@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
+import 'package:we_care/core/dependency_injection.dart';
 
 import 'Errors/server_exception.dart';
 import 'app_interceptors.dart';
