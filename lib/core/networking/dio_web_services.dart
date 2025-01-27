@@ -30,9 +30,10 @@ class DioWebServices implements WebServices {
       ..receiveTimeout = const Duration(seconds: 20 * 1000)
       ..receiveDataWhenStatusError = true
       // ..responseType = ResponseType.plain
-      ..validateStatus = (status) => status! < StatusCode.internalServerError;
+      ..validateStatus = (status) =>
+          status! < StatusCode.internalServerError; //TODO: check this later
 
-    dio.interceptors.add(getIt.get<DioInterceptor>()); 
+    dio.interceptors.add(getIt.get<DioInterceptor>());
     if (kDebugMode) {
       dio.interceptors.add(
         getIt.get<LogInterceptor>(),
