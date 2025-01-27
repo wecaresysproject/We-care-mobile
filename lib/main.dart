@@ -6,12 +6,12 @@ import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setUpDependencyInjection();
+  await setUpDependencyInjection();
   // To fix texts being hidden bug in flutter_screenutil in release mode.
   await ScreenUtil.ensureScreenSize();
 
   runApp(
-    MyApp(
+    WeCareApp(
       appRouter: AppRouter(),
     ),
   );

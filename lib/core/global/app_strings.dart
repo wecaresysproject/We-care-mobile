@@ -6,4 +6,5 @@ class AppStrings {
   static const languagekey = "appLanguage";
 
   static const themekey = "apptheme";
+  static const cairoFontFamily = "Cairo";
 }
