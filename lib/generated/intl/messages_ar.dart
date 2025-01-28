@@ -21,5 +21,19 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "confirmPassword": MessageLookupByLibrary.simpleMessage("تأكيد كلمة السر"),
+    "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "enterFirstName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الأول"),
+    "enterLastName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الثاني"),
+    "enterMobileNumber": MessageLookupByLibrary.simpleMessage("01234"),
+    "enterPassword": MessageLookupByLibrary.simpleMessage("اكتب كلمة السر"),
+    "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
+    "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
+    "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
+    "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
+    "passwordHint": MessageLookupByLibrary.simpleMessage(
+      "يجب أن تحتوي كلمة المرور الخاصة بك",
+    ),
+  };
 }

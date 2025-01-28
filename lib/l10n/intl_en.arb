@@ -1,1 +1,14 @@
-{}
+{
+        "createAccount": "Create Account",
+        "firstName": "First Name",
+        "familyName": "Family Name",
+        "enterFirstName": "Enter Your First Name",
+        "enterLastName": "Enter Your Last Name",
+        "mobileNumber": "Mobile Number",
+        "enterMobileNumber": "Enter Mobile Number",
+        "password": "Password",
+        "enterPassword":"Enter Password",
+        "confirmPassword": "Confirm Password",
+        "passwordHint":"Your password must contain"
+
+}

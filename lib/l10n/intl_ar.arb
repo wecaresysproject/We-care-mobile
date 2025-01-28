@@ -1,1 +1,14 @@
-{}
+{
+    "createAccount": "إنشاء حساب",
+    "firstName": "الاسم الأول",
+    "familyName": "اسم العائلة",
+    "enterFirstName": "اكتب اسمك الأول",
+    "enterLastName": "اكتب اسمك الثاني",
+    "mobileNumber": "رقم الموبايل/الجوال",
+    "enterMobileNumber": "01234",
+    "password": "كلمة السر",
+    "enterPassword": "اكتب كلمة السر",
+    "confirmPassword": "تأكيد كلمة السر",
+    "passwordHint": "يجب أن تحتوي كلمة المرور الخاصة بك"
+
+}
