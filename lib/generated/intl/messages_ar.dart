@@ -60,5 +60,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterYourPhoneNum": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم الهاتف",
     ),
+    "resend": MessageLookupByLibrary.simpleMessage("اعادة الارسال"),
+    "verifyYourNumber": MessageLookupByLibrary.simpleMessage("التحقق من رقمك"),
+    "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(
+      "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",
+    ),
   };
 }

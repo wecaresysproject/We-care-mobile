@@ -5,7 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/app_router.dart';
-import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
+import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class WeCareApp extends StatelessWidget {
@@ -43,7 +43,7 @@ class WeCareApp extends StatelessWidget {
           theme: ThemeData(
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file
-            scaffoldBackgroundColor: ColorsManager.scaffoldBackGroundColor,
+            scaffoldBackgroundColor: AppColorsManager.scaffoldBackGroundColor,
             fontFamily: AppStrings.cairoFontFamily,
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
@@ -58,7 +58,7 @@ class WeCareApp extends StatelessWidget {
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
-                backgroundColor: ColorsManager.mainDarkBlue,
+                backgroundColor: AppColorsManager.mainDarkBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -66,7 +66,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const SignUpView(),
+          home: const OtpView(),
         );
       },
     );

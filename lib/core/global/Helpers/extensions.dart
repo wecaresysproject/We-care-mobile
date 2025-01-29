@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/generated/l10n.dart';
 
 extension BuildContextOperations on BuildContext {
+  S get translate => S.of(this);
+
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => Theme.of(this).textTheme;
   ColorScheme get colorSchemeTheme => Theme.of(this).colorScheme;

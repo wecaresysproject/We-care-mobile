@@ -4,5 +4,5 @@ class Routes {
   static const splashscreen = '/splashScreen';
 
   static const homeTabView = '/homeTabView';
-  static const pinFieldsView = '/pinFieldsView';
+  static const otpView = '/otpView';
 }

@@ -249,6 +249,31 @@ class S {
       args: [],
     );
   }
+
+  /// `Verify Your Number`
+  String get verifyYourNumber {
+    return Intl.message(
+      'Verify Your Number',
+      name: 'verifyYourNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the verification code we sent to your number.`
+  String get verifyYourNumberHint {
+    return Intl.message(
+      'Enter the verification code we sent to your number.',
+      name: 'verifyYourNumberHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resend`
+  String get resend {
+    return Intl.message('Resend', name: 'resend', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
