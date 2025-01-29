@@ -133,7 +133,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: ColorsManager.placeHolderColor.withAlpha(150),
+                        color: AppColorsManager.placeHolderColor.withAlpha(150),
                         width: 1.3,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -283,8 +283,8 @@ class PasswordValidations extends StatelessWidget {
           child: CircleAvatar(
             radius: 6,
             backgroundColor: hasValidated
-                ? ColorsManager.doneColor
-                : ColorsManager.warningColor,
+                ? AppColorsManager.doneColor
+                : AppColorsManager.warningColor,
           ),
         ),
         horizontalSpacing(6),

@@ -19,7 +19,11 @@
         "passwordNotMatch":"Passwords do not match",
         "passwordHint1": "Between 8 and 15 characters",
         "passwordHint2": "1 or more special characters",
-        "passwordHint3": "1 or more numbers"
+        "passwordHint3": "1 or more numbers",
+        "verifyYourNumber": "Verify Your Number",
+        "verifyYourNumberHint": "Enter the verification code we sent to your number.",
+        "resend": "Resend"
+
 
 
 

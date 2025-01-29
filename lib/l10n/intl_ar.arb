@@ -19,8 +19,10 @@
     "passwordNotMatch":"كلمة المرور غير متطابقة",
     "passwordHint1": "بين 8 و 15 حرف",
     "passwordHint2": "1 أو أكثر من الرموز",
-    "passwordHint3": "1 أو أكثر من الأرقام"
-
+    "passwordHint3": "1 أو أكثر من الأرقام",
+    "verifyYourNumber": "التحقق من رقمك",
+    "verifyYourNumberHint": "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",
+    "resend": "اعادة الارسال"
 
 
 }

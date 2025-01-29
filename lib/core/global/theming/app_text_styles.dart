@@ -12,13 +12,13 @@ class AppTextStyles {
     fontSize: 18.sp,
     fontWeight: FontWeightHelper.medium,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
-    color: ColorsManager.textColor,
+    color: AppColorsManager.textColor,
   );
   static final font16DarkGreyRegular = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeightHelper.regular,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
-    color: ColorsManager.placeHolderColor,
+    color: AppColorsManager.placeHolderColor,
   );
   static final font22DarkRegular = TextStyle(
     fontSize: 22.sp,
@@ -29,7 +29,7 @@ class AppTextStyles {
     fontSize: 12.sp,
     fontWeight: FontWeightHelper.regular,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,//cairo
-    color: ColorsManager.textColor,
+    color: AppColorsManager.textColor,
   );
   TextStyle generateNewTextStyle({
     required double fontSize,
@@ -39,7 +39,7 @@ class AppTextStyles {
     return TextStyle(
       fontSize: fontSize.sp,
       fontWeight: fontWeight ?? FontWeightHelper.regular,
-      color: color ?? ColorsManager.textColor,
+      color: color ?? AppColorsManager.textColor,
     );
   }
 }

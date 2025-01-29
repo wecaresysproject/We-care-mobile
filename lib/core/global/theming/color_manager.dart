@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //! Most of the color names in this class almost match those used in the Figma design file.
-class ColorsManager {
+class AppColorsManager {
   static const Color mainDarkBlue = Color(0xff014C8A);
   static const Color secondaryColor = Color(0xffDAE9FA);
   static const Color scaffoldBackGroundColor = Color(0xffFEFEFE);

@@ -55,7 +55,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
-            color: ColorsManager.placeHolderColor,
+            color: AppColorsManager.placeHolderColor,
             width: 1.3,
           ),
         ),
@@ -65,7 +65,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: ColorsManager.warningColor, // Red color
+            color: AppColorsManager.warningColor, // Red color
             width: 1.3, // Same thickness
           ),
         ),
@@ -73,7 +73,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: ColorsManager.warningColor, // Red color
+            color: AppColorsManager.warningColor, // Red color
             width: 1.3, // Same thickness
           ),
         ),
@@ -81,7 +81,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: ColorsManager.placeHolderColor.withAlpha(150),
+            color: AppColorsManager.placeHolderColor.withAlpha(150),
             width: 1.3, // Same thickness
           ),
         ),
@@ -89,17 +89,17 @@ class CustomTextFieldState extends State<CustomTextField> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: ColorsManager.warningColor, // Red color
+            color: AppColorsManager.warningColor, // Red color
             // width: 1.5, // Same thickness
             width: 1.3, // Same thickness
           ),
         ),
-        fillColor: ColorsManager.textfieldInsideColor.withAlpha(100),
+        fillColor: AppColorsManager.textfieldInsideColor.withAlpha(100),
         filled: true,
         prefixIcon: widget.isPassword
             ? Icon(
                 Icons.lock,
-                color: ColorsManager.placeHolderColor,
+                color: AppColorsManager.placeHolderColor,
               )
             : null,
         suffixIcon: widget.isPassword
