@@ -22,6 +22,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "PleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Password",
+    ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
     "enterFirstName": MessageLookupByLibrary.simpleMessage(
@@ -40,6 +43,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
       "Your password must contain",
+    ),
+    "passwordHint1": MessageLookupByLibrary.simpleMessage(
+      "Between 8 and 15 characters",
+    ),
+    "passwordHint2": MessageLookupByLibrary.simpleMessage(
+      "1 or more special characters",
+    ),
+    "passwordHint3": MessageLookupByLibrary.simpleMessage("1 or more numbers"),
+    "passwordMustContain": MessageLookupByLibrary.simpleMessage(
+      "The password must contain at least one uppercase letter, one number, and one special character.",
+    ),
+    "passwordNotMatch": MessageLookupByLibrary.simpleMessage(
+      "Passwords do not match",
+    ),
+    "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Corrent Phone Number",
+    ),
+    "pleaseEnterYourName": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Name",
+    ),
+    "pleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Password",
+    ),
+    "pleaseEnterYourPhoneNum": MessageLookupByLibrary.simpleMessage(
+      "Please Enter Your Phone Number",
     ),
   };
 }

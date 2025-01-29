@@ -9,6 +9,19 @@
         "password": "Password",
         "enterPassword":"Enter Password",
         "confirmPassword": "Confirm Password",
-        "passwordHint":"Your password must contain"
+        "passwordHint":"Your password must contain",
+        "pleaseEnterYourName":"Please Enter Your Name",
+        "pleaseEnterYourPhoneNum":"Please Enter Your Phone Number",
+        "pleaseEnterYourCorrentPhoneNum":"Please Enter Your Corrent Phone Number",
+        "PleaseEnterYourPassword":"Please Enter Your Password",
+        "passwordMustContain": "The password must contain at least one uppercase letter, one number, and one special character.",
+        "pleaseEnterYourPassword":"Please Enter Your Password",
+        "passwordNotMatch":"Passwords do not match",
+        "passwordHint1": "Between 8 and 15 characters",
+        "passwordHint2": "1 or more special characters",
+        "passwordHint3": "1 or more numbers"
+
+
+
 
 }

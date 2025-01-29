@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,14 +21,9 @@ class SignUpFormFields extends StatefulWidget {
 }
 
 class _SignUpFormFieldsState extends State<SignUpFormFields> {
-  bool isPasswordObscureText = true;
-  bool isPasswordConfirmationObscureText = true;
-
   bool hasbetween8and15 = false;
-  bool hasUppercase = false;
   bool hasSpecialCharacters = false;
   bool hasNumber = false;
-  bool hasMinLength = false;
 
   late TextEditingController passwordController;
 
@@ -43,11 +39,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
       setState(() {
         hasbetween8and15 =
             AppRegex.lengthBetween8And15(passwordController.text);
-        hasUppercase = AppRegex.hasUpperCase(passwordController.text);
         hasSpecialCharacters =
             AppRegex.hasSpecialCharacter(passwordController.text);
         hasNumber = AppRegex.hasNumber(passwordController.text);
-        hasMinLength = AppRegex.hasMinLength(passwordController.text);
       });
     });
   }
@@ -58,7 +52,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
       key: context.read<SignUpCubit>().formKey,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 16,
+          horizontal: 20,
           vertical: 16,
         ),
         child: Column(
@@ -80,7 +74,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                       CustomTextField(
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'من فضلك ادخل الاسم'; //TODo: handle it in l10 file
+                            return S
+                                .of(context)
+                                .pleaseEnterYourName; //TODo: handle it in l10 file
                           }
                         },
                         controller:
@@ -108,7 +104,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                             context.read<SignUpCubit>().lastNameController,
                         validator: (value) {
                           if (value.isEmptyOrNull) {
-                            return 'من فضلك ادخل الاسم'; //TODo: handle it in l10 file
+                            return S
+                                .of(context)
+                                .pleaseEnterYourName; //TODo: handle it in l10 file
                           }
                         },
                         isPassword: false,
@@ -130,35 +128,24 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             const SizedBox(height: 8),
             Row(
               children: [
-                // Country Dropdown
                 Expanded(
                   flex: 1,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: LinearGradient(
-                        colors: [
-                          ColorsManager.textfieldInsideColor.withAlpha(150),
-                          Colors.white,
-                        ],
+                      border: Border.all(
+                        color: ColorsManager.placeHolderColor.withAlpha(150),
+                        width: 1.3,
                       ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: DropdownButton<String>(
-                      value: '+91',
-                      underline: Container(),
-                      items: const [
-                        DropdownMenuItem(
-                          value: '+91',
-                          child: Text('+91'),
-                        ),
-                        DropdownMenuItem(
-                          value: '+1',
-                          child: Text('+1'),
-                        ),
-                      ],
+                    child: CountryCodePicker(
+                      flagWidth: 20.w,
                       onChanged: (value) {},
+                      initialSelection: 'IT',
+                      favorite: ['+39', 'FR'],
+                      showCountryOnly: false,
+                      showOnlyCountryWhenClosed: true,
+                      alignLeft: true,
                     ),
                   ),
                 ),
@@ -169,10 +156,10 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     controller: context.read<SignUpCubit>().phoneController,
                     validator: (phoneNumber) {
                       if (phoneNumber.isEmptyOrNull) {
-                        return 'من فضلك ادخل رقم الهاتف';
+                        return S.of(context).pleaseEnterYourPhoneNum;
                       }
                       if (!AppRegex.isPhoneNumberValid(phoneNumber!)) {
-                        return 'من فضلك ادخل رقم هاتف صحيح';
+                        return S.of(context).pleaseEnterYourCorrentPhoneNum;
                       }
                       // return null; // ✅ No error, validation passes
                     },
@@ -195,10 +182,16 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
               controller: context.read<SignUpCubit>().passwordController,
               validator: (password) {
                 if (password.isEmptyOrNull) {
-                  return 'من فضلك ادخل كلمة المرور'; // ✅ Correct error message
+                  return S
+                      .of(context)
+                      .PleaseEnterYourPassword; // ✅ Correct error message
                 }
-                if (!AppRegex.isPasswordValid(password!)) {
-                  return 'كلمة المرور يجب أن تحتوي على حرف كبير، رقم، ورمز خاص على الأقل.'; // ✅ Short & clear message
+                if (!AppRegex.hasSpecialCharacter(password!) ||
+                    !AppRegex.lengthBetween8And15(password) ||
+                    !AppRegex.hasNumber(password)) {
+                  return S
+                      .of(context)
+                      .passwordMustContain; // ✅ Short & clear message
                 }
                 return null; // ✅ No error
               },
@@ -218,11 +211,15 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                   context.read<SignUpCubit>().passwordConfirmationController,
               validator: (value) {
                 if (value.isEmptyOrNull) {
-                  return 'من فضلك ادخل كلمة المرور'; // ✅ Correct error message
+                  return S
+                      .of(context)
+                      .PleaseEnterYourPassword; // ✅ Correct error message
                 }
                 if (value !=
                     context.read<SignUpCubit>().passwordController.text) {
-                  return 'كلمة المرور غير متطابقة'; // ✅ Ensure password match
+                  return S
+                      .of(context)
+                      .passwordNotMatch; // ✅ Ensure password match
                 }
               },
               hintText: S.of(context).enterPassword,
@@ -240,11 +237,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             verticalSpacing(4),
 
             PasswordValidations(
-              hasbetween8and15: hasbetween8and15,
-              hasMinLength: hasMinLength,
+              isbetween8and15Character: hasbetween8and15,
               hasNumber: hasNumber,
               hasSpecialCharacters: hasSpecialCharacters,
-              hasUpperCase: hasUppercase,
             ),
           ],
         ),
@@ -254,29 +249,26 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
 }
 
 class PasswordValidations extends StatelessWidget {
-  final bool hasbetween8and15;
-  final bool hasUpperCase;
+  final bool isbetween8and15Character;
   final bool hasSpecialCharacters;
   final bool hasNumber;
-  final bool hasMinLength;
   const PasswordValidations({
     super.key,
-    required this.hasbetween8and15,
-    required this.hasUpperCase,
+    required this.isbetween8and15Character,
     required this.hasSpecialCharacters,
     required this.hasNumber,
-    required this.hasMinLength,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildValidationRow('بين 8 و15 حرفًا', hasbetween8and15),
+        buildValidationRow(
+            S.of(context).passwordHint1, isbetween8and15Character),
         verticalSpacing(5),
-        buildValidationRow('1 أو أكثر من الرموز', hasSpecialCharacters),
+        buildValidationRow(S.of(context).passwordHint2, hasSpecialCharacters),
         verticalSpacing(5),
-        buildValidationRow('1 أو أكثر من الأرقام', hasNumber),
+        buildValidationRow(S.of(context).passwordHint3, hasNumber),
         verticalSpacing(5),
       ],
     );

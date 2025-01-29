@@ -149,6 +149,106 @@ class S {
       args: [],
     );
   }
+
+  /// `Please Enter Your Name`
+  String get pleaseEnterYourName {
+    return Intl.message(
+      'Please Enter Your Name',
+      name: 'pleaseEnterYourName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter Your Phone Number`
+  String get pleaseEnterYourPhoneNum {
+    return Intl.message(
+      'Please Enter Your Phone Number',
+      name: 'pleaseEnterYourPhoneNum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter Your Corrent Phone Number`
+  String get pleaseEnterYourCorrentPhoneNum {
+    return Intl.message(
+      'Please Enter Your Corrent Phone Number',
+      name: 'pleaseEnterYourCorrentPhoneNum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter Your Password`
+  String get PleaseEnterYourPassword {
+    return Intl.message(
+      'Please Enter Your Password',
+      name: 'PleaseEnterYourPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password must contain at least one uppercase letter, one number, and one special character.`
+  String get passwordMustContain {
+    return Intl.message(
+      'The password must contain at least one uppercase letter, one number, and one special character.',
+      name: 'passwordMustContain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please Enter Your Password`
+  String get pleaseEnterYourPassword {
+    return Intl.message(
+      'Please Enter Your Password',
+      name: 'pleaseEnterYourPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passwords do not match`
+  String get passwordNotMatch {
+    return Intl.message(
+      'Passwords do not match',
+      name: 'passwordNotMatch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Between 8 and 15 characters`
+  String get passwordHint1 {
+    return Intl.message(
+      'Between 8 and 15 characters',
+      name: 'passwordHint1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 or more special characters`
+  String get passwordHint2 {
+    return Intl.message(
+      '1 or more special characters',
+      name: 'passwordHint2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1 or more numbers`
+  String get passwordHint3 {
+    return Intl.message(
+      '1 or more numbers',
+      name: 'passwordHint3',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

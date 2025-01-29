@@ -28,7 +28,8 @@ class SignUpView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 8),
+                // const SizedBox(height: 8),
+                verticalSpacing(8),
                 SizedBox(
                   width: 116,
                   height: 113,
@@ -89,7 +90,12 @@ class PinFieldsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pin fields view'),
+        title: Text(
+          'Pin fields view',
+          style: TextStyle(
+            color: Colors.black,
+          ),
+        ),
       ),
     );
   }
