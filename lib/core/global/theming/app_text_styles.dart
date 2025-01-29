@@ -20,6 +20,11 @@ class AppTextStyles {
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
     color: ColorsManager.placeHolderColor,
   );
+  static final font22DarkRegular = TextStyle(
+    fontSize: 22.sp,
+    fontWeight: FontWeightHelper.bold,
+    color: Colors.black,
+  );
   static final font12blackRegular = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeightHelper.regular,

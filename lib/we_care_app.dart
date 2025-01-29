@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/app_router.dart';
+import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class WeCareApp extends StatelessWidget {
@@ -20,7 +21,6 @@ class WeCareApp extends StatelessWidget {
       builder: (_, child) {
         return MaterialApp(
           title: 'We Care Mobile App',
-
           builder: (context, Widget? child) {
             return Directionality(
               textDirection: isArabic() ? TextDirection.rtl : TextDirection.ltr,
@@ -44,28 +44,31 @@ class WeCareApp extends StatelessWidget {
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file
             scaffoldBackgroundColor: ColorsManager.scaffoldBackGroundColor,
-
+            fontFamily: AppStrings.cairoFontFamily,
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.deepPurple,
             ),
+            appBarTheme: const AppBarTheme(
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              foregroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              toolbarHeight: kToolbarHeight - 30,
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorsManager.mainDarkBlue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+            ),
             useMaterial3: true,
           ),
-          home: const DemoPage(),
+          home: const SignUpView(),
         );
       },
-    );
-  }
-}
-
-class DemoPage extends StatelessWidget {
-  const DemoPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Demo Home Page'),
-      ),
     );
   }
 }

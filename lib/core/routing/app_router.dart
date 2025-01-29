@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 
 class AppRouter {
 //automatically recalled when we use Navigator in our screen
   Route<dynamic>? onGenerateRoutes(RouteSettings route) {
     String routeName = route.name!;
+    // ignore: unused_local_variable
     final arguments = route.arguments;
 
     //! provide the nedded bloc providers here
 
     switch (routeName) {
-      // case splashscreen:
-      //   return MaterialPageRoute(builder: (context) => const SplashView());
+      case Routes.pinFieldsView:
+        return MaterialPageRoute(
+          builder: (context) => const PinFieldsView(),
+        );
 
       // case bottomNavBar:
       //   return MaterialPageRoute(

@@ -1,1 +1,26 @@
-{}
+{
+    "createAccount": "إنشاء حساب",
+    "firstName": "الاسم الأول",
+    "familyName": "اسم العائلة",
+    "enterFirstName": "اكتب اسمك الأول",
+    "enterLastName": "اكتب اسمك الثاني",
+    "mobileNumber": "رقم الموبايل/الجوال",
+    "enterMobileNumber": "01234",
+    "password": "كلمة السر",
+    "enterPassword": "اكتب كلمة السر",
+    "confirmPassword": "تأكيد كلمة السر",
+    "passwordHint": "يجب أن تحتوي كلمة المرور الخاصة بك",
+    "pleaseEnterYourName":"من فضلك ادخل الاسم",
+    "pleaseEnterYourPhoneNum":"من فضلك ادخل رقم الهاتف",
+    "pleaseEnterYourCorrentPhoneNum":"من فضلك ادخل رقم هاتف صحيح",
+    "PleaseEnterYourPassword":"من فضلك ادخل كلمة المرور",
+    "PasswordMustContain":"كلمة المرور يجب أن تحتوي على حرف كبير، رقم، ورمز خاص على الأقل.",
+    "pleaseEnterYourPassword":"من فضلك ادخل كلمة المرور",
+    "passwordNotMatch":"كلمة المرور غير متطابقة",
+    "passwordHint1": "بين 8 و 15 حرف",
+    "passwordHint2": "1 أو أكثر من الرموز",
+    "passwordHint3": "1 أو أكثر من الأرقام"
+
+
+
+}

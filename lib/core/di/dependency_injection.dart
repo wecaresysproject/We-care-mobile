@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/networking/app_interceptors.dart';
 import 'package:we_care/core/networking/dio_web_services.dart';
+import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
 
 final getIt = GetIt.instance;
 Future<void> setUpDependencyInjection() async {
@@ -41,4 +42,7 @@ Future<void> setUpDependencyInjection() async {
       dio: getIt<Dio>(),
     ),
   );
+  // signup
+  // getIt.registerLazySingleton<SignupRepo>(() => SignupRepo(getIt()));
+  getIt.registerFactory<SignUpCubit>(() => SignUpCubit());
 }
