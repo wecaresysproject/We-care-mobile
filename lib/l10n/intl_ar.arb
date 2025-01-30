@@ -27,6 +27,17 @@
     "doctorSpecialist": "الطبيب / الاخصائي",
     "medicalServiceProviders": "مقدمي الخدمات الطبية",
     "insuranceCompanies": "شركات التأمين",
-    "supportingEntities": "الهيئات الداعمة"
+    "supportingEntities": "الهيئات الداعمة",
+    "medicalRecordManagement": "اختر ما تريد القيام به لإدارة سجلك الطبي.",
+    "enter_medical_data":  "ادخال بيانات\nسجلك الطبي",
+    "view_medical_record": "عرض سجلك\nالطبي",
+    "dummyUserName":"أحمد محمد",
+    "homeTab": "الرئيسية",
+    "medical_recordTab": "ملف طبي",
+    "doctorsTab": "الأطباء",
+    "pharmaInteractionTab": "تفاعل دواء",
+    "settingsTab": "الإعدادات"
+
+
 
 }

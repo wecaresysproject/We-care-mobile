@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class PinCodeFieldsWidget extends StatelessWidget {
   const PinCodeFieldsWidget({
@@ -47,6 +49,7 @@ class PinCodeFieldsWidget extends StatelessWidget {
         onChanged: (value) {},
         onCompleted: (value) {
           print("OTP Entered: $value");
+          context.pushNamed(Routes.bottomNavBar);
           //!Check here that the code is correct and go to home page or not
         },
       ),

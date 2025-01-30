@@ -30,6 +30,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "Doctor / Specialist",
     ),
+    "doctorsTab": MessageLookupByLibrary.simpleMessage("Doctors"),
+    "dummyUserName": MessageLookupByLibrary.simpleMessage("Ahmed Mohamed"),
     "enterFirstName": MessageLookupByLibrary.simpleMessage(
       "Enter Your First Name",
     ),
@@ -40,14 +42,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter Mobile Number",
     ),
     "enterPassword": MessageLookupByLibrary.simpleMessage("Enter Password"),
+    "enter_medical_data": MessageLookupByLibrary.simpleMessage(
+      "Enter your medical record\ndata",
+    ),
     "familyName": MessageLookupByLibrary.simpleMessage("Family Name"),
     "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
+    "homeTab": MessageLookupByLibrary.simpleMessage("Home"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage(
       "Insurance Companies",
+    ),
+    "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
+      "Choose what you want to do to manage your medical record.",
     ),
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "Medical Service Providers",
     ),
+    "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical Record"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -67,6 +77,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passwords do not match",
     ),
     "patient": MessageLookupByLibrary.simpleMessage("Patient"),
+    "pharmaInteractionTab": MessageLookupByLibrary.simpleMessage(
+      "Drug Interaction",
+    ),
     "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Corrent Phone Number",
     ),
@@ -80,6 +93,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please Enter Your Phone Number",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("Resend"),
+    "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "Supporting Entities",
     ),
@@ -88,6 +102,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(
       "Enter the verification code we sent to your number.",
+    ),
+    "view_medical_record": MessageLookupByLibrary.simpleMessage(
+      "View your medical\nrecord",
     ),
   };
 }

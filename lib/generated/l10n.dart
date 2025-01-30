@@ -319,6 +319,81 @@ class S {
       args: [],
     );
   }
+
+  /// `Choose what you want to do to manage your medical record.`
+  String get medicalRecordManagement {
+    return Intl.message(
+      'Choose what you want to do to manage your medical record.',
+      name: 'medicalRecordManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your medical record\ndata`
+  String get enter_medical_data {
+    return Intl.message(
+      'Enter your medical record\ndata',
+      name: 'enter_medical_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View your medical\nrecord`
+  String get view_medical_record {
+    return Intl.message(
+      'View your medical\nrecord',
+      name: 'view_medical_record',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ahmed Mohamed`
+  String get dummyUserName {
+    return Intl.message(
+      'Ahmed Mohamed',
+      name: 'dummyUserName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home`
+  String get homeTab {
+    return Intl.message('Home', name: 'homeTab', desc: '', args: []);
+  }
+
+  /// `Medical Record`
+  String get medical_recordTab {
+    return Intl.message(
+      'Medical Record',
+      name: 'medical_recordTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctors`
+  String get doctorsTab {
+    return Intl.message('Doctors', name: 'doctorsTab', desc: '', args: []);
+  }
+
+  /// `Drug Interaction`
+  String get pharmaInteractionTab {
+    return Intl.message(
+      'Drug Interaction',
+      name: 'pharmaInteractionTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get settingsTab {
+    return Intl.message('Settings', name: 'settingsTab', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
