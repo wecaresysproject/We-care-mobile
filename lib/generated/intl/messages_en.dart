@@ -27,6 +27,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
+    "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
+      "Doctor / Specialist",
+    ),
     "enterFirstName": MessageLookupByLibrary.simpleMessage(
       "Enter Your First Name",
     ),
@@ -39,6 +42,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "enterPassword": MessageLookupByLibrary.simpleMessage("Enter Password"),
     "familyName": MessageLookupByLibrary.simpleMessage("Family Name"),
     "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
+    "insuranceCompanies": MessageLookupByLibrary.simpleMessage(
+      "Insurance Companies",
+    ),
+    "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
+      "Medical Service Providers",
+    ),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -57,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordNotMatch": MessageLookupByLibrary.simpleMessage(
       "Passwords do not match",
     ),
+    "patient": MessageLookupByLibrary.simpleMessage("Patient"),
     "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Corrent Phone Number",
     ),
@@ -70,6 +80,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please Enter Your Phone Number",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("Resend"),
+    "supportingEntities": MessageLookupByLibrary.simpleMessage(
+      "Supporting Entities",
+    ),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage(
       "Verify Your Number",
     ),

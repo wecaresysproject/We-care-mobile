@@ -13,4 +13,5 @@ class AppColorsManager {
   static const Color selectedNavIconColor = Color(0xffFEFEFE);
   static const Color placeHolderColor = Color(0xff777777);
   static const Color textColor = Color(0xff080808);
+  static const Color backGroundColor = Color(0xffFEFEFE);
 }

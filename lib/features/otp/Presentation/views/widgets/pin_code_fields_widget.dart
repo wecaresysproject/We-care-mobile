@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
@@ -18,7 +19,11 @@ class PinCodeFieldsWidget extends StatelessWidget {
         length: 4,
         appContext: context,
         keyboardType: TextInputType.number,
-        textStyle: AppTextStyles.font22DarkRegular,
+        textStyle: AppTextStyles.font18blackRegular.copyWith(
+          fontSize: 20.sp,
+          fontFamily: "inter",
+          fontWeight: FontWeightHelper.semiBold,
+        ),
         cursorColor: AppColorsManager.mainDarkBlue,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         autoFocus: true,

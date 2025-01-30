@@ -89,7 +89,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
+                horizontalSpacing(10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,25 +127,33 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             ),
             const SizedBox(height: 8),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 1,
                   child: Container(
+                    height: 48.h,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: AppColorsManager.placeHolderColor.withAlpha(150),
                         width: 1.3,
                       ),
+                      color:
+                          AppColorsManager.textfieldInsideColor.withAlpha(100),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: CountryCodePicker(
                       flagWidth: 20.w,
                       onChanged: (value) {},
-                      initialSelection: 'IT',
-                      favorite: ['+39', 'FR'],
-                      showCountryOnly: false,
+                      margin: EdgeInsets.only(
+                        left: 0.w,
+                      ),
+                      initialSelection: 'EG',
+                      favorite: ['+20', 'EG'],
+                      showCountryOnly: true,
                       showOnlyCountryWhenClosed: true,
-                      alignLeft: true,
+                      hideMainText: true,
+                      // alignLeft: true,
                     ),
                   ),
                 ),

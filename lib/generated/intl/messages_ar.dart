@@ -27,12 +27,19 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("تأكيد كلمة السر"),
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
+      "الطبيب / الاخصائي",
+    ),
     "enterFirstName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الأول"),
     "enterLastName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الثاني"),
     "enterMobileNumber": MessageLookupByLibrary.simpleMessage("01234"),
     "enterPassword": MessageLookupByLibrary.simpleMessage("اكتب كلمة السر"),
     "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
+    "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
+    "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
+      "مقدمي الخدمات الطبية",
+    ),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -48,6 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordNotMatch": MessageLookupByLibrary.simpleMessage(
       "كلمة المرور غير متطابقة",
     ),
+    "patient": MessageLookupByLibrary.simpleMessage("المريض"),
     "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم هاتف صحيح",
     ),
@@ -61,6 +69,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "من فضلك ادخل رقم الهاتف",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("اعادة الارسال"),
+    "supportingEntities": MessageLookupByLibrary.simpleMessage(
+      "الهيئات الداعمة",
+    ),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage("التحقق من رقمك"),
     "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(
       "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",

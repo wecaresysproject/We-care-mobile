@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
+import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
+import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 
 class AppRouter {
 //automatically recalled when we use Navigator in our screen
@@ -12,6 +14,14 @@ class AppRouter {
     //! provide the nedded bloc providers here
 
     switch (routeName) {
+      case Routes.userTypesView:
+        return MaterialPageRoute(
+          builder: (context) => const UserTypesView(),
+        );
+      case Routes.signUpView:
+        return MaterialPageRoute(
+          builder: (context) => const SignUpView(),
+        );
       case Routes.otpView:
         return MaterialPageRoute(
           builder: (context) => const OtpView(),
