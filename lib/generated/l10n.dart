@@ -274,6 +274,51 @@ class S {
   String get resend {
     return Intl.message('Resend', name: 'resend', desc: '', args: []);
   }
+
+  /// `Patient`
+  String get patient {
+    return Intl.message('Patient', name: 'patient', desc: '', args: []);
+  }
+
+  /// `Doctor / Specialist`
+  String get doctorSpecialist {
+    return Intl.message(
+      'Doctor / Specialist',
+      name: 'doctorSpecialist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Service Providers`
+  String get medicalServiceProviders {
+    return Intl.message(
+      'Medical Service Providers',
+      name: 'medicalServiceProviders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insurance Companies`
+  String get insuranceCompanies {
+    return Intl.message(
+      'Insurance Companies',
+      name: 'insuranceCompanies',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supporting Entities`
+  String get supportingEntities {
+    return Intl.message(
+      'Supporting Entities',
+      name: 'supportingEntities',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

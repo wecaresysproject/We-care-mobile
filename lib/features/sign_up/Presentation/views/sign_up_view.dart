@@ -27,10 +27,10 @@ class SignUpView extends StatelessWidget {
             children: [
               verticalSpacing(8),
               DesignLogoWidget(),
-              verticalSpacing(16),
+              verticalSpacing(4),
               Text(
                 S.of(context).createAccount,
-                style: AppTextStyles.font22DarkRegular,
+                style: AppTextStyles.font22MainBlueRegular,
               ),
               SignUpFormFields(),
               // Submit Button

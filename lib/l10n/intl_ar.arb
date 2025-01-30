@@ -22,7 +22,11 @@
     "passwordHint3": "1 أو أكثر من الأرقام",
     "verifyYourNumber": "التحقق من رقمك",
     "verifyYourNumberHint": "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",
-    "resend": "اعادة الارسال"
-
+    "resend": "اعادة الارسال",
+    "patient": "المريض",
+    "doctorSpecialist": "الطبيب / الاخصائي",
+    "medicalServiceProviders": "مقدمي الخدمات الطبية",
+    "insuranceCompanies": "شركات التأمين",
+    "supportingEntities": "الهيئات الداعمة"
 
 }

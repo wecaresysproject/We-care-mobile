@@ -22,9 +22,12 @@
         "passwordHint3": "1 or more numbers",
         "verifyYourNumber": "Verify Your Number",
         "verifyYourNumberHint": "Enter the verification code we sent to your number.",
-        "resend": "Resend"
-
-
+        "resend": "Resend",
+        "patient": "Patient",
+        "doctorSpecialist": "Doctor / Specialist",
+        "medicalServiceProviders": "Medical Service Providers",
+        "insuranceCompanies": "Insurance Companies",
+        "supportingEntities": "Supporting Entities"
 
 
 
