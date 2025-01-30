@@ -1,34 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/routing/routes.dart';
 
 class CustomImageWithTextButton extends StatelessWidget {
   final String text;
   final String imagePath;
   final TextStyle? textStyle;
+  final void Function()? onTap;
 
   const CustomImageWithTextButton({
     super.key,
     required this.text,
     required this.imagePath,
     this.textStyle,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        //TODO: call bloc from this point to save user type in order to use it later in the app when making any request
-        context.pushNamed(Routes.signUpView);
-      },
+      onTap: onTap,
       child: Container(
         height: 52.h,
         width: double.infinity,
         alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           vertical: 8,
         ),
         decoration: BoxDecoration(
@@ -60,7 +57,7 @@ class CustomImageWithTextButton extends StatelessWidget {
             horizontalSpacing(20),
             Text(
               text,
-              style: textStyle ?? AppTextStyles.font22WhiteSemiBold,
+              style: AppTextStyles.font22WhiteSemiBold,
             ),
           ],
         ),

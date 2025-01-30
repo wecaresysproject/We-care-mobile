@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
+import 'package:we_care/features/show_data_entry_types/Presentation/views/show_data_entry_categories_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 
@@ -26,6 +28,18 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const OtpView(),
         );
+      case Routes.bottomNavBar:
+        return MaterialPageRoute(
+          builder: (context) => const CustomBottomNavBar(),
+        );
+      case Routes.dateEntryTypesView:
+        return MaterialPageRoute(
+          builder: (context) => const DataEntryCategoryTypesView(),
+        );
+      // case Routes.homeTabView:
+      //   return MaterialPageRoute(
+      //     builder: (context) => const HomeTabView(),
+      //   );
 
       // case bottomNavBar:
       //   return MaterialPageRoute(

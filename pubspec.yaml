@@ -30,6 +30,7 @@ environment:
 dependencies:
   country_code_picker: ^3.1.0
   cupertino_icons: ^1.0.8
+  curved_labeled_navigation_bar: ^2.0.5
   dio: ^5.7.0
   equatable: ^2.0.7
   flutter:

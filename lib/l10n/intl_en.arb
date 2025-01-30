@@ -27,7 +27,17 @@
         "doctorSpecialist": "Doctor / Specialist",
         "medicalServiceProviders": "Medical Service Providers",
         "insuranceCompanies": "Insurance Companies",
-        "supportingEntities": "Supporting Entities"
+        "supportingEntities": "Supporting Entities",
+        "medicalRecordManagement": "Choose what you want to do to manage your medical record.",
+        "enter_medical_data":"Enter your medical record\ndata",
+        "view_medical_record": "View your medical\nrecord",
+        "dummyUserName":"Ahmed Mohamed",
+        "homeTab": "Home",
+        "medical_recordTab": "Medical Record",
+        "doctorsTab": "Doctors",
+        "pharmaInteractionTab": "Drug Interaction",
+        "settingsTab": "Settings"
+
 
 
 

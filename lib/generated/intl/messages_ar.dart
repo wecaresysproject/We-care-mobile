@@ -30,16 +30,26 @@ class MessageLookup extends MessageLookupByLibrary {
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "الطبيب / الاخصائي",
     ),
+    "doctorsTab": MessageLookupByLibrary.simpleMessage("الأطباء"),
+    "dummyUserName": MessageLookupByLibrary.simpleMessage("أحمد محمد"),
     "enterFirstName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الأول"),
     "enterLastName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الثاني"),
     "enterMobileNumber": MessageLookupByLibrary.simpleMessage("01234"),
     "enterPassword": MessageLookupByLibrary.simpleMessage("اكتب كلمة السر"),
+    "enter_medical_data": MessageLookupByLibrary.simpleMessage(
+      "ادخال بيانات\nسجلك الطبي",
+    ),
     "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
+    "homeTab": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
+    "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
+      "اختر ما تريد القيام به لإدارة سجلك الطبي.",
+    ),
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "مقدمي الخدمات الطبية",
     ),
+    "medical_recordTab": MessageLookupByLibrary.simpleMessage("ملف طبي"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -56,6 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "كلمة المرور غير متطابقة",
     ),
     "patient": MessageLookupByLibrary.simpleMessage("المريض"),
+    "pharmaInteractionTab": MessageLookupByLibrary.simpleMessage("تفاعل دواء"),
     "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم هاتف صحيح",
     ),
@@ -69,12 +80,16 @@ class MessageLookup extends MessageLookupByLibrary {
       "من فضلك ادخل رقم الهاتف",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("اعادة الارسال"),
+    "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "الهيئات الداعمة",
     ),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage("التحقق من رقمك"),
     "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(
       "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",
+    ),
+    "view_medical_record": MessageLookupByLibrary.simpleMessage(
+      "عرض سجلك\nالطبي",
     ),
   };
 }
