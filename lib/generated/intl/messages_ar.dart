@@ -25,6 +25,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "PleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل كلمة المرور",
     ),
+    "T_and_C": MessageLookupByLibrary.simpleMessage("شروط الاستخدام"),
+    "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
+      "هل يوجد لديك حساب؟",
+    ),
+    "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
+      " بإنشاء حساب جديد أنت توافق على",
+    ),
+    "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
+      "شروط الاستخدام الخاصة بنا",
+    ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("تأكيد كلمة السر"),
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
@@ -51,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("ملف طبي"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
+    "ok": MessageLookupByLibrary.simpleMessage("موافق"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
       "يجب أن تحتوي كلمة المرور الخاصة بك",

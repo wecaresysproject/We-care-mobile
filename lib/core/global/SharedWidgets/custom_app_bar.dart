@@ -18,7 +18,7 @@ class CustomAppBarWidget extends StatelessWidget {
         horizontalSpacing(8),
         Text(
           context.translate.dummyUserName,
-          style: AppTextStyles.font16DarkGreyRegular.copyWith(
+          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
             color: AppColorsManager.textColor,
             fontWeight: FontWeightHelper.medium,
           ),

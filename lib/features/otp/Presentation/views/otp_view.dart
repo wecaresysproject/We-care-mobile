@@ -31,7 +31,7 @@ class OtpView extends StatelessWidget {
               verticalSpacing(32),
               Text(
                 context.translate.verifyYourNumberHint,
-                style: AppTextStyles.font16DarkGreyRegular,
+                style: AppTextStyles.font16DarkGreyWeight400,
               ),
               verticalSpacing(24),
               // ✅ Pin Code Fields

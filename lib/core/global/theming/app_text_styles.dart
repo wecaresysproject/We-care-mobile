@@ -14,7 +14,7 @@ class AppTextStyles {
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
     color: AppColorsManager.textColor,
   );
-  static final font16DarkGreyRegular = TextStyle(
+  static final font16DarkGreyWeight400 = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeightHelper.regular,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,

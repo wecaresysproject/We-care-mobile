@@ -25,6 +25,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "PleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Password",
     ),
+    "T_and_C": MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
+    "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
+      "Already have an account?",
+    ),
+    "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
+      "By creating an account, you agree to our ",
+    ),
+    "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
+      "Terms and Conditions of us",
+    ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
@@ -59,6 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical Record"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
+    "ok": MessageLookupByLibrary.simpleMessage("Accept"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
       "Your password must contain",

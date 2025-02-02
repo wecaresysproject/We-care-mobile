@@ -43,8 +43,9 @@ class CustomTextFieldState extends State<CustomTextField> {
       enableInteractiveSelection: true, // ✅ Allow text selection
       decoration: InputDecoration(
         hintText: widget.hintText,
-        // contentPadding:
-        //     EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+
+        hintStyle: AppTextStyles.font16DarkGreyWeight400,
+
         isDense: true,
         constraints: BoxConstraints(
           minHeight: 48.h,
@@ -55,7 +56,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(
-            color: AppColorsManager.placeHolderColor,
+            color: AppColorsManager.mainDarkBlue,
             width: 1.3,
           ),
         ),
@@ -90,7 +91,6 @@ class CustomTextFieldState extends State<CustomTextField> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
             color: AppColorsManager.warningColor, // Red color
-            // width: 1.5, // Same thickness
             width: 1.3, // Same thickness
           ),
         ),
@@ -115,7 +115,9 @@ class CustomTextFieldState extends State<CustomTextField> {
               )
             : null,
       ),
-      style: AppTextStyles.font16DarkGreyRegular,
+      style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+        color: AppColorsManager.textColor,
+      ),
     );
   }
 }

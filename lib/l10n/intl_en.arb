@@ -36,7 +36,13 @@
         "medical_recordTab": "Medical Record",
         "doctorsTab": "Doctors",
         "pharmaInteractionTab": "Drug Interaction",
-        "settingsTab": "Settings"
+        "settingsTab": "Settings",
+        "by_creating_account_you_agree_to": "By creating an account, you agree to our ",
+        "conditionsOFUse": "Terms and Conditions of us",
+        "ok": "Accept",
+        "T_and_C": "Terms and Conditions",
+        "alreadyHaveAccount": "Already have an account?"
+
 
 
 

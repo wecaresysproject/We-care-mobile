@@ -36,8 +36,12 @@
     "medical_recordTab": "ملف طبي",
     "doctorsTab": "الأطباء",
     "pharmaInteractionTab": "تفاعل دواء",
-    "settingsTab": "الإعدادات"
-
+    "settingsTab": "الإعدادات",
+    "by_creating_account_you_agree_to": " بإنشاء حساب جديد أنت توافق على",
+    "conditionsOFUse": "شروط الاستخدام الخاصة بنا",
+    "ok": "موافق",
+    "T_and_C": "شروط الاستخدام",
+    "alreadyHaveAccount": "هل يوجد لديك حساب؟"
 
 
 }
