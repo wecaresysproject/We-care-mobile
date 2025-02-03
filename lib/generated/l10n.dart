@@ -405,10 +405,10 @@ class S {
     );
   }
 
-  /// `Terms and Conditions of us`
+  /// ` Terms and Conditions of us`
   String get conditionsOFUse {
     return Intl.message(
-      'Terms and Conditions of us',
+      ' Terms and Conditions of us',
       name: 'conditionsOFUse',
       desc: '',
       args: [],
@@ -430,11 +430,36 @@ class S {
     );
   }
 
-  /// `Already have an account?`
+  /// `Already have an account ? `
   String get alreadyHaveAccount {
     return Intl.message(
-      'Already have an account?',
+      'Already have an account ? ',
       name: 'alreadyHaveAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login`
+  String get login {
+    return Intl.message('Login', name: 'login', desc: '', args: []);
+  }
+
+  /// `Don't have an account ? `
+  String get dontHaveAccount {
+    return Intl.message(
+      'Don\'t have an account ? ',
+      name: 'dontHaveAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot Password`
+  String get forgotPassword {
+    return Intl.message(
+      'Forgot Password',
+      name: 'forgotPassword',
       desc: '',
       args: [],
     );

@@ -39,7 +39,7 @@ class OtpView extends StatelessWidget {
               verticalSpacing(20),
               UnderlinedText(
                 text: context.translate.resend,
-                textStyle: AppTextStyles.font18blackRegular.copyWith(
+                textStyle: AppTextStyles.font18blackWight500.copyWith(
                   color: AppColorsManager.mainDarkBlue,
                   fontWeight: FontWeightHelper.semiBold,
                 ),

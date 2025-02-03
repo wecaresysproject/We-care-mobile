@@ -68,7 +68,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     children: [
                       Text(
                         S.of(context).firstName,
-                        style: AppTextStyles.font18blackRegular,
+                        style: AppTextStyles.font18blackWight500,
                       ),
                       verticalSpacing(12),
                       CustomTextField(
@@ -96,7 +96,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     children: [
                       Text(
                         S.of(context).familyName,
-                        style: AppTextStyles.font18blackRegular,
+                        style: AppTextStyles.font18blackWight500,
                       ),
                       verticalSpacing(12),
                       CustomTextField(
@@ -123,7 +123,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             // Country Code and Phone Number
             Text(
               S.of(context).mobileNumber,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
             const SizedBox(height: 8),
             Row(
@@ -183,7 +183,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             // Password Fields
             Text(
               S.of(context).password,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(12),
             CustomTextField(
@@ -211,7 +211,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             verticalSpacing(16),
             Text(
               S.of(context).confirmPassword,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(12),
             CustomTextField(

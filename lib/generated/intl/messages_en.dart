@@ -27,13 +27,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "T_and_C": MessageLookupByLibrary.simpleMessage("Terms and Conditions"),
     "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
-      "Already have an account?",
+      "Already have an account ? ",
     ),
     "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
       "By creating an account, you agree to our ",
     ),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
-      "Terms and Conditions of us",
+      " Terms and Conditions of us",
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
@@ -41,6 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Doctor / Specialist",
     ),
     "doctorsTab": MessageLookupByLibrary.simpleMessage("Doctors"),
+    "dontHaveAccount": MessageLookupByLibrary.simpleMessage(
+      "Don\'t have an account ? ",
+    ),
     "dummyUserName": MessageLookupByLibrary.simpleMessage("Ahmed Mohamed"),
     "enterFirstName": MessageLookupByLibrary.simpleMessage(
       "Enter Your First Name",
@@ -57,10 +60,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "familyName": MessageLookupByLibrary.simpleMessage("Family Name"),
     "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage("Forgot Password"),
     "homeTab": MessageLookupByLibrary.simpleMessage("Home"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage(
       "Insurance Companies",
     ),
+    "login": MessageLookupByLibrary.simpleMessage("Login"),
     "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
       "Choose what you want to do to manage your medical record.",
     ),

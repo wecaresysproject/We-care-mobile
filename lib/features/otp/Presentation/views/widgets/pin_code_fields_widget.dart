@@ -21,7 +21,7 @@ class PinCodeFieldsWidget extends StatelessWidget {
         length: 4,
         appContext: context,
         keyboardType: TextInputType.number,
-        textStyle: AppTextStyles.font18blackRegular.copyWith(
+        textStyle: AppTextStyles.font18blackWight500.copyWith(
           fontSize: 20.sp,
           fontFamily: "inter",
           fontWeight: FontWeightHelper.semiBold,

@@ -8,7 +8,7 @@ class AppTextStyles {
   // Private constructor to prevent instantiation
   AppTextStyles._();
 
-  static final font18blackRegular = TextStyle(
+  static final font18blackWight500 = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeightHelper.medium,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,

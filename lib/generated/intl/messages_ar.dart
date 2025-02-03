@@ -27,10 +27,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "T_and_C": MessageLookupByLibrary.simpleMessage("شروط الاستخدام"),
     "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
-      "هل يوجد لديك حساب؟",
+      " هل يوجد لديك حساب ؟",
     ),
     "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
-      " بإنشاء حساب جديد أنت توافق على",
+      "بإنشاء حساب جديد أنت توافق على  ",
     ),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
       "شروط الاستخدام الخاصة بنا",
@@ -41,6 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "الطبيب / الاخصائي",
     ),
     "doctorsTab": MessageLookupByLibrary.simpleMessage("الأطباء"),
+    "dontHaveAccount": MessageLookupByLibrary.simpleMessage(
+      " ليس لديك حساب ؟ ",
+    ),
     "dummyUserName": MessageLookupByLibrary.simpleMessage("أحمد محمد"),
     "enterFirstName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الأول"),
     "enterLastName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الثاني"),
@@ -51,8 +54,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
     "homeTab": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
+    "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
       "اختر ما تريد القيام به لإدارة سجلك الطبي.",
     ),
