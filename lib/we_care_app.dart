@@ -30,7 +30,7 @@ class WeCareApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           onGenerateRoute: appRouter.onGenerateRoutes,
           locale: const Locale(
-            AppStrings.arabicLang,
+            AppStrings.englishLang,
           ), //TODO: handle localization cubit to switch between each locale later
           localizationsDelegates: [
             S.delegate,

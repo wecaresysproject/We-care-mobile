@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/progress_line_tracking_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/design_logo_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -29,13 +29,15 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 10.h, left: 16.w, right: 16.w),
+        padding: EdgeInsets.only(left: 16.w, right: 16.w),
         physics: const BouncingScrollPhysics(),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              verticalSpacing(20),
+              verticalSpacing(8),
+              DesignLogoWidget(),
+              verticalSpacing(4),
               Text(
                 S.of(context).forgotPassword,
                 style: AppTextStyles.font22WhiteWeight600.copyWith(
@@ -43,7 +45,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                   color: AppColorsManager.mainDarkBlue,
                 ),
               ),
-              verticalSpacing(16),
+              verticalSpacing(8),
               Text(
                 isArabic()
                     ? weHaveSendCodeToUrPhoneAr
@@ -59,10 +61,6 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
               ForgetPasswordFormFields(),
 
               verticalSpacing(context.screenHeight * 0.35),
-              ProgressLineTracking(
-                currentStep: "1",
-              ),
-              verticalSpacing(6),
 
               // Submit Button
               AppCustomButton(
