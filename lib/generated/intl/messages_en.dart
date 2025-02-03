@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "Continue": MessageLookupByLibrary.simpleMessage("Continue"),
     "PleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Password",
     ),
@@ -37,6 +38,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
+    "create_new_password": MessageLookupByLibrary.simpleMessage(
+      "Create a New Password",
+    ),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "Doctor / Specialist",
     ),
@@ -74,6 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical Record"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
+    "new_password": MessageLookupByLibrary.simpleMessage("New Password"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -109,9 +114,15 @@ class MessageLookup extends MessageLookupByLibrary {
       "Please Enter Your Phone Number",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("Resend"),
+    "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
+      "Enter your phone number, and we will send you a code to reset your password.",
+    ),
     "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "Supporting Entities",
+    ),
+    "verfication_code": MessageLookupByLibrary.simpleMessage(
+      "Verification Code",
     ),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage(
       "Verify Your Number",
@@ -121,6 +132,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "view_medical_record": MessageLookupByLibrary.simpleMessage(
       "View your medical\nrecord",
+    ),
+    "we_have_send_code_to_ur_phone": MessageLookupByLibrary.simpleMessage(
+      "We have sent a verification code to your phone, please enter it.",
     ),
   };
 }

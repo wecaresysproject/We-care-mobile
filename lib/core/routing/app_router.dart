@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/show_data_entry_categories_view.dart';
@@ -28,6 +29,10 @@ class AppRouter {
       case Routes.loginView:
         return MaterialPageRoute(
           builder: (context) => const LoginView(),
+        );
+      case Routes.forgetPasswordView:
+        return MaterialPageRoute(
+          builder: (context) => const ForgetPasswordView(),
         );
       case Routes.otpView:
         return MaterialPageRoute(

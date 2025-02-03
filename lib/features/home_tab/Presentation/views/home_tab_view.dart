@@ -42,7 +42,7 @@ class HomeTabView extends StatelessWidget {
                   text: isArabic()
                       ? "ادخال بيانات\nسجلك الطبي"
                       : "Enter medical\n record data",
-                  textStyle: AppTextStyles.font22WhiteSemiBold.copyWith(
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
                     fontSize: 24.sp,
                   ),
                 ),
@@ -51,7 +51,7 @@ class HomeTabView extends StatelessWidget {
                   onTap: () {},
                   imagePath: "assets/images/show_medical_history.png",
                   text: isArabic() ? "عرض سجلك\nالطبي" : "View medical\nrecord",
-                  textStyle: AppTextStyles.font22WhiteSemiBold.copyWith(
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
                     fontSize: 24.sp,
                   ),
                 ),

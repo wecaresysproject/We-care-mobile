@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/networking/app_interceptors.dart';
 import 'package:we_care/core/networking/dio_web_services.dart';
+import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import 'package:we_care/features/login/Presentation/view_models/cubit/cubit/login_cubit.dart';
 import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
 
@@ -52,5 +53,10 @@ Future<void> setUpDependencyInjection() async {
   // getIt.registerLazySingleton<loginRepo>(() => loginRepo(getIt()));
   getIt.registerFactory<LoginCubit>(
     () => LoginCubit(),
+  );
+  // login
+  // getIt.registerLazySingleton<ResetPasswordRepo>(() => ResetPasswordRepo(getIt()));
+  getIt.registerFactory<ForgetPasswordCubit>(
+    () => ForgetPasswordCubit(),
   );
 }

@@ -44,7 +44,13 @@
     "alreadyHaveAccount": " هل يوجد لديك حساب ؟",
     "login": "تسجيل الدخول",
     "dontHaveAccount": " ليس لديك حساب ؟ ",
-    "forgotPassword": "نسيت كلمة المرور"
+    "forgotPassword": "نسيت كلمة المرور",
+    "Continue": "متابعة",
+    "reset_password_subtitle":"أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
+    "verfication_code":"كود التحقق",
+    "we_have_send_code_to_ur_phone": "أرسلنا رمز التحقق لرقمك ، برجاء ادخاله",
+    "new_password":"كلمة السر الجديدة",
+    "create_new_password":"انشاء كلمة السر"
 
 
 

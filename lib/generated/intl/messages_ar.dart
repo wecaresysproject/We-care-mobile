@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "Continue": MessageLookupByLibrary.simpleMessage("متابعة"),
     "PleaseEnterYourPassword": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل كلمة المرور",
     ),
@@ -37,6 +38,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("تأكيد كلمة السر"),
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
+    "create_new_password": MessageLookupByLibrary.simpleMessage(
+      "انشاء كلمة السر",
+    ),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "الطبيب / الاخصائي",
     ),
@@ -66,6 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("ملف طبي"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
+    "new_password": MessageLookupByLibrary.simpleMessage("كلمة السر الجديدة"),
     "ok": MessageLookupByLibrary.simpleMessage("موافق"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -96,16 +101,23 @@ class MessageLookup extends MessageLookupByLibrary {
       "من فضلك ادخل رقم الهاتف",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("اعادة الارسال"),
+    "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
+      "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
+    ),
     "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "الهيئات الداعمة",
     ),
+    "verfication_code": MessageLookupByLibrary.simpleMessage("كود التحقق"),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage("التحقق من رقمك"),
     "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(
       "أرسلنا رمز التحقق لرقمك، برجاء ادخاله",
     ),
     "view_medical_record": MessageLookupByLibrary.simpleMessage(
       "عرض سجلك\nالطبي",
+    ),
+    "we_have_send_code_to_ur_phone": MessageLookupByLibrary.simpleMessage(
+      "أرسلنا رمز التحقق لرقمك ، برجاء ادخاله",
     ),
   };
 }

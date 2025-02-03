@@ -25,7 +25,7 @@ class AppTextStyles {
     fontWeight: FontWeightHelper.bold,
     color: AppColorsManager.mainDarkBlue,
   );
-  static final font22WhiteSemiBold = TextStyle(
+  static final font22WhiteWeight600 = TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeightHelper.semiBold,
     // height: 27.sp,

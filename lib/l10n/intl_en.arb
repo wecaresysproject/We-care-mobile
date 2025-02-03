@@ -44,7 +44,13 @@
         "alreadyHaveAccount": "Already have an account ? ",
         "login": "Login",
         "dontHaveAccount": "Don't have an account ? ",
-        "forgotPassword": "Forgot Password"
+        "forgotPassword": "Forgot Password",
+        "Continue": "Continue",
+        "reset_password_subtitle": "Enter your phone number, and we will send you a code to reset your password.",
+        "verfication_code": "Verification Code",
+        "we_have_send_code_to_ur_phone": "We have sent a verification code to your phone, please enter it.",
+        "new_password": "New Password",
+        "create_new_password": "Create a New Password"
 
 
 
