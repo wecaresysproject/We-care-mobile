@@ -23,7 +23,7 @@ class SignUpState extends Equatable {
   }) {
     return SignUpState(
       signupStatus: signupStatus ?? this.signupStatus,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

@@ -37,6 +37,9 @@ class MessageLookup extends MessageLookupByLibrary {
       " Terms and Conditions of us",
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("Confirm Password"),
+    "confirm_new_password": MessageLookupByLibrary.simpleMessage(
+      "Confirm New Password",
+    ),
     "createAccount": MessageLookupByLibrary.simpleMessage("Create Account"),
     "create_new_password": MessageLookupByLibrary.simpleMessage(
       "Create a New Password",

@@ -37,6 +37,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "شروط الاستخدام الخاصة بنا",
     ),
     "confirmPassword": MessageLookupByLibrary.simpleMessage("تأكيد كلمة السر"),
+    "confirm_new_password": MessageLookupByLibrary.simpleMessage(
+      "تاكيد كلمة السر",
+    ),
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "create_new_password": MessageLookupByLibrary.simpleMessage(
       "انشاء كلمة السر",
@@ -58,7 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
-    "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور"),
+    "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة السر"),
     "homeTab": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),

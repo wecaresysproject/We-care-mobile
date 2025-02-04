@@ -10,16 +10,18 @@ import 'package:we_care/core/routing/routes.dart';
 class PinCodeFieldsWidget extends StatelessWidget {
   const PinCodeFieldsWidget({
     super.key,
+    required this.isForgetPasswordFlow,
   });
-
+  final bool isForgetPasswordFlow;
   @override
   Widget build(BuildContext context) {
     return Directionality(
-      //* always start wrighting from lest
+      //* always start wrighting from left
       textDirection: TextDirection.ltr,
       child: PinCodeTextField(
         length: 4,
         appContext: context,
+        // controller: TextEditingController(),
         keyboardType: TextInputType.number,
         textStyle: AppTextStyles.font18blackWight500.copyWith(
           fontSize: 20.sp,
@@ -30,8 +32,10 @@ class PinCodeFieldsWidget extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         autoFocus: true,
         cursorHeight: 29.h,
+        enablePinAutofill: true,
         cursorWidth: 1.5.w,
         animationType: AnimationType.fade,
+
         pinTheme: PinTheme(
           shape: PinCodeFieldShape.box,
           borderRadius: BorderRadius.circular(12),
@@ -47,10 +51,13 @@ class PinCodeFieldsWidget extends StatelessWidget {
         animationDuration: const Duration(milliseconds: 300),
         enableActiveFill: false,
         onChanged: (value) {},
-        onCompleted: (value) {
-          print("OTP Entered: $value");
-          context.pushNamed(Routes.bottomNavBar);
-          //!Check here that the code is correct and go to home page or not
+        onCompleted: (value) async {
+          /// navigate to right screen
+          if (!context.mounted) return;
+          isForgetPasswordFlow
+              ? await context.pushNamed(Routes.createNewPasswordView)
+              : await context.pushNamed(Routes
+                  .bottomNavBar); //! TODO: and validated also before push to bottom nav bar
         },
       ),
     );

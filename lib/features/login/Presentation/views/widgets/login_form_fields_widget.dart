@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/login/Presentation/view_models/cubit/cubit/login_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -116,13 +117,18 @@ class LoginFormFields extends StatelessWidget {
               isPassword: true,
               keyboardType: TextInputType.visiblePassword,
             ),
-            Align(
-              alignment:
-                  isArabic() ? Alignment.bottomLeft : Alignment.bottomRight,
-              child: Text(
-                S.of(context).forgotPassword,
-                style: AppTextStyles.font18blackWight500.copyWith(
-                  color: AppColorsManager.mainDarkBlue,
+            GestureDetector(
+              onTap: () async {
+                await context.pushNamed(Routes.forgetPasswordView);
+              },
+              child: Align(
+                alignment:
+                    isArabic() ? Alignment.bottomLeft : Alignment.bottomRight,
+                child: Text(
+                  S.of(context).forgotPassword,
+                  style: AppTextStyles.font18blackWight500.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                  ),
                 ),
               ),
             ),

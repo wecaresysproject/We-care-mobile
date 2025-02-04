@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/design_logo_widget.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -26,10 +27,13 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
       "Enter your phone number and we will send you a code\n to reset your password";
   @override
   Widget build(BuildContext context) {
+    //TODO: handle Provider here
+    //  BlocProvider<ForgetPasswordCubit>(
+    //   create: (context) => getIt<ForgetPasswordCubit>(),
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(left: 16.w, right: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         physics: const BouncingScrollPhysics(),
         child: Center(
           child: Column(
@@ -53,7 +57,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.textColor,
+                  color: Color(0xff555555),
                 ),
               ),
               verticalSpacing(44),
@@ -78,7 +82,12 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
 
                     if (!context.mounted) return;
 
-                    await context.pushNamed(Routes.otpView);
+                    await context.pushNamed(
+                      Routes.otpView,
+                      arguments: {
+                        AppStrings.isForgetPasswordFlowArgumentKey: true,
+                      },
+                    );
                   }
                 },
               )

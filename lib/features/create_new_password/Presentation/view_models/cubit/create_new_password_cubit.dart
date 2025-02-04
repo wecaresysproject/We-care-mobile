@@ -2,38 +2,35 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'sign_up_state.dart';
+part 'create_new_password_state.dart';
 
-class SignUpCubit extends Cubit<SignUpState> {
-  SignUpCubit() : super(SignUpState.intialState());
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+class CreateNewPasswordCubit extends Cubit<CreateNewPasswordState> {
+  CreateNewPasswordCubit() : super(CreateNewPasswordState.intialState());
+
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmationController =
       TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  Future<void> emitSignupStates() async {
+  void emitCreateNewPasswordStates() async {
     try {
-      emit(state.copyWith(signupStatus: RequestStatus.loading));
+      emit(state.copyWith(createNewPasswordStatus: RequestStatus.loading));
 
       // Simulating API request delay
       await Future.delayed(Duration(seconds: 2));
 
       // Example condition (Replace with API logic)
-      if (emailController.text.contains("@")) {
-        emit(state.copyWith(signupStatus: RequestStatus.success));
+      if (passwordController.text.contains("@")) {
+        emit(state.copyWith(createNewPasswordStatus: RequestStatus.success));
       } else {
         emit(state.copyWith(
-            signupStatus: RequestStatus.failure,
+            createNewPasswordStatus: RequestStatus.failure,
             errorMessage: 'Invalid email'));
       }
     } catch (e) {
       emit(
         state.copyWith(
-          signupStatus: RequestStatus.failure,
+          createNewPasswordStatus: RequestStatus.failure,
           errorMessage: e.toString(),
         ),
       );

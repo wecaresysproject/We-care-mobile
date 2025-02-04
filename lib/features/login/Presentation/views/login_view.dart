@@ -41,7 +41,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 //! Login Form fields here
                 LoginFormFields(),
-                verticalSpacing(32),
+                verticalSpacing(88),
                 // Submit Button
                 AppCustomButton(
                   title: S.of(context).login,

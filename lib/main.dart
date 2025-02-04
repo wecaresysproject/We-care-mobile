@@ -30,8 +30,8 @@ Future<void> main() async {
         BlocProvider<SignUpCubit>(
           create: (_) => getIt<SignUpCubit>(),
         ),
-        BlocProvider(
-          create: (context) => getIt<ForgetPasswordCubit>(),
+        BlocProvider<ForgetPasswordCubit>(
+          create: (_) => getIt<ForgetPasswordCubit>(),
         ),
       ],
       child: WeCareApp(

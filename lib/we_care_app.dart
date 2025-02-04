@@ -5,7 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/app_router.dart';
-import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
+import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class WeCareApp extends StatelessWidget {
@@ -30,7 +30,7 @@ class WeCareApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           onGenerateRoute: appRouter.onGenerateRoutes,
           locale: const Locale(
-            AppStrings.englishLang,
+            AppStrings.arabicLang,
           ), //TODO: handle localization cubit to switch between each locale later
           localizationsDelegates: [
             S.delegate,
@@ -66,7 +66,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const ForgetPasswordView(),
+          home: const LoginView(),
         );
       },
     );

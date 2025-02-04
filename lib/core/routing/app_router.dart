@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/create_new_password/Presentation/views/create_new_password_view.dart';
 import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
@@ -13,7 +15,8 @@ class AppRouter {
   Route<dynamic>? onGenerateRoutes(RouteSettings route) {
     String routeName = route.name!;
     // ignore: unused_local_variable
-    final arguments = route.arguments;
+    final arguments = route.arguments as Map<String,
+        dynamic>?; //!recheck as later , as it can be dynamic for most cases
 
     //! provide the nedded bloc providers here
 
@@ -35,8 +38,17 @@ class AppRouter {
           builder: (context) => const ForgetPasswordView(),
         );
       case Routes.otpView:
+
+        /// false by default => signUp => otp => home view
         return MaterialPageRoute(
-          builder: (context) => const OtpView(),
+          builder: (context) => OtpView(
+            isForgetPasswordFlow:
+                arguments?[AppStrings.isForgetPasswordFlowArgumentKey] ?? false,
+          ),
+        );
+      case Routes.createNewPasswordView:
+        return MaterialPageRoute(
+          builder: (context) => CreateNewPasswordView(),
         );
       case Routes.bottomNavBar:
         return MaterialPageRoute(
@@ -46,18 +58,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const DataEntryCategoryTypesView(),
         );
-      // case Routes.homeTabView:
-      //   return MaterialPageRoute(
-      //     builder: (context) => const HomeTabView(),
-      //   );
 
-      // case bottomNavBar:
-      //   return MaterialPageRoute(
-      //     builder: (context) => CustomBottomNavBar(),
-      //   );
-
-      // case homeTabView:
-      //   return MaterialPageRoute(builder: (context) => const HomeTabView());
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

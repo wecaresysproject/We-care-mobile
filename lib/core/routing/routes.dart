@@ -11,4 +11,5 @@ class Routes {
 
   static const homeTabView = '/homeTabView';
   static const otpView = '/otpView';
+  static const createNewPasswordView = '/createNewPasswordView';
 }

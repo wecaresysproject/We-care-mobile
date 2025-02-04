@@ -519,6 +519,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Confirm New Password`
+  String get confirm_new_password {
+    return Intl.message(
+      'Confirm New Password',
+      name: 'confirm_new_password',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

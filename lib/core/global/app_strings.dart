@@ -10,4 +10,5 @@ class AppStrings {
   static const themekey = "apptheme";
 
   static const cairoFontFamily = "Cairo";
+  static const isForgetPasswordFlowArgumentKey = "isForgetPasswordFlow";
 }

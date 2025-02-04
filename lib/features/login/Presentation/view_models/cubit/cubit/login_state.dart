@@ -23,7 +23,7 @@ class LoginState extends Equatable {
   }) {
     return LoginState(
       loginStatus: loginStatus ?? this.loginStatus,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 

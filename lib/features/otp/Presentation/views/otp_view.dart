@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/core/global/Helpers/custom_rich_text.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/design_logo_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/underlined_text.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/otp/Presentation/views/widgets/pin_code_fields_widget.dart';
 
 class OtpView extends StatelessWidget {
-  const OtpView({super.key});
-
+  const OtpView({super.key, required this.isForgetPasswordFlow});
+  final bool isForgetPasswordFlow;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +33,16 @@ class OtpView extends StatelessWidget {
               ),
               verticalSpacing(24),
               // ✅ Pin Code Fields
-              PinCodeFieldsWidget(),
+              PinCodeFieldsWidget(
+                isForgetPasswordFlow: isForgetPasswordFlow,
+              ),
               verticalSpacing(20),
-              UnderlinedText(
-                text: context.translate.resend,
-                textStyle: AppTextStyles.font18blackWight500.copyWith(
-                  color: AppColorsManager.mainDarkBlue,
-                  fontWeight: FontWeightHelper.semiBold,
-                ),
-                underlineColor: AppColorsManager.mainDarkBlue,
+              CustomRichTextWidget(
+                normalText: "",
+                highlightedText: context.translate.resend,
+                onTap: () async {
+                  //! Call Method to get new otp codes
+                },
               ),
             ],
           ).paddingSymmetricHorizontal(16),
