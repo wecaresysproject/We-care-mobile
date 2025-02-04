@@ -55,7 +55,7 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
             horizontalSpacing(20),
             Text(
               text,
-              style: AppTextStyles.font22WhiteSemiBold,
+              style: AppTextStyles.font22WhiteWeight600,
             ),
           ],
         ),

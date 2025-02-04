@@ -8,13 +8,13 @@ class AppTextStyles {
   // Private constructor to prevent instantiation
   AppTextStyles._();
 
-  static final font18blackRegular = TextStyle(
+  static final font18blackWight500 = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeightHelper.medium,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
     color: AppColorsManager.textColor,
   );
-  static final font16DarkGreyRegular = TextStyle(
+  static final font16DarkGreyWeight400 = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeightHelper.regular,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
@@ -25,7 +25,7 @@ class AppTextStyles {
     fontWeight: FontWeightHelper.bold,
     color: AppColorsManager.mainDarkBlue,
   );
-  static final font22WhiteSemiBold = TextStyle(
+  static final font22WhiteWeight600 = TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeightHelper.semiBold,
     // height: 27.sp,

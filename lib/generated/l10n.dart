@@ -394,6 +394,141 @@ class S {
   String get settingsTab {
     return Intl.message('Settings', name: 'settingsTab', desc: '', args: []);
   }
+
+  /// `By creating an account, you agree to our `
+  String get by_creating_account_you_agree_to {
+    return Intl.message(
+      'By creating an account, you agree to our ',
+      name: 'by_creating_account_you_agree_to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Terms and Conditions of us`
+  String get conditionsOFUse {
+    return Intl.message(
+      ' Terms and Conditions of us',
+      name: 'conditionsOFUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get ok {
+    return Intl.message('Accept', name: 'ok', desc: '', args: []);
+  }
+
+  /// `Terms and Conditions`
+  String get T_and_C {
+    return Intl.message(
+      'Terms and Conditions',
+      name: 'T_and_C',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Already have an account ? `
+  String get alreadyHaveAccount {
+    return Intl.message(
+      'Already have an account ? ',
+      name: 'alreadyHaveAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Login`
+  String get login {
+    return Intl.message('Login', name: 'login', desc: '', args: []);
+  }
+
+  /// `Don't have an account ? `
+  String get dontHaveAccount {
+    return Intl.message(
+      'Don\'t have an account ? ',
+      name: 'dontHaveAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot Password`
+  String get forgotPassword {
+    return Intl.message(
+      'Forgot Password',
+      name: 'forgotPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue`
+  String get Continue {
+    return Intl.message('Continue', name: 'Continue', desc: '', args: []);
+  }
+
+  /// `Enter your phone number, and we will send you a code to reset your password.`
+  String get reset_password_subtitle {
+    return Intl.message(
+      'Enter your phone number, and we will send you a code to reset your password.',
+      name: 'reset_password_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verification Code`
+  String get verfication_code {
+    return Intl.message(
+      'Verification Code',
+      name: 'verfication_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We have sent a verification code to your phone, please enter it.`
+  String get we_have_send_code_to_ur_phone {
+    return Intl.message(
+      'We have sent a verification code to your phone, please enter it.',
+      name: 'we_have_send_code_to_ur_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Password`
+  String get new_password {
+    return Intl.message(
+      'New Password',
+      name: 'new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a New Password`
+  String get create_new_password {
+    return Intl.message(
+      'Create a New Password',
+      name: 'create_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm New Password`
+  String get confirm_new_password {
+    return Intl.message(
+      'Confirm New Password',
+      name: 'confirm_new_password',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

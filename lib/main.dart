@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/routing/app_router.dart';
+import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
 import 'package:we_care/we_care_app.dart';
 
@@ -23,8 +24,16 @@ Future<void> main() async {
     ),
   );
   runApp(
-    BlocProvider<SignUpCubit>(
-      create: (_) => getIt<SignUpCubit>(),
+    MultiBlocProvider(
+      //!TODO: remove MultiBlocProvider later from main
+      providers: [
+        BlocProvider<SignUpCubit>(
+          create: (_) => getIt<SignUpCubit>(),
+        ),
+        BlocProvider<ForgetPasswordCubit>(
+          create: (_) => getIt<ForgetPasswordCubit>(),
+        ),
+      ],
       child: WeCareApp(
         appRouter: AppRouter(),
       ),

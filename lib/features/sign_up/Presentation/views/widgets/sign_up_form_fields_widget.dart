@@ -9,6 +9,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
+import 'package:we_care/features/sign_up/Presentation/views/widgets/password_validations_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class SignUpFormFields extends StatefulWidget {
@@ -68,9 +69,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     children: [
                       Text(
                         S.of(context).firstName,
-                        style: AppTextStyles.font18blackRegular,
+                        style: AppTextStyles.font18blackWight500,
                       ),
-                      verticalSpacing(12),
+                      verticalSpacing(8),
                       CustomTextField(
                         validator: (value) {
                           if (value!.isEmpty) {
@@ -96,9 +97,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                     children: [
                       Text(
                         S.of(context).familyName,
-                        style: AppTextStyles.font18blackRegular,
+                        style: AppTextStyles.font18blackWight500,
                       ),
-                      verticalSpacing(12),
+                      verticalSpacing(8),
                       CustomTextField(
                         controller:
                             context.read<SignUpCubit>().lastNameController,
@@ -123,9 +124,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             // Country Code and Phone Number
             Text(
               S.of(context).mobileNumber,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
-            const SizedBox(height: 8),
+            verticalSpacing(8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -183,9 +184,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             // Password Fields
             Text(
               S.of(context).password,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
-            verticalSpacing(12),
+            verticalSpacing(8),
             CustomTextField(
               controller: context.read<SignUpCubit>().passwordController,
               validator: (password) {
@@ -211,9 +212,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
             verticalSpacing(16),
             Text(
               S.of(context).confirmPassword,
-              style: AppTextStyles.font18blackRegular,
+              style: AppTextStyles.font18blackWight500,
             ),
-            verticalSpacing(12),
+            verticalSpacing(8),
             CustomTextField(
               controller:
                   context.read<SignUpCubit>().passwordConfirmationController,
@@ -242,7 +243,7 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                 fontSize: 14.sp,
               ),
             ),
-            verticalSpacing(4),
+            verticalSpacing(5),
 
             PasswordValidations(
               isbetween8and15Character: hasbetween8and15,
@@ -252,58 +253,6 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class PasswordValidations extends StatelessWidget {
-  final bool isbetween8and15Character;
-  final bool hasSpecialCharacters;
-  final bool hasNumber;
-  const PasswordValidations({
-    super.key,
-    required this.isbetween8and15Character,
-    required this.hasSpecialCharacters,
-    required this.hasNumber,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildValidationRow(
-            S.of(context).passwordHint1, isbetween8and15Character),
-        verticalSpacing(5),
-        buildValidationRow(S.of(context).passwordHint2, hasSpecialCharacters),
-        verticalSpacing(5),
-        buildValidationRow(S.of(context).passwordHint3, hasNumber),
-        verticalSpacing(5),
-      ],
-    );
-  }
-
-  Widget buildValidationRow(String text, bool hasValidated) {
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundColor: Color(0xff909090).withAlpha(100),
-          radius: 12,
-          child: CircleAvatar(
-            radius: 6,
-            backgroundColor: hasValidated
-                ? AppColorsManager.doneColor
-                : AppColorsManager.warningColor,
-          ),
-        ),
-        horizontalSpacing(6),
-        Text(
-          text,
-          style: AppTextStyles.font12blackRegular.copyWith(
-            decorationColor: Colors.green,
-            decorationThickness: 2,
-          ),
-        )
-      ],
     );
   }
 }

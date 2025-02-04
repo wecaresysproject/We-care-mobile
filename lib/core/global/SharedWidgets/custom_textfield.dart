@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
@@ -43,9 +45,10 @@ class CustomTextFieldState extends State<CustomTextField> {
       enableInteractiveSelection: true, // ✅ Allow text selection
       decoration: InputDecoration(
         hintText: widget.hintText,
-        // contentPadding:
-        //     EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        isDense: true,
+
+        hintStyle: AppTextStyles.font16DarkGreyWeight400,
+
+        // isDense: true,
         constraints: BoxConstraints(
           minHeight: 48.h,
           maxHeight: 48.h + 20.h,
@@ -53,17 +56,19 @@ class CustomTextFieldState extends State<CustomTextField> {
         // errorText: errorText,
         //! ✅ Focused border (when user taps on it)
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: const BorderSide(
-            color: AppColorsManager.placeHolderColor,
+            color: AppColorsManager.mainDarkBlue,
             width: 1.3,
           ),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
         //! ✅ Error border (when validation fails) - same as enabledBorder but red
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
             color: AppColorsManager.warningColor, // Red color
             width: 1.3, // Same thickness
@@ -71,7 +76,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         ),
         //! ✅ Focused Error border (when user clicks on invalid field)
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
             color: AppColorsManager.warningColor, // Red color
             width: 1.3, // Same thickness
@@ -79,7 +84,7 @@ class CustomTextFieldState extends State<CustomTextField> {
         ),
         //! ✅ Default border (Enabled)
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
             color: AppColorsManager.placeHolderColor.withAlpha(150),
             width: 1.3, // Same thickness
@@ -87,10 +92,9 @@ class CustomTextFieldState extends State<CustomTextField> {
         ),
 
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
             color: AppColorsManager.warningColor, // Red color
-            // width: 1.5, // Same thickness
             width: 1.3, // Same thickness
           ),
         ),
@@ -100,6 +104,8 @@ class CustomTextFieldState extends State<CustomTextField> {
             ? Icon(
                 Icons.lock,
                 color: AppColorsManager.placeHolderColor,
+              ).paddingFrom(
+                right: isArabic() ? 14 : 0,
               )
             : null,
         suffixIcon: widget.isPassword
@@ -111,11 +117,16 @@ class CustomTextFieldState extends State<CustomTextField> {
                 },
                 child: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: _obscureText
+                      ? Colors.grey
+                      : AppColorsManager.mainDarkBlue,
                 ),
               )
             : null,
       ),
-      style: AppTextStyles.font16DarkGreyRegular,
+      style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+        color: AppColorsManager.textColor,
+      ),
     );
   }
 }

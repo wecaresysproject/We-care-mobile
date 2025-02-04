@@ -15,7 +15,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  void emitSignupStates() async {
+  Future<void> emitSignupStates() async {
     try {
       emit(state.copyWith(signupStatus: RequestStatus.loading));
 

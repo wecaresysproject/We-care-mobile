@@ -4,9 +4,12 @@ class Routes {
   static const dateEntryTypesView = '/dateEntryTypesView';
 
   static const signUpView = '/signUpView';
+  static const loginView = '/loginView';
+  static const forgetPasswordView = '/forgetPasswordView';
 
   static const splashscreen = '/splashScreen';
 
   static const homeTabView = '/homeTabView';
   static const otpView = '/otpView';
+  static const createNewPasswordView = '/createNewPasswordView';
 }
