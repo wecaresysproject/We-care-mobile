@@ -9,9 +9,9 @@ import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/design_logo_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
 import 'package:we_care/features/sign_up/Presentation/views/widgets/sign_up_form_fields_widget.dart';
 import 'package:we_care/features/sign_up/Presentation/views/widgets/terms_and_conditions_text_widget.dart';
+import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class SignUpView extends StatefulWidget {
