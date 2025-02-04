@@ -8,8 +8,8 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/sign_up/Presentation/view_models/cubit/sign_up_cubit.dart';
 import 'package:we_care/features/sign_up/Presentation/views/widgets/password_validations_widget.dart';
+import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class SignUpFormFields extends StatefulWidget {

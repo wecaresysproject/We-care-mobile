@@ -56,8 +56,10 @@ class PinCodeFieldsWidget extends StatelessWidget {
           if (!context.mounted) return;
           isForgetPasswordFlow
               ? await context.pushNamed(Routes.createNewPasswordView)
-              : await context.pushNamed(Routes
-                  .bottomNavBar); //! TODO: and validated also before push to bottom nav bar
+              : await context.pushNamedAndRemoveUntil(
+                  Routes.bottomNavBar,
+                  predicate: (route) => false, // remove all previous screens
+                ); //! TODO: and validated also before push to bottom nav bar
         },
       ),
     );

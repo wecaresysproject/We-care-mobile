@@ -1,70 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CacheHelper {
-  static late SharedPreferences
-      sharedPreferences; //* this is way of applying composition concept on oop
+  // private constructor as I don't want to allow creating an instance of this class itself.
+  CacheHelper._();
 
-//! Here The Initialize of sharedPrefrences .
-  init() async {
-    sharedPreferences = await SharedPreferences.getInstance();
+  /// Removes a value from SharedPreferences with given [key].
+  static removeData(String key) async {
+    debugPrint('SharedPrefHelper : data with key : $key has been removed');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.remove(key);
   }
 
-//! this method to get value of specific key from local database only return astring data type
-
-  String? getDataString({
-    required String key,
-  }) {
-    return sharedPreferences.getString(key);
+  /// Removes all keys and values in the SharedPreferences
+  static clearAllData() async {
+    debugPrint('SharedPrefHelper : all data has been cleared');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.clear();
   }
 
-//! this method to put data in local database using key and value
-
-  Future<bool> saveData({required String key, required dynamic value}) async {
-    if (value is bool) {
-      return await sharedPreferences.setBool(key, value);
-    } else if (value is String) {
-      return await sharedPreferences.setString(key, value);
-    } else if (value is int) {
-      return await sharedPreferences.setInt(key, value);
-    } else {
-      return await sharedPreferences.setDouble(key, value);
+  /// Saves a [value] with a [key] in the SharedPreferences.
+  static setData(String key, value) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    debugPrint("SharedPrefHelper : setData with key : $key and value : $value");
+    switch (value.runtimeType) {
+      case String:
+        await sharedPreferences.setString(key, value);
+        break;
+      case int:
+        await sharedPreferences.setInt(key, value);
+        break;
+      case bool:
+        await sharedPreferences.setBool(key, value);
+        break;
+      case double:
+        await sharedPreferences.setDouble(key, value);
+        break;
+      default:
+        return null;
     }
   }
 
-//! this method to get data already saved in local database
-
-  dynamic getData({required String key}) {
-    return sharedPreferences.get(key);
+  /// Gets a bool value from SharedPreferences with given [key].
+  static getBool(String key) async {
+    debugPrint('SharedPrefHelper : getBool with key : $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getBool(key) ?? false;
   }
 
-//! remove data using specific key
-
-  Future<bool> removeData({required String key}) async {
-    return await sharedPreferences.remove(key);
+  /// Gets a double value from SharedPreferences with given [key].
+  static getDouble(String key) async {
+    debugPrint('SharedPrefHelper : getDouble with key : $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getDouble(key) ?? 0.0;
   }
 
-//! this method to check if local database contains {key}
-  Future<bool> containsKey({required String key}) async {
-    return sharedPreferences.containsKey(key);
+  /// Gets an int value from SharedPreferences with given [key].
+  static getInt(String key) async {
+    debugPrint('SharedPrefHelper : getInt with key : $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getInt(key) ?? 0;
   }
 
-//TODO : search when to use it later ..
-//! clear all data in the local database
-  Future<bool> clearData() async {
-    return await sharedPreferences.clear();
+  /// Gets an String value from SharedPreferences with given [key].
+  static getString(String key) async {
+    debugPrint('SharedPrefHelper : getString with key : $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.getString(key) ?? '';
   }
 
-// //! this method to put data in local database using key
-//   Future<dynamic> put({
-//     required String key,
-//     required dynamic value,
-//   }) async {
-//     if (value is String) {
-//       return await sharedPreferences.setString(key, value);
-//     } else if (value is bool) {
-//       return await sharedPreferences.setBool(key, value);
-//     } else {
-//       return await sharedPreferences.setInt(key, value);
-//     }
-//   }
+  /// Saves a [value] with a [key] in the FlutterSecureStorage.
+  static setSecuredString(String key, String value) async {
+    const flutterSecureStorage = FlutterSecureStorage();
+    debugPrint(
+        "FlutterSecureStorage : setSecuredString with key : $key and value : $value");
+    await flutterSecureStorage.write(key: key, value: value);
+  }
+
+  /// Gets an String value from FlutterSecureStorage with given [key].
+  static getSecuredString(String key) async {
+    const flutterSecureStorage = FlutterSecureStorage();
+    debugPrint('FlutterSecureStorage : getSecuredString with key :');
+    return await flutterSecureStorage.read(key: key) ?? '';
+  }
+
+  /// Removes all keys and values in the FlutterSecureStorage , almost triggered when user perform logout
+  static clearAllSecuredData() async {
+    debugPrint('FlutterSecureStorage : all data has been cleared');
+    const flutterSecureStorage = FlutterSecureStorage();
+    await flutterSecureStorage.deleteAll();
+  }
 }
