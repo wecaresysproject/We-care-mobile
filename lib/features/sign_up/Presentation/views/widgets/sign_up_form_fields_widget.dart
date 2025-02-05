@@ -74,10 +74,11 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                       verticalSpacing(8),
                       CustomTextField(
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return S
-                                .of(context)
-                                .pleaseEnterYourName; //TODo: handle it in l10 file
+                          if (AppRegex.isOnlyWhiteSpaces(value!)) {
+                            return S.of(context).white_spaces_validation;
+                          }
+                          if (value.isEmpty) {
+                            return S.of(context).pleaseEnterYourName;
                           }
                         },
                         controller:
@@ -104,10 +105,11 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
                         controller:
                             context.read<SignUpCubit>().lastNameController,
                         validator: (value) {
+                          if (AppRegex.isOnlyWhiteSpaces(value!)) {
+                            return S.of(context).white_spaces_validation;
+                          }
                           if (value.isEmptyOrNull) {
-                            return S
-                                .of(context)
-                                .pleaseEnterYourName; //TODo: handle it in l10 file
+                            return S.of(context).pleaseEnterYourName;
                           }
                         },
                         isPassword: false,

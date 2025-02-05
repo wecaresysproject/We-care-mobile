@@ -6,7 +6,6 @@ import 'package:we_care/features/create_new_password/Presentation/views/create_n
 import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
-import 'package:we_care/features/show_data_entry_types/Presentation/views/show_data_entry_categories_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 
@@ -54,10 +53,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const CustomBottomNavBar(),
         );
-      case Routes.dateEntryTypesView:
-        return MaterialPageRoute(
-          builder: (context) => const DataEntryCategoryTypesView(),
-        );
+      // case Routes.dateEntryTypesView:
+      //   return MaterialPageRoute(
+      //     builder: (context) => const DataEntryCategoryTypesView(),
+      //   );
 
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

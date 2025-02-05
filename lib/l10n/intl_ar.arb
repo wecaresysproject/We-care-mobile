@@ -51,7 +51,9 @@
     "we_have_send_code_to_ur_phone": "أرسلنا رمز التحقق لرقمك ، برجاء ادخاله",
     "new_password":"كلمة السر الجديدة",
     "create_new_password":"انشاء كلمة السر",
-    "confirm_new_password":"تاكيد كلمة السر"
+    "confirm_new_password":"تاكيد كلمة السر",
+    "white_spaces_validation":"الحقل فارغ"
+
 
 
 

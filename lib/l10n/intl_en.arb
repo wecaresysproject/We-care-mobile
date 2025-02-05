@@ -33,7 +33,7 @@
         "view_medical_record": "View your medical\nrecord",
         "dummyUserName":"Ahmed Mohamed",
         "homeTab": "Home",
-        "medical_recordTab": "Medical Record",
+        "medical_recordTab": "Medical",
         "doctorsTab": "Doctors",
         "pharmaInteractionTab": "Drug Interaction",
         "settingsTab": "Settings",
@@ -51,7 +51,9 @@
         "we_have_send_code_to_ur_phone": "We have sent a verification code to your phone, please enter it.",
         "new_password": "New Password",
         "create_new_password": "Create a New Password",
-        "confirm_new_password": "Confirm New Password"
+        "confirm_new_password": "Confirm New Password",
+        "white_spaces_validation":"Empty field"
+
 
 
 

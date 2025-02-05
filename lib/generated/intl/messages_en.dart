@@ -79,7 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "Medical Service Providers",
     ),
-    "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical Record"),
+    "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "new_password": MessageLookupByLibrary.simpleMessage("New Password"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
@@ -138,6 +138,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "we_have_send_code_to_ur_phone": MessageLookupByLibrary.simpleMessage(
       "We have sent a verification code to your phone, please enter it.",
+    ),
+    "white_spaces_validation": MessageLookupByLibrary.simpleMessage(
+      "Empty field",
     ),
   };
 }

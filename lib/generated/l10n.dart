@@ -365,10 +365,10 @@ class S {
     return Intl.message('Home', name: 'homeTab', desc: '', args: []);
   }
 
-  /// `Medical Record`
+  /// `Medical`
   String get medical_recordTab {
     return Intl.message(
-      'Medical Record',
+      'Medical',
       name: 'medical_recordTab',
       desc: '',
       args: [],
@@ -525,6 +525,16 @@ class S {
     return Intl.message(
       'Confirm New Password',
       name: 'confirm_new_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Empty field`
+  String get white_spaces_validation {
+    return Intl.message(
+      'Empty field',
+      name: 'white_spaces_validation',
       desc: '',
       args: [],
     );

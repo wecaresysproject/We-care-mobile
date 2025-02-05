@@ -122,5 +122,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "we_have_send_code_to_ur_phone": MessageLookupByLibrary.simpleMessage(
       "أرسلنا رمز التحقق لرقمك ، برجاء ادخاله",
     ),
+    "white_spaces_validation": MessageLookupByLibrary.simpleMessage(
+      "الحقل فارغ",
+    ),
   };
 }

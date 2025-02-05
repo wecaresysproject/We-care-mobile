@@ -37,4 +37,9 @@ class AppRegex {
   static bool hasMinLength(String password) {
     return RegExp(r'^(?=.{8,})').hasMatch(password);
   }
+
+  /// Check if the input string contains only white spaces or is empty (Corner case)
+  static bool isOnlyWhiteSpaces(String input) {
+    return RegExp(r'^\s*$').hasMatch(input);
+  }
 }
