@@ -30,8 +30,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
       " هل يوجد لديك حساب ؟",
     ),
+    "artificial_intelligence": MessageLookupByLibrary.simpleMessage(
+      "ذكاء الاصطناعي",
+    ),
     "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
       "بإنشاء حساب جديد أنت توافق على  ",
+    ),
+    "category_notifications": MessageLookupByLibrary.simpleMessage(
+      "تقيم الاطباء",
+    ),
+    "category_star_ratings": MessageLookupByLibrary.simpleMessage(
+      "اعداد تقرير طبي",
     ),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
       "شروط الاستخدام الخاصة بنا",
@@ -46,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "الطبيب / الاخصائي",
+    ),
+    "doctor_search_service": MessageLookupByLibrary.simpleMessage(
+      "بحث عن طبيب",
     ),
     "doctorsTab": MessageLookupByLibrary.simpleMessage("الأطباء"),
     "dontHaveAccount": MessageLookupByLibrary.simpleMessage(
@@ -62,8 +74,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "familyName": MessageLookupByLibrary.simpleMessage("اسم العائلة"),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة السر"),
+    "genetical_inheritance": MessageLookupByLibrary.simpleMessage(
+      "الشجره الوراثية",
+    ),
     "homeTab": MessageLookupByLibrary.simpleMessage("الرئيسية"),
+    "home_visit_service": MessageLookupByLibrary.simpleMessage("كشف منزلى"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
+    "life_quality_cat3": MessageLookupByLibrary.simpleMessage(
+      "توصيات لجودة الحياة",
+    ),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
       "اختر ما تريد القيام به لإدارة سجلك الطبي.",
@@ -71,7 +90,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "مقدمي الخدمات الطبية",
     ),
+    "medical_consultations": MessageLookupByLibrary.simpleMessage(
+      "استشارات طبيه",
+    ),
+    "medical_files": MessageLookupByLibrary.simpleMessage("الملف الطبى"),
+    "medical_inter_cat1": MessageLookupByLibrary.simpleMessage(
+      "تفاعلات الادويه",
+    ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("ملف طبي"),
+    "medical_summary_cat2": MessageLookupByLibrary.simpleMessage("ملخص طبى"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
     "new_password": MessageLookupByLibrary.simpleMessage("كلمة السر الجديدة"),
     "ok": MessageLookupByLibrary.simpleMessage("موافق"),
@@ -107,10 +134,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
     ),
+    "search_text": MessageLookupByLibrary.simpleMessage("بحث متقدم"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "الهيئات الداعمة",
     ),
+    "supprting_rooms": MessageLookupByLibrary.simpleMessage("غرف الدعم"),
     "verfication_code": MessageLookupByLibrary.simpleMessage("كود التحقق"),
     "verifyYourNumber": MessageLookupByLibrary.simpleMessage("التحقق من رقمك"),
     "verifyYourNumberHint": MessageLookupByLibrary.simpleMessage(

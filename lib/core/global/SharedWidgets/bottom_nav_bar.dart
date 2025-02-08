@@ -121,6 +121,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         buttonBackgroundColor: AppColorsManager.mainDarkBlue,

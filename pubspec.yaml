@@ -28,24 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  build_runner: ^2.4.7
+  cached_network_image: ^3.4.1
+  carousel_slider: ^5.0.0
   country_code_picker: ^3.1.0
   cupertino_icons: ^1.0.8
-  # Bottom Navigation Bar of the app
   curved_labeled_navigation_bar: ^2.0.5
-  #A build system for Dart code generation and modular compilation
-  build_runner: ^2.4.7
-  # Networking
   dio: ^5.7.0
-  retrofit: ^4.4.2
-  retrofit_generator: ^9.1.7
-  pretty_dio_logger: ^1.4.0
-  # provides API to store data in secure storage.
-  flutter_secure_storage: ^9.2.4
-  # Flutter library to load and cache network images.
-  cached_network_image: ^3.4.1
-  # Code generator (mainly used with cubit & retrofit)
-  freezed: ^2.5.8
-  freezed_annotation: ^2.4.4
   equatable: ^2.0.7
   flutter:
     sdk: flutter
@@ -53,14 +42,20 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_screenutil: ^5.9.3
+  flutter_secure_storage: ^9.2.4
   flutter_svg: ^2.0.17
   fluttertoast: ^8.2.10
+  freezed: ^2.5.8
+  freezed_annotation: ^2.4.4
   get_it: ^8.0.3
   json_annotation: ^4.9.0
-  # Automatically generate code for converting to and from JSON by annotating Dart classes
   json_serializable: ^6.9.3
   pin_code_fields: ^8.0.1
+  pretty_dio_logger: ^1.4.0
+  retrofit: ^4.4.2
+  retrofit_generator: ^9.1.7
   shared_preferences: ^2.4.0
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_lints: ^5.0.0

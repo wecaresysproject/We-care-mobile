@@ -42,7 +42,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 verticalSpacing(16),
                 Text(
                   S.of(context).create_new_password,
-                  style: AppTextStyles.font22MainBlueRegular,
+                  style: AppTextStyles.font22MainBlueWeight700,
                 ),
                 CreateNewPasswordFormFields(),
 

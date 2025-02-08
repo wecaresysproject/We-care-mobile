@@ -4,8 +4,10 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/create_new_password/Presentation/views/create_new_password_view.dart';
 import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
+import 'package:we_care/features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
+import 'package:we_care/features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 
@@ -53,10 +55,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const CustomBottomNavBar(),
         );
-      // case Routes.dateEntryTypesView:
-      //   return MaterialPageRoute(
-      //     builder: (context) => const DataEntryCategoryTypesView(),
-      //   );
+      case Routes.viewOrEditMedicalRecord:
+        return MaterialPageRoute(
+          builder: (context) => const ViewOrEditMedicalRecord(),
+        );
+      case Routes.dateEntryTypesView:
+        return MaterialPageRoute(
+          builder: (context) => DataEntryCategoryTypesView(),
+        );
 
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

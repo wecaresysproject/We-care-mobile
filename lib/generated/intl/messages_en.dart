@@ -30,8 +30,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "alreadyHaveAccount": MessageLookupByLibrary.simpleMessage(
       "Already have an account ? ",
     ),
+    "artificial_intelligence": MessageLookupByLibrary.simpleMessage(
+      "Artificial Intelligence",
+    ),
     "by_creating_account_you_agree_to": MessageLookupByLibrary.simpleMessage(
       "By creating an account, you agree to our ",
+    ),
+    "category_notifications": MessageLookupByLibrary.simpleMessage(
+      "Doctor Evaluations",
+    ),
+    "category_star_ratings": MessageLookupByLibrary.simpleMessage(
+      "Medical Report Preparation",
     ),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
       " Terms and Conditions of us",
@@ -46,6 +55,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "Doctor / Specialist",
+    ),
+    "doctor_search_service": MessageLookupByLibrary.simpleMessage(
+      "Doctor Search",
     ),
     "doctorsTab": MessageLookupByLibrary.simpleMessage("Doctors"),
     "dontHaveAccount": MessageLookupByLibrary.simpleMessage(
@@ -68,10 +80,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "familyName": MessageLookupByLibrary.simpleMessage("Family Name"),
     "firstName": MessageLookupByLibrary.simpleMessage("First Name"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("Forgot Password"),
+    "genetical_inheritance": MessageLookupByLibrary.simpleMessage(
+      "Genetic Tree",
+    ),
     "homeTab": MessageLookupByLibrary.simpleMessage("Home"),
+    "home_visit_service": MessageLookupByLibrary.simpleMessage("Home Visit"),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage(
       "Insurance Companies",
     ),
+    "life_quality_cat3": MessageLookupByLibrary.simpleMessage("Life Quality"),
     "login": MessageLookupByLibrary.simpleMessage("Login"),
     "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
       "Choose what you want to do to manage your medical record.",
@@ -79,7 +96,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "Medical Service Providers",
     ),
+    "medical_consultations": MessageLookupByLibrary.simpleMessage(
+      "Medical Consultations",
+    ),
+    "medical_files": MessageLookupByLibrary.simpleMessage("Medical File"),
+    "medical_inter_cat1": MessageLookupByLibrary.simpleMessage(
+      "Drug Interactions",
+    ),
     "medical_recordTab": MessageLookupByLibrary.simpleMessage("Medical"),
+    "medical_summary_cat2": MessageLookupByLibrary.simpleMessage(
+      "Medical Summary",
+    ),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "new_password": MessageLookupByLibrary.simpleMessage("New Password"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
@@ -101,9 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Passwords do not match",
     ),
     "patient": MessageLookupByLibrary.simpleMessage("Patient"),
-    "pharmaInteractionTab": MessageLookupByLibrary.simpleMessage(
-      "Drug Interaction",
-    ),
+    "pharmaInteractionTab": MessageLookupByLibrary.simpleMessage("Interaction"),
     "pleaseEnterYourCorrentPhoneNum": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Corrent Phone Number",
     ),
@@ -120,10 +145,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "Enter your phone number, and we will send you a code to reset your password.",
     ),
+    "search_text": MessageLookupByLibrary.simpleMessage("Advanced Search"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "Supporting Entities",
     ),
+    "supprting_rooms": MessageLookupByLibrary.simpleMessage("Support Rooms"),
     "verfication_code": MessageLookupByLibrary.simpleMessage(
       "Verification Code",
     ),

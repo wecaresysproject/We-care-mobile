@@ -24,7 +24,7 @@ class OtpView extends StatelessWidget {
               verticalSpacing(16),
               Text(
                 context.translate.verifyYourNumber,
-                style: AppTextStyles.font22MainBlueRegular,
+                style: AppTextStyles.font22MainBlueWeight700,
               ),
               verticalSpacing(32),
               Text(
@@ -37,7 +37,7 @@ class OtpView extends StatelessWidget {
                 isForgetPasswordFlow: isForgetPasswordFlow,
               ),
               verticalSpacing(20),
-              CustomRichTextWidget(
+              CustomUnderlinedRichTextWidget(
                 normalText: "",
                 highlightedText: context.translate.resend,
                 onTap: () async {

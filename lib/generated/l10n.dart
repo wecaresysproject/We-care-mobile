@@ -380,10 +380,10 @@ class S {
     return Intl.message('Doctors', name: 'doctorsTab', desc: '', args: []);
   }
 
-  /// `Drug Interaction`
+  /// `Interaction`
   String get pharmaInteractionTab {
     return Intl.message(
-      'Drug Interaction',
+      'Interaction',
       name: 'pharmaInteractionTab',
       desc: '',
       args: [],
@@ -535,6 +535,136 @@ class S {
     return Intl.message(
       'Empty field',
       name: 'white_spaces_validation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced Search`
+  String get search_text {
+    return Intl.message(
+      'Advanced Search',
+      name: 'search_text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Drug Interactions`
+  String get medical_inter_cat1 {
+    return Intl.message(
+      'Drug Interactions',
+      name: 'medical_inter_cat1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Summary`
+  String get medical_summary_cat2 {
+    return Intl.message(
+      'Medical Summary',
+      name: 'medical_summary_cat2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Life Quality`
+  String get life_quality_cat3 {
+    return Intl.message(
+      'Life Quality',
+      name: 'life_quality_cat3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Genetic Tree`
+  String get genetical_inheritance {
+    return Intl.message(
+      'Genetic Tree',
+      name: 'genetical_inheritance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Artificial Intelligence`
+  String get artificial_intelligence {
+    return Intl.message(
+      'Artificial Intelligence',
+      name: 'artificial_intelligence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Report Preparation`
+  String get category_star_ratings {
+    return Intl.message(
+      'Medical Report Preparation',
+      name: 'category_star_ratings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctor Evaluations`
+  String get category_notifications {
+    return Intl.message(
+      'Doctor Evaluations',
+      name: 'category_notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Support Rooms`
+  String get supprting_rooms {
+    return Intl.message(
+      'Support Rooms',
+      name: 'supprting_rooms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home Visit`
+  String get home_visit_service {
+    return Intl.message(
+      'Home Visit',
+      name: 'home_visit_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical File`
+  String get medical_files {
+    return Intl.message(
+      'Medical File',
+      name: 'medical_files',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctor Search`
+  String get doctor_search_service {
+    return Intl.message(
+      'Doctor Search',
+      name: 'doctor_search_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Consultations`
+  String get medical_consultations {
+    return Intl.message(
+      'Medical Consultations',
+      name: 'medical_consultations',
       desc: '',
       args: [],
     );

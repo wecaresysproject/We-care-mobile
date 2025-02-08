@@ -52,10 +52,18 @@
     "new_password":"كلمة السر الجديدة",
     "create_new_password":"انشاء كلمة السر",
     "confirm_new_password":"تاكيد كلمة السر",
-    "white_spaces_validation":"الحقل فارغ"
-
-
-
-
-
+    "white_spaces_validation":"الحقل فارغ",
+    "search_text":"بحث متقدم",
+    "medical_inter_cat1": "تفاعلات الادويه",
+    "medical_summary_cat2": "ملخص طبى",
+    "life_quality_cat3": "توصيات لجودة الحياة",
+    "genetical_inheritance": "الشجره الوراثية",
+    "artificial_intelligence": "ذكاء الاصطناعي",
+    "category_star_ratings": "اعداد تقرير طبي",
+    "category_notifications": "تقيم الاطباء",
+    "supprting_rooms": "غرف الدعم",
+    "home_visit_service": "كشف منزلى",
+    "medical_files": "الملف الطبى",
+    "doctor_search_service": "بحث عن طبيب",
+    "medical_consultations": "استشارات طبيه"
 }

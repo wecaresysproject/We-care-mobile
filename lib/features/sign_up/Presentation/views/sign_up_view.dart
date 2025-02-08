@@ -38,7 +38,7 @@ class _SignUpViewState extends State<SignUpView> {
               verticalSpacing(4),
               Text(
                 S.of(context).createAccount,
-                style: AppTextStyles.font22MainBlueRegular,
+                style: AppTextStyles.font22MainBlueWeight700,
               ),
               SignUpFormFields(),
               // Use TermsAndConditionsWidget properly
@@ -77,7 +77,7 @@ class _SignUpViewState extends State<SignUpView> {
               ),
               verticalSpacing(24),
               // Already have an account
-              CustomRichTextWidget(
+              CustomUnderlinedRichTextWidget(
                 normalText: "${S.of(context).alreadyHaveAccount} ",
                 highlightedText: S.of(context).login,
                 onTap: () async {

@@ -10,6 +10,8 @@ class Routes {
   static const splashscreen = '/splashScreen';
 
   static const homeTabView = '/homeTabView';
+  static const viewOrEditMedicalRecord = '/viewOrEditMedicalRecord';
+
   static const otpView = '/otpView';
   static const createNewPasswordView = '/createNewPasswordView';
 }

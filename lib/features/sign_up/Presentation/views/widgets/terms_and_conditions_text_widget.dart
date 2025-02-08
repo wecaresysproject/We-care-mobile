@@ -56,7 +56,7 @@ class TermsAndConditionsTextWidget extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: context.translate.by_creating_account_you_agree_to,
-                    style: AppTextStyles.font12blackRegular.copyWith(
+                    style: AppTextStyles.font12blackWeight400.copyWith(
                       color: AppColorsManager.textColor,
                       fontSize: 12.sp,
                     ),
@@ -77,7 +77,7 @@ class TermsAndConditionsTextWidget extends StatelessWidget {
                         );
                       },
                     text: context.translate.conditionsOFUse,
-                    style: AppTextStyles.font12blackRegular.copyWith(
+                    style: AppTextStyles.font12blackWeight400.copyWith(
                       color: AppColorsManager.mainDarkBlue,
                       fontSize: 12.sp,
                       fontWeight: FontWeightHelper.bold,
