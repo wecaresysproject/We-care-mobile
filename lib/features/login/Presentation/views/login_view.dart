@@ -37,7 +37,7 @@ class _LoginViewState extends State<LoginView> {
                 verticalSpacing(4),
                 Text(
                   S.of(context).login,
-                  style: AppTextStyles.font22MainBlueRegular,
+                  style: AppTextStyles.font22MainBlueWeight700,
                 ),
                 //! Login Form fields here
                 LoginFormFields(),
@@ -63,7 +63,7 @@ class _LoginViewState extends State<LoginView> {
                 verticalSpacing(56),
 
                 /// dont have an account
-                CustomRichTextWidget(
+                CustomUnderlinedRichTextWidget(
                   normalText: S.of(context).dontHaveAccount,
                   highlightedText: S.of(context).createAccount,
                   onTap: () {

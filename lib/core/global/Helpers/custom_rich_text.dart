@@ -4,16 +4,18 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class CustomRichTextWidget extends StatelessWidget {
+class CustomUnderlinedRichTextWidget extends StatelessWidget {
   final String normalText;
   final String highlightedText;
   final VoidCallback onTap;
+  final TextStyle? textStyle;
 
-  const CustomRichTextWidget({
+  const CustomUnderlinedRichTextWidget({
     super.key,
     required this.normalText,
     required this.highlightedText,
     required this.onTap,
+    this.textStyle,
   });
 
   @override
@@ -49,9 +51,10 @@ class CustomRichTextWidget extends StatelessWidget {
                 ),
                 child: Text(
                   highlightedText,
-                  style: AppTextStyles.font18blackWight500.copyWith(
-                    color: AppColorsManager.mainDarkBlue,
-                  ),
+                  style: textStyle ??
+                      AppTextStyles.font18blackWight500.copyWith(
+                        color: AppColorsManager.mainDarkBlue,
+                      ),
                 ),
               ),
             ),

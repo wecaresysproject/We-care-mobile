@@ -20,7 +20,7 @@ class AppTextStyles {
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
     color: AppColorsManager.placeHolderColor,
   );
-  static final font22MainBlueRegular = TextStyle(
+  static final font22MainBlueWeight700 = TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeightHelper.bold,
     color: AppColorsManager.mainDarkBlue,
@@ -28,10 +28,9 @@ class AppTextStyles {
   static final font22WhiteWeight600 = TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeightHelper.semiBold,
-    // height: 27.sp,
     color: AppColorsManager.backGroundColor,
   );
-  static final font12blackRegular = TextStyle(
+  static final font12blackWeight400 = TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeightHelper.regular,
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,//cairo

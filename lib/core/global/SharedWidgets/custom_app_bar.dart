@@ -8,13 +8,19 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class CustomAppBarWidget extends StatelessWidget {
-  const CustomAppBarWidget({super.key});
+  const CustomAppBarWidget({super.key, this.haveBackArrow = false});
+
+  final bool haveBackArrow;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _buildUserAvatar(),
+        UserAvatarWidget(
+          width: 40,
+          height: 40,
+          borderRadius: 17,
+        ),
         horizontalSpacing(8),
         Text(
           context.translate.dummyUserName,
@@ -24,23 +30,34 @@ class CustomAppBarWidget extends StatelessWidget {
           ),
         ),
         Spacer(),
-        CustomAppBackArrow(),
+        haveBackArrow ? CustomAppBackArrow() : SizedBox.shrink(),
       ],
     );
   }
 }
 
-/// 🔹 Creates a user avatar that matches the back arrow button
-Widget _buildUserAvatar() {
-  return SizedBox(
-    width: 40.w,
-    height: 40.h,
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(17.r),
-      child: Image.asset(
-        "assets/images/user_dummy_photo.png",
-        fit: BoxFit.cover,
+class UserAvatarWidget extends StatelessWidget {
+  const UserAvatarWidget({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.borderRadius,
+  });
+  final double width;
+  final double height;
+  final double borderRadius;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width.w,
+      height: height.h,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius.r),
+        child: Image.asset(
+          "assets/images/user_dummy_photo.png",
+          fit: BoxFit.cover,
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

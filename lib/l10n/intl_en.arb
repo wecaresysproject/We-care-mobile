@@ -33,9 +33,9 @@
         "view_medical_record": "View your medical\nrecord",
         "dummyUserName":"Ahmed Mohamed",
         "homeTab": "Home",
-        "medical_recordTab": "Medical Record",
+        "medical_recordTab": "Medical",
         "doctorsTab": "Doctors",
-        "pharmaInteractionTab": "Drug Interaction",
+        "pharmaInteractionTab": "Interaction",
         "settingsTab": "Settings",
         "by_creating_account_you_agree_to": "By creating an account, you agree to our ",
         "conditionsOFUse": " Terms and Conditions of us",
@@ -51,12 +51,19 @@
         "we_have_send_code_to_ur_phone": "We have sent a verification code to your phone, please enter it.",
         "new_password": "New Password",
         "create_new_password": "Create a New Password",
-        "confirm_new_password": "Confirm New Password"
-
-
-
-
-
-
-
+        "confirm_new_password": "Confirm New Password",
+        "white_spaces_validation":"Empty field",
+        "search_text":"Advanced Search",
+        "medical_inter_cat1": "Drug Interactions",
+        "medical_summary_cat2": "Medical Summary",
+        "life_quality_cat3": "Life Quality",
+        "genetical_inheritance": "Genetic Tree",
+        "artificial_intelligence": "Artificial Intelligence",
+        "category_star_ratings": "Medical Report Preparation",
+        "category_notifications": "Doctor Evaluations",
+        "supprting_rooms": "Support Rooms",
+        "home_visit_service": "Home Visit",
+        "medical_files": "Medical File",
+        "doctor_search_service": "Doctor Search",
+        "medical_consultations": "Medical Consultations"
 }

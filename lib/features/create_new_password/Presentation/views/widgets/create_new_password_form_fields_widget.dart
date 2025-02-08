@@ -117,7 +117,7 @@ class _CreateNewPasswordFormFieldsState
           verticalSpacing(8),
           Text(
             S.of(context).passwordHint,
-            style: AppTextStyles.font12blackRegular.copyWith(
+            style: AppTextStyles.font12blackWeight400.copyWith(
               fontSize: 14.sp,
             ),
           ),
