@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class DataEntryCategoriesGridView extends StatelessWidget {
   const DataEntryCategoriesGridView({
@@ -27,7 +29,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
           return CategoryItem(
             title: categories[index]["title"]!,
             imagePath: categories[index]["image"]!,
-            // routeName: categories[index]["route"]!,
+            routeName: categories[index]["route"]!,
           );
         },
       ),
@@ -38,13 +40,13 @@ class DataEntryCategoriesGridView extends StatelessWidget {
 class CategoryItem extends StatelessWidget {
   final String title;
   final String imagePath;
-  // final String routeName;
+  final String routeName;
 
   const CategoryItem({
     super.key,
     required this.title,
     required this.imagePath,
-    // required this.routeName,
+    required this.routeName,
   });
 
   @override
@@ -55,7 +57,9 @@ class CategoryItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: () async {
+              await context.pushNamed(routeName);
+            },
             child: Container(
               width: 99.w,
               height: 88.h,
@@ -71,7 +75,7 @@ class CategoryItem extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.31),
+                    color: Colors.black.withAlpha(75),
                     offset: const Offset(3, 4),
                     blurRadius: 4,
                   ),
@@ -130,7 +134,7 @@ final List<Map<String, String>> categories = [
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
-    "route": "/medical_tests"
+    "route": Routes.xrayCategoryDataEntryView,
   },
   {
     "title": "العمليات\nالجراحية",

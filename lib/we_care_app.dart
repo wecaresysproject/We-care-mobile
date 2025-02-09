@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/app_router.dart';
@@ -66,7 +65,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: CustomBottomNavBar(),
+          home: XrayCategoryDataEntryView(),
         );
       },
     );
