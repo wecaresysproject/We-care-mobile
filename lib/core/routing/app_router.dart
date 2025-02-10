@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/date_validator_class.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/create_new_password/Presentation/views/create_new_password_view.dart';
 import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
@@ -16,6 +8,7 @@ import 'package:we_care/features/home_tab/Presentation/views/view_or_edit_medica
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_feature/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 
@@ -94,93 +87,6 @@ class NotFoundView extends StatelessWidget {
       body: Center(
         child: Text('Page not found'),
       ),
-    );
-  }
-}
-
-class XrayCategoryDataEntryView extends StatelessWidget {
-  const XrayCategoryDataEntryView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomAppBarWidget(
-                haveBackArrow: true,
-              ),
-              verticalSpacing(24),
-              XRayDataEntryFormFields(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DateFormField extends StatefulWidget {
-  const DateFormField({super.key});
-
-  @override
-  DateFormFieldState createState() => DateFormFieldState();
-}
-
-class DateFormFieldState extends State<DateFormField> {
-  final TextEditingController _dateController = TextEditingController();
-
-  /// intialize it in its cubit later to take its input from here to make the request and handle focus node
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomTextField(
-      validator: (value) {
-        if (value.isEmptyOrNull) return "من فضلك ادخل التاريخ";
-        return DateValidator.getErrorMessage(value!);
-      },
-      controller: _dateController,
-      isPassword: false,
-      showSuffixIcon: false,
-      keyboardType: TextInputType.number,
-      hintText: "يوم / شهر / سنة",
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(10),
-        DateTextFormatter(),
-      ],
-    );
-  }
-}
-
-class XRayDataEntryFormFields extends StatelessWidget {
-  const XRayDataEntryFormFields({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "تاريخ الأشعة",
-          style: AppTextStyles.font18blackWight500,
-        ),
-        verticalSpacing(10),
-        DateFormField(),
-
-        /// size between each categogry
-        verticalSpacing(16),
-        Text(
-          "منطقة الأشعة",
-          style: AppTextStyles.font18blackWight500,
-        ),
-        verticalSpacing(10),
-      ],
     );
   }
 }
