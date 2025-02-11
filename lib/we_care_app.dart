@@ -6,6 +6,7 @@ import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/app_router.dart';
+import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_view.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class WeCareApp extends StatelessWidget {
@@ -66,7 +67,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: CustomBottomNavBar(),
+          home: XRayView(),
         );
       },
     );

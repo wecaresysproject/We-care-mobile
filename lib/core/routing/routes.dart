@@ -15,4 +15,5 @@ class Routes {
 
   static const otpView = '/otpView';
   static const createNewPasswordView = '/createNewPasswordView';
+  static const xRayDataView = '/xRayDataView';
 }

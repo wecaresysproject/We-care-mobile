@@ -11,6 +11,7 @@ import 'package:we_care/features/show_data_entry_types/Presentation/views/data_e
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
+import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_view.dart';
 
 class AppRouter {
 //automatically recalled when we use Navigator in our screen
@@ -69,6 +70,10 @@ class AppRouter {
           builder: (context) => XrayCategoryDataEntryView(),
         );
 
+      case Routes.xRayDataView:
+        return MaterialPageRoute(
+          builder: (context) => const XRayView(),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }
