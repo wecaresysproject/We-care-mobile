@@ -17,7 +17,7 @@ class XRayDataViewAppBar extends StatelessWidget {
       padding: EdgeInsets.only(top: 16.h, bottom: 24.h),
       child: Row(
         children: [
-          CustomAppBackArrow(),
+          CustomBackArrow(),
           horizontalSpacing(50),
           CustomSearchBar(),
         ],

@@ -109,7 +109,10 @@ class MedicalTestCard extends StatelessWidget {
       maxLines: 2,
       text: TextSpan(
         children: [
-          TextSpan(text: "$label ", style: AppTextStyles.font10blueWeight400),
+          TextSpan(
+              text: "$label ",
+              style:
+                  AppTextStyles.font10blueWeight400.copyWith(fontSize: 13.sp)),
           TextSpan(
             text: value,
             style: AppTextStyles.font14blackWeight400,
