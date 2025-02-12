@@ -43,7 +43,7 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                   verticalSpacing(60),
                   CustomImageWithTextButtonHomeWidget(
                     onTap: () {
-                      context.pushNamed(Routes.dateEntryTypesView);
+                      context.pushNamed(Routes.dataEntryTypesView);
                     },
                     imagePath: "assets/images/edit_icon.png",
                     text: isArabic()

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 
-class CustomAppBackArrow extends StatelessWidget {
-  const CustomAppBackArrow({super.key});
+class CustomBackArrow extends StatelessWidget {
+  const CustomBackArrow({super.key});
 
   @override
   Widget build(BuildContext context) {

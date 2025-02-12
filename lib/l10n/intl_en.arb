@@ -65,5 +65,7 @@
         "home_visit_service": "Home Visit",
         "medical_files": "Medical File",
         "doctor_search_service": "Doctor Search",
-        "medical_consultations": "Medical Consultations"
+        "medical_consultations": "Medical Consultations",
+        "choose_X_ray_body_part":"Choose X-Ray Body Part",
+        "required_field":"This field is required"
 }

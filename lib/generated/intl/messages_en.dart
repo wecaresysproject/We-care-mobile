@@ -42,6 +42,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "category_star_ratings": MessageLookupByLibrary.simpleMessage(
       "Medical Report Preparation",
     ),
+    "choose_X_ray_body_part": MessageLookupByLibrary.simpleMessage(
+      "Choose X-Ray Body Part",
+    ),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
       " Terms and Conditions of us",
     ),
@@ -140,6 +143,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "pleaseEnterYourPhoneNum": MessageLookupByLibrary.simpleMessage(
       "Please Enter Your Phone Number",
+    ),
+    "required_field": MessageLookupByLibrary.simpleMessage(
+      "This field is required",
     ),
     "resend": MessageLookupByLibrary.simpleMessage("Resend"),
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(

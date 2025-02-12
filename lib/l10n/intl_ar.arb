@@ -65,5 +65,6 @@
     "home_visit_service": "كشف منزلى",
     "medical_files": "الملف الطبى",
     "doctor_search_service": "بحث عن طبيب",
-    "medical_consultations": "استشارات طبيه"
+    "medical_consultations": "استشارات طبيه",
+    "required_field":"هذا الحقل مطلوب"
 }

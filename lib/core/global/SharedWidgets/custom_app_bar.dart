@@ -30,7 +30,7 @@ class CustomAppBarWidget extends StatelessWidget {
           ),
         ),
         Spacer(),
-        haveBackArrow ? CustomAppBackArrow() : SizedBox.shrink(),
+        haveBackArrow ? CustomBackArrow() : SizedBox.shrink(),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -12,6 +13,8 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextEditingController? controller;
   final Function(String?) validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final FocusNode? focusNode;
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -19,6 +22,8 @@ class CustomTextField extends StatefulWidget {
     this.showSuffixIcon = false,
     this.keyboardType = TextInputType.text,
     this.controller,
+    this.inputFormatters,
+    this.focusNode,
     required this.validator,
   });
 
@@ -43,6 +48,8 @@ class CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.keyboardType,
       obscureText: widget.isPassword && _obscureText,
       enableInteractiveSelection: true, // ✅ Allow text selection
+      inputFormatters: widget.inputFormatters,
+      focusNode: widget.focusNode,
       decoration: InputDecoration(
         hintText: widget.hintText,
 
