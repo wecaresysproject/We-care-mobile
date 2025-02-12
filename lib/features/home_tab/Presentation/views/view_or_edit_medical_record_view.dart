@@ -55,7 +55,9 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                   ),
                   verticalSpacing(80),
                   CustomImageWithTextButtonHomeWidget(
-                    onTap: () {},
+                    onTap: () {
+                      context.pushNamed(Routes.xRayDataView);
+                    },
                     imagePath: "assets/images/show_medical_history.png",
                     text:
                         isArabic() ? "عرض سجلك\nالطبي" : "View medical\nrecord",
