@@ -669,6 +669,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Choose X-Ray Body Part`
+  String get choose_X_ray_body_part {
+    return Intl.message(
+      'Choose X-Ray Body Part',
+      name: 'choose_X_ray_body_part',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field is required`
+  String get required_field {
+    return Intl.message(
+      'This field is required',
+      name: 'required_field',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

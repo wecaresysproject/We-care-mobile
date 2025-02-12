@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-Future<void> showToast(String error) async {
+Future<void> showError(String error) async {
   await Fluttertoast.cancel();
   await Fluttertoast.showToast(
     msg: error, //TODO: translate error messages after backend meeting later

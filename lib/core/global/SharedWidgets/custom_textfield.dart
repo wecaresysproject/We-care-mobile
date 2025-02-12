@@ -137,31 +137,3 @@ class CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
-
-/// Custom Date Formatter for DD/MM/YYYY
-class DateTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    String text =
-        newValue.text.replaceAll(RegExp(r'[^0-9]'), ''); // Allow only numbers
-
-    if (text.length > 8) {
-      return oldValue; // Restrict to 8 numeric characters (DDMMYYYY)
-    }
-
-    StringBuffer formatted = StringBuffer();
-
-    for (int i = 0; i < text.length; i++) {
-      if ((i == 2 || i == 4) && text.length > i) {
-        formatted.write('/'); // Insert '/' after day and month
-      }
-      formatted.write(text[i]);
-    }
-
-    return TextEditingValue(
-      text: formatted.toString(),
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-}

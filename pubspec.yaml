@@ -30,6 +30,8 @@ environment:
 dependencies:
   build_runner: ^2.4.7
   cached_network_image: ^3.4.1
+  # plugin for selecting images from the Android and iOS image library and taking new pictures with the camera.
+  image_picker: ^1.1.2
   carousel_slider: ^5.0.0
   country_code_picker: ^3.1.0
   cupertino_icons: ^1.0.8

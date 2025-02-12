@@ -130,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterYourPhoneNum": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم الهاتف",
     ),
+    "required_field": MessageLookupByLibrary.simpleMessage("هذا الحقل مطلوب"),
     "resend": MessageLookupByLibrary.simpleMessage("اعادة الارسال"),
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",

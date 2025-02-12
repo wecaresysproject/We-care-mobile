@@ -8,7 +8,7 @@ import 'package:we_care/features/home_tab/Presentation/views/view_or_edit_medica
 import 'package:we_care/features/login/Presentation/views/login_view.dart';
 import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_feature/Presentation/views/x_ray_data_entry_view.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
 import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
 

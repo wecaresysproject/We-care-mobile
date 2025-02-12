@@ -52,5 +52,14 @@
     <string>en</string>
     <string>ar</string>
 </array>
+ <!-- 🔹 Added Required Permissions for image picker -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to upload images.</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>We need access to your camera to take pictures.</string>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need microphone access for recording videos.</string>
 </dict>
 </plist>
