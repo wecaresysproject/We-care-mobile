@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,18 +25,21 @@ Future<void> main() async {
     ),
   );
   runApp(
-    MultiBlocProvider(
-      //!TODO: remove MultiBlocProvider later from main
-      providers: [
-        BlocProvider<SignUpCubit>(
-          create: (_) => getIt<SignUpCubit>(),
+    DevicePreview(
+      enabled: true,
+      builder: (context) => MultiBlocProvider(
+        //!TODO: remove MultiBlocProvider later from main
+        providers: [
+          BlocProvider<SignUpCubit>(
+            create: (_) => getIt<SignUpCubit>(),
+          ),
+          BlocProvider<ForgetPasswordCubit>(
+            create: (_) => getIt<ForgetPasswordCubit>(),
+          ),
+        ],
+        child: WeCareApp(
+          appRouter: AppRouter(),
         ),
-        BlocProvider<ForgetPasswordCubit>(
-          create: (_) => getIt<ForgetPasswordCubit>(),
-        ),
-      ],
-      child: WeCareApp(
-        appRouter: AppRouter(),
       ),
     ),
   );
