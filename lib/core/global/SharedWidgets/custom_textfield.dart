@@ -15,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   final Function(String?) validator;
   final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
+  final void Function(String)? onChanged;
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -25,6 +26,7 @@ class CustomTextField extends StatefulWidget {
     this.inputFormatters,
     this.focusNode,
     required this.validator,
+    this.onChanged,
   });
 
   @override
@@ -45,6 +47,10 @@ class CustomTextFieldState extends State<CustomTextField> {
 
         return widget.validator(value);
       },
+      onChanged: widget.onChanged,
+      cursorColor: AppColorsManager.mainDarkBlue,
+      cursorErrorColor: AppColorsManager.warningColor,
+
       keyboardType: widget.keyboardType,
       obscureText: widget.isPassword && _obscureText,
       enableInteractiveSelection: true, // ✅ Allow text selection
@@ -135,5 +141,28 @@ class CustomTextFieldState extends State<CustomTextField> {
         color: AppColorsManager.textColor,
       ),
     );
+  }
+}
+
+class WordLimitInputFormatter extends TextInputFormatter {
+  final int maxWords;
+
+  WordLimitInputFormatter({required this.maxWords});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    int wordCount = _countWords(newValue.text);
+
+    if (wordCount > maxWords) {
+      return oldValue; // Reject new input if it exceeds the word limit
+    }
+
+    return newValue; // Accept new input if within limit
+  }
+
+  int _countWords(String text) {
+    List<String> words = text.trim().split(RegExp(r'\s+'));
+    return words.isEmpty || words.first == "" ? 0 : words.length;
   }
 }

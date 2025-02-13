@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'x_ray_data_entry_state.dart';
 
@@ -10,6 +9,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
       : super(
           XRayDataEntryState.initialState(),
         );
+
+  final personalNotesController = TextEditingController();
 
   /// Update Field Values
   void updateXRayDate(String? date) {

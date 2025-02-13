@@ -2,15 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection.dart';
+import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/date_time_picker_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/user_selection_container_widget.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/word_limit_text_field_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
 class XRayDataEntryFormFields extends StatefulWidget {
@@ -129,6 +131,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     context
                         .read<XRayDataEntryCubit>()
                         .updateXRayPicture(isImagePicked);
+
+                    final picker = getIt.get<ImagePickerService>();
+                    if (isImagePicked && picker.isImagePickedAccepted) {
+                      log("xxx: image path: ${picker.pickedImage?.path}");
+                    }
                   },
                 );
               },
@@ -151,7 +158,15 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               imagePath: "assets/images/photo_icon.png",
               label: " ارفق صورة للتقرير",
               onTap: () async {
-                await showImagePicker(context);
+                await showImagePicker(
+                  context,
+                  onImagePicked: (isImagePicked) {
+                    final picker = getIt.get<ImagePickerService>();
+                    if (isImagePicked && picker.isImagePickedAccepted) {
+                      log("xxx: image path: ${picker.pickedImage?.path}");
+                    }
+                  },
+                );
               },
             ),
             verticalSpacing(16),
@@ -249,12 +264,10 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            CustomTextField(
-              validator: (value) {},
-              isPassword: false,
-              showSuffixIcon: false,
-              keyboardType: TextInputType.text,
-              hintText: "اكتب باختصار أى معلومات مهمة أخرى",
+
+            WordLimitTextField(
+              controller:
+                  context.read<XRayDataEntryCubit>().personalNotesController,
             ),
 
             ///TODO: handle this button in main view and remove it from here

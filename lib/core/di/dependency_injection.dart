@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
@@ -50,5 +51,9 @@ Future<void> setUpDependencyInjection() async {
   //create XRayDataEntryCubit
   getIt.registerLazySingleton<ImagePicker>(
     () => ImagePicker(),
+  );
+
+  getIt.registerLazySingleton<ImagePickerService>(
+    () => ImagePickerService(),
   );
 }
