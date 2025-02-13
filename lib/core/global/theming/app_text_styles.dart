@@ -49,6 +49,13 @@ class AppTextStyles {
     fontFamily: AppStrings.cairoFontFamily,
     color: AppColorsManager.textColor,
   );
+
+  static final font20blackWeight600 = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontWeightHelper.semiBold,
+    fontFamily: AppStrings.cairoFontFamily,
+    color: AppColorsManager.textColor,
+  );
   static final font14whiteWeight600 = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeightHelper.semiBold,

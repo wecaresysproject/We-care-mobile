@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_details_view.dart';
 
 class MedicalTestCard extends StatelessWidget {
   final String title;
@@ -66,7 +67,11 @@ class MedicalTestCard extends StatelessWidget {
                 Flexible(
                   child: TextButton(
                     onPressed: () {
-                      // TODO: Handle button action
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => XRayDetailsView(),
+                        ),
+                      );
                     },
                     style: TextButton.styleFrom(
                       padding: EdgeInsets.zero, // Removes default padding
