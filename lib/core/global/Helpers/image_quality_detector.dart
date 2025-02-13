@@ -57,7 +57,7 @@ class ImagePickerService {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
       if (await _isImageBlurred(imageFile)) {
-        await showError("الصورة غير واضحة، يرجىإعادة المحاولة");
+        await showError("الصورة غير واضحة، يرجى إعادة المحاولة");
         isImagePickedAccepted = false;
         _pickedImage = null; // Clear picked image if blurred
         return false;
