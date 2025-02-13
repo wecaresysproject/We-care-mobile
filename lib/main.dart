@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +27,7 @@ Future<void> main() async {
   );
   runApp(
     DevicePreview(
-      enabled: true,
+      enabled: kDebugMode,
       builder: (context) => MultiBlocProvider(
         //!TODO: remove MultiBlocProvider later from main
         providers: [
