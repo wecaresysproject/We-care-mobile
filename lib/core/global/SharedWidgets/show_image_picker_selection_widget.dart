@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
@@ -79,27 +78,21 @@ Future<void> showImagePicker(BuildContext context,
 }
 
 Future<bool> _pickImageFromGallery() async {
-  final picker = getIt<ImagePicker>();
-  final pickedFile =
-      await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
-  if (pickedFile != null) {
-    await showSuccess("تم ارفاق الصورة بنجاح");
-    return true;
-  } else {
-    await showError("لم يتم ارفاق الصورة");
-    return false;
+  final picker = getIt.get<ImagePickerService>();
+
+  final result = await picker.pickImageFromGallery();
+  if (picker.isImagePickedAccepted) {
+    // log("path of image : ${picker.pickedImage?.path}");
   }
+  return result;
 }
 
 Future<bool> _pickImageFromCamera() async {
-  final picker = getIt<ImagePicker>();
-  final pickedFile =
-      await picker.pickImage(source: ImageSource.camera, imageQuality: 100);
-  if (pickedFile != null) {
-    await showSuccess("تم ارفاق الصورة بنجاح");
-    return true;
-  } else {
-    await showError("لم يتم ارفاق الصورة");
-    return false;
+  final picker = getIt.get<ImagePickerService>();
+
+  final result = await picker.pickImageFromCamera();
+  if (picker.isImagePickedAccepted) {
+    // log("path of image : ${picker.pickedImage?.path}");
   }
+  return result;
 }

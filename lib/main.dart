@@ -25,6 +25,7 @@ Future<void> main() async {
       //     Brightness.dark, // Dark icons for navigation bar
     ),
   );
+
   runApp(
     DevicePreview(
       enabled: kDebugMode,

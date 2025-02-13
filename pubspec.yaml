@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  blur_detection: ^1.0.0
   build_runner: ^2.4.7
   cached_network_image: ^3.4.1
   carousel_slider: ^5.0.0

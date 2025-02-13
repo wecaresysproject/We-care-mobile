@@ -19,3 +19,9 @@ String trimWord(String input, String wordToTrim) {
 bool isArabic() {
   return Intl.getCurrentLocale() == AppStrings.arabicLang;
 }
+
+/// Function to count words in the text
+int countWords(String text) {
+  List<String> words = text.trim().split(RegExp(r'\s+'));
+  return words.isEmpty || words.first == "" ? 0 : words.length;
+}

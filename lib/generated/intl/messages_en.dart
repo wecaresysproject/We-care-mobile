@@ -175,5 +175,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "white_spaces_validation": MessageLookupByLibrary.simpleMessage(
       "Empty field",
     ),
+    "word": MessageLookupByLibrary.simpleMessage("Word"),
+    "word_limit_exceeded": MessageLookupByLibrary.simpleMessage(
+      "You have exceeded the limit of 150 words!",
+    ),
   };
 }

@@ -67,5 +67,7 @@
         "doctor_search_service": "Doctor Search",
         "medical_consultations": "Medical Consultations",
         "choose_X_ray_body_part":"Choose X-Ray Body Part",
-        "required_field":"This field is required"
+        "required_field":"This field is required",
+        "word": "Word",
+        "word_limit_exceeded":"You have exceeded the limit of 150 words!"
 }
