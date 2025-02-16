@@ -2,15 +2,16 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/app_regex.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/sign_up/Presentation/views/widgets/password_validations_widget.dart';
-import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
-import 'package:we_care/generated/l10n.dart';
+
+import '../../../../../core/global/Helpers/app_regex.dart';
+import '../../../../../core/global/Helpers/extensions.dart';
+import '../../../../../core/global/Helpers/functions.dart';
+import '../../../../../core/global/SharedWidgets/custom_textfield.dart';
+import '../../../../../core/global/theming/app_text_styles.dart';
+import '../../../../../core/global/theming/color_manager.dart';
+import '../../../../../generated/l10n.dart';
+import '../../../logic/sign_up_cubit.dart';
+import 'password_validations_widget.dart';
 
 class SignUpFormFields extends StatefulWidget {
   const SignUpFormFields({
@@ -52,9 +53,9 @@ class _SignUpFormFieldsState extends State<SignUpFormFields> {
     return Form(
       key: context.read<SignUpCubit>().formKey,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
+        padding: EdgeInsets.symmetric(
+          vertical: 16.h,
+          horizontal: 20.w,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

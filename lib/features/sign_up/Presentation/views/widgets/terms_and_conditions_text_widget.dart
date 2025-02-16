@@ -1,12 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/bottom_sheet_child.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
+
+import '../../../../../core/global/Helpers/bottom_sheet_child.dart';
+import '../../../../../core/global/Helpers/extensions.dart';
+import '../../../../../core/global/Helpers/font_weight_helper.dart';
+import '../../../../../core/global/Helpers/functions.dart';
+import '../../../../../core/global/theming/app_text_styles.dart';
+import '../../../../../core/global/theming/color_manager.dart';
 
 class TermsAndConditionsTextWidget extends StatelessWidget {
   final bool isAccepted;

@@ -240,10 +240,10 @@ class __$$FailureImplCopyWithImpl<T, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? apiErrorModel = freezed,
+    Object? apiErrorModel = null,
   }) {
     return _then(_$FailureImpl<T>(
-      freezed == apiErrorModel
+      null == apiErrorModel
           ? _value.apiErrorModel
           : apiErrorModel // ignore: cast_nullable_to_non_nullable
               as ApiErrorModel,
@@ -269,13 +269,12 @@ class _$FailureImpl<T> implements Failure<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$FailureImpl<T> &&
-            const DeepCollectionEquality()
-                .equals(other.apiErrorModel, apiErrorModel));
+            (identical(other.apiErrorModel, apiErrorModel) ||
+                other.apiErrorModel == apiErrorModel));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(apiErrorModel));
+  int get hashCode => Object.hash(runtimeType, apiErrorModel);
 
   /// Create a copy of ApiResult
   /// with the given fields replaced by the non-null parameter values.
