@@ -1,7 +1,5 @@
 part of 'sign_up_cubit.dart';
 
-enum RequestStatus { initial, loading, success, failure }
-
 @immutable
 class SignUpState extends Equatable {
   final RequestStatus signupStatus;

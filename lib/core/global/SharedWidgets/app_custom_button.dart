@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
+
+import '../theming/app_text_styles.dart';
+import '../theming/color_manager.dart';
 
 class AppCustomButton extends StatelessWidget {
   const AppCustomButton({
@@ -8,10 +11,13 @@ class AppCustomButton extends StatelessWidget {
     required this.title,
     this.onPressed,
     this.isEnabled = false,
+    this.isLoading = false,
   });
   final String title;
   final void Function()? onPressed;
   final bool isEnabled;
+  final bool isLoading;
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -24,12 +30,21 @@ class AppCustomButton extends StatelessWidget {
         ),
         minimumSize: const Size(double.infinity, 50),
       ),
-      child: Text(
-        title,
-        style: AppTextStyles.font22MainBlueWeight700.copyWith(
-          color: Colors.white,
-        ),
-      ),
+      child: isLoading
+          ? Lottie.asset(
+              'assets/svgs/loading_lottie.json',
+              height: 50.h,
+              width: 50.w,
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+              repeat: true,
+            )
+          : Text(
+              title,
+              style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                color: Colors.white,
+              ),
+            ),
     );
   }
 }

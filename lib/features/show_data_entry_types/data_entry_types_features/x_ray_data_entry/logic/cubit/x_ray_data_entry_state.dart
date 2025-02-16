@@ -1,7 +1,5 @@
 part of 'x_ray_data_entry_cubit.dart';
 
-enum RequestStatus { initial, loading, success, failure }
-
 @immutable
 class XRayDataEntryState extends Equatable {
   final RequestStatus xRayDataEntryStatus;

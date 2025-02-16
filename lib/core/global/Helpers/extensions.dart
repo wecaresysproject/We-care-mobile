@@ -172,4 +172,5 @@ extension PaddingExtension on Widget {
 extension StringExtensions on String? {
   int get toInt => int.parse(this!);
   bool get isEmptyOrNull => this == '' || this == null;
+  firstLetterToUpperCase() => this![0].toUpperCase() + this!.substring(1);
 }
