@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
-import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/create_new_password/Presentation/views/create_new_password_view.dart';
-import 'package:we_care/features/forget_password/Presentation/views/forget_password_view.dart';
-import 'package:we_care/features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
-import 'package:we_care/features/login/Presentation/views/login_view.dart';
-import 'package:we_care/features/otp/Presentation/views/otp_view.dart';
-import 'package:we_care/features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
-import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
-import 'package:we_care/features/user_type/Presentation/views/user_type_view.dart';
-import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_view.dart';
+import '../global/SharedWidgets/bottom_nav_bar.dart';
+import '../global/app_strings.dart';
+import 'routes.dart';
+import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
+import '../../features/forget_password/Presentation/views/forget_password_view.dart';
+import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
+import '../../features/login/Presentation/views/login_view.dart';
+import '../../features/otp/Presentation/views/otp_view.dart';
+import '../../features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
+import '../../features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
+import '../../features/sign_up/Presentation/views/sign_up_view.dart';
+import '../../features/user_type/Presentation/views/user_type_view.dart';
+import '../../features/x_ray_view/Presentation/views/x_ray_view.dart';
 
 class AppRouter {
 //automatically recalled when we use Navigator in our screen
@@ -47,6 +47,7 @@ class AppRouter {
           builder: (context) => OtpView(
             isForgetPasswordFlow:
                 arguments?[AppStrings.isForgetPasswordFlowArgumentKey] ?? false,
+            phoneNumber: arguments?[AppStrings.phoneNumberArgumentKey] ?? "+20",
           ),
         );
       case Routes.createNewPasswordView:
