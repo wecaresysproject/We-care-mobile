@@ -32,7 +32,7 @@ class OtpCubit extends Cubit<OtpState> {
       ));
     }, failure: (error) {
       emit(state.copyWith(
-        message: error.message,
+        message: error.errors.first,
         otpStatus: RequestStatus.failure,
       ));
     });

@@ -10,12 +10,12 @@ part 'api_error_model.g.dart';
 // //! flutter pub run build_runner build
 @JsonSerializable()
 class ApiErrorModel {
-  final String? message;
-  final int? code;
+  final bool? success;
+  final List<String> errors;
 
   ApiErrorModel({
-    required this.message,
-    this.code,
+    this.success,
+    required this.errors,
   });
 
   factory ApiErrorModel.fromJson(Map<String, dynamic> json) =>

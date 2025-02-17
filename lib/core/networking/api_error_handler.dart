@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-
 import 'api_error_model.dart';
 
 class ApiErrorHandler {
@@ -7,36 +6,53 @@ class ApiErrorHandler {
     if (error is DioException) {
       switch (error.type) {
         case DioExceptionType.connectionError:
-          return ApiErrorModel(message: "Connection to server failed");
+          return ApiErrorModel(
+            errors: ["Connection to server failed"],
+          );
         case DioExceptionType.cancel:
-          return ApiErrorModel(message: "Request to the server was cancelled");
+          return ApiErrorModel(
+            errors: ["Request to the server was cancelled"],
+          );
         case DioExceptionType.connectionTimeout:
-          return ApiErrorModel(message: "Connection timeout with the server");
+          return ApiErrorModel(
+            errors: ["Connection timeout with the server"],
+          );
         case DioExceptionType.unknown:
           return ApiErrorModel(
-              message:
-                  "Connection to the server failed due to internet connection");
+            errors: [
+              "Connection to the server failed due to internet connection"
+            ],
+          );
         case DioExceptionType.receiveTimeout:
           return ApiErrorModel(
-              message: "Receive timeout in connection with the server");
+            errors: ["Receive timeout in connection with the server"],
+          );
         case DioExceptionType.badResponse:
           return _handleError(error.response?.data);
         case DioExceptionType.sendTimeout:
           return ApiErrorModel(
-              message: "Send timeout in connection with the server");
+            errors: ["Send timeout in connection with the server"],
+          );
         default:
-          return ApiErrorModel(message: "Something went wrong");
+          return ApiErrorModel(
+            errors: ["Something went wrong"],
+          );
       }
     } else {
-      return ApiErrorModel(message: "Unknown error occurred");
+      return ApiErrorModel(
+        errors: ["Unknown error occurred"],
+      );
     }
   }
-}
 
-ApiErrorModel _handleError(dynamic data) {
-  return ApiErrorModel(
-    message: data['message'] ?? "Unknown error occurred",
-    code: data['code'],
-    // errors: data['data'],
-  );
+  static ApiErrorModel _handleError(dynamic data) {
+    // Assuming the API response structure matches the ApiErrorModel
+    if (data is Map<String, dynamic>) {
+      return ApiErrorModel.fromJson(data);
+    } else {
+      return ApiErrorModel(
+        errors: ["Unknown error occurred"],
+      );
+    }
+  }
 }
