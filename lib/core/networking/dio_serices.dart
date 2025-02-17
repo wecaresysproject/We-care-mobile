@@ -40,8 +40,8 @@ class DioServices {
   static void addDioHeaders() async {
     dio?.options.headers = {
       'Accept': 'application/json',
-      'Authorization':
-          'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
+      // 'Authorization':
+      //     'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
     };
   }
 

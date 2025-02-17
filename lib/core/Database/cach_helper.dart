@@ -71,7 +71,7 @@ class CacheHelper {
   }
 
   /// Saves a [value] with a [key] in the FlutterSecureStorage.
-  static setSecuredString(String key, String value) async {
+  static Future<void> setSecuredString(String key, String value) async {
     const flutterSecureStorage = FlutterSecureStorage();
     debugPrint(
         "FlutterSecureStorage : setSecuredString with key : $key and value : $value");

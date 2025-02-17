@@ -25,34 +25,34 @@ class SignUpCubit extends Cubit<SignUpState> {
   final formKey = GlobalKey<FormState>();
 
   Future<void> emitSignupStates() async {
-    try {
-      emit(state.copyWith(signupStatus: RequestStatus.loading));
-      await _signupRepo.signup(
-        signupRequestBody: SignUpRequestBodyModel(
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          language:
-              AppStrings.arabicLang, //TODO: use the selected one from user
-          userType: UserTypes.patient.name.firstLetterToUpperCase(),
-          phoneNumber: "+20${phoneController.text}",
-          password: passwordController.text,
-          confirmPassword:
-              passwordConfirmationController.text, //! remove it later
-        ),
-      );
+    emit(state.copyWith(signupStatus: RequestStatus.loading));
+    final response = await _signupRepo.signup(
+      signupRequestBody: SignUpRequestBodyModel(
+        firstName: firstNameController.text,
+        lastName: lastNameController.text,
+        language: AppStrings.arabicLang, //TODO: use the selected one from user
+        userType: UserTypes.patient.name.firstLetterToUpperCase(),
+        phoneNumber: "+2${phoneController.text}",
+        password: passwordController.text,
+        confirmPassword:
+            passwordConfirmationController.text, //! remove it later
+      ),
+    );
+    response.when(success: (response) {
       emit(
         state.copyWith(
           signupStatus: RequestStatus.success,
+          successMessage: response.message,
         ),
       );
-    } catch (e) {
+    }, failure: (error) {
       emit(
         state.copyWith(
           signupStatus: RequestStatus.failure,
-          errorMessage: e.toString(),
+          errorMessage: error.message,
         ),
       );
-    }
+    });
   }
 
   @override

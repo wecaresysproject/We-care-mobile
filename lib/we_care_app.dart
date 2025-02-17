@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/core/routing/app_router.dart';
-import 'package:we_care/features/sign_up/Presentation/views/sign_up_view.dart';
-import 'package:we_care/generated/l10n.dart';
+import 'core/global/Helpers/functions.dart';
+import 'core/global/app_strings.dart';
+import 'core/global/theming/color_manager.dart';
+import 'core/routing/app_router.dart';
+import 'features/sign_up/Presentation/views/sign_up_view.dart';
+import 'generated/l10n.dart';
 
 class WeCareApp extends StatelessWidget {
   const WeCareApp({super.key, required this.appRouter});

@@ -10,7 +10,7 @@ class SignUpResponseModel {
     required this.userData,
   });
   @JsonKey(name: "success")
-  String isSuccess;
+  bool isSuccess;
   String message;
 
   @JsonKey(name: "data")
@@ -28,7 +28,7 @@ class UserData {
     required this.lastName,
     required this.phoneNumber,
   });
-  String id;
+  int id;
 
   @JsonKey(name: "firstname")
   String firstName;

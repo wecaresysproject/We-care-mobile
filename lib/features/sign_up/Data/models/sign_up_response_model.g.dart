@@ -8,7 +8,7 @@ part of 'sign_up_response_model.dart';
 
 SignUpResponseModel _$SignUpResponseModelFromJson(Map<String, dynamic> json) =>
     SignUpResponseModel(
-      isSuccess: json['success'] as String,
+      isSuccess: json['success'] as bool,
       message: json['message'] as String,
       userData: UserData.fromJson(json['data'] as Map<String, dynamic>),
     );
@@ -22,7 +22,7 @@ Map<String, dynamic> _$SignUpResponseModelToJson(
     };
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
-      id: json['id'] as String,
+      id: (json['id'] as num).toInt(),
       firstName: json['firstname'] as String,
       lastName: json['lastname'] as String,
       phoneNumber: json['phone'] as String,
