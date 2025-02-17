@@ -5,8 +5,8 @@ import '../../../core/Database/cach_helper.dart';
 import '../../../core/global/Helpers/app_enums.dart';
 import '../../../core/global/app_strings.dart';
 import '../../../core/networking/auth_api_constants.dart';
-import '../data/models/verify_otp_request_body.dart';
-import '../data/repo/otp_repository.dart';
+import '../Data/models/verify_otp_request_body_model.dart';
+import '../Data/repo/otp_repository.dart';
 import 'otp_state.dart';
 
 class OtpCubit extends Cubit<OtpState> {

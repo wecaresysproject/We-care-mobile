@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/routing/app_router.dart';
-import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
-import 'package:we_care/we_care_app.dart';
+
+import 'core/Database/cach_helper.dart';
+import 'core/di/dependency_injection.dart';
+import 'core/global/Helpers/extensions.dart';
+import 'core/networking/auth_api_constants.dart';
+import 'core/routing/app_router.dart';
+import 'features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
+import 'we_care_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +28,7 @@ Future<void> main() async {
       //     Brightness.dark, // Dark icons for navigation bar
     ),
   );
-
+  await checkIfLoggedInUser();
   runApp(
     DevicePreview(
       enabled: kDebugMode,
@@ -41,4 +45,14 @@ Future<void> main() async {
       ),
     ),
   );
+}
+
+Future<void> checkIfLoggedInUser() async {
+  String? userToken =
+      await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey);
+  if (!userToken.isEmptyOrNull) {
+    isLoggedInUser = true;
+  } else {
+    isLoggedInUser = false;
+  }
 }

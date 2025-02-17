@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-part 'verify_otp_request_body.g.dart';
+
+part 'verify_otp_request_body_model.g.dart';
 
 @JsonSerializable()
 class VerifyOtpRequestBodyModel {

@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:we_care/core/networking/auth_api_constants.dart';
-import 'package:we_care/features/sign_up/Data/models/sign_up_request_body_model.dart';
-import 'package:we_care/features/sign_up/Data/models/sign_up_response_model.dart';
 
-import '../../features/otp/data/models/verify_otp_request_body.dart';
-import '../../features/otp/data/models/verify_otp_response_model.dart';
+import '../../features/otp/Data/models/verify_otp_request_body_model.dart';
+import '../../features/otp/Data/models/verify_otp_response_model.dart';
+import '../../features/sign_up/Data/models/sign_up_request_body_model.dart';
+import '../../features/sign_up/Data/models/sign_up_response_model.dart';
+import 'auth_api_constants.dart';
 
 part 'auth_service.g.dart';
 

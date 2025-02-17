@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/generated/l10n.dart';
+
+import '../../../generated/l10n.dart';
 
 extension BuildContextOperations on BuildContext {
   S get translate => S.of(this);
@@ -172,5 +173,6 @@ extension PaddingExtension on Widget {
 extension StringExtensions on String? {
   int get toInt => int.parse(this!);
   bool get isEmptyOrNull => this == '' || this == null;
-  firstLetterToUpperCase() => this![0].toUpperCase() + this!.substring(1);
+  String get firstLetterToUpperCase =>
+      this![0].toUpperCase() + this!.substring(1);
 }

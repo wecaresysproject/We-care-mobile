@@ -4,8 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:we_care/core/Database/cach_helper.dart';
-import 'package:we_care/core/networking/auth_api_constants.dart';
 
 class DioServices {
   /// private constructor as I don't want to allow creating an instance of this class

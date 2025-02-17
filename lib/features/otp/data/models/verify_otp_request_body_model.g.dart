@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'verify_otp_request_body.dart';
+part of 'verify_otp_request_body_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
