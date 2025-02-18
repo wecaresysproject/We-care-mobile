@@ -1,4 +1,5 @@
 {
+    "@@locale": "ar",
     "createAccount": "إنشاء حساب",
     "firstName": "الاسم الأول",
     "familyName": "اسم العائلة",
