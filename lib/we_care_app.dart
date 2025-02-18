@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'core/global/Helpers/functions.dart';
 import 'core/global/app_strings.dart';
 import 'core/global/theming/color_manager.dart';
+import 'core/networking/auth_api_constants.dart';
 import 'core/routing/app_router.dart';
+import 'core/routing/routes.dart';
 import 'features/sign_up/Presentation/views/sign_up_view.dart';
 import 'generated/l10n.dart';
 
@@ -39,7 +42,7 @@ class WeCareApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          // initialRoute: , ///checkAppFirstLogin() ? SignUpRoute : HomePageRoute
+          initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
           theme: ThemeData(
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file
@@ -60,7 +63,7 @@ class WeCareApp extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsManager.mainDarkBlue,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
               ),
             ),

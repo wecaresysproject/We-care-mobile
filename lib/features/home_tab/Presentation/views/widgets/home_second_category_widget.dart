@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
+
+import '../../../../../core/global/theming/app_text_styles.dart';
+import '../../../../../core/global/theming/color_manager.dart';
 
 class HomeSecondCategoryItem extends StatelessWidget {
   const HomeSecondCategoryItem({
@@ -54,6 +55,8 @@ class HomeSecondCategoryItem extends StatelessWidget {
           Text(
             categoryName,
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
             style: AppTextStyles.font22WhiteWeight600.copyWith(
               fontSize: 14.sp,
               color: AppColorsManager.textColor,

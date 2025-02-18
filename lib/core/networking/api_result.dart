@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:we_care/core/networking/api_error_model.dart';
+
+import 'api_error_model.dart';
 
 part 'api_result.freezed.dart';
 

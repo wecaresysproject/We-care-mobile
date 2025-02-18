@@ -1,5 +1,8 @@
+bool isLoggedInUser = false;
+
 class AuthApiConstants {
   static const userTokenKey = "userTokenKey";
+  static const isUserLoggedIn = "isUserLoggedIn";
   static const baseUrl = "http://147.93.57.70/api/v1/auth";
   static const signUpEndPoint = "/register";
   static const resendOtpEndPoint = "/resend-otp";

@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/global/Helpers/app_enums.dart';
+
 part 'create_new_password_state.dart';
 
 class CreateNewPasswordCubit extends Cubit<CreateNewPasswordState> {

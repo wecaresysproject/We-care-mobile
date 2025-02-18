@@ -31,7 +31,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         firstName: firstNameController.text,
         lastName: lastNameController.text,
         language: AppStrings.arabicLang, //TODO: use the selected one from user
-        userType: UserTypes.patient.name.firstLetterToUpperCase(),
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
         phoneNumber: "+2${phoneController.text}",
         password: passwordController.text,
         confirmPassword:
