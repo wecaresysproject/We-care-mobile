@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/otp/Data/models/resend_otp_request_body.dart';
+import 'package:we_care/features/otp/Data/models/resend_otp_response_model.dart';
 
 import '../../features/login/Data/models/login_request_body_model.dart';
 import '../../features/login/Data/models/login_response_model.dart';
@@ -27,5 +29,10 @@ abstract class AuthApiServices {
   @POST(AuthApiConstants.loginEndPoint)
   Future<LoginResponseModel> login(
     @Body() LoginRequestBodyModel loginRequestBody,
+  );
+
+  @POST(AuthApiConstants.resendOtpEndPoint)
+  Future<ResendOtpResponseModel> resendOtp(
+    @Body() ResendOtpRequestBody signupRequestBody,
   );
 }
