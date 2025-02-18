@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../features/login/Data/models/login_request_body_model.dart';
+import '../../features/login/Data/models/login_response_model.dart';
 import '../../features/otp/Data/models/verify_otp_request_body_model.dart';
 import '../../features/otp/Data/models/verify_otp_response_model.dart';
 import '../../features/sign_up/Data/models/sign_up_request_body_model.dart';
@@ -20,6 +22,10 @@ abstract class AuthApiServices {
 
   @POST(AuthApiConstants.verifyOtpEndPoint)
   Future<VerifyOtpResponseModel> verifyOtp(
-    @Body() VerifyOtpRequestBodyModel signupRequestBody,
+    @Body() VerifyOtpRequestBodyModel verifyOtpRequestBody,
+  );
+  @POST(AuthApiConstants.loginEndPoint)
+  Future<LoginResponseModel> login(
+    @Body() LoginRequestBodyModel loginRequestBody,
   );
 }

@@ -4,7 +4,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
-import '../../features/login/Presentation/view_models/cubit/cubit/login_cubit.dart';
+import '../../features/login/Data/Repostory/login_repo.dart';
+import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/otp/Data/repo/otp_repository.dart';
 import '../../features/otp/logic/otp_cubit.dart';
 import '../../features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
@@ -32,7 +33,9 @@ void setupAppCubits() {
     ),
   );
   getIt.registerFactory<LoginCubit>(
-    () => LoginCubit(),
+    () => LoginCubit(
+      getIt<LoginRepo>(),
+    ),
   );
   getIt.registerFactory<ForgetPasswordCubit>(
     () => ForgetPasswordCubit(),
@@ -60,6 +63,11 @@ void setupAppRepos() {
 
   getIt.registerLazySingleton<OtpRepository>(
     () => OtpRepository(
+      getIt<AuthApiServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<LoginRepo>(
+    () => LoginRepo(
       getIt<AuthApiServices>(),
     ),
   );

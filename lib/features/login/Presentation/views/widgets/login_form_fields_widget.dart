@@ -2,15 +2,16 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/app_regex.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/login/Presentation/view_models/cubit/cubit/login_cubit.dart';
-import 'package:we_care/generated/l10n.dart';
+
+import '../../../../../core/global/Helpers/app_regex.dart';
+import '../../../../../core/global/Helpers/extensions.dart';
+import '../../../../../core/global/Helpers/functions.dart';
+import '../../../../../core/global/SharedWidgets/custom_textfield.dart';
+import '../../../../../core/global/theming/app_text_styles.dart';
+import '../../../../../core/global/theming/color_manager.dart';
+import '../../../../../core/routing/routes.dart';
+import '../../../../../generated/l10n.dart';
+import '../../../logic/cubit/login_cubit.dart';
 
 class LoginFormFields extends StatelessWidget {
   const LoginFormFields({super.key});
@@ -52,7 +53,11 @@ class LoginFormFields extends StatelessWidget {
                     ),
                     child: CountryCodePicker(
                       flagWidth: 20.w,
-                      onChanged: (value) {},
+                      onChanged: (countryCode) {
+                        context
+                            .read<LoginCubit>()
+                            .onDialCodeChanged(countryCode);
+                      },
                       margin: EdgeInsets.only(
                         left: 0.w,
                       ),
@@ -66,24 +71,30 @@ class LoginFormFields extends StatelessWidget {
                   ),
                 ),
                 horizontalSpacing(10),
-                Expanded(
-                  flex: 3,
-                  child: CustomTextField(
-                    controller: context.read<LoginCubit>().phoneController,
-                    validator: (phoneNumber) {
-                      if (phoneNumber.isEmptyOrNull) {
-                        return S.of(context).pleaseEnterYourPhoneNum;
-                      }
-                      if (!AppRegex.isPhoneNumberValid(phoneNumber!)) {
-                        return S.of(context).pleaseEnterYourCorrentPhoneNum;
-                      }
-                      // return null; // ✅ No error, validation passes
-                    },
-                    hintText: S.of(context).enterMobileNumber,
-                    isPassword: false,
-                    showSuffixIcon: false,
-                    keyboardType: TextInputType.number,
-                  ),
+                BlocBuilder<LoginCubit, LoginState>(
+                  buildWhen: (previous, current) =>
+                      previous.dialCode != current.dialCode,
+                  builder: (context, state) {
+                    return Expanded(
+                      flex: 3,
+                      child: CustomTextField(
+                        controller: context.read<LoginCubit>().phoneController,
+                        validator: (phoneNumber) {
+                          if (phoneNumber.isEmptyOrNull) {
+                            return S.of(context).pleaseEnterYourPhoneNum;
+                          }
+                          if (!AppRegex.isPhoneNumberValid(phoneNumber!)) {
+                            return S.of(context).pleaseEnterYourCorrentPhoneNum;
+                          }
+                          // return null; // ✅ No error, validation passes
+                        },
+                        hintText: state.dialCode,
+                        isPassword: false,
+                        showSuffixIcon: false,
+                        keyboardType: TextInputType.number,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

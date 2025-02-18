@@ -5,6 +5,9 @@ import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import '../Database/cach_helper.dart';
+import 'auth_api_constants.dart';
+
 class DioServices {
   /// private constructor as I don't want to allow creating an instance of this class
   DioServices._();
@@ -38,8 +41,9 @@ class DioServices {
   static void addDioHeaders() async {
     dio?.options.headers = {
       'Accept': 'application/json',
-      // 'Authorization':
-      //     'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
+      'Content-Type': 'application/json',
+      'Authorization':
+          'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
     };
   }
 

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/Helpers/custom_rich_text.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
-import 'package:we_care/core/global/SharedWidgets/design_logo_widget.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/login/Presentation/view_models/cubit/cubit/login_cubit.dart';
-import 'package:we_care/features/login/Presentation/views/widgets/login_form_fields_widget.dart';
-import 'package:we_care/generated/l10n.dart';
+
+import '../../../../core/di/dependency_injection.dart';
+import '../../../../core/global/Helpers/app_enums.dart';
+import '../../../../core/global/Helpers/app_toasts.dart';
+import '../../../../core/global/Helpers/custom_rich_text.dart';
+import '../../../../core/global/Helpers/extensions.dart';
+import '../../../../core/global/Helpers/functions.dart';
+import '../../../../core/global/SharedWidgets/app_custom_button.dart';
+import '../../../../core/global/SharedWidgets/design_logo_widget.dart';
+import '../../../../core/global/theming/app_text_styles.dart';
+import '../../../../core/routing/routes.dart';
+import '../../../../generated/l10n.dart';
+import '../../logic/cubit/login_cubit.dart';
+import 'widgets/login_form_fields_widget.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -43,19 +46,36 @@ class _LoginViewState extends State<LoginView> {
                 LoginFormFields(),
                 verticalSpacing(88),
                 // Submit Button
-                AppCustomButton(
-                  title: S.of(context).login,
-                  isEnabled: true,
-                  onPressed: () {
-                    if (context
-                        .read<LoginCubit>()
-                        .formKey
-                        .currentState!
-                        .validate()) {
-                      context.read<LoginCubit>().emitLoginStates();
-
-                      context.pushNamed(Routes.otpView);
+                BlocConsumer<LoginCubit, LoginState>(
+                  listenWhen: (prev, curr) =>
+                      curr.loginStatus == RequestStatus.failure ||
+                      curr.loginStatus == RequestStatus.success,
+                  listener: (context, state) async {
+                    if (state.loginStatus == RequestStatus.success) {
+                      await showSuccess(state.message);
+                      if (!context.mounted) return;
+                      await context.pushNamed(
+                        Routes.bottomNavBar,
+                      );
+                    } else if (state.loginStatus == RequestStatus.failure) {
+                      await showError(state.message);
                     }
+                  },
+                  builder: (context, state) {
+                    return AppCustomButton(
+                      isLoading: state.loginStatus == RequestStatus.loading,
+                      title: S.of(context).login,
+                      isEnabled: true,
+                      onPressed: () async {
+                        if (context
+                            .read<LoginCubit>()
+                            .formKey
+                            .currentState!
+                            .validate()) {
+                          await context.read<LoginCubit>().emitLoginStates();
+                        }
+                      },
+                    );
                   },
                 ).paddingSymmetricHorizontal(
                   16,
