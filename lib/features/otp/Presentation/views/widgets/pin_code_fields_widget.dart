@@ -6,6 +6,7 @@ import '../../../../../core/global/Helpers/app_enums.dart';
 import '../../../../../core/global/Helpers/app_toasts.dart';
 import '../../../../../core/global/Helpers/extensions.dart';
 import '../../../../../core/global/Helpers/font_weight_helper.dart';
+import '../../../../../core/global/app_strings.dart';
 import '../../../../../core/global/theming/app_text_styles.dart';
 import '../../../../../core/global/theming/color_manager.dart';
 import '../../../../../core/routing/routes.dart';
@@ -35,7 +36,9 @@ class PinCodeFieldsWidget extends StatelessWidget {
         await showSuccess(state.message);
         if (!context.mounted) return;
         if (isForgetPasswordFlow) {
-          await context.pushNamed(Routes.createNewPasswordView);
+          await context.pushNamed(Routes.createNewPasswordView, arguments: {
+            AppStrings.phoneNumberArgumentKey: phoneNumber,
+          });
         } else {
           await context.pushNamedAndRemoveUntil(
             Routes.bottomNavBar,

@@ -13,18 +13,29 @@ import 'package:we_care/features/create_new_password/Presentation/views/widgets/
 import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
+import '../../../../core/global/Helpers/app_enums.dart';
+import '../../../../core/global/Helpers/app_toasts.dart';
+
 class CreateNewPasswordView extends StatefulWidget {
-  const CreateNewPasswordView({super.key});
+  final String phoneNumber;
+  const CreateNewPasswordView({super.key, required this.phoneNumber});
 
   @override
   State<CreateNewPasswordView> createState() => _CreateNewPasswordViewState();
 }
 
 class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
+  late CreateNewPasswordCubit createNewPasswordCubit;
+  @override
+  void initState() {
+    createNewPasswordCubit = getIt.get<CreateNewPasswordCubit>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CreateNewPasswordCubit>(
-      create: (context) => getIt<CreateNewPasswordCubit>(),
+      create: (context) => createNewPasswordCubit,
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -47,22 +58,31 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                 CreateNewPasswordFormFields(),
 
                 // Submit Button
-                AppCustomButton(
-                  title: S.of(context).createAccount,
-                  isEnabled: true,
-                  onPressed: () async {
-                    if (context
-                        .read<SignUpCubit>()
-                        .formKey
-                        .currentState!
-                        .validate()) {
-                      await context.read<SignUpCubit>().emitSignupStates();
-
+                BlocConsumer<CreateNewPasswordCubit, CreateNewPasswordState>(
+                  listener: (context, state) async {
+                    if (state.createNewPasswordStatus ==
+                        RequestStatus.success) {
+                      await showSuccess(state.message!);
                       if (!context.mounted) return;
-
-                      await context.pushNamed(Routes.bottomNavBar);
+                      await context.pushNamed(
+                        Routes.loginView,
+                      );
+                    } else if (state.createNewPasswordStatus ==
+                        RequestStatus.failure) {
+                      await showError(state.message!);
                     }
                   },
+                  builder: (context, state) => AppCustomButton(
+                    title: S.of(context).createAccount,
+                    isEnabled: true,
+                    isLoading:
+                        state.createNewPasswordStatus == RequestStatus.loading,
+                    onPressed: () async {
+                      createNewPasswordCubit.emitCreateNewPasswordStates(
+                        widget.phoneNumber,
+                      );
+                    },
+                  ),
                 ).paddingFrom(
                   top: context.screenHeight * 0.19,
                 ),

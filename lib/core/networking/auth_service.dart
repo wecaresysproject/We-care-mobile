@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/create_new_password/Data/models/create_new_password_request_body.dart';
+import 'package:we_care/features/create_new_password/Data/models/create_new_password_response_model.dart';
 import 'package:we_care/features/otp/Data/models/resend_otp_request_body.dart';
 import 'package:we_care/features/otp/Data/models/resend_otp_response_model.dart';
 
@@ -17,8 +19,7 @@ part 'auth_service.g.dart';
 
 @RestApi(baseUrl: AuthApiConstants.baseUrl)
 abstract class AuthApiServices {
-  factory AuthApiServices(Dio dio) = _AuthApiServices;
-
+  factory AuthApiServices(Dio dio, {String? baseUrl}) = _AuthApiServices;
   @POST(AuthApiConstants.signUpEndPoint)
   Future<SignUpResponseModel> signup(
     @Body() SignUpRequestBodyModel signupRequestBody,
@@ -35,8 +36,14 @@ abstract class AuthApiServices {
 
   @POST(AuthApiConstants.resendOtpEndPoint)
   Future<ResendOtpResponseModel> resendOtp(
-    @Body() ResendOtpRequestBody signupRequestBody,
+    @Body() ResendOtpRequestBody resendOtpRequestBody,
   );
+
+  @PUT(AuthApiConstants.createNewPasswordEndPoint)
+  Future<CreateNewPasswordResponseModel> createNewPassword(
+    @Body() CreateNewPasswordRequestBody createNewPasswordRequestBody,
+  );
+
   @POST(AuthApiConstants.forgotPasswordEndPoint)
   Future<ForgetPasswordResponseModel> forgetPassword(
     @Body() ForgetPasswordRequestBodyModel forgetPasswordRequestBody,

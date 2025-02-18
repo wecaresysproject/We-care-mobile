@@ -53,7 +53,9 @@ class AppRouter {
         );
       case Routes.createNewPasswordView:
         return MaterialPageRoute(
-          builder: (context) => CreateNewPasswordView(),
+          builder: (context) => CreateNewPasswordView(
+            phoneNumber: arguments?[AppStrings.phoneNumberArgumentKey] ?? "+20",
+          ),
         );
       case Routes.bottomNavBar:
         return MaterialPageRoute(
