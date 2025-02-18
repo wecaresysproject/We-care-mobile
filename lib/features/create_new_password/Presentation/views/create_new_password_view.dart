@@ -10,7 +10,6 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import 'package:we_care/features/create_new_password/Presentation/views/widgets/create_new_password_form_fields_widget.dart';
-import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
 import '../../../../core/global/Helpers/app_enums.dart';
@@ -55,6 +54,7 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
                   S.of(context).create_new_password,
                   style: AppTextStyles.font22MainBlueWeight700,
                 ),
+
                 CreateNewPasswordFormFields(),
 
                 // Submit Button

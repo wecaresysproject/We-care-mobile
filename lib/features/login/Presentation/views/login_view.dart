@@ -26,7 +26,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginCubit>(
-      create: (context) => getIt<LoginCubit>(),
+      create: (_) => getIt<LoginCubit>(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -87,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
                   normalText: S.of(context).dontHaveAccount,
                   highlightedText: S.of(context).createAccount,
                   onTap: () {
-                    context.pop();
+                    context.pushNamed(Routes.signUpView);
                   },
                 ),
                 verticalSpacing(33),
