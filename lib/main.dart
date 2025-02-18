@@ -2,11 +2,9 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/routing/app_router.dart';
-import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
@@ -28,16 +26,8 @@ Future<void> main() async {
   runApp(
     DevicePreview(
       enabled: kDebugMode,
-      builder: (context) => MultiBlocProvider(
-        //!TODO: remove MultiBlocProvider later from main
-        providers: [
-          BlocProvider<ForgetPasswordCubit>(
-            create: (_) => getIt<ForgetPasswordCubit>(),
-          ),
-        ],
-        child: WeCareApp(
-          appRouter: AppRouter(),
-        ),
+      builder: (context) => WeCareApp(
+        appRouter: AppRouter(),
       ),
     ),
   );

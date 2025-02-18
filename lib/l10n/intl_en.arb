@@ -1,4 +1,5 @@
 {
+        "@@locale": "en",
         "createAccount": "Create Account",
         "firstName": "First Name",
         "familyName": "Family Name",
