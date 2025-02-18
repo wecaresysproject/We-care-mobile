@@ -2,14 +2,16 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/app_regex.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
-import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
-import 'package:we_care/generated/l10n.dart';
+
+import '../../../../../core/global/Helpers/app_regex.dart';
+import '../../../../../core/global/Helpers/extensions.dart';
+import '../../../../../core/global/Helpers/functions.dart';
+import '../../../../../core/global/SharedWidgets/custom_textfield.dart';
+import '../../../../../core/global/theming/app_text_styles.dart';
+import '../../../../../core/global/theming/color_manager.dart';
+import '../../../../../generated/l10n.dart';
+import '../../../../forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
+import '../../../../forget_password/Presentation/view_models/cubit/forget_password_state.dart';
 
 class ForgetPasswordFormFields extends StatelessWidget {
   const ForgetPasswordFormFields({super.key});
@@ -43,7 +45,11 @@ class ForgetPasswordFormFields extends StatelessWidget {
                   ),
                   child: CountryCodePicker(
                     flagWidth: 20.w,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      context
+                          .read<ForgetPasswordCubit>()
+                          .onDialCodeChanged(value);
+                    },
                     margin: EdgeInsets.only(
                       left: 0.w,
                     ),
@@ -56,24 +62,28 @@ class ForgetPasswordFormFields extends StatelessWidget {
                 ),
               ),
               horizontalSpacing(10),
-              Expanded(
-                flex: 3,
-                child: CustomTextField(
-                  controller:
-                      context.read<ForgetPasswordCubit>().phoneController,
-                  validator: (phoneNumber) {
-                    if (phoneNumber!.isEmptyOrNull) {
-                      return S.of(context).pleaseEnterYourPhoneNum;
-                    }
-                    if (!AppRegex.isPhoneNumberValid(phoneNumber)) {
-                      return S.of(context).pleaseEnterYourCorrentPhoneNum;
-                    }
-                    // return null; // ✅ No error, validation passes
-                  },
-                  hintText: S.of(context).enterMobileNumber,
-                  isPassword: false,
-                  showSuffixIcon: false,
-                  keyboardType: TextInputType.number,
+              BlocBuilder<ForgetPasswordCubit, ForgetPasswordState>(
+                buildWhen: (previous, current) =>
+                    previous.dialCode != current.dialCode,
+                builder: (context, state) => Expanded(
+                  flex: 3,
+                  child: CustomTextField(
+                    controller:
+                        context.read<ForgetPasswordCubit>().phoneController,
+                    validator: (phoneNumber) {
+                      if (phoneNumber!.isEmptyOrNull) {
+                        return S.of(context).pleaseEnterYourPhoneNum;
+                      }
+                      if (!AppRegex.isPhoneNumberValid(phoneNumber)) {
+                        return S.of(context).pleaseEnterYourCorrentPhoneNum;
+                      }
+                      // return null; // ✅ No error, validation passes
+                    },
+                    hintText: state.dialCode,
+                    isPassword: false,
+                    showSuffixIcon: false,
+                    keyboardType: TextInputType.number,
+                  ),
                 ),
               ),
             ],

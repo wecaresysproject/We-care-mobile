@@ -44,6 +44,9 @@ linux/flutter/generated_plugins.cmake
 macos/Flutter/GeneratedPluginRegistrant.swift
 windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugins.cmake
+# Ignore generated Dart files
+*.g.dart
+*.freezed.dart
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
