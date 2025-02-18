@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
 import '../../../../../core/global/Helpers/app_enums.dart';
 import '../../../../../core/global/Helpers/app_toasts.dart';
 import '../../../../../core/global/Helpers/extensions.dart';
@@ -36,9 +37,13 @@ class PinCodeFieldsWidget extends StatelessWidget {
         await showSuccess(state.message);
         if (!context.mounted) return;
         if (isForgetPasswordFlow) {
-          await context.pushNamed(Routes.createNewPasswordView, arguments: {
-            AppStrings.phoneNumberArgumentKey: phoneNumber,
-          });
+          await context.pushNamedAndRemoveUntil(
+            Routes.createNewPasswordView,
+            predicate: (Route<dynamic> route) => false,
+            arguments: {
+              AppStrings.phoneNumberArgumentKey: phoneNumber,
+            },
+          );
         } else {
           await context.pushNamedAndRemoveUntil(
             Routes.bottomNavBar,
@@ -83,15 +88,10 @@ class PinCodeFieldsWidget extends StatelessWidget {
           enableActiveFill: false,
           onChanged: (value) {},
           onCompleted: (value) async {
-            await onCompleted(context);
+            await context.read<OtpCubit>().verifyOtp(phoneNumber);
           },
         ),
       ),
     );
-  }
-
-  Future<void> onCompleted(BuildContext context) async {
-    final OtpCubit otpCubit = context.read<OtpCubit>();
-    await otpCubit.verifyOtp(phoneNumber);
   }
 }

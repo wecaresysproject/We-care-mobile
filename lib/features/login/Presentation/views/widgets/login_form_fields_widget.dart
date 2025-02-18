@@ -15,7 +15,10 @@ import '../../../logic/cubit/login_cubit.dart';
 
 class LoginFormFields extends StatelessWidget {
   const LoginFormFields({super.key});
-
+  final passWordMustContainEnglish =
+      "The password must contain at least one uppercase letter, one number, and one special character.";
+  final passordMustContainArabic =
+      "كلمة المرور يجب أن تحتوي على حرف كبير، رقم، ورمز خاص على الأقل.";
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -117,9 +120,9 @@ class LoginFormFields extends StatelessWidget {
                 if (!AppRegex.hasSpecialCharacter(password!) ||
                     !AppRegex.lengthBetween8And15(password) ||
                     !AppRegex.hasNumber(password)) {
-                  return S
-                      .of(context)
-                      .passwordMustContain; // ✅ Short & clear message
+                  return isArabic()
+                      ? passordMustContainArabic
+                      : passWordMustContainEnglish;
                 }
                 return null; // ✅ No error
               },

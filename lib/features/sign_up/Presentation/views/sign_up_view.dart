@@ -66,10 +66,7 @@ class _SignUpViewState extends State<SignUpView> {
                   normalText: "${context.translate.alreadyHaveAccount} ",
                   highlightedText: S.of(context).login,
                   onTap: () async {
-                    await context.pushNamed(Routes.otpView, arguments: {
-                      'phoneNumber':
-                          context.read<SignUpCubit>().phoneController.text
-                    });
+                    await context.pushNamed(Routes.loginView);
                   },
                 ),
                 verticalSpacing(33),
