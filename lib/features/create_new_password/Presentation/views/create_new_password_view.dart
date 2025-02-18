@@ -13,8 +13,12 @@ import 'package:we_care/features/create_new_password/Presentation/views/widgets/
 import 'package:we_care/features/sign_up/logic/sign_up_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
+import '../../../../core/global/Helpers/app_enums.dart';
+import '../../../../core/global/Helpers/app_toasts.dart';
+
 class CreateNewPasswordView extends StatefulWidget {
-  const CreateNewPasswordView({super.key});
+  final String phoneNumber;
+  const CreateNewPasswordView({super.key, required this.phoneNumber});
 
   @override
   State<CreateNewPasswordView> createState() => _CreateNewPasswordViewState();
@@ -25,49 +29,56 @@ class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
   Widget build(BuildContext context) {
     return BlocProvider<CreateNewPasswordCubit>(
       create: (context) => getIt<CreateNewPasswordCubit>(),
-      child: Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 20,
-          ),
-          physics: const BouncingScrollPhysics(),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                verticalSpacing(8),
-                DesignLogoWidget(),
-                verticalSpacing(16),
-                Text(
-                  S.of(context).create_new_password,
-                  style: AppTextStyles.font22MainBlueWeight700,
-                ),
-                CreateNewPasswordFormFields(),
+      child: BlocListener<CreateNewPasswordCubit, CreateNewPasswordState>(
+        listener: (context, state) async {
+          if (state.createNewPasswordStatus == RequestStatus.success) {
+            await showSuccess(state.message!);
+            if (!context.mounted) return;
+            context.pushNamed(
+              Routes.loginView,
+            );
+          } else if (state.createNewPasswordStatus == RequestStatus.failure) {
+            showError(state.message!);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 20,
+            ),
+            physics: const BouncingScrollPhysics(),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  verticalSpacing(8),
+                  DesignLogoWidget(),
+                  verticalSpacing(16),
+                  Text(
+                    S.of(context).create_new_password,
+                    style: AppTextStyles.font22MainBlueWeight700,
+                  ),
+                  CreateNewPasswordFormFields(),
 
-                // Submit Button
-                AppCustomButton(
-                  title: S.of(context).createAccount,
-                  isEnabled: true,
-                  onPressed: () async {
-                    if (context
-                        .read<SignUpCubit>()
-                        .formKey
-                        .currentState!
-                        .validate()) {
-                      await context.read<SignUpCubit>().emitSignupStates();
-
-                      if (!context.mounted) return;
-
-                      await context.pushNamed(Routes.bottomNavBar);
-                    }
-                  },
-                ).paddingFrom(
-                  top: context.screenHeight * 0.19,
-                ),
-                verticalSpacing(24),
-              ],
+                  // Submit Button
+                  AppCustomButton(
+                    title: S.of(context).createAccount,
+                    isEnabled: true,
+                    onPressed: () async {
+                      context
+                          .read<CreateNewPasswordCubit>()
+                          .emitCreateNewPasswordStates(
+                            widget.phoneNumber,
+                          );
+                    },
+                  ).paddingFrom(
+                    top: context.screenHeight * 0.19,
+                  ),
+                  verticalSpacing(24),
+                ],
+              ),
             ),
           ),
         ),

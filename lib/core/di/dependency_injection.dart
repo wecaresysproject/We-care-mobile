@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Data/Repostory/forget_password_repo.dart';
+import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import '../../features/login/Data/Repostory/login_repo.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
@@ -44,7 +45,9 @@ void setupAppCubits() {
     ),
   );
   getIt.registerFactory<CreateNewPasswordCubit>(
-    () => CreateNewPasswordCubit(),
+    () => CreateNewPasswordCubit(
+      getIt<CreateNewPasswordRepo>(),
+    ),
   );
   getIt.registerFactory<XRayDataEntryCubit>(
     () => XRayDataEntryCubit(),
@@ -76,6 +79,12 @@ void setupAppRepos() {
   );
   getIt.registerLazySingleton<ForgetPasswordRepo>(
     () => ForgetPasswordRepo(
+      getIt<AuthApiServices>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CreateNewPasswordRepo>(
+    () => CreateNewPasswordRepo(
       getIt<AuthApiServices>(),
     ),
   );

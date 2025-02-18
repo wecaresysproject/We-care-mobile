@@ -3,40 +3,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/global/Helpers/app_enums.dart';
+import '../../../../../core/global/app_strings.dart';
+import '../../../data/models/create_new_password_request_body.dart';
+import '../../../data/repo/create_new_password_repo.dart';
 
 part 'create_new_password_state.dart';
 
 class CreateNewPasswordCubit extends Cubit<CreateNewPasswordState> {
-  CreateNewPasswordCubit() : super(CreateNewPasswordState.intialState());
+  final CreateNewPasswordRepo _createNewPasswordRepo;
+  CreateNewPasswordCubit(this._createNewPasswordRepo)
+      : super(CreateNewPasswordState.intialState());
 
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordConfirmationController =
       TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  void emitCreateNewPasswordStates() async {
-    try {
-      emit(state.copyWith(createNewPasswordStatus: RequestStatus.loading));
+  void emitCreateNewPasswordStates(final String phoneNumber) async {
+    emit(state.copyWith(createNewPasswordStatus: RequestStatus.loading));
 
-      // Simulating API request delay
-      await Future.delayed(Duration(seconds: 2));
+    final response = await _createNewPasswordRepo.createNewPassword(
+      CreateNewPasswordRequestBody(
+        phoneNumber: phoneNumber,
+        newPassword: passwordController.text,
+        confirmPassword: passwordConfirmationController.text,
+        language: AppStrings.arabicLang,
+      ),
+    );
 
-      // Example condition (Replace with API logic)
-      if (passwordController.text.contains("@")) {
-        emit(state.copyWith(createNewPasswordStatus: RequestStatus.success));
-      } else {
+    response.when(
+      success: (createNewPasswordResponseModel) {
         emit(state.copyWith(
-            createNewPasswordStatus: RequestStatus.failure,
-            errorMessage: 'Invalid email'));
-      }
-    } catch (e) {
-      emit(
-        state.copyWith(
+          createNewPasswordStatus: RequestStatus.success,
+          message: createNewPasswordResponseModel.message,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
           createNewPasswordStatus: RequestStatus.failure,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
+          message: error.errors.first,
+        ));
+      },
+    );
   }
   // void emitSignupStates() async {
   //   emit(const SignupState.signupLoading());

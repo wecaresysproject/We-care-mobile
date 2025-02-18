@@ -57,7 +57,7 @@ dependencies:
   pin_code_fields: ^8.0.1
   pretty_dio_logger: ^1.4.0
   retrofit: ^4.4.2
-  retrofit_generator: ^9.1.7
+  retrofit_generator: ^9.1.9
   shared_preferences: ^2.4.0
   smooth_page_indicator: ^1.2.0+3
 
