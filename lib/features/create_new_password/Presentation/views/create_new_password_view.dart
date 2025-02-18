@@ -25,60 +25,69 @@ class CreateNewPasswordView extends StatefulWidget {
 }
 
 class _CreateNewPasswordViewState extends State<CreateNewPasswordView> {
+  late CreateNewPasswordCubit createNewPasswordCubit;
+  @override
+  void initState() {
+    createNewPasswordCubit = getIt.get<CreateNewPasswordCubit>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CreateNewPasswordCubit>(
-      create: (context) => getIt<CreateNewPasswordCubit>(),
-      child: BlocListener<CreateNewPasswordCubit, CreateNewPasswordState>(
-        listener: (context, state) async {
-          if (state.createNewPasswordStatus == RequestStatus.success) {
-            await showSuccess(state.message!);
-            if (!context.mounted) return;
-            context.pushNamed(
-              Routes.loginView,
-            );
-          } else if (state.createNewPasswordStatus == RequestStatus.failure) {
-            showError(state.message!);
-          }
-        },
-        child: Scaffold(
-          appBar: AppBar(),
-          body: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 20,
-            ),
-            physics: const BouncingScrollPhysics(),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  verticalSpacing(8),
-                  DesignLogoWidget(),
-                  verticalSpacing(16),
-                  Text(
-                    S.of(context).create_new_password,
-                    style: AppTextStyles.font22MainBlueWeight700,
-                  ),
-                  CreateNewPasswordFormFields(),
+      create: (context) => createNewPasswordCubit,
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 20,
+          ),
+          physics: const BouncingScrollPhysics(),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                verticalSpacing(8),
+                DesignLogoWidget(),
+                verticalSpacing(16),
+                Text(
+                  S.of(context).create_new_password,
+                  style: AppTextStyles.font22MainBlueWeight700,
+                ),
+                CreateNewPasswordFormFields(),
 
-                  // Submit Button
-                  AppCustomButton(
+                // Submit Button
+                BlocConsumer<CreateNewPasswordCubit, CreateNewPasswordState>(
+                  listener: (context, state) async {
+                    if (state.createNewPasswordStatus ==
+                        RequestStatus.success) {
+                      await showSuccess(state.message!);
+                      if (!context.mounted) return;
+                      await context.pushNamed(
+                        Routes.loginView,
+                      );
+                    } else if (state.createNewPasswordStatus ==
+                        RequestStatus.failure) {
+                      await showError(state.message!);
+                    }
+                  },
+                  builder: (context, state) => AppCustomButton(
                     title: S.of(context).createAccount,
                     isEnabled: true,
+                    isLoading:
+                        state.createNewPasswordStatus == RequestStatus.loading,
                     onPressed: () async {
-                      context
-                          .read<CreateNewPasswordCubit>()
-                          .emitCreateNewPasswordStates(
-                            widget.phoneNumber,
-                          );
+                      createNewPasswordCubit.emitCreateNewPasswordStates(
+                        widget.phoneNumber,
+                      );
                     },
-                  ).paddingFrom(
-                    top: context.screenHeight * 0.19,
                   ),
-                  verticalSpacing(24),
-                ],
-              ),
+                ).paddingFrom(
+                  top: context.screenHeight * 0.19,
+                ),
+                verticalSpacing(24),
+              ],
             ),
           ),
         ),

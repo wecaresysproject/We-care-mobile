@@ -19,7 +19,7 @@ part 'auth_service.g.dart';
 
 @RestApi(baseUrl: AuthApiConstants.baseUrl)
 abstract class AuthApiServices {
-  factory AuthApiServices(Dio dio, {String baseUrl}) = _AuthApiServices;
+  factory AuthApiServices(Dio dio, {String? baseUrl}) = _AuthApiServices;
   @POST(AuthApiConstants.signUpEndPoint)
   Future<SignUpResponseModel> signup(
     @Body() SignUpRequestBodyModel signupRequestBody,
@@ -43,6 +43,7 @@ abstract class AuthApiServices {
   Future<CreateNewPasswordResponseModel> createNewPassword(
     @Body() CreateNewPasswordRequestBody createNewPasswordRequestBody,
   );
+
   @POST(AuthApiConstants.forgotPasswordEndPoint)
   Future<ForgetPasswordResponseModel> forgetPassword(
     @Body() ForgetPasswordRequestBodyModel forgetPasswordRequestBody,

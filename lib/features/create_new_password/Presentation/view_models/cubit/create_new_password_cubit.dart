@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/global/Helpers/app_enums.dart';
 import '../../../../../core/global/app_strings.dart';
-import '../../../data/models/create_new_password_request_body.dart';
-import '../../../data/repo/create_new_password_repo.dart';
+import '../../../Data/models/create_new_password_request_body.dart';
+import '../../../Data/repo/create_new_password_repo.dart';
 
 part 'create_new_password_state.dart';
 
@@ -64,4 +64,11 @@ class CreateNewPasswordCubit extends Cubit<CreateNewPasswordState> {
   //     emit(SignupState.signupError(error: error.apiErrorModel.message ?? ''));
   //   });
   // }
+
+  @override
+  Future<void> close() {
+    passwordController.dispose();
+    passwordConfirmationController.dispose();
+    return super.close();
+  }
 }
