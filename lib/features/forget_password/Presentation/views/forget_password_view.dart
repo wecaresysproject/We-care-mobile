@@ -89,6 +89,8 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
             Routes.otpView,
             arguments: {
               AppStrings.isForgetPasswordFlowArgumentKey: true,
+              AppStrings.phoneNumberArgumentKey:
+                  '+2${context.read<ForgetPasswordCubit>().phoneController.text}'
             },
           );
         } else if (state.forgetPasswordStatus == RequestStatus.failure) {

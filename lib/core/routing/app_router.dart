@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../global/SharedWidgets/bottom_nav_bar.dart';
-import '../global/app_strings.dart';
-import 'routes.dart';
+
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
 import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
@@ -12,6 +10,9 @@ import '../../features/show_data_entry_types/data_entry_types_features/x_ray_dat
 import '../../features/sign_up/Presentation/views/sign_up_view.dart';
 import '../../features/user_type/Presentation/views/user_type_view.dart';
 import '../../features/x_ray_view/Presentation/views/x_ray_view.dart';
+import '../global/SharedWidgets/bottom_nav_bar.dart';
+import '../global/app_strings.dart';
+import 'routes.dart';
 
 class AppRouter {
 //automatically recalled when we use Navigator in our screen
