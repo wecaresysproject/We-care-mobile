@@ -3,6 +3,8 @@ import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/otp/Data/models/resend_otp_request_body.dart';
 import 'package:we_care/features/otp/Data/models/resend_otp_response_model.dart';
 
+import '../../features/forget_password/Data/models/forget_password_request_body_model.dart';
+import '../../features/forget_password/Data/models/forget_password_response_model.dart';
 import '../../features/login/Data/models/login_request_body_model.dart';
 import '../../features/login/Data/models/login_response_model.dart';
 import '../../features/otp/Data/models/verify_otp_request_body_model.dart';
@@ -34,5 +36,9 @@ abstract class AuthApiServices {
   @POST(AuthApiConstants.resendOtpEndPoint)
   Future<ResendOtpResponseModel> resendOtp(
     @Body() ResendOtpRequestBody signupRequestBody,
+  );
+  @POST(AuthApiConstants.forgotPasswordEndPoint)
+  Future<ForgetPasswordResponseModel> forgetPassword(
+    @Body() ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
   );
 }

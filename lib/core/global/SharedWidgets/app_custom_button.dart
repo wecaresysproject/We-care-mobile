@@ -32,7 +32,7 @@ class AppCustomButton extends StatelessWidget {
       ),
       child: isLoading
           ? Lottie.asset(
-              'assets/svgs/loading_lottie.json',
+              'assets/svgs/loading_animation.json',
               height: 50.h,
               width: 50.w,
               fit: BoxFit.contain,
