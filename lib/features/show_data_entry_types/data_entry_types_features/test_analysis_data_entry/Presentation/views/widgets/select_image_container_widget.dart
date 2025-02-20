@@ -47,9 +47,7 @@ class SelectImageContainer extends StatelessWidget {
                 horizontalSpacing(18.3),
                 Text(
                   label,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: Color(0xff555555),
-                  ),
+                  style: AppTextStyles.font16DarkGreyWeight400,
                 ),
                 Spacer(),
                 Image.asset(

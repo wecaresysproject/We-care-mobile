@@ -76,7 +76,10 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
               children: [
                 Text(
                   selectedItem ?? widget.containerHintText,
-                  style: AppTextStyles.font16DarkGreyWeight400,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
                 ),
                 Image.asset(
                   selectedItem != null

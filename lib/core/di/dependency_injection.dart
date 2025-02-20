@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 
+import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Data/Repostory/forget_password_repo.dart';
-import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import '../../features/login/Data/Repostory/login_repo.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
@@ -57,6 +58,9 @@ void setupAppCubits() {
     () => OtpCubit(
       getIt<OtpRepository>(),
     ),
+  );
+  getIt.registerFactory<TestAnalysisDataEntryCubit>(
+    () => TestAnalysisDataEntryCubit(),
   );
 }
 

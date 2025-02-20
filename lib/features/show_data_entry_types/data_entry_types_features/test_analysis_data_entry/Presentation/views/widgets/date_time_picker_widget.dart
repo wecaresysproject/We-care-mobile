@@ -107,11 +107,7 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
                   ? widget.placeholderText
                   : dateFormat.format(selectedDate!),
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                // color: widget.onDateSelected != null //TODO: !check it later
-                //     ? AppColorsManager.textColor
-                //     : AppColorsManager.placeHolderColor,
-                color: AppColorsManager.placeHolderColor,
-                fontFamily: "Roboto",
+                color: AppColorsManager.textColor,
               ),
             ),
           ),
