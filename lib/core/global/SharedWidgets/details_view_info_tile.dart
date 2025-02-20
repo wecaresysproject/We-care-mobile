@@ -9,12 +9,14 @@ class DetailsViewInfoTile extends StatelessWidget {
   final String value;
   final String icon;
   final bool isExpanded;
+  final bool isMultiContainer;
 
   const DetailsViewInfoTile(
       {super.key,
       required this.title,
       required this.value,
       required this.icon,
+      this.isMultiContainer = false,
       this.isExpanded = false});
 
   @override
@@ -39,27 +41,49 @@ class DetailsViewInfoTile extends StatelessWidget {
           width: isExpanded
               ? MediaQuery.of(context).size.width - 32.w
               : (MediaQuery.of(context).size.width * 0.5) - 24.w,
-          child: Container(
-            padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.r),
-              border:
-                  Border.all(color: AppColorsManager.mainDarkBlue, width: 0.3),
-              gradient: const LinearGradient(
-                colors: [Color(0xFFECF5FF), Color(0xFFFBFDFD)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: Text(
-              value,
-              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.textColor,
-                  fontWeight: FontWeight.w500),
-            ),
+          child: CustomContainer(
+            value: value,
+            isExpanded: isExpanded,
           ),
         ),
       ],
+    );
+  }
+}
+
+class CustomContainer extends StatelessWidget {
+  const CustomContainer({
+    super.key,
+    required this.value,
+    this.isExpanded = false,
+  });
+
+  final String value;
+  final bool isExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: isExpanded
+          ? MediaQuery.of(context).size.width - 32.w
+          : (MediaQuery.of(context).size.width * 0.5) - 24.w,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: AppColorsManager.mainDarkBlue, width: 0.3),
+          gradient: const LinearGradient(
+            colors: [Color(0xFFECF5FF), Color(0xFFFBFDFD)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Text(
+          value,
+          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+              color: AppColorsManager.textColor, fontWeight: FontWeight.w500),
+        ),
+      ),
     );
   }
 }

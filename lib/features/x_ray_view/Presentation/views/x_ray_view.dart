@@ -47,7 +47,7 @@ class XRayDataViewFooterRow extends StatelessWidget {
             fixedSize: const Size(158, 32),
             backgroundColor: AppColorsManager.mainDarkBlue,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(16.r),
             ),
             padding: EdgeInsets.zero, // No default padding
           ),
@@ -63,17 +63,17 @@ class XRayDataViewFooterRow extends StatelessWidget {
                 Icons.expand_more,
                 color: Colors.white,
                 weight: 100,
-                size: 20,
+                size: 24.sp,
               ),
             ],
           ),
         ),
         Container(
-          width: 47,
-          height: 28,
+          width: 47.w,
+          height: 28.h,
           padding: const EdgeInsets.symmetric(horizontal: 6),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(11.r),
             border: Border.all(color: Color(0xFF014C8A), width: 2),
           ),
           child: Center(
