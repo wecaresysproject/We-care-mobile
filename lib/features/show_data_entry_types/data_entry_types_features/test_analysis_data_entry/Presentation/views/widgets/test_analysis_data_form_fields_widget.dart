@@ -40,13 +40,15 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(10),
 
             DateTimePickerContainer(
-              // containerBorderColor: state.xRayDateSelection == null
-              //     ? AppColorsManager.warningColor
-              //     : AppColorsManager.textfieldOutsideBorderColor,
+              containerBorderColor: state.isDateSelected == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               placeholderText:
                   isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
               onDateSelected: (pickedDate) {
-                // context.read<XRayDataEntryCubit>().updateXRayDate(pickedDate);
+                context.read<TestAnalysisDataEntryCubit>().updateTestDate(
+                      pickedDate,
+                    );
                 log("xxx: pickedDate: $pickedDate"); //! 2024-02-14
               },
             ),
@@ -61,19 +63,19 @@ class _TestAnalysisDataEntryFormFieldsState
             ),
             verticalSpacing(10),
             SelectImageContainer(
-              // containerBorderColor: (state.isXRayPictureSelected == null) ||
-              //         (state.isXRayPictureSelected == false)
-              //     ? AppColorsManager.warningColor
-              //     : AppColorsManager.textfieldOutsideBorderColor,
+              containerBorderColor: (state.isTestPictureSelected == null) ||
+                      (state.isTestPictureSelected == false)
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               imagePath: "assets/images/photo_icon.png",
               label: "ارفق صورة",
               onTap: () async {
                 await showImagePicker(
                   context,
                   onImagePicked: (isImagePicked) {
-                    // context
-                    //     .read<XRayDataEntryCubit>()
-                    //     .updateXRayPicture(isImagePicked);
+                    context
+                        .read<TestAnalysisDataEntryCubit>()
+                        .updateTestPicture(isImagePicked);
 
                     final picker = getIt.get<ImagePickerService>();
                     if (isImagePicked && picker.isImagePickedAccepted) {
@@ -210,14 +212,14 @@ class _TestAnalysisDataEntryFormFieldsState
             AppCustomButton(
               title: "ارسال",
               onPressed: () {
-                // if (state.isFormValidated) {
-                //   // context.read<XRayDataEntryCubit>().sendForm;
-                //   log("xxx:Save Data Entry");
-                // } else {
-                //   log("");
-                // }
+                if (state.isFormValidated) {
+                  // context.read<XRayDataEntryCubit>().sendForm;
+                  log("xxx:Save Data Entry");
+                } else {
+                  log("");
+                }
               },
-              // isEnabled: state.isFormValidated ? true : false,
+              isEnabled: state.isFormValidated ? true : false,
             ),
             verticalSpacing(71),
           ],
@@ -232,319 +234,445 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
+    return BlocBuilder<TestAnalysisDataEntryCubit, TestAnalysisDataEntryState>(
+      builder: (context, state) {
+        bool showTable = !state.isTypeOfTestSelected.isEmptyOrNull ||
+            !state.isTypeOfTestWithAnnotationSelected.isEmptyOrNull;
+        return Column(
           children: [
-            Expanded(
-              flex: 3,
-              child: UserSelectionContainer(
-                // containerBorderColor: state.xRayBodyPartSelection == null
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
-                categoryLabel: "نوع التحليل",
-                containerHintText: "اختر نوع التحليل",
-                options: [
-                  "تحليل الدم",
-                  "تحليل البول",
-                  "تحليل صورة دم كامله",
-                ],
-                onOptionSelected: (value) {
-                  log("xxx:Selected: $value");
-                  // context.read<XRayDataEntryCubit>().updateXRayBodyPart(value);
-                },
-                bottomSheetTitle: 'اختر نوع التحليل',
-              ),
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: !state.isTypeOfTestWithAnnotationSelected.isEmptyOrNull
+                      ? UserSelectionContainer(
+                          isDisabled: true,
+                          containerBorderColor: AppColorsManager
+                              .disAbledTextFieldOutsideBorderColor,
+                          categoryLabel: "نوع التحليل",
+                          containerHintText: "اختر نوع التحليل",
+                          options: [
+                            "تحليل الدم",
+                            "تحليل البول",
+                            "تحليل صورة دم كامله",
+                          ],
+                          onOptionSelected: (value) {
+                            log("xxx:Selected: $value");
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateTestType(value);
+                          },
+                          iconColor: AppColorsManager.disAbledIconColor,
+                          bottomSheetTitle: 'اختر نوع التحليل',
+                        )
+                      : UserSelectionContainer(
+                          isDisabled: false,
+                          containerBorderColor: state
+                                  .isTypeOfTestSelected.isEmptyOrNull
+                              ? AppColorsManager.warningColor
+                              : AppColorsManager.textfieldOutsideBorderColor,
+                          categoryLabel: "نوع التحليل",
+                          containerHintText: "اختر نوع التحليل",
+                          options: [
+                            "تحليل الدم",
+                            "تحليل البول",
+                            "تحليل صورة دم كامله",
+                          ],
+                          onOptionSelected: (value) {
+                            log("xxx:Selected: $value");
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateTestType(value);
+                          },
+                          iconColor: AppColorsManager.mainDarkBlue,
+                          bottomSheetTitle: 'اختر نوع التحليل',
+                        ),
+                ),
+                horizontalSpacing(16),
+                Expanded(
+                  flex: 2,
+                  child: state.isTypeOfTestSelected.isEmptyOrNull
+                      ? UserSelectionContainer(
+                          containerBorderColor: state
+                                  .isTypeOfTestWithAnnotationSelected
+                                  .isEmptyOrNull
+                              ? AppColorsManager.warningColor
+                              : AppColorsManager.textfieldOutsideBorderColor,
+                          categoryLabel: "الرمز",
+                          containerHintText: "اختر الرمز ",
+                          options: [
+                            "CBC",
+                            "RBC",
+                            "WBC",
+                            "HGB",
+                            "HCT",
+                            "MCV",
+                          ],
+                          onOptionSelected: (value) {
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateTestTypeWithAnnoation(value);
+                            log("xxx:Selected: $value");
+                          },
+                          bottomSheetTitle: 'اختر نوع الأشعة',
+                        )
+                      : UserSelectionContainer(
+                          containerBorderColor: AppColorsManager
+                              .disAbledTextFieldOutsideBorderColor,
+                          iconColor: AppColorsManager.disAbledIconColor,
+                          isDisabled: true,
+                          categoryLabel: "الرمز",
+                          containerHintText: "اختر الرمز ",
+                          options: [
+                            "CBC",
+                            "RBC",
+                            "WBC",
+                            "HGB",
+                            "HCT",
+                            "MCV",
+                          ],
+                          onOptionSelected: (value) {
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateTestTypeWithAnnoation(value);
+                            log("xxx:Selected: $value");
+                          },
+                          bottomSheetTitle: 'اختر نوع الأشعة',
+                        ),
+                ),
+              ],
             ),
-            horizontalSpacing(16),
-            Expanded(
-              flex: 2,
-              child: UserSelectionContainer(
-                // containerBorderColor: state.xRayTypeSelection == null
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
-                categoryLabel: "الرمز",
-                containerHintText: "اختر الرمز ",
-                options: [
-                  "CBC",
-                  "RBC",
-                  "WBC",
-                  "HGB",
-                  "HCT",
-                  "MCV",
-                ],
-                onOptionSelected: (value) {
-                  // context.read<XRayDataEntryCubit>().updateXRayType(value);
-
-                  log("xxx:Selected: $value");
-                },
-                bottomSheetTitle: 'اختر نوع الأشعة',
-              ),
+            AnimatedSwitcher(
+              duration: Duration(milliseconds: 1100),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(0.0, 0.2), // Start slightly below
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: showTable
+                  ? buildTable().paddingTop(16)
+                  : SizedBox.shrink(), // Hide when not visible
             ),
           ],
-        ),
-        if (true) buildTable().paddingTop(16),
-      ],
+        );
+      },
     );
   }
 }
 
 Widget buildTable() {
-  return DataTable(
-    clipBehavior: Clip.antiAliasWithSaveLayer,
-    headingRowColor: WidgetStateProperty.all(
-      AppColorsManager.mainDarkBlue,
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: DataTable(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      headingRowColor: WidgetStateProperty.all(
+        AppColorsManager.mainDarkBlue,
+      ),
+      columnSpacing: 16.8.w,
+      dataRowMaxHeight: 44.5.h,
+      horizontalMargin: 7,
+      dividerThickness: .83,
+      headingTextStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
+        color: AppColorsManager.backGroundColor,
+        fontWeight: FontWeight.w600,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          0,
+        ),
+      ),
+      showBottomBorder: true,
+      border: TableBorder.all(
+        style: BorderStyle.solid,
+        borderRadius: BorderRadius.circular(8.r),
+        color: Color(0xff909090),
+        width: .15.w,
+      ),
+      columns: [
+        DataColumn(
+          label: Text(
+            "الاسم",
+          ),
+          headingRowAlignment: MainAxisAlignment.center,
+        ),
+        DataColumn(
+          label: Text(
+            "الرمز",
+          ),
+          headingRowAlignment: MainAxisAlignment.center,
+        ),
+        DataColumn(
+          label: Text(
+            "المعيار",
+          ),
+          headingRowAlignment: MainAxisAlignment.center,
+          numeric: true,
+        ),
+        DataColumn(
+          label: Text(
+            "النتيجة",
+          ),
+          headingRowAlignment: MainAxisAlignment.center,
+        ),
+      ],
+      rows: [
+        DataRow(
+          cells: [
+            DataCell(
+              Text(
+                "كرات الدم البيضاء",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "H.Pylori",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "55520:100200",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.7.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              buildStyledTextField(),
+            ),
+          ],
+        ),
+        DataRow(
+          cells: [
+            DataCell(
+              Text(
+                "كرات الدم الحمراء",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "H.Pylori",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "55520:100200",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.7.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              buildStyledTextField(),
+            ),
+          ],
+        ),
+        DataRow(
+          cells: [
+            DataCell(
+              Text(
+                "الهيموجلوبين",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "H.Pylori",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "55520:100200",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.7.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              buildStyledTextField(),
+            ),
+          ],
+        ),
+        DataRow(
+          cells: [
+            DataCell(
+              Text(
+                "الصفائح الدموية",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "H.Pylori",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              Text(
+                "55520:100200",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12.7.sp,
+                ),
+              ),
+            ),
+            DataCell(
+              buildStyledTextField(),
+            ),
+          ],
+        ),
+      ],
     ),
-    columnSpacing: 12.w,
-    border: TableBorder.all(
-      style: BorderStyle.solid,
-      borderRadius: BorderRadius.circular(8.r),
-      color: Color(0xff909090),
-      width: .15.w,
-    ),
-    columns: [
-      DataColumn(
-        label: Text(
-          "الاسم",
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-            color: AppColorsManager.backGroundColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        headingRowAlignment: MainAxisAlignment.center,
-      ),
-      DataColumn(
-        label: Text(
-          "الرمز",
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-            color: AppColorsManager.backGroundColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        headingRowAlignment: MainAxisAlignment.center,
-      ),
-      DataColumn(
-        label: Text(
-          "المعيار",
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-            color: AppColorsManager.backGroundColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        headingRowAlignment: MainAxisAlignment.center,
-        numeric: true,
-      ),
-      DataColumn(
-        label: Text(
-          "النتيجة",
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-            color: AppColorsManager.backGroundColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        headingRowAlignment: MainAxisAlignment.center,
-      ),
-    ],
-    rows: [
-      DataRow(
-        cells: [
-          DataCell(
-            Text(
-              "كرات الدم البيضاء",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "H.Pylori",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "55520:100200",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.7.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            buildStyledTextField(),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          DataCell(
-            Text(
-              "كرات الدم الحمراء",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "H.Pylori",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "55520:100200",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.7.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            buildStyledTextField(),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          DataCell(
-            Text(
-              "الهيموجلوبين",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "H.Pylori",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "55520:100200",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.7.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            buildStyledTextField(),
-          ),
-        ],
-      ),
-      DataRow(
-        cells: [
-          DataCell(
-            Text(
-              "الصفائح الدموية",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "H.Pylori",
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            Text(
-              "55520:100200",
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: AppTextStyles.font12blackWeight400.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 12.7.sp,
-              ),
-            ),
-          ),
-          DataCell(
-            buildStyledTextField(),
-          ),
-        ],
-      ),
-    ],
   );
 }
 
 Widget buildStyledTextField() {
-  return TextField(
-    textAlign: TextAlign.center,
-    cursorColor: AppColorsManager.mainDarkBlue,
-    decoration: InputDecoration(
-      border: InputBorder.none,
-      focusedBorder: InputBorder.none,
-      enabledBorder: InputBorder.none,
-      errorBorder: InputBorder.none,
-      disabledBorder: InputBorder.none,
-      hintText: "اكتب النسبة",
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: 1.w,
-      ), // Ensure text starts at center
-
-      hintStyle: AppTextStyles.font12blackWeight400.copyWith(
-        fontWeight: FontWeight.w700,
-        color: AppColorsManager.placeHolderColor,
+  return Container(
+    margin: EdgeInsets.only(
+      bottom: 3,
+    ),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.r),
+      gradient: LinearGradient(
+        end: Alignment.centerRight,
+        begin: Alignment.centerLeft,
+        colors: [
+          Color(0xffECF5FF),
+          Color(0xffFBFDFF),
+        ],
       ),
     ),
-    keyboardType: TextInputType.number,
-  ).paddingFrom(
-    top: 2,
-    left: 0,
+    child: TextField(
+      scrollPhysics: const BouncingScrollPhysics(),
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+      textAlign: TextAlign.center,
+      cursorHeight: 20.h,
+      cursorColor: AppColorsManager.mainDarkBlue,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        hintText: "اكتب النسبة",
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 13.w,
+          vertical: 8.5.h,
+        ),
+        hintStyle: AppTextStyles.font12blackWeight400.copyWith(
+          fontWeight: FontWeight.w700,
+          fontSize: 10.sp,
+          color: AppColorsManager.placeHolderColor,
+          overflow: TextOverflow.ellipsis,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            width: 0.5.w,
+            color: AppColorsManager.textfieldOutsideBorderColor,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            width: 0.8.w,
+            color: AppColorsManager.mainDarkBlue,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            width: 0.5.w,
+            color: AppColorsManager.textfieldOutsideBorderColor,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            width: 0.5.w,
+            color: AppColorsManager.warningColor,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            width: 0.5.w,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+    ).paddingFrom(
+      top: 2,
+    ),
   );
 }

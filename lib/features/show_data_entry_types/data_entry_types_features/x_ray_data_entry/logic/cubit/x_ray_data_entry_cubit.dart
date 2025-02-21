@@ -29,8 +29,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateXRayPicture(bool? picture) {
-    emit(state.copyWith(isXRayPictureSelected: picture));
+  void updateXRayPicture(bool? isImagePicked) {
+    emit(state.copyWith(isXRayPictureSelected: isImagePicked));
     validateRequiredFields();
   }
 

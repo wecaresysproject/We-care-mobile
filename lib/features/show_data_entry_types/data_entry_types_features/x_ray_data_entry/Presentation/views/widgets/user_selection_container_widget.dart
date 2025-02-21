@@ -14,7 +14,9 @@ class UserSelectionContainer extends StatefulWidget {
     required this.onOptionSelected,
     required this.containerHintText,
     this.allowManualEntry = false,
+    this.isDisabled = false,
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
+    this.iconColor = AppColorsManager.mainDarkBlue,
   });
 
   final List<String> options;
@@ -24,6 +26,8 @@ class UserSelectionContainer extends StatefulWidget {
   final Function(String) onOptionSelected;
   final bool allowManualEntry;
   final Color containerBorderColor;
+  final bool isDisabled;
+  final Color? iconColor;
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -44,20 +48,22 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
         verticalSpacing(10),
         GestureDetector(
           onTap: () {
-            showSelectionBottomSheet(
-              context: context,
-              onAddNew: () {},
-              title: widget.bottomSheetTitle,
-              options: widget.options,
-              initialSelectedItem: selectedItem,
-              onItemSelected: (selected) {
-                setState(() {
-                  selectedItem = selected;
-                });
-                widget.onOptionSelected(selected);
-              },
-              allowManualEntry: widget.allowManualEntry,
-            );
+            !widget.isDisabled
+                ? showSelectionBottomSheet(
+                    context: context,
+                    onAddNew: () {},
+                    title: widget.bottomSheetTitle,
+                    options: widget.options,
+                    initialSelectedItem: selectedItem,
+                    onItemSelected: (selected) {
+                      setState(() {
+                        selectedItem = selected;
+                      });
+                      widget.onOptionSelected(selected);
+                    },
+                    allowManualEntry: widget.allowManualEntry,
+                  )
+                : null;
           },
           child: Container(
             width: double.infinity,
@@ -84,6 +90,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
                       : "assets/images/arrow_down_icon.png",
                   height: 24.h,
                   width: 16.w,
+                  color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
                 ),
               ],
             ),
