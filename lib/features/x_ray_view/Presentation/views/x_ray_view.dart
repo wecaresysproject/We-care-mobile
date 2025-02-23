@@ -7,6 +7,7 @@ import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_t
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
+import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_details_view.dart';
 
 class XRayView extends StatelessWidget {
   const XRayView({super.key});
@@ -43,6 +44,11 @@ class XRayView extends StatelessWidget {
             verticalSpacing(16),
             MedicalItemGridView(
               items: testData,
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => XRayDetailsView(),
+                  )),
             ),
             verticalSpacing(16),
             XRayDataViewFooterRow(),

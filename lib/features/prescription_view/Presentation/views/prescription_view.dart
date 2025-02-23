@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/prescription_view/Presentation/views/prescription_details_view.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
@@ -39,6 +40,11 @@ class PrescriptionView extends StatelessWidget {
             verticalSpacing(16),
             MedicalItemGridView(
               items: prescriptionMockData,
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PrescriptionDetailsView(),
+                  )),
             ),
             verticalSpacing(16),
             XRayDataViewFooterRow(),
@@ -146,33 +152,39 @@ final doctorsFilters = FilterConfig(
 
 List<PrescriptionData> prescriptionMockData = [
   PrescriptionData(
-    doctorName: "د/ مصطفى محمود",
+    title: "د/ مصطفى محمود",
     specialty: "أنف وأذن وحنجرة",
     date: "25/1/2025",
     condition: "التهاب جيوب أنفية",
   ),
   PrescriptionData(
-    doctorName: "د/ أحمد علي",
+    title: "د/ أحمد علي",
     specialty: "باطنة",
     date: "10/2/2025",
     condition: "ارتفاع ضغط الدم",
   ),
   PrescriptionData(
-    doctorName: "د/ سارة حسن",
+    title: "د/ سارة حسن",
     specialty: "جلدية",
     date: "5/3/2025",
     condition: "أكزيما حادة",
   ),
   PrescriptionData(
-    doctorName: "د/ رشا محمود",
+    title: "د/ رشا محمود",
     specialty: "قلب وأوعية دموية",
     date: "15/4/2025",
     condition: "صداع مزمن",
   ),
   PrescriptionData(
-    doctorName: "د/ محمد خالد",
+    title: "د/ محمد خالد",
     specialty: "قلب وأوعية دموية",
     date: "20/5/2025",
+    condition: "صداع مزمن",
+  ),
+  PrescriptionData(
+    title: "د/ مصطفى حسن",
+    specialty: "قلب وأوعية دموية",
+    date: "25/6/2025",
     condition: "صداع مزمن",
   ),
 ];

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/features/prescription_view/Presentation/views/prescription_details_view.dart';
+import 'package:we_care/features/prescription_view/Presentation/views/prescription_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 
 import 'core/global/Helpers/functions.dart';
@@ -67,7 +69,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: PrescriptionCategoryDataEntryView(),
+          home: PrescriptionView(),
         );
       },
     );

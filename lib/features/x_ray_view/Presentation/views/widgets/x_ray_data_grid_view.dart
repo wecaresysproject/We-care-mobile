@@ -4,9 +4,12 @@ import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_t
 class MedicalItemGridView extends StatelessWidget {
   final List<dynamic> items;
 
+  final void Function() onTap;
+
   const MedicalItemGridView({
     super.key,
     required this.items,
+    required this.onTap,
   });
 
   @override
@@ -22,7 +25,10 @@ class MedicalItemGridView extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final item = items[index];
-          return MedicalItemCard(item: item);
+          return MedicalItemCard(
+            item: item,
+            onTap: onTap,
+          );
         },
       ),
     );

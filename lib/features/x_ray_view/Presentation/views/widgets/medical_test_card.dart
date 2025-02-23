@@ -1,110 +1,129 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MedicalItemCard extends StatelessWidget {
   final dynamic item;
+  final void Function()? onTap;
 
   const MedicalItemCard({
     super.key,
     required this.item,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blueAccent),
-        gradient: LinearGradient(
-          colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              item is PrescriptionData ? item.doctorName : item.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 4),
-          _infoRow("التخصص:", item is PrescriptionData ? item.specialty : "-")
-              .visible(item is PrescriptionData),
-          _infoRow("التاريخ:", item.date),
-          _infoRow("منطقة الأشعة:", item is MedicalTestData ? item.region : "-")
-              .visible(item is MedicalTestData),
-          _infoRow("دواعي الفحص:", item is MedicalTestData ? item.reason : "-")
-              .visible(item is MedicalTestData),
-          _infoRow("ملاحظات:", item is MedicalTestData ? item.notes : "-")
-              .visible(item is MedicalTestData),
-          _infoRow("المرض:", item is PrescriptionData ? item.condition : "-")
-              .visible(item is PrescriptionData),
-          const Spacer(),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              side: const BorderSide(color: Colors.blueAccent, width: 1.6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+    return Column(
+      children: [
+        Flexible(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.48,
+            height: MediaQuery.of(context).size.height * 0.35,
+            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(color: Color(0xFF555555), width: 0.5),
+              gradient: LinearGradient(
+                colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "عرض المحتوى",
-                  style: TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
+                Center(
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.r),
+                      border: Border.all(
+                          color: AppColorsManager.mainDarkBlue, width: 0.6),
+                    ),
+                    child: Text(
+                      item.title,
+                      style: AppTextStyles.font14BlueWeight700,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 8),
-                Icon(Icons.arrow_back_ios, size: 14, color: Colors.blue),
+                verticalSpacing(4),
+                _infoRow("التخصص:",
+                        item is PrescriptionData ? item.specialty : "-")
+                    .visible(item is PrescriptionData),
+                _infoRow("التاريخ:", item.date),
+                _infoRow("منطقة الأشعة:",
+                        item is MedicalTestData ? item.region : "-")
+                    .visible(item is MedicalTestData),
+                _infoRow("دواعي الفحص:",
+                        item is MedicalTestData ? item.reason : "-")
+                    .visible(item is MedicalTestData),
+                _infoRow("ملاحظات:", item is MedicalTestData ? item.notes : "-")
+                    .visible(item is MedicalTestData),
+                _infoRow("المرض:",
+                        item is PrescriptionData ? item.condition : "-")
+                    .visible(item is PrescriptionData),
+                verticalSpacing(6),
+                Flexible(
+                  child: TextButton(
+                    onPressed: onTap,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero, // Removes default padding
+                      backgroundColor: Colors.white,
+                      side: BorderSide(
+                          color: AppColorsManager.mainDarkBlue, width: 1.6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.r),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "عرض المحتوى",
+                          style: AppTextStyles.font14BlueWeight700,
+                        ),
+                        horizontalSpacing(12),
+                        Image.asset(
+                          "assets/images/side_arrow_filled.png",
+                          width: 10.w,
+                          height: 10.h,
+                          color: AppColorsManager.mainDarkBlue,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _infoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: RichText(
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-        text: TextSpan(
-          children: [
-            TextSpan(
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+      text: TextSpan(
+        children: [
+          TextSpan(
               text: "$label ",
-              style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue),
-            ),
-            TextSpan(
-              text: value,
-              style: const TextStyle(fontSize: 14, color: Colors.black),
-            ),
-          ],
-        ),
+              style:
+                  AppTextStyles.font10blueWeight400.copyWith(fontSize: 13.sp)),
+          TextSpan(
+            text: value,
+            style: AppTextStyles.font14blackWeight400,
+          ),
+        ],
       ),
     );
-  }
-}
-
-extension WidgetVisibility on Widget {
-  Widget visible(bool isVisible) {
-    return isVisible ? this : const SizedBox.shrink();
   }
 }
 
@@ -125,13 +144,13 @@ class MedicalTestData {
 }
 
 class PrescriptionData {
-  final String doctorName;
+  final String title;
   final String specialty;
   final String date;
   final String condition;
 
   PrescriptionData({
-    required this.doctorName,
+    required this.title,
     required this.specialty,
     required this.date,
     required this.condition,

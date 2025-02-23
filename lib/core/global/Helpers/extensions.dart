@@ -176,3 +176,9 @@ extension StringExtensions on String? {
   String get firstLetterToUpperCase =>
       this![0].toUpperCase() + this!.substring(1);
 }
+
+extension WidgetVisibility on Widget {
+  Widget visible(bool isVisible) {
+    return isVisible ? this : const SizedBox.shrink();
+  }
+}

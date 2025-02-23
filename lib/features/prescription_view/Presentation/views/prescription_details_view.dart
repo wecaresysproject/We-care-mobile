@@ -4,8 +4,8 @@ import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 
-class XRayDetailsView extends StatelessWidget {
-  const XRayDetailsView({super.key});
+class PrescriptionDetailsView extends StatelessWidget {
+  const PrescriptionDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class XRayDetailsView extends StatelessWidget {
         child: Column(
           spacing: 16.h,
           children: [
-            DetailsViewAppBar(title: 'الاشعة'),
+            DetailsViewAppBar(title: 'الروشتة'),
             Row(children: [
               DetailsViewInfoTile(
                   title: "التاريخ",
@@ -26,22 +26,24 @@ class XRayDetailsView extends StatelessWidget {
                   icon: 'assets/images/date_icon.png'),
               Spacer(),
               DetailsViewInfoTile(
-                title: "المنطقة",
-                value: "الرأس والدماغ",
-                icon: 'assets/images/body_icon.png',
+                title: "المرض",
+                value: " التهاب جيوب انفية",
+                icon: 'assets/images/symptoms_icon.png',
               ),
             ]),
             Row(children: [
               DetailsViewInfoTile(
-                  title: "النوع",
-                  value: "الرنين المغناطيسي",
-                  icon: 'assets/images/type_icon.png'),
+                  title: "اسم الطبيب",
+                  value: " د/ احمد هاني",
+                  icon: 'assets/images/doctor_name.png'),
               Spacer(),
               DetailsViewInfoTile(
-                  title: "نوعية الاحتياج",
-                  value: "دورية",
-                  icon: 'assets/images/need_icon.png'),
+                  title: "التخصص ",
+                  value: "انف واذن وحنجره",
+                  icon: 'assets/images/doctor_icon.png'),
             ]),
+            DetailsViewImageWithTitleTile(
+                image: 'assets/images/images 2.png', title: "صورة الروشتة"),
             DetailsViewInfoTile(
                 title: "الأعراض",
                 value: "ارتفاع درجة الحرارة / صداع مزمن",
@@ -49,25 +51,14 @@ class XRayDetailsView extends StatelessWidget {
                 isExpanded: true),
             Row(children: [
               DetailsViewInfoTile(
-                  title: "الطبيب المعالج",
-                  value: "د/ أحمد هاني",
-                  icon: 'assets/images/doctor_icon.png'),
-              Spacer(),
-              DetailsViewInfoTile(
-                  title: "طبيب الأشعة",
-                  value: "د/ أسامة محمد",
-                  icon: 'assets/images/doctor_icon.png'),
-            ]),
-            Row(children: [
-              DetailsViewInfoTile(
-                  title: "المستشفى",
-                  value: "دار الفؤاد",
-                  icon: 'assets/images/hospital_icon.png'),
-              Spacer(),
-              DetailsViewInfoTile(
                   title: "الدولة",
                   value: "مصر",
                   icon: 'assets/images/country_icon.png'),
+              Spacer(),
+              DetailsViewInfoTile(
+                  title: "المدينة",
+                  value: "القاهرة ",
+                  icon: 'assets/images/hospital_icon.png'),
             ]),
             DetailsViewInfoTile(
                 title: "ملاحظات",
@@ -75,10 +66,6 @@ class XRayDetailsView extends StatelessWidget {
                     'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة. لقد تم توليد هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو العديد من النصوص الأخر',
                 icon: 'assets/images/notes_icon.png',
                 isExpanded: true),
-            DetailsViewImageWithTitleTile(
-                image: 'assets/images/x_ray_sample.png', title: "صورة الأشعة"),
-            DetailsViewImageWithTitleTile(
-                image: 'assets/images/report.png', title: "صورة التقرير"),
           ],
         ),
       ),
