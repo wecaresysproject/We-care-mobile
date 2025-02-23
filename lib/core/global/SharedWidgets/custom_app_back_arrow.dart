@@ -13,15 +13,12 @@ class CustomBackArrow extends StatelessWidget {
       onTap: () {
         Navigator.of(context).pop();
       },
-      child: Transform.rotate(
-        angle: !isArabic()
-            ? 180 * 3.1415926535 / 180
-            : 0, // Rotate 180° if English
-        child: Image.asset(
-          "assets/images/back_arrow.png",
-          width: 40.w,
-          height: 40.h,
-        ),
+      child: Image.asset(
+        !isArabic()
+            ? "assets/images/back_arrow.png"
+            : "assets/images/back_arrow_arabic.png",
+        width: 40.w,
+        height: 40.h,
       ),
     );
   }

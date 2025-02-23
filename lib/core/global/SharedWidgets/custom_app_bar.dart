@@ -16,12 +16,8 @@ class CustomAppBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        UserAvatarWidget(
-          width: 40,
-          height: 40,
-          borderRadius: 17,
-        ),
-        horizontalSpacing(8),
+        haveBackArrow ? CustomBackArrow() : SizedBox.shrink(),
+        Spacer(),
         Text(
           context.translate.dummyUserName,
           style: AppTextStyles.font16DarkGreyWeight400.copyWith(
@@ -29,8 +25,12 @@ class CustomAppBarWidget extends StatelessWidget {
             fontWeight: FontWeightHelper.medium,
           ),
         ),
-        Spacer(),
-        haveBackArrow ? CustomBackArrow() : SizedBox.shrink(),
+        horizontalSpacing(8),
+        UserAvatarWidget(
+          width: 40,
+          height: 40,
+          borderRadius: 17,
+        ),
       ],
     );
   }

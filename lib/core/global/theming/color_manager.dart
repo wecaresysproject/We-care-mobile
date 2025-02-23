@@ -7,6 +7,9 @@ class AppColorsManager {
   static const Color scaffoldBackGroundColor = Color(0xffFEFEFE);
   static const Color textfieldInsideColor = Color(0xffECF5FF);
   static const Color textfieldOutsideBorderColor = Color(0xff555555);
+  static Color disAbledTextFieldOutsideBorderColor =
+      Color(0xff555555).withAlpha(40);
+  static const Color disAbledIconColor = Color(0xff5688B1);
   static const Color warningColor = Color(0xffCE0000);
   static const Color doneColor = Color(0xff00B087);
   static const Color unselectedNavIconColor = Color(0xff909090);

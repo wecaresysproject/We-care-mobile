@@ -29,16 +29,18 @@ Future<void> main() async {
   // Lock the app to portrait mode
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-  ]).then((_) {
-    runApp(
-      DevicePreview(
-        enabled: false,
-        builder: (context) => WeCareApp(
-          appRouter: AppRouter(),
+  ]).then(
+    (_) {
+      runApp(
+        DevicePreview(
+          enabled: false,
+          builder: (context) => WeCareApp(
+            appRouter: AppRouter(),
+          ),
         ),
-      ),
-    );
-  });
+      );
+    },
+  );
 }
 
 Future<void> checkIfLoggedInUser() async {

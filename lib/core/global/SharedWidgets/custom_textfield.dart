@@ -16,6 +16,11 @@ class CustomTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final FocusNode? focusNode;
   final void Function(String)? onChanged;
+  final InputBorder? border; // ✅ Custom Border
+  final InputBorder? focusedBorder; // ✅ Custom Focused Border
+  final InputBorder? enabledBorder; // ✅ Custom Enabled Border
+  final InputBorder? errorBorder; // ✅ Custom Error Border
+  final InputBorder? focusedErrorBorder; // ✅ Custom Focused Error Border
   const CustomTextField({
     super.key,
     required this.hintText,
@@ -27,6 +32,11 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     required this.validator,
     this.onChanged,
+    this.border, // ✅ Allow border to be set from outside
+    this.focusedBorder,
+    this.enabledBorder,
+    this.errorBorder,
+    this.focusedErrorBorder,
   });
 
   @override
@@ -80,37 +90,41 @@ class CustomTextFieldState extends State<CustomTextField> {
           vertical: 14,
         ),
         //! ✅ Error border (when validation fails) - same as enabledBorder but red
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: AppColorsManager.warningColor, // Red color
-            width: 1.3, // Same thickness
-          ),
-        ),
+        errorBorder: widget.errorBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: AppColorsManager.warningColor, // Red color
+                width: 1.3, // Same thickness
+              ),
+            ),
         //! ✅ Focused Error border (when user clicks on invalid field)
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: AppColorsManager.warningColor, // Red color
-            width: 1.3, // Same thickness
-          ),
-        ),
+        focusedErrorBorder: widget.focusedErrorBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: AppColorsManager.warningColor, // Red color
+                width: 1.3, // Same thickness
+              ),
+            ),
         //! ✅ Default border (Enabled)
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: AppColorsManager.placeHolderColor.withAlpha(150),
-            width: 1.3, // Same thickness
-          ),
-        ),
+        enabledBorder: widget.enabledBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: AppColorsManager.placeHolderColor.withAlpha(150),
+                width: 1.3, // Same thickness
+              ),
+            ),
 
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.r),
-          borderSide: BorderSide(
-            color: AppColorsManager.warningColor, // Red color
-            width: 1.3, // Same thickness
-          ),
-        ),
+        border: widget.border ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              borderSide: BorderSide(
+                color: AppColorsManager.warningColor, // Red color
+                width: 1.3, // Same thickness
+              ),
+            ),
         fillColor: AppColorsManager.textfieldInsideColor.withAlpha(100),
         filled: true,
         prefixIcon: widget.isPassword
