@@ -6,8 +6,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 
 import '../../../../../core/global/theming/color_manager.dart';
 
-class XRayDataViewAppBar extends StatelessWidget {
-  const XRayDataViewAppBar({
+class ViewAppBar extends StatelessWidget {
+  const ViewAppBar({
     super.key,
   });
 

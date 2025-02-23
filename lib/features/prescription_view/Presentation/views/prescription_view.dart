@@ -8,8 +8,8 @@ import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_dat
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
-class XRayView extends StatelessWidget {
-  const XRayView({super.key});
+class PrescriptionView extends StatelessWidget {
+  const PrescriptionView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +25,12 @@ class XRayView extends StatelessWidget {
             DataViewFiltersRow(
               filters: [
                 FilterConfig(
-                    title: 'السنة',
+                    title: 'التاريخ',
                     options:
                         List.generate(20, (index) => (2010 + index).toString()),
                     isYearFilter: true),
-                FilterConfig(
-                    title: 'نوع المنظار',
-                    options: ['الكل', 'المنظار العادي', 'المنظار الرقمي']),
-                FilterConfig(
-                    title: 'نوع الاجراء',
-                    options: ['الكل', 'الاشعة', 'التحاليل', 'المنظار']),
+                doctorsFilters,
+                doctorDepartmentFilters
               ],
               onApply: () {
                 // Handle apply button action
@@ -42,7 +38,7 @@ class XRayView extends StatelessWidget {
             ),
             verticalSpacing(16),
             MedicalItemGridView(
-              items: testData,
+              items: prescriptionMockData,
             ),
             verticalSpacing(16),
             XRayDataViewFooterRow(),
@@ -110,20 +106,73 @@ class XRayDataViewFooterRow extends StatelessWidget {
   }
 }
 
-List<MedicalTestData> testData = [
-  MedicalTestData(
-    title: "الرنين المغناطيسي",
+// Example usage with doctors' names and specialties
+final doctorDepartmentFilters = FilterConfig(
+  title: 'التخصص',
+  options: [
+    'قلب وأوعية دموية',
+    'عيون',
+    'أنف وأذن وحنجرة',
+    'أسنان',
+    'الجراحة العامة',
+    'طب الأطفال',
+    'الأمراض الجلدية',
+    'جراحة العظام',
+    'المسالك البولية',
+    'الأورام',
+    'الغدد الصماء',
+    'الجهاز الهضمي',
+    'جراحة التجميل',
+    'مخ وأعصاب',
+    'باطنة',
+    'الأسنان واللثة'
+  ],
+);
+final doctorsFilters = FilterConfig(
+  title: 'اسم الطبيب',
+  options: [
+    'د/ محمد أحمد',
+    'د/ أسامة مصطفى',
+    'د/ مريم صالح',
+    'د/ كريم محمود',
+    'د/ رشا محمود',
+    'د/ أحمد خالد',
+    'د/ مصطفى حسن',
+    'د/ نهى عبد العزيز',
+    'د/ علي إبراهيم',
+    'د/ سارة مجدي'
+  ],
+);
+
+List<PrescriptionData> prescriptionMockData = [
+  PrescriptionData(
+    doctorName: "د/ مصطفى محمود",
+    specialty: "أنف وأذن وحنجرة",
     date: "25/1/2025",
-    region: "العين",
-    reason: "صداع مزمن\nاحمرار وحكة مستمرة",
-    notes: "هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.",
+    condition: "التهاب جيوب أنفية",
   ),
-  MedicalTestData(
-    title: "الأشعة السينية",
-    date: "20/2/2025",
-    region: "الرئة",
-    reason: "ضيق تنفس وألم في الصدر",
-    notes: "نتائج الفحص قيد المراجعة.",
+  PrescriptionData(
+    doctorName: "د/ أحمد علي",
+    specialty: "باطنة",
+    date: "10/2/2025",
+    condition: "ارتفاع ضغط الدم",
   ),
-  // Add more test data here
+  PrescriptionData(
+    doctorName: "د/ سارة حسن",
+    specialty: "جلدية",
+    date: "5/3/2025",
+    condition: "أكزيما حادة",
+  ),
+  PrescriptionData(
+    doctorName: "د/ رشا محمود",
+    specialty: "قلب وأوعية دموية",
+    date: "15/4/2025",
+    condition: "صداع مزمن",
+  ),
+  PrescriptionData(
+    doctorName: "د/ محمد خالد",
+    specialty: "قلب وأوعية دموية",
+    date: "20/5/2025",
+    condition: "صداع مزمن",
+  ),
 ];
