@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
 
-class XRayDataGridView extends StatelessWidget {
-  const XRayDataGridView({
+class MedicalItemGridView extends StatelessWidget {
+  final List<dynamic> items;
+
+  const MedicalItemGridView({
     super.key,
+    required this.items,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GridView.builder(
-        itemCount: 4,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        itemCount: items.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
-          childAspectRatio: 0.65,
+          childAspectRatio: 0.85,
         ),
         itemBuilder: (context, index) {
-          return MedicalTestCard(
-            title: "الرنين المغناطيسي",
-            date: "25/1/2025",
-            region: "العين",
-            reason: "صداع مزمن\nاحمرار وحكة مستمرة",
-            notes: "هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.",
-          );
+          final item = items[index];
+          return MedicalItemCard(item: item);
         },
       ),
     );

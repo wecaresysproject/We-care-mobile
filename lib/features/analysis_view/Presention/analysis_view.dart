@@ -73,7 +73,7 @@ class AnalysisView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            XRayDataViewAppBar(),
+            ViewAppBar(),
             Row(
               children: [
                 SearchFilterWidget(

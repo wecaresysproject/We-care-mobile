@@ -4,94 +4,70 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
 
-class XRayDataViewFiltersRaw extends StatelessWidget {
-  const XRayDataViewFiltersRaw({
+class DataViewFiltersRow extends StatelessWidget {
+  final List<FilterConfig> filters;
+  final VoidCallback onApply;
+
+  const DataViewFiltersRow({
     super.key,
+    required this.filters,
+    required this.onApply,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SearchFilterWidget(
-          filterTitle: 'السنة',
-          isYearFilter: true,
-          filterList: List.generate(20, (index) => (2010 + index).toString()),
-        ),
+        for (var filter in filters) ...[
+          SearchFilterWidget(
+            filterTitle: filter.title,
+            filterList: filter.options,
+            isYearFilter: filter.isYearFilter,
+          ),
+          if (filter != filters.last) Spacer(),
+        ],
         Spacer(),
-        SearchFilterWidget(
-          filterTitle: 'نوع المنظار',
-          filterList: [
-            'الكل',
-            'المنظار العادي',
-            'المنظار الرقمي',
-            'المنظار الجراحي',
-            'منظار الأنف',
-            'منظار الأذن',
-            'منظار الحنجرة',
-            'منظار القولون',
-            'منظار المعدة',
-            'منظار الرحم',
-            'منظار الصدر',
-            'منظار المفاصل',
-            'منظار المثانة',
-            'منظار الكلى',
-            'منظار الأمعاء',
-            'منظار البطن',
-            'منظار الحنجرة',
-            'منظار القلب'
-          ],
-        ),
-        Spacer(),
-        SearchFilterWidget(
-          filterTitle: 'نوع الاجراء',
-          filterList: [
-            'الكل',
-            'الاشعة',
-            'التحاليل',
-            'المنظار',
-            'الأشعة السينية',
-            'تحليل الدم',
-            'تحليل البول',
-            'تحليل البراز',
-            'فحص السكري',
-            'اختبار الحساسية',
-            'اختبار الحمل',
-            'فحص القلب',
-          ],
-        ),
-        Spacer(),
-        FilterButton(title: 'عرض'),
+        FilterButton(title: 'عرض', onTap: onApply),
       ],
     );
   }
 }
 
+class FilterConfig {
+  final String title;
+  final List<String> options;
+  final bool isYearFilter;
+
+  FilterConfig({
+    required this.title,
+    required this.options,
+    this.isYearFilter = false,
+  });
+}
+
 class FilterButton extends StatelessWidget {
   final String title;
+  final VoidCallback onTap;
 
-  const FilterButton({super.key, required this.title});
+  const FilterButton({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        // TODO: Handle button action
-      },
+      onTap: onTap,
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
-        width: 58.w, // Fixed width
-        height: 40.h, // Fixed height
-        padding: EdgeInsets.only(top: 8.h, bottom: 10.h), // Custom padding
+        width: 58.w,
+        height: 40.h,
+        padding: EdgeInsets.only(top: 8.h, bottom: 10.h),
         decoration: BoxDecoration(
-          color: AppColorsManager.mainDarkBlue, // Updated Main Color
-          borderRadius: BorderRadius.circular(12.r), // Rounded corners
+          color: AppColorsManager.mainDarkBlue,
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        alignment: Alignment.center, // Center text
+        alignment: Alignment.center,
         child: Text(
-          title, // Dynamic title
-          style: AppTextStyles.font22WhiteWeight600
-              .copyWith(fontSize: 14), // Updated text style
+          title,
+          style: AppTextStyles.font22WhiteWeight600.copyWith(fontSize: 14),
           textAlign: TextAlign.center,
         ),
       ),
