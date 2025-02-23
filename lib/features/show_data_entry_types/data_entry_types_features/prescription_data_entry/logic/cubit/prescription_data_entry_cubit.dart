@@ -12,6 +12,10 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         );
 
   final personalNotesController = TextEditingController();
+  final symptomsAccompanyingComplaintController =
+      TextEditingController(); // الاعراض المصاحبة للشكوى
+
+  final formKey = GlobalKey<FormState>();
 
   /// Update Field Values
   void updatePrescriptionDate(String? date) {
@@ -19,28 +23,28 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateXRayBodyPart(String? bodyPart) {
-    emit(state.copyWith(xRayBodyPartSelection: bodyPart));
+  void updateDoctorName(String? doctorName) {
+    emit(state.copyWith(doctorNameSelection: doctorName));
     validateRequiredFields();
   }
 
-  void updateXRayType(String? type) {
-    emit(state.copyWith(xRayTypeSelection: type));
+  void updateDoctorSpeciality(String? speciality) {
+    emit(state.copyWith(doctorSpecialitySelection: speciality));
     validateRequiredFields();
   }
 
-  void updateXRayPicture(bool? isImagePicked) {
-    emit(state.copyWith(isXRayPictureSelected: isImagePicked));
+  void updatePrescriptionPicture(bool? isImagePicked) {
+    emit(state.copyWith(isPrescriptionPictureSelected: isImagePicked));
     validateRequiredFields();
   }
 
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.preceriptionDateSelection == null ||
-        state.xRayBodyPartSelection == null ||
-        state.xRayTypeSelection == null ||
-        state.isXRayPictureSelected == null ||
-        state.isXRayPictureSelected == false) {
+        state.doctorNameSelection == null ||
+        state.doctorSpecialitySelection == null ||
+        state.isPrescriptionPictureSelected == null ||
+        state.isPrescriptionPictureSelected == false) {
       emit(
         state.copyWith(
           isFormValidated: false,
@@ -53,5 +57,13 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    personalNotesController.dispose();
+    symptomsAccompanyingComplaintController.dispose();
+    formKey.currentState?.reset();
+    return super.close();
   }
 }

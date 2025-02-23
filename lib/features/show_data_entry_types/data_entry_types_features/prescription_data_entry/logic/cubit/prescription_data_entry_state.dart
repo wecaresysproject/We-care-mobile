@@ -6,18 +6,18 @@ class PrescriptionDataEntryState extends Equatable {
   final String? errorMessage;
   final bool isFormValidated;
   final String? preceriptionDateSelection;
-  final String? xRayBodyPartSelection;
-  final String? xRayTypeSelection;
-  final bool? isXRayPictureSelected;
+  final String? doctorNameSelection;
+  final String? doctorSpecialitySelection;
+  final bool? isPrescriptionPictureSelected;
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
     this.preceriptionDateSelection,
-    this.xRayBodyPartSelection,
-    this.xRayTypeSelection,
-    this.isXRayPictureSelected,
+    this.doctorNameSelection,
+    this.doctorSpecialitySelection,
+    this.isPrescriptionPictureSelected,
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -25,9 +25,9 @@ class PrescriptionDataEntryState extends Equatable {
           preceriptionDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           preceriptionDateSelection: null,
-          xRayBodyPartSelection: null,
-          xRayTypeSelection: null,
-          isXRayPictureSelected: null,
+          doctorNameSelection: null,
+          doctorSpecialitySelection: null,
+          isPrescriptionPictureSelected: null,
         );
 
   PrescriptionDataEntryState copyWith({
@@ -35,9 +35,9 @@ class PrescriptionDataEntryState extends Equatable {
     String? errorMessage,
     bool? isFormValidated,
     String? preceriptionDateSelection,
-    String? xRayBodyPartSelection,
-    String? xRayTypeSelection,
-    bool? isXRayPictureSelected,
+    String? doctorNameSelection,
+    String? doctorSpecialitySelection,
+    bool? isPrescriptionPictureSelected,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -46,11 +46,11 @@ class PrescriptionDataEntryState extends Equatable {
       isFormValidated: isFormValidated ?? this.isFormValidated,
       preceriptionDateSelection:
           preceriptionDateSelection ?? this.preceriptionDateSelection,
-      xRayBodyPartSelection:
-          xRayBodyPartSelection ?? this.xRayBodyPartSelection,
-      xRayTypeSelection: xRayTypeSelection ?? this.xRayTypeSelection,
-      isXRayPictureSelected:
-          isXRayPictureSelected ?? this.isXRayPictureSelected,
+      doctorNameSelection: doctorNameSelection ?? this.doctorNameSelection,
+      doctorSpecialitySelection:
+          doctorSpecialitySelection ?? this.doctorSpecialitySelection,
+      isPrescriptionPictureSelected:
+          isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
     );
   }
 
@@ -60,8 +60,8 @@ class PrescriptionDataEntryState extends Equatable {
         errorMessage,
         isFormValidated,
         preceriptionDateSelection,
-        xRayBodyPartSelection,
-        xRayTypeSelection,
-        isXRayPictureSelected,
+        doctorNameSelection,
+        doctorSpecialitySelection,
+        isPrescriptionPictureSelected,
       ];
 }

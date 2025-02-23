@@ -29,7 +29,7 @@ class WordLimitTextFieldState extends State<WordLimitTextField> {
           heightFactor: 0,
           alignment: !isArabic() ? Alignment.bottomRight : Alignment.bottomLeft,
           child: Text(
-            "${countWords(widget.controller!.text)} / $maxWords ${context.translate.word}",
+            "${countWords(widget.controller!.text)}/$maxWords ${context.translate.word}",
             textAlign: TextAlign.right,
             style: AppTextStyles.font14whiteWeight600.copyWith(
               color: countWords(widget.controller!.text) > maxWords

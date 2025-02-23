@@ -24,7 +24,7 @@ class AppCustomButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor:
-            isEnabled ? AppColorsManager.mainDarkBlue : Colors.grey,
+            isEnabled ? AppColorsManager.mainDarkBlue : Color(0xff2F6C9F),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
