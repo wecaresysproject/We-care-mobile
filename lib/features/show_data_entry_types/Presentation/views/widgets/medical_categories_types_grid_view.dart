@@ -6,8 +6,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 
-class DataEntryCategoriesGridView extends StatelessWidget {
-  const DataEntryCategoriesGridView({
+class MedicalCategoriesTrypesGridView extends StatelessWidget {
+  const MedicalCategoriesTrypesGridView({
     super.key,
   });
 
@@ -15,8 +15,9 @@ class DataEntryCategoriesGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: GridView.builder(
-        itemCount: dataEntryCategories.length,
+        itemCount: categoriesView.length,
         physics: const BouncingScrollPhysics(),
+        clipBehavior: Clip.none,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisExtent:
@@ -26,10 +27,11 @@ class DataEntryCategoriesGridView extends StatelessWidget {
           mainAxisSpacing: 32.h,
         ),
         itemBuilder: (context, index) {
-          return CategoryItem(
-            title: dataEntryCategories[index]["title"]!,
-            imagePath: dataEntryCategories[index]["image"]!,
-            routeName: dataEntryCategories[index]["route"]!,
+          return MedicalCategoryItem(
+            title: categoriesView[index]["title"]!,
+            imagePath: categoriesView[index]["image"]!,
+            routeName: categoriesView[index]["route"]!,
+            notificationCount: index % 2 == 0 ? 1 : 10,
           );
         },
       ),
@@ -37,16 +39,18 @@ class DataEntryCategoriesGridView extends StatelessWidget {
   }
 }
 
-class CategoryItem extends StatelessWidget {
+class MedicalCategoryItem extends StatelessWidget {
   final String title;
   final String imagePath;
   final String routeName;
+  final int? notificationCount; // Added notification count
 
-  const CategoryItem({
+  const MedicalCategoryItem({
     super.key,
     required this.title,
     required this.imagePath,
     required this.routeName,
+    this.notificationCount, // Optional parameter for the badge
   });
 
   @override
@@ -60,39 +64,88 @@ class CategoryItem extends StatelessWidget {
             onTap: () async {
               await context.pushNamed(routeName);
             },
-            child: Container(
-              width: 99.w,
-              height: 88.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40.r),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFCDE1F8),
-                    Color(0xFFE7E9EB),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(75),
-                    offset: const Offset(3, 4),
-                    blurRadius: 4,
+            child: Stack(
+              clipBehavior: Clip.none, // Allows badge to overflow
+              children: [
+                // Main Category Container
+                Container(
+                  width: 99.w,
+                  height: 88.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40.r),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFCDE1F8),
+                        Color(0xFFE7E9EB),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(75),
+                        offset: const Offset(3, 4),
+                        blurRadius: 4,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 24.w),
-              child: Center(
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.contain,
-                  height: 51.h,
-                  width: 52.w,
+                  padding:
+                      EdgeInsets.symmetric(vertical: 18.h, horizontal: 24.w),
+                  child: Center(
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.contain,
+                      height: 51.h,
+                      width: 52.w,
+                    ),
+                  ),
                 ),
-              ),
+
+                // Notification Badge (Only shows if notificationCount > 0)
+                if (notificationCount != null && notificationCount! > 0)
+                  Positioned(
+                    top: 60.h,
+                    right: -5.w,
+                    child: Container(
+                      height: 30.31.h,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 0.h,
+                      ),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: AppColorsManager.mainDarkBlue,
+                        borderRadius: BorderRadius.circular(14.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(
+                                0.31), // Shadow color (31% opacity)
+                            offset: Offset(3, 4), // X: 3, Y: 4
+                            blurRadius: 4, // Blur 4
+                            spreadRadius: 0, // No spread
+                          ),
+                        ],
+                        border: Border.all(
+                          color: AppColorsManager.backGroundColor,
+                          width: 2.w,
+                        ),
+                      ),
+                      child: Text(
+                        '$notificationCount',
+                        style: AppTextStyles.font20blackWeight600.copyWith(
+                          color: Colors.white,
+                          fontSize: 22.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
+
           verticalSpacing(8.h),
+
+          // Category Title
           Text(
             title,
             textAlign: TextAlign.center,
@@ -102,7 +155,7 @@ class CategoryItem extends StatelessWidget {
               fontSize: 14.sp,
               color: AppColorsManager.textColor,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -110,7 +163,7 @@ class CategoryItem extends StatelessWidget {
 }
 
 // Categories with Named Routes
-final List<Map<String, String>> dataEntryCategories = [
+final List<Map<String, String>> categoriesView = [
   {
     "title": "الأدوية",
     "image": "assets/images/medicines_icon.png",
@@ -134,7 +187,7 @@ final List<Map<String, String>> dataEntryCategories = [
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
-    "route": Routes.xrayCategoryDataEntryView,
+    "route": Routes.xRayDataView,
   },
   {
     "title": "العمليات\nالجراحية",

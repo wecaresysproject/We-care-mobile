@@ -10,7 +10,9 @@ class Routes {
 
   static const homeTabView = '/homeTabView';
   static const viewOrEditMedicalRecord = '/viewOrEditMedicalRecord';
-  static const dataEntryTypesView = '/dateEntryTypesView';
+  static const medicalDataEntryTypesView =
+      '/medicalDataEntryTypesView'; // إدخال
+  static const medicalCategoriesTypesView = '/medicalCategoriesTypesView'; //عرض
   static const xrayCategoryDataEntryView = '/xrayCategoryDataEntryView';
 
   static const otpView = '/otpView';

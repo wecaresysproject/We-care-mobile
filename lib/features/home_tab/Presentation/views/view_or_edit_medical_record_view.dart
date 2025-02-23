@@ -43,7 +43,7 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                   verticalSpacing(60),
                   CustomImageWithTextButtonHomeWidget(
                     onTap: () {
-                      context.pushNamed(Routes.dataEntryTypesView);
+                      context.pushNamed(Routes.medicalDataEntryTypesView);
                     },
                     imagePath: "assets/images/edit_icon.png",
                     text: isArabic()
@@ -56,7 +56,7 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                   verticalSpacing(80),
                   CustomImageWithTextButtonHomeWidget(
                     onTap: () {
-                      context.pushNamed(Routes.xRayDataView);
+                      context.pushNamed(Routes.medicalCategoriesTypesView);
                     },
                     imagePath: "assets/images/show_medical_history.png",
                     text:

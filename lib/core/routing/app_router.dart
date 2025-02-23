@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
 import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
 import '../../features/login/Presentation/views/login_view.dart';
 import '../../features/otp/Presentation/views/otp_view.dart';
-import '../../features/show_data_entry_types/Presentation/views/data_entry_types_view.dart';
+import '../../features/show_data_entry_types/Presentation/views/medical_categories_data_entry_types_view.dart';
 import '../../features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import '../../features/sign_up/Presentation/views/sign_up_view.dart';
 import '../../features/user_type/Presentation/views/user_type_view.dart';
@@ -65,9 +66,13 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const ViewOrEditMedicalRecord(),
         );
-      case Routes.dataEntryTypesView:
+      case Routes.medicalDataEntryTypesView:
         return MaterialPageRoute(
-          builder: (context) => DataEntryCategoryTypesView(),
+          builder: (context) => MedicalDataEntryCategoryTypesView(),
+        );
+      case Routes.medicalCategoriesTypesView:
+        return MaterialPageRoute(
+          builder: (context) => MedicalCategoriesTypesView(),
         );
       case Routes.xrayCategoryDataEntryView:
         return MaterialPageRoute(

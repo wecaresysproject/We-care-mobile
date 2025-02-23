@@ -7,8 +7,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/widgets/basic_data_category_widget.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/widgets/data_entry_categories_grid_view.dart';
 
-class DataEntryCategoryTypesView extends StatelessWidget {
-  const DataEntryCategoryTypesView({super.key});
+class MedicalDataEntryCategoryTypesView extends StatelessWidget {
+  const MedicalDataEntryCategoryTypesView({super.key});
 
   @override
   Widget build(BuildContext context) {
