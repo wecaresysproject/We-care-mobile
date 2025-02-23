@@ -68,6 +68,13 @@ class AppTextStyles {
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,//cairo
     color: AppColorsManager.textColor,
   );
+  static final customTextStyle = TextStyle(
+    fontSize: 14, // 14px
+    fontWeight: FontWeight.w600, // 600 weight
+    height: 17 / 14, // Line height (17px)
+    letterSpacing: 0, // 0% letter spacing
+    color: const Color.fromARGB(216, 1, 36, 64), // Black text color
+  );
   TextStyle generateNewTextStyle({
     required double fontSize,
     FontWeight? fontWeight,

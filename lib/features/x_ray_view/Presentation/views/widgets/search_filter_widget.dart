@@ -131,11 +131,11 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
                 widget.filterTitle,
                 style: AppTextStyles.font12blackWeight400,
               ),
-              horizontalSpacing(4),
+              horizontalSpacing(6),
               Icon(
                 _selectedIndex != -1 ? Icons.expand_less : Icons.expand_more,
                 color: AppColorsManager.mainDarkBlue,
-                size: 12,
+                size: 22.sp,
               ),
             ],
           ),
