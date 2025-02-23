@@ -7,12 +7,12 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/date_time_picker_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/user_selection_container_widget.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/widgets/word_limit_text_field_widget.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
 class XRayDataEntryFormFields extends StatefulWidget {
