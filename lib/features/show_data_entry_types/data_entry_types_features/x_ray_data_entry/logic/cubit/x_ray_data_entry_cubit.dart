@@ -12,6 +12,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         );
 
   final personalNotesController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   /// Update Field Values
   void updateXRayDate(String? date) {
@@ -53,5 +54,12 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    personalNotesController.dispose();
+    formKey.currentState?.reset();
+    return super.close();
   }
 }
