@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 
 class DataEntryCategoriesGridView extends StatelessWidget {
@@ -20,7 +19,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisExtent:
-              146.h, //! Fixed height for each item until text overflows
+              148.h, //! Fixed height for each item until text overflows
           childAspectRatio: .85,
           crossAxisSpacing: 13.w,
           mainAxisSpacing: 32.h,
@@ -51,60 +50,60 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 99.w,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              await context.pushNamed(routeName);
-            },
-            child: Container(
-              width: 99.w,
-              height: 88.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40.r),
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFCDE1F8),
-                    Color(0xFFE7E9EB),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(75),
-                    offset: const Offset(3, 4),
-                    blurRadius: 4,
-                  ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () async {
+            await context.pushNamed(routeName);
+          },
+          child: Container(
+            width: 99.w,
+            height: 88.h,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(40.r),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFCDE1F8),
+                  Color(0xFFE7E9EB),
                 ],
               ),
-              padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 24.w),
-              child: Center(
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.contain,
-                  height: 51.h,
-                  width: 52.w,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(75),
+                  offset: const Offset(3, 4),
+                  blurRadius: 4,
                 ),
+              ],
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: 18.h,
+              horizontal: 24.w,
+            ),
+            child: Center(
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+                height: 51.h,
+                width: 52.w,
               ),
             ),
           ),
-          verticalSpacing(8.h),
-          Text(
+        ),
+        verticalSpacing(8.h),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
             title,
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.font22WhiteWeight600.copyWith(
-              fontSize: 14.sp,
-              color: AppColorsManager.textColor,
-            ),
-          )
-        ],
-      ),
+            style: AppTextStyles.font18blackWight500,
+          ),
+        )
+      ],
     );
   }
 }
@@ -124,12 +123,12 @@ final List<Map<String, String>> dataEntryCategories = [
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
-    "route": "/doctor_routine"
+    "route": Routes.prescriptionCategoryDataEntryView,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
-    "route": "/radiology"
+    "route": Routes.testAnalsisDataEntryView,
   },
   {
     "title": "الأشعة",

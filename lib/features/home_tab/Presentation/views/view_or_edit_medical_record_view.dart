@@ -23,50 +23,47 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Center(
-              child: Column(
-                children: [
-                  CustomAppBarWidget(
-                    haveBackArrow: true,
+            child: Column(
+              children: [
+                CustomAppBarWidget(
+                  haveBackArrow: true,
+                ),
+                verticalSpacing(32),
+                Text(
+                  context.translate.medicalRecordManagement,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                    color: AppColorsManager.textColor,
+                    fontFamily: "Rubik",
+                    fontWeight: FontWeightHelper.medium,
                   ),
-                  verticalSpacing(32),
-                  Text(
-                    context.translate.medicalRecordManagement,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                      color: AppColorsManager.textColor,
-                      fontFamily: "Rubik",
-                      fontWeight: FontWeightHelper.medium,
-                    ),
+                ),
+                verticalSpacing(60),
+                CustomImageWithTextButtonHomeWidget(
+                  onTap: () {
+                    context.pushNamed(Routes.medicalDataEntryTypesView);
+                  },
+                  imagePath: "assets/images/edit_icon.png",
+                  text: isArabic()
+                      ? "ادخال بيانات\nسجلك الطبي"
+                      : "Enter medical\n record data",
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
+                    fontSize: 24.sp,
                   ),
-                  verticalSpacing(60),
-                  CustomImageWithTextButtonHomeWidget(
-                    onTap: () {
-                      context.pushNamed(Routes.medicalDataEntryTypesView);
-                    },
-                    imagePath: "assets/images/edit_icon.png",
-                    text: isArabic()
-                        ? "ادخال بيانات\nسجلك الطبي"
-                        : "Enter medical\n record data",
-                    textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
-                      fontSize: 24.sp,
-                    ),
+                ),
+                verticalSpacing(88),
+                CustomImageWithTextButtonHomeWidget(
+                  onTap: () {
+                    context.pushNamed(Routes.medicalCategoriesTypesView);
+                  },
+                  imagePath: "assets/images/show_medical_history.png",
+                  text: isArabic() ? "عرض سجلك\nالطبي" : "View medical\nrecord",
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
+                    fontSize: 24.sp,
                   ),
-                  verticalSpacing(80),
-                  CustomImageWithTextButtonHomeWidget(
-                    onTap: () {
-                      context.pushNamed(Routes.medicalCategoriesTypesView);
-                    },
-                    imagePath: "assets/images/show_medical_history.png",
-                    text:
-                        isArabic() ? "عرض سجلك\nالطبي" : "View medical\nrecord",
-                    textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

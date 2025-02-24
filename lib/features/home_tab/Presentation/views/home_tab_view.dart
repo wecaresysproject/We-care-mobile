@@ -31,104 +31,89 @@ class HomeTabView extends StatelessWidget {
               Image.asset("assets/images/panner.png"),
               Image.asset("assets/images/indicators.png"),
               verticalSpacing(16),
-              SizedBox(
-                height: 100.h,
-                width: double.infinity,
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  childAspectRatio: 4,
-                  physics: const NeverScrollableScrollPhysics(),
-                  mainAxisSpacing: 16.w,
-                  crossAxisSpacing: 16.h,
-                  children: [
-                    CustomElevatedButton(
-                      text: "ملفى الطبى",
-                      onPressed: () {},
-                    ),
-                    CustomElevatedButton(
-                      text: "اختبار توافق أدويتى",
-                      onPressed: () {},
-                    ),
-                    CustomElevatedButton(
-                      text: "زيارة طبية للمنزل",
-                      onPressed: () {},
-                    ),
-                    CustomElevatedButton(
-                      text: "طبيبك أونلاين",
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
+              GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: 4 / 1,
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 16.w,
+                crossAxisSpacing: 16.h,
+                children: [
+                  CustomElevatedButton(
+                    text: "ملفى الطبى",
+                    onPressed: () {},
+                  ),
+                  CustomElevatedButton(
+                    text: "اختبار توافق أدويتى",
+                    onPressed: () {},
+                  ),
+                  CustomElevatedButton(
+                    text: "زيارة طبية للمنزل",
+                    onPressed: () {},
+                  ),
+                  CustomElevatedButton(
+                    text: "طبيبك أونلاين",
+                    onPressed: () {},
+                  ),
+                ],
               ),
-              verticalSpacing(32),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  // Calculate the width of each grid item
-                  double totalSpacing =
-                      (4 - 1) * 16.w; // if crossAxisSpacing is 16.w
-                  double itemWidth = (constraints.maxWidth - totalSpacing) / 4;
-                  // Suppose your item needs a height of about 1.5 times its width
-                  double itemHeight = itemWidth * 1.5;
+              verticalSpacing(15),
+              GridView.count(
+                crossAxisCount: 4,
+                childAspectRatio: 1 / 1.7,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.zero,
+                crossAxisSpacing: 13.w,
+                children: [
+                  HomeSecondCategoryItem(
+                    categoryName: "استشر الذكاء\nالاصطناعي",
+                    imagePath: "assets/images/ai_image.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "امراضى\nالوراثيه",
+                    imagePath: "assets/images/icon_family.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "لست\nوحدك",
+                    imagePath: "assets/images/support_rooms_icon.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "تقاريرى\nالطبية",
+                    imagePath: "assets/images/medical_file_icon.png",
+                    onTap: () {
+                      context.pushNamedWithSettingRootNavigator(
+                        Routes.viewOrEditMedicalRecord,
+                      );
+                    },
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "جودة\nالحياة",
+                    imagePath: "assets/images/quality_of_life.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "بحث عن\nطبيب",
+                    imagePath: "assets/images/search_for_doctor_icon.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "تقييم\nالاطباء",
+                    imagePath: "assets/images/doctors_evaluation.png",
+                    onTap: () {},
+                  ),
+                  HomeSecondCategoryItem(
+                    categoryName: "الاعدادات\n",
+                    imagePath: "assets/images/setting_icon.png",
+                    onTap: () {},
+                  ),
+                ],
+              ),
 
-                  return SizedBox(
-                    height: 215
-                        .h, // or you can remove the fixed height to let it adapt
-                    child: GridView.count(
-                      crossAxisCount: 4,
-                      childAspectRatio: itemWidth / itemHeight,
-                      physics: const NeverScrollableScrollPhysics(),
-                      cacheExtent: 0.0,
-                      crossAxisSpacing: 13.w,
-                      children: [
-                        HomeSecondCategoryItem(
-                          categoryName: "استشر الذكاء\nالاصطناعي",
-                          imagePath: "assets/images/ai_image.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "امراضى\nالوراثيه",
-                          imagePath: "assets/images/icon_family.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "لست\nوحدك",
-                          imagePath: "assets/images/support_rooms_icon.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "تقاريرى\nالطبية",
-                          imagePath: "assets/images/medical_file_icon.png",
-                          onTap: () {
-                            context.pushNamedWithSettingRootNavigator(
-                              Routes.viewOrEditMedicalRecord,
-                            );
-                          },
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "جودة\nالحياة",
-                          imagePath: "assets/images/quality_of_life.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "بحث عن\nطبيب",
-                          imagePath: "assets/images/search_for_doctor_icon.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "تقييم\nالاطباء",
-                          imagePath: "assets/images/doctors_evaluation.png",
-                          onTap: () {},
-                        ),
-                        HomeSecondCategoryItem(
-                          categoryName: "الاعدادات\n",
-                          imagePath: "assets/images/setting_icon.png",
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
               verticalSpacing(30),
               Image.asset("assets/images/home_screen_videos.png"),
 

@@ -21,7 +21,7 @@ class MedicalCategoriesTypesView extends StatelessWidget {
             haveBackArrow: true,
           ),
           verticalSpacing(24),
-          MedicalCategoriesTrypesGridView(),
+          MedicalCategoriesTypesGridView(),
         ],
       ).paddingSymmetricHorizontal(16),
     );

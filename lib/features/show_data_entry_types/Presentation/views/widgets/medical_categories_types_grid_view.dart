@@ -6,8 +6,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 
-class MedicalCategoriesTrypesGridView extends StatelessWidget {
-  const MedicalCategoriesTrypesGridView({
+class MedicalCategoriesTypesGridView extends StatelessWidget {
+  const MedicalCategoriesTypesGridView({
     super.key,
   });
 
@@ -21,7 +21,7 @@ class MedicalCategoriesTrypesGridView extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
           mainAxisExtent:
-              146.h, //! Fixed height for each item until text overflows
+              148.h, //! Fixed height for each item until text overflows
           childAspectRatio: .85,
           crossAxisSpacing: 13.w,
           mainAxisSpacing: 32.h,
@@ -55,109 +55,105 @@ class MedicalCategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 99.w,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onTap: () async {
-              await context.pushNamed(routeName);
-            },
-            child: Stack(
-              clipBehavior: Clip.none, // Allows badge to overflow
-              children: [
-                // Main Category Container
-                Container(
-                  width: 99.w,
-                  height: 88.h,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40.r),
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Color(0xFFCDE1F8),
-                        Color(0xFFE7E9EB),
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(75),
-                        offset: const Offset(3, 4),
-                        blurRadius: 4,
-                      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () async {
+            await context.pushNamed(routeName);
+          },
+          child: Stack(
+            clipBehavior: Clip.none, // Allows badge to overflow
+            children: [
+              // Main Category Container
+              Container(
+                width: 99.w,
+                height: 88.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40.r),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFCDE1F8),
+                      Color(0xFFE7E9EB),
                     ],
                   ),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 18.h, horizontal: 24.w),
-                  child: Center(
-                    child: Image.asset(
-                      imagePath,
-                      fit: BoxFit.contain,
-                      height: 51.h,
-                      width: 52.w,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(75),
+                      offset: const Offset(3, 4),
+                      blurRadius: 4,
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 24.w),
+                child: Center(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    height: 51.h,
+                    width: 52.w,
+                  ),
+                ),
+              ),
+
+              // Notification Badge (Only shows if notificationCount > 0)
+              if (notificationCount != null && notificationCount! > 0)
+                Positioned(
+                  top: 60.h,
+                  right: -5.w,
+                  child: Container(
+                    height: 30.31.h,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 0.h,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColorsManager.mainDarkBlue,
+                      borderRadius: BorderRadius.circular(14.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black
+                              .withOpacity(0.31), // Shadow color (31% opacity)
+                          offset: Offset(3, 4), // X: 3, Y: 4
+                          blurRadius: 4, // Blur 4
+                          spreadRadius: 0, // No spread
+                        ),
+                      ],
+                      border: Border.all(
+                        color: AppColorsManager.backGroundColor,
+                        width: 2.w,
+                      ),
+                    ),
+                    child: Text(
+                      '$notificationCount',
+                      style: AppTextStyles.font20blackWeight600.copyWith(
+                        color: Colors.white,
+                        fontSize: 22.sp,
+                      ),
                     ),
                   ),
                 ),
-
-                // Notification Badge (Only shows if notificationCount > 0)
-                if (notificationCount != null && notificationCount! > 0)
-                  Positioned(
-                    top: 60.h,
-                    right: -5.w,
-                    child: Container(
-                      height: 30.31.h,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                        vertical: 0.h,
-                      ),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppColorsManager.mainDarkBlue,
-                        borderRadius: BorderRadius.circular(14.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(
-                                0.31), // Shadow color (31% opacity)
-                            offset: Offset(3, 4), // X: 3, Y: 4
-                            blurRadius: 4, // Blur 4
-                            spreadRadius: 0, // No spread
-                          ),
-                        ],
-                        border: Border.all(
-                          color: AppColorsManager.backGroundColor,
-                          width: 2.w,
-                        ),
-                      ),
-                      child: Text(
-                        '$notificationCount',
-                        style: AppTextStyles.font20blackWeight600.copyWith(
-                          color: Colors.white,
-                          fontSize: 22.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
+        ),
 
-          verticalSpacing(8.h),
+        verticalSpacing(8.h),
 
-          // Category Title
-          Text(
+        // Category Title
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
             title,
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.font22WhiteWeight600.copyWith(
-              fontSize: 14.sp,
-              color: AppColorsManager.textColor,
-            ),
+            style: AppTextStyles.font18blackWight500,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -177,12 +173,12 @@ final List<Map<String, String>> categoriesView = [
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
-    "route": "/doctor_routine"
+    "route": Routes.prescriptionView,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
-    "route": "/radiology"
+    "route": Routes.medicalAnalysisView,
   },
   {
     "title": "الأشعة",

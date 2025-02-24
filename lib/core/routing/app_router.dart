@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/features/analysis_view/Presention/analysis_view.dart';
+import 'package:we_care/features/prescription_view/Presentation/views/prescription_details_view.dart';
+import 'package:we_care/features/prescription_view/Presentation/views/prescription_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
@@ -77,6 +82,27 @@ class AppRouter {
       case Routes.xrayCategoryDataEntryView:
         return MaterialPageRoute(
           builder: (context) => XrayCategoryDataEntryView(),
+        );
+
+      case Routes.prescriptionView:
+        return MaterialPageRoute(
+          builder: (context) => const PrescriptionView(),
+        );
+      case Routes.prescriptionCategoryDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => PrescriptionCategoryDataEntryView(),
+        );
+      case Routes.prescriptionDetailsView:
+        return MaterialPageRoute(
+          builder: (context) => PrescriptionDetailsView(),
+        );
+      case Routes.medicalAnalysisView:
+        return MaterialPageRoute(
+          builder: (context) => MedicalAnalysisView(),
+        );
+      case Routes.testAnalsisDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => TestAnalysisDataEntryView(),
         );
 
       case Routes.xRayDataView:

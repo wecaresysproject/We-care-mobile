@@ -14,6 +14,12 @@ class Routes {
       '/medicalDataEntryTypesView'; // إدخال
   static const medicalCategoriesTypesView = '/medicalCategoriesTypesView'; //عرض
   static const xrayCategoryDataEntryView = '/xrayCategoryDataEntryView';
+  static const prescriptionCategoryDataEntryView =
+      '/prescriptionCategoryDataEntryView';
+  static const prescriptionDetailsView = '/prescriptionDetailsView';
+  static const medicalAnalysisView = '/medicalAnalysisView';
+  static const prescriptionView = '/prescriptionView';
+  static const testAnalsisDataEntryView = '/testAnalsisDataEntryView';
 
   static const otpView = '/otpView';
   static const createNewPasswordView = '/createNewPasswordView';

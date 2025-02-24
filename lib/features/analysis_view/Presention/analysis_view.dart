@@ -8,7 +8,7 @@ import 'package:we_care/features/x_ray_view/Presentation/views/widgets/search_fi
 import 'package:we_care/features/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 import 'package:we_care/features/x_ray_view/Presentation/views/x_ray_view.dart';
 
-class AnalysisView extends StatelessWidget {
+class MedicalAnalysisView extends StatelessWidget {
   final List<Map<String, String>> tableData = [
     {
       "date": "4/7/2024",
@@ -61,7 +61,7 @@ class AnalysisView extends StatelessWidget {
     },
   ];
 
-  AnalysisView({super.key});
+  MedicalAnalysisView({super.key});
 
   @override
   Widget build(BuildContext context) {

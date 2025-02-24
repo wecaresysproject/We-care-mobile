@@ -21,21 +21,23 @@ class CustomElevatedButton extends StatelessWidget {
           105.w,
           20.h,
         ),
-        padding: EdgeInsets.symmetric(
-          vertical: 9.h,
-          horizontal: 11.w,
-        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(
             16.r,
           ),
         ),
       ),
-      child: Text(
-        text,
-        style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-          fontWeight: FontWeight.w600,
-          color: Color(0xffFEFEFE),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Color(0xffFEFEFE),
+          ),
         ),
       ),
     );

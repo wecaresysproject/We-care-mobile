@@ -53,9 +53,13 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
               cacheHeight: 1000,
             ),
             horizontalSpacing(20),
-            Text(
-              text,
-              style: AppTextStyles.font22WhiteWeight600,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font22WhiteWeight600,
+              ),
             ),
           ],
         ),
