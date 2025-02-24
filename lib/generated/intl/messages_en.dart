@@ -177,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "word": MessageLookupByLibrary.simpleMessage("Word"),
     "word_limit_exceeded": MessageLookupByLibrary.simpleMessage(
-      "You have exceeded the limit of 150 words!",
+      "You have exceeded the limit of 100 words!",
     ),
   };
 }

@@ -33,7 +33,7 @@ Future<void> main() async {
     (_) {
       runApp(
         DevicePreview(
-          enabled: false,
+          enabled: true,
           builder: (context) => WeCareApp(
             appRouter: AppRouter(),
           ),

@@ -69,5 +69,5 @@
     "medical_consultations": "استشارات طبيه",
     "required_field":"هذا الحقل مطلوب",
     "word": "كلمة",
-    "word_limit_exceeded":"لقد تجاوزت الحد الادنى من 150 كلمة!"
+    "word_limit_exceeded":"لقد تجاوزت الحد الادنى من 100 كلمة!"
 }

@@ -33,9 +33,10 @@ class PrescriptionDetailsView extends StatelessWidget {
             ]),
             Row(children: [
               DetailsViewInfoTile(
-                  title: "اسم الطبيب",
-                  value: " د/ احمد هاني",
-                  icon: 'assets/images/doctor_name.png'),
+                title: "اسم الطبيب",
+                value: " د/ احمد هاني",
+                icon: 'assets/images/doctor_name.png',
+              ),
               Spacer(),
               DetailsViewInfoTile(
                   title: "التخصص ",
@@ -43,7 +44,9 @@ class PrescriptionDetailsView extends StatelessWidget {
                   icon: 'assets/images/doctor_icon.png'),
             ]),
             DetailsViewImageWithTitleTile(
-                image: 'assets/images/images 2.png', title: "صورة الروشتة"),
+              image: 'assets/images/images_2.png',
+              title: "صورة الروشتة",
+            ),
             DetailsViewInfoTile(
                 title: "الأعراض",
                 value: "ارتفاع درجة الحرارة / صداع مزمن",

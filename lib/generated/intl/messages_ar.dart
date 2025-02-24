@@ -157,7 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "word": MessageLookupByLibrary.simpleMessage("كلمة"),
     "word_limit_exceeded": MessageLookupByLibrary.simpleMessage(
-      "لقد تجاوزت الحد الادنى من 150 كلمة!",
+      "لقد تجاوزت الحد الادنى من 100 كلمة!",
     ),
   };
 }

@@ -695,10 +695,10 @@ class S {
     return Intl.message('Word', name: 'word', desc: '', args: []);
   }
 
-  /// `You have exceeded the limit of 150 words!`
+  /// `You have exceeded the limit of 100 words!`
   String get word_limit_exceeded {
     return Intl.message(
-      'You have exceeded the limit of 150 words!',
+      'You have exceeded the limit of 100 words!',
       name: 'word_limit_exceeded',
       desc: '',
       args: [],
