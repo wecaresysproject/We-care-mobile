@@ -114,7 +114,7 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
       child: CompositedTransformTarget(
         link: _layerLink,
         child: Container(
-          padding: EdgeInsets.fromLTRB(12.w, 8.h, 6.w, 10.h),
+          padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 10.h),
           decoration: BoxDecoration(
             color: AppColorsManager.secondaryColor,
             borderRadius: BorderRadius.circular(12.r),
@@ -129,9 +129,10 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
             children: [
               Text(
                 widget.filterTitle,
-                style: AppTextStyles.font12blackWeight400,
+                style: AppTextStyles.font12blackWeight400.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              horizontalSpacing(6),
               Icon(
                 _selectedIndex != -1 ? Icons.expand_less : Icons.expand_more,
                 color: AppColorsManager.mainDarkBlue,

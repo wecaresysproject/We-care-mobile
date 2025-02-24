@@ -23,7 +23,7 @@ class DetailsViewAppBar extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.font20blackWeight600,
+            style: AppTextStyles.font20blackWeight600.copyWith(fontSize: 21.sp),
           ),
         ),
         horizontalSpacing(24.h)

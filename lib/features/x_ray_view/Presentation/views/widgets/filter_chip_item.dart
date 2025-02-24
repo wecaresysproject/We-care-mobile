@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -40,7 +41,7 @@ class FilterChipItem extends StatelessWidget {
               if (isSelected)
                 Image.asset('assets/images/check_icon.png',
                     width: 10, height: 10),
-              if (isSelected) horizontalSpacing(2.5), // Avoid spacing issues
+              if (isSelected) horizontalSpacing(2), // Avoid spacing issues
               Flexible(
                 child: Text(
                   label,

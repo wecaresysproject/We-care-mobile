@@ -117,8 +117,10 @@ class MedicalAnalysisView extends StatelessWidget {
             Color(0xFF014C8A)), // Header Background Color
         headingTextStyle: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold), // Header Text
-        columnSpacing: 23.w,
-        dataRowHeight: 60,
+        columnSpacing: 22.w,
+        dataRowHeight: 70.h,
+        horizontalMargin: 10,
+        showBottomBorder: true,
         border: TableBorder.all(
           borderRadius: BorderRadius.circular(16.r),
           color: Color(0xff909090),
@@ -134,7 +136,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
-                    fontSize: 15.sp),
+                    fontSize: 16.sp),
               ))),
           DataColumn(
               headingRowAlignment: MainAxisAlignment.center,
@@ -145,7 +147,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
-                    fontSize: 15.sp),
+                    fontSize: 16.sp),
               ))),
           DataColumn(
               headingRowAlignment: MainAxisAlignment.center,
@@ -156,7 +158,7 @@ class MedicalAnalysisView extends StatelessWidget {
                   style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
-                      fontSize: 15.sp),
+                      fontSize: 16.sp),
                 ),
               )),
           DataColumn(
@@ -168,7 +170,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
-                    fontSize: 15.sp),
+                    fontSize: 16.sp),
               ))),
           DataColumn(
               headingRowAlignment: MainAxisAlignment.center,
@@ -179,7 +181,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                     fontWeight: FontWeight.w500,
                     color: Colors.white,
-                    fontSize: 15.sp),
+                    fontSize: 16.sp),
               ))),
         ],
         rows: tableData.map((data) {
@@ -192,7 +194,7 @@ class MedicalAnalysisView extends StatelessWidget {
                     style: TextStyle(
                       color: AppColorsManager.mainDarkBlue,
                       decoration: TextDecoration.underline,
-                      fontSize: 14.sp,
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                     )),
               ),
@@ -211,7 +213,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -222,7 +224,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -234,7 +236,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -247,7 +249,7 @@ class MedicalAnalysisView extends StatelessWidget {
                     style: TextStyle(
                         color: AppColorsManager.mainDarkBlue,
                         decoration: TextDecoration.underline,
-                        fontSize: 14.sp,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w600)),
               ),
             ),
