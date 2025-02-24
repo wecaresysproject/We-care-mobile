@@ -14,7 +14,7 @@ class PrescriptionDetailsView extends StatelessWidget {
         toolbarHeight: 0.h,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
         child: Column(
           spacing: 16.h,
           children: [

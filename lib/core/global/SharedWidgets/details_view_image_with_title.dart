@@ -19,6 +19,7 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
           title,
           style: AppTextStyles.font16DarkGreyWeight400.copyWith(
             color: AppColorsManager.mainDarkBlue,
+            fontSize: 18.sp,
           ),
         ),
         verticalSpacing(8),

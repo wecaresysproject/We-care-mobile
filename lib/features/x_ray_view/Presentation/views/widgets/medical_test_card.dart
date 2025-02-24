@@ -47,7 +47,16 @@ class MedicalItemCard extends StatelessWidget {
                     ),
                     child: Text(
                       item.title,
-                      style: AppTextStyles.font14BlueWeight700,
+                      style: AppTextStyles.font14BlueWeight700.copyWith(
+                        fontWeight: FontWeight.w600,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1.5, 1.5),
+                            blurRadius: 3,
+                            color: Color(0x29000000), // Black with 16% opacity
+                          ),
+                        ],
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -68,19 +77,23 @@ class MedicalItemCard extends StatelessWidget {
                 _infoRow("المرض:",
                         item is PrescriptionData ? item.condition : "-")
                     .visible(item is PrescriptionData),
-                verticalSpacing(6),
-                Flexible(
-                  child: TextButton(
-                    onPressed: onTap,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero, // Removes default padding
-                      backgroundColor: Colors.white,
-                      side: BorderSide(
-                          color: AppColorsManager.mainDarkBlue, width: 1.6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
+                Spacer(),
+                InkWell(
+                  onTap: onTap,
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Container(
+                    // Matching the 'TextButton' style
+                    decoration: BoxDecoration(
+                      color: Colors
+                          .transparent, // same as backgroundColor: Colors.transparent
+                      border: Border.all(
+                        color: AppColorsManager.mainDarkBlue,
+                        width: 1.6,
                       ),
+                      borderRadius: BorderRadius.circular(16.r),
                     ),
+                    // InkWell doesn't have its own default padding, so if you need padding, add it here
+                    padding: EdgeInsets.symmetric(vertical: 4.h),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -98,7 +111,7 @@ class MedicalItemCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -110,7 +123,7 @@ class MedicalItemCard extends StatelessWidget {
   Widget _infoRow(String label, String value) {
     return RichText(
       overflow: TextOverflow.ellipsis,
-      maxLines: 1,
+      maxLines: 2,
       text: TextSpan(
         children: [
           TextSpan(
