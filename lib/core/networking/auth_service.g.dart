@@ -140,36 +140,6 @@ class _AuthApiServices implements AuthApiServices {
   }
 
   @override
-  Future<ForgetPasswordResponseModel> forgetPassword(
-    ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(forgetPasswordRequestBody.toJson());
-    final _options = _setStreamType<ForgetPasswordResponseModel>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/forgot-password',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ForgetPasswordResponseModel _value;
-    try {
-      _value = ForgetPasswordResponseModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
   Future<CreateNewPasswordResponseModel> createNewPassword(
     CreateNewPasswordRequestBody createNewPasswordRequestBody,
   ) async {
@@ -192,6 +162,36 @@ class _AuthApiServices implements AuthApiServices {
     late CreateNewPasswordResponseModel _value;
     try {
       _value = CreateNewPasswordResponseModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ForgetPasswordResponseModel> forgetPassword(
+    ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(forgetPasswordRequestBody.toJson());
+    final _options = _setStreamType<ForgetPasswordResponseModel>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/forgot-password',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ForgetPasswordResponseModel _value;
+    try {
+      _value = ForgetPasswordResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

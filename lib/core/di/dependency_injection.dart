@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
@@ -12,7 +13,6 @@ import '../../features/login/Data/Repostory/login_repo.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/otp/Data/repo/otp_repository.dart';
 import '../../features/otp/logic/otp_cubit.dart';
-import '../../features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 import '../../features/sign_up/Data/repos/sign_up_repo.dart';
 import '../../features/sign_up/logic/sign_up_cubit.dart';
 import '../global/Helpers/image_quality_detector.dart';

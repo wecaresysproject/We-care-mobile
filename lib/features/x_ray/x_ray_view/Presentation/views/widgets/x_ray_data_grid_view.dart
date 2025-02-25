@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/features/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
+
+import 'medical_test_card.dart';
 
 class MedicalItemGridView extends StatelessWidget {
   final List<dynamic> items;

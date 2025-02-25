@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 import 'core/global/Helpers/functions.dart';
 import 'core/global/app_strings.dart';
@@ -40,7 +41,7 @@ class WeCareApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          // initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
+          initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
           theme: ThemeData(
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file
@@ -67,7 +68,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const CustomBottomNavBar(),
+          // home: const CustomBottomNavBar(),
         );
       },
     );

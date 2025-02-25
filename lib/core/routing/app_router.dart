@@ -5,6 +5,7 @@ import 'package:we_care/features/prescription_view/Presentation/views/prescripti
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
