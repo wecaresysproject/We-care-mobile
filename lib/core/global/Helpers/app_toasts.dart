@@ -8,6 +8,7 @@ Future<void> showError(String error) async {
     msg: error, //TODO: translate error messages after backend meeting later
     backgroundColor: AppColorsManager.warningColor,
     toastLength: Toast.LENGTH_LONG,
+    timeInSecForIosWeb: 1,
     gravity: ToastGravity.BOTTOM,
   );
 }
@@ -19,6 +20,7 @@ Future<void> showSuccess(String message) async {
     textColor: Colors.white,
     msg: message, //TODO: translate error messages after backend meeting later
     toastLength: Toast.LENGTH_LONG,
+    timeInSecForIosWeb: 1,
     gravity: ToastGravity.BOTTOM,
   );
 }

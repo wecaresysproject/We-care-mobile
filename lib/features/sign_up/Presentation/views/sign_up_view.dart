@@ -59,7 +59,7 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
                 verticalSpacing(32),
                 // Submit Button
-                submitSignUpBlocBuilder(),
+                submitSignUpBlocConsumer(),
                 verticalSpacing(24),
                 // Already have an account
                 CustomUnderlinedRichTextWidget(
@@ -78,7 +78,7 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  Widget submitSignUpBlocBuilder() {
+  Widget submitSignUpBlocConsumer() {
     return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) async {
         if (state.signupStatus == RequestStatus.success) {

@@ -79,6 +79,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "homeTab": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "home_visit_service": MessageLookupByLibrary.simpleMessage("كشف منزلى"),
+    "image_not_clear": MessageLookupByLibrary.simpleMessage(
+      "الصورة غير واضحة، يرجى إعادة المحاولة",
+    ),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage("شركات التأمين"),
     "life_quality_cat3": MessageLookupByLibrary.simpleMessage(
       "توصيات لجودة الحياة",
@@ -101,6 +104,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "medical_summary_cat2": MessageLookupByLibrary.simpleMessage("ملخص طبى"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
     "new_password": MessageLookupByLibrary.simpleMessage("كلمة السر الجديدة"),
+    "no_data_entered": MessageLookupByLibrary.simpleMessage(
+      "لم يتم ادخال بيانات",
+    ),
     "ok": MessageLookupByLibrary.simpleMessage("موافق"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -136,6 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
     ),
     "search_text": MessageLookupByLibrary.simpleMessage("بحث متقدم"),
+    "send": MessageLookupByLibrary.simpleMessage("ارسال"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "الهيئات الداعمة",

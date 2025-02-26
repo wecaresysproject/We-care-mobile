@@ -16,7 +16,6 @@ Future<void> main() async {
   await ScreenUtil.ensureScreenSize();
   await checkIfLoggedInUser();
 
-  // Set system UI overlay style
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // Light status bar
@@ -33,7 +32,7 @@ Future<void> main() async {
     (_) {
       runApp(
         DevicePreview(
-          enabled: true,
+          enabled: false,
           builder: (context) => WeCareApp(
             appRouter: AppRouter(),
           ),

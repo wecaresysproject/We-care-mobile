@@ -4,6 +4,8 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/networking/dio_serices.dart';
+import 'package:we_care/features/login/Data/models/login_response_model.dart';
 
 import '../../../../core/Database/cach_helper.dart';
 import '../../../../core/global/Helpers/app_enums.dart';
@@ -34,8 +36,7 @@ class LoginCubit extends Cubit<LoginState> {
     );
 
     response.when(success: (response) async {
-      await CacheHelper.setSecuredString(
-          AuthApiConstants.userTokenKey, response.userData.token);
+      await saveUserToken(response);
       emit(
         state.copyWith(
           message: response.message,
@@ -48,6 +49,12 @@ class LoginCubit extends Cubit<LoginState> {
         loginStatus: RequestStatus.failure,
       ));
     });
+  }
+
+  Future<void> saveUserToken(LoginResponseModel response) async {
+    await CacheHelper.setSecuredString(
+        AuthApiConstants.userTokenKey, response.userData.token);
+    DioServices.setTokenIntoHeaderAfterLogin(response.userData.token);
   }
 
   void onDialCodeChanged(CountryCode country) {

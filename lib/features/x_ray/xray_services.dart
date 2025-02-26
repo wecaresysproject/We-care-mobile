@@ -1,7 +1,17 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+<<<<<<< HEAD
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
+=======
+import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
+import 'package:we_care/features/x_ray/data/models/xray_image_response_model.dart';
+import 'package:we_care/features/x_ray/data/models/xray_report_response_model.dart';
+>>>>>>> e8e36dc (implement upload xray report picked)
 import 'package:we_care/features/x_ray/xray_api_constants.dart';
+
+import 'data/models/body_parts_response_model.dart';
 
 part 'xray_services.g.dart';
 
@@ -9,6 +19,7 @@ part 'xray_services.g.dart';
 abstract class XRayApiServices {
   factory XRayApiServices(Dio dio, {String? baseUrl}) = _XRayApiServices;
 
+<<<<<<< HEAD
   @GET(XrayApiConstants.getUserRadiologysData)
   Future<UserRadiologyDataResponse> getUserRadiologyData(
       @Query("language") String language, @Query("UserType") String userType);
@@ -28,4 +39,30 @@ abstract class XRayApiServices {
       @Query("year") int? year,
       @Query("radioType") String? radioType,
       @Query("bodyPart") String? bodyPart);
+=======
+  @GET(XrayApiConstants.getBodyParts)
+  Future<List<BodyPartsResponseModel>> getBodyPartsData();
+  @GET(XrayApiConstants.getRadiologyTypeByBodyPartId)
+  Future<dynamic> getRadiologyTypeByBodyPartId(@Query('id') String id);
+  @GET(XrayApiConstants.getCountries)
+  Future<dynamic> getCountries(@Query('language') String language);
+  @POST(XrayApiConstants.postRadiologyDataEntry)
+  Future<dynamic> postRadiologyDataEntry(
+    @Body() XrayDataEntryRequestBodyModel xrayDataEntryRequestBodyModel,
+  );
+  @MultiPart()
+  @POST(XrayApiConstants.uploadXrayImageEndpoint)
+  Future<XrayImageResponseModel> uploadRadiologyImage(
+    @Part() File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+  @MultiPart()
+  @POST(XrayApiConstants.uploadXrayReportEndpoint)
+  Future<XrayReportResponseModel> uploadRadiologyReportImage(
+    @Part(name: 'report') File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+>>>>>>> e8e36dc (implement upload xray report picked)
 }

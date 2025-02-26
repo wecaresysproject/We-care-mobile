@@ -14,7 +14,8 @@ class XrayCategoryDataEntryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<XRayDataEntryCubit>(
-      create: (context) => getIt<XRayDataEntryCubit>(),
+      create: (context) =>
+          getIt<XRayDataEntryCubit>()..intialRequestsForXRayDataEntry(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

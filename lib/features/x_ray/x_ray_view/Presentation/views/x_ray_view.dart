@@ -10,6 +10,7 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_r
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
 
+import 'widgets/medical_test_card.dart';
 import 'widgets/x_ray_data_filters_row.dart';
 import 'widgets/x_ray_data_grid_view.dart';
 import 'x_ray_details_view.dart';

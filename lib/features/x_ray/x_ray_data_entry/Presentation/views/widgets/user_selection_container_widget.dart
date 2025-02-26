@@ -80,12 +80,19 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  selectedItem ?? widget.containerHintText,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: selectedItem != null
-                        ? AppColorsManager.textColor
-                        : null,
+                // Wrapping the text inside an Expanded widget to ensure it doesn't overflow
+                Expanded(
+                  child: Text(
+                    selectedItem ?? widget.containerHintText,
+                    style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      color: selectedItem != null
+                          ? AppColorsManager.textColor
+                          : null,
+                    ),
+                    overflow:
+                        TextOverflow.ellipsis, // Handles long text with "..."
+                    maxLines: 1, // Limits to one line to prevent height issues
+                    softWrap: true, // Prevents wrapping to a new line
                   ),
                 ),
                 Image.asset(
@@ -173,63 +180,79 @@ void showSelectionBottomSheet({
                 verticalSpacing(20),
 
                 // Options List
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: options.length,
-                  itemBuilder: (context, index) {
-                    bool isSelected = selectedItem == options[index];
+                SizedBox(
+                  height: context.screenHeight * 0.5,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (context, index) {
+                      bool isSelected = selectedItem == options[index];
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedItem = options[index]; // Update selection
-                        });
-                        onItemSelected(options[index]); // Return selected item
-                        Navigator.pop(context); // Close bottom sheet
-                      },
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 11,
-                              vertical: 12,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  options[index],
-                                  style: AppTextStyles.font16DarkGreyWeight400
-                                      .copyWith(
-                                    color: isSelected
-                                        ? AppColorsManager.mainDarkBlue
-                                        : Color(0xff555555),
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedItem = options[index]; // Update selection
+                          });
+                          onItemSelected(
+                              options[index]); // Return selected item
+                          Navigator.pop(context); // Close bottom sheet
+                        },
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 11,
+                                vertical: 12,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    // Ensures text does not overflow
+                                    child: Text(
+                                      options[index],
+                                      overflow: TextOverflow
+                                          .ellipsis, // Prevents overflow, adds "..."
+                                      maxLines: 2, // Limits to one line
+                                      softWrap:
+                                          false, // Prevents text from wrapping
+                                      style: AppTextStyles
+                                          .font16DarkGreyWeight400
+                                          .copyWith(
+                                        color: isSelected
+                                            ? AppColorsManager.mainDarkBlue
+                                            : Color(0xff555555),
+                                        fontWeight: isSelected
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                      textAlign: isArabic()
+                                          ? TextAlign.right
+                                          : TextAlign.left,
+                                    ),
                                   ),
-                                  textAlign: TextAlign.left,
-                                ),
-                                isSelected
-                                    ? Image.asset(
-                                        "assets/images/check_right.png",
-                                        height: 15,
-                                        width: 20,
-                                      )
-                                    : SizedBox.shrink(),
-                              ],
+                                  isSelected
+                                      ? Image.asset(
+                                          "assets/images/check_right.png",
+                                          height: 15,
+                                          width: 20,
+                                        )
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
                             ),
-                          ),
-                          Divider(
-                            height: 1,
-                            thickness: 0.3,
-                            indent: 14,
-                            color: AppColorsManager.placeHolderColor,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                            Divider(
+                              height: 1,
+                              thickness: 0.3,
+                              indent: 14,
+                              color: AppColorsManager.placeHolderColor,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
                 // Add New Option Button (Optional)

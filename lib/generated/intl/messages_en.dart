@@ -88,6 +88,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "homeTab": MessageLookupByLibrary.simpleMessage("Home"),
     "home_visit_service": MessageLookupByLibrary.simpleMessage("Home Visit"),
+    "image_not_clear": MessageLookupByLibrary.simpleMessage(
+      "The image is unclear, please try again.",
+    ),
     "insuranceCompanies": MessageLookupByLibrary.simpleMessage(
       "Insurance Companies",
     ),
@@ -112,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "new_password": MessageLookupByLibrary.simpleMessage("New Password"),
+    "no_data_entered": MessageLookupByLibrary.simpleMessage("No data"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
@@ -152,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Enter your phone number, and we will send you a code to reset your password.",
     ),
     "search_text": MessageLookupByLibrary.simpleMessage("Advanced Search"),
+    "send": MessageLookupByLibrary.simpleMessage("Send"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
       "Supporting Entities",
