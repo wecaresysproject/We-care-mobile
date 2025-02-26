@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/generated/l10n.dart';
 
 import 'medical_test_card.dart';
 
 class MedicalItemGridView extends StatelessWidget {
   final List<dynamic> items;
 
-  final void Function() onTap;
+  final void Function(String id) onTap;
 
   const MedicalItemGridView({
     super.key,

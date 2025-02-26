@@ -3,7 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
+import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
+import 'package:we_care/features/x_ray/xray_services.dart';
 
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
@@ -66,6 +69,10 @@ void setupAppCubits() {
   getIt.registerFactory<PrescriptionDataEntryCubit>(
     () => PrescriptionDataEntryCubit(),
   );
+
+  getIt.registerFactory<XRayViewCubit>(
+    () => XRayViewCubit(getIt<XRayViewRepo>()),
+  );
 }
 
 void setupAppRepos() {
@@ -96,6 +103,10 @@ void setupAppRepos() {
       getIt<AuthApiServices>(),
     ),
   );
+
+  getIt.registerLazySingleton<XRayViewRepo>(
+    () => XRayViewRepo(getIt<XRayApiServices>()),
+  );
 }
 
 void setupAppServices() {
@@ -107,5 +118,9 @@ void setupAppServices() {
 
   getIt.registerLazySingleton<ImagePickerService>(
     () => ImagePickerService(),
+  );
+
+  getIt.registerLazySingleton<XRayApiServices>(
+    () => XRayApiServices(dio),
   );
 }
