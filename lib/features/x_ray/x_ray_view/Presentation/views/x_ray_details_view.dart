@@ -90,12 +90,12 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
                   DetailsViewImageWithTitleTile(
-                      image: radiologyData.radiologyPhoto == ''
-                          ? 'assets/images/x_ray_sample.png'
-                          : radiologyData.radiologyPhoto,
+                      image: radiologyData.radiologyPhoto,
                       title: "صورة الأشعة"),
                   DetailsViewImageWithTitleTile(
-                      image: radiologyData.report, title: "صورة التقرير"),
+                      //  image: radiologyData.report,
+                      image: '',
+                      title: "صورة التقرير"),
                 ],
               ),
             ),

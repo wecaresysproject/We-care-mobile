@@ -116,7 +116,7 @@ class SurgeryDetailsView extends StatelessWidget {
                 icon: 'assets/images/notes_icon.png',
                 isExpanded: true),
             DetailsViewImageWithTitleTile(
-              image: 'assets/images/report.png',
+              image: '',
               title: "التقرير الطبي",
             ),
           ],
