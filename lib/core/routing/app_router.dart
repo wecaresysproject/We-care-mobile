@@ -6,6 +6,7 @@ import 'package:we_care/features/show_data_entry_types/Presentation/views/medica
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
+import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
@@ -13,10 +14,8 @@ import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_v
 import '../../features/login/Presentation/views/login_view.dart';
 import '../../features/otp/Presentation/views/otp_view.dart';
 import '../../features/show_data_entry_types/Presentation/views/medical_categories_data_entry_types_view.dart';
-import '../../features/show_data_entry_types/data_entry_types_features/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import '../../features/sign_up/Presentation/views/sign_up_view.dart';
 import '../../features/user_type/Presentation/views/user_type_view.dart';
-import '../../features/x_ray_view/Presentation/views/x_ray_view.dart';
 import '../global/SharedWidgets/bottom_nav_bar.dart';
 import '../global/app_strings.dart';
 import 'routes.dart';

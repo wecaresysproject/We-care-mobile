@@ -41,7 +41,7 @@ class PrescriptionView extends StatelessWidget {
             verticalSpacing(16),
             MedicalItemGridView(
                 items: prescriptionMockData,
-                onTap: () async {
+                onTap: (id) async {
                   await context.pushNamed(Routes.prescriptionDetailsView);
                 }),
             verticalSpacing(16),

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
+import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
 
 import 'widgets/x_ray_data_filters_row.dart';
 import 'widgets/x_ray_data_grid_view.dart';
@@ -14,45 +19,60 @@ class XRayView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(
-                    title: 'السنة',
-                    options:
-                        List.generate(20, (index) => (2010 + index).toString()),
-                    isYearFilter: true),
-                FilterConfig(
-                    title: 'نوع المنظار',
-                    options: ['الكل', 'المنظار العادي', 'المنظار الرقمي']),
-                FilterConfig(
-                    title: 'نوع الاجراء',
-                    options: ['الكل', 'الاشعة', 'التحاليل', 'المنظار']),
-              ],
-              onApply: () {
-                // Handle apply button action
-              },
-            ),
-            verticalSpacing(16),
-            MedicalItemGridView(
-              items: testData,
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => XRayDetailsView(),
-                  )),
-            ),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-          ],
+    return BlocProvider<XRayViewCubit>(
+      create: (context) => getIt<XRayViewCubit>()..emitUserRadiologyData(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            children: [
+              ViewAppBar(),
+              DataViewFiltersRow(
+                filters: [
+                  FilterConfig(
+                      title: 'السنة',
+                      options: List.generate(
+                          20, (index) => (2010 + index).toString()),
+                      isYearFilter: true),
+                  FilterConfig(
+                      title: 'نوع الاشعة',
+                      options: ['الكل', 'المنظار العادي', 'المنظار الرقمي']),
+                  FilterConfig(
+                      title: ' منطفة الاشعة',
+                      options: ['الكل', 'الاشعة', 'التحاليل', 'المنظار']),
+                ],
+                onApply: () {
+                  // Handle apply button action
+                },
+              ),
+              verticalSpacing(16),
+              BlocBuilder<XRayViewCubit, XRayViewState>(
+                builder: (context, state) {
+                  if (state.requestStatus == RequestStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.requestStatus == RequestStatus.success) {
+                    return MedicalItemGridView(
+                      items: state.userRadiologyData,
+                      onTap: (id) => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => XRayDetailsView(
+                              documentId: id,
+                            ),
+                          )),
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+              verticalSpacing(16),
+              XRayDataViewFooterRow(),
+            ],
+          ),
         ),
       ),
     );
@@ -115,21 +135,3 @@ class XRayDataViewFooterRow extends StatelessWidget {
     );
   }
 }
-
-List<MedicalTestData> testData = [
-  MedicalTestData(
-    title: "الرنين المغناطيسي",
-    date: "25/1/2025",
-    region: "العين",
-    reason: "صداع مزمن\nاحمرار وحكة مستمرة",
-    notes: "هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.",
-  ),
-  MedicalTestData(
-    title: "الأشعة السينية",
-    date: "20/2/2025",
-    region: "الرئة",
-    reason: "ضيق تنفس وألم في الصدر",
-    notes: "نتائج الفحص قيد المراجعة.",
-  ),
-  // Add more test data here
-];
