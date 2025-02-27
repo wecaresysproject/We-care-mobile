@@ -24,8 +24,14 @@ class DataViewFiltersRow extends StatelessWidget {
             filterList: filter.options,
             isYearFilter: filter.isYearFilter,
           ),
-          Spacer(),
+          if (filter != filters.last)
+            Spacer(
+              flex: 1,
+            ),
         ],
+        Spacer(
+          flex: 4,
+        ),
         FilterButton(title: 'عرض', onTap: onApply),
       ],
     );

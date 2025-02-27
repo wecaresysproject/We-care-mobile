@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-
-import 'medical_test_card.dart';
+import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
 
 class MedicalItemGridView extends StatelessWidget {
   final List<dynamic> items;
-
   final void Function(String id) onTap;
+  final List<Map<String, String>> Function(dynamic item) infoRowBuilder;
+  final String Function(dynamic item) titleBuilder;
 
   const MedicalItemGridView({
     super.key,
     required this.items,
     required this.onTap,
+    required this.infoRowBuilder,
+    required this.titleBuilder,
   });
 
   @override
@@ -27,7 +29,9 @@ class MedicalItemGridView extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = items[index];
           return MedicalItemCard(
-            item: item,
+            title: titleBuilder(item), // Get the title dynamically
+            itemId: item.id,
+            infoRows: infoRowBuilder(item), // Get the info rows dynamically
             onTap: onTap,
           );
         },

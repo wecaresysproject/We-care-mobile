@@ -81,10 +81,8 @@ class AnalysisDetailsView extends StatelessWidget {
                   value: "مصر",
                   icon: 'assets/images/country_icon.png'),
             ]),
-            DetailsViewImageWithTitleTile(
-                image: 'assets/images/analysis.png', title: "صورة التحليل"),
-            DetailsViewImageWithTitleTile(
-                image: 'assets/images/report.png', title: "التقرير الطبي"),
+            DetailsViewImageWithTitleTile(image: '', title: "صورة التحليل"),
+            DetailsViewImageWithTitleTile(image: '', title: "التقرير الطبي"),
           ],
         ),
       ),

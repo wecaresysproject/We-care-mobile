@@ -44,7 +44,7 @@ class PrescriptionDetailsView extends StatelessWidget {
                   icon: 'assets/images/doctor_icon.png'),
             ]),
             DetailsViewImageWithTitleTile(
-              image: 'assets/images/images_2.png',
+              image: '',
               title: "صورة الروشتة",
             ),
             DetailsViewInfoTile(
