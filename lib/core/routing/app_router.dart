@@ -5,6 +5,7 @@ import 'package:we_care/features/prescription_view/Presentation/views/prescripti
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
+import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
@@ -108,6 +109,10 @@ class AppRouter {
       case Routes.xRayDataView:
         return MaterialPageRoute(
           builder: (context) => const XRayView(),
+        );
+      case Routes.surgeriesView:
+        return MaterialPageRoute(
+          builder: (context) => const SurgeriesView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

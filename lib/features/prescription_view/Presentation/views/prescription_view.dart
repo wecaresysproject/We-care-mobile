@@ -40,10 +40,18 @@ class PrescriptionView extends StatelessWidget {
             ),
             verticalSpacing(16),
             MedicalItemGridView(
-                items: prescriptionMockData,
-                onTap: (id) async {
-                  await context.pushNamed(Routes.prescriptionDetailsView);
-                }),
+              items: prescriptionMockData,
+              onTap: (id) async {
+                await context.pushNamed(Routes.prescriptionDetailsView);
+              },
+              titleBuilder: (item) =>
+                  item.title, // Extract the title dynamically
+              infoRowBuilder: (item) => [
+                {"title": "التخصص:", "value": item.specialty},
+                {"title": "التاريخ:", "value": item.date},
+                {"title": "المرض:", "value": item.condition},
+              ],
+            ),
             verticalSpacing(16),
             XRayDataViewFooterRow(),
           ],
@@ -150,36 +158,42 @@ final doctorsFilters = FilterConfig(
 
 List<PrescriptionData> prescriptionMockData = [
   PrescriptionData(
+    id: '1',
     title: "د/ مصطفى محمود",
     specialty: "أنف وأذن وحنجرة",
     date: "25/1/2025",
     condition: "التهاب جيوب أنفية",
   ),
   PrescriptionData(
+    id: '2',
     title: "د/ أحمد علي",
     specialty: "باطنة",
     date: "10/2/2025",
     condition: "ارتفاع ضغط الدم",
   ),
   PrescriptionData(
+    id: '3',
     title: "د/ سارة حسن",
     specialty: "جلدية",
     date: "5/3/2025",
     condition: "أكزيما حادة",
   ),
   PrescriptionData(
+    id: '4',
     title: "د/ رشا محمود",
     specialty: "قلب وأوعية دموية",
     date: "15/4/2025",
     condition: "صداع مزمن",
   ),
   PrescriptionData(
+    id: '5',
     title: "د/ محمد خالد",
     specialty: "قلب وأوعية دموية",
     date: "20/5/2025",
     condition: "صداع مزمن",
   ),
   PrescriptionData(
+    id: '6',
     title: "د/ مصطفى حسن",
     specialty: "قلب وأوعية دموية",
     date: "25/6/2025",

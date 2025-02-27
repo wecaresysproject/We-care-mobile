@@ -5,13 +5,18 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MedicalItemCard extends StatelessWidget {
-  final dynamic item;
+  final String title;
+  final String itemId;
+  final List<Map<String, String>> infoRows;
+
   final void Function(String id)? onTap;
 
   const MedicalItemCard({
     super.key,
-    required this.item,
     required this.onTap,
+    required this.title,
+    required this.infoRows,
+    required this.itemId,
   });
 
   @override
@@ -35,41 +40,44 @@ class MedicalItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(
-                    color: AppColorsManager.mainDarkBlue,
-                    width: 0.6,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: AppColorsManager.mainDarkBlue,
+                      width: 0.6,
+                    ),
                   ),
-                ),
-                child: Text(
-                  item.radioType,
-                  style: AppTextStyles.font14BlueWeight700.copyWith(
-                    fontWeight: FontWeight.w600,
-                    shadows: [
-                      Shadow(
-                        offset: Offset(1.5, 1.5),
-                        blurRadius: 3,
-                        color: Color(0x29000000),
-                      ),
-                    ],
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    style: AppTextStyles.font14BlueWeight700.copyWith(
+                      fontWeight: FontWeight.w600,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.5, 1.5),
+                          blurRadius: 3,
+                          color: Color(0x29000000),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),
             verticalSpacing(4),
-            _infoRow("التاريخ:", item.radiologyDate),
-            _infoRow("منطقة الأشعة:", item.bodyPart),
-            _infoRow("دواعي الفحص:", item.symptoms ?? 'لم يتم ادخاله'),
-            _infoRow("ملاحظات:", item.radiologyNote),
+            ...infoRows
+                .map((row) => _infoRow(row["title"]!, row["value"]!))
+                .toList(),
             const Spacer(
               flex: 3,
             ),
             InkWell(
-              onTap: () => onTap!(item.id),
+              onTap: () => onTap!(itemId),
               borderRadius: BorderRadius.circular(16.r),
               child: Container(
                 decoration: BoxDecoration(
@@ -129,12 +137,14 @@ class MedicalItemCard extends StatelessWidget {
 }
 
 class PrescriptionData {
+  final String id;
   final String title;
   final String specialty;
   final String date;
   final String condition;
 
   PrescriptionData({
+    required this.id,
     required this.title,
     required this.specialty,
     required this.date,

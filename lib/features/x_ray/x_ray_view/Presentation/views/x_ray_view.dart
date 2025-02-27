@@ -63,6 +63,16 @@ class XRayView extends StatelessWidget {
                               documentId: id,
                             ),
                           )),
+                      titleBuilder: (item) => item.radioType,
+                      infoRowBuilder: (item) => [
+                        {"title": "التاريخ:", "value": item.radiologyDate},
+                        {"title": "منطقة الأشعة:", "value": item.bodyPart},
+                        {
+                          "title": "دواعي الفحص:",
+                          "value": item.symptoms ?? 'لم يتم ادخاله'
+                        },
+                        {"title": "ملاحظات:", "value": item.radiologyNote},
+                      ],
                     );
                   } else {
                     return Container();
