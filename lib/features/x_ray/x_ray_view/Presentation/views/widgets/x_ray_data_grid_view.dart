@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/generated/l10n.dart';
 
 import 'medical_test_card.dart';
 

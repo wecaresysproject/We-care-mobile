@@ -113,7 +113,7 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
       child: CompositedTransformTarget(
         link: _layerLink,
         child: Container(
-          padding: EdgeInsets.fromLTRB(8.w, 8.h, 8.w, 10.h),
+          padding: EdgeInsets.fromLTRB(4.w, 8.h, 4.w, 8.h),
           decoration: BoxDecoration(
             color: AppColorsManager.secondaryColor,
             borderRadius: BorderRadius.circular(12.r),

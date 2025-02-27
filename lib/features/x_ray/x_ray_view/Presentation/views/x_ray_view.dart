@@ -38,10 +38,10 @@ class XRayView extends StatelessWidget {
                           20, (index) => (2010 + index).toString()),
                       isYearFilter: true),
                   FilterConfig(
-                      title: 'نوع المنظار',
+                      title: 'نوع الاشعة',
                       options: ['الكل', 'المنظار العادي', 'المنظار الرقمي']),
                   FilterConfig(
-                      title: 'نوع الاجراء',
+                      title: ' منطفة الاشعة',
                       options: ['الكل', 'الاشعة', 'التحاليل', 'المنظار']),
                 ],
                 onApply: () {

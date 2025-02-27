@@ -19,8 +19,8 @@ class MedicalItemCard extends StatelessWidget {
     return FittedBox(
       fit: BoxFit.fill,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.48,
-        height: MediaQuery.of(context).size.height * 0.273,
+        width: MediaQuery.of(context).size.width * 0.5,
+        height: MediaQuery.of(context).size.height * 0.3,
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
@@ -63,9 +63,11 @@ class MedicalItemCard extends StatelessWidget {
             verticalSpacing(4),
             _infoRow("التاريخ:", item.radiologyDate),
             _infoRow("منطقة الأشعة:", item.bodyPart),
-            _infoRow("دواعي الفحص:", item.symptoms),
+            _infoRow("دواعي الفحص:", item.symptoms ?? 'لم يتم ادخاله'),
             _infoRow("ملاحظات:", item.radiologyNote),
-            const Spacer(),
+            const Spacer(
+              flex: 3,
+            ),
             InkWell(
               onTap: () => onTap!(item.id),
               borderRadius: BorderRadius.circular(16.r),
@@ -97,6 +99,9 @@ class MedicalItemCard extends StatelessWidget {
                 ),
               ),
             ),
+            Spacer(
+              flex: 1,
+            ),
           ],
         ),
       ),
@@ -106,7 +111,7 @@ class MedicalItemCard extends StatelessWidget {
   Widget _infoRow(String label, String value) {
     return RichText(
       overflow: TextOverflow.ellipsis,
-      maxLines: 1,
+      maxLines: label == "ملاحظات:" ? 2 : 1,
       text: TextSpan(
         children: [
           TextSpan(
