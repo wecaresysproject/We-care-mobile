@@ -23,7 +23,7 @@ class DioServices {
               (X509Certificate cert, String host, int port) =>
                   true; // Accept all certificates
 
-    Duration timeOut = const Duration(seconds: 30);
+    Duration timeOut = const Duration(seconds: 100);
 
     if (dio == null) {
       dio = Dio();

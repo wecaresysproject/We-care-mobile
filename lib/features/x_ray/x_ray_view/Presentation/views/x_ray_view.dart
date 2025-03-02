@@ -20,68 +20,90 @@ class XRayView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<XRayViewCubit>(
-      create: (context) => getIt<XRayViewCubit>()..emitUserRadiologyData(),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0.h,
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Column(
-            children: [
-              ViewAppBar(),
-              DataViewFiltersRow(
-                filters: [
-                  FilterConfig(
-                      title: 'السنة',
-                      options: List.generate(
-                          20, (index) => (2010 + index).toString()),
-                      isYearFilter: true),
-                  FilterConfig(
-                      title: 'نوع الاشعة',
-                      options: ['الكل', 'المنظار العادي', 'المنظار الرقمي']),
-                  FilterConfig(
-                      title: ' منطفة الاشعة',
-                      options: ['الكل', 'الاشعة', 'التحاليل', 'المنظار']),
-                ],
-                onApply: () {
-                  // Handle apply button action
-                },
-              ),
-              verticalSpacing(16),
-              BlocBuilder<XRayViewCubit, XRayViewState>(
-                builder: (context, state) {
-                  if (state.requestStatus == RequestStatus.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state.requestStatus == RequestStatus.success) {
-                    return MedicalItemGridView(
-                      items: state.userRadiologyData,
-                      onTap: (id) => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => XRayDetailsView(
-                              documentId: id,
-                            ),
-                          )),
-                      titleBuilder: (item) => item.radioType,
-                      infoRowBuilder: (item) => [
-                        {"title": "التاريخ:", "value": item.radiologyDate},
-                        {"title": "منطقة الأشعة:", "value": item.bodyPart},
-                        {
-                          "title": "دواعي الفحص:",
-                          "value": item.symptoms ?? 'لم يتم ادخاله'
-                        },
-                        {"title": "ملاحظات:", "value": item.radiologyNote},
+      create: (context) => getIt<XRayViewCubit>()
+        ..emitUserRadiologyData()
+        ..emitFilters(),
+      child: RefreshIndicator(
+        onRefresh: () => getIt<XRayViewCubit>().emitUserRadiologyData(),
+        color: AppColorsManager.mainDarkBlue,
+        backgroundColor: Colors.white,
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0.h,
+          ),
+          body: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            child: Column(
+              children: [
+                ViewAppBar(),
+                BlocBuilder<XRayViewCubit, XRayViewState>(
+                  builder: (context, state) {
+                    return DataViewFiltersRow(
+                      filters: [
+                        FilterConfig(
+                            title: 'السنة',
+                            options: state.yearsFilter,
+                            isYearFilter: true),
+                        FilterConfig(
+                            title: 'نوع الاشعة', options: state.xrayTypeFilter),
+                        FilterConfig(
+                            title: ' منطفة الاشعة',
+                            options: state.bodyPartFilter),
                       ],
+                      onApply: () {
+                        // Handle apply button action
+                      },
                     );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-              verticalSpacing(16),
-              XRayDataViewFooterRow(),
-            ],
+                  },
+                ),
+                verticalSpacing(16),
+                BlocBuilder<XRayViewCubit, XRayViewState>(
+                  builder: (context, state) {
+                    if (state.requestStatus == RequestStatus.loading) {
+                      return Expanded(
+                          child: const Center(
+                              child: CircularProgressIndicator(
+                        color: AppColorsManager.mainDarkBlue,
+                        backgroundColor: Colors.white,
+                      )));
+                    } else if (state.userRadiologyData.isEmpty &&
+                        state.requestStatus != RequestStatus.loading) {
+                      return Expanded(
+                        child: Center(
+                          child: Text('لا توجد نتائج',
+                              style: AppTextStyles.font22MainBlueWeight700),
+                        ),
+                      );
+                    } else if (state.requestStatus == RequestStatus.success) {
+                      return MedicalItemGridView(
+                        items: state.userRadiologyData,
+                        onTap: (id) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => XRayDetailsView(
+                                documentId: id,
+                              ),
+                            )),
+                        titleBuilder: (item) => item.radioType,
+                        infoRowBuilder: (item) => [
+                          {"title": "التاريخ:", "value": item.radiologyDate},
+                          {"title": "منطقة الأشعة:", "value": item.bodyPart},
+                          {
+                            "title": "دواعي الفحص:",
+                            "value": item.symptoms ?? 'لم يتم ادخاله'
+                          },
+                          {"title": "ملاحظات:", "value": item.radiologyNote},
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+                verticalSpacing(16),
+                XRayDataViewFooterRow(),
+              ],
+            ),
           ),
         ),
       ),
