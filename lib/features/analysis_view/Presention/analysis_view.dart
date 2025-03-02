@@ -81,6 +81,7 @@ class MedicalAnalysisView extends StatelessWidget {
                   isYearFilter: true,
                   filterList:
                       List.generate(20, (index) => (2010 + index).toString()),
+                  onFilterSelected: (filterTitle, selectedValue) {},
                 ),
                 Spacer(),
                 CustomAppContainer(label: 'العدد', value: 10)

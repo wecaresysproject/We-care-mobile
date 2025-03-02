@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
+import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 
-class DataViewFiltersRow extends StatelessWidget {
+class DataViewFiltersRow extends StatefulWidget {
   final List<FilterConfig> filters;
   final VoidCallback onApply;
 
@@ -15,24 +17,43 @@ class DataViewFiltersRow extends StatelessWidget {
   });
 
   @override
+  _DataViewFiltersRowState createState() => _DataViewFiltersRowState();
+}
+
+class _DataViewFiltersRowState extends State<DataViewFiltersRow> {
+  final Map<String, dynamic> selectedFilters = {};
+
+  void onFilterSelected(String filterTitle, dynamic selectedValue) {
+    setState(() {
+      selectedFilters[filterTitle] = selectedValue;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        for (var filter in filters) ...[
+        for (var filter in widget.filters) ...[
           SearchFilterWidget(
             filterTitle: filter.title,
             filterList: filter.options,
             isYearFilter: filter.isYearFilter,
+            onFilterSelected: onFilterSelected,
           ),
-          if (filter != filters.last)
-            Spacer(
-              flex: 1,
-            ),
+          if (filter != widget.filters.last) Spacer(flex: 1),
         ],
-        Spacer(
-          flex: 4,
+        Spacer(flex: 4),
+        FilterButton(
+          title: 'عرض',
+          onTap: () {
+            print(
+                "Selected Filters: $selectedFilters"); // Access selected filters
+            BlocProvider.of<XRayViewCubit>(context).emitFilteredData(
+                selectedFilters['السنة'].toString(),
+                selectedFilters['نوع الاشعة'],
+                selectedFilters[' منطفة الاشعة']);
+          },
         ),
-        FilterButton(title: 'عرض', onTap: onApply),
       ],
     );
   }
@@ -40,7 +61,7 @@ class DataViewFiltersRow extends StatelessWidget {
 
 class FilterConfig {
   final String title;
-  final List<String> options;
+  final List<dynamic> options;
   final bool isYearFilter;
 
   FilterConfig({

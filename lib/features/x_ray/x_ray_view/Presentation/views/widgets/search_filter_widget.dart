@@ -8,13 +8,16 @@ import 'filter_chip_item.dart';
 class SearchFilterWidget extends StatefulWidget {
   final String filterTitle;
   final bool isYearFilter;
-  final List<String> filterList;
+  final List<dynamic> filterList;
+  final Function(String, dynamic) onFilterSelected;
 
-  const SearchFilterWidget(
-      {super.key,
-      required this.filterTitle,
-      this.isYearFilter = false,
-      required this.filterList});
+  const SearchFilterWidget({
+    super.key,
+    required this.filterTitle,
+    this.isYearFilter = false,
+    required this.filterList,
+    required this.onFilterSelected,
+  });
 
   @override
   _SearchFilterWidgetState createState() => _SearchFilterWidgetState();
@@ -53,8 +56,17 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
   void _onChipSelected(int index) {
     _closeOverlay();
     setState(() {
-      _selectedIndex = index;
+      if (_selectedIndex == index) {
+        _selectedIndex = -1;
+      } else {
+        _selectedIndex = index;
+      }
     });
+
+    widget.onFilterSelected(
+      widget.filterTitle,
+      _selectedIndex != -1 ? widget.filterList[_selectedIndex] : null,
+    );
   }
 
   OverlayEntry _createOverlayEntry() {
@@ -94,7 +106,7 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
               itemCount: widget.filterList.length,
               itemBuilder: (context, index) {
                 return FilterChipItem(
-                  label: widget.filterList[index],
+                  label: widget.filterList[index].toString(),
                   isSelected: index == _selectedIndex,
                   onTap: () => _onChipSelected(index),
                 );

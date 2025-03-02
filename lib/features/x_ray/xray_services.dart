@@ -18,4 +18,14 @@ abstract class XRayApiServices {
       @Query("documentId") String id,
       @Query("language") String language,
       @Query("UserType") String userType);
+
+  @GET(XrayApiConstants.getFilters)
+  Future<dynamic> gettFilters(@Query("language") String language);
+
+  @GET('/RadiologyUserEntryPage/RadiologySearchUserDocuments')
+  Future<UserRadiologyDataResponse> getFilteredData(
+      @Query("language") String language,
+      @Query("year") int? year,
+      @Query("radioType") String? radioType,
+      @Query("bodyPart") String? bodyPart);
 }

@@ -15,4 +15,9 @@ class XrayApiConstants {
   //{{base_url_app}}/RadiologyUserEntryPage/GetRadiologyUserDocumentViewPerOne/67bd878f716e68b0056d43de?language=ar&UserType=Patient
   static const getSpecificUserRadiologyDocument =
       "/RadiologyUserEntryPage/GetRadiologyUserDocumentViewPerOne";
+
+  //filters
+  static const getFilters = '/RadiologyUserEntryPage/RadiologyGetUserFilters';
+  static const getFilteredData =
+      '/RadiologyUserEntryPage/RadiologySearchUserDocuments';
 }
