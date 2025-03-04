@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
@@ -28,8 +27,7 @@ class DateTimePickerContainer extends StatefulWidget {
 
 class DatePickerContainerState extends State<DateTimePickerContainer> {
   DateTime? selectedDate;
-  final DateFormat dateFormat = DateFormat('dd/MM/yyyy',
-      isArabic() ? AppStrings.arabicLang : AppStrings.englishLang);
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy', 'en');
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(

@@ -13,7 +13,8 @@ class TestAnalysisDataEntryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TestAnalysisDataEntryCubit>(
-      create: (context) => getIt<TestAnalysisDataEntryCubit>(),
+      create: (context) => getIt<TestAnalysisDataEntryCubit>()
+        ..intialRequestsForTestAnalysisDataEntry(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

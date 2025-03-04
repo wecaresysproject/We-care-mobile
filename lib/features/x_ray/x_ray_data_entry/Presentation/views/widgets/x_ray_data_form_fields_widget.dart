@@ -16,8 +16,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
+import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'select_image_container_widget.dart';
-import 'user_selection_container_widget.dart';
 
 class XRayDataEntryFormFields extends StatefulWidget {
   const XRayDataEntryFormFields({super.key});
@@ -111,11 +111,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
               listener: (context, state) async {
                 if (state.xRayImageRequestStatus ==
-                    XRayImageRequestStatus.success) {
+                    UploadImageRequestStatus.success) {
                   await showSuccess(state.message);
                 }
                 if (state.xRayImageRequestStatus ==
-                    XRayImageRequestStatus.failure) {
+                    UploadImageRequestStatus.failure) {
                   await showError(state.message);
                 }
               },
@@ -166,11 +166,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   prev.xRayReportRequestStatus != curr.xRayReportRequestStatus,
               listener: (context, state) async {
                 if (state.xRayReportRequestStatus ==
-                    XRayReportRequestStatus.success) {
+                    UploadReportRequestStatus.success) {
                   await showSuccess(state.message);
                 }
                 if (state.xRayReportRequestStatus ==
-                    XRayReportRequestStatus.failure) {
+                    UploadReportRequestStatus.failure) {
                   await showError(state.message);
                 }
               },

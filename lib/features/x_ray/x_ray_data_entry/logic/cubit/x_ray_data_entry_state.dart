@@ -1,17 +1,5 @@
 part of 'x_ray_data_entry_cubit.dart';
 
-enum XRayImageRequestStatus {
-  initial,
-  success,
-  failure,
-}
-
-enum XRayReportRequestStatus {
-  initial,
-  success,
-  failure,
-}
-
 @immutable
 class XRayDataEntryState extends Equatable {
   final RequestStatus xRayDataEntryStatus;
@@ -33,8 +21,8 @@ class XRayDataEntryState extends Equatable {
   final String xRayPictureUploadedUrl;
 
   final String xRayReportUploadedUrl;
-  final XRayImageRequestStatus xRayImageRequestStatus;
-  final XRayReportRequestStatus xRayReportRequestStatus;
+  final UploadImageRequestStatus xRayImageRequestStatus;
+  final UploadReportRequestStatus xRayReportRequestStatus;
 
   const XRayDataEntryState({
     this.selectedPupose,
@@ -54,8 +42,8 @@ class XRayDataEntryState extends Equatable {
     this.selectedRadiologyTypesOfBodyPartModel,
     this.xRayPictureUploadedUrl = '',
     this.xRayReportUploadedUrl = '',
-    this.xRayImageRequestStatus = XRayImageRequestStatus.initial,
-    this.xRayReportRequestStatus = XRayReportRequestStatus.initial,
+    this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
+    this.xRayReportRequestStatus = UploadReportRequestStatus.initial,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -70,8 +58,8 @@ class XRayDataEntryState extends Equatable {
           selectedPupose: null,
           message: '',
           selectedCountryName: null,
-          xRayImageRequestStatus: XRayImageRequestStatus.initial,
-          xRayReportRequestStatus: XRayReportRequestStatus.initial,
+          xRayImageRequestStatus: UploadImageRequestStatus.initial,
+          xRayReportRequestStatus: UploadReportRequestStatus.initial,
         );
 
   XRayDataEntryState copyWith({
@@ -92,8 +80,8 @@ class XRayDataEntryState extends Equatable {
     String? message,
     String? xRayPictureUploadedUrl,
     String? xRayReportUploadedUrl,
-    XRayImageRequestStatus? xRayImageRequestStatus,
-    XRayReportRequestStatus? xRayReportRequestStatus,
+    UploadImageRequestStatus? xRayImageRequestStatus,
+    UploadReportRequestStatus? xRayReportRequestStatus,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,

@@ -4,16 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/widgets/user_selection_container_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 
 class TestAnalysisDataEntryFormFields extends StatefulWidget {
@@ -62,28 +64,46 @@ class _TestAnalysisDataEntryFormFieldsState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            SelectImageContainer(
-              containerBorderColor: (state.isTestPictureSelected == null) ||
-                      (state.isTestPictureSelected == false)
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              imagePath: "assets/images/photo_icon.png",
-              label: "ارفق صورة",
-              onTap: () async {
-                await showImagePicker(
-                  context,
-                  onImagePicked: (isImagePicked) {
-                    context
-                        .read<TestAnalysisDataEntryCubit>()
-                        .updateTestPicture(isImagePicked);
-
-                    final picker = getIt.get<ImagePickerService>();
-                    if (isImagePicked && picker.isImagePickedAccepted) {
-                      log("xxx: image path: ${picker.pickedImage?.path}");
-                    }
-                  },
-                );
+            BlocListener<TestAnalysisDataEntryCubit,
+                TestAnalysisDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.testImageRequestStatus != curr.testImageRequestStatus,
+              listener: (context, state) async {
+                if (state.testImageRequestStatus ==
+                    UploadImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.testImageRequestStatus ==
+                    UploadImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
+              child: SelectImageContainer(
+                containerBorderColor: (state.isTestPictureSelected == null) ||
+                        (state.isTestPictureSelected == false)
+                    ? AppColorsManager.warningColor
+                    : AppColorsManager.textfieldOutsideBorderColor,
+                imagePath: "assets/images/photo_icon.png",
+                label: "ارفق صورة",
+                onTap: () async {
+                  await showImagePicker(
+                    context,
+                    onImagePicked: (isImagePicked) async {
+                      final picker = getIt.get<ImagePickerService>();
+                      if (isImagePicked && picker.isImagePickedAccepted) {
+                        context
+                            .read<TestAnalysisDataEntryCubit>()
+                            .updateTestPicture(isImagePicked);
+                        await context
+                            .read<TestAnalysisDataEntryCubit>()
+                            .uploadLaboratoryTestImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
+                      }
+                    },
+                  );
+                },
+              ),
             ),
 
             verticalSpacing(16),
@@ -99,32 +119,52 @@ class _TestAnalysisDataEntryFormFieldsState
             ),
 
             verticalSpacing(8),
-            SelectImageContainer(
-              imagePath: "assets/images/photo_icon.png",
-              label: " ارفق صورة للتقرير",
-              onTap: () async {
-                await showImagePicker(
-                  context,
-                  onImagePicked: (isImagePicked) {
-                    final picker = getIt.get<ImagePickerService>();
-                    if (isImagePicked && picker.isImagePickedAccepted) {
-                      log("xxx: image path: ${picker.pickedImage?.path}");
-                    }
-                  },
-                );
+            BlocListener<TestAnalysisDataEntryCubit,
+                TestAnalysisDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.testReportRequestStatus != curr.testReportRequestStatus,
+              listener: (context, state) async {
+                if (state.testReportRequestStatus ==
+                    UploadReportRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.testReportRequestStatus ==
+                    UploadReportRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
+              child: SelectImageContainer(
+                imagePath: "assets/images/photo_icon.png",
+                label: " ارفق صورة للتقرير",
+                onTap: () async {
+                  await showImagePicker(
+                    context,
+                    onImagePicked: (isImagePicked) async {
+                      final picker = getIt.get<ImagePickerService>();
+                      if (isImagePicked && picker.isImagePickedAccepted) {
+                        await context
+                            .read<TestAnalysisDataEntryCubit>()
+                            .uploadLaboratoryTestReportPicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
+                      }
+                    },
+                  );
+                },
+              ),
             ),
             verticalSpacing(16),
 
             UserSelectionContainer(
               allowManualEntry: true,
               options: [
-                "فحص الدم",
-                "فحص البول",
-                "فحص القلب",
-                "أشعة سينية",
+                "اسبوعية",
+                "شهرية",
+                "كل ثلاث شهور",
+                "كل ست شهور",
+                "كل عام",
               ],
-              categoryLabel: "نوعية الاحتياج للتحليل",
+              categoryLabel: "دورية التحليل",
               bottomSheetTitle: "اختر الأعراض المستدعية",
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
@@ -193,8 +233,7 @@ class _TestAnalysisDataEntryFormFieldsState
             ///الدولة
             UserSelectionContainer(
               options: state.countriesNames,
-              categoryLabel:
-                  "السنيؤ نيؤ", //state.selectedCountryName ?? "الدولة",
+              categoryLabel: state.selectedCountryName ?? "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (selectedCountry) {
                 context
@@ -234,108 +273,122 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TestAnalysisDataEntryCubit, TestAnalysisDataEntryState>(
       builder: (context, state) {
-        bool showTable = !state.isTypeOfTestSelected.isEmptyOrNull ||
-            !state.isTypeOfTestWithAnnotationSelected.isEmptyOrNull;
+        bool showTable = !state.isTestNameSelected.isEmptyOrNull ||
+            !state.isTestCodeSelected.isEmptyOrNull ||
+            !state.isTestGroupNameSelected.isEmptyOrNull;
         return Column(
           children: [
             Row(
               children: [
                 Expanded(
-                  flex: 3,
-                  child: !state.isTypeOfTestWithAnnotationSelected.isEmptyOrNull
+                  child: !state.isTestCodeSelected.isEmptyOrNull ||
+                          !state.isTestGroupNameSelected.isEmptyOrNull
                       ? UserSelectionContainer(
                           isDisabled: true,
                           containerBorderColor: AppColorsManager
                               .disAbledTextFieldOutsideBorderColor,
-                          categoryLabel: "نوع التحليل",
-                          containerHintText: "اختر نوع التحليل",
-                          options: [
-                            "تحليل الدم",
-                            "تحليل البول",
-                            "تحليل صورة دم كامله",
-                          ],
+                          categoryLabel: "اسم التحليل",
+                          containerHintText: "اختر الاسم",
+                          options: state.testNames,
                           onOptionSelected: (value) {
                             log("xxx:Selected: $value");
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestType(value);
+                                .updateTestName(value);
                           },
                           iconColor: AppColorsManager.disAbledIconColor,
-                          bottomSheetTitle: 'اختر نوع التحليل',
+                          bottomSheetTitle: 'اختر اسم التحليل',
                         )
                       : UserSelectionContainer(
                           isDisabled: false,
                           containerBorderColor: state
-                                  .isTypeOfTestSelected.isEmptyOrNull
+                                  .isTestNameSelected.isEmptyOrNull
                               ? AppColorsManager.warningColor
                               : AppColorsManager.textfieldOutsideBorderColor,
-                          categoryLabel: "نوع التحليل",
+                          categoryLabel: "اسم التحليل",
                           containerHintText: "اختر نوع التحليل",
-                          options: [
-                            "تحليل الدم",
-                            "تحليل البول",
-                            "تحليل صورة دم كامله",
-                          ],
+                          options: state.testNames,
                           onOptionSelected: (value) {
                             log("xxx:Selected: $value");
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestType(value);
+                                .updateTestName(value);
                           },
                           iconColor: AppColorsManager.mainDarkBlue,
-                          bottomSheetTitle: 'اختر نوع التحليل',
+                          bottomSheetTitle: 'اختر اسم التحليل',
                         ),
                 ),
                 horizontalSpacing(16),
                 Expanded(
-                  flex: 2,
-                  child: state.isTypeOfTestSelected.isEmptyOrNull
+                  child: !state.isTestNameSelected.isEmptyOrNull ||
+                          !state.isTestCodeSelected.isEmptyOrNull
                       ? UserSelectionContainer(
-                          containerBorderColor: state
-                                  .isTypeOfTestWithAnnotationSelected
-                                  .isEmptyOrNull
-                              ? AppColorsManager.warningColor
-                              : AppColorsManager.textfieldOutsideBorderColor,
-                          categoryLabel: "الرمز",
-                          containerHintText: "اختر الرمز ",
-                          options: [
-                            "CBC",
-                            "RBC",
-                            "WBC",
-                            "HGB",
-                            "HCT",
-                            "MCV",
-                          ],
+                          containerBorderColor: AppColorsManager
+                              .disAbledTextFieldOutsideBorderColor,
+                          iconColor: AppColorsManager.disAbledIconColor,
+                          isDisabled: true,
+                          categoryLabel: "المجموعه",
+                          containerHintText: "اختر المجموعه",
+                          options: state.testGroupNames,
                           onOptionSelected: (value) {
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestTypeWithAnnoation(value);
+                                .updateGroupNameSelection(value);
                             log("xxx:Selected: $value");
                           },
-                          bottomSheetTitle: 'اختر نوع الأشعة',
+                          bottomSheetTitle: 'اختر اسم المجموعة',
                         )
                       : UserSelectionContainer(
+                          containerBorderColor: state
+                                  .isTestGroupNameSelected.isEmptyOrNull
+                              ? AppColorsManager.warningColor
+                              : AppColorsManager.textfieldOutsideBorderColor,
+                          categoryLabel: "المجموعه",
+                          containerHintText: "اختر المجموعه",
+                          options: state.testGroupNames,
+                          onOptionSelected: (value) {
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateGroupNameSelection(value);
+                          },
+                          bottomSheetTitle: 'اختر اسم المجموعة',
+                        ),
+                ),
+                horizontalSpacing(16),
+                Expanded(
+                  child: !state.isTestNameSelected.isEmptyOrNull ||
+                          !state.isTestGroupNameSelected.isEmptyOrNull
+                      ? UserSelectionContainer(
                           containerBorderColor: AppColorsManager
                               .disAbledTextFieldOutsideBorderColor,
                           iconColor: AppColorsManager.disAbledIconColor,
                           isDisabled: true,
                           categoryLabel: "الرمز",
-                          containerHintText: "اختر الرمز ",
-                          options: [
-                            "CBC",
-                            "RBC",
-                            "WBC",
-                            "HGB",
-                            "HCT",
-                            "MCV",
-                          ],
+                          containerHintText: "اختر الرمز",
+                          options: state.testCodes,
                           onOptionSelected: (value) {
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestTypeWithAnnoation(value);
+                                .updateTestCodeSelection(value);
                             log("xxx:Selected: $value");
                           },
-                          bottomSheetTitle: 'اختر نوع الأشعة',
+                          bottomSheetTitle: 'اختر الرمز',
+                        )
+                      : UserSelectionContainer(
+                          containerBorderColor: state
+                                  .isTestCodeSelected.isEmptyOrNull
+                              ? AppColorsManager.warningColor
+                              : AppColorsManager.textfieldOutsideBorderColor,
+                          categoryLabel: "الرمز",
+                          containerHintText: "اختر الرمز",
+                          options: state.testCodes,
+                          onOptionSelected: (value) {
+                            context
+                                .read<TestAnalysisDataEntryCubit>()
+                                .updateTestCodeSelection(value);
+                            log("xxx:Selected: $value");
+                          },
+                          bottomSheetTitle: 'اختر الرمز',
                         ),
                 ),
               ],

@@ -1,3 +1,4 @@
+//!NOote : this is a shared widget for data entries modules
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';

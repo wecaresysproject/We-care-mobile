@@ -4,3 +4,15 @@ enum RequestStatus { initial, loading, success, failure }
 enum UserTypes {
   patient,
 }
+
+enum UploadImageRequestStatus {
+  initial,
+  success,
+  failure,
+}
+
+enum UploadReportRequestStatus {
+  initial,
+  success,
+  failure,
+}

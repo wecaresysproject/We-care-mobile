@@ -29,22 +29,27 @@ abstract class XRayApiServices {
   @GET(XrayApiConstants.getFilters)
   Future<dynamic> gettFilters(@Query("language") String language);
 
-  @GET('/RadiologyUserEntryPage/RadiologySearchUserDocuments')
+  @GET(XrayApiConstants.getFilteredDataEndpoint)
   Future<UserRadiologyDataResponse> getFilteredData(
-      @Query("language") String language,
-      @Query("year") int? year,
-      @Query("radioType") String? radioType,
-      @Query("bodyPart") String? bodyPart);
+    @Query("language") String language,
+    @Query("year") int? year,
+    @Query("radioType") String? radioType,
+    @Query("bodyPart") String? bodyPart,
+  );
   @GET(XrayApiConstants.getBodyParts)
   Future<List<BodyPartsResponseModel>> getBodyPartsData();
+
   @GET(XrayApiConstants.getRadiologyTypeByBodyPartId)
   Future<dynamic> getRadiologyTypeByBodyPartId(@Query('id') String id);
+
   @GET(XrayApiConstants.getCountries)
   Future<dynamic> getCountries(@Query('language') String language);
+
   @POST(XrayApiConstants.postRadiologyDataEntry)
   Future<dynamic> postRadiologyDataEntry(
     @Body() XrayDataEntryRequestBodyModel xrayDataEntryRequestBodyModel,
   );
+
   @MultiPart()
   @POST(XrayApiConstants.uploadXrayImageEndpoint)
   Future<UploadImageResponseModel> uploadRadiologyImage(
@@ -52,6 +57,7 @@ abstract class XRayApiServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+
   @MultiPart()
   @POST(XrayApiConstants.uploadXrayReportEndpoint)
   Future<UploadReportResponseModel> uploadRadiologyReportImage(
