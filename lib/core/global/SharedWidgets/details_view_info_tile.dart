@@ -68,6 +68,7 @@ class CustomContainer extends StatelessWidget {
           : (MediaQuery.of(context).size.width * 0.5) - 24.w,
       child: Container(
         padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
+        margin: EdgeInsets.zero,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(color: AppColorsManager.mainDarkBlue, width: 0.3),
