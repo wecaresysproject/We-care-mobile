@@ -25,4 +25,5 @@ class Routes {
   static const createNewPasswordView = '/createNewPasswordView';
   static const xRayDataView = '/xRayDataView';
   static const surgeriesView = '/surgeriesView';
+  static const surgeriesDataEntryView = '/surgeriesDataEntryView';
 }
