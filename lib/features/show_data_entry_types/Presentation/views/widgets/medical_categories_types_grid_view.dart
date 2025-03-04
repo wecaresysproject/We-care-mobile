@@ -188,7 +188,7 @@ final List<Map<String, String>> categoriesView = [
   {
     "title": "العمليات\nالجراحية",
     "image": "assets/images/surgery_icon.png",
-    "route": "/surgeries"
+    "route": Routes.surgeriesView,
   },
   {
     "title": "المناظير\nالطبيه",
