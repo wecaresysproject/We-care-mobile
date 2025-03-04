@@ -2,8 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
+import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Data/repos/test_analysis_data_entry_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_data_entry_repo.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
@@ -67,9 +69,7 @@ void setupAppCubits() {
       getIt<OtpRepository>(),
     ),
   );
-  getIt.registerFactory<TestAnalysisDataEntryCubit>(
-    () => TestAnalysisDataEntryCubit(),
-  );
+
   getIt.registerFactory<PrescriptionDataEntryCubit>(
     () => PrescriptionDataEntryCubit(),
   );
@@ -79,6 +79,11 @@ void setupAppCubits() {
   );
   getIt.registerFactory<SurgeryDataEntryCubit>(
     () => SurgeryDataEntryCubit(),
+  );
+  getIt.registerFactory<TestAnalysisDataEntryCubit>(
+    () => TestAnalysisDataEntryCubit(
+      getIt<TestAnalysisDataEntryRepo>(),
+    ),
   );
 }
 
@@ -121,6 +126,11 @@ void setupAppRepos() {
       getIt<XRayApiServices>(),
     ),
   );
+  getIt.registerLazySingleton<TestAnalysisDataEntryRepo>(
+    () => TestAnalysisDataEntryRepo(
+      getIt<TestAnalysisSerices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -136,5 +146,8 @@ void setupAppServices() {
 
   getIt.registerLazySingleton<XRayApiServices>(
     () => XRayApiServices(dio),
+  );
+  getIt.registerLazySingleton<TestAnalysisSerices>(
+    () => TestAnalysisSerices(dio),
   );
 }
