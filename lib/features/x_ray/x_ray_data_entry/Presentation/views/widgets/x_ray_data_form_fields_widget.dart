@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -59,17 +62,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "منطقة الأشعة",
               containerHintText: "اختر العضو الخاص بالأشعة",
-              options: [
-                "أشعة الصدر",
-                "أشعة البطن",
-                "أشعة اليد",
-                "أشعة القدم",
-                "أشعة العمود الفقري",
-                "أشعة الأسنان",
-              ],
-              onOptionSelected: (value) {
-                log("xxx:Selected: $value");
-                context.read<XRayDataEntryCubit>().updateXRayBodyPart(value);
+              options: state.bodyPartNames,
+              onOptionSelected: (selectedbodyPartName) async {
+                await context
+                    .read<XRayDataEntryCubit>()
+                    .updateXRayBodyPart(selectedbodyPartName);
               },
               bottomSheetTitle: 'اختر العضو الخاص بالأشعة',
             ),
@@ -81,16 +78,9 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "النوع",
               containerHintText: "اختر نوع الأشعة",
-              options: [
-                "فحص الدم",
-                "فحص البول",
-                "فحص القلب",
-                "أشعة سينية",
-              ],
-              onOptionSelected: (value) {
+              options: state.radiologyTypesBasedOnBodyPartNameSelected,
+              onOptionSelected: (value) async {
                 context.read<XRayDataEntryCubit>().updateXRayType(value);
-
-                log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر نوع الأشعة',
             ),
@@ -100,16 +90,14 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               categoryLabel:
                   "نوعية الاحتياج للأشعة", // Another Dropdown Example
               containerHintText: "اختر نوعية احتياجك للأشعة",
-              options: [
-                "فحص الدم",
-                "فحص البول",
-                "فحص القلب",
-                "أشعة سينية",
-              ],
-              onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+              options: state.puposesOfSelectedXRayType,
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateXRaySelectedPupose(selectedPupose);
               },
-              bottomSheetTitle: 'اختر نوع الأشعة',
+              bottomSheetTitle: "اختر نوعية احتياجك للأشعة",
             ),
 
             verticalSpacing(16),
@@ -118,28 +106,46 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            SelectImageContainer(
-              containerBorderColor: (state.isXRayPictureSelected == null) ||
-                      (state.isXRayPictureSelected == false)
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              imagePath: "assets/images/photo_icon.png",
-              label: "ارفق صورة",
-              onTap: () async {
-                await showImagePicker(
-                  context,
-                  onImagePicked: (isImagePicked) {
-                    context
-                        .read<XRayDataEntryCubit>()
-                        .updateXRayPicture(isImagePicked);
-
-                    final picker = getIt.get<ImagePickerService>();
-                    if (isImagePicked && picker.isImagePickedAccepted) {
-                      log("xxx: image path: ${picker.pickedImage?.path}");
-                    }
-                  },
-                );
+            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
+              listener: (context, state) async {
+                if (state.xRayImageRequestStatus ==
+                    XRayImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.xRayImageRequestStatus ==
+                    XRayImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
+              child: SelectImageContainer(
+                containerBorderColor: (state.isXRayPictureSelected == null) ||
+                        (state.isXRayPictureSelected == false)
+                    ? AppColorsManager.warningColor
+                    : AppColorsManager.textfieldOutsideBorderColor,
+                imagePath: "assets/images/photo_icon.png",
+                label: "ارفق صورة",
+                onTap: () async {
+                  await showImagePicker(
+                    context,
+                    onImagePicked: (isImagePicked) async {
+                      final picker = getIt.get<ImagePickerService>();
+                      if (isImagePicked && picker.isImagePickedAccepted) {
+                        context
+                            .read<XRayDataEntryCubit>()
+                            .updateXRayPicture(isImagePicked);
+
+                        await context
+                            .read<XRayDataEntryCubit>()
+                            .uploadXrayImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
+                      }
+                    },
+                  );
+                },
+              ),
             ),
 
             verticalSpacing(16),
@@ -155,20 +161,38 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
 
             verticalSpacing(8),
-            SelectImageContainer(
-              imagePath: "assets/images/photo_icon.png",
-              label: " ارفق صورة للتقرير",
-              onTap: () async {
-                await showImagePicker(
-                  context,
-                  onImagePicked: (isImagePicked) {
-                    final picker = getIt.get<ImagePickerService>();
-                    if (isImagePicked && picker.isImagePickedAccepted) {
-                      log("xxx: image path: ${picker.pickedImage?.path}");
-                    }
-                  },
-                );
+            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.xRayReportRequestStatus != curr.xRayReportRequestStatus,
+              listener: (context, state) async {
+                if (state.xRayReportRequestStatus ==
+                    XRayReportRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.xRayReportRequestStatus ==
+                    XRayReportRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
+              child: SelectImageContainer(
+                imagePath: "assets/images/photo_icon.png",
+                label: " ارفق صورة للتقرير",
+                onTap: () async {
+                  await showImagePicker(
+                    context,
+                    onImagePicked: (isImagePicked) async {
+                      final picker = getIt.get<ImagePickerService>();
+                      if (isImagePicked && picker.isImagePickedAccepted) {
+                        await context
+                            .read<XRayDataEntryCubit>()
+                            .uploadXrayReportPicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
+                      }
+                    },
+                  );
+                },
+              ),
             ),
             verticalSpacing(16),
 
@@ -251,17 +275,14 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             ///الدولة
             UserSelectionContainer(
-              allowManualEntry: true,
-              options: [
-                "مصر",
-                "الامارات",
-                "السعوديه",
-                "الكويت",
-                "العراق",
-              ],
+              options: state.countriesNames,
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
-              onOptionSelected: (value) {},
+              onOptionSelected: (selectedCountry) {
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedCountry(selectedCountry);
+              },
               containerHintText: "اختر اسم الدولة",
             ),
 
@@ -278,22 +299,48 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
 
             ///TODO: handle this button in main view and remove it from here
-            /// final section
+            /// send button
             verticalSpacing(32),
-            AppCustomButton(
-              title: "ارسال",
-              onPressed: () {
-                if (state.isFormValidated) {
-                  // context.read<XRayDataEntryCubit>().sendForm;
-                  log("xxx:Save Data Entry");
-                } else {
-                  log("form not validated");
-                }
-              },
-              isEnabled: state.isFormValidated ? true : false,
-            ),
+            submitXrayDataEntryButtonBlocConsumer(),
             verticalSpacing(71),
           ],
+        );
+      },
+    );
+  }
+
+  Widget submitXrayDataEntryButtonBlocConsumer() {
+    return BlocConsumer<XRayDataEntryCubit, XRayDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.xRayDataEntryStatus == RequestStatus.failure ||
+          curr.xRayDataEntryStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.isFormValidated != curr.isFormValidated ||
+          prev.xRayDataEntryStatus != curr.xRayDataEntryStatus,
+      listener: (context, state) async {
+        if (state.xRayDataEntryStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop();
+        } else {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: state.xRayDataEntryStatus == RequestStatus.loading,
+          title: context.translate.send,
+          onPressed: () async {
+            if (state.isFormValidated) {
+              await context.read<XRayDataEntryCubit>().postRadiologyDataEntry(
+                    context.translate,
+                  );
+              log("xxx:Save Data Entry");
+            } else {
+              log("form not validated");
+            }
+          },
+          isEnabled: state.isFormValidated ? true : false,
         );
       },
     );

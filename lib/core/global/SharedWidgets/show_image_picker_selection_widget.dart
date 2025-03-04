@@ -45,8 +45,8 @@ Future<void> showImagePicker(BuildContext context,
             ),
             onTap: () async {
               context.pop();
-              bool result = await _pickImageFromGallery();
-              if (onImagePicked != null) {
+              bool result = await _pickImageFromGallery(context);
+              if (onImagePicked != null && result) {
                 onImagePicked(result); // Call callback function
               }
             },
@@ -65,8 +65,8 @@ Future<void> showImagePicker(BuildContext context,
             ),
             onTap: () async {
               context.pop();
-              bool result = await _pickImageFromCamera();
-              if (onImagePicked != null) {
+              bool result = await _pickImageFromCamera(context);
+              if (onImagePicked != null && result) {
                 onImagePicked(result); // Call callback only if it's provided
               }
             },
@@ -77,22 +77,18 @@ Future<void> showImagePicker(BuildContext context,
   );
 }
 
-Future<bool> _pickImageFromGallery() async {
+Future<bool> _pickImageFromGallery(BuildContext context) async {
   final picker = getIt.get<ImagePickerService>();
 
-  final result = await picker.pickImageFromGallery();
-  if (picker.isImagePickedAccepted) {
-    // log("path of image : ${picker.pickedImage?.path}");
-  }
+  final result = await picker.pickImageFromGallery(context.translate);
+
   return result;
 }
 
-Future<bool> _pickImageFromCamera() async {
+Future<bool> _pickImageFromCamera(BuildContext context) async {
   final picker = getIt.get<ImagePickerService>();
 
-  final result = await picker.pickImageFromCamera();
-  if (picker.isImagePickedAccepted) {
-    // log("path of image : ${picker.pickedImage?.path}");
-  }
+  final result = await picker.pickImageFromCamera(context.translate);
+
   return result;
 }

@@ -12,4 +12,6 @@ class AppStrings {
   static const cairoFontFamily = "Cairo";
   static const isForgetPasswordFlowArgumentKey = "isForgetPasswordFlow";
   static const phoneNumberArgumentKey = "phoneNumber";
+  static const contentTypeKey = "Content-Type";
+  static const contentTypeMultiPartValue = "multipart/form-data";
 }

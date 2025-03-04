@@ -704,6 +704,26 @@ class S {
       args: [],
     );
   }
+
+  /// `No data`
+  String get no_data_entered {
+    return Intl.message('No data', name: 'no_data_entered', desc: '', args: []);
+  }
+
+  /// `Send`
+  String get send {
+    return Intl.message('Send', name: 'send', desc: '', args: []);
+  }
+
+  /// `The image is unclear, please try again.`
+  String get image_not_clear {
+    return Intl.message(
+      'The image is unclear, please try again.',
+      name: 'image_not_clear',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

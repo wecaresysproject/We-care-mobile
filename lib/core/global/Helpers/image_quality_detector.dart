@@ -4,6 +4,7 @@ import 'package:blur_detection/blur_detection.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class ImagePickerService {
   final ImagePicker _picker = getIt<ImagePicker>();
@@ -18,7 +19,7 @@ class ImagePickerService {
   bool isImagePickedAccepted = false;
 
   /// Picks an image from the camera and checks for blur
-  Future<bool> pickImageFromCamera() async {
+  Future<bool> pickImageFromCamera(S localozation) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 100,
@@ -28,18 +29,16 @@ class ImagePickerService {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
       if (await _isImageBlurred(imageFile)) {
-        await showError("الصورة غير واضحة، يرجى إعادة المحاولة");
+        await showError(localozation.image_not_clear);
         isImagePickedAccepted = false;
         _pickedImage = null; // Clear picked image if blurred
         return false;
       }
 
-      await showSuccess("تم ارفاق الصورة بنجاح");
       isImagePickedAccepted = true;
       _pickedImage = imageFile; // Store valid image
       return true;
     } else {
-      await showError("لم يتم ارفاق الصورة");
       isImagePickedAccepted = false;
       _pickedImage = null;
       return false;
@@ -47,7 +46,7 @@ class ImagePickerService {
   }
 
   /// Picks an image from the gallery and checks for blur
-  Future<bool> pickImageFromGallery() async {
+  Future<bool> pickImageFromGallery(S localozation) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 100,
@@ -57,18 +56,16 @@ class ImagePickerService {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
       if (await _isImageBlurred(imageFile)) {
-        await showError("الصورة غير واضحة، يرجى إعادة المحاولة");
+        await showError(localozation.image_not_clear);
         isImagePickedAccepted = false;
         _pickedImage = null; // Clear picked image if blurred
         return false;
       }
 
-      await showSuccess("تم ارفاق الصورة بنجاح");
       isImagePickedAccepted = true;
       _pickedImage = imageFile; // Store valid image
       return true;
     } else {
-      await showError("لم يتم ارفاق الصورة");
       isImagePickedAccepted = false;
       _pickedImage = null;
       return false;
