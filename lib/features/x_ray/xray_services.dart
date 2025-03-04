@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
-import 'package:we_care/features/x_ray/data/models/xray_image_response_model.dart';
-import 'package:we_care/features/x_ray/data/models/xray_report_response_model.dart';
 import 'package:we_care/features/x_ray/xray_api_constants.dart';
 
+import '../../core/models/upload_report_response_model.dart';
 import 'data/models/body_parts_response_model.dart';
 
 part 'xray_services.g.dart';
@@ -47,14 +47,14 @@ abstract class XRayApiServices {
   );
   @MultiPart()
   @POST(XrayApiConstants.uploadXrayImageEndpoint)
-  Future<XrayImageResponseModel> uploadRadiologyImage(
+  Future<UploadImageResponseModel> uploadRadiologyImage(
     @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
   @MultiPart()
   @POST(XrayApiConstants.uploadXrayReportEndpoint)
-  Future<XrayReportResponseModel> uploadRadiologyReportImage(
+  Future<UploadReportResponseModel> uploadRadiologyReportImage(
     @Part(name: 'report') File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,

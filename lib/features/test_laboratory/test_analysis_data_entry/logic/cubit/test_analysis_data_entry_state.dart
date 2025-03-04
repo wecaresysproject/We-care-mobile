@@ -9,14 +9,18 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? isTypeOfTestSelected;
   final String? isTypeOfTestWithAnnotationSelected;
   final bool isFormValidated;
+  final List<String> countriesNames;
+  final String message; // error or success message
 
   const TestAnalysisDataEntryState({
     this.testAnalysisDataEntryStatus = RequestStatus.initial,
+    this.countriesNames = const [],
     this.isDateSelected,
     this.isFormValidated = false,
     this.isTestPictureSelected,
     this.isTypeOfTestSelected,
     this.isTypeOfTestWithAnnotationSelected,
+    this.message = '',
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -26,6 +30,7 @@ class TestAnalysisDataEntryState extends Equatable {
           isTestPictureSelected: null,
           isTypeOfTestSelected: null,
           isTypeOfTestWithAnnotationSelected: null,
+          message: '',
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -35,6 +40,8 @@ class TestAnalysisDataEntryState extends Equatable {
     bool? isTestPictureSelected,
     String? isTypeOfTestSelected,
     String? isTypeOfTestWithAnnotationSelected,
+    List<String>? countriesNames,
+    String? message,
   }) {
     return TestAnalysisDataEntryState(
       isDateSelected: isDateSelected ?? this.isDateSelected,
@@ -46,6 +53,8 @@ class TestAnalysisDataEntryState extends Equatable {
       isTypeOfTestSelected: isTypeOfTestSelected ?? this.isTypeOfTestSelected,
       isTypeOfTestWithAnnotationSelected: isTypeOfTestWithAnnotationSelected ??
           this.isTypeOfTestWithAnnotationSelected,
+      countriesNames: countriesNames ?? this.countriesNames,
+      message: message ?? this.message,
     );
   }
 
@@ -57,5 +66,7 @@ class TestAnalysisDataEntryState extends Equatable {
         isTestPictureSelected,
         isTypeOfTestSelected,
         isTypeOfTestWithAnnotationSelected,
+        countriesNames,
+        message,
       ];
 }

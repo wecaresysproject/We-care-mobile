@@ -1,20 +1,20 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'xray_image_response_model.g.dart';
+part 'upload_image_response_model.g.dart';
 
 @JsonSerializable()
-class XrayImageResponseModel {
+class UploadImageResponseModel {
   final String imageUrl;
   @JsonKey(name: 'success')
   final bool isImageUploadedSuccessfully;
   final String message;
 
-  XrayImageResponseModel({
+  UploadImageResponseModel({
     required this.imageUrl,
     required this.message,
     required this.isImageUploadedSuccessfully,
   });
 
-  factory XrayImageResponseModel.fromJson(Map<String, dynamic> json) =>
-      _$XrayImageResponseModelFromJson(json);
+  factory UploadImageResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$UploadImageResponseModelFromJson(json);
 }

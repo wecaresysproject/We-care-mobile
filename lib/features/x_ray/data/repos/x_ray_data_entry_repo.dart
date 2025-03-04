@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
-import 'package:we_care/features/x_ray/data/models/country_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_response_model.dart';
-import 'package:we_care/features/x_ray/data/models/xray_image_response_model.dart';
-import 'package:we_care/features/x_ray/data/models/xray_report_response_model.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 
 import '../../../../core/networking/api_error_handler.dart';
@@ -67,7 +67,7 @@ class XRayDataEntryRepo {
     }
   }
 
-  Future<ApiResult<XrayImageResponseModel>> uploadRadiologyImage({
+  Future<ApiResult<UploadImageResponseModel>> uploadRadiologyImage({
     required String language,
     required String contentType,
     required File image,
@@ -84,7 +84,7 @@ class XRayDataEntryRepo {
     }
   }
 
-  Future<ApiResult<XrayReportResponseModel>> uploadRadiologyReportImage({
+  Future<ApiResult<UploadReportResponseModel>> uploadRadiologyReportImage({
     required String language,
     required String contentType,
     required File image,
