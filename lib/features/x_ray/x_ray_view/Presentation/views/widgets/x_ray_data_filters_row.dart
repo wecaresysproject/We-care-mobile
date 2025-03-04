@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
-import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 
 class DataViewFiltersRow extends StatefulWidget {
   final List<FilterConfig> filters;
-  final VoidCallback onApply;
+  final Function(dynamic) onApply;
 
   const DataViewFiltersRow({
     super.key,
@@ -45,14 +43,7 @@ class _DataViewFiltersRowState extends State<DataViewFiltersRow> {
         Spacer(flex: 4),
         FilterButton(
           title: 'عرض',
-          onTap: () {
-            print(
-                "Selected Filters: $selectedFilters"); // Access selected filters
-            BlocProvider.of<XRayViewCubit>(context).emitFilteredData(
-                selectedFilters['السنة'].toString(),
-                selectedFilters['نوع الاشعة'],
-                selectedFilters[' منطفة الاشعة']);
-          },
+          onTap: (selectedFilters) => widget.onApply,
         ),
       ],
     );
@@ -73,14 +64,14 @@ class FilterConfig {
 
 class FilterButton extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final Function(dynamic) onTap;
 
   const FilterButton({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () => onTap,
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         width: 58.w,

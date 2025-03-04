@@ -34,7 +34,7 @@ class PrescriptionView extends StatelessWidget {
                 doctorsFilters,
                 doctorDepartmentFilters
               ],
-              onApply: () {
+              onApply: (selectedFilters) {
                 // Handle apply button action
               },
             ),

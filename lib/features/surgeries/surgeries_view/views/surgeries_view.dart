@@ -31,7 +31,7 @@ class SurgeriesView extends StatelessWidget {
                     isYearFilter: true),
                 surgeriesNamesFilters
               ],
-              onApply: () {
+              onApply: (selectedFilters) {
                 // Handle apply button action
               },
             ),

@@ -79,7 +79,7 @@ class MedicinesView extends StatelessWidget {
                 FilterConfig(title: 'السنة', options: [], isYearFilter: true),
                 FilterConfig(title: ' الاسم', options: []),
               ],
-              onApply: () {
+              onApply: (selectedFilters) {
                 // Handle apply button action
               },
             ),

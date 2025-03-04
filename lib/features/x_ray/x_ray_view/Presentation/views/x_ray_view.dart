@@ -51,8 +51,14 @@ class XRayView extends StatelessWidget {
                             title: ' منطفة الاشعة',
                             options: state.bodyPartFilter),
                       ],
-                      onApply: () {
-                        // Handle apply button action
+                      onApply: (selectedFilters) {
+                        print(
+                            "Selected Filters: $selectedFilters"); // Access selected filters
+                        BlocProvider.of<XRayViewCubit>(context)
+                            .emitFilteredData(
+                                selectedFilters['السنة'].toString(),
+                                selectedFilters['نوع الاشعة'],
+                                selectedFilters[' منطفة الاشعة']);
                       },
                     );
                   },
