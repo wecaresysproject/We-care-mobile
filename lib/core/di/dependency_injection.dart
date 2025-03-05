@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Data/repos/test_analysis_data_entry_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
+import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_data_entry_repo.dart';
@@ -85,6 +87,11 @@ void setupAppCubits() {
       getIt<TestAnalysisDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory<TestAnalysisViewCubit>(
+    () => TestAnalysisViewCubit(
+      getIt<TestAnalysisViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -128,6 +135,11 @@ void setupAppRepos() {
   );
   getIt.registerLazySingleton<TestAnalysisDataEntryRepo>(
     () => TestAnalysisDataEntryRepo(
+      getIt<TestAnalysisSerices>(),
+    ),
+  );
+  getIt.registerLazySingleton<TestAnalysisViewRepo>(
+    () => TestAnalysisViewRepo(
       getIt<TestAnalysisSerices>(),
     ),
   );
