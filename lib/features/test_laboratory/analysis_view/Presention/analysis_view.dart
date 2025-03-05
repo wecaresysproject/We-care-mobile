@@ -1,10 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/prescription_view/Presentation/views/prescription_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
@@ -65,60 +72,84 @@ class MedicalAnalysisView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            Row(
-              children: [
-                SearchFilterWidget(
-                  filterTitle: 'السنة',
-                  isYearFilter: true,
-                  filterList:
-                      List.generate(20, (index) => (2010 + index).toString()),
-                  onFilterSelected: (filterTitle, selectedValue) {},
-                ),
-                Spacer(),
-                CustomAppContainer(label: 'العدد', value: 10)
-              ],
+    return BlocProvider<TestAnalysisViewCubit>(
+      create: (context) => getIt<TestAnalysisViewCubit>()
+        ..emitFilters()
+        ..emitTests(),
+      child: BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
             ),
-            verticalSpacing(8),
-            Text(
-              "اضغط على التاريخ لعرض التحليل\nاضغط على النتيجة لعرض تحاليك المماثلة",
-              style: AppTextStyles.customTextStyle,
-              textAlign: TextAlign.center,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  ViewAppBar(),
+                  Row(
+                    children: [
+                      SearchFilterWidget(
+                        filterTitle: 'السنة',
+                        isYearFilter: true,
+                        filterList: state.yearsFilter,
+                        onFilterSelected: (filterTitle, selectedValue) {
+                          if (selectedValue == null) {
+                            context.read<TestAnalysisViewCubit>().emitTests();
+                            return;
+                          } else {
+                            context
+                                .read<TestAnalysisViewCubit>()
+                                .emitFilteredData(selectedValue);
+                          }
+                        },
+                      ),
+                      Spacer(),
+                      CustomAppContainer(
+                          label: 'العدد',
+                          value: state.analysisSummarizedDataList.length),
+                    ],
+                  ),
+                  verticalSpacing(8),
+                  Text(
+                    "اضغط على التاريخ لعرض التحليل\nاضغط على النتيجة لعرض تحاليك المماثلة",
+                    style: AppTextStyles.customTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  verticalSpacing(16),
+                  Expanded(
+                    flex: 12,
+                    child:
+                        buildTable(context, state.analysisSummarizedDataList),
+                  ),
+                  verticalSpacing(16),
+                  XRayDataViewFooterRow(),
+                  Spacer(
+                    flex: 1,
+                  ),
+                ],
+              ),
             ),
-            verticalSpacing(16),
-            Expanded(
-              flex: 12,
-              child: buildTable(context),
-            ),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-            Spacer(
-              flex: 1,
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildTable(BuildContext context) {
+  Widget buildTable(BuildContext context,
+      List<AnalysisSummarizedData> analysisSummarizedData) {
+    final ScrollController controller = ScrollController();
+    final ScrollController controller2 = ScrollController();
     return SingleChildScrollView(
-      scrollDirection: Axis.vertical, // Allow scrolling if needed
+      controller: controller,
+      scrollDirection: Axis.vertical,
       child: DataTable(
         clipBehavior: Clip.antiAliasWithSaveLayer,
         headingRowColor: WidgetStateProperty.all(
             Color(0xFF014C8A)), // Header Background Color
         headingTextStyle: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold), // Header Text
-        columnSpacing: 22.w,
+        columnSpacing: 9.5.w,
         dataRowHeight: 70.h,
         horizontalMargin: 10,
         showBottomBorder: true,
@@ -185,43 +216,48 @@ class MedicalAnalysisView extends StatelessWidget {
                     fontSize: 16.sp),
               ))),
         ],
-        rows: tableData.map((data) {
+        rows: analysisSummarizedData.map((data) {
           return DataRow(cells: [
             DataCell(
               Center(
-                child: Text(data["date"]!,
-                    maxLines: 3,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColorsManager.mainDarkBlue,
-                      decoration: TextDecoration.underline,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                    )),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(data.testDate,
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColorsManager.mainDarkBlue,
+                        decoration: TextDecoration.underline,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                      )),
+                ),
               ),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AnalysisDetailsView(),
+                    builder: (context) => AnalysisDetailsView(
+                      documentId: data.id,
+                    ),
                   ),
                 );
               },
             ),
             DataCell(Center(
               child: Text(
-                data["name"]!,
+                data.testName,
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
             )),
             DataCell(Center(
               child: Text(
-                data["code"]!,
+                data.code,
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -232,7 +268,7 @@ class MedicalAnalysisView extends StatelessWidget {
             )),
             DataCell(Center(
               child: Text(
-                data["standard"]!,
+                data.standardRate ?? '-',
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -244,7 +280,7 @@ class MedicalAnalysisView extends StatelessWidget {
             )),
             DataCell(
               Center(
-                child: Text(data["result"]!,
+                child: Text(data.result.toString(),
                     maxLines: 3,
                     textAlign: TextAlign.center,
                     style: TextStyle(
