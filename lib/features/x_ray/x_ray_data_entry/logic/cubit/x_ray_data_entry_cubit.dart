@@ -201,7 +201,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
           state.copyWith(
             message: response.message,
             xRayPictureUploadedUrl: response.imageUrl,
-            xRayImageRequestStatus: XRayImageRequestStatus.success,
+            xRayImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
       },
@@ -209,7 +209,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
-            xRayImageRequestStatus: XRayImageRequestStatus.failure,
+            xRayImageRequestStatus: UploadImageRequestStatus.failure,
           ),
         );
       },
@@ -227,7 +227,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         emit(
           state.copyWith(
             message: response.message,
-            xRayReportRequestStatus: XRayReportRequestStatus.success,
+            xRayReportRequestStatus: UploadReportRequestStatus.success,
             xRayReportUploadedUrl: response.reportUrl,
           ),
         );
@@ -236,7 +236,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
-            xRayReportRequestStatus: XRayReportRequestStatus.failure,
+            xRayReportRequestStatus: UploadReportRequestStatus.failure,
           ),
         );
       },

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/test_analysis_data_entry/Data/repos/test_analysis_data_entry_repo.dart';
+import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
 
 part 'test_analysis_data_entry_state.dart';
 
@@ -14,6 +17,22 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         );
 
   final TestAnalysisDataEntryRepo _testAnalysisDataEntryRepo;
+  Future<void> intialRequestsForTestAnalysisDataEntry() async {
+    await emitCountriesData();
+    await emitListOfTestAnnotations(
+      testType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+    await emitListOfTestGroupNames(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    await emitListOfTestNames(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+  }
+
   void updateTestDate(String? date) {
     emit(
       state.copyWith(
@@ -32,28 +51,164 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateTestType(String? type) {
+  void updateTestName(String? type) {
     emit(
       state.copyWith(
-        isTypeOfTestSelected: type,
+        isTestNameSelected: type,
       ),
     );
     validateRequiredFields();
   }
 
-//TODO: to be continue
+  void updateGroupNameSelection(String? selectedGroupName) {
+    emit(
+      state.copyWith(
+        isTestGroupNameSelected: selectedGroupName,
+      ),
+    );
+    validateRequiredFields();
+  }
+
   void updateSelectedCountry(String? selectedCountry) {
     emit(
       state.copyWith(
-          // selectedCountryName: selectedCountry,
-          ),
+        selectedCountryName: selectedCountry,
+      ),
     );
   }
 
-  void updateTestTypeWithAnnoation(String? type) {
+  Future<void> uploadLaboratoryTestImagePicked(
+      {required String imagePath}) async {
+    final response = await _testAnalysisDataEntryRepo.uploadLaboratoryTestImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            testPictureUploadedUrl: response.imageUrl,
+            testImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            testImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitListOfTestAnnotations(
+      {required String language, required String testType}) async {
+    final response = await _testAnalysisDataEntryRepo.getListOFTestAnnotations(
+      language: language,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (testCodes) {
+        emit(
+          state.copyWith(
+            testCodes: testCodes,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitListOfTestGroupNames(
+      {required String language, required String userType}) async {
+    final response = await _testAnalysisDataEntryRepo.getListOfTestGroupNames(
+      language: language,
+      userType: userType,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            testGroupNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitListOfTestNames(
+      {required String language, required String userType}) async {
+    final response = await _testAnalysisDataEntryRepo.getListOfTestNames(
+      language: language,
+      userType: userType,
+    );
+    response.when(
+      success: (listOfTestNames) {
+        emit(
+          state.copyWith(
+            testNames: listOfTestNames,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadLaboratoryTestReportPicked(
+      {required String imagePath}) async {
+    final response =
+        await _testAnalysisDataEntryRepo.uploadLaboratoryReportImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            testPictureUploadedUrl: response.reportUrl,
+            testReportRequestStatus: UploadReportRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            testReportRequestStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  void updateTestCodeSelection(String? testCode) {
     emit(
       state.copyWith(
-        isTypeOfTestWithAnnotationSelected: type,
+        isTestCodeSelected: testCode,
       ),
     );
     validateRequiredFields();
@@ -86,8 +241,9 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     if (state.isDateSelected == null ||
         state.isTestPictureSelected == null ||
         state.isTestPictureSelected == false ||
-        (state.isTypeOfTestSelected == null &&
-            state.isTypeOfTestWithAnnotationSelected == null)) {
+        (state.isTestNameSelected == null &&
+            state.isTestCodeSelected == null &&
+            state.isTestGroupNameSelected == null)) {
       emit(
         state.copyWith(
           isFormValidated: false,

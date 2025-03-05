@@ -16,5 +16,21 @@ class TestAnalysisApiConstants {
 
   static const getTestbyId = "/m2/api/lab-tests/doc";
 
+  //Data Entry
+  static const getTestAnnotationsEndpoint =
+      "/m2/api/flutter/SortsAnalysis/codes";
+  static const getTestByGroupNamesEndpoint =
+      "/m2/api/flutter/SortsAnalysis/group-names";
+  static const getTestNamesEndpoint =
+      "/m2/api/flutter/SortsAnalysis/test-names";
+  static const getTableOfDataEndpoint = "/api/flutter/SortsAnalysis/test-info";
+
+  static const uploadLaboratoryTestImageEndpoint =
+      "/m2/api/FileUpload/upload-image";
+  static const uploadLaboratoryTestReportEndpoint =
+      "/m2/api/FileUpload/upload-report";
+
+  //View Entry
+
   //filters
 }
