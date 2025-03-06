@@ -36,7 +36,7 @@ class TableRowReponseModel {
   String groupName;
   String standardRate;
   @JsonKey(name: "writtenPercent")
-  double testWrittenPercent;
+  double? testWrittenPercent;
 
   factory TableRowReponseModel.fromJson(Map<String, dynamic> json) =>
       _$TableRowReponseModelFromJson(json);

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:we_care/core/models/country_response_model.dart';
@@ -5,6 +6,8 @@ import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 
 class TestAnalysisDataEntryRepo {
@@ -93,6 +96,41 @@ class TestAnalysisDataEntryRepo {
         userType,
       );
       return ApiResult.success(response.testNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<TableRowReponseModel>>> getTableDetails({
+    required String language,
+    required String userType,
+    String? testNameQuery,
+    String? groupNameQuery,
+    String? codeQuery,
+  }) async {
+    try {
+      final response = await _testAnalysisSerices.getTableDetails(
+        language,
+        userType,
+        testNameQuery,
+        groupNameQuery,
+        codeQuery,
+      );
+      log(" xxx getTableDetails response : $response");
+      return ApiResult.success(response.testTableRowsData);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postLaboratoryTestDataEntrered(
+      {required TestAnalysisDataEnteryRequestBodyModel
+          testAnalysisRequestBodyModel}) async {
+    try {
+      final response = await _testAnalysisSerices
+          .postLaboratoryTestDataEntrered(testAnalysisRequestBodyModel);
+      log('postData response : $response');
+      return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

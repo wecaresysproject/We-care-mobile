@@ -25,6 +25,8 @@ class TestAnalysisApiConstants {
       "/m2/api/flutter/SortsAnalysis/test-names";
   static const getTableOfDataEndpoint = "/api/flutter/SortsAnalysis/test-info";
 
+  static const postTestAnalysisEndpoint = "/m2/api/lab-tests";
+
   static const uploadLaboratoryTestImageEndpoint =
       "/m2/api/FileUpload/upload-image";
   static const uploadLaboratoryTestReportEndpoint =

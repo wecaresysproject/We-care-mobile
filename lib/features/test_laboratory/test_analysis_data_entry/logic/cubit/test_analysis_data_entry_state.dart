@@ -12,6 +12,11 @@ class TestAnalysisDataEntryState extends Equatable {
   final bool isFormValidated;
   final List<String> countriesNames;
   final String? selectedCountryName;
+  final String? selectedHospitalName;
+  final String? selectedDoctorName;
+  final String? selectedSymptomsForProcedure;
+  final String? selectedNoOftimesTestPerformed;
+
   final UploadImageRequestStatus testImageRequestStatus;
   final UploadReportRequestStatus testReportRequestStatus;
   final String testPictureUploadedUrl;
@@ -22,6 +27,8 @@ class TestAnalysisDataEntryState extends Equatable {
   final List<String> testCodes;
   final List<String> testGroupNames;
   final List<String> testNames;
+  final List<TableRowReponseModel> testTableRowsData;
+  final List<TableRowReponseModel> enteredTableRows;
 
   const TestAnalysisDataEntryState({
     this.testAnalysisDataEntryStatus = RequestStatus.initial,
@@ -32,6 +39,10 @@ class TestAnalysisDataEntryState extends Equatable {
     this.isTestNameSelected,
     this.isTestGroupNameSelected,
     this.selectedCountryName,
+    this.selectedHospitalName,
+    this.selectedDoctorName,
+    this.selectedSymptomsForProcedure,
+    this.selectedNoOftimesTestPerformed,
     this.isTestCodeSelected,
     this.message = '',
     this.testImageRequestStatus = UploadImageRequestStatus.initial,
@@ -41,6 +52,8 @@ class TestAnalysisDataEntryState extends Equatable {
     this.testCodes = const [],
     this.testGroupNames = const [],
     this.testNames = const [],
+    this.testTableRowsData = const [],
+    this.enteredTableRows = const [],
     this.selectedTestAnnotation,
   });
   const TestAnalysisDataEntryState.initial()
@@ -53,6 +66,10 @@ class TestAnalysisDataEntryState extends Equatable {
           isTestGroupNameSelected: null,
           isTestCodeSelected: null,
           selectedCountryName: null,
+          selectedHospitalName: null,
+          selectedDoctorName: null,
+          selectedSymptomsForProcedure: null,
+          selectedNoOftimesTestPerformed: null,
           message: '',
           testImageRequestStatus: UploadImageRequestStatus.initial,
           testReportRequestStatus: UploadReportRequestStatus.initial,
@@ -78,6 +95,12 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? testGroupNames,
     List<String>? testNames,
     String? selectedTestAnnotation,
+    List<TableRowReponseModel>? testTableRowsData,
+    List<TableRowReponseModel>? enteredTableRows,
+    String? selectedHospitalName,
+    String? selectedDoctorName,
+    String? selectedSymptomsForProcedure,
+    String? selectedNoOftimesTestPerformed,
   }) {
     return TestAnalysisDataEntryState(
       isDateSelected: isDateSelected ?? this.isDateSelected,
@@ -106,6 +129,14 @@ class TestAnalysisDataEntryState extends Equatable {
           isTestGroupNameSelected ?? this.isTestGroupNameSelected,
       testGroupNames: testGroupNames ?? this.testGroupNames,
       testNames: testNames ?? this.testNames,
+      testTableRowsData: testTableRowsData ?? this.testTableRowsData,
+      enteredTableRows: enteredTableRows ?? this.enteredTableRows,
+      selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
+      selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
+      selectedSymptomsForProcedure:
+          selectedSymptomsForProcedure ?? this.selectedSymptomsForProcedure,
+      selectedNoOftimesTestPerformed:
+          selectedNoOftimesTestPerformed ?? this.selectedNoOftimesTestPerformed,
     );
   }
 
@@ -129,5 +160,11 @@ class TestAnalysisDataEntryState extends Equatable {
         selectedTestAnnotation,
         testGroupNames,
         testNames,
+        testTableRowsData,
+        enteredTableRows,
+        selectedHospitalName,
+        selectedDoctorName,
+        selectedSymptomsForProcedure,
+        selectedNoOftimesTestPerformed
       ];
 }

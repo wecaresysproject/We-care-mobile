@@ -16,6 +16,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 
 class TestAnalysisDataEntryFormFields extends StatefulWidget {
@@ -167,6 +168,9 @@ class _TestAnalysisDataEntryFormFieldsState
               categoryLabel: "دورية التحليل",
               bottomSheetTitle: "اختر الأعراض المستدعية",
               onOptionSelected: (value) {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateTimesTestPerformed(value);
                 log("xxx:Selected: $value");
               },
               containerHintText: "اختر نوعية احتياجك للتحليل",
@@ -178,14 +182,16 @@ class _TestAnalysisDataEntryFormFieldsState
             UserSelectionContainer(
               allowManualEntry: true,
               options: [
-                "فحص الدم",
-                "فحص البول",
-                "فحص القلب",
-                "أشعة سينية",
+                "عرض واحد",
+                "عرض اتنين",
+                "عرض ثلاثة",
               ],
               categoryLabel: "الأعراض المستدعية للاجراء",
               bottomSheetTitle: "اختر الأعراض المستدعية",
               onOptionSelected: (value) {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedSymptom(value);
                 log("xxx:Selected: $value");
               },
               containerHintText: "اختر الأعراض المستدعية",
@@ -205,6 +211,9 @@ class _TestAnalysisDataEntryFormFieldsState
                 "مستشفى 57357",
               ],
               onOptionSelected: (value) {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedHospital(value);
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر اسم المستشفى/المركز',
@@ -224,7 +233,12 @@ class _TestAnalysisDataEntryFormFieldsState
               ],
               categoryLabel: "الطبيب المعالج",
               bottomSheetTitle: "اختر اسم الطبيب المعالج ",
-              onOptionSelected: (value) {},
+              onOptionSelected: (value) {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedDoctorName(value);
+                log("xxx:Selected: $value");
+              },
               containerHintText: "اختر اسم الطبيب المعالج ",
             ),
 
@@ -246,20 +260,47 @@ class _TestAnalysisDataEntryFormFieldsState
             ///TODO: handle this button in main view and remove it from here
             /// final section
             verticalSpacing(32),
-            AppCustomButton(
-              title: "ارسال",
-              onPressed: () {
-                if (state.isFormValidated) {
-                  // context.read<XRayDataEntryCubit>().sendForm;
-                  log("xxx:Save Data Entry");
-                } else {
-                  log("");
-                }
-              },
-              isEnabled: state.isFormValidated ? true : false,
-            ),
+
+            submitTestAnalysisEntryButtonBlocConsumer(),
             verticalSpacing(71),
           ],
+        );
+      },
+    );
+  }
+
+  Widget submitTestAnalysisEntryButtonBlocConsumer() {
+    return BlocConsumer<TestAnalysisDataEntryCubit, TestAnalysisDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.testAnalysisDataEntryStatus == RequestStatus.failure ||
+          curr.testAnalysisDataEntryStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.isFormValidated != curr.isFormValidated ||
+          prev.testAnalysisDataEntryStatus != curr.testAnalysisDataEntryStatus,
+      listener: (context, state) async {
+        if (state.testAnalysisDataEntryStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop();
+        } else {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: state.testAnalysisDataEntryStatus == RequestStatus.loading,
+          title: context.translate.send,
+          onPressed: () async {
+            if (state.isFormValidated) {
+              await context
+                  .read<TestAnalysisDataEntryCubit>()
+                  .postLaboratoryTestDataEntrered(
+                    context.translate,
+                  );
+              log("xxx:Save Data Entry");
+            }
+          },
+          isEnabled: state.isFormValidated ? true : false,
         );
       },
     );
@@ -408,7 +449,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                 );
               },
               child: showTable
-                  ? buildTable().paddingTop(16)
+                  ? buildTable(state.testTableRowsData).paddingTop(16)
                   : SizedBox.shrink(), // Hide when not visible
             ),
           ],
@@ -418,240 +459,8 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
   }
 }
 
-Widget buildTable() {
-  return SingleChildScrollView(
-    scrollDirection: Axis.horizontal,
-    child: DataTable(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      headingRowColor: WidgetStateProperty.all(
-        AppColorsManager.mainDarkBlue,
-      ),
-      columnSpacing: 16.8.w,
-      dataRowMaxHeight: 44.5.h,
-      horizontalMargin: 7,
-      dividerThickness: .83,
-      headingTextStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
-        color: AppColorsManager.backGroundColor,
-        fontWeight: FontWeight.w600,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          0,
-        ),
-      ),
-      showBottomBorder: true,
-      border: TableBorder.all(
-        style: BorderStyle.solid,
-        borderRadius: BorderRadius.circular(8.r),
-        color: Color(0xff909090),
-        width: .15.w,
-      ),
-      columns: [
-        DataColumn(
-          label: Text(
-            "الاسم",
-          ),
-          headingRowAlignment: MainAxisAlignment.center,
-        ),
-        DataColumn(
-          label: Text(
-            "الرمز",
-          ),
-          headingRowAlignment: MainAxisAlignment.center,
-        ),
-        DataColumn(
-          label: Text(
-            "المعيار",
-          ),
-          headingRowAlignment: MainAxisAlignment.center,
-          numeric: true,
-        ),
-        DataColumn(
-          label: Text(
-            "النتيجة",
-          ),
-          headingRowAlignment: MainAxisAlignment.center,
-        ),
-      ],
-      rows: [
-        DataRow(
-          cells: [
-            DataCell(
-              Text(
-                "كرات الدم البيضاء",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font14blackWeight400.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "H.Pylori",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "55520:100200",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.7.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              buildStyledTextField(),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: [
-            DataCell(
-              Text(
-                "كرات الدم الحمراء",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font14blackWeight400.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "H.Pylori",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "55520:100200",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.7.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              buildStyledTextField(),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: [
-            DataCell(
-              Text(
-                "الهيموجلوبين",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font14blackWeight400.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "H.Pylori",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "55520:100200",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.7.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              buildStyledTextField(),
-            ),
-          ],
-        ),
-        DataRow(
-          cells: [
-            DataCell(
-              Text(
-                "الصفائح الدموية",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font14blackWeight400.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "H.Pylori",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              Text(
-                "55520:100200",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: AppTextStyles.font12blackWeight400.copyWith(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12.7.sp,
-                ),
-              ),
-            ),
-            DataCell(
-              buildStyledTextField(),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-}
-
-Widget buildStyledTextField() {
+Widget buildStyledTextField(List<TableRowReponseModel> tableRows,
+    String testName, BuildContext context) {
   return Container(
     margin: EdgeInsets.only(
       bottom: 3,
@@ -670,6 +479,21 @@ Widget buildStyledTextField() {
     child: TextField(
       scrollPhysics: const BouncingScrollPhysics(),
       onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+      onChanged: (value) {
+        //! try to handle it later, and make backend to make it have intial value with 0.0
+        double percentValue =
+            double.tryParse(value) ?? 0.0; // Ensure it's a double
+
+        for (var element in tableRows) {
+          if (element.testName == testName) {
+            element.testWrittenPercent = percentValue;
+            break;
+          }
+        }
+        context
+            .read<TestAnalysisDataEntryCubit>()
+            .updateTestTableRowsData(tableRows);
+      },
       textAlign: TextAlign.center,
       cursorHeight: 20.h,
       cursorColor: AppColorsManager.mainDarkBlue,
@@ -727,3 +551,114 @@ Widget buildStyledTextField() {
     ),
   );
 }
+
+Widget buildTable(List<TableRowReponseModel> tableRows) {
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      double screenWidth = constraints.maxWidth;
+      double columnSpacing = screenWidth * 0.02;
+
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: screenWidth,
+            maxWidth: screenWidth,
+          ),
+          child: FittedBox(
+            alignment: Alignment.centerLeft,
+            child: DataTable(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              headingRowColor: WidgetStateProperty.all(
+                AppColorsManager.mainDarkBlue,
+              ),
+              columnSpacing: columnSpacing,
+              dataRowMaxHeight: 44.5.h,
+              horizontalMargin: 7,
+              dividerThickness: 0.83,
+              headingTextStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                color: AppColorsManager.backGroundColor,
+                fontWeight: FontWeight.w600,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(0),
+              ),
+              showBottomBorder: true,
+              border: TableBorder.all(
+                style: BorderStyle.solid,
+                borderRadius: BorderRadius.circular(8.r),
+                color: const Color(0xff909090),
+                width: 0.15.w,
+              ),
+              columns: _buildColumns(),
+              rows: _buildRows(tableRows, context),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+List<DataColumn> _buildColumns() {
+  return [
+    _buildColumn("الاسم"),
+    _buildColumn("الرمز"),
+    _buildColumn("المعيار", isNumeric: true),
+    _buildColumn("النتيجة"),
+  ];
+}
+
+List<DataRow> _buildRows(
+    List<TableRowReponseModel> tableRows, BuildContext context) {
+  return tableRows.map(
+    (data) {
+      return DataRow(
+        cells: [
+          _buildCell(data.testName, isBold: true),
+          _buildCell(data.testCode),
+          _buildCell(data.standardRate),
+          DataCell(
+            buildStyledTextField(tableRows, data.testName, context),
+          ),
+        ],
+      );
+    },
+  ).toList();
+}
+
+DataColumn _buildColumn(String label, {bool isNumeric = false}) {
+  return DataColumn(
+    label: Expanded(
+      child: Center(
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    ),
+    numeric: isNumeric,
+  );
+}
+
+DataCell _buildCell(String text, {bool isBold = false}) {
+  return DataCell(
+    Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.ellipsis,
+        style: AppTextStyles.font12blackWeight400.copyWith(
+          fontWeight: isBold ? FontWeight.w700 : FontWeight.w600,
+          fontSize: 12.sp,
+        ),
+      ),
+    ),
+  );
+}
+
+// store all objects in a list to use it later, and if user try to choose one of drop down  again
+// it will be removed from the list
+// validate that as minumum one field is not empty to submit the form
