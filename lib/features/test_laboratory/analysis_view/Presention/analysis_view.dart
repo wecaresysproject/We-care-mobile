@@ -137,7 +137,6 @@ class MedicalAnalysisView extends StatelessWidget {
   Widget buildTable(BuildContext context,
       List<AnalysisSummarizedData> analysisSummarizedData) {
     final ScrollController controller = ScrollController();
-    final ScrollController controller2 = ScrollController();
     return SingleChildScrollView(
       controller: controller,
       scrollDirection: Axis.vertical,
@@ -231,8 +230,8 @@ class MedicalAnalysisView extends StatelessWidget {
                       )),
                 ),
               ),
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final result = await Navigator.push<bool>(
                   context,
                   MaterialPageRoute(
                     builder: (context) => AnalysisDetailsView(
@@ -240,6 +239,9 @@ class MedicalAnalysisView extends StatelessWidget {
                     ),
                   ),
                 );
+                if (result as bool && context.mounted) {
+                  await context.read<TestAnalysisViewCubit>().emitTests();
+                }
               },
             ),
             DataCell(Center(

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/delete_analysis_document_response.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
@@ -39,6 +40,13 @@ abstract class TestAnalysisSerices {
     @Query('id') String id,
     @Query('language') String language,
   );
+
+  @DELETE(TestAnalysisApiConstants.deleteAnalysisById)
+  Future<DeleteAnalysisDocumentResponse> deleteAnalysisById(
+    @Query('id') String id,
+    @Query('language') String language,
+  );
+
   @GET(TestAnalysisApiConstants.getTestAnnotationsEndpoint)
   Future<TestCodeModel> getListOFTestAnnotations(
     @Query("language") String language,

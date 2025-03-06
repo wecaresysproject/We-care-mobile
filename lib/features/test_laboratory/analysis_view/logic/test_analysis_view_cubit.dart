@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 
@@ -72,6 +73,27 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     }, failure: (error) {
       emit(state.copyWith(
         requestStatus: RequestStatus.failure,
+      ));
+    });
+  }
+
+  Future<void> emitDeleteTest(String id) async {
+    emit(state.copyWith(
+        requestStatus: RequestStatus.loading, isDeleteRequest: true));
+
+    final response = await testAnalysisViewRepo.deleteAnalysisById(
+        id, AppStrings.arabicLang, AppStrings.arabicLang);
+
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        message: response.message,
+        isDeleteRequest: false,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        message: error.errors.first,
       ));
     });
   }

@@ -16,6 +16,8 @@ class TestAnalysisApiConstants {
 
   static const getTestbyId = "/m2/api/lab-tests/doc";
 
+  static const deleteAnalysisById = "/m2/api/lab-tests";
+
   //Data Entry
   static const getTestAnnotationsEndpoint =
       "/m2/api/flutter/SortsAnalysis/codes";

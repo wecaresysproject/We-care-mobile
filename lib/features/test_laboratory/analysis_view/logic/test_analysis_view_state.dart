@@ -8,12 +8,16 @@ class TestAnalysisViewState extends Equatable {
   final List<int> yearsFilter;
   final List<AnalysisSummarizedData> analysisSummarizedDataList;
   final AnalysisDetailedData? selectedAnalysisDetails;
+  final String? message;
+  final bool isDeleteRequest;
 
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
     this.analysisSummarizedDataList = const [],
     this.selectedAnalysisDetails,
+    this.message,
+    this.isDeleteRequest = false,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -22,6 +26,8 @@ class TestAnalysisViewState extends Equatable {
       yearsFilter: const [],
       analysisSummarizedDataList: const [],
       selectedAnalysisDetails: null,
+      message: null,
+      isDeleteRequest: false,
     );
   }
 
@@ -30,6 +36,8 @@ class TestAnalysisViewState extends Equatable {
     List<int>? yearsFilter,
     List<AnalysisSummarizedData>? analysisSummarizedDataList,
     AnalysisDetailedData? selectedAnalysisDetails,
+    String? message,
+    bool? isDeleteRequest,
   }) {
     return TestAnalysisViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -38,6 +46,8 @@ class TestAnalysisViewState extends Equatable {
           analysisSummarizedDataList ?? this.analysisSummarizedDataList,
       selectedAnalysisDetails:
           selectedAnalysisDetails ?? this.selectedAnalysisDetails,
+      message: message ?? this.message,
+      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
     );
   }
 
@@ -47,5 +57,7 @@ class TestAnalysisViewState extends Equatable {
         yearsFilter,
         analysisSummarizedDataList,
         selectedAnalysisDetails,
+        message,
+        isDeleteRequest,
       ];
 }
