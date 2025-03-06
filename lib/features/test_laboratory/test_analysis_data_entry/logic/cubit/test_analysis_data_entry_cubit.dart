@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -6,7 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'test_analysis_data_entry_state.dart';
 
@@ -33,6 +37,49 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  void updateTimesTestPerformed(String? timesTestPerformed) {
+    emit(
+      state.copyWith(
+        selectedNoOftimesTestPerformed: timesTestPerformed,
+      ),
+    );
+  }
+
+  void updateSelectedSymptom(String? newSymptoms) {
+    emit(
+      state.copyWith(
+        selectedSymptomsForProcedure: newSymptoms,
+      ),
+    );
+  }
+
+  void updateSelectedHospital(String? hospitalName) {
+    emit(
+      state.copyWith(
+        selectedHospitalName: hospitalName,
+      ),
+    );
+  }
+
+  void updateSelectedDoctorName(String? doctorName) {
+    emit(
+      state.copyWith(
+        selectedDoctorName: doctorName,
+      ),
+    );
+  }
+
+  void updateTestTableRowsData(List<TableRowReponseModel> tableRows) {
+    for (var element in tableRows) {
+      log("xxx: sent table rows : ${element.testName} ${element.testWrittenPercent}");
+    }
+    emit(
+      state.copyWith(
+        enteredTableRows: tableRows,
+      ),
+    );
+  }
+
   void updateTestDate(String? date) {
     emit(
       state.copyWith(
@@ -51,21 +98,23 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateTestName(String? type) {
+  Future<void> updateTestName(String? type) async {
     emit(
       state.copyWith(
         isTestNameSelected: type,
       ),
     );
+    await getTableDetails();
     validateRequiredFields();
   }
 
-  void updateGroupNameSelection(String? selectedGroupName) {
+  Future<void> updateGroupNameSelection(String? selectedGroupName) async {
     emit(
       state.copyWith(
         isTestGroupNameSelected: selectedGroupName,
       ),
     );
+    await getTableDetails();
     validateRequiredFields();
   }
 
@@ -205,12 +254,13 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  void updateTestCodeSelection(String? testCode) {
+  Future<void> updateTestCodeSelection(String? testCode) async {
     emit(
       state.copyWith(
         isTestCodeSelected: testCode,
       ),
     );
+    await getTableDetails();
     validateRequiredFields();
   }
 
@@ -230,6 +280,76 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       failure: (error) {
         emit(
           state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getTableDetails() async {
+    final response = await _testAnalysisDataEntryRepo.getTableDetails(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      codeQuery: state.isTestCodeSelected,
+      groupNameQuery: state.isTestGroupNameSelected,
+      testNameQuery: state.isTestNameSelected,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            testTableRowsData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postLaboratoryTestDataEntrered(S localozation) async {
+    emit(
+      state.copyWith(
+        testAnalysisDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _testAnalysisDataEntryRepo.postLaboratoryTestDataEntrered(
+      testAnalysisRequestBodyModel: TestAnalysisDataEnteryRequestBodyModel(
+        country: state.selectedCountryName ?? localozation.no_data_entered,
+        testDate: state.isDateSelected!,
+        testTableEnteredResults: state.enteredTableRows,
+        testImage: state.testPictureUploadedUrl,
+        reportImage: state.testPictureUploadedUrl,
+        hospital: state.selectedHospitalName ?? localozation.no_data_entered,
+        doctor: state.selectedDoctorName ?? localozation.no_data_entered,
+        symptomsForProcedure:
+            state.selectedSymptomsForProcedure ?? localozation.no_data_entered,
+        timesTestPerformed: state.selectedNoOftimesTestPerformed ??
+            localozation.no_data_entered,
+      ),
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
           ),
         );

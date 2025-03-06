@@ -6,6 +6,7 @@ import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_code_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_group_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_name_model.dart';
@@ -80,5 +81,9 @@ abstract class TestAnalysisSerices {
     @Part(name: 'report') File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
+  );
+  @POST(TestAnalysisApiConstants.postTestAnalysisEndpoint)
+  Future<dynamic> postLaboratoryTestDataEntrered(
+    @Body() TestAnalysisDataEnteryRequestBodyModel testAnalysisRequestBodyModel,
   );
 }

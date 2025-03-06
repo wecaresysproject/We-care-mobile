@@ -42,7 +42,11 @@ class HomeTabView extends StatelessWidget {
                 children: [
                   CustomElevatedButton(
                     text: "ملفى الطبى",
-                    onPressed: () {},
+                    onPressed: () async {
+                      await context.pushNamedWithSettingRootNavigator(
+                        Routes.viewOrEditMedicalRecord,
+                      );
+                    },
                   ),
                   CustomElevatedButton(
                     text: "اختبار توافق أدويتى",
@@ -85,11 +89,7 @@ class HomeTabView extends StatelessWidget {
                   HomeSecondCategoryItem(
                     categoryName: "تقاريرى\nالطبية",
                     imagePath: "assets/images/medical_file_icon.png",
-                    onTap: () {
-                      context.pushNamedWithSettingRootNavigator(
-                        Routes.viewOrEditMedicalRecord,
-                      );
-                    },
+                    onTap: () {},
                   ),
                   HomeSecondCategoryItem(
                     categoryName: "جودة\nالحياة",

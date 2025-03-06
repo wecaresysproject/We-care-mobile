@@ -76,6 +76,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForXRayDataEntry() async {
     await emitBodyPartsData();
     await emitCountriesData();
