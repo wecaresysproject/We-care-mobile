@@ -69,12 +69,10 @@ class AnalysisDetailsView extends StatelessWidget {
                     ),
                   ]),
                   DetailsViewImageWithTitleTile(
-                      //  image: state.selectedAnalysisDetails!.imageBase64,
-                      image: '',
+                      image: state.selectedAnalysisDetails!.imageBase64,
                       title: "صورة التحليل"),
                   DetailsViewImageWithTitleTile(
-                      //    image: state.selectedAnalysisDetails!.reportBase64,
-                      image: '',
+                      image: state.selectedAnalysisDetails!.reportBase64,
                       title: "التقرير الطبي"),
                   Row(children: [
                     DetailsViewInfoTile(
