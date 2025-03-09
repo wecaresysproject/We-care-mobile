@@ -40,4 +40,6 @@ class TableRowReponseModel {
 
   factory TableRowReponseModel.fromJson(Map<String, dynamic> json) =>
       _$TableRowReponseModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TableRowReponseModelToJson(this);
 }

@@ -2,9 +2,9 @@
 
 part of 'auth_service.dart';
 
-// ***************************************************************************
+// **************************************************************************
 // RetrofitGenerator
-// ***************************************************************************
+// **************************************************************************
 
 class _AuthApiServices implements AuthApiServices {
   _AuthApiServices(this._dio, {this.baseUrl}) {
@@ -18,60 +18,119 @@ class _AuthApiServices implements AuthApiServices {
   @override
   Future<SignUpResponseModel> signup(
       SignUpRequestBodyModel signupRequestBody) async {
-    final response = await _dio.post(
-      AuthApiConstants.signUpEndPoint,
-      data: signupRequestBody.toJson(),
-    );
-    return SignUpResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(signupRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<SignUpResponseModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, AuthApiConstants.signUpEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = SignUpResponseModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
   Future<VerifyOtpResponseModel> verifyOtp(
       VerifyOtpRequestBodyModel verifyOtpRequestBody) async {
-    final response = await _dio.post(
-      AuthApiConstants.verifyOtpEndPoint,
-      data: verifyOtpRequestBody.toJson(),
-    );
-    return VerifyOtpResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(verifyOtpRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<VerifyOtpResponseModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, AuthApiConstants.verifyOtpEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = VerifyOtpResponseModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
   Future<LoginResponseModel> login(
       LoginRequestBodyModel loginRequestBody) async {
-    final response = await _dio.post(
-      AuthApiConstants.loginEndPoint,
-      data: loginRequestBody.toJson(),
-    );
-    return LoginResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(loginRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<LoginResponseModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, AuthApiConstants.loginEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = LoginResponseModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
   Future<ResendOtpResponseModel> resendOtp(
       ResendOtpRequestBody resendOtpRequestBody) async {
-    final response = await _dio.post(
-      AuthApiConstants.resendOtpEndPoint,
-      data: resendOtpRequestBody.toJson(),
-    );
-    return ResendOtpResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(resendOtpRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ResendOtpResponseModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, AuthApiConstants.resendOtpEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ResendOtpResponseModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
   Future<CreateNewPasswordResponseModel> createNewPassword(
       CreateNewPasswordRequestBody createNewPasswordRequestBody) async {
-    final response = await _dio.put(
-      AuthApiConstants.createNewPasswordEndPoint,
-      data: createNewPasswordRequestBody.toJson(),
-    );
-    return CreateNewPasswordResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(createNewPasswordRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CreateNewPasswordResponseModel>(
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(
+                    _dio.options, AuthApiConstants.createNewPasswordEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CreateNewPasswordResponseModel.fromJson(_result.data!);
+    return value;
   }
 
   @override
   Future<ForgetPasswordResponseModel> forgetPassword(
       ForgetPasswordRequestBodyModel forgetPasswordRequestBody) async {
-    final response = await _dio.post(
-      AuthApiConstants.forgotPasswordEndPoint,
-      data: forgetPasswordRequestBody.toJson(),
-    );
-    return ForgetPasswordResponseModel.fromJson(response.data);
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(forgetPasswordRequestBody.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ForgetPasswordResponseModel>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, AuthApiConstants.forgotPasswordEndPoint,
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ForgetPasswordResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  // Helper function for Retrofit-generated API calls
+  RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
+      requestOptions.responseType = ResponseType.json;
+    }
+    return requestOptions;
   }
 }
