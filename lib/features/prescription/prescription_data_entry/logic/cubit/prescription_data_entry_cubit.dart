@@ -2,15 +2,17 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 
 part 'prescription_data_entry_state.dart';
 
 class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
-  PrescriptionDataEntryCubit()
+  PrescriptionDataEntryCubit(this._prescriptionDataEntryRepo)
       : super(
           PrescriptionDataEntryState.initialState(),
         );
-
+  final PrescriptionDataEntryRepo _prescriptionDataEntryRepo;
   final personalNotesController = TextEditingController();
   final symptomsAccompanyingComplaintController =
       TextEditingController(); // الاعراض المصاحبة للشكوى
@@ -31,6 +33,42 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   void updateDoctorSpeciality(String? speciality) {
     emit(state.copyWith(doctorSpecialitySelection: speciality));
     validateRequiredFields();
+  }
+
+  void updateSelectedCountry(String? selectedCountry) {
+    emit(
+      state.copyWith(
+        selectedCountryName: selectedCountry,
+      ),
+    );
+  }
+
+  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
+  Future<void> intialRequestsForPrescriptionDataEntry() async {
+    await emitCountriesData();
+  }
+
+  Future<void> emitCountriesData() async {
+    final response = await _prescriptionDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            countriesNames: response.map((e) => e.name).toList(),
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   void updatePrescriptionPicture(bool? isImagePicked) {

@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
+import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/prescription/prescription_services.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
@@ -73,7 +75,9 @@ void setupAppCubits() {
   );
 
   getIt.registerFactory<PrescriptionDataEntryCubit>(
-    () => PrescriptionDataEntryCubit(),
+    () => PrescriptionDataEntryCubit(
+      getIt<PrescriptionDataEntryRepo>(),
+    ),
   );
 
   getIt.registerFactory<XRayViewCubit>(
@@ -144,6 +148,12 @@ void setupAppRepos() {
       getIt<TestAnalysisSerices>(),
     ),
   );
+
+  getIt.registerLazySingleton<PrescriptionDataEntryRepo>(
+    () => PrescriptionDataEntryRepo(
+      getIt<PrescriptionServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -162,5 +172,9 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<TestAnalysisSerices>(
     () => TestAnalysisSerices(dio),
+  );
+
+  getIt.registerLazySingleton<PrescriptionServices>(
+    () => PrescriptionServices(dio),
   );
 }

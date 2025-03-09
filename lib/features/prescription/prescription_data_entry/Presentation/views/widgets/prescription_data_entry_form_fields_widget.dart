@@ -11,10 +11,10 @@ import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_wi
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 
-import 'select_image_container_widget.dart';
-import 'user_selection_container_widget.dart';
+import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
 class PrescriptionDataEntryFormFields extends StatefulWidget {
   const PrescriptionDataEntryFormFields({super.key});
@@ -169,11 +169,17 @@ class _PrescriptionDataEntryFormFieldsState
 
               ///الدولة
               UserSelectionContainer(
-                allowManualEntry: true,
-                options: ["مصر", "الامارات", "السعوديه", "الكويت", "العراق"],
+                options: state.countriesNames,
                 categoryLabel: "الدولة",
                 bottomSheetTitle: "اختر اسم الدولة",
-                onOptionSelected: (value) {},
+                onOptionSelected: (value) async {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedCountry(value);
+                  await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .emitCountriesData();
+                },
                 containerHintText: "اختر اسم الدولة",
               ),
 

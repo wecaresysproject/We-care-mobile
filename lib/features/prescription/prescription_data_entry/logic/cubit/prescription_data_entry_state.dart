@@ -9,6 +9,9 @@ class PrescriptionDataEntryState extends Equatable {
   final String? doctorNameSelection;
   final String? doctorSpecialitySelection;
   final bool? isPrescriptionPictureSelected;
+  final List<String> countriesNames;
+  final String? selectedCountryName;
+  final String message; // error or success message
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
@@ -18,6 +21,9 @@ class PrescriptionDataEntryState extends Equatable {
     this.doctorNameSelection,
     this.doctorSpecialitySelection,
     this.isPrescriptionPictureSelected,
+    this.selectedCountryName,
+    this.countriesNames = const [],
+    this.message = '',
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -28,6 +34,8 @@ class PrescriptionDataEntryState extends Equatable {
           doctorNameSelection: null,
           doctorSpecialitySelection: null,
           isPrescriptionPictureSelected: null,
+          selectedCountryName: null,
+          message: '',
         );
 
   PrescriptionDataEntryState copyWith({
@@ -38,6 +46,9 @@ class PrescriptionDataEntryState extends Equatable {
     String? doctorNameSelection,
     String? doctorSpecialitySelection,
     bool? isPrescriptionPictureSelected,
+    String? selectedCountryName,
+    List<String>? countriesNames,
+    String? message,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -51,6 +62,9 @@ class PrescriptionDataEntryState extends Equatable {
           doctorSpecialitySelection ?? this.doctorSpecialitySelection,
       isPrescriptionPictureSelected:
           isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+      countriesNames: countriesNames ?? this.countriesNames,
+      message: message ?? this.message,
     );
   }
 
@@ -63,5 +77,8 @@ class PrescriptionDataEntryState extends Equatable {
         doctorNameSelection,
         doctorSpecialitySelection,
         isPrescriptionPictureSelected,
+        selectedCountryName,
+        countriesNames,
+        message,
       ];
 }
