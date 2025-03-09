@@ -29,11 +29,11 @@ class PrescriptionDataEntryRepo {
   }
 
   Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
-      {required String language, required String CityName}) async {
+      {required String language, required String cityName}) async {
     try {
       final response = await _prescriptionServices.getCitiesByCountryName(
         language,
-        CityName,
+        cityName,
       );
       final cityNames = (response['data'] as List)
           .map((city) => city['name'] as String)
@@ -53,8 +53,8 @@ class PrescriptionDataEntryRepo {
     try {
       final response = await _prescriptionServices.uploadPrescriptionImage(
         image,
-        language,
         contentType,
+        language,
       );
       return ApiResult.success(response);
     } catch (error) {

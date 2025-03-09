@@ -45,7 +45,7 @@ Future<void> main() async {
 Future<void> checkIfLoggedInUser() async {
   String? userToken =
       await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey);
-  if (!userToken.isEmptyOrNull) {
+  if (userToken.isEmptyOrNull) {
     isLoggedInUser = false;
   } else {
     isLoggedInUser = true;

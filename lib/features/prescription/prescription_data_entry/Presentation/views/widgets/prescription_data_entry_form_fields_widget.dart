@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -140,29 +142,49 @@ class _PrescriptionDataEntryFormFieldsState
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              SelectImageContainer(
-                containerBorderColor:
-                    (state.isPrescriptionPictureSelected == null) ||
-                            (state.isPrescriptionPictureSelected == false)
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) {
-                      context
-                          .read<PrescriptionDataEntryCubit>()
-                          .updatePrescriptionPicture(isImagePicked);
-
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        log("xxx: image path: ${picker.pickedImage?.path}");
-                      }
-                    },
-                  );
+              BlocListener<PrescriptionDataEntryCubit,
+                  PrescriptionDataEntryState>(
+                listenWhen: (prev, curr) =>
+                    prev.prescriptionImageRequestStatus !=
+                    curr.prescriptionImageRequestStatus,
+                listener: (context, state) async {
+                  if (state.prescriptionImageRequestStatus ==
+                      UploadImageRequestStatus.success) {
+                    await showSuccess(state.message);
+                  }
+                  if (state.prescriptionImageRequestStatus ==
+                      UploadImageRequestStatus.failure) {
+                    await showError(state.message);
+                  }
                 },
+                child: SelectImageContainer(
+                  containerBorderColor:
+                      (state.isPrescriptionPictureSelected == null) ||
+                              (state.isPrescriptionPictureSelected == false)
+                          ? AppColorsManager.warningColor
+                          : AppColorsManager.textfieldOutsideBorderColor,
+                  imagePath: "assets/images/photo_icon.png",
+                  label: "ارفق صورة",
+                  onTap: () async {
+                    await showImagePicker(
+                      context,
+                      onImagePicked: (isImagePicked) async {
+                        final picker = getIt.get<ImagePickerService>();
+                        if (isImagePicked && picker.isImagePickedAccepted) {
+                          context
+                              .read<PrescriptionDataEntryCubit>()
+                              .updatePrescriptionPicture(isImagePicked);
+
+                          await context
+                              .read<PrescriptionDataEntryCubit>()
+                              .uploadPrescriptionImagePicked(
+                                imagePath: picker.pickedImage!.path,
+                              );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
 
               verticalSpacing(16),

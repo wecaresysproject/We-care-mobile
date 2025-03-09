@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,7 +62,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     final response =
         await _prescriptionDataEntryRepo.getCitiesBasedOnCountryName(
       language: AppStrings.arabicLang,
-      CityName: state.selectedCountryName ?? "egypt",
+      cityName: state.selectedCountryName ?? "egypt",
     );
 
     response.when(
@@ -75,6 +77,34 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadPrescriptionImagePicked(
+      {required String imagePath}) async {
+    final response = await _prescriptionDataEntryRepo.uploadPrescriptionImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            prescriptionPictureUploadedUrl: response.imageUrl,
+            prescriptionImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            prescriptionImageRequestStatus: UploadImageRequestStatus.failure,
           ),
         );
       },

@@ -15,6 +15,9 @@ class PrescriptionDataEntryState extends Equatable {
   final String? selectedCityName;
 
   final String message; // error or success message
+  final String prescriptionPictureUploadedUrl;
+
+  final UploadImageRequestStatus prescriptionImageRequestStatus;
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
@@ -29,6 +32,8 @@ class PrescriptionDataEntryState extends Equatable {
     this.countriesNames = const [],
     this.citiesNames = const [],
     this.message = '',
+    this.prescriptionPictureUploadedUrl = '',
+    this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -42,6 +47,7 @@ class PrescriptionDataEntryState extends Equatable {
           selectedCountryName: null,
           selectedCityName: null,
           message: '',
+          prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
         );
 
   PrescriptionDataEntryState copyWith({
@@ -57,6 +63,8 @@ class PrescriptionDataEntryState extends Equatable {
     List<String>? countriesNames,
     String? message,
     List<String>? citiesNames,
+    String? prescriptionPictureUploadedUrl,
+    UploadImageRequestStatus? prescriptionImageRequestStatus,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -75,6 +83,10 @@ class PrescriptionDataEntryState extends Equatable {
       message: message ?? this.message,
       citiesNames: citiesNames ?? this.citiesNames,
       selectedCityName: selectedCityName ?? this.selectedCityName,
+      prescriptionPictureUploadedUrl:
+          prescriptionPictureUploadedUrl ?? this.prescriptionPictureUploadedUrl,
+      prescriptionImageRequestStatus:
+          prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
     );
   }
 
@@ -92,5 +104,7 @@ class PrescriptionDataEntryState extends Equatable {
         message,
         citiesNames,
         selectedCityName,
+        prescriptionPictureUploadedUrl,
+        prescriptionImageRequestStatus,
       ];
 }
