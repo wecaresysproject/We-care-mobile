@@ -185,20 +185,18 @@ class _PrescriptionDataEntryFormFieldsState
 
               verticalSpacing(16),
 
-              /// الطبيب المعالج
-
               UserSelectionContainer(
-                allowManualEntry: true,
-                options: [
-                  "مدينة الفيوم",
-                  "مدينة القاهرة",
-                  "مدينة الجيزة",
-                  "مدينة الاسكندرية",
-                  "مدينة البحر الاحمر",
-                ],
+                options: state.citiesNames,
                 categoryLabel: "المدينة",
                 bottomSheetTitle: "اختر المدينة",
-                onOptionSelected: (value) {},
+                onOptionSelected: (value) async {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedCityName(value);
+                  await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .emitCitiesData();
+                },
                 containerHintText: "اختر المدينة",
               ),
 

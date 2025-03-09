@@ -43,9 +43,42 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
+  void updateSelectedCityName(String? selectedCity) {
+    emit(
+      state.copyWith(
+        selectedCityName: selectedCity,
+      ),
+    );
+  }
+
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
     await emitCountriesData();
+  }
+
+  Future<void> emitCitiesData() async {
+    final response =
+        await _prescriptionDataEntryRepo.getCitiesBasedOnCountryName(
+      language: AppStrings.arabicLang,
+      CityName: state.selectedCountryName ?? "egypt",
+    );
+
+    response.when(
+      success: (citiesList) {
+        emit(
+          state.copyWith(
+            citiesNames: citiesList,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> emitCountriesData() async {
@@ -60,6 +93,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
             countriesNames: response.map((e) => e.name).toList(),
           ),
         );
+        emitCitiesData();
       },
       failure: (error) {
         emit(

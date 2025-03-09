@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:we_care/core/models/country_response_model.dart';
@@ -22,6 +23,23 @@ class PrescriptionDataEntryRepo {
           .map<CountryModel>((e) => CountryModel.fromJson(e))
           .toList();
       return ApiResult.success(countries);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
+      {required String language, required String CityName}) async {
+    try {
+      final response = await _prescriptionServices.getCitiesByCountryName(
+        language,
+        CityName,
+      );
+      final cityNames = (response['data'] as List)
+          .map((city) => city['name'] as String)
+          .toList();
+      log("xxx: cityNames from repo: $cityNames");
+      return ApiResult.success(cityNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

@@ -10,7 +10,10 @@ class PrescriptionDataEntryState extends Equatable {
   final String? doctorSpecialitySelection;
   final bool? isPrescriptionPictureSelected;
   final List<String> countriesNames;
+  final List<String> citiesNames;
   final String? selectedCountryName;
+  final String? selectedCityName;
+
   final String message; // error or success message
 
   const PrescriptionDataEntryState({
@@ -22,7 +25,9 @@ class PrescriptionDataEntryState extends Equatable {
     this.doctorSpecialitySelection,
     this.isPrescriptionPictureSelected,
     this.selectedCountryName,
+    this.selectedCityName,
     this.countriesNames = const [],
+    this.citiesNames = const [],
     this.message = '',
   }) : super();
 
@@ -35,6 +40,7 @@ class PrescriptionDataEntryState extends Equatable {
           doctorSpecialitySelection: null,
           isPrescriptionPictureSelected: null,
           selectedCountryName: null,
+          selectedCityName: null,
           message: '',
         );
 
@@ -47,8 +53,10 @@ class PrescriptionDataEntryState extends Equatable {
     String? doctorSpecialitySelection,
     bool? isPrescriptionPictureSelected,
     String? selectedCountryName,
+    String? selectedCityName,
     List<String>? countriesNames,
     String? message,
+    List<String>? citiesNames,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -65,6 +73,8 @@ class PrescriptionDataEntryState extends Equatable {
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       countriesNames: countriesNames ?? this.countriesNames,
       message: message ?? this.message,
+      citiesNames: citiesNames ?? this.citiesNames,
+      selectedCityName: selectedCityName ?? this.selectedCityName,
     );
   }
 
@@ -80,5 +90,7 @@ class PrescriptionDataEntryState extends Equatable {
         selectedCountryName,
         countriesNames,
         message,
+        citiesNames,
+        selectedCityName,
       ];
 }
