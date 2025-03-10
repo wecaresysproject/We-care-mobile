@@ -49,7 +49,6 @@ class SimilarTests {
   String standardRate;
   int writtenPercent;
   String interpretation;
-  @JsonKey(name: 'result')
   String recommendation;
 
   SimilarTests({

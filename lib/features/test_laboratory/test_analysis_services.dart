@@ -46,6 +46,7 @@ abstract class TestAnalysisSerices {
   Future<DeleteAnalysisDocumentResponse> deleteAnalysisById(
     @Query('id') String id,
     @Query('language') String language,
+    @Query('testName') String testName,
   );
 
   @GET(TestAnalysisApiConstants.getSimilarTests)

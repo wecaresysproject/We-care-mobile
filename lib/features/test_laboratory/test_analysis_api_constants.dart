@@ -16,7 +16,7 @@ class TestAnalysisApiConstants {
 
   static const getTestbyId = "/m2/api/lab-tests/doc";
 
-  static const deleteAnalysisById = "/m2/api/lab-tests";
+  static const deleteAnalysisById = '/m2/api/lab-tests';
 
   static const getSimilarTests = "/m2/api/lab-tests/search";
 

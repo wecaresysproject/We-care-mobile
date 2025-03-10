@@ -77,12 +77,12 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  Future<void> emitDeleteTest(String id) async {
+  Future<void> emitDeleteTest(String id, String testName) async {
     emit(state.copyWith(
         requestStatus: RequestStatus.loading, isDeleteRequest: true));
 
     final response = await testAnalysisViewRepo.deleteAnalysisById(
-        id, AppStrings.arabicLang, AppStrings.arabicLang);
+        id, AppStrings.arabicLang, AppStrings.arabicLang, testName);
 
     response.when(success: (response) async {
       emit(state.copyWith(

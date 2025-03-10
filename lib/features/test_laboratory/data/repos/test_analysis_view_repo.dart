@@ -54,10 +54,10 @@ class TestAnalysisViewRepo {
   }
 
   Future<ApiResult<DeleteAnalysisDocumentResponse>> deleteAnalysisById(
-      String id, string, String language) async {
+      String id, string, String language, String testName) async {
     try {
       final response =
-          await testAnalysisSerices.deleteAnalysisById(id, language);
+          await testAnalysisSerices.deleteAnalysisById(id, language, testName);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

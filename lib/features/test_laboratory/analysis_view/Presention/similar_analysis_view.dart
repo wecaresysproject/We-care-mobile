@@ -15,16 +15,6 @@ class SimilarAnalysisView extends StatelessWidget {
   SimilarAnalysisView({super.key, required this.testName});
   final String testName;
 
-  final List<AnalysisData> chartData = [
-    AnalysisData(x: 1, y: 100, label: "الأول"),
-    AnalysisData(x: 2, y: 50, label: "الثاني"),
-    AnalysisData(x: 3, y: 140, label: "الثالث"),
-    AnalysisData(x: 4, y: 180, label: "الرابع"),
-    AnalysisData(x: 5, y: 100, label: "الخامس"),
-    AnalysisData(x: 6, y: 100, label: "السادس"),
-    AnalysisData(x: 7, y: 145, label: "السابع"),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(

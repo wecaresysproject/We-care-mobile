@@ -12,7 +12,6 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 
@@ -56,8 +55,9 @@ class AnalysisDetailsView extends StatelessWidget {
                       title: 'التحليل',
                       editFunction: () {},
                       deleteFunction: () async {
-                        await getIt<TestAnalysisViewCubit>()
-                            .emitDeleteTest(documentId);
+                        await getIt<TestAnalysisViewCubit>().emitDeleteTest(
+                            documentId,
+                            state.selectedAnalysisDetails!.groupName);
                         await showSuccess('تم حذف التحليل بنجاح');
                         Navigator.pop(context, true);
                       },
