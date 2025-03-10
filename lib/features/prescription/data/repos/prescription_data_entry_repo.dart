@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
 
 import '../../../../core/networking/api_error_handler.dart';
@@ -57,6 +58,17 @@ class PrescriptionDataEntryRepo {
         language,
       );
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postPrescriptionDataEntry(
+      PrescriptionRequestBodyModel requestBody) async {
+    try {
+      final response =
+          await _prescriptionServices.postPrescriptionDataEntry(requestBody);
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

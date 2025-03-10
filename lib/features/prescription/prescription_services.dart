@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/prescription_api_constants.dart';
 
 part 'prescription_services.g.dart';
@@ -20,8 +21,10 @@ abstract class PrescriptionServices {
     @Query('language') String language,
     @Query('country') String country,
   );
-  // @POST(PrescriptionApiConstants.postPrescriptionDataEntry)
-  // Future<dynamic> postPrescriptionDataEntry();
+  @POST(PrescriptionApiConstants.postPrescriptionDataEntry)
+  Future<dynamic> postPrescriptionDataEntry(
+    @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
+  );
 
   @MultiPart()
   @POST(PrescriptionApiConstants.uploadPrescriptionImageEndpoint)

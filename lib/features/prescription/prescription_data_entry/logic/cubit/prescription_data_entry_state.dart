@@ -13,6 +13,7 @@ class PrescriptionDataEntryState extends Equatable {
   final List<String> citiesNames;
   final String? selectedCountryName;
   final String? selectedCityName;
+  final String? selectedDisease;
 
   final String message; // error or success message
   final String prescriptionPictureUploadedUrl;
@@ -29,6 +30,7 @@ class PrescriptionDataEntryState extends Equatable {
     this.isPrescriptionPictureSelected,
     this.selectedCountryName,
     this.selectedCityName,
+    this.selectedDisease,
     this.countriesNames = const [],
     this.citiesNames = const [],
     this.message = '',
@@ -46,6 +48,7 @@ class PrescriptionDataEntryState extends Equatable {
           isPrescriptionPictureSelected: null,
           selectedCountryName: null,
           selectedCityName: null,
+          selectedDisease: null,
           message: '',
           prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
         );
@@ -65,6 +68,7 @@ class PrescriptionDataEntryState extends Equatable {
     List<String>? citiesNames,
     String? prescriptionPictureUploadedUrl,
     UploadImageRequestStatus? prescriptionImageRequestStatus,
+    String? selectedDisease,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -87,6 +91,7 @@ class PrescriptionDataEntryState extends Equatable {
           prescriptionPictureUploadedUrl ?? this.prescriptionPictureUploadedUrl,
       prescriptionImageRequestStatus:
           prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
+      selectedDisease: selectedDisease ?? this.selectedDisease,
     );
   }
 
@@ -106,5 +111,6 @@ class PrescriptionDataEntryState extends Equatable {
         selectedCityName,
         prescriptionPictureUploadedUrl,
         prescriptionImageRequestStatus,
+        selectedDisease,
       ];
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -131,6 +132,9 @@ class _PrescriptionDataEntryFormFieldsState
                   "مرض القلب",
                 ],
                 onOptionSelected: (value) {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedDisease(value);
                   log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: "اختر المرض الذى تم تشخيصه",
@@ -239,21 +243,49 @@ class _PrescriptionDataEntryFormFieldsState
               ///TODO: handle this button in main view and remove it from here
               /// final section
               verticalSpacing(32),
-              AppCustomButton(
-                title: "ارسال",
-                onPressed: () {
-                  if (state.isFormValidated) {
-                    // context.read<XRayDataEntryCubit>().sendForm;
-                    log("xxx:Save Data Entry");
-                  } else {
-                    log("");
-                  }
-                },
-                isEnabled: state.isFormValidated ? true : false,
-              ),
+              submitPrescriptionDataEnteredBlocConsumer(),
               verticalSpacing(71),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget submitPrescriptionDataEnteredBlocConsumer() {
+    return BlocConsumer<PrescriptionDataEntryCubit, PrescriptionDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.preceriptionDataEntryStatus == RequestStatus.failure ||
+          curr.preceriptionDataEntryStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.isFormValidated != curr.isFormValidated ||
+          prev.preceriptionDataEntryStatus != curr.preceriptionDataEntryStatus,
+      listener: (context, state) async {
+        if (state.preceriptionDataEntryStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop();
+        } else {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: state.preceriptionDataEntryStatus == RequestStatus.loading,
+          title: context.translate.send,
+          onPressed: () async {
+            if (state.isFormValidated) {
+              await context
+                  .read<PrescriptionDataEntryCubit>()
+                  .postPrescriptionDataEntry(
+                    context.translate,
+                  );
+              log("xxx:Save Data Entry");
+            } else {
+              log("form not validated");
+            }
+          },
+          isEnabled: state.isFormValidated ? true : false,
         );
       },
     );
