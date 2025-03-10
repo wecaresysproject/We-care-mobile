@@ -69,6 +69,39 @@ extension BuildContextOperations on BuildContext {
   }
 }
 
+extension MedicalRangeParsing on String {
+  double? get minValue {
+    String value = trim();
+
+    if (value.startsWith('<') || value.endsWith('>')) {
+      return null; // No lower bound
+    } else if (value.startsWith('>') || value.endsWith('<')) {
+      return double.tryParse(
+          value.replaceAll(RegExp(r'[<>]'), '').trim()); // Min value exists
+    } else if (value.contains('-') || value.contains(':')) {
+      return double.tryParse(value.split(RegExp(r'[-:]'))[0].trim());
+    } else {
+      return double.tryParse(value);
+    }
+  }
+
+  double? get maxValue {
+    String value = trim();
+
+    if (value.startsWith('<') || value.endsWith('>')) {
+      return double.tryParse(
+          value.replaceAll(RegExp(r'[<>]'), '').trim()); // Max value exists
+    } else if (value.startsWith('>') || value.endsWith('<')) {
+      return null; // No upper bound
+    } else if (value.contains('-') || value.contains(':')) {
+      var parts = value.split(RegExp(r'[-:]')).map((e) => e.trim()).toList();
+      return parts.length > 1 ? double.tryParse(parts[1]) : null;
+    } else {
+      return double.tryParse(value);
+    }
+  }
+}
+
 extension PaddingListOperations on List<Widget> {
   List<Widget> paddingFrom({
     double? top,

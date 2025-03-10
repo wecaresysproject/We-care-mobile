@@ -3,6 +3,7 @@ import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/test_laboratory/data/models/delete_analysis_document_response.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_similar_tests_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 
@@ -57,6 +58,18 @@ class TestAnalysisViewRepo {
     try {
       final response =
           await testAnalysisSerices.deleteAnalysisById(id, language);
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  //get similar tests
+  Future<ApiResult<GetSimilarTestsResponseModel>> getSimilarTests(
+      {required String query}) async {
+    try {
+      final response = await testAnalysisSerices.getSimilarTests(
+          AppStrings.arabicLang, query);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

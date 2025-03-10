@@ -97,4 +97,23 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       ));
     });
   }
+
+  Future<void> emitGetSimilarTests({required String testName}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response =
+        await testAnalysisViewRepo.getSimilarTests(query: testName);
+
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        getSimilarTestsResponseModel: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        message: error.errors.first,
+        requestStatus: RequestStatus.failure,
+      ));
+    });
+  }
 }
