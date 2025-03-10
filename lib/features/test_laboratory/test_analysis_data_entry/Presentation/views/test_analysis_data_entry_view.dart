@@ -4,17 +4,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/test_analysis_data_form_fields_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 
 class TestAnalysisDataEntryView extends StatelessWidget {
-  const TestAnalysisDataEntryView({super.key});
-
+  const TestAnalysisDataEntryView({super.key, this.editingAnalysisDetailsData});
+  final AnalysisDetailedData? editingAnalysisDetailsData;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TestAnalysisDataEntryCubit>(
-      create: (context) => getIt<TestAnalysisDataEntryCubit>()
-        ..intialRequestsForTestAnalysisDataEntry(),
+      create: (context) {
+        var cubit = getIt<TestAnalysisDataEntryCubit>();
+        if (editingAnalysisDetailsData != null) {
+          cubit.loadAnalysisDataForEditing(editingAnalysisDetailsData!);
+        } else {
+          cubit.intialRequestsForTestAnalysisDataEntry();
+        }
+        return cubit;
+      },
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

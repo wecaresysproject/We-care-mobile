@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
@@ -35,6 +36,28 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
+  }
+
+  void loadAnalysisDataForEditing(
+      AnalysisDetailedData editingAnalysisDetailsData) {
+    emit(
+      state.copyWith(
+        selectedDate: editingAnalysisDetailsData.testDate,
+        isTestPictureSelected:
+            editingAnalysisDetailsData.imageBase64.isNotEmpty,
+        testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
+        selectedCountryName: editingAnalysisDetailsData.country,
+        selectedHospitalName: editingAnalysisDetailsData.hospital,
+        selectedDoctorName: editingAnalysisDetailsData.doctor,
+        selectedSymptomsForProcedure:
+            editingAnalysisDetailsData.symptomsForProcedure,
+        isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
+        selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
+        isEditMode: true,
+      ),
+    );
+    validateRequiredFields();
+    intialRequestsForTestAnalysisDataEntry();
   }
 
   void updateTimesTestPerformed(String? timesTestPerformed) {
@@ -83,7 +106,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   void updateTestDate(String? date) {
     emit(
       state.copyWith(
-        isDateSelected: date,
+        selectedDate: date,
       ),
     );
     validateRequiredFields();
@@ -324,7 +347,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         await _testAnalysisDataEntryRepo.postLaboratoryTestDataEntrered(
       testAnalysisRequestBodyModel: TestAnalysisDataEnteryRequestBodyModel(
         country: state.selectedCountryName ?? localozation.no_data_entered,
-        testDate: state.isDateSelected!,
+        testDate: state.selectedDate!,
         testTableEnteredResults: state.enteredTableRows,
         testImage: state.testPictureUploadedUrl,
         reportImage: state.testPictureUploadedUrl,
@@ -358,7 +381,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void validateRequiredFields() {
-    if (state.isDateSelected == null ||
+    if (state.selectedDate == null ||
         state.isTestPictureSelected == null ||
         state.isTestPictureSelected == false ||
         (state.isTestNameSelected == null &&

@@ -43,11 +43,10 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(10),
 
             DateTimePickerContainer(
-              containerBorderColor: state.isDateSelected == null
+              containerBorderColor: state.selectedDate == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText:
-                  isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
+              placeholderText: state.selectedDate ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context.read<TestAnalysisDataEntryCubit>().updateTestDate(
                       pickedDate,
@@ -56,10 +55,12 @@ class _TestAnalysisDataEntryFormFieldsState
               },
             ),
 
-            /// size between each categogry
-            verticalSpacing(16),
-            TypeOfTestAndAnnotationWidget(),
-            verticalSpacing(16),
+            if (!state.isEditMode) ...[
+              // /// size between each categogry
+              verticalSpacing(16),
+              TypeOfTestAndAnnotationWidget(),
+              verticalSpacing(16),
+            ],
             Text(
               "الصورة",
               style: AppTextStyles.font18blackWight500,
@@ -166,14 +167,15 @@ class _TestAnalysisDataEntryFormFieldsState
                 "كل عام",
               ],
               categoryLabel: "دورية التحليل",
-              bottomSheetTitle: "اختر الأعراض المستدعية",
+              bottomSheetTitle: "اختر دورية التحليل",
               onOptionSelected: (value) {
                 context
                     .read<TestAnalysisDataEntryCubit>()
                     .updateTimesTestPerformed(value);
                 log("xxx:Selected: $value");
               },
-              containerHintText: "اختر نوعية احتياجك للتحليل",
+              containerHintText:
+                  state.selectedNoOftimesTestPerformed ?? "اختر دورية التحليل",
             ),
 
             verticalSpacing(16),
@@ -194,7 +196,8 @@ class _TestAnalysisDataEntryFormFieldsState
                     .updateSelectedSymptom(value);
                 log("xxx:Selected: $value");
               },
-              containerHintText: "اختر الأعراض المستدعية",
+              containerHintText: state.selectedSymptomsForProcedure ??
+                  "اختر الأعراض المستدعية",
             ),
 
             verticalSpacing(16),
@@ -204,7 +207,8 @@ class _TestAnalysisDataEntryFormFieldsState
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "المعمل / المستشفى",
-              containerHintText: "اختر اسم المعمل / المستشفى",
+              containerHintText:
+                  state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
               options: [
                 "مستشفى القلب",
                 "مستشفى العين الدولى",
@@ -239,7 +243,8 @@ class _TestAnalysisDataEntryFormFieldsState
                     .updateSelectedDoctorName(value);
                 log("xxx:Selected: $value");
               },
-              containerHintText: "اختر اسم الطبيب المعالج ",
+              containerHintText:
+                  state.selectedDoctorName ?? "اختر اسم الطبيب المعالج ",
             ),
 
             verticalSpacing(16),
@@ -247,14 +252,14 @@ class _TestAnalysisDataEntryFormFieldsState
             ///الدولة
             UserSelectionContainer(
               options: state.countriesNames,
-              categoryLabel: state.selectedCountryName ?? "الدولة",
+              categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (selectedCountry) {
                 context
                     .read<TestAnalysisDataEntryCubit>()
                     .updateSelectedCountry(selectedCountry);
               },
-              containerHintText: "اختر اسم الدولة",
+              containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
             ),
 
             ///TODO: handle this button in main view and remove it from here

@@ -4,7 +4,7 @@ part of 'test_analysis_data_entry_cubit.dart';
 class TestAnalysisDataEntryState extends Equatable {
   final RequestStatus testAnalysisDataEntryStatus;
 
-  final String? isDateSelected;
+  final String? selectedDate;
   final bool? isTestPictureSelected;
   final String? isTestNameSelected;
   final String? isTestGroupNameSelected;
@@ -16,6 +16,7 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final String? selectedSymptomsForProcedure;
   final String? selectedNoOftimesTestPerformed;
+  final bool isEditMode;
 
   final UploadImageRequestStatus testImageRequestStatus;
   final UploadReportRequestStatus testReportRequestStatus;
@@ -33,8 +34,9 @@ class TestAnalysisDataEntryState extends Equatable {
   const TestAnalysisDataEntryState({
     this.testAnalysisDataEntryStatus = RequestStatus.initial,
     this.countriesNames = const [],
-    this.isDateSelected,
+    this.selectedDate,
     this.isFormValidated = false,
+    this.isEditMode = false,
     this.isTestPictureSelected,
     this.isTestNameSelected,
     this.isTestGroupNameSelected,
@@ -58,7 +60,7 @@ class TestAnalysisDataEntryState extends Equatable {
   });
   const TestAnalysisDataEntryState.initial()
       : this(
-          isDateSelected: null,
+          selectedDate: null,
           testAnalysisDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           isTestPictureSelected: null,
@@ -74,10 +76,11 @@ class TestAnalysisDataEntryState extends Equatable {
           testImageRequestStatus: UploadImageRequestStatus.initial,
           testReportRequestStatus: UploadReportRequestStatus.initial,
           testPictureUploadedUrl: '',
+          isEditMode: false,
         );
 
   TestAnalysisDataEntryState copyWith({
-    String? isDateSelected,
+    String? selectedDate,
     RequestStatus? testAnalysisDataEntryStatus,
     bool? isFormValidated,
     bool? isTestPictureSelected,
@@ -101,9 +104,10 @@ class TestAnalysisDataEntryState extends Equatable {
     String? selectedDoctorName,
     String? selectedSymptomsForProcedure,
     String? selectedNoOftimesTestPerformed,
+    bool? isEditMode,
   }) {
     return TestAnalysisDataEntryState(
-      isDateSelected: isDateSelected ?? this.isDateSelected,
+      selectedDate: selectedDate ?? this.selectedDate,
       testAnalysisDataEntryStatus:
           testAnalysisDataEntryStatus ?? this.testAnalysisDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
@@ -137,12 +141,13 @@ class TestAnalysisDataEntryState extends Equatable {
           selectedSymptomsForProcedure ?? this.selectedSymptomsForProcedure,
       selectedNoOftimesTestPerformed:
           selectedNoOftimesTestPerformed ?? this.selectedNoOftimesTestPerformed,
+      isEditMode: isEditMode ?? this.isEditMode,
     );
   }
 
   @override
   List<Object?> get props => [
-        isDateSelected,
+        selectedDate,
         testAnalysisDataEntryStatus,
         isFormValidated,
         isTestPictureSelected,
@@ -165,6 +170,7 @@ class TestAnalysisDataEntryState extends Equatable {
         selectedHospitalName,
         selectedDoctorName,
         selectedSymptomsForProcedure,
-        selectedNoOftimesTestPerformed
+        selectedNoOftimesTestPerformed,
+        isEditMode,
       ];
 }
