@@ -9,6 +9,16 @@ class PrescriptionDataEntryState extends Equatable {
   final String? doctorNameSelection;
   final String? doctorSpecialitySelection;
   final bool? isPrescriptionPictureSelected;
+  final List<String> countriesNames;
+  final List<String> citiesNames;
+  final String? selectedCountryName;
+  final String? selectedCityName;
+  final String? selectedDisease;
+
+  final String message; // error or success message
+  final String prescriptionPictureUploadedUrl;
+
+  final UploadImageRequestStatus prescriptionImageRequestStatus;
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
@@ -18,6 +28,14 @@ class PrescriptionDataEntryState extends Equatable {
     this.doctorNameSelection,
     this.doctorSpecialitySelection,
     this.isPrescriptionPictureSelected,
+    this.selectedCountryName,
+    this.selectedCityName,
+    this.selectedDisease,
+    this.countriesNames = const [],
+    this.citiesNames = const [],
+    this.message = '',
+    this.prescriptionPictureUploadedUrl = '',
+    this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -28,6 +46,11 @@ class PrescriptionDataEntryState extends Equatable {
           doctorNameSelection: null,
           doctorSpecialitySelection: null,
           isPrescriptionPictureSelected: null,
+          selectedCountryName: null,
+          selectedCityName: null,
+          selectedDisease: null,
+          message: '',
+          prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
         );
 
   PrescriptionDataEntryState copyWith({
@@ -38,6 +61,14 @@ class PrescriptionDataEntryState extends Equatable {
     String? doctorNameSelection,
     String? doctorSpecialitySelection,
     bool? isPrescriptionPictureSelected,
+    String? selectedCountryName,
+    String? selectedCityName,
+    List<String>? countriesNames,
+    String? message,
+    List<String>? citiesNames,
+    String? prescriptionPictureUploadedUrl,
+    UploadImageRequestStatus? prescriptionImageRequestStatus,
+    String? selectedDisease,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -51,6 +82,16 @@ class PrescriptionDataEntryState extends Equatable {
           doctorSpecialitySelection ?? this.doctorSpecialitySelection,
       isPrescriptionPictureSelected:
           isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+      countriesNames: countriesNames ?? this.countriesNames,
+      message: message ?? this.message,
+      citiesNames: citiesNames ?? this.citiesNames,
+      selectedCityName: selectedCityName ?? this.selectedCityName,
+      prescriptionPictureUploadedUrl:
+          prescriptionPictureUploadedUrl ?? this.prescriptionPictureUploadedUrl,
+      prescriptionImageRequestStatus:
+          prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
+      selectedDisease: selectedDisease ?? this.selectedDisease,
     );
   }
 
@@ -63,5 +104,13 @@ class PrescriptionDataEntryState extends Equatable {
         doctorNameSelection,
         doctorSpecialitySelection,
         isPrescriptionPictureSelected,
+        selectedCountryName,
+        countriesNames,
+        message,
+        citiesNames,
+        selectedCityName,
+        prescriptionPictureUploadedUrl,
+        prescriptionImageRequestStatus,
+        selectedDisease,
       ];
 }

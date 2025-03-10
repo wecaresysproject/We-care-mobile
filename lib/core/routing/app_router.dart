@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:we_care/features/prescription_view/Presentation/views/prescription_details_view.dart';
-import 'package:we_care/features/prescription_view/Presentation/views/prescription_view.dart';
+import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
+import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
+import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';

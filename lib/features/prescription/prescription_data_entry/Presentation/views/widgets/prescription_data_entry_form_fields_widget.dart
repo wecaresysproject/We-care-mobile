@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -11,10 +14,10 @@ import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_wi
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/show_data_entry_types/data_entry_types_features/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 
-import 'select_image_container_widget.dart';
-import 'user_selection_container_widget.dart';
+import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
 class PrescriptionDataEntryFormFields extends StatefulWidget {
   const PrescriptionDataEntryFormFields({super.key});
@@ -129,6 +132,9 @@ class _PrescriptionDataEntryFormFieldsState
                   "مرض القلب",
                 ],
                 onOptionSelected: (value) {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedDisease(value);
                   log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: "اختر المرض الذى تم تشخيصه",
@@ -140,59 +146,83 @@ class _PrescriptionDataEntryFormFieldsState
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              SelectImageContainer(
-                containerBorderColor:
-                    (state.isPrescriptionPictureSelected == null) ||
-                            (state.isPrescriptionPictureSelected == false)
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) {
-                      context
-                          .read<PrescriptionDataEntryCubit>()
-                          .updatePrescriptionPicture(isImagePicked);
-
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        log("xxx: image path: ${picker.pickedImage?.path}");
-                      }
-                    },
-                  );
+              BlocListener<PrescriptionDataEntryCubit,
+                  PrescriptionDataEntryState>(
+                listenWhen: (prev, curr) =>
+                    prev.prescriptionImageRequestStatus !=
+                    curr.prescriptionImageRequestStatus,
+                listener: (context, state) async {
+                  if (state.prescriptionImageRequestStatus ==
+                      UploadImageRequestStatus.success) {
+                    await showSuccess(state.message);
+                  }
+                  if (state.prescriptionImageRequestStatus ==
+                      UploadImageRequestStatus.failure) {
+                    await showError(state.message);
+                  }
                 },
+                child: SelectImageContainer(
+                  containerBorderColor:
+                      (state.isPrescriptionPictureSelected == null) ||
+                              (state.isPrescriptionPictureSelected == false)
+                          ? AppColorsManager.warningColor
+                          : AppColorsManager.textfieldOutsideBorderColor,
+                  imagePath: "assets/images/photo_icon.png",
+                  label: "ارفق صورة",
+                  onTap: () async {
+                    await showImagePicker(
+                      context,
+                      onImagePicked: (isImagePicked) async {
+                        final picker = getIt.get<ImagePickerService>();
+                        if (isImagePicked && picker.isImagePickedAccepted) {
+                          context
+                              .read<PrescriptionDataEntryCubit>()
+                              .updatePrescriptionPicture(isImagePicked);
+
+                          await context
+                              .read<PrescriptionDataEntryCubit>()
+                              .uploadPrescriptionImagePicked(
+                                imagePath: picker.pickedImage!.path,
+                              );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
 
               verticalSpacing(16),
 
               ///الدولة
               UserSelectionContainer(
-                allowManualEntry: true,
-                options: ["مصر", "الامارات", "السعوديه", "الكويت", "العراق"],
+                options: state.countriesNames,
                 categoryLabel: "الدولة",
                 bottomSheetTitle: "اختر اسم الدولة",
-                onOptionSelected: (value) {},
+                onOptionSelected: (value) async {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedCountry(value);
+                  await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .emitCountriesData();
+                },
                 containerHintText: "اختر اسم الدولة",
               ),
 
               verticalSpacing(16),
 
-              /// الطبيب المعالج
-
               UserSelectionContainer(
-                allowManualEntry: true,
-                options: [
-                  "مدينة الفيوم",
-                  "مدينة القاهرة",
-                  "مدينة الجيزة",
-                  "مدينة الاسكندرية",
-                  "مدينة البحر الاحمر",
-                ],
+                options: state.citiesNames,
                 categoryLabel: "المدينة",
                 bottomSheetTitle: "اختر المدينة",
-                onOptionSelected: (value) {},
+                onOptionSelected: (value) async {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedCityName(value);
+                  await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .emitCitiesData();
+                },
                 containerHintText: "اختر المدينة",
               ),
 
@@ -213,21 +243,49 @@ class _PrescriptionDataEntryFormFieldsState
               ///TODO: handle this button in main view and remove it from here
               /// final section
               verticalSpacing(32),
-              AppCustomButton(
-                title: "ارسال",
-                onPressed: () {
-                  if (state.isFormValidated) {
-                    // context.read<XRayDataEntryCubit>().sendForm;
-                    log("xxx:Save Data Entry");
-                  } else {
-                    log("");
-                  }
-                },
-                isEnabled: state.isFormValidated ? true : false,
-              ),
+              submitPrescriptionDataEnteredBlocConsumer(),
               verticalSpacing(71),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget submitPrescriptionDataEnteredBlocConsumer() {
+    return BlocConsumer<PrescriptionDataEntryCubit, PrescriptionDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.preceriptionDataEntryStatus == RequestStatus.failure ||
+          curr.preceriptionDataEntryStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.isFormValidated != curr.isFormValidated ||
+          prev.preceriptionDataEntryStatus != curr.preceriptionDataEntryStatus,
+      listener: (context, state) async {
+        if (state.preceriptionDataEntryStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop();
+        } else {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: state.preceriptionDataEntryStatus == RequestStatus.loading,
+          title: context.translate.send,
+          onPressed: () async {
+            if (state.isFormValidated) {
+              await context
+                  .read<PrescriptionDataEntryCubit>()
+                  .postPrescriptionDataEntry(
+                    context.translate,
+                  );
+              log("xxx:Save Data Entry");
+            } else {
+              log("form not validated");
+            }
+          },
+          isEnabled: state.isFormValidated ? true : false,
         );
       },
     );
