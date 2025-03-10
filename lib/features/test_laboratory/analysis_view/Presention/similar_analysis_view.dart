@@ -1,83 +1,108 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 
 class SimilarAnalysisView extends StatelessWidget {
-  SimilarAnalysisView({super.key});
-
-  final List<AnalysisData> chartData = [
-    AnalysisData(x: 1, y: 100, label: "الأول"),
-    AnalysisData(x: 2, y: 50, label: "الثاني"),
-    AnalysisData(x: 3, y: 140, label: "الثالث"),
-    AnalysisData(x: 4, y: 180, label: "الرابع"),
-    AnalysisData(x: 5, y: 100, label: "الخامس"),
-    AnalysisData(x: 6, y: 100, label: "السادس"),
-    AnalysisData(x: 7, y: 145, label: "السابع"),
-  ];
+  SimilarAnalysisView({super.key, required this.testName});
+  final String testName;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Column(
-            children: [
-              DetailsViewAppBar(title: 'التحاليل المماثلة'),
-              verticalSpacing(24),
-              CustomAnalysisContainer(
-                  iconPath: 'assets/images/noto_test-tube.png',
-                  label: 'Na',
-                  title: 'ًصوديوم',
-                  description:
-                      'يقيس نسبة الصوديوم في الدم ، وهو أحد المعادن الأساسية فى الجسم والمسئول عن توازن السوائل ووظائف الأعصاب والعضلات .'),
-              verticalSpacing(16),
-              //TODO create list view.builder
-              AnalysisCard(
-                date: ["20/12/2025"],
-                names: [
-                  "MCV",
-                  "HB",
-                  "PTL",
-                  "WBC",
-                ],
-                ranges: ["4.2 - 5.4", "100 - 200", "50 - 100", "25 - 33"],
-                results: ["4.4", "100", "50", "25"],
-                interpretation:
-                    "تشير النسبة المرتفعة للبوتاسيوم إلى مشاكل في وظيفة الكلى أو تناول بعض الأدوية التي ترفع مستويات البوتاسيوم.",
+    return BlocProvider.value(
+      value: getIt<TestAnalysisViewCubit>()
+        ..emitGetSimilarTests(testName: testName),
+      child: BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
+        builder: (context, state) {
+          if (state.getSimilarTestsResponseModel == null) {
+            return Scaffold(
+                body: const Center(child: CircularProgressIndicator()));
+          }
+          final similarTestsResponse = state.getSimilarTestsResponseModel!.data;
+          // Generate dynamic chart data from API response
+          final List<AnalysisData> dynamicChartData =
+              similarTestsResponse.similarTests
+                  .asMap()
+                  .entries
+                  .map((entry) => AnalysisData(
+                        x: entry.key + 1, // Assuming x-axis is the index + 1
+                        y: entry.value.writtenPercent
+                            .toDouble(), // Ensure valid double
+                        label: entry.value.testDate, // Use test date as label
+                      ))
+                  .toList();
+          String standardRateStr =
+              similarTestsResponse.similarTests[0].standardRate;
+
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  children: [
+                    DetailsViewAppBar(
+                      title: 'التحاليل المماثلة',
+                      showActionButtons: false,
+                    ),
+                    verticalSpacing(24),
+                    CustomAnalysisContainer(
+                        iconPath: 'assets/images/test_tube.png',
+                        label: similarTestsResponse.testDetails.code,
+                        title: similarTestsResponse.testDetails.nameTest,
+                        description:
+                            similarTestsResponse.testDetails.description),
+                    verticalSpacing(16),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: similarTestsResponse.similarTests.length,
+                        itemBuilder: (context, index) {
+                          return AnalysisCard(
+                              date: [
+                                similarTestsResponse
+                                    .similarTests[index].testDate
+                              ],
+                              names: [
+                                similarTestsResponse.similarTests[index].code
+                              ],
+                              ranges: [
+                                similarTestsResponse
+                                    .similarTests[index].standardRate
+                              ],
+                              results: [
+                                similarTestsResponse
+                                    .similarTests[index].writtenPercent
+                                    .toString()
+                              ],
+                              interpretation: similarTestsResponse
+                                  .similarTests[index].interpretation,
+                              recommendation: similarTestsResponse
+                                  .similarTests[index].recommendation);
+                        }),
+                    verticalSpacing(12),
+                    AnalysisLineChart(
+                      data: dynamicChartData,
+                      title: 'راقب نسب التغيرات',
+                      normalMax: standardRateStr.maxValue ?? 400,
+                      normalMin: standardRateStr.minValue ?? 0,
+                    )
+                  ],
+                ),
               ),
-              AnalysisCard(
-                  date: [
-                    "20/12/2025"
-                  ],
-                  names: [
-                    "NA",
-                  ],
-                  ranges: [
-                    "4.2 - 5.4"
-                  ],
-                  results: [
-                    "4.4"
-                  ],
-                  interpretation:
-                      "تشير النسبة المرتفعة للبوتاسيوم إلى مشاكل في وظيفة الكلى أو تناول بعض الأدوية التي ترفع مستويات البوتاسيوم."),
-              verticalSpacing(12),
-              AnalysisLineChart(
-                data: chartData,
-                title: 'راقب نسب التغيرات',
-                normalMax: 130,
-                normalMin: 100,
-              )
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -157,11 +182,12 @@ class CustomAnalysisContainer extends StatelessWidget {
 }
 
 class AnalysisCard extends StatelessWidget {
-  final List<String> date; // e.g. "13/11/2025"
-  final List<String> names; // e.g. ["MCV", "HB", "PTL", "WBC", ...]
-  final List<String> ranges; // e.g. ["4.2 - 5.4", "100 - 200", ...]
+  final List<String> date;
+  final List<String> names;
+  final List<String> ranges;
   final List<String> results;
-  final String interpretation; // e.g. "تشير النسبة المرتفعة ..."
+  final String interpretation;
+  final String recommendation;
 
   const AnalysisCard({
     super.key,
@@ -170,6 +196,7 @@ class AnalysisCard extends StatelessWidget {
     required this.ranges,
     required this.results,
     required this.interpretation,
+    required this.recommendation,
   });
 
   @override
@@ -235,41 +262,11 @@ class AnalysisCard extends StatelessWidget {
               ),
             ],
           ),
-          // تفسير (التفسير) + أيقونة
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(Icons.info_outline, color: borderColor, size: 20),
-              const SizedBox(width: 4),
-              Text(
-                'التفسير',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: borderColor,
-                ),
-              ),
-            ],
-          ),
-
+          InterpretationDetailsContainerWithTitleRow(
+              content: interpretation, title: 'التفسير'),
           verticalSpacing(8),
-
-          // Interpretation Text
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.transparent, // a slightly different background
-              borderRadius: BorderRadius.circular(8),
-              border:
-                  Border.all(color: AppColorsManager.mainDarkBlue, width: 0.5),
-            ),
-            child: Text(
-              interpretation,
-              style: AppTextStyles.font12blackWeight400,
-              //textAlign: TextAlign.center,
-            ),
-          ),
+          InterpretationDetailsContainerWithTitleRow(
+              content: recommendation, title: 'التوصيات'),
         ],
       ),
     );
@@ -342,6 +339,55 @@ class AnalysisCard extends StatelessWidget {
   }
 }
 
+class InterpretationDetailsContainerWithTitleRow extends StatelessWidget {
+  const InterpretationDetailsContainerWithTitleRow(
+      {super.key, required this.content, required this.title});
+
+  final String content;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      // تفسير (التفسير) + أيقونة
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.info_outline,
+              color: AppColorsManager.mainDarkBlue, size: 20),
+          const SizedBox(width: 4),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: AppColorsManager.mainDarkBlue,
+            ),
+          ),
+        ],
+      ),
+
+      verticalSpacing(8),
+
+      // Interpretation Text
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.transparent, // a slightly different background
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColorsManager.mainDarkBlue, width: 0.5),
+        ),
+        child: Text(
+          content,
+          style: AppTextStyles.font12blackWeight400,
+          //textAlign: TextAlign.center,
+        ),
+      ),
+    ]);
+  }
+}
+
 class AnalysisData {
   final int x; // e.g. 1, 2, 3, ...
   final double y; // e.g. 100, 140, 180, ...
@@ -352,11 +398,10 @@ class AnalysisData {
 
 class AnalysisLineChart extends StatelessWidget {
   final List<AnalysisData> data;
-  final String title; // "راقب تغيرات النسب"
+  final String title;
 
-  // ADD: Normal Range
-  final double normalMin; // e.g. 80
-  final double normalMax; // e.g. 120
+  final double normalMin;
+  final double normalMax;
 
   const AnalysisLineChart({
     Key? key,

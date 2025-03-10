@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/Presention/similar_analysis_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
@@ -279,6 +280,16 @@ class MedicalAnalysisView extends StatelessWidget {
               ),
             )),
             DataCell(
+              onTap: () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SimilarAnalysisView(
+                      testName: data.testName,
+                    ),
+                  ),
+                );
+              },
               Center(
                 child: Text(data.result.toString(),
                     maxLines: 3,

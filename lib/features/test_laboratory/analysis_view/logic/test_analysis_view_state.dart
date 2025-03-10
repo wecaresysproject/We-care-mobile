@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_similar_tests_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 
 class TestAnalysisViewState extends Equatable {
@@ -10,6 +11,7 @@ class TestAnalysisViewState extends Equatable {
   final AnalysisDetailedData? selectedAnalysisDetails;
   final String? message;
   final bool isDeleteRequest;
+  final GetSimilarTestsResponseModel? getSimilarTestsResponseModel;
 
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
@@ -18,6 +20,7 @@ class TestAnalysisViewState extends Equatable {
     this.selectedAnalysisDetails,
     this.message,
     this.isDeleteRequest = false,
+    this.getSimilarTestsResponseModel,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -28,6 +31,7 @@ class TestAnalysisViewState extends Equatable {
       selectedAnalysisDetails: null,
       message: null,
       isDeleteRequest: false,
+      getSimilarTestsResponseModel: null,
     );
   }
 
@@ -38,6 +42,7 @@ class TestAnalysisViewState extends Equatable {
     AnalysisDetailedData? selectedAnalysisDetails,
     String? message,
     bool? isDeleteRequest,
+    GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
   }) {
     return TestAnalysisViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -48,6 +53,8 @@ class TestAnalysisViewState extends Equatable {
           selectedAnalysisDetails ?? this.selectedAnalysisDetails,
       message: message ?? this.message,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      getSimilarTestsResponseModel:
+          getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
     );
   }
 
@@ -59,5 +66,6 @@ class TestAnalysisViewState extends Equatable {
         selectedAnalysisDetails,
         message,
         isDeleteRequest,
+        getSimilarTestsResponseModel
       ];
 }

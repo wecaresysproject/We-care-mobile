@@ -77,12 +77,12 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  Future<void> emitDeleteTest(String id) async {
+  Future<void> emitDeleteTest(String id, String testName) async {
     emit(state.copyWith(
         requestStatus: RequestStatus.loading, isDeleteRequest: true));
 
     final response = await testAnalysisViewRepo.deleteAnalysisById(
-        id, AppStrings.arabicLang, AppStrings.arabicLang);
+        id, AppStrings.arabicLang, AppStrings.arabicLang, testName);
 
     response.when(success: (response) async {
       emit(state.copyWith(
@@ -94,6 +94,25 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       emit(state.copyWith(
         requestStatus: RequestStatus.failure,
         message: error.errors.first,
+      ));
+    });
+  }
+
+  Future<void> emitGetSimilarTests({required String testName}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response =
+        await testAnalysisViewRepo.getSimilarTests(query: testName);
+
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        getSimilarTestsResponseModel: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        message: error.errors.first,
+        requestStatus: RequestStatus.failure,
       ));
     });
   }

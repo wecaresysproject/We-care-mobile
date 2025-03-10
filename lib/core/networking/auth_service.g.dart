@@ -7,13 +7,15 @@ part of 'auth_service.dart';
 // **************************************************************************
 
 class _AuthApiServices implements AuthApiServices {
-  _AuthApiServices(this._dio, {this.baseUrl}) {
+  _AuthApiServices(this._dio, {this.baseUrl, this.errorLogger}) {
     baseUrl ??= AuthApiConstants.baseUrl;
   }
 
   final Dio _dio;
 
   String? baseUrl;
+
+  final ParseErrorLogger? errorLogger;
 
   @override
   Future<SignUpResponseModel> signup(
