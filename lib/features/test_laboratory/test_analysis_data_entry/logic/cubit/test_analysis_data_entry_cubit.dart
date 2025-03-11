@@ -263,7 +263,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         emit(
           state.copyWith(
             message: response.message,
-            testPictureUploadedUrl: response.reportUrl,
+            testReportUploadedUrl: response.reportUrl,
             testReportRequestStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -352,7 +352,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         testDate: state.selectedDate!,
         testTableEnteredResults: state.enteredTableRows,
         testImage: state.testPictureUploadedUrl,
-        reportImage: state.testPictureUploadedUrl,
+        reportImage: state.testReportUploadedUrl,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
         symptomsForProcedure:
@@ -394,7 +394,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         country: state.selectedCountryName!,
         testDate: state.selectedDate!,
         testImage: state.testPictureUploadedUrl,
-        reportImage: state.testPictureUploadedUrl,
+        reportImage: state.testReportUploadedUrl,
         hospital: state.selectedHospitalName!,
         doctor: state.selectedDoctorName!,
         symptomsForProcedure: state.selectedSymptomsForProcedure!,

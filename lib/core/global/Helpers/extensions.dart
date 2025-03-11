@@ -203,6 +203,11 @@ extension PaddingExtension on Widget {
   }
 }
 
+// check for nullabilty over all types
+extension NullableExtension<T> on T? {
+  bool get isNotNull => this != null;
+}
+
 extension StringExtensions on String? {
   int get toInt => int.parse(this!);
   bool get isEmptyOrNull => this == '' || this == null;

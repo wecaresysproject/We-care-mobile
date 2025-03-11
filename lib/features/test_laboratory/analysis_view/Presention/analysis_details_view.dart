@@ -56,16 +56,26 @@ class AnalysisDetailsView extends StatelessWidget {
                   DetailsViewAppBar(
                       title: 'التحليل',
                       editFunction: () async {
-                        await context.pushNamed(
+                        final result = await context.pushNamed(
                           Routes.testAnalsisDataEntryView,
                           arguments: state.selectedAnalysisDetails,
                         );
+                        if (result != null && result) {
+                          if (!context.mounted) return;
+                          context
+                              .read<TestAnalysisViewCubit>()
+                              .emitTestbyId(documentId);
+                        }
                       },
                       deleteFunction: () async {
-                        await getIt<TestAnalysisViewCubit>().emitDeleteTest(
-                            documentId,
-                            state.selectedAnalysisDetails!.groupName);
+                        await context
+                            .read<TestAnalysisViewCubit>()
+                            .emitDeleteTest(
+                              documentId,
+                              state.selectedAnalysisDetails!.groupName,
+                            );
                         await showSuccess('تم حذف التحليل بنجاح');
+                        if (!context.mounted) return;
                         Navigator.pop(context, true);
                       },
                       shareFunction: () {

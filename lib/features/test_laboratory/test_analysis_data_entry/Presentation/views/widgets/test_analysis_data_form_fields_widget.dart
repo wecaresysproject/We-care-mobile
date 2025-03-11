@@ -286,7 +286,10 @@ class _TestAnalysisDataEntryFormFieldsState
         if (state.testAnalysisDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
-          context.pop();
+          context.pop(
+            result:
+                true, //! send true back to test analysis details view inn order to check if its updated , then reload the view
+          );
         } else {
           await showError(state.message);
         }
