@@ -281,7 +281,7 @@ class MedicalAnalysisView extends StatelessWidget {
             )),
             DataCell(
               onTap: () async {
-                Navigator.push(
+                bool result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SimilarAnalysisView(
@@ -289,6 +289,10 @@ class MedicalAnalysisView extends StatelessWidget {
                     ),
                   ),
                 );
+
+                if (result && context.mounted) {
+                  await context.read<TestAnalysisViewCubit>().emitTests();
+                }
               },
               Center(
                 child: Text(data.result.toString(),

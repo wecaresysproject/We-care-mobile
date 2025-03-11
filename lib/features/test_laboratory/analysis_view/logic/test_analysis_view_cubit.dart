@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -8,6 +9,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
   TestAnalysisViewCubit(this.testAnalysisViewRepo)
       : super(TestAnalysisViewState.initial());
   final TestAnalysisViewRepo testAnalysisViewRepo;
+  final resultEditingController = TextEditingController();
 
   Future<void> emitFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -115,5 +117,44 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
         requestStatus: RequestStatus.failure,
       ));
     });
+  }
+
+  void toggleEditing(String id, String currentResult) {
+    emit(state.copyWith(
+      isEditing: !state.isEditing,
+      editingId: id,
+      currentResult: currentResult,
+    ));
+  }
+
+  Future<void> updateTestResult(
+      {required String id,
+      required String testName,
+      required double result}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await testAnalysisViewRepo.editTestResultByIdAndName(
+        id: id, testName: testName, result: result);
+
+    response.when(success: (response) async {
+      await emitGetSimilarTests(testName: testName);
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        message: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        message: error.errors.first,
+      ));
+    });
+    emit(
+        state.copyWith(isEditing: false, editingId: null, currentResult: null));
+  }
+
+  @override
+  Future<void> close() {
+    resultEditingController.dispose();
+    return super.close();
   }
 }
