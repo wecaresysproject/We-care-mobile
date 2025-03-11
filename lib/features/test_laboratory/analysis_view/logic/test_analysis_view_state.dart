@@ -12,6 +12,9 @@ class TestAnalysisViewState extends Equatable {
   final String? message;
   final bool isDeleteRequest;
   final GetSimilarTestsResponseModel? getSimilarTestsResponseModel;
+  final bool isEditing;
+  final String? editingId;
+  final String? currentResult;
 
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
@@ -21,6 +24,9 @@ class TestAnalysisViewState extends Equatable {
     this.message,
     this.isDeleteRequest = false,
     this.getSimilarTestsResponseModel,
+    this.isEditing = false,
+    this.editingId,
+    this.currentResult,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -32,30 +38,37 @@ class TestAnalysisViewState extends Equatable {
       message: null,
       isDeleteRequest: false,
       getSimilarTestsResponseModel: null,
+      isEditing: false,
+      editingId: null,
+      currentResult: null,
     );
   }
 
-  TestAnalysisViewState copyWith({
-    RequestStatus? requestStatus,
-    List<int>? yearsFilter,
-    List<AnalysisSummarizedData>? analysisSummarizedDataList,
-    AnalysisDetailedData? selectedAnalysisDetails,
-    String? message,
-    bool? isDeleteRequest,
-    GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
-  }) {
+  TestAnalysisViewState copyWith(
+      {RequestStatus? requestStatus,
+      List<int>? yearsFilter,
+      List<AnalysisSummarizedData>? analysisSummarizedDataList,
+      AnalysisDetailedData? selectedAnalysisDetails,
+      String? message,
+      bool? isDeleteRequest,
+      GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
+      bool? isEditing,
+      String? editingId,
+      String? currentResult}) {
     return TestAnalysisViewState(
-      requestStatus: requestStatus ?? this.requestStatus,
-      yearsFilter: yearsFilter ?? this.yearsFilter,
-      analysisSummarizedDataList:
-          analysisSummarizedDataList ?? this.analysisSummarizedDataList,
-      selectedAnalysisDetails:
-          selectedAnalysisDetails ?? this.selectedAnalysisDetails,
-      message: message ?? this.message,
-      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
-      getSimilarTestsResponseModel:
-          getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
-    );
+        requestStatus: requestStatus ?? this.requestStatus,
+        yearsFilter: yearsFilter ?? this.yearsFilter,
+        analysisSummarizedDataList:
+            analysisSummarizedDataList ?? this.analysisSummarizedDataList,
+        selectedAnalysisDetails:
+            selectedAnalysisDetails ?? this.selectedAnalysisDetails,
+        message: message ?? this.message,
+        isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+        getSimilarTestsResponseModel:
+            getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
+        isEditing: isEditing ?? this.isEditing,
+        editingId: editingId ?? this.editingId,
+        currentResult: currentResult ?? this.currentResult);
   }
 
   @override
@@ -66,6 +79,9 @@ class TestAnalysisViewState extends Equatable {
         selectedAnalysisDetails,
         message,
         isDeleteRequest,
-        getSimilarTestsResponseModel
+        getSimilarTestsResponseModel,
+        isEditing,
+        editingId,
+        currentResult
       ];
 }

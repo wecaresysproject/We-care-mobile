@@ -20,6 +20,9 @@ class TestAnalysisApiConstants {
 
   static const getSimilarTests = "/m2/api/lab-tests/search";
 
+  static const editTestResultByIdAndName =
+      '/api/lab-tests/updateWrittenPercent';
+
   //Data Entry
   static const getTestAnnotationsEndpoint =
       "/m2/api/flutter/SortsAnalysis/codes";

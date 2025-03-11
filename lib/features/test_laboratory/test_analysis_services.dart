@@ -49,6 +49,14 @@ abstract class TestAnalysisSerices {
     @Query('testName') String testName,
   );
 
+  @PUT(TestAnalysisApiConstants.editTestResultByIdAndName)
+  Future<dynamic> editTestResultByIdAndName(
+    @Query('id') String id,
+    @Query('language') String language,
+    @Query('testName') String testName,
+    @Body() Map<String, dynamic> newTestResult,
+  );
+
   @GET(TestAnalysisApiConstants.getSimilarTests)
   Future<GetSimilarTestsResponseModel> getSimilarTests(
     @Query('language') String language,

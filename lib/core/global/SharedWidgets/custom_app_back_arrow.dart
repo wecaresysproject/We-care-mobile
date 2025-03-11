@@ -11,7 +11,7 @@ class CustomBackArrow extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
       },
       child: Image.asset(
         !isArabic()

@@ -64,6 +64,19 @@ class TestAnalysisViewRepo {
     }
   }
 
+  Future<ApiResult<String>> editTestResultByIdAndName(
+      {required String id,
+      required String testName,
+      required double result}) async {
+    try {
+      final response = await testAnalysisSerices.editTestResultByIdAndName(
+          id, AppStrings.arabicLang, testName, {"writtenPercent": result});
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   //get similar tests
   Future<ApiResult<GetSimilarTestsResponseModel>> getSimilarTests(
       {required String query}) async {
