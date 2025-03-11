@@ -297,11 +297,15 @@ class _TestAnalysisDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              await context
-                  .read<TestAnalysisDataEntryCubit>()
-                  .postLaboratoryTestDataEntrered(
-                    context.translate,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<TestAnalysisDataEntryCubit>()
+                      .submitEditsOnTest()
+                  : await context
+                      .read<TestAnalysisDataEntryCubit>()
+                      .postLaboratoryTestDataEntrered(
+                        context.translate,
+                      );
               log("xxx:Save Data Entry");
             }
           },

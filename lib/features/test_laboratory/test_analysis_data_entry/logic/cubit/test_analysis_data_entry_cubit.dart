@@ -46,6 +46,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         isTestPictureSelected:
             editingAnalysisDetailsData.imageBase64.isNotEmpty,
         testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
+        testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
         selectedCountryName: editingAnalysisDetailsData.country,
         selectedHospitalName: editingAnalysisDetailsData.hospital,
         selectedDoctorName: editingAnalysisDetailsData.doctor,
@@ -54,6 +55,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
         selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
         isEditMode: true,
+        updatedTestId: editingAnalysisDetailsData.id,
       ),
     );
     validateRequiredFields();
@@ -358,6 +360,48 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         timesTestPerformed: state.selectedNoOftimesTestPerformed ??
             localozation.no_data_entered,
       ),
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitEditsOnTest() async {
+    emit(
+      state.copyWith(
+        testAnalysisDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
+    final response = await _testAnalysisDataEntryRepo.editLaboratoryTestData(
+      requestBodyModel: EditTestAnalysisDataEnteryRequestBodyModel(
+        country: state.selectedCountryName!,
+        testDate: state.selectedDate!,
+        testImage: state.testPictureUploadedUrl,
+        reportImage: state.testPictureUploadedUrl,
+        hospital: state.selectedHospitalName!,
+        doctor: state.selectedDoctorName!,
+        symptomsForProcedure: state.selectedSymptomsForProcedure!,
+        timesTestPerformed: state.selectedNoOftimesTestPerformed!,
+      ),
+      testId: state.updatedTestId,
+      language: AppStrings.arabicLang,
     );
 
     response.when(

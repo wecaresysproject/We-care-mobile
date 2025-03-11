@@ -17,6 +17,7 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedSymptomsForProcedure;
   final String? selectedNoOftimesTestPerformed;
   final bool isEditMode;
+  final String updatedTestId;
 
   final UploadImageRequestStatus testImageRequestStatus;
   final UploadReportRequestStatus testReportRequestStatus;
@@ -57,6 +58,7 @@ class TestAnalysisDataEntryState extends Equatable {
     this.testTableRowsData = const [],
     this.enteredTableRows = const [],
     this.selectedTestAnnotation,
+    this.updatedTestId = '',
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -77,6 +79,7 @@ class TestAnalysisDataEntryState extends Equatable {
           testReportRequestStatus: UploadReportRequestStatus.initial,
           testPictureUploadedUrl: '',
           isEditMode: false,
+          updatedTestId: '',
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -105,6 +108,7 @@ class TestAnalysisDataEntryState extends Equatable {
     String? selectedSymptomsForProcedure,
     String? selectedNoOftimesTestPerformed,
     bool? isEditMode,
+    String? updatedTestId,
   }) {
     return TestAnalysisDataEntryState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -142,6 +146,7 @@ class TestAnalysisDataEntryState extends Equatable {
       selectedNoOftimesTestPerformed:
           selectedNoOftimesTestPerformed ?? this.selectedNoOftimesTestPerformed,
       isEditMode: isEditMode ?? this.isEditMode,
+      updatedTestId: updatedTestId ?? this.updatedTestId,
     );
   }
 
@@ -172,5 +177,6 @@ class TestAnalysisDataEntryState extends Equatable {
         selectedSymptomsForProcedure,
         selectedNoOftimesTestPerformed,
         isEditMode,
+        updatedTestId,
       ];
 }
