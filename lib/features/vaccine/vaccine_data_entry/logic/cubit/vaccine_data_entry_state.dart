@@ -9,86 +9,58 @@ class VaccineDataEntryState extends Equatable {
   final List<String> countriesNames;
   final String message; // error or success message
   final bool isFormValidated;
-  final String? xRayDateSelection;
-  final String? xRayBodyPartSelection;
-  final String? xRayTypeSelection;
+  final String? vaccineDateSelection;
+  final String? selectedvaccineName; //الطعم
   final String? selectedCountryName;
-  final bool? isXRayPictureSelected;
-  final String xRayPictureUploadedUrl;
-
-  final String xRayReportUploadedUrl;
-  final UploadImageRequestStatus xRayImageRequestStatus;
-  final UploadReportRequestStatus xRayReportRequestStatus;
+  final bool isEditMode;
+  final String? doseArrangement; // ترتيب الجرعة
 
   const VaccineDataEntryState({
     this.countriesNames = const [],
     this.vaccineDataEntryStatus = RequestStatus.initial,
     this.message = '',
     this.isFormValidated = false,
-    this.xRayDateSelection,
-    this.xRayBodyPartSelection,
+    this.vaccineDateSelection,
+    this.selectedvaccineName,
     this.selectedCountryName,
-    this.xRayTypeSelection,
-    this.isXRayPictureSelected,
-    this.xRayPictureUploadedUrl = '',
-    this.xRayReportUploadedUrl = '',
-    this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
-    this.xRayReportRequestStatus = UploadReportRequestStatus.initial,
+    this.doseArrangement,
+    this.isEditMode = false,
   }) : super();
 
   const VaccineDataEntryState.initialState()
       : this(
           vaccineDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
-          xRayDateSelection: null,
-          xRayBodyPartSelection: null,
-          xRayTypeSelection: null,
-          isXRayPictureSelected: null,
+          vaccineDateSelection: null,
+          selectedvaccineName: null,
           message: '',
           selectedCountryName: null,
-          xRayImageRequestStatus: UploadImageRequestStatus.initial,
-          xRayReportRequestStatus: UploadReportRequestStatus.initial,
+          isEditMode: false,
+          doseArrangement: null,
         );
 
   VaccineDataEntryState copyWith({
     RequestStatus? vaccineDataEntryStatus,
     bool? isFormValidated,
-    String? xRayDateSelection,
-    String? xRayBodyPartSelection,
-    String? xRayTypeSelection,
-    bool? isXRayPictureSelected,
-    List<String>? bodyPartNames,
-    List<String>? radiologyTypesBasedOnBodyPartNameSelected,
+    String? vaccineDateSelection,
     List<String>? countriesNames,
     String? selectedCountryName,
-    String? selectedPupose,
     String? message,
-    String? xRayPictureUploadedUrl,
-    String? xRayReportUploadedUrl,
-    UploadImageRequestStatus? xRayImageRequestStatus,
-    UploadReportRequestStatus? xRayReportRequestStatus,
+    String? selectedvaccineName,
+    bool? isEditMode,
+    String? doseArrangement,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
           vaccineDataEntryStatus ?? this.vaccineDataEntryStatus,
       message: message ?? this.message,
       isFormValidated: isFormValidated ?? this.isFormValidated,
-      xRayDateSelection: xRayDateSelection ?? this.xRayDateSelection,
-      xRayBodyPartSelection:
-          xRayBodyPartSelection ?? this.xRayBodyPartSelection,
-      xRayTypeSelection: xRayTypeSelection ?? this.xRayTypeSelection,
-      isXRayPictureSelected:
-          isXRayPictureSelected ?? this.isXRayPictureSelected,
+      vaccineDateSelection: vaccineDateSelection ?? this.vaccineDateSelection,
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-      xRayPictureUploadedUrl:
-          xRayPictureUploadedUrl ?? this.xRayPictureUploadedUrl,
-      xRayReportUploadedUrl:
-          xRayReportUploadedUrl ?? this.xRayReportUploadedUrl,
-      xRayImageRequestStatus:
-          xRayImageRequestStatus ?? this.xRayImageRequestStatus,
-      xRayReportRequestStatus:
-          xRayReportRequestStatus ?? this.xRayReportRequestStatus,
+      selectedvaccineName: selectedvaccineName ?? this.selectedvaccineName,
+      isEditMode: isEditMode ?? this.isEditMode,
+      doseArrangement: doseArrangement ?? this.doseArrangement,
     );
   }
 
@@ -97,15 +69,11 @@ class VaccineDataEntryState extends Equatable {
         vaccineDataEntryStatus,
         message,
         isFormValidated,
-        xRayDateSelection,
-        xRayBodyPartSelection,
-        xRayTypeSelection,
-        isXRayPictureSelected,
+        vaccineDateSelection,
         countriesNames,
         selectedCountryName,
-        xRayPictureUploadedUrl,
-        xRayReportUploadedUrl,
-        xRayImageRequestStatus,
-        xRayReportRequestStatus,
+        selectedvaccineName,
+        isEditMode,
+        doseArrangement,
       ];
 }

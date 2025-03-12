@@ -44,21 +44,43 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
   }
 
-  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
-  Future<void> intialRequestsForVaccineDataEntry() async {}
-
-  void updateXRayPicture(bool? isImagePicked) {
-    emit(state.copyWith(isXRayPictureSelected: isImagePicked));
+// ترتيب الجرعه
+  void updateDoseArrangement(String? dose) {
+    emit(
+      state.copyWith(
+        doseArrangement: dose,
+      ),
+    );
     validateRequiredFields();
   }
 
+  void updateVaccineDate(String? vaccineDateSelection) {
+    emit(
+      state.copyWith(
+        vaccineDateSelection: vaccineDateSelection,
+      ),
+    );
+    validateRequiredFields();
+  }
+
+  /// اخترالطعم
+  void updateVaccineeName(String? selectedVaccineName) {
+    emit(
+      state.copyWith(
+        selectedvaccineName: selectedVaccineName,
+      ),
+    );
+    validateRequiredFields();
+  }
+
+  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
+  Future<void> intialRequestsForVaccineDataEntry() async {}
+
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
-    if (state.xRayDateSelection == null ||
-        state.xRayBodyPartSelection == null ||
-        state.xRayTypeSelection == null ||
-        state.isXRayPictureSelected == null ||
-        state.isXRayPictureSelected == false) {
+    if (state.vaccineDateSelection == null ||
+        state.selectedvaccineName == null ||
+        state.doseArrangement == null) {
       emit(
         state.copyWith(
           isFormValidated: false,

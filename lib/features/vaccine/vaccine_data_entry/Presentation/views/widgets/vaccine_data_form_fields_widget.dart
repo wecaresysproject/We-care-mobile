@@ -35,30 +35,32 @@ class _VaccineDataEntryFormFieldsState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserSelectionContainer(
-              containerBorderColor: state.xRayBodyPartSelection == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "العمر عند تلقى التطعيم",
-              containerHintText: "اختر عمرك أثناء تلقى التطعيم",
-              options: [],
-              onOptionSelected: (selectedAge) async {
-                // await context
-                //     .read<VaccineDataEntryCubit>()
-                //     .updateXRayBodyPart(selectedbodyPartName);
+              categoryLabel: "السن النموزجي للتطعيم",
+              containerHintText: "اختر السن",
+              options: [
+                "الاسم الاول ١",
+                "الاسم الاول ٢",
+                "الاسم الاول٣١",
+              ],
+              onOptionSelected: (value) {
+                context.read<VaccineDataEntryCubit>().updateVaccineeName(value);
               },
-              bottomSheetTitle: 'اختر عمرك اثناء تلقى التطعيم',
+              bottomSheetTitle: " اختر السن النموزجي للتطعيم",
             ),
-
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.xRayTypeSelection == null
+              containerBorderColor: state.selectedvaccineName == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "الطعم",
               containerHintText: "اختر الطعم",
-              options: [],
-              onOptionSelected: (value) async {
-                // context.read<XRayDataEntryCubit>().updateXRayType(value);
+              options: [
+                "الاسم الاول ١",
+                "الاسم الاول ٢",
+                "الاسم الاول٣١",
+              ],
+              onOptionSelected: (value) {
+                context.read<VaccineDataEntryCubit>().updateVaccineeName(value);
               },
               bottomSheetTitle: "اختر الطعم",
             ),
@@ -71,27 +73,36 @@ class _VaccineDataEntryFormFieldsState
             verticalSpacing(10),
 
             DateTimePickerContainer(
-              containerBorderColor: state.xRayDateSelection == null
+              containerBorderColor: state.vaccineDateSelection == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               placeholderText:
                   isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
               onDateSelected: (pickedDate) {
-                log("xxx: pickedDate: $pickedDate"); //! 2024-02-14
+                context
+                    .read<VaccineDataEntryCubit>()
+                    .updateVaccineDate(pickedDate);
+                log("xxx: pickedDate: $pickedDate");
               },
             ),
 
             /// size between each categogry
             verticalSpacing(16),
             UserSelectionContainer(
+              containerBorderColor: state.doseArrangement == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "ترتيب الجرعة", // Another Dropdown Example
               containerHintText: "اختر ترتيب الجرعة",
-              options: [],
-              onOptionSelected: (selectedPupose) {
-                log("xxx:Selected: $selectedPupose");
-                // context
-                //     .read<XRayDataEntryCubit>()
-                //     .updateXRaySelectedPupose(selectedPupose);
+              options: [
+                "ترتيب ١",
+                "ترتيب 2",
+                "ترتيب 3",
+              ],
+              onOptionSelected: (doseArrangment) {
+                context
+                    .read<VaccineDataEntryCubit>()
+                    .updateDoseArrangement(doseArrangment);
               },
               bottomSheetTitle: "اختر ترتيب الجرعة",
             ),
@@ -269,9 +280,8 @@ class _VaccineDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // await context.read<VaccineDataEntryCubit>().postRadiologyDataEntry(
-              //       context.translate,
-              //     );
+              // state.isEditMode?
+
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");
