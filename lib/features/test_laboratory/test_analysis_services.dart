@@ -110,4 +110,11 @@ abstract class TestAnalysisSerices {
   Future<dynamic> postLaboratoryTestDataEntrered(
     @Body() TestAnalysisDataEnteryRequestBodyModel testAnalysisRequestBodyModel,
   );
+  @PUT(TestAnalysisApiConstants.updateTestAnalysisEndpoint)
+  Future<dynamic> updateTestAnalysis(
+    @Body()
+    EditTestAnalysisDataEnteryRequestBodyModel testAnalysisRequestBodyModel,
+    @Query("language") String language,
+    @Query("id") String id,
+  );
 }

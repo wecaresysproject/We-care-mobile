@@ -6,6 +6,7 @@ import 'package:we_care/features/show_data_entry_types/Presentation/views/medica
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
@@ -27,8 +28,8 @@ class AppRouter {
   Route<dynamic>? onGenerateRoutes(RouteSettings route) {
     String routeName = route.name!;
     // ignore: unused_local_variable
-    final arguments = route.arguments as Map<String,
-        dynamic>?; //!recheck as later , as it can be dynamic for most cases
+    final arguments = route.arguments
+        as dynamic; //!recheck as later , as it can be dynamic for most cases
 
     //! provide the nedded bloc providers here
 
@@ -103,8 +104,13 @@ class AppRouter {
           builder: (context) => MedicalAnalysisView(),
         );
       case Routes.testAnalsisDataEntryView:
+        final testAnalysisDetails = arguments
+            as AnalysisDetailedData?; // Replace with your actual model type
+
         return MaterialPageRoute(
-          builder: (context) => TestAnalysisDataEntryView(),
+          builder: (context) => TestAnalysisDataEntryView(
+            editingAnalysisDetailsData: testAnalysisDetails,
+          ),
         );
 
       case Routes.xRayDataView:

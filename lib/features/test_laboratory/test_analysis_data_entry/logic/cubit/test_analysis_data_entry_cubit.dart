@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
@@ -35,6 +36,30 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
+  }
+
+  void loadAnalysisDataForEditing(
+      AnalysisDetailedData editingAnalysisDetailsData) {
+    emit(
+      state.copyWith(
+        selectedDate: editingAnalysisDetailsData.testDate,
+        isTestPictureSelected:
+            editingAnalysisDetailsData.imageBase64.isNotEmpty,
+        testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
+        testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
+        selectedCountryName: editingAnalysisDetailsData.country,
+        selectedHospitalName: editingAnalysisDetailsData.hospital,
+        selectedDoctorName: editingAnalysisDetailsData.doctor,
+        selectedSymptomsForProcedure:
+            editingAnalysisDetailsData.symptomsForProcedure,
+        isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
+        selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
+        isEditMode: true,
+        updatedTestId: editingAnalysisDetailsData.id,
+      ),
+    );
+    validateRequiredFields();
+    intialRequestsForTestAnalysisDataEntry();
   }
 
   void updateTimesTestPerformed(String? timesTestPerformed) {
@@ -83,7 +108,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   void updateTestDate(String? date) {
     emit(
       state.copyWith(
-        isDateSelected: date,
+        selectedDate: date,
       ),
     );
     validateRequiredFields();
@@ -238,7 +263,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         emit(
           state.copyWith(
             message: response.message,
-            testPictureUploadedUrl: response.reportUrl,
+            testReportUploadedUrl: response.reportUrl,
             testReportRequestStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -324,10 +349,10 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         await _testAnalysisDataEntryRepo.postLaboratoryTestDataEntrered(
       testAnalysisRequestBodyModel: TestAnalysisDataEnteryRequestBodyModel(
         country: state.selectedCountryName ?? localozation.no_data_entered,
-        testDate: state.isDateSelected!,
+        testDate: state.selectedDate!,
         testTableEnteredResults: state.enteredTableRows,
         testImage: state.testPictureUploadedUrl,
-        reportImage: state.testPictureUploadedUrl,
+        reportImage: state.testReportUploadedUrl,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
         symptomsForProcedure:
@@ -357,8 +382,50 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  Future<void> submitEditsOnTest() async {
+    emit(
+      state.copyWith(
+        testAnalysisDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
+    final response = await _testAnalysisDataEntryRepo.editLaboratoryTestData(
+      requestBodyModel: EditTestAnalysisDataEnteryRequestBodyModel(
+        country: state.selectedCountryName!,
+        testDate: state.selectedDate!,
+        testImage: state.testPictureUploadedUrl,
+        reportImage: state.testReportUploadedUrl,
+        hospital: state.selectedHospitalName!,
+        doctor: state.selectedDoctorName!,
+        symptomsForProcedure: state.selectedSymptomsForProcedure!,
+        timesTestPerformed: state.selectedNoOftimesTestPerformed!,
+      ),
+      testId: state.updatedTestId,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            testAnalysisDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   void validateRequiredFields() {
-    if (state.isDateSelected == null ||
+    if (state.selectedDate == null ||
         state.isTestPictureSelected == null ||
         state.isTestPictureSelected == false ||
         (state.isTestNameSelected == null &&

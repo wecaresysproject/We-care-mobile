@@ -135,4 +135,22 @@ class TestAnalysisDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> editLaboratoryTestData({
+    required EditTestAnalysisDataEnteryRequestBodyModel requestBodyModel,
+    required String language,
+    required String testId,
+  }) async {
+    try {
+      final response = await _testAnalysisSerices.updateTestAnalysis(
+        requestBodyModel,
+        language,
+        testId,
+      ) as Map<String, dynamic>;
+      log('postData response : $response');
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

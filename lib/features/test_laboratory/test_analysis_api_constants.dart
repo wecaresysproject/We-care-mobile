@@ -5,6 +5,7 @@ class TestAnalysisApiConstants {
 
   static const uploadXImageEndpoint = "/FileUpload/upload-image";
   static const uploadXReportEndpoint = "/FileUpload/upload-report";
+  static const updateTestAnalysisEndpoint = "/m2/api/lab-tests/update";
 
   //View Endpoints
 

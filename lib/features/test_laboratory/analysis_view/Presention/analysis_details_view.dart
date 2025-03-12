@@ -9,9 +9,11 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 
@@ -53,12 +55,27 @@ class AnalysisDetailsView extends StatelessWidget {
                 children: [
                   DetailsViewAppBar(
                       title: 'التحليل',
-                      editFunction: () {},
+                      editFunction: () async {
+                        final result = await context.pushNamed(
+                          Routes.testAnalsisDataEntryView,
+                          arguments: state.selectedAnalysisDetails,
+                        );
+                        if (result != null && result) {
+                          if (!context.mounted) return;
+                          context
+                              .read<TestAnalysisViewCubit>()
+                              .emitTestbyId(documentId);
+                        }
+                      },
                       deleteFunction: () async {
-                        await getIt<TestAnalysisViewCubit>().emitDeleteTest(
-                            documentId,
-                            state.selectedAnalysisDetails!.groupName);
+                        await context
+                            .read<TestAnalysisViewCubit>()
+                            .emitDeleteTest(
+                              documentId,
+                              state.selectedAnalysisDetails!.groupName,
+                            );
                         await showSuccess('تم حذف التحليل بنجاح');
+                        if (!context.mounted) return;
                         Navigator.pop(context, true);
                       },
                       shareFunction: () {

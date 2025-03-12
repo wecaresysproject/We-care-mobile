@@ -49,7 +49,12 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
           ),
           verticalSpacing(8),
           image != ""
-              ? Image.network(image!, height: 278.h, width: 343.w)
+              ? Image.network(
+                  image!,
+                  height: 278.h,
+                  width: double.infinity,
+                  fit: BoxFit.contain,
+                )
               : CustomContainer(
                   value: 'لم يتم رفع صورة',
                   isExpanded: true,

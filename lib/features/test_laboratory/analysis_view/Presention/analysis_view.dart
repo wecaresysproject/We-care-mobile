@@ -240,7 +240,7 @@ class MedicalAnalysisView extends StatelessWidget {
                     ),
                   ),
                 );
-                if (result as bool && context.mounted) {
+                if (result != null as bool? && context.mounted) {
                   await context.read<TestAnalysisViewCubit>().emitTests();
                 }
               },
