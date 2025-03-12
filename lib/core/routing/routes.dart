@@ -26,4 +26,6 @@ class Routes {
   static const xRayDataView = '/xRayDataView';
   static const surgeriesView = '/surgeriesView';
   static const surgeriesDataEntryView = '/surgeriesDataEntryView';
+  static const vaccineDataEntryView = '/vaccineDataEntryView';
+  static const vaccineView = '/vaccineView';
 }

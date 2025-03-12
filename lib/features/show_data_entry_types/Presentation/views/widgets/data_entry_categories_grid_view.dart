@@ -188,7 +188,7 @@ final List<Map<String, String>> dataEntryCategories = [
   {
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
-    "route": "/pregnancy_followup"
+    "route": Routes.vaccineDataEntryView,
   },
   {
     "title": "متابعة\n الحمل",

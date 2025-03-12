@@ -238,7 +238,7 @@ final List<Map<String, String>> categoriesView = [
   {
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
-    "route": "/pregnancy_followup"
+    "route": Routes.vaccineView,
   },
   {
     "title": "متابعة\n الحمل",
