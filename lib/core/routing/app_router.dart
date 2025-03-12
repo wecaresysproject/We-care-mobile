@@ -8,6 +8,7 @@ import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.d
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
+import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/vaccine_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
@@ -124,6 +125,10 @@ class AppRouter {
       case Routes.surgeriesDataEntryView:
         return MaterialPageRoute(
           builder: (context) => const SurgeriesDataEntryView(),
+        );
+      case Routes.vaccineDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => const VaccineDataEntryView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -10,27 +10,29 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
+import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_cubit.dart';
+import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
-class XRayDataEntryFormFields extends StatefulWidget {
-  const XRayDataEntryFormFields({super.key});
+class VaccineDataEntryFormFields extends StatefulWidget {
+  const VaccineDataEntryFormFields({super.key});
 
   @override
-  State<XRayDataEntryFormFields> createState() =>
-      _XRayDataEntryFormFieldsState();
+  State<VaccineDataEntryFormFields> createState() =>
+      _VaccineDataEntryFormFieldsState();
 }
 
-class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
+class _VaccineDataEntryFormFieldsState
+    extends State<VaccineDataEntryFormFields> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<XRayDataEntryCubit, XRayDataEntryState>(
+    return BlocBuilder<VaccineDataEntryCubit, VaccineDataEntryState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +50,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               placeholderText:
                   isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
               onDateSelected: (pickedDate) {
-                context.read<XRayDataEntryCubit>().updateXRayDate(pickedDate);
                 log("xxx: pickedDate: $pickedDate"); //! 2024-02-14
               },
             ),
@@ -62,11 +63,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "منطقة الأشعة",
               containerHintText: "اختر العضو الخاص بالأشعة",
-              options: state.bodyPartNames,
+              options: [],
               onOptionSelected: (selectedbodyPartName) async {
-                await context
-                    .read<XRayDataEntryCubit>()
-                    .updateXRayBodyPart(selectedbodyPartName);
+                // await context
+                //     .read<VaccineDataEntryCubit>()
+                //     .updateXRayBodyPart(selectedbodyPartName);
               },
               bottomSheetTitle: 'اختر العضو الخاص بالأشعة',
             ),
@@ -78,9 +79,9 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "النوع",
               containerHintText: "اختر نوع الأشعة",
-              options: state.radiologyTypesBasedOnBodyPartNameSelected,
+              options: [],
               onOptionSelected: (value) async {
-                context.read<XRayDataEntryCubit>().updateXRayType(value);
+                // context.read<XRayDataEntryCubit>().updateXRayType(value);
               },
               bottomSheetTitle: 'اختر نوع الأشعة',
             ),
@@ -90,12 +91,12 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               categoryLabel:
                   "نوعية الاحتياج للأشعة", // Another Dropdown Example
               containerHintText: "اختر نوعية احتياجك للأشعة",
-              options: state.puposesOfSelectedXRayType,
+              options: [],
               onOptionSelected: (selectedPupose) {
                 log("xxx:Selected: $selectedPupose");
-                context
-                    .read<XRayDataEntryCubit>()
-                    .updateXRaySelectedPupose(selectedPupose);
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
               bottomSheetTitle: "اختر نوعية احتياجك للأشعة",
             ),
@@ -106,7 +107,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
+            BlocListener<VaccineDataEntryCubit, VaccineDataEntryState>(
               listenWhen: (prev, curr) =>
                   prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
               listener: (context, state) async {
@@ -132,15 +133,15 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        context
-                            .read<XRayDataEntryCubit>()
-                            .updateXRayPicture(isImagePicked);
+                        // context
+                        //     .read<VaccineDataEntryCubit>()
+                        //     .updateXRayPicture(isImagePicked);
 
-                        await context
-                            .read<XRayDataEntryCubit>()
-                            .uploadXrayImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
+                        // await context
+                        //     .read<VaccineDataEntryCubit>()
+                        //     .uploadXrayImagePicked(
+                        //       imagePath: picker.pickedImage!.path,
+                        //     );
                       }
                     },
                   );
@@ -161,7 +162,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
 
             verticalSpacing(8),
-            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
+            BlocListener<VaccineDataEntryCubit, VaccineDataEntryState>(
               listenWhen: (prev, curr) =>
                   prev.xRayReportRequestStatus != curr.xRayReportRequestStatus,
               listener: (context, state) async {
@@ -183,11 +184,11 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<XRayDataEntryCubit>()
-                            .uploadXrayReportPicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
+                        // await context
+                        //     .read<VaccineDataEntryCubit>()
+                        //     .uploadXrayReportPicked(
+                        //       imagePath: picker.pickedImage!.path,
+                        //     );
                       }
                     },
                   );
@@ -280,7 +281,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (selectedCountry) {
                 context
-                    .read<XRayDataEntryCubit>()
+                    .read<VaccineDataEntryCubit>()
                     .updateSelectedCountry(selectedCountry);
               },
               containerHintText: "اختر اسم الدولة",
@@ -295,7 +296,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             WordLimitTextField(
               controller:
-                  context.read<XRayDataEntryCubit>().personalNotesController,
+                  context.read<VaccineDataEntryCubit>().personalNotesController,
             ),
 
             ///TODO: handle this button in main view and remove it from here
@@ -310,15 +311,15 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
   }
 
   Widget submitXrayDataEntryButtonBlocConsumer() {
-    return BlocConsumer<XRayDataEntryCubit, XRayDataEntryState>(
+    return BlocConsumer<VaccineDataEntryCubit, VaccineDataEntryState>(
       listenWhen: (prev, curr) =>
-          curr.xRayDataEntryStatus == RequestStatus.failure ||
-          curr.xRayDataEntryStatus == RequestStatus.success,
+          curr.vaccineDataEntryStatus == RequestStatus.failure ||
+          curr.vaccineDataEntryStatus == RequestStatus.success,
       buildWhen: (prev, curr) =>
           prev.isFormValidated != curr.isFormValidated ||
-          prev.xRayDataEntryStatus != curr.xRayDataEntryStatus,
+          prev.vaccineDataEntryStatus != curr.vaccineDataEntryStatus,
       listener: (context, state) async {
-        if (state.xRayDataEntryStatus == RequestStatus.success) {
+        if (state.vaccineDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
           context.pop();
@@ -328,13 +329,13 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
       },
       builder: (context, state) {
         return AppCustomButton(
-          isLoading: state.xRayDataEntryStatus == RequestStatus.loading,
+          isLoading: state.vaccineDataEntryStatus == RequestStatus.loading,
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              await context.read<XRayDataEntryCubit>().postRadiologyDataEntry(
-                    context.translate,
-                  );
+              // await context.read<VaccineDataEntryCubit>().postRadiologyDataEntry(
+              //       context.translate,
+              //     );
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");
