@@ -12,7 +12,7 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
   Future<void> getPrescriptionFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _prescriptionRepo.gettFilters(
-        language: AppStrings.arabicLang, userType: AppStrings.arabicLang);
+        language: AppStrings.arabicLang, userType: 'Patient');
 
     result.when(success: (response) {
       emit(state.copyWith(
@@ -20,6 +20,39 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
         yearsFilter: response.years,
         doctorNameFilter: response.doctors,
         specificationsFilter: response.specification,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(requestStatus: RequestStatus.failure));
+    });
+  }
+
+  Future<void> getUserPrescriptionList() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _prescriptionRepo.getUserPrescriptionList(
+        language: AppStrings.arabicLang);
+
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        userPrescriptions: response.prescriptionList,
+        responseMessage: response.message,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first));
+    });
+  }
+
+  Future<void> getUserPrescriptionDetailsById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _prescriptionRepo.getUserPrescriptionDetailsById(
+        id: id, language: AppStrings.arabicLang, userType: 'Patient');
+
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        selectedPrescriptionDetails: response,
       ));
     }, failure: (error) {
       emit(state.copyWith(requestStatus: RequestStatus.failure));

@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +7,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -154,17 +153,18 @@ Future<void> _shareDetails(
     List<String> imagePaths = [];
 
     if (analysisDetails.imageBase64.startsWith("http")) {
-      final imagePath = await _downloadImage(
+      final imagePath = await downloadImage(
           analysisDetails.imageBase64, tempDir, 'analysis_image.png');
       if (imagePath != null) imagePaths.add(imagePath);
     }
 
     if (analysisDetails.reportBase64.startsWith("http")) {
-      final reportPath = await _downloadImage(
+      final reportPath = await downloadImage(
           analysisDetails.reportBase64, tempDir, 'medical_report.png');
       if (reportPath != null) imagePaths.add(reportPath);
     }
 
+//!TODO: to be removed after adding real data
     // 📤 Share text & images
     if (imagePaths.isNotEmpty) {
       await Share.shareXFiles([XFile(imagePaths.first), XFile(imagePaths.last)],
@@ -173,19 +173,6 @@ Future<void> _shareDetails(
       await Share.share(text);
     }
   } catch (e) {
-    showError("❌ حدث خطأ أثناء المشاركة");
-  }
-}
-
-// 📥 Helper function to download images using Dio
-Future<String?> _downloadImage(
-    String imageUrl, Directory tempDir, String fileName) async {
-  try {
-    final filePath = '${tempDir.path}/$fileName';
-    await Dio().download(imageUrl, filePath);
-    return filePath;
-  } catch (e) {
-    print("⚠️ Failed to download image: $imageUrl - Error: $e");
-    return null;
+    await showError("❌ حدث خطأ أثناء المشاركة");
   }
 }

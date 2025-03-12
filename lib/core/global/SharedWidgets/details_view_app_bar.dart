@@ -22,21 +22,28 @@ class DetailsViewAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Align(
-          alignment: isArabic() ? Alignment.topRight : Alignment.topLeft,
-          child: CustomBackArrow(),
+        Row(
+          children: [
+            Align(
+              alignment: isArabic() ? Alignment.topRight : Alignment.topLeft,
+              child: CustomBackArrow(),
+            ),
+            Expanded(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font20blackWeight600
+                    .copyWith(fontSize: 21.sp),
+              ),
+            ),
+          ],
         ),
-        Expanded(
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.font20blackWeight600.copyWith(fontSize: 21.sp),
-          ),
-        ),
+        verticalSpacing(12),
         showActionButtons
             ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CustomActionButton(
                     onTap: deleteFunction,

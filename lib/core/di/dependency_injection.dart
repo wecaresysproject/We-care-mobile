@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
+import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
@@ -100,9 +102,16 @@ void setupAppCubits() {
       getIt<TestAnalysisViewRepo>(),
     ),
   );
+
   getIt.registerFactory<VaccineDataEntryCubit>(
     () => VaccineDataEntryCubit(
       getIt<VaccineDataEntryRepo>(),
+    ),
+  );
+
+  getIt.registerFactory<PrescriptionViewCubit>(
+    () => PrescriptionViewCubit(
+      getIt<PrescriptionViewRepo>(),
     ),
   );
 }
@@ -165,6 +174,12 @@ void setupAppRepos() {
   getIt.registerLazySingleton<VaccineDataEntryRepo>(
     () => VaccineDataEntryRepo(
       vaccineApiServices: getIt<VaccineApiServices>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<PrescriptionViewRepo>(
+    () => PrescriptionViewRepo(
+      prescriptionServices: getIt<PrescriptionServices>(),
     ),
   );
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
@@ -90,7 +93,7 @@ class AppRouter {
 
       case Routes.prescriptionView:
         return MaterialPageRoute(
-          builder: (context) => const PrescriptionView(),
+          builder: (context) => PrescriptionView(),
         );
       case Routes.prescriptionCategoryDataEntryView:
         return MaterialPageRoute(
@@ -98,7 +101,9 @@ class AppRouter {
         );
       case Routes.prescriptionDetailsView:
         return MaterialPageRoute(
-          builder: (context) => PrescriptionDetailsView(),
+          builder: (context) => PrescriptionDetailsView(
+            documentId: arguments?['id'] ?? "",
+          ),
         );
       case Routes.medicalAnalysisView:
         return MaterialPageRoute(

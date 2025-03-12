@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
+import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
@@ -15,47 +20,67 @@ class PrescriptionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(
-                    title: 'التاريخ',
-                    options:
-                        List.generate(20, (index) => (2010 + index).toString()),
-                    isYearFilter: true),
-                doctorsFilters,
-                doctorDepartmentFilters
-              ],
-              onApply: (selectedFilters) {
-                // Handle apply button action
-              },
+    return BlocProvider<PrescriptionViewCubit>(
+      create: (context) => getIt<PrescriptionViewCubit>()
+        ..getPrescriptionFilters()
+        ..getUserPrescriptionList(),
+      child: BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+        builder: (context, state) {
+          if (state.requestStatus == RequestStatus.loading) {
+            return Scaffold(
+                backgroundColor: Colors.white,
+                body: const Center(child: CircularProgressIndicator()));
+          }
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0.h,
             ),
-            verticalSpacing(16),
-            MedicalItemGridView(
-              items: prescriptionMockData,
-              onTap: (id) async {
-                await context.pushNamed(Routes.prescriptionDetailsView);
-              },
-              titleBuilder: (item) =>
-                  item.title, // Extract the title dynamically
-              infoRowBuilder: (item) => [
-                {"title": "التخصص:", "value": item.specialty},
-                {"title": "التاريخ:", "value": item.date},
-                {"title": "المرض:", "value": item.condition},
-              ],
+            body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Column(
+                children: [
+                  ViewAppBar(),
+                  DataViewFiltersRow(
+                    filters: [
+                      FilterConfig(
+                          title: 'التاريخ',
+                          options: state.yearsFilter,
+                          isYearFilter: true),
+                      FilterConfig(
+                        title: 'التخصص',
+                        options: state.specificationsFilter,
+                      ),
+                      FilterConfig(
+                        title: 'الطبيب',
+                        options: state.doctorNameFilter,
+                      ),
+                    ],
+                    onApply: (selectedFilters) {
+                      // Handle apply button action
+                    },
+                  ),
+                  verticalSpacing(16),
+                  MedicalItemGridView(
+                    items: state.userPrescriptions,
+                    onTap: (id) async {
+                      await context.pushNamed(Routes.prescriptionDetailsView,
+                          arguments: {'id': id});
+                    },
+                    titleBuilder: (item) =>
+                        item.doctorName, // Extract the title dynamically
+                    infoRowBuilder: (item) => [
+                      {"title": "التخصص:", "value": item.doctorSpecialty},
+                      {"title": "التاريخ:", "value": item.preDescriptionDate},
+                      {"title": "المرض:", "value": item.disease},
+                    ],
+                  ),
+                  verticalSpacing(16),
+                  XRayDataViewFooterRow(),
+                ],
+              ),
             ),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -117,44 +142,6 @@ class XRayDataViewFooterRow extends StatelessWidget {
     );
   }
 }
-
-// Example usage with doctors' names and specialties
-final doctorDepartmentFilters = FilterConfig(
-  title: 'التخصص',
-  options: [
-    'قلب وأوعية دموية',
-    'عيون',
-    'أنف وأذن وحنجرة',
-    'أسنان',
-    'الجراحة العامة',
-    'طب الأطفال',
-    'الأمراض الجلدية',
-    'جراحة العظام',
-    'المسالك البولية',
-    'الأورام',
-    'الغدد الصماء',
-    'الجهاز الهضمي',
-    'جراحة التجميل',
-    'مخ وأعصاب',
-    'باطنة',
-    'الأسنان واللثة'
-  ],
-);
-final doctorsFilters = FilterConfig(
-  title: 'اسم الطبيب',
-  options: [
-    'د/ محمد أحمد',
-    'د/ أسامة مصطفى',
-    'د/ مريم صالح',
-    'د/ كريم محمود',
-    'د/ رشا محمود',
-    'د/ أحمد خالد',
-    'د/ مصطفى حسن',
-    'د/ نهى عبد العزيز',
-    'د/ علي إبراهيم',
-    'د/ سارة مجدي'
-  ],
-);
 
 List<PrescriptionData> prescriptionMockData = [
   PrescriptionData(
