@@ -2,19 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_radio_buttons_shared_container_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_cubit.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
 
@@ -37,8 +34,38 @@ class _VaccineDataEntryFormFieldsState
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            UserSelectionContainer(
+              containerBorderColor: state.xRayBodyPartSelection == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "العمر عند تلقى التطعيم",
+              containerHintText: "اختر عمرك أثناء تلقى التطعيم",
+              options: [],
+              onOptionSelected: (selectedAge) async {
+                // await context
+                //     .read<VaccineDataEntryCubit>()
+                //     .updateXRayBodyPart(selectedbodyPartName);
+              },
+              bottomSheetTitle: 'اختر عمرك اثناء تلقى التطعيم',
+            ),
+
+            verticalSpacing(16),
+            UserSelectionContainer(
+              containerBorderColor: state.xRayTypeSelection == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "الطعم",
+              containerHintText: "اختر الطعم",
+              options: [],
+              onOptionSelected: (value) async {
+                // context.read<XRayDataEntryCubit>().updateXRayType(value);
+              },
+              bottomSheetTitle: "اختر الطعم",
+            ),
+
+            verticalSpacing(16),
             Text(
-              "تاريخ الأشعة",
+              "تاريخ الجرعة",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
@@ -56,41 +83,9 @@ class _VaccineDataEntryFormFieldsState
 
             /// size between each categogry
             verticalSpacing(16),
-
             UserSelectionContainer(
-              containerBorderColor: state.xRayBodyPartSelection == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "منطقة الأشعة",
-              containerHintText: "اختر العضو الخاص بالأشعة",
-              options: [],
-              onOptionSelected: (selectedbodyPartName) async {
-                // await context
-                //     .read<VaccineDataEntryCubit>()
-                //     .updateXRayBodyPart(selectedbodyPartName);
-              },
-              bottomSheetTitle: 'اختر العضو الخاص بالأشعة',
-            ),
-
-            verticalSpacing(16),
-            UserSelectionContainer(
-              containerBorderColor: state.xRayTypeSelection == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "النوع",
-              containerHintText: "اختر نوع الأشعة",
-              options: [],
-              onOptionSelected: (value) async {
-                // context.read<XRayDataEntryCubit>().updateXRayType(value);
-              },
-              bottomSheetTitle: 'اختر نوع الأشعة',
-            ),
-
-            verticalSpacing(16),
-            UserSelectionContainer(
-              categoryLabel:
-                  "نوعية الاحتياج للأشعة", // Another Dropdown Example
-              containerHintText: "اختر نوعية احتياجك للأشعة",
+              categoryLabel: "ترتيب الجرعة", // Another Dropdown Example
+              containerHintText: "اختر ترتيب الجرعة",
               options: [],
               onOptionSelected: (selectedPupose) {
                 log("xxx:Selected: $selectedPupose");
@@ -98,198 +93,138 @@ class _VaccineDataEntryFormFieldsState
                 //     .read<XRayDataEntryCubit>()
                 //     .updateXRaySelectedPupose(selectedPupose);
               },
-              bottomSheetTitle: "اختر نوعية احتياجك للأشعة",
+              bottomSheetTitle: "اختر ترتيب الجرعة",
             ),
 
             verticalSpacing(16),
-            Text(
-              "الصورة",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            BlocListener<VaccineDataEntryCubit, VaccineDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
-              listener: (context, state) async {
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
+            UserSelectionContainer(
+              categoryLabel:
+                  "الفئة العمرية المستهدفة", // Another Dropdown Example
+              containerHintText: "اختر الفئة العمرية المستهدفة",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
-              child: SelectImageContainer(
-                containerBorderColor: (state.isXRayPictureSelected == null) ||
-                        (state.isXRayPictureSelected == false)
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        // context
-                        //     .read<VaccineDataEntryCubit>()
-                        //     .updateXRayPicture(isImagePicked);
-
-                        // await context
-                        //     .read<VaccineDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-
-            verticalSpacing(16),
-            Text(
-              "التقرير الطبي",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            SelectImageContainer(
-              imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
-            ),
-
-            verticalSpacing(8),
-            BlocListener<VaccineDataEntryCubit, VaccineDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayReportRequestStatus != curr.xRayReportRequestStatus,
-              listener: (context, state) async {
-                if (state.xRayReportRequestStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.xRayReportRequestStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة للتقرير",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        // await context
-                        //     .read<VaccineDataEntryCubit>()
-                        //     .uploadXrayReportPicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
-                      }
-                    },
-                  );
-                },
-              ),
+              bottomSheetTitle: "اختر الفئة العمرية المستهدفة",
             ),
             verticalSpacing(16),
-
-            // //! الأعراض المستدعية للاجراء"
+            CustomToggleRadioContainer(
+              initialValue: "",
+              title: "هل التطعيم الزامى أم اختيارى؟",
+              option1: 'الزامي',
+              option2: 'اختياري',
+              onChanged: (String value) {},
+            ),
+            verticalSpacing(16),
 
             UserSelectionContainer(
-              allowManualEntry: true,
-              options: [
-                "فحص الدم",
-                "فحص البول",
-                "فحص القلب",
-                "أشعة سينية",
-              ],
-              categoryLabel: "الأعراض المستدعية للاجراء",
-              bottomSheetTitle: "اختر الأعراض المستدعية",
-              onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+              categoryLabel: "طريقة اعطاء التطعيم", // Another Dropdown Example
+              containerHintText: "اختر الفئة العمرية المستهدفة",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
-              containerHintText: "اختر الأعراض المستدعية",
+              bottomSheetTitle: "اختر طريقة أخذك للتطعيم",
+            ),
+            verticalSpacing(16),
+
+            UserSelectionContainer(
+              categoryLabel: "المرض المستهدف",
+              containerHintText: "اختر المرض الذى يقى منه اللقاح",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
+              },
+              bottomSheetTitle: "اختر المرض الذى يقى منه اللقاح",
             ),
 
             verticalSpacing(16),
 
-            /// طبيب الأشعة
-
             UserSelectionContainer(
-              allowManualEntry: true,
-              categoryLabel: "طبيب الأشعة",
-              containerHintText: "اختر اسم طبيب الأشعة",
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
-              onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+              categoryLabel: "حجم الجرعة",
+              containerHintText: "اختر حجم الجرعة",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
-              bottomSheetTitle: 'اختر اسم طبيب الأشعة',
+              bottomSheetTitle: "اختر حجم الجرعة",
             ),
 
             verticalSpacing(16),
 
-            /// المركز / المستشفى
-            //   //! write by ur hand
             UserSelectionContainer(
-              allowManualEntry: true,
-              categoryLabel: "المركز / المستشفى",
-              containerHintText: "اختر اسم المستشفى/المركز",
-              options: [
-                "مستشفى القلب",
-                "مستشفى العين الدولى",
-                "مستشفى 57357",
-              ],
-              onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+              categoryLabel: "الأعراض المرضية - المنطقة",
+              containerHintText: "اختر الأعراض المصاحبة",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
-              bottomSheetTitle: 'اختر اسم المستشفى/المركز',
+              bottomSheetTitle: "اختر الأعراض المصاحبة",
             ),
-
             verticalSpacing(16),
 
             /// الطبيب المعالج
 
             UserSelectionContainer(
-              allowManualEntry: true,
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
-              categoryLabel: "الطبيب المعالج",
-              bottomSheetTitle: "اختر اسم الطبيب المعالج ",
-              onOptionSelected: (value) {},
-              containerHintText: "اختر اسم الطبيب المعالج (جراح/باطنة)",
+              categoryLabel: "الأعراض المرضية - الشكوى",
+              containerHintText: "اختر الأعراض المصاحبة",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
+              },
+              bottomSheetTitle: "اختر الأعراض المصاحبة",
             ),
 
             verticalSpacing(16),
 
-            ///الدولة
             UserSelectionContainer(
-              options: state.countriesNames,
-              categoryLabel: "الدولة",
-              bottomSheetTitle: "اختر اسم الدولة",
-              onOptionSelected: (selectedCountry) {
-                context
-                    .read<VaccineDataEntryCubit>()
-                    .updateSelectedCountry(selectedCountry);
+              categoryLabel: "جهة تلقى التطعيم",
+              containerHintText: "اكتب اسم الجهة التى تم التطعيم منها",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
               },
-              containerHintText: "اختر اسم الدولة",
+              bottomSheetTitle: "اكتب اسم الجهة التى تم التطعيم منها",
+            ),
+
+            verticalSpacing(16),
+            UserSelectionContainer(
+              categoryLabel: "الدولة",
+              containerHintText: "اختر الدولة التى تم فيها التطعيم",
+              options: [],
+              onOptionSelected: (selectedPupose) {
+                log("xxx:Selected: $selectedPupose");
+                // context
+                //     .read<XRayDataEntryCubit>()
+                //     .updateXRaySelectedPupose(selectedPupose);
+              },
+              bottomSheetTitle: "اختر الدولة التى تم فيها التطعيم",
             ),
 
             verticalSpacing(16),
             Text(
-              "ملاحظات شخصية",
+              "معلومات اضافية",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
@@ -297,6 +232,7 @@ class _VaccineDataEntryFormFieldsState
             WordLimitTextField(
               controller:
                   context.read<VaccineDataEntryCubit>().personalNotesController,
+              hintText: "اكتب باختصار أى معلومات اضافية مهمة",
             ),
 
             ///TODO: handle this button in main view and remove it from here
