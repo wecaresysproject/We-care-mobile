@@ -24,64 +24,117 @@ class PrescriptionView extends StatelessWidget {
       create: (context) => getIt<PrescriptionViewCubit>()
         ..getPrescriptionFilters()
         ..getUserPrescriptionList(),
-      child: BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
-        builder: (context, state) {
-          if (state.requestStatus == RequestStatus.loading) {
-            return Scaffold(
-                backgroundColor: Colors.white,
-                body: const Center(child: CircularProgressIndicator()));
-          }
-          return Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 0.h,
-            ),
-            body: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: Column(
-                children: [
-                  ViewAppBar(),
-                  DataViewFiltersRow(
-                    filters: [
-                      FilterConfig(
-                          title: 'التاريخ',
-                          options: state.yearsFilter,
-                          isYearFilter: true),
-                      FilterConfig(
-                        title: 'التخصص',
-                        options: state.specificationsFilter,
-                      ),
-                      FilterConfig(
-                        title: 'الطبيب',
-                        options: state.doctorNameFilter,
-                      ),
-                    ],
-                    onApply: (selectedFilters) {
-                      // Handle apply button action
-                    },
-                  ),
-                  verticalSpacing(16),
-                  MedicalItemGridView(
-                    items: state.userPrescriptions,
-                    onTap: (id) async {
-                      await context.pushNamed(Routes.prescriptionDetailsView,
-                          arguments: {'id': id});
-                    },
-                    titleBuilder: (item) =>
-                        item.doctorName, // Extract the title dynamically
-                    infoRowBuilder: (item) => [
-                      {"title": "التخصص:", "value": item.doctorSpecialty},
-                      {"title": "التاريخ:", "value": item.preDescriptionDate},
-                      {"title": "المرض:", "value": item.disease},
-                    ],
-                  ),
-                  verticalSpacing(16),
-                  XRayDataViewFooterRow(),
-                ],
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            children: [
+              ViewAppBar(),
+              PrescriptionsViewFilersRow(),
+              verticalSpacing(16),
+              PrescriptionViewListBuilder(),
+              verticalSpacing(16),
+              XRayDataViewFooterRow(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PrescriptionViewListBuilder extends StatelessWidget {
+  const PrescriptionViewListBuilder({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+      builder: (context, state) {
+        if (state.requestStatus == RequestStatus.loading ||
+            state.requestStatus == RequestStatus.initial) {
+          return Expanded(
+              child: const Center(child: CircularProgressIndicator()));
+        } else if (state.userPrescriptions.isEmpty) {
+          return Expanded(
+            child: Center(
+              child: Text(
+                "لا يوجد بيانات",
+                style: AppTextStyles.font22MainBlueWeight700,
               ),
             ),
           );
-        },
-      ),
+        }
+        return MedicalItemGridView(
+          items: state.userPrescriptions,
+          onTap: (id) async {
+            final result = await context.pushNamed(
+                Routes.prescriptionDetailsView,
+                arguments: {'id': id});
+            if (result != null && result as bool && context.mounted) {
+              await context
+                  .read<PrescriptionViewCubit>()
+                  .getUserPrescriptionList();
+              await context
+                  .read<PrescriptionViewCubit>()
+                  .getPrescriptionFilters();
+            }
+          },
+          titleBuilder: (item) =>
+              item.doctorName, // Extract the title dynamically
+          infoRowBuilder: (item) => [
+            {"title": "التخصص:", "value": item.doctorSpecialty},
+            {"title": "التاريخ:", "value": item.preDescriptionDate},
+            {"title": "المرض:", "value": item.disease},
+          ],
+        );
+      },
+    );
+  }
+}
+
+class PrescriptionsViewFilersRow extends StatelessWidget {
+  const PrescriptionsViewFilersRow({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+      buildWhen: (previous, current) {
+        return previous.yearsFilter != current.yearsFilter ||
+            previous.specificationsFilter != current.specificationsFilter ||
+            previous.doctorNameFilter != current.doctorNameFilter;
+      },
+      builder: (context, state) {
+        return DataViewFiltersRow(
+          filters: [
+            FilterConfig(
+                title: 'السنة', options: state.yearsFilter, isYearFilter: true),
+            FilterConfig(
+              title: 'التخصص',
+              options: state.specificationsFilter,
+            ),
+            FilterConfig(
+              title: 'الطبيب',
+              options: state.doctorNameFilter,
+            ),
+          ],
+          onApply: (selectedFilters) async {
+            print("Selected Filters: $selectedFilters");
+            await context
+                .read<PrescriptionViewCubit>()
+                .getFilteredPrescriptionList(
+                    year: selectedFilters['السنة'],
+                    specification: selectedFilters['التخصص'],
+                    doctorName: selectedFilters['الطبيب']);
+          },
+        );
+      },
     );
   }
 }

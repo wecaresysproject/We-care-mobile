@@ -6,7 +6,7 @@ part 'prescription_filters_response_model.g.dart';
 class PrescriptionFiltersResponseModel {
   List<int>? years;
   List<String>? doctors;
-  @JsonKey(name: 'diseases')
+  @JsonKey(name: 'doctorspecialty')
   List<String>? specification;
 
   PrescriptionFiltersResponseModel(

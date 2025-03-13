@@ -56,4 +56,20 @@ abstract class PrescriptionServices {
     @Query('UserType') String userType,
     @Query('documentId') String documentId,
   );
+
+  @DELETE(PrescriptionApiConstants.deletePrescriptionById)
+  Future<dynamic> deletePrescriptionById(
+    @Query("documentId") String id,
+    @Query("language") String language,
+    @Query("UserType") String userType,
+  );
+
+  @GET(PrescriptionApiConstants.getFilteredPrescriptionList)
+  Future<GetUserPrescriptionsResponseModel> getFilteredPrescriptionList({
+    @Query("language") required String language,
+    @Query("doctorName") String? doctorName,
+    @Query("doctorspecialty") String? specialization,
+    @Query("year") int? year,
+    @Query("UserType") required String userType,
+  });
 }
