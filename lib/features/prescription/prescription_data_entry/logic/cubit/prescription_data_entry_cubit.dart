@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -64,29 +65,78 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
-  // Future<void> loadPrescriptionDataForEditing(
-  //     AnalysisDetailedData editingAnalysisDetailsData) async {
-  //   emit(
-  //     state.copyWith(
-  //       selectedDate: editingAnalysisDetailsData.testDate,
-  //       isTestPictureSelected:
-  //           editingAnalysisDetailsData.imageBase64.isNotEmpty,
-  //       testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
-  //       testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
-  //       selectedCountryName: editingAnalysisDetailsData.country,
-  //       selectedHospitalName: editingAnalysisDetailsData.hospital,
-  //       selectedDoctorName: editingAnalysisDetailsData.doctor,
-  //       selectedSymptomsForProcedure:
-  //           editingAnalysisDetailsData.symptomsForProcedure,
-  //       isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
-  //       selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
-  //       isEditMode: true,
-  //       updatedTestId: editingAnalysisDetailsData.id,
-  //     ),
-  //   );
-  //   validateRequiredFields();
-  //   await intialRequestsForPrescriptionDataEntry();
-  // }
+  Future<void> submitEditsOnPrescription() async {
+    emit(
+      state.copyWith(
+        preceriptionDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
+    final response =
+        await _prescriptionDataEntryRepo.updatePrescriptionDocumentDetails(
+      requestBody: PrescriptionRequestBodyModel(
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+        language: AppStrings.arabicLang, //TODO: to change later
+        prescriptionDate: state.preceriptionDateSelection!,
+        doctorName: state.doctorNameSelection!,
+        doctorSpecialty: state.doctorSpecialitySelection!,
+        cause: symptomsAccompanyingComplaintController.text,
+        disease: state.selectedDisease!,
+        preDescriptionPhoto: state.prescriptionPictureUploadedUrl,
+        country: state.selectedCountryName!,
+        governate: state.selectedCityName!,
+        preDescriptionNotes: personalNotesController.text,
+      ),
+      documentId: state.prescribtionEditedModel!.id,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            preceriptionDataEntryStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            preceriptionDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> loadPrescriptionDataForEditing(
+      PrescriptionModel editingPrescriptionDetailsData) async {
+    emit(
+      state.copyWith(
+        preceriptionDateSelection:
+            editingPrescriptionDetailsData.preDescriptionDate,
+        isEditMode: true,
+        doctorNameSelection: editingPrescriptionDetailsData.doctorName,
+        doctorSpecialitySelection:
+            editingPrescriptionDetailsData.doctorSpecialty,
+        selectedCountryName: editingPrescriptionDetailsData.country,
+        selectedCityName: editingPrescriptionDetailsData.governate, //TODO:
+        selectedDisease: editingPrescriptionDetailsData.disease,
+        prescriptionPictureUploadedUrl:
+            editingPrescriptionDetailsData.preDescriptionPhoto,
+        prescriptionImageRequestStatus: UploadImageRequestStatus.success,
+        isPrescriptionPictureSelected: true,
+        prescribtionEditedModel: editingPrescriptionDetailsData,
+      ),
+    );
+    personalNotesController.text =
+        editingPrescriptionDetailsData.preDescriptionNotes;
+    symptomsAccompanyingComplaintController.text =
+        editingPrescriptionDetailsData.cause;
+    validateRequiredFields();
+    await intialRequestsForPrescriptionDataEntry();
+  }
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
@@ -225,14 +275,12 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     validateRequiredFields();
   }
 
-  /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.preceriptionDateSelection == null ||
         state.doctorNameSelection == null ||
         state.doctorSpecialitySelection == null ||
-        state.isPrescriptionPictureSelected != true ||
-        state.prescriptionImageRequestStatus !=
-            UploadImageRequestStatus.success) {
+        state.isPrescriptionPictureSelected == null ||
+        state.isPrescriptionPictureSelected == false) {
       emit(
         state.copyWith(
           isFormValidated: false,

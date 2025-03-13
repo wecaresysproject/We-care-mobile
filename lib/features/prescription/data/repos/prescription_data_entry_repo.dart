@@ -74,8 +74,10 @@ class PrescriptionDataEntryRepo {
     }
   }
 
-  Future<ApiResult<String>> updatePrescriptionDocumentDetails(
-      PrescriptionRequestBodyModel requestBody, String documentId) async {
+  Future<ApiResult<String>> updatePrescriptionDocumentDetails({
+    required PrescriptionRequestBodyModel requestBody,
+    required String documentId,
+  }) async {
     try {
       final response =
           await _prescriptionServices.updatePrescriptionDocumentDetails(

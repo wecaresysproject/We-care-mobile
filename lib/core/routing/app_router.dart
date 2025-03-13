@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
+import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
@@ -96,8 +94,12 @@ class AppRouter {
           builder: (context) => PrescriptionView(),
         );
       case Routes.prescriptionCategoryDataEntryView:
+        final prescriptionDetailsModel = arguments
+            as PrescriptionModel?; // Replace with your actual model type
         return MaterialPageRoute(
-          builder: (context) => PrescriptionCategoryDataEntryView(),
+          builder: (context) => PrescriptionCategoryDataEntryView(
+            editingPrescriptionDetailsData: prescriptionDetailsModel,
+          ),
         );
       case Routes.prescriptionDetailsView:
         return MaterialPageRoute(
