@@ -31,7 +31,6 @@ class PrescriptionViewRepo {
     }
   }
 
-  //get user prescription details by id
   Future<ApiResult<PrescriptionModel>> getUserPrescriptionDetailsById(
       {required String id,
       required String language,
@@ -40,6 +39,40 @@ class PrescriptionViewRepo {
       final response = await prescriptionServices
           .getUserPrescriptionDetailsById(id, language, userType);
       return ApiResult.success(PrescriptionModel.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> deletePrescriptionById(
+      {required String id,
+      required String language,
+      required String userType}) async {
+    try {
+      final response = await prescriptionServices.deletePrescriptionById(
+          id, language, userType);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<GetUserPrescriptionsResponseModel>>
+      getFilteredPrescriptionList(
+          {required String language,
+          required String userType,
+          int? year,
+          String? doctorName,
+          String? specification}) async {
+    try {
+      final response = await prescriptionServices.getFilteredPrescriptionList(
+          language: language,
+          userType: userType,
+          year: year,
+          doctorName: doctorName,
+          specialization: specification);
+
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
