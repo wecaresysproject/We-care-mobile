@@ -6,10 +6,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
 
@@ -38,6 +40,18 @@ class PrescriptionDetailsView extends StatelessWidget {
                 children: [
                   DetailsViewAppBar(
                     title: 'الروشتة',
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.prescriptionCategoryDataEntryView,
+                        arguments: state.selectedPrescriptionDetails!,
+                      );
+                      if (result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<PrescriptionViewCubit>()
+                            .getUserPrescriptionDetailsById(documentId);
+                      }
+                    },
                     shareFunction: () => _shareDetails(context, state),
                   ),
                   Row(children: [
@@ -85,7 +99,7 @@ class PrescriptionDetailsView extends StatelessWidget {
                     Spacer(),
                     DetailsViewInfoTile(
                         title: "المدينة",
-                        value: 'لم يتم تحديد المدينة',
+                        value: state.selectedPrescriptionDetails!.governate,
                         icon: 'assets/images/hospital_icon.png'),
                   ]),
                   DetailsViewInfoTile(

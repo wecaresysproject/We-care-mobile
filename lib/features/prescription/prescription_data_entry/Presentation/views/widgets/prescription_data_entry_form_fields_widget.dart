@@ -49,7 +49,7 @@ class _PrescriptionDataEntryFormFieldsState
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 placeholderText:
-                    isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
+                    state.preceriptionDateSelection ?? "يوم / شهر / سنة",
                 onDateSelected: (pickedDate) {
                   context
                       .read<PrescriptionDataEntryCubit>()
@@ -67,7 +67,8 @@ class _PrescriptionDataEntryFormFieldsState
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 categoryLabel: "اسم الطبيب",
-                containerHintText: "اختر اسم الطبيب",
+                containerHintText:
+                    state.doctorNameSelection ?? "اختر اسم الطبيب",
                 options: [
                   "د / محمد محمد",
                   "د / كريم محمد",
@@ -89,7 +90,8 @@ class _PrescriptionDataEntryFormFieldsState
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 categoryLabel: "التخصص",
-                containerHintText: "اختر تخصص الطبيب",
+                containerHintText:
+                    state.doctorSpecialitySelection ?? "اختر تخصص",
                 options: [
                   "باطنة",
                   "جراحة",
@@ -115,7 +117,8 @@ class _PrescriptionDataEntryFormFieldsState
               verticalSpacing(10),
 
               WordLimitTextField(
-                hintText: "اكتب الأعراض التى تعانى منها",
+                hintText: state.prescribtionEditedModel?.cause ??
+                    "اكتب الأعراض التى تعانى منها",
                 controller: context
                     .read<PrescriptionDataEntryCubit>()
                     .symptomsAccompanyingComplaintController,
@@ -124,7 +127,8 @@ class _PrescriptionDataEntryFormFieldsState
               UserSelectionContainer(
                 allowManualEntry: true,
                 categoryLabel: "المرض", // Another Dropdown Example
-                containerHintText: "اختر المرض الذى تم تشخيصه",
+                containerHintText:
+                    state.selectedDisease ?? "اختر المرض الذى تم تشخيصه",
                 options: [
                   "مرض القلب",
                   "مرض البول",
@@ -206,7 +210,8 @@ class _PrescriptionDataEntryFormFieldsState
                       .read<PrescriptionDataEntryCubit>()
                       .emitCountriesData();
                 },
-                containerHintText: "اختر اسم الدولة",
+                containerHintText:
+                    state.selectedCountryName ?? "اختر اسم الدولة",
               ),
 
               verticalSpacing(16),
@@ -223,7 +228,7 @@ class _PrescriptionDataEntryFormFieldsState
                       .read<PrescriptionDataEntryCubit>()
                       .emitCitiesData();
                 },
-                containerHintText: "اختر المدينة",
+                containerHintText: state.selectedCityName ?? "اختر المدينة",
               ),
 
               verticalSpacing(16),
@@ -238,6 +243,8 @@ class _PrescriptionDataEntryFormFieldsState
                 controller: context
                     .read<PrescriptionDataEntryCubit>()
                     .personalNotesController,
+                hintText: state.prescribtionEditedModel?.preDescriptionNotes ??
+                    "اكتب باختصار اى معلومات مهمة اخرى",
               ),
 
               ///TODO: handle this button in main view and remove it from here
@@ -264,7 +271,7 @@ class _PrescriptionDataEntryFormFieldsState
         if (state.preceriptionDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
-          context.pop();
+          context.pop(result: true);
         } else {
           await showError(state.message);
         }
@@ -275,11 +282,15 @@ class _PrescriptionDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              await context
-                  .read<PrescriptionDataEntryCubit>()
-                  .postPrescriptionDataEntry(
-                    context.translate,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .submitEditsOnPrescription()
+                  : await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .postPrescriptionDataEntry(
+                        context.translate,
+                      );
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");

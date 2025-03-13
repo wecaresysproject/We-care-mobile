@@ -14,6 +14,8 @@ class PrescriptionDataEntryState extends Equatable {
   final String? selectedCountryName;
   final String? selectedCityName;
   final String? selectedDisease;
+  final bool isEditMode;
+  final PrescriptionModel? prescribtionEditedModel;
 
   final String message; // error or success message
   final String prescriptionPictureUploadedUrl;
@@ -36,6 +38,8 @@ class PrescriptionDataEntryState extends Equatable {
     this.message = '',
     this.prescriptionPictureUploadedUrl = '',
     this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
+    this.isEditMode = false,
+    this.prescribtionEditedModel,
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -51,6 +55,7 @@ class PrescriptionDataEntryState extends Equatable {
           selectedDisease: null,
           message: '',
           prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
+          isEditMode: false,
         );
 
   PrescriptionDataEntryState copyWith({
@@ -69,6 +74,8 @@ class PrescriptionDataEntryState extends Equatable {
     String? prescriptionPictureUploadedUrl,
     UploadImageRequestStatus? prescriptionImageRequestStatus,
     String? selectedDisease,
+    bool? isEditMode,
+    PrescriptionModel? prescribtionEditedModel,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -92,6 +99,9 @@ class PrescriptionDataEntryState extends Equatable {
       prescriptionImageRequestStatus:
           prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
       selectedDisease: selectedDisease ?? this.selectedDisease,
+      isEditMode: isEditMode ?? this.isEditMode,
+      prescribtionEditedModel:
+          prescribtionEditedModel ?? this.prescribtionEditedModel,
     );
   }
 
@@ -112,5 +122,7 @@ class PrescriptionDataEntryState extends Equatable {
         prescriptionPictureUploadedUrl,
         prescriptionImageRequestStatus,
         selectedDisease,
+        isEditMode,
+        prescribtionEditedModel,
       ];
 }

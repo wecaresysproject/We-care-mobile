@@ -8,6 +8,8 @@ class PrescriptionApiConstants {
   static const uploadPrescriptionImageEndpoint = "/FileUpload/upload-image";
 
   //View Entry
+  static const updatePrescriptionDocumentDetails =
+      "/PreDescriptionUserEntryPage/EditPreDescriptionUserDocument";
 
   static const getUserPrescriptionList =
       "/PreDescriptionUserEntryPage/PreDescriptionGetUserDocuments";

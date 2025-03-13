@@ -49,4 +49,11 @@ abstract class PrescriptionServices {
     @Query("language") String language,
     @Query("UserType") String userType,
   );
+  @PUT(PrescriptionApiConstants.updatePrescriptionDocumentDetails)
+  Future<dynamic> updatePrescriptionDocumentDetails(
+    @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
+    @Query('language') String language,
+    @Query('UserType') String userType,
+    @Query('documentId') String documentId,
+  );
 }
