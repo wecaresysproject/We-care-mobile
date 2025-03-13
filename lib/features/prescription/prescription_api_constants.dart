@@ -15,6 +15,12 @@ class PrescriptionApiConstants {
   static const getUserPrescriptionDetailsById =
       "/PreDescriptionUserEntryPage/GetPreDescriptionPerOne";
 
+  static const deletePrescriptionById =
+      "/PreDescriptionUserEntryPage/DeletePreDescriptionUserDocument";
+
+  static const getFilteredPrescriptionList =
+      "/PreDescriptionUserEntryPage/PreDescriptionSearchUserDocuments";
+
   //filters
   static const getPrescriptionFilters =
       "/PreDescriptionUserEntryPage/PreDescriptionGetUserFilters";

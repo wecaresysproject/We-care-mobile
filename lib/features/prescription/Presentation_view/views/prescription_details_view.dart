@@ -26,7 +26,18 @@ class PrescriptionDetailsView extends StatelessWidget {
       body: BlocProvider.value(
         value: getIt<PrescriptionViewCubit>()
           ..getUserPrescriptionDetailsById(documentId),
-        child: BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+        child: BlocConsumer<PrescriptionViewCubit, PrescriptionViewState>(
+          listenWhen: (previous, current) =>
+              previous.isDeleteRequest != current.isDeleteRequest,
+          listener: (context, state) {
+            if (state.requestStatus == RequestStatus.failure) {
+              showError(state.responseMessage);
+            }
+            if (state.requestStatus == RequestStatus.success) {
+              showSuccess(state.responseMessage);
+              Navigator.pop(context, true);
+            }
+          },
           builder: (context, state) {
             if (state.requestStatus == RequestStatus.loading) {
               return const Center(child: CircularProgressIndicator());
@@ -39,6 +50,11 @@ class PrescriptionDetailsView extends StatelessWidget {
                   DetailsViewAppBar(
                     title: 'الروشتة',
                     shareFunction: () => _shareDetails(context, state),
+                    deleteFunction: () async {
+                      await context
+                          .read<PrescriptionViewCubit>()
+                          .deletePrescriptionById(documentId);
+                    },
                   ),
                   Row(children: [
                     DetailsViewInfoTile(

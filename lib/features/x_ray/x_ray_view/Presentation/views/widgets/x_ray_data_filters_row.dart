@@ -43,7 +43,8 @@ class _DataViewFiltersRowState extends State<DataViewFiltersRow> {
         Spacer(flex: 4),
         FilterButton(
           title: 'عرض',
-          onTap: (selectedFilters) => widget.onApply,
+          onTap: (selectedFilters) => widget.onApply(selectedFilters),
+          selectedFilters: selectedFilters,
         ),
       ],
     );
@@ -65,13 +66,18 @@ class FilterConfig {
 class FilterButton extends StatelessWidget {
   final String title;
   final Function(dynamic) onTap;
+  final Map<String, dynamic> selectedFilters;
 
-  const FilterButton({super.key, required this.title, required this.onTap});
+  const FilterButton(
+      {super.key,
+      required this.title,
+      required this.onTap,
+      required this.selectedFilters});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap,
+      onTap: () => onTap(selectedFilters),
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         width: 58.w,
