@@ -230,9 +230,9 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     if (state.preceriptionDateSelection == null ||
         state.doctorNameSelection == null ||
         state.doctorSpecialitySelection == null ||
-        state.isPrescriptionPictureSelected == null ||
-        state.isPrescriptionPictureSelected == false ||
-        state.prescriptionPictureUploadedUrl.isEmpty) {
+        state.isPrescriptionPictureSelected != true ||
+        state.prescriptionImageRequestStatus !=
+            UploadImageRequestStatus.success) {
       emit(
         state.copyWith(
           isFormValidated: false,
