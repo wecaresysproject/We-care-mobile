@@ -64,6 +64,30 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
+  // Future<void> loadPrescriptionDataForEditing(
+  //     AnalysisDetailedData editingAnalysisDetailsData) async {
+  //   emit(
+  //     state.copyWith(
+  //       selectedDate: editingAnalysisDetailsData.testDate,
+  //       isTestPictureSelected:
+  //           editingAnalysisDetailsData.imageBase64.isNotEmpty,
+  //       testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
+  //       testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
+  //       selectedCountryName: editingAnalysisDetailsData.country,
+  //       selectedHospitalName: editingAnalysisDetailsData.hospital,
+  //       selectedDoctorName: editingAnalysisDetailsData.doctor,
+  //       selectedSymptomsForProcedure:
+  //           editingAnalysisDetailsData.symptomsForProcedure,
+  //       isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
+  //       selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
+  //       isEditMode: true,
+  //       updatedTestId: editingAnalysisDetailsData.id,
+  //     ),
+  //   );
+  //   validateRequiredFields();
+  //   await intialRequestsForPrescriptionDataEntry();
+  // }
+
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
     await emitCountriesData();
@@ -207,7 +231,8 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         state.doctorNameSelection == null ||
         state.doctorSpecialitySelection == null ||
         state.isPrescriptionPictureSelected == null ||
-        state.isPrescriptionPictureSelected == false) {
+        state.isPrescriptionPictureSelected == false ||
+        state.prescriptionPictureUploadedUrl.isEmpty) {
       emit(
         state.copyWith(
           isFormValidated: false,

@@ -73,4 +73,20 @@ class PrescriptionDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> updatePrescriptionDocumentDetails(
+      PrescriptionRequestBodyModel requestBody, String documentId) async {
+    try {
+      final response =
+          await _prescriptionServices.updatePrescriptionDocumentDetails(
+        requestBody,
+        requestBody.language,
+        requestBody.userType,
+        documentId,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

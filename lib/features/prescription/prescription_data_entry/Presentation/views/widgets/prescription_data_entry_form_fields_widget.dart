@@ -275,6 +275,9 @@ class _PrescriptionDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
+              // state.isEditMode ? await context
+              //     .read<PrescriptionDataEntryCubit>()
+              //     .loadPrescriptionDataForEditing() :
               await context
                   .read<PrescriptionDataEntryCubit>()
                   .postPrescriptionDataEntry(
