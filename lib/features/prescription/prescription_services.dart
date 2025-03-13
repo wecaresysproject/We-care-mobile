@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/prescription_api_constants.dart';
 
@@ -32,5 +33,20 @@ abstract class PrescriptionServices {
     @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
+  );
+
+  @GET(PrescriptionApiConstants.getPrescriptionFilters)
+  Future<dynamic> getPrescriptionFilters(
+      @Query("language") String language, @Query("UserType") String userType);
+
+  @GET(PrescriptionApiConstants.getUserPrescriptionList)
+  Future<GetUserPrescriptionsResponseModel> getUserPrescriptionList(
+      @Query("language") String language);
+
+  @GET(PrescriptionApiConstants.getUserPrescriptionDetailsById)
+  Future<dynamic> getUserPrescriptionDetailsById(
+    @Query("DocumentId") String id,
+    @Query("language") String language,
+    @Query("UserType") String userType,
   );
 }

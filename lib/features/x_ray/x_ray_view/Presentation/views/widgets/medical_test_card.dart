@@ -25,7 +25,7 @@ class MedicalItemCard extends StatelessWidget {
       fit: BoxFit.fill,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.3,
+        height: MediaQuery.of(context).size.height * 0.283,
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
@@ -56,6 +56,7 @@ class MedicalItemCard extends StatelessWidget {
                     maxLines: 1,
                     style: AppTextStyles.font14BlueWeight700.copyWith(
                       fontWeight: FontWeight.w600,
+                      fontSize: 16.sp,
                       shadows: [
                         Shadow(
                           offset: Offset(1.5, 1.5),
@@ -74,7 +75,7 @@ class MedicalItemCard extends StatelessWidget {
                 .map((row) => _infoRow(row["title"]!, row["value"]!))
                 .toList(),
             const Spacer(
-              flex: 3,
+              flex: 2,
             ),
             InkWell(
               onTap: () => onTap!(itemId),

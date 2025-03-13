@@ -9,5 +9,13 @@ class PrescriptionApiConstants {
 
   //View Entry
 
+  static const getUserPrescriptionList =
+      "/PreDescriptionUserEntryPage/PreDescriptionGetUserDocuments";
+
+  static const getUserPrescriptionDetailsById =
+      "/PreDescriptionUserEntryPage/GetPreDescriptionPerOne";
+
   //filters
+  static const getPrescriptionFilters =
+      "/PreDescriptionUserEntryPage/PreDescriptionGetUserFilters";
 }

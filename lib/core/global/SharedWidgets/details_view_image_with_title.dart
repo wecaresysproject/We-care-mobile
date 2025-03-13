@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/networking/dio_serices.dart';
 
 class DetailsViewImageWithTitleTile extends StatelessWidget {
   final String? image;
@@ -69,8 +71,7 @@ Future<void> shareImage(String imageUrl, String title) async {
   final tempDir = await getTemporaryDirectory();
   final filePath = "${tempDir.path}/$title.jpg";
 
-  await Dio().download(imageUrl, filePath);
-
+  downloadImage(imageUrl, tempDir, filePath);
   await Share.shareXFiles(
     [XFile(filePath)],
     text: title,
