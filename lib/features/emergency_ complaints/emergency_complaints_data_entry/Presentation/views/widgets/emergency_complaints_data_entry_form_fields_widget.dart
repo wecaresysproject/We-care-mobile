@@ -10,6 +10,7 @@ import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/true_or_false_question_widget.dart';
 import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -144,6 +145,31 @@ class _EmergencyComplaintDataEntryFormFieldsState
               ),
 
               verticalSpacing(16),
+              TrueOrFalseQuestionWidget(
+                question: "هل عانيت من شكوى مشابهة سابقًا ؟",
+                containerValidationColor: true
+                    ? AppColorsManager.redBackgroundValidationColor
+                    : AppColorsManager.babyBlueColor,
+                imagePath: "assets/images/sick_outline_imoji.png",
+              ),
+              verticalSpacing(16),
+
+              TrueOrFalseQuestionWidget(
+                question: "هل تتناول أدوية حالية ؟",
+                containerValidationColor: false
+                    ? AppColorsManager.redBackgroundValidationColor
+                    : AppColorsManager.babyBlueColor,
+                imagePath: "assets/images/medicines.png",
+              ),
+              verticalSpacing(16),
+
+              TrueOrFalseQuestionWidget(
+                question: "هل أجريت  تدخل طبى طارئ للشكوى ؟",
+                containerValidationColor: false
+                    ? AppColorsManager.redBackgroundValidationColor
+                    : AppColorsManager.babyBlueColor,
+                imagePath: "assets/images/medical_tool_kit.png",
+              ),
 
               ///TODO: handle this button in main view and remove it from here
               /// final section

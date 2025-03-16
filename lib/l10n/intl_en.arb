@@ -73,5 +73,7 @@
         "word_limit_exceeded":"You have exceeded the limit of 100 words!",
         "no_data_entered":"No data",
         "send":"Send",
-        "image_not_clear": "The image is unclear, please try again."
+        "image_not_clear": "The image is unclear, please try again.", 
+        "yes":"Yes",
+        "no":"No"
 }
