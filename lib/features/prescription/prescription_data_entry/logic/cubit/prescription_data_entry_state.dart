@@ -3,7 +3,6 @@ part of 'prescription_data_entry_cubit.dart';
 @immutable
 class PrescriptionDataEntryState extends Equatable {
   final RequestStatus preceriptionDataEntryStatus;
-  final String? errorMessage;
   final bool isFormValidated;
   final String? preceriptionDateSelection;
   final String? doctorNameSelection;
@@ -24,7 +23,6 @@ class PrescriptionDataEntryState extends Equatable {
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
-    this.errorMessage,
     this.isFormValidated = false,
     this.preceriptionDateSelection,
     this.doctorNameSelection,
@@ -80,7 +78,6 @@ class PrescriptionDataEntryState extends Equatable {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
           preceriptionDataEntryStatus ?? this.preceriptionDataEntryStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       preceriptionDateSelection:
           preceriptionDateSelection ?? this.preceriptionDateSelection,
@@ -108,7 +105,6 @@ class PrescriptionDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         preceriptionDataEntryStatus,
-        errorMessage,
         isFormValidated,
         preceriptionDateSelection,
         doctorNameSelection,

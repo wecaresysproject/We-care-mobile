@@ -28,4 +28,8 @@ class Routes {
   static const surgeriesDataEntryView = '/surgeriesDataEntryView';
   static const vaccineDataEntryView = '/vaccineDataEntryView';
   static const vaccineView = '/vaccineView';
+  static const emergenciesComplaintDataView = '/emergenciesComplaintDataView';
+
+  static const emergenciesComplaintDataEntryView =
+      '/emergenciesComplaintDataEntryView';
 }

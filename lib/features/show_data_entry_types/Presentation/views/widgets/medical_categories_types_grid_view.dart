@@ -168,7 +168,7 @@ final List<Map<String, String>> categoriesView = [
   {
     "title": "الشكاوى\nالطارئة",
     "image": "assets/images/urgent_icon.png",
-    "route": "/lab_diagnostics"
+    "route": Routes.emergenciesComplaintDataView,
   },
   {
     "title": "روشتة الأطباء",
