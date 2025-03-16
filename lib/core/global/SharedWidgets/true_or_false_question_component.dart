@@ -86,7 +86,8 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                         setState(() {
                           _selectedOption = value;
                         });
-                        widget.onOptionSelected(value);
+                        widget.onOptionSelected(
+                            value!); //TODO check null here later
                       },
                     ),
                   ),

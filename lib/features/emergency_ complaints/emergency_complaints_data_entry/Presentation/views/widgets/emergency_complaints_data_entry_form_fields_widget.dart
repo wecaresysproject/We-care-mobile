@@ -8,12 +8,13 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/true_or_false_question_component.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/true_or_false_question_widget.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import '../../../logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
 class EmergencyComplaintDataEntryFormFields extends StatefulWidget {
   const EmergencyComplaintDataEntryFormFields({super.key});
@@ -143,7 +144,16 @@ class _EmergencyComplaintDataEntryFormFieldsState
                 containerHintText:
                     "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
               ),
-
+              verticalSpacing(16),
+              // Title
+              Text(
+                "حدة الشكوى",
+                style: AppTextStyles.font18blackWight500,
+              ),
+              verticalSpacing(10),
+              OptionSelectorWidget(
+                options: ["قليلة", "متوسطة", "كثيرة"],
+              ),
               verticalSpacing(16),
               TrueOrFalseQuestionWidget(
                 question: "هل عانيت من شكوى مشابهة سابقًا ؟",
@@ -151,6 +161,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
                     ? AppColorsManager.redBackgroundValidationColor
                     : AppColorsManager.babyBlueColor,
                 imagePath: "assets/images/sick_outline_imoji.png",
+                onOptionSelected: (p0) {},
               ),
               verticalSpacing(16),
 
@@ -160,6 +171,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
                     ? AppColorsManager.redBackgroundValidationColor
                     : AppColorsManager.babyBlueColor,
                 imagePath: "assets/images/medicines.png",
+                onOptionSelected: (p0) {},
               ),
               verticalSpacing(16),
 
@@ -169,6 +181,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
                     ? AppColorsManager.redBackgroundValidationColor
                     : AppColorsManager.babyBlueColor,
                 imagePath: "assets/images/medical_tool_kit.png",
+                onOptionSelected: (p0) {},
               ),
 
               ///TODO: handle this button in main view and remove it from here
