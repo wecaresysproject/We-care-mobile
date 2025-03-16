@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/features/emergency_%20complaints/data/repos/emergency_complaints_data_entry_repo.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
@@ -114,6 +117,11 @@ void setupAppCubits() {
       getIt<PrescriptionViewRepo>(),
     ),
   );
+  getIt.registerFactory<EmergencyComplaintsDataEntryCubit>(
+    () => EmergencyComplaintsDataEntryCubit(
+      getIt<EmergencyComplaintsDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -182,6 +190,11 @@ void setupAppRepos() {
       prescriptionServices: getIt<PrescriptionServices>(),
     ),
   );
+  getIt.registerLazySingleton<EmergencyComplaintsDataEntryRepo>(
+    () => EmergencyComplaintsDataEntryRepo(
+      getIt<EmergencyComplaintsServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -207,5 +220,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<VaccineApiServices>(
     () => VaccineApiServices(dio),
+  );
+  getIt.registerLazySingleton<EmergencyComplaintsServices>(
+    () => EmergencyComplaintsServices(dio),
   );
 }
