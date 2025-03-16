@@ -8,6 +8,7 @@ class MedicalItemCard extends StatelessWidget {
   final String title;
   final String itemId;
   final List<Map<String, String>> infoRows;
+  final bool isExpandingTitle;
 
   final void Function(String id)? onTap;
 
@@ -17,15 +18,30 @@ class MedicalItemCard extends StatelessWidget {
     required this.title,
     required this.infoRows,
     required this.itemId,
+    this.isExpandingTitle = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Calculate the height based on the number of info rows
+    double baseHeight = 120.h; // Base height for the card
+    double rowHeight = 24.h; // Height for each info row
+    double additionalHeight = infoRows.length * rowHeight;
+
+    // Adjust height if any row has 2 lines
+    for (var row in infoRows) {
+      if (row["title"] == "ملاحظات:" || row["title"] == "العرض الرئيسي:") {
+        additionalHeight += rowHeight; // Add extra height for 2-line rows
+      }
+    }
+
+    double totalHeight = baseHeight + additionalHeight;
+
     return FittedBox(
       fit: BoxFit.fill,
       child: Container(
         width: MediaQuery.of(context).size.width * 0.5,
-        height: MediaQuery.of(context).size.height * 0.283,
+        height: totalHeight,
         padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
@@ -43,7 +59,8 @@ class MedicalItemCard extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 6.w),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 8.h, horizontal: isExpandingTitle ? 70.w : 6.w),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.r),
                     border: Border.all(
@@ -120,7 +137,7 @@ class MedicalItemCard extends StatelessWidget {
   Widget _infoRow(String label, String value) {
     return RichText(
       overflow: TextOverflow.ellipsis,
-      maxLines: label == "ملاحظات:" ? 2 : 1,
+      maxLines: label == "ملاحظات:" || label == "العرض الرئيسي:" ? 2 : 1,
       text: TextSpan(
         children: [
           TextSpan(
