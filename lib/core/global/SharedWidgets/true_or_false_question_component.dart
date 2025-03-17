@@ -87,7 +87,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                           _selectedOption = value;
                         });
                         widget.onOptionSelected(
-                            value!); //TODO check null here later
+                            value!); //TODO check null here laters
                       },
                     ),
                   ),
@@ -115,6 +115,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                         setState(() {
                           _selectedOption = value;
                         });
+                        widget.onOptionSelected(value!);
                       },
                     ),
                   ),
