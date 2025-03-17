@@ -16,8 +16,10 @@ import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_r
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_data_entry_repo.dart';
+import 'package:we_care/features/vaccine/data/repos/vaccine_view_repo.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_cubit.dart';
 import 'package:we_care/features/vaccine/vaccine_services.dart';
+import 'package:we_care/features/vaccine/vaccine_view/logic/vaccine_view_cubit.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_data_entry_repo.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
@@ -122,6 +124,12 @@ void setupAppCubits() {
       getIt<EmergencyComplaintsDataEntryRepo>(),
     ),
   );
+
+  getIt.registerFactory<VaccineViewCubit>(
+    () => VaccineViewCubit(
+      getIt<VaccineViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -193,6 +201,12 @@ void setupAppRepos() {
   getIt.registerLazySingleton<EmergencyComplaintsDataEntryRepo>(
     () => EmergencyComplaintsDataEntryRepo(
       getIt<EmergencyComplaintsServices>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<VaccineViewRepo>(
+    () => VaccineViewRepo(
+      getIt<VaccineApiServices>(),
     ),
   );
 }

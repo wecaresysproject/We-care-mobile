@@ -1,85 +1,77 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
+import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_details_view.dart';
+import 'package:we_care/features/vaccine/vaccine_view/logic/vaccine_view_cubit.dart';
+import 'package:we_care/features/vaccine/vaccine_view/logic/vaccne_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class VaccineView extends StatelessWidget {
-  final List<Map<String, String>> vaccineData = [
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-    {
-      "date": "4/7/2024",
-      "name": "لقاح الجدري المائي",
-      "disease": "الحصبة الالماني",
-    },
-  ];
-
-  VaccineView({super.key});
+  const VaccineView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(title: 'السنة', options: [], isYearFilter: true),
-                FilterConfig(title: 'فئة اللقاح', options: []),
-              ],
-              onApply: (selectedFilters) {},
-            ),
-            verticalSpacing(32),
-            Expanded(
-              flex: 12,
-              child: buildTable(context, vaccineData),
-            ),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-            Spacer(
-              flex: 1,
-            ),
-          ],
+    return BlocProvider<VaccineViewCubit>(
+      create: (context) => getIt<VaccineViewCubit>()
+        ..emitUserVaccinesData()
+        ..emitVaccinesFilters(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+        ),
+        body: BlocBuilder<VaccineViewCubit, VaccineViewState>(
+          builder: (context, state) {
+            if (state.requestStatus == RequestStatus.loading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  ViewAppBar(),
+                  DataViewFiltersRow(
+                    filters: [
+                      FilterConfig(
+                          title: 'السنة',
+                          options: state.yearsFilter,
+                          isYearFilter: true),
+                      FilterConfig(
+                          title: 'فئة اللقاح',
+                          options: state.vaccineTypesFilter),
+                    ],
+                    onApply: (selectedFilters) {},
+                  ),
+                  verticalSpacing(32),
+                  Expanded(
+                    flex: 12,
+                    child: buildTable(context, state.userVaccines),
+                  ),
+                  verticalSpacing(16),
+                  XRayDataViewFooterRow(),
+                  Spacer(
+                    flex: 1,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget buildTable(
-      BuildContext context, List<Map<String, String>> vaccinesData) {
+  Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
     final ScrollController controller = ScrollController();
     return SingleChildScrollView(
       controller: controller,
@@ -90,7 +82,7 @@ class VaccineView extends StatelessWidget {
             Color(0xFF014C8A)), // Header Background Color
         headingTextStyle: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold), // Header Text
-        columnSpacing: 9.5.w,
+        columnSpacing: 22.w,
         dataRowHeight: 70.h,
         horizontalMargin: 10.w,
         showBottomBorder: true,
@@ -152,7 +144,7 @@ class VaccineView extends StatelessWidget {
               Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(data["date"]!,
+                  child: Text(data.vaccineDate,
                       maxLines: 3,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -164,7 +156,7 @@ class VaccineView extends StatelessWidget {
             ),
             DataCell(Center(
               child: Text(
-                data["name"]!,
+                data.vaccineName,
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -175,7 +167,7 @@ class VaccineView extends StatelessWidget {
             )),
             DataCell(Center(
               child: Text(
-                data["disease"]!,
+                data.diseases,
                 maxLines: 3,
                 textAlign: TextAlign.center,
                 style: TextStyle(

@@ -12,5 +12,9 @@ class VaccineApiConstants {
 
   //View Entry
 
+  static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";
+
   //filters
+  static const getVaccinesFilters =
+      "/VaccineUserEntryPage/GetUserVaccineFilters";
 }
