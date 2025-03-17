@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -146,6 +147,10 @@ class AppRouter {
       case Routes.emergenciesComplaintDataEntryView:
         return MaterialPageRoute(
           builder: (context) => const EmergencyComplaintCategoryDataEntryView(),
+        );
+      case Routes.emergenciesComplaintDataView:
+        return MaterialPageRoute(
+          builder: (context) => const EmergencyComplaintsView(),
         );
 
       default:

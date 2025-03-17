@@ -18,6 +18,10 @@ class VaccineDetailsView extends StatelessWidget {
             spacing: 16.h,
             children: [
               DetailsViewAppBar(title: 'الجدري المائي'),
+              DetailsViewInfoTile(
+                  title: "تاريج التطعيم",
+                  value: "1 / 3 / 2025",
+                  icon: 'assets/images/date_icon.png'),
               Row(children: [
                 DetailsViewInfoTile(
                     title: "العمر عند التلقي",
@@ -25,20 +29,31 @@ class VaccineDetailsView extends StatelessWidget {
                     icon: 'assets/images/file_icon.png'),
                 Spacer(),
                 DetailsViewInfoTile(
-                    title: "الطعم",
-                    value: "سابين",
-                    icon: 'assets/images/medicine_icon.png'),
+                    title: "العمر النموذجي",
+                    value: "62 عام",
+                    icon: 'assets/images/file_icon.png'),
               ]),
               Row(children: [
                 DetailsViewInfoTile(
-                    title: "تاريج الجرعة",
-                    value: "1 / 3 / 2025",
-                    icon: 'assets/images/date_icon.png'),
+                    title: "فئة اللقاح",
+                    value: "62 عام",
+                    icon: 'assets/images/ratio.png'),
                 Spacer(),
                 DetailsViewInfoTile(
-                  title: "ترتيب الجرعة",
-                  value: " هذا النص مثال ",
-                  icon: 'assets/images/times_icon.png',
+                    title: "اسم الطعم",
+                    value: "سابين",
+                    icon: 'assets/images/doctor_name.png'),
+              ]),
+              Row(children: [
+                DetailsViewInfoTile(
+                    title: "رقم الجرعة",
+                    value: "هذذا النص مثال",
+                    icon: 'assets/images/chat_question_icon.png'),
+                Spacer(),
+                DetailsViewInfoTile(
+                  title: "المرض المستهدف",
+                  value: "هذا النص مثال",
+                  icon: 'assets/images/tumor_icon.png',
                 ),
               ]),
               Row(children: [
@@ -54,45 +69,32 @@ class VaccineDetailsView extends StatelessWidget {
               ]),
               Row(children: [
                 DetailsViewInfoTile(
-                    title: "طريقة الاعطاء",
-                    value: "فموي",
-                    icon: 'assets/images/hugeicons_medicine-01.png'),
-                Spacer(),
-                DetailsViewInfoTile(
-                  title: "المرض المستهدف",
-                  value: "هذا النص مثال",
-                  icon: 'assets/images/tumor_icon.png',
-                ),
-              ]),
-              Row(children: [
-                DetailsViewInfoTile(
-                    title: "حجم الجرعة",
+                    title: " الجرعة",
                     value: "نص مثال",
                     icon: 'assets/images/hugeicons_medicine-01.png'),
                 Spacer(),
                 DetailsViewInfoTile(
+                    title: "طريقة الاعطاء",
+                    value: "فموي",
+                    icon: 'assets/images/hugeicons_medicine-01.png'),
+              ]),
+              Row(children: [
+                DetailsViewInfoTile(
                     title: "جهة التلقي",
                     value: "مستشفى الامير ",
                     icon: 'assets/images/hospital_icon.png'),
+                Spacer(),
+                DetailsViewInfoTile(
+                    title: "الدولة",
+                    value: 'نص مثال',
+                    icon: 'assets/images/country_icon.png'),
               ]),
               DetailsViewInfoTile(
-                title: "الاعراض الجانبيه - المنطقة",
+                title: "الاعراض الجانبيه",
                 value:
                     ' هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة. لقد تم توليد هذا النص من مولد ',
                 icon: 'assets/images/symptoms_icon.png',
                 isExpanded: true,
-              ),
-              DetailsViewInfoTile(
-                title: "الاعراض الجانبيه - الشكوي",
-                value:
-                    ' هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة. لقد تم توليد هذا النص من مولد ',
-                icon: 'assets/images/symptoms_icon.png',
-                isExpanded: true,
-              ),
-              DetailsViewInfoTile(
-                title: "الدولة",
-                value: 'نص مثال',
-                icon: 'assets/images/country_icon.png',
               ),
               DetailsViewInfoTile(
                 title: "معلومات اضافية",

@@ -6,6 +6,7 @@ class MedicalItemGridView extends StatelessWidget {
   final void Function(String id) onTap;
   final List<Map<String, String>> Function(dynamic item) infoRowBuilder;
   final String Function(dynamic item) titleBuilder;
+  final bool isExpendingTileTitle;
 
   const MedicalItemGridView({
     super.key,
@@ -13,6 +14,7 @@ class MedicalItemGridView extends StatelessWidget {
     required this.onTap,
     required this.infoRowBuilder,
     required this.titleBuilder,
+    this.isExpendingTileTitle = false,
   });
 
   @override
@@ -33,6 +35,7 @@ class MedicalItemGridView extends StatelessWidget {
             itemId: item.id,
             infoRows: infoRowBuilder(item), // Get the info rows dynamically
             onTap: onTap,
+            isExpandingTitle: isExpendingTileTitle,
           );
         },
       ),
