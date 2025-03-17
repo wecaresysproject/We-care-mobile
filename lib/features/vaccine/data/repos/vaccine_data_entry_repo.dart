@@ -23,6 +23,26 @@ class VaccineDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getVaccineCategories({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.getVaccineCategories(
+        language,
+        userType,
+      );
+      final categories = (response['data'] as List)
+          .map<String>(
+            (e) => e.toString(),
+          )
+          .toList();
+      return ApiResult.success(categories);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<UploadImageResponseModel>> uploadRadiologyImage({
   //   required String language,
   //   required String contentType,

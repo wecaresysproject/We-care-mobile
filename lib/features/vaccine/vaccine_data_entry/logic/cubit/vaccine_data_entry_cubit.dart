@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_data_entry_repo.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
 
@@ -13,28 +16,52 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
   final personalNotesController = TextEditingController();
 
-  // Future<void> emitCountriesData() async {
-  //   final response = await _xRayDataEntryRepo.getCountriesData(
-  //     language: AppStrings.arabicLang,
-  //   );
+  Future<void> emitCountriesData() async {
+    final response = await _vaccineDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
 
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           countriesNames: response.map((e) => e.name).toList(),
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            countriesNames: response.map((e) => e.name).toList(),
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitVaccineCategories() async {
+    final response = await _vaccineDataEntryRepo.getVaccineCategories(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            vaccineCategories: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   void updateSelectedCountry(String? selectedCountry) {
     emit(
@@ -73,12 +100,25 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     validateRequiredFields();
   }
 
+  void updateSelectedVaccineCategory(String? value) {
+    emit(
+      state.copyWith(
+        selectedVaccineCategory: value,
+      ),
+    );
+    validateRequiredFields();
+  }
+
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
-  Future<void> intialRequestsForVaccineDataEntry() async {}
+  Future<void> intialRequestsForVaccineDataEntry() async {
+    await emitVaccineCategories();
+    await emitCountriesData();
+  }
 
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.vaccineDateSelection == null ||
+        state.selectedVaccineCategory == null ||
         state.selectedvaccineName == null ||
         state.doseArrangement == null) {
       emit(
@@ -94,60 +134,6 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
       );
     }
   }
-
-  // Future<void> uploadXrayImagePicked({required String imagePath}) async {
-  //   final response = await _xRayDataEntryRepo.uploadRadiologyImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           xRayPictureUploadedUrl: response.imageUrl,
-  //           xRayImageRequestStatus: UploadImageRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           xRayImageRequestStatus: UploadImageRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> uploadXrayReportPicked({required String imagePath}) async {
-  //   final response = await _xRayDataEntryRepo.uploadRadiologyReportImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           xRayReportRequestStatus: UploadReportRequestStatus.success,
-  //           xRayReportUploadedUrl: response.reportUrl,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           xRayReportRequestStatus: UploadReportRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   // Future<void> postVaccineDataEntry(S localozation) async {
   //   emit(

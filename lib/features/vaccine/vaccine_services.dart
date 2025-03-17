@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 import 'package:we_care/features/vaccine/vaccine_api_constants.dart';
-import 'package:we_care/features/x_ray/xray_api_constants.dart';
 
 part 'vaccine_services.g.dart';
 
@@ -10,8 +9,14 @@ part 'vaccine_services.g.dart';
 abstract class VaccineApiServices {
   factory VaccineApiServices(Dio dio, {String? baseUrl}) = _VaccineApiServices;
 
-  @GET(XrayApiConstants.getCountries)
+  @GET(VaccineApiConstants.getCountries)
   Future<dynamic> getCountries(@Query('language') String language);
+
+  @GET(VaccineApiConstants.getvaccineCategories)
+  Future<dynamic> getVaccineCategories(
+    @Query('language') String language,
+    @Query('UserType') String userType,
+  );
 
   // @POST(XrayApiConstants.postRadiologyDataEntry)
   // Future<dynamic> postRadiologyDataEntry(

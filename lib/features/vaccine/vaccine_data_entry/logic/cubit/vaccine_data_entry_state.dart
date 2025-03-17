@@ -7,9 +7,11 @@ class VaccineDataEntryState extends Equatable {
   final RequestStatus vaccineDataEntryStatus;
 
   final List<String> countriesNames;
+  final List<String> vaccineCategories;
   final String message; // error or success message
   final bool isFormValidated;
   final String? vaccineDateSelection;
+  final String? selectedVaccineCategory;
   final String? selectedvaccineName; //الطعم
   final String? selectedCountryName;
   final bool isEditMode;
@@ -17,12 +19,14 @@ class VaccineDataEntryState extends Equatable {
 
   const VaccineDataEntryState({
     this.countriesNames = const [],
+    this.vaccineCategories = const [],
     this.vaccineDataEntryStatus = RequestStatus.initial,
     this.message = '',
     this.isFormValidated = false,
     this.vaccineDateSelection,
     this.selectedvaccineName,
     this.selectedCountryName,
+    this.selectedVaccineCategory,
     this.doseArrangement,
     this.isEditMode = false,
   }) : super();
@@ -37,6 +41,7 @@ class VaccineDataEntryState extends Equatable {
           selectedCountryName: null,
           isEditMode: false,
           doseArrangement: null,
+          selectedVaccineCategory: null,
         );
 
   VaccineDataEntryState copyWith({
@@ -44,11 +49,13 @@ class VaccineDataEntryState extends Equatable {
     bool? isFormValidated,
     String? vaccineDateSelection,
     List<String>? countriesNames,
+    List<String>? vaccineCategories,
     String? selectedCountryName,
     String? message,
     String? selectedvaccineName,
     bool? isEditMode,
     String? doseArrangement,
+    String? selectedVaccineCategory,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
@@ -57,10 +64,13 @@ class VaccineDataEntryState extends Equatable {
       isFormValidated: isFormValidated ?? this.isFormValidated,
       vaccineDateSelection: vaccineDateSelection ?? this.vaccineDateSelection,
       countriesNames: countriesNames ?? this.countriesNames,
+      vaccineCategories: vaccineCategories ?? this.vaccineCategories,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       selectedvaccineName: selectedvaccineName ?? this.selectedvaccineName,
       isEditMode: isEditMode ?? this.isEditMode,
       doseArrangement: doseArrangement ?? this.doseArrangement,
+      selectedVaccineCategory:
+          selectedVaccineCategory ?? this.selectedVaccineCategory,
     );
   }
 
@@ -75,5 +85,7 @@ class VaccineDataEntryState extends Equatable {
         selectedvaccineName,
         isEditMode,
         doseArrangement,
+        vaccineCategories,
+        selectedVaccineCategory,
       ];
 }

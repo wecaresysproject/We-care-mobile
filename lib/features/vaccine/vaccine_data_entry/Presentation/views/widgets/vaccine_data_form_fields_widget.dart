@@ -35,25 +35,26 @@ class _VaccineDataEntryFormFieldsState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserSelectionContainer(
-              categoryLabel: "السن النموزجي للتطعيم",
-              containerHintText: "اختر السن",
-              options: [
-                "الاسم الاول ١",
-                "الاسم الاول ٢",
-                "الاسم الاول٣١",
-              ],
+              containerBorderColor: state.selectedVaccineCategory == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "فئة اللقاح",
+              containerHintText: "اختر فئة اللقاح",
+              options: state.vaccineCategories,
               onOptionSelected: (value) {
-                context.read<VaccineDataEntryCubit>().updateVaccineeName(value);
+                context
+                    .read<VaccineDataEntryCubit>()
+                    .updateSelectedVaccineCategory(value);
               },
-              bottomSheetTitle: " اختر السن النموزجي للتطعيم",
+              bottomSheetTitle: "اختر فئة اللقاح",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
               containerBorderColor: state.selectedvaccineName == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "الطعم",
-              containerHintText: "اختر الطعم",
+              categoryLabel: "اسم الطعم",
+              containerHintText: "اختر اسم الطعم",
               options: [
                 "الاسم الاول ١",
                 "الاسم الاول ٢",
@@ -223,7 +224,7 @@ class _VaccineDataEntryFormFieldsState
             UserSelectionContainer(
               categoryLabel: "الدولة",
               containerHintText: "اختر الدولة التى تم فيها التطعيم",
-              options: [],
+              options: state.countriesNames,
               onOptionSelected: (selectedPupose) {
                 log("xxx:Selected: $selectedPupose");
                 // context
