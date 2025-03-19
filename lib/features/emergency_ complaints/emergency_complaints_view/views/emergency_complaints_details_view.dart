@@ -33,41 +33,16 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                     icon: 'assets/images/date_icon.png'),
                 Spacer(),
                 DetailsViewInfoTile(
-                    title: "العرض الرئيسي",
-                    value: "تشجنات",
-                    icon: 'assets/images/qr_code_icon.png'),
+                    title: "طبيعة الشكوى",
+                    value: "مستمرة",
+                    icon: 'assets/images/file_icon.png'),
               ],
             ),
-            DetailsViewInfoTile(
-                title: "الأعراض المرضية - المنطقة",
-                value: "صعوبة في التنفس - ارتفاع درجة الحرارة",
-                isExpanded: true,
-                icon: 'assets/images/symptoms_icon.png'),
-            DetailsViewInfoTile(
-                title: "الأعراض المرضية - الشكوى",
-                value: "صعوبة في التنفس / ارتفاع درجة الحرارة",
-                isExpanded: true,
-                icon: 'assets/images/symptoms_icon.png'),
-            Row(children: [
-              DetailsViewInfoTile(
-                  title: "مكان الشكوى",
-                  value: "الظهر",
-                  icon: 'assets/images/body_icon.png'),
-              Spacer(),
-              DetailsViewInfoTile(
-                  title: "طبيعة الشكوى",
-                  value: "مستمرة",
-                  icon: 'assets/images/file_icon.png'),
-            ]),
-            // DetailsViewSlider(
-            //   // title: "حدة الشكوى",
-            //   levels: ["متوسطة", "شديدة", "شديدة جدًا"],
-            //   selectedValue: 1,
-            // ),
+            SymptomContainer(isMainSymptom: true),
+            SymptomContainer(isMainSymptom: false),
             SectionTitleContainer(
                 title: 'شكاوي مشابهه سابقا',
                 iconPath: 'assets/images/symptoms_icon.png'),
-
             Row(children: [
               DetailsViewInfoTile(
                   title: "التشخيص ",
@@ -79,7 +54,6 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                   value: "1 / 3 / 2025",
                   icon: 'assets/images/date_icon.png'),
             ]),
-
             SectionTitleContainer(
                 title: "ادوية حالية", iconPath: 'assets/images/medicines.png'),
             Row(
@@ -95,7 +69,6 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                     icon: 'assets/images/hugeicons_medicine-01.png'),
               ],
             ),
-
             SectionTitleContainer(
                 title: "تدخل طبي طارئ للشكوى",
                 iconPath: 'assets/images/medical_kit_icon.png'),
@@ -128,7 +101,7 @@ class SectionTitleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 65.w),
+      margin: EdgeInsets.symmetric(horizontal: 55.w),
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.5.h),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14.r),
@@ -148,41 +121,60 @@ class SectionTitleContainer extends StatelessWidget {
   }
 }
 
-class DetailsViewSlider extends StatelessWidget {
-  final List<String> levels;
-  final int selectedValue;
-
-  const DetailsViewSlider({
-    super.key,
-    required this.levels,
-    required this.selectedValue,
-  });
+class SymptomContainer extends StatelessWidget {
+  const SymptomContainer({super.key, required this.isMainSymptom});
+  final bool isMainSymptom;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      padding: isMainSymptom
+          ? EdgeInsets.all(8)
+          : EdgeInsets.only(left: 8, right: 8, bottom: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.grey.shade400),
+        color: Colors.transparent,
+        border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),
+        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
         children: [
-          Slider(
-            value: selectedValue.toDouble(),
-            min: 0,
-            max: (levels.length - 1).toDouble(),
-            divisions: levels.length - 1,
-            activeColor: Colors.blue.shade900,
-            onChanged: null, // Disabled for display only
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: levels
-                .map((level) => Text(level, style: TextStyle(fontSize: 14.sp)))
-                .toList(),
-          ),
+          isMainSymptom
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Center(
+                    child: Text(
+                      "العرض المرضي الرئيسي",
+                      style: AppTextStyles.font18blackWight500.copyWith(
+                          color: AppColorsManager.mainDarkBlue,
+                          fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : SizedBox.shrink(),
+          DetailsViewInfoTile(
+              title: "الأعراض المرضية - المنطقة",
+              value: "صعوبة في التنفس - ارتفاع درجة الحرارة",
+              isExpanded: true,
+              icon: 'assets/images/symptoms_icon.png'),
+          verticalSpacing(16),
+          DetailsViewInfoTile(
+              title: "الأعراض المرضية - الشكوى",
+              value: "صعوبة في التنفس / ارتفاع درجة الحرارة",
+              isExpanded: true,
+              icon: 'assets/images/symptoms_icon.png'),
+          verticalSpacing(16),
+          Row(children: [
+            DetailsViewInfoTile(
+                title: "طبيعة الشكوى",
+                value: "مستمرة",
+                icon: 'assets/images/file_icon.png'),
+            Spacer(),
+            DetailsViewInfoTile(
+                title: "حدة الشكوى",
+                value: "هذا النص مثال",
+                icon: 'assets/images/heart_rate_search_icon.png'),
+          ]),
         ],
       ),
     );

@@ -39,7 +39,7 @@ class DetailsViewInfoTile extends StatelessWidget {
         SizedBox(
           width: isExpanded
               ? MediaQuery.of(context).size.width - 32.w
-              : (MediaQuery.of(context).size.width * 0.5) - 24.w,
+              : (MediaQuery.of(context).size.width * 0.5) - 27.w,
           child: CustomContainer(
             value: value,
             isExpanded: isExpanded,

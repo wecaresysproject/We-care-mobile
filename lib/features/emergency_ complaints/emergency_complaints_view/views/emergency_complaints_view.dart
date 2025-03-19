@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
@@ -42,7 +43,11 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return MedicalItemGridView(
       items: complaints,
-      onTap: (id) async {},
+      onTap: (id) async {
+        Navigator.push(context, MaterialPageRoute(builder: (_) {
+          return EmergencyComplaintsDetailsView();
+        }));
+      },
       titleBuilder: (item) => item.complaintArea,
       isExpendingTileTitle: true,
       infoRowBuilder: (item) => [
