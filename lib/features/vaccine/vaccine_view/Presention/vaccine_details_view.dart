@@ -47,7 +47,7 @@ class VaccineDetailsView extends StatelessWidget {
                   spacing: 16.h,
                   children: [
                     DetailsViewAppBar(
-                        title: 'الجدري المائي',
+                        title: state.selectedVaccine!.vaccineName,
                         deleteFunction: () {
                           context
                               .read<VaccineViewCubit>()
@@ -63,12 +63,14 @@ class VaccineDetailsView extends StatelessWidget {
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "العمر عند التلقي",
-                          value: state.selectedVaccine!.userAge,
+                          value:
+                              state.selectedVaccine!.userAge ?? "لم يتم ادخاله",
                           icon: 'assets/images/file_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
                           title: "العمر النموذجي",
-                          value: state.selectedVaccine!.vaccinePerfectAge,
+                          value: state.selectedVaccine!.vaccinePerfectAge ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/file_icon.png'),
                     ]),
                     Row(children: [
@@ -85,41 +87,47 @@ class VaccineDetailsView extends StatelessWidget {
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "رقم الجرعة",
-                          value: state.selectedVaccine!.dose,
+                          value: state.selectedVaccine!.dose ?? "لم يتم ادخاله",
                           icon: 'assets/images/chat_question_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
                         title: "المرض المستهدف",
-                        value: state.selectedVaccine!.diseases,
+                        value:
+                            state.selectedVaccine!.diseases ?? "لم يتم ادخاله",
                         icon: 'assets/images/tumor_icon.png',
                       ),
                     ]),
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "الفئة العمرية",
-                          value: state.selectedVaccine!.ageSection,
+                          value: state.selectedVaccine!.ageSection ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/head_question_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
                           title: " الزامي / اختياري",
-                          value: state.selectedVaccine!.priorityTake,
+                          value: state.selectedVaccine!.priorityTake ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/chat_question_icon.png'),
                     ]),
                     Row(children: [
                       DetailsViewInfoTile(
                           title: " الجرعة",
-                          value: state.selectedVaccine!.doseDaily,
+                          value: state.selectedVaccine!.doseDaily ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/hugeicons_medicine-01.png'),
                       Spacer(),
                       DetailsViewInfoTile(
                           title: "طريقة الاعطاء",
-                          value: state.selectedVaccine!.wayToTakeVaccine,
+                          value: state.selectedVaccine!.wayToTakeVaccine ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/hugeicons_medicine-01.png'),
                     ]),
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "جهة التلقي",
-                          value: state.selectedVaccine!.regionForVaccine,
+                          value: state.selectedVaccine!.regionForVaccine ??
+                              "لم يتم ادخاله",
                           icon: 'assets/images/hospital_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
@@ -129,19 +137,30 @@ class VaccineDetailsView extends StatelessWidget {
                     ]),
                     DetailsViewInfoTile(
                       title: "الأعراض الجانبية الشائعة",
-                      value: state.selectedVaccine!.sideEffects,
+                      value: state.selectedVaccine!.sideEffects == null
+                          ? "لم يتم ادخاله"
+                          : state
+                              .selectedVaccine!.sideEffects!.popularSideEffects!
+                              .join(', '),
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true,
                     ),
                     DetailsViewInfoTile(
                       title: "الأعراض الجانبية الاقل شيوعا",
-                      value: state.selectedVaccine!.sideEffects,
+                      value: state.selectedVaccine!.sideEffects == null
+                          ? "لم يتم ادخاله"
+                          : state.selectedVaccine!.sideEffects!
+                              .lessPopularSideEffects!
+                              .join(', '),
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true,
                     ),
                     DetailsViewInfoTile(
                       title: "الأعراض الجانبية النادرة",
-                      value: state.selectedVaccine!.sideEffects,
+                      value: state.selectedVaccine!.sideEffects == null
+                          ? "لم يتم ادخاله"
+                          : state.selectedVaccine!.sideEffects!.rareSideEffects!
+                              .join(', '),
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true,
                     ),

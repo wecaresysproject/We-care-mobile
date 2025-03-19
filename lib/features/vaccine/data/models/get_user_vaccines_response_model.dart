@@ -26,18 +26,18 @@ class UserVaccineModel {
   @JsonKey(name: 'vaccinecategory')
   String vaccineCategory;
   @JsonKey(name: 'vaccineperfectage')
-  String vaccinePerfectAge;
+  String? vaccinePerfectAge;
   @JsonKey(name: 'userage')
-  String userAge;
+  String? userAge;
   String vaccineDate;
-  String dose;
-  String diseases;
-  String doseDaily;
-  String wayToTakeVaccine;
-  String priorityTake;
-  String ageSection;
-  String sideEffects;
-  String regionForVaccine;
+  String? dose;
+  String? diseases;
+  String? doseDaily;
+  String? wayToTakeVaccine;
+  String? priorityTake;
+  String? ageSection;
+  VaccinesSideEffectsModel? sideEffects;
+  String? regionForVaccine;
   String country;
   String notes;
 
@@ -62,4 +62,23 @@ class UserVaccineModel {
 
   factory UserVaccineModel.fromJson(Map<String, dynamic> json) =>
       _$UserVaccineModelFromJson(json);
+}
+
+@JsonSerializable()
+class VaccinesSideEffectsModel {
+  @JsonKey(name: "اعراض الجانبية شائعة")
+  List<String>? popularSideEffects;
+  @JsonKey(name: "اعراض جانبية اقل شيوعا")
+  List<String>? lessPopularSideEffects;
+  @JsonKey(name: "اعراض جانبية نادرة")
+  List<String>? rareSideEffects;
+
+  VaccinesSideEffectsModel({
+    this.popularSideEffects,
+    this.lessPopularSideEffects,
+    this.rareSideEffects,
+  });
+
+  factory VaccinesSideEffectsModel.fromJson(Map<String, dynamic> json) =>
+      _$VaccinesSideEffectsModelFromJson(json);
 }

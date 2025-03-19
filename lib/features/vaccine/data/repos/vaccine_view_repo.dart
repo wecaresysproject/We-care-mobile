@@ -49,7 +49,7 @@ class VaccineViewRepo {
       String language, String userType, String vaccineId) async {
     try {
       final response =
-          await vaccineApiServices.deleteVaccine(language, userType, vaccineId);
+          await vaccineApiServices.deleteVaccine(language, vaccineId, userType);
       return ApiResult.success(response['message']);
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));

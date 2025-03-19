@@ -59,7 +59,8 @@ class VaccinesTableBlocBuilder extends StatelessWidget {
     return BlocBuilder<VaccineViewCubit, VaccineViewState>(
       buildWhen: (previous, current) =>
           previous.userVaccines != current.userVaccines ||
-          previous.requestStatus != current.requestStatus,
+          previous.requestStatus != current.requestStatus ||
+          previous.isDeleteRequest != current.isDeleteRequest,
       builder: (context, state) {
         if (state.requestStatus == RequestStatus.loading) {
           return Center(
@@ -129,7 +130,7 @@ Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
             headingRowAlignment: MainAxisAlignment.center,
             label: Center(
               child: Text(
-                "المرض",
+                "الترتيب",
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                     fontWeight: FontWeight.w500,
@@ -168,22 +169,22 @@ Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
           DataCell(Center(
             child: Text(
               data.vaccineName,
-              maxLines: 2,
+              maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
           )),
           DataCell(Center(
             child: Text(
-              data.diseases,
+              data.dose ?? "-",
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: FontWeight.w600,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
               ),
             ),
           )),
@@ -216,14 +217,20 @@ Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
                 ],
               ),
             )),
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              final bool result = await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => VaccineDetailsView(
                           documentId: data.id,
                         )),
               );
+              if (result && context.mounted) {
+                await context.read<VaccineViewCubit>().emitUserVaccinesData();
+                await context
+                    .read<VaccineViewCubit>()
+                    .emitFilteredVaccinesList();
+              }
             },
           ),
         ]);
