@@ -12,5 +12,14 @@ class VaccineApiConstants {
 
   //View Entry
 
+  static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";
+  static const getVaccineById = "/VaccineUserEntryPage/GetVaccineById";
+  static const deleteVaccineById = "/VaccineUserEntryPage/DeleteUserVaccine";
+
   //filters
+  static const getVaccinesFilters =
+      "/VaccineUserEntryPage/GetUserVaccineFilters";
+
+  static const getFilteredList =
+      "/VaccineUserEntryPage/SearchUserVaccineDocuments";
 }
