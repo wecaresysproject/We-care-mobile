@@ -23,7 +23,67 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
       emit(state.copyWith(
         responseMessage: error.errors.first,
         requestStatus: RequestStatus.failure,
+        userVaccines: [],
       ));
+    });
+  }
+
+  Future<void> emitVaccineById(String vaccineId) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await _vaccinesRepo.getVaccineById(
+        AppStrings.arabicLang, 'Patient', vaccineId);
+
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        selectedVaccine: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        responseMessage: error.errors.first,
+        requestStatus: RequestStatus.failure,
+      ));
+    });
+  }
+
+  Future<void> emitFilteredVaccinesList(
+      {String? vaccineName, String? year}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await _vaccinesRepo.getFilteredList(
+        AppStrings.arabicLang, 'Patient', vaccineName, year);
+
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        userVaccines: response.userVaccines,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        responseMessage: error.errors.first,
+        requestStatus: RequestStatus.failure,
+        userVaccines: [],
+      ));
+    });
+  }
+
+  Future<void> deleteVaccineById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _vaccinesRepo.deleteVaccineById(
+        AppStrings.arabicLang, 'Patient', id);
+
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        responseMessage: response,
+        isDeleteRequest: true,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isDeleteRequest: true));
     });
   }
 

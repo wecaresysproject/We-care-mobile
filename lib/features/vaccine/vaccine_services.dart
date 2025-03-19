@@ -41,4 +41,26 @@ abstract class VaccineApiServices {
   @GET(VaccineApiConstants.getVaccinesFilters)
   Future<dynamic> getVaccinesFilters(
       @Query('language') String language, @Query('userType') String userType);
+
+  @GET(VaccineApiConstants.getFilteredList)
+  Future<GetUserVaccinesResponseModel> getFilteredList(
+    @Query('lang') String language,
+    @Query('UserType') String userType,
+    @Query('vaccineName') String? vaccineName,
+    @Query('year') String? year,
+  );
+
+  @GET(VaccineApiConstants.getVaccineById)
+  Future<dynamic> getVaccineById(
+    @Query('language') String language,
+    @Query('vaccineId') String vaccineId,
+    @Query('userType') String userType,
+  );
+
+  @DELETE(VaccineApiConstants.deleteVaccineById)
+  Future<dynamic> deleteVaccine(
+    @Query('language') String language,
+    @Query('vaccineId') String vaccineId,
+    @Query('userType') String userType,
+  );
 }

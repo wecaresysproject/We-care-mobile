@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
-import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 
 class VaccineViewState extends Equatable {
   final RequestStatus requestStatus;
@@ -9,6 +8,8 @@ class VaccineViewState extends Equatable {
   final List<UserVaccineModel> userVaccines;
   final List<int> yearsFilter;
   final List<String> vaccineTypesFilter;
+  final UserVaccineModel? selectedVaccine;
+  final bool isDeleteRequest;
 
   const VaccineViewState({
     this.responseMessage = '',
@@ -16,6 +17,8 @@ class VaccineViewState extends Equatable {
     this.userVaccines = const [],
     this.yearsFilter = const [],
     this.vaccineTypesFilter = const [],
+    this.selectedVaccine,
+    this.isDeleteRequest = false,
   });
 
   factory VaccineViewState.initial() {
@@ -25,6 +28,8 @@ class VaccineViewState extends Equatable {
       userVaccines: [],
       yearsFilter: [],
       vaccineTypesFilter: [],
+      selectedVaccine: null,
+      isDeleteRequest: false,
     );
   }
 
@@ -34,6 +39,8 @@ class VaccineViewState extends Equatable {
     List<UserVaccineModel>? userVaccines,
     List<int>? yearsFilter,
     List<String>? vaccineTypesFilter,
+    UserVaccineModel? selectedVaccine,
+    bool? isDeleteRequest,
   }) {
     return VaccineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -41,6 +48,8 @@ class VaccineViewState extends Equatable {
       userVaccines: userVaccines ?? this.userVaccines,
       yearsFilter: yearsFilter ?? this.yearsFilter,
       vaccineTypesFilter: vaccineTypesFilter ?? this.vaccineTypesFilter,
+      selectedVaccine: selectedVaccine ?? this.selectedVaccine,
+      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
     );
   }
 
@@ -50,5 +59,8 @@ class VaccineViewState extends Equatable {
         requestStatus,
         userVaccines,
         yearsFilter,
+        vaccineTypesFilter,
+        selectedVaccine,
+        isDeleteRequest,
       ];
 }
