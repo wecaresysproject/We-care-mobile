@@ -5,8 +5,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/vaccine/vaccine_view/logic/vaccine_view_cubit.dart';
 import 'package:we_care/features/vaccine/vaccine_view/logic/vaccne_view_state.dart';
 
@@ -52,6 +54,18 @@ class VaccineDetailsView extends StatelessWidget {
                           context
                               .read<VaccineViewCubit>()
                               .deleteVaccineById(documentId);
+                        },
+                        editFunction: () async {
+                          final result = await context.pushNamed(
+                            Routes.vaccineDataEntryView,
+                            arguments: state.selectedVaccine,
+                          );
+                          if (result != null && result) {
+                            if (!context.mounted) return;
+                            context
+                                .read<VaccineViewCubit>()
+                                .emitVaccineById(documentId);
+                          }
                         },
                         shareFunction: () {
                           _shareDetails(context, state);

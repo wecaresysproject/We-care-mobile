@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_data_entry_repo.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
@@ -18,6 +19,21 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 // جهة تلقي التطعيم
   final vaccinationLocationController = TextEditingController();
   final personalNotesController = TextEditingController();
+  void loadVaccineDataForEditing(UserVaccineModel editingVaccineData) {
+    emit(
+      state.copyWith(
+        vaccineDateSelection: editingVaccineData.vaccineDate,
+        selectedVaccineName: editingVaccineData.vaccineName,
+        selectedVaccineCategory: editingVaccineData.vaccineCategory,
+        selectedCountryName: editingVaccineData.country,
+        selectedDoseArrangement: editingVaccineData.dose,
+        vaccinePerfectAge: editingVaccineData.vaccinePerfectAge,
+        isEditMode: true,
+      ),
+    );
+    personalNotesController.text = editingVaccineData.notes;
+    vaccinationLocationController.text = editingVaccineData.regionForVaccine;
+  }
 
   Future<void> emitCountriesData() async {
     final response = await _vaccineDataEntryRepo.getCountriesData(
