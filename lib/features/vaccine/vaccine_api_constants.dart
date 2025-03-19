@@ -4,7 +4,10 @@ class VaccineApiConstants {
   static const getCountries = "/countries";
   static const getvaccineCategories =
       "/VaccineUserEntryPage/GetAllVaccineCategories";
-
+  static const getSpecificVaccinesResultsUsingSelectedCategory =
+      "/VaccineUserEntryPage/GetVaccinesByCategory";
+  static const postVaccineDataEntry =
+      "/VaccineUserEntryPage/AddVaccineUserEntry";
   //View Entry
 
   static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";

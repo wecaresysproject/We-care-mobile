@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 
 @immutable
 class VaccineDataEntryState extends Equatable {
@@ -8,26 +9,34 @@ class VaccineDataEntryState extends Equatable {
 
   final List<String> countriesNames;
   final List<String> vaccineCategories;
+  final List<String> vaccinesNames;
+  final List<VaccineModel> vaccinesDataList;
   final String message; // error or success message
   final bool isFormValidated;
   final String? vaccineDateSelection;
   final String? selectedVaccineCategory;
-  final String? selectedvaccineName; //الطعم
+  final String? selectedVaccineName; //الطعم
   final String? selectedCountryName;
   final bool isEditMode;
-  final String? doseArrangement; // ترتيب الجرعة
+  final String? selectedDoseArrangement; // ترتيب الجرعة
+  final List<String> doseArrangementData;
+  final String? vaccinePerfectAge;
 
   const VaccineDataEntryState({
     this.countriesNames = const [],
     this.vaccineCategories = const [],
+    this.vaccinesNames = const [],
+    this.vaccinesDataList = const [],
+    this.doseArrangementData = const [],
     this.vaccineDataEntryStatus = RequestStatus.initial,
     this.message = '',
     this.isFormValidated = false,
     this.vaccineDateSelection,
-    this.selectedvaccineName,
+    this.selectedVaccineName,
     this.selectedCountryName,
     this.selectedVaccineCategory,
-    this.doseArrangement,
+    this.selectedDoseArrangement,
+    this.vaccinePerfectAge,
     this.isEditMode = false,
   }) : super();
 
@@ -36,12 +45,13 @@ class VaccineDataEntryState extends Equatable {
           vaccineDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           vaccineDateSelection: null,
-          selectedvaccineName: null,
+          selectedVaccineName: null,
           message: '',
           selectedCountryName: null,
           isEditMode: false,
-          doseArrangement: null,
+          selectedDoseArrangement: null,
           selectedVaccineCategory: null,
+          vaccinePerfectAge: null,
         );
 
   VaccineDataEntryState copyWith({
@@ -52,10 +62,14 @@ class VaccineDataEntryState extends Equatable {
     List<String>? vaccineCategories,
     String? selectedCountryName,
     String? message,
-    String? selectedvaccineName,
+    String? selectedVaccineName,
     bool? isEditMode,
-    String? doseArrangement,
+    String? selectedDoseArrangement,
     String? selectedVaccineCategory,
+    List<String>? vaccinesNames,
+    List<VaccineModel>? vaccinesDataList,
+    List<String>? doseArrangementData,
+    String? vaccinePerfectAge,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
@@ -66,11 +80,16 @@ class VaccineDataEntryState extends Equatable {
       countriesNames: countriesNames ?? this.countriesNames,
       vaccineCategories: vaccineCategories ?? this.vaccineCategories,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-      selectedvaccineName: selectedvaccineName ?? this.selectedvaccineName,
+      selectedVaccineName: selectedVaccineName ?? this.selectedVaccineName,
       isEditMode: isEditMode ?? this.isEditMode,
-      doseArrangement: doseArrangement ?? this.doseArrangement,
+      selectedDoseArrangement:
+          selectedDoseArrangement ?? this.selectedDoseArrangement,
       selectedVaccineCategory:
           selectedVaccineCategory ?? this.selectedVaccineCategory,
+      vaccinesNames: vaccinesNames ?? this.vaccinesNames,
+      vaccinesDataList: vaccinesDataList ?? this.vaccinesDataList,
+      doseArrangementData: doseArrangementData ?? this.doseArrangementData,
+      vaccinePerfectAge: vaccinePerfectAge ?? this.vaccinePerfectAge,
     );
   }
 
@@ -82,10 +101,14 @@ class VaccineDataEntryState extends Equatable {
         vaccineDateSelection,
         countriesNames,
         selectedCountryName,
-        selectedvaccineName,
+        selectedVaccineName,
         isEditMode,
-        doseArrangement,
+        selectedDoseArrangement,
         vaccineCategories,
         selectedVaccineCategory,
+        vaccinesNames,
+        vaccinesDataList,
+        doseArrangementData,
+        vaccinePerfectAge,
       ];
 }
