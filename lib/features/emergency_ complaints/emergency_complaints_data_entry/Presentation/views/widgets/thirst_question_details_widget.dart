@@ -67,11 +67,6 @@ class ThirdQuestionDetails extends StatelessWidget {
                 ),
                 verticalSpacing(24),
                 Text(
-                  "الجرعة",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(8),
-                Text(
                   "تاريخ الشكوى",
                   style: AppTextStyles.font18blackWight500,
                 ),

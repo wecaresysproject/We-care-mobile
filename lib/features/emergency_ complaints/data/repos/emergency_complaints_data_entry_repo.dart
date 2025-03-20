@@ -1,3 +1,6 @@
+import 'package:we_care/core/networking/api_error_handler.dart';
+import 'package:we_care/core/networking/api_result.dart';
+
 import '../../emergency_complaints_services.dart';
 
 class EmergencyComplaintsDataEntryRepo {
@@ -5,32 +8,16 @@ class EmergencyComplaintsDataEntryRepo {
 
   EmergencyComplaintsDataEntryRepo(this._emergencyComplaintsServices);
 
-  // Future<ApiResult<String>> postPrescriptionDataEntry(
-  //     PrescriptionRequestBodyModel requestBody) async {
-  //   try {
-  //     final response =
-  //         await _prescriptionServices.postPrescriptionDataEntry(requestBody);
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<String>> updatePrescriptionDocumentDetails({
-  //   required PrescriptionRequestBodyModel requestBody,
-  //   required String documentId,
-  // }) async {
-  //   try {
-  //     final response =
-  //         await _prescriptionServices.updatePrescriptionDocumentDetails(
-  //       requestBody,
-//       requestBody.language,
-  //       requestBody.userType,
-  //       documentId,
-  //     );
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getAllPlacesOfComplaints(
+      {required String language}) async {
+    try {
+      final response =
+          await _emergencyComplaintsServices.getAllPlacesOfComplaints(language);
+      final complaints =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

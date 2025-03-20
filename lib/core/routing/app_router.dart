@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
@@ -152,6 +156,15 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const EmergencyComplaintCategoryDataEntryView(),
         );
+      case Routes.addNewComplaintDetails:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: getIt.get<EmergencyComplaintsDataEntryCubit>()
+              ..getAllRequestsForAddingNewComplaintView(),
+            child: const CreateNewComplaintDetailsView(),
+          ),
+        );
+
       case Routes.emergenciesComplaintDataView:
         return MaterialPageRoute(
           builder: (context) => const EmergencyComplaintsView(),

@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/emergency_%20complaints/data/models/medical_complaint_model.dart';
 
 import '../../../data/repos/emergency_complaints_data_entry_repo.dart';
 
@@ -16,6 +18,49 @@ class EmergencyComplaintsDataEntryCubit
   final EmergencyComplaintsDataEntryRepo _emergencyDataEntryRepo;
 
   final formKey = GlobalKey<FormState>();
+  final personalInfoController = TextEditingController();
+  List<MedicalComplaint> medicalComplaints = [];
+  void saveNewMedicalComplaint() {
+    medicalComplaints.add(
+      MedicalComplaint(
+        symptomsRegion: state.symptomsDiseaseRegion!,
+        sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
+        natureOfComplaint: state.natureOfComplaint!,
+        severityOfComplaint: state.complaintDegree!,
+      ),
+    );
+    emit(
+      state.copyWith(
+        isNewComplaintAddedSuccefully: true,
+      ),
+    );
+  }
+
+  Future<void> getAllRequestsForAddingNewComplaintView() async {
+    getAllComplaintsPlaces();
+  }
+
+  Future<void> getAllComplaintsPlaces() async {
+    final response = await _emergencyDataEntryRepo.getAllPlacesOfComplaints(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (complaints) {
+        emit(
+          state.copyWith(
+            complaintPlaces: complaints,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   /// Update Field Values
   void updateDateOfComplaint(String? date) {
@@ -27,29 +72,28 @@ class EmergencyComplaintsDataEntryCubit
     emit(state.copyWith(previousComplaintDate: date));
   }
 
-  void updateComplaintLocation(String? complaintLocation) {
-    emit(state.copyWith(complaintLocation: complaintLocation));
-    validateRequiredFields();
-  }
-
   void updateSymptomsDiseaseRegion(String? symptom) {
     emit(state.copyWith(symptomsDiseaseRegion: symptom));
     validateRequiredFields();
+    validateAddNewComplaintRequiredForms();
   }
 
   void updateNatureOfComplaint(String? type) {
     emit(state.copyWith(natureOfComplaint: type));
     validateRequiredFields();
+    validateAddNewComplaintRequiredForms();
   }
 
   void updateMedicalSymptomsIssue(String? issue) {
     emit(state.copyWith(medicalSymptomsIssue: issue));
     validateRequiredFields();
+    validateAddNewComplaintRequiredForms();
   }
 
   void updateComplaintDegree(String? intensity) {
     emit(state.copyWith(complaintDegree: intensity));
     validateRequiredFields();
+    validateAddNewComplaintRequiredForms();
   }
 
   bool updateHasPreviousComplaintBefore(String? result) {
@@ -100,7 +144,6 @@ class EmergencyComplaintsDataEntryCubit
 
   void validateRequiredFields() {
     if (state.complaintAppearanceDate == null ||
-        state.complaintLocation == null ||
         state.symptomsDiseaseRegion == null ||
         state.natureOfComplaint == null ||
         state.medicalSymptomsIssue == null ||
@@ -122,9 +165,29 @@ class EmergencyComplaintsDataEntryCubit
     }
   }
 
+  void validateAddNewComplaintRequiredForms() {
+    if (state.symptomsDiseaseRegion == null ||
+        state.natureOfComplaint == null ||
+        state.medicalSymptomsIssue == null ||
+        state.complaintDegree == null) {
+      emit(
+        state.copyWith(
+          isAddNewComplaintFormsValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isAddNewComplaintFormsValidated: true,
+        ),
+      );
+    }
+  }
+
   @override
   Future<void> close() {
     formKey.currentState?.reset();
+    personalInfoController.dispose();
     return super.close();
   }
 }

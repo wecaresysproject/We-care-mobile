@@ -1,6 +1,8 @@
 class EmergencyComplaintsApiConstants {
   static const baseUrl = "http://147.93.57.70:5299/api/";
   //Data Entry
+  static const getAllPlacesOfComplaints =
+      "/EnterEmergencyComplain/Placeofcomplaint";
 
   //View Entry
   static const getAllEmergencyComplaints =

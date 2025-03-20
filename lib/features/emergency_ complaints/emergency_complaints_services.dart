@@ -40,4 +40,6 @@ abstract class EmergencyComplaintsServices {
   Future<dynamic> deleteEmergencyComplaintById(
     @Query('id') String id,
   );
+  @GET(EmergencyComplaintsApiConstants.getAllPlacesOfComplaints)
+  Future<dynamic> getAllPlacesOfComplaints(@Query('language') String language);
 }

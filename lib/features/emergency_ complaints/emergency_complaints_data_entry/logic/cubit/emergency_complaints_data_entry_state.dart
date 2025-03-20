@@ -4,9 +4,10 @@ part of 'emergency_complaints_data_entry_cubit.dart';
 class EmergencyComplaintsDataEntryState extends Equatable {
   final RequestStatus emergencyComplaintsDataEntryStatus;
   final bool isFormValidated;
+  final bool isAddNewComplaintFormsValidated;
+  final bool isNewComplaintAddedSuccefully;
   final String? complaintAppearanceDate;
   final String? previousComplaintDate;
-  final String? complaintLocation;
   final String? symptomsDiseaseRegion; // الاعراض المرضية - المنطقه
   final String? medicalSymptomsIssue; // الاعراض المرضية - الشكوي
   final String? natureOfComplaint; // طبيعة الشكوي
@@ -14,6 +15,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final String? hasSimilarComplaintBefore;
   final String? isCurrentlyTakingMedication;
   final String? hasReceivedEmergencyCareBefore;
+  final List<String> complaintPlaces;
 
   final bool isEditMode;
   final String message; // error or success message
@@ -24,8 +26,9 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.isAddNewComplaintFormsValidated = false,
+    this.isNewComplaintAddedSuccefully = false,
     this.complaintAppearanceDate,
-    this.complaintLocation,
     this.symptomsDiseaseRegion,
     this.medicalSymptomsIssue,
     this.natureOfComplaint,
@@ -39,14 +42,16 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.secondQuestionAnswer = false,
     this.thirdQuestionAnswer = false,
     this.previousComplaintDate,
+    this.complaintPlaces = const [],
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
       : this(
           emergencyComplaintsDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
+          isAddNewComplaintFormsValidated: false,
+          isNewComplaintAddedSuccefully: false,
           complaintAppearanceDate: null,
-          complaintLocation: null,
           symptomsDiseaseRegion: null,
           natureOfComplaint: null,
           medicalSymptomsIssue: null,
@@ -67,7 +72,6 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     String? errorMessage,
     bool? isFormValidated,
     String? complaintAppearanceDate,
-    String? complaintLocation,
     String? symptomsDiseaseRegion,
     String? medicalSymptomsIssue,
     String? natureOfComplaint,
@@ -82,14 +86,18 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     bool? secondQuestionAnswer,
     bool? thirdQuestionAnswer,
     String? previousComplaintDate,
+    bool? isAddNewComplaintFormsValidated,
+    bool? isNewComplaintAddedSuccefully,
+    List<String>? complaintPlaces,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
           this.emergencyComplaintsDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      isAddNewComplaintFormsValidated: isAddNewComplaintFormsValidated ??
+          this.isAddNewComplaintFormsValidated,
       complaintAppearanceDate:
           complaintAppearanceDate ?? this.complaintAppearanceDate,
-      complaintLocation: complaintLocation ?? this.complaintLocation,
       symptomsDiseaseRegion:
           symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
       natureOfComplaint: natureOfComplaint ?? this.natureOfComplaint,
@@ -108,6 +116,9 @@ class EmergencyComplaintsDataEntryState extends Equatable {
       thirdQuestionAnswer: thirdQuestionAnswer ?? this.thirdQuestionAnswer,
       previousComplaintDate:
           previousComplaintDate ?? this.previousComplaintDate,
+      isNewComplaintAddedSuccefully:
+          isNewComplaintAddedSuccefully ?? this.isNewComplaintAddedSuccefully,
+      complaintPlaces: complaintPlaces ?? this.complaintPlaces,
     );
   }
 
@@ -115,8 +126,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   List<Object?> get props => [
         emergencyComplaintsDataEntryStatus,
         isFormValidated,
+        isAddNewComplaintFormsValidated,
         complaintAppearanceDate,
-        complaintLocation,
         symptomsDiseaseRegion,
         natureOfComplaint,
         medicalSymptomsIssue,
@@ -129,6 +140,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         firstQuestionAnswer,
         secondQuestionAnswer,
         thirdQuestionAnswer,
-        previousComplaintDate
+        previousComplaintDate,
+        isNewComplaintAddedSuccefully,
+        complaintPlaces,
       ];
 }
