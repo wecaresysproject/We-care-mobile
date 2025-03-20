@@ -221,12 +221,14 @@ Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
               final bool result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => VaccineDetailsView(
-                          documentId: data.id,
-                        )),
+                  builder: (context) => VaccineDetailsView(
+                    documentId: data.id,
+                  ),
+                ),
               );
               if (result && context.mounted) {
                 await context.read<VaccineViewCubit>().emitUserVaccinesData();
+                if (!context.mounted) return;
                 await context
                     .read<VaccineViewCubit>()
                     .emitFilteredVaccinesList();
