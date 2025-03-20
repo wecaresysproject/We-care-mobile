@@ -5,6 +5,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final RequestStatus emergencyComplaintsDataEntryStatus;
   final bool isFormValidated;
   final String? complaintAppearanceDate;
+  final String? previousComplaintDate;
   final String? complaintLocation;
   final String? symptomsDiseaseRegion; // الاعراض المرضية - المنطقه
   final String? medicalSymptomsIssue; // الاعراض المرضية - الشكوي
@@ -16,6 +17,9 @@ class EmergencyComplaintsDataEntryState extends Equatable {
 
   final bool isEditMode;
   final String message; // error or success message
+  final bool firstQuestionAnswer;
+  final bool secondQuestionAnswer;
+  final bool thirdQuestionAnswer;
 
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
@@ -31,6 +35,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.hasReceivedEmergencyCareBefore,
     this.message = '',
     this.isEditMode = false,
+    this.firstQuestionAnswer = false,
+    this.secondQuestionAnswer = false,
+    this.thirdQuestionAnswer = false,
+    this.previousComplaintDate,
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -48,6 +56,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           hasReceivedEmergencyCareBefore: null,
           message: '',
           isEditMode: false,
+          firstQuestionAnswer: false,
+          secondQuestionAnswer: false,
+          thirdQuestionAnswer: false,
+          previousComplaintDate: null,
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -66,6 +78,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     String? message,
     String? selectedDisease,
     bool? isEditMode,
+    bool? firstQuestionAnswer,
+    bool? secondQuestionAnswer,
+    bool? thirdQuestionAnswer,
+    String? previousComplaintDate,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -87,6 +103,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           hasReceivedEmergencyCareBefore ?? this.hasReceivedEmergencyCareBefore,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
+      firstQuestionAnswer: firstQuestionAnswer ?? this.firstQuestionAnswer,
+      secondQuestionAnswer: secondQuestionAnswer ?? this.secondQuestionAnswer,
+      thirdQuestionAnswer: thirdQuestionAnswer ?? this.thirdQuestionAnswer,
+      previousComplaintDate:
+          previousComplaintDate ?? this.previousComplaintDate,
     );
   }
 
@@ -105,5 +126,9 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         hasReceivedEmergencyCareBefore,
         message,
         isEditMode,
+        firstQuestionAnswer,
+        secondQuestionAnswer,
+        thirdQuestionAnswer,
+        previousComplaintDate
       ];
 }

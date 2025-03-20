@@ -23,6 +23,10 @@ class EmergencyComplaintsDataEntryCubit
     validateRequiredFields();
   }
 
+  void updateIfHasSameComplaintBeforeDate(String? date) {
+    emit(state.copyWith(previousComplaintDate: date));
+  }
+
   void updateComplaintLocation(String? complaintLocation) {
     emit(state.copyWith(complaintLocation: complaintLocation));
     validateRequiredFields();
@@ -49,21 +53,46 @@ class EmergencyComplaintsDataEntryCubit
   }
 
   bool updateHasPreviousComplaintBefore(String? result) {
-    emit(state.copyWith(hasSimilarComplaintBefore: result));
-    validateRequiredFields();
-    return result == 'نعم' ? true : false;
+    bool hasComplaint = result == 'نعم';
+
+    emit(
+      state.copyWith(
+        hasSimilarComplaintBefore: result,
+        firstQuestionAnswer: hasComplaint,
+      ),
+    );
+
+    validateRequiredFields(); // Ensure this method is called
+
+    return hasComplaint;
   }
 
   bool updateIsTakingMedicines(String? result) {
-    emit(state.copyWith(isCurrentlyTakingMedication: result));
-    validateRequiredFields();
-    return result == 'نعم' ? true : false;
+    bool isTakingMedicine = result == 'نعم';
+
+    emit(
+      state.copyWith(
+        isCurrentlyTakingMedication: result,
+        secondQuestionAnswer: isTakingMedicine,
+      ),
+    );
+
+    validateRequiredFields(); // Ensure validation runs
+
+    return isTakingMedicine;
   }
 
   bool updateHasReceivedEmergencyCareBefore(String? result) {
-    emit(state.copyWith(hasReceivedEmergencyCareBefore: result));
-    validateRequiredFields();
-    return result == 'نعم' ? true : false;
+    bool hasReceivedCare = result == 'نعم';
+
+    emit(state.copyWith(
+      hasReceivedEmergencyCareBefore: result,
+      thirdQuestionAnswer: hasReceivedCare,
+    ));
+
+    validateRequiredFields(); // Ensure validation runs
+
+    return hasReceivedCare;
   }
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed

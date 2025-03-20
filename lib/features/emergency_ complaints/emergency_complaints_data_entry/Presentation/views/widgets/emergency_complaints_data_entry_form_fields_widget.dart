@@ -2,20 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_regex.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/true_or_false_question_component.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/generated/l10n.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/first_question_details_widget.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/second_question_details_widget.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/thirst_question_details_widget.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import '../../../logic/cubit/emergency_complaints_data_entry_cubit.dart';
@@ -181,107 +179,12 @@ class _EmergencyComplaintDataEntryFormFieldsState
                 },
               ),
               verticalSpacing(16),
-              TrueOrFalseQuestionWidget(
-                question: "هل عانيت من شكوى مشابهة سابقًا ؟",
-                containerValidationColor:
-                    state.hasSimilarComplaintBefore == null
-                        ? AppColorsManager.redBackgroundValidationColor
-                        : AppColorsManager.babyBlueColor,
-                imagePath: "assets/images/sick_outline_imoji.png",
-                onOptionSelected: (p0) {
-                  log("xxx:hasSimilarComplaintBefore: $p0");
-                  final result = context
-                      .read<EmergencyComplaintsDataEntryCubit>()
-                      .updateHasPreviousComplaintBefore(p0);
-
-                  if (result) {
-                    // open botttem sheet that has two text fields to enter the name of the previous complaint and the date of the previous complaint
-                    if (result) {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(18.r),
-                          ),
-                        ),
-                        builder: (BuildContext context) {
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 24.h,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "التشخيص",
-                                    style: AppTextStyles.font18blackWight500,
-                                  ),
-                                  verticalSpacing(8),
-                                  CustomTextField(
-                                    validator: (value) {
-                                      if (AppRegex.isOnlyWhiteSpaces(value!)) {
-                                        return S
-                                            .of(context)
-                                            .white_spaces_validation;
-                                      }
-                                      if (value.isEmpty) {
-                                        return S
-                                            .of(context)
-                                            .pleaseEnterYourName;
-                                      }
-                                    },
-                                    // controller:
-                                    //     context.read<SignUpCubit>().firstNameController,
-                                    isPassword: false,
-                                    showSuffixIcon: false,
-                                    keyboardType: TextInputType.name,
-                                    hintText: "اكتب التشخيص الذى تم",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  }
-                },
-              ),
+              FirstQuestionDetails(),
               verticalSpacing(16),
 
-              TrueOrFalseQuestionWidget(
-                question: "هل تتناول أدوية حالية ؟",
-                containerValidationColor:
-                    state.isCurrentlyTakingMedication == null
-                        ? AppColorsManager.redBackgroundValidationColor
-                        : AppColorsManager.babyBlueColor,
-                imagePath: "assets/images/medicines.png",
-                onOptionSelected: (p0) {
-                  context
-                      .read<EmergencyComplaintsDataEntryCubit>()
-                      .updateIsTakingMedicines(p0);
-                },
-              ),
+              SecondQuestionDetails(),
               verticalSpacing(16),
-
-              TrueOrFalseQuestionWidget(
-                question: "هل أجريت  تدخل طبى طارئ للشكوى ؟",
-                containerValidationColor:
-                    state.hasReceivedEmergencyCareBefore == null
-                        ? AppColorsManager.redBackgroundValidationColor
-                        : AppColorsManager.babyBlueColor,
-                imagePath: "assets/images/medical_tool_kit.png",
-                onOptionSelected: (p0) {
-                  context
-                      .read<EmergencyComplaintsDataEntryCubit>()
-                      .updateHasReceivedEmergencyCareBefore(p0);
-                },
-              ),
+              ThirdQuestionDetails(),
 
               ///TODO: handle this button in main view and remove it from here
               /// final section
