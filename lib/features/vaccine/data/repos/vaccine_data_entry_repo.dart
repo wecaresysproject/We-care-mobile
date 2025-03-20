@@ -84,4 +84,23 @@ class VaccineDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> editVaccineData({
+    required VaccineModuleRequestBody requestBody,
+    required String language,
+    required String userType,
+    required String vaccineId,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.updateVaccineDataEntry(
+        requestBody,
+        language,
+        userType,
+        vaccineId,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

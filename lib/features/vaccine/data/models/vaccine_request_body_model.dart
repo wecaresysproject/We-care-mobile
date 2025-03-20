@@ -6,11 +6,16 @@ part 'vaccine_request_body_model.g.dart';
 class VaccineModuleRequestBody {
   final String vaccineName;
   final String vaccineDate;
+  @JsonKey(name: 'vaccinecategory')
   final String vaccineCategory;
   final String vaccinePerfectAge;
+  @JsonKey(name: 'Dose')
   final String dose;
+  @JsonKey(name: 'RegionForVaccine')
   final String regionForVaccine;
+  @JsonKey(name: 'Country')
   final String country;
+  @JsonKey(name: 'Notes')
   final String? notes;
 
   VaccineModuleRequestBody({

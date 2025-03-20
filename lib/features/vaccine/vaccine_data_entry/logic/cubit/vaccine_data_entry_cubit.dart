@@ -29,10 +29,58 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         selectedDoseArrangement: editingVaccineData.dose,
         vaccinePerfectAge: editingVaccineData.vaccinePerfectAge,
         isEditMode: true,
+        editedVaccineId: editingVaccineData.id,
       ),
     );
     personalNotesController.text = editingVaccineData.notes;
     vaccinationLocationController.text = editingVaccineData.regionForVaccine;
+  }
+
+  Future<void> submitEditVaccineData(S localozation) async {
+    emit(
+      state.copyWith(
+        vaccineDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _vaccineDataEntryRepo.editVaccineData(
+      requestBody: VaccineModuleRequestBody(
+        vaccineName: state.selectedVaccineName!,
+        vaccineDate: state.vaccineDateSelection!,
+        vaccineCategory: state.selectedVaccineCategory!,
+        vaccinePerfectAge: state.vaccinePerfectAge!,
+        dose: state.selectedDoseArrangement!,
+        regionForVaccine: vaccinationLocationController.text.isEmpty
+            ? localozation.no_data_entered
+            : vaccinationLocationController.text,
+        country: state.selectedCountryName.isEmptyOrNull
+            ? localozation.no_data_entered
+            : state.selectedCountryName!,
+        notes: personalNotesController.text.isEmpty
+            ? localozation.no_data_entered
+            : personalNotesController.text,
+      ),
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      vaccineId: state.editedVaccineId!,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            vaccineDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            vaccineDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> emitCountriesData() async {

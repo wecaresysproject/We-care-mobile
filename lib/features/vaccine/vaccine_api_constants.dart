@@ -8,6 +8,8 @@ class VaccineApiConstants {
       "/VaccineUserEntryPage/GetVaccinesByCategory";
   static const postVaccineDataEntry =
       "/VaccineUserEntryPage/AddVaccineUserEntry";
+  static const updateVaccineDataEntry =
+      "/VaccineUserEntryPage/EditUserVaccineDocument";
   //View Entry
 
   static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";

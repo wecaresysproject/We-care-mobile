@@ -61,4 +61,11 @@ abstract class VaccineApiServices {
     @Query('language') String language,
     @Query('UserType') String userType,
   );
+  @PUT(VaccineApiConstants.updateVaccineDataEntry)
+  Future<dynamic> updateVaccineDataEntry(
+    @Body() VaccineModuleRequestBody requestBody,
+    @Query('language') String language,
+    @Query('UserType') String userType,
+    @Query('vaccineId') String vaccineId,
+  );
 }

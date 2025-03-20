@@ -21,6 +21,7 @@ class VaccineDataEntryState extends Equatable {
   final String? selectedDoseArrangement; // ترتيب الجرعة
   final List<String> doseArrangementData;
   final String? vaccinePerfectAge;
+  final String? editedVaccineId;
 
   const VaccineDataEntryState({
     this.countriesNames = const [],
@@ -37,6 +38,7 @@ class VaccineDataEntryState extends Equatable {
     this.selectedVaccineCategory,
     this.selectedDoseArrangement,
     this.vaccinePerfectAge,
+    this.editedVaccineId,
     this.isEditMode = false,
   }) : super();
 
@@ -52,6 +54,7 @@ class VaccineDataEntryState extends Equatable {
           selectedDoseArrangement: null,
           selectedVaccineCategory: null,
           vaccinePerfectAge: null,
+          editedVaccineId: null,
         );
 
   VaccineDataEntryState copyWith({
@@ -70,6 +73,7 @@ class VaccineDataEntryState extends Equatable {
     List<VaccineModel>? vaccinesDataList,
     List<String>? doseArrangementData,
     String? vaccinePerfectAge,
+    String? editedVaccineId,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
@@ -90,6 +94,7 @@ class VaccineDataEntryState extends Equatable {
       vaccinesDataList: vaccinesDataList ?? this.vaccinesDataList,
       doseArrangementData: doseArrangementData ?? this.doseArrangementData,
       vaccinePerfectAge: vaccinePerfectAge ?? this.vaccinePerfectAge,
+      editedVaccineId: editedVaccineId ?? this.editedVaccineId,
     );
   }
 
@@ -110,5 +115,6 @@ class VaccineDataEntryState extends Equatable {
         vaccinesDataList,
         doseArrangementData,
         vaccinePerfectAge,
+        editedVaccineId,
       ];
 }

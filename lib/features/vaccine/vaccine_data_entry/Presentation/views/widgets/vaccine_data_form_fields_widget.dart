@@ -193,10 +193,15 @@ class _VaccineDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode?
-              await context.read<VaccineDataEntryCubit>().postVaccineDataEntry(
-                    S.of(context),
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<VaccineDataEntryCubit>()
+                      .submitEditVaccineData(S.of(context))
+                  : await context
+                      .read<VaccineDataEntryCubit>()
+                      .postVaccineDataEntry(
+                        S.of(context),
+                      );
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");
