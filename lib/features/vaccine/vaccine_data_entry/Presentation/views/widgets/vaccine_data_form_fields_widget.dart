@@ -45,8 +45,7 @@ class _VaccineDataEntryFormFieldsState
               containerBorderColor: state.vaccineDateSelection == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText:
-                  isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
+              placeholderText: state.vaccineDateSelection ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context
                     .read<VaccineDataEntryCubit>()
@@ -62,7 +61,8 @@ class _VaccineDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "فئة اللقاح",
-              containerHintText: "اختر فئة اللقاح",
+              containerHintText:
+                  state.selectedVaccineCategory ?? "اختر فئة اللقاح",
               options: state.vaccineCategories,
               onOptionSelected: (value) {
                 context
@@ -77,7 +77,7 @@ class _VaccineDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "اسم الطعم",
-              containerHintText: "اختر اسم الطعم",
+              containerHintText: state.selectedVaccineName ?? "اختر اسم الطعم",
               options: state.vaccinesNames,
               onOptionSelected: (value) {
                 context.read<VaccineDataEntryCubit>().updateVaccineeName(value);
@@ -92,7 +92,8 @@ class _VaccineDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "ترتيب الجرعة", // Another Dropdown Example
-              containerHintText: "اختر ترتيب الجرعة",
+              containerHintText:
+                  state.selectedDoseArrangement ?? "اختر ترتيب الجرعة",
               options: state.doseArrangementData,
               onOptionSelected: (doseArrangment) {
                 context
@@ -182,7 +183,7 @@ class _VaccineDataEntryFormFieldsState
         if (state.vaccineDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
-          context.pop();
+          context.pop(result: true);
         } else {
           await showError(state.message);
         }

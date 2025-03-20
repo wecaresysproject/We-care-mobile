@@ -228,6 +228,7 @@ Widget buildTable(BuildContext context, List<UserVaccineModel> vaccinesData) {
               );
               if (result && context.mounted) {
                 await context.read<VaccineViewCubit>().emitUserVaccinesData();
+                if (!context.mounted) return;
                 await context
                     .read<VaccineViewCubit>()
                     .emitFilteredVaccinesList();

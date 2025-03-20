@@ -19,7 +19,8 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 // جهة تلقي التطعيم
   final vaccinationLocationController = TextEditingController();
   final personalNotesController = TextEditingController();
-  void loadVaccineDataForEditing(UserVaccineModel editingVaccineData) {
+  Future<void> loadVaccineDataForEditing(
+      UserVaccineModel editingVaccineData) async {
     emit(
       state.copyWith(
         vaccineDateSelection: editingVaccineData.vaccineDate,
@@ -33,7 +34,8 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
       ),
     );
     personalNotesController.text = editingVaccineData.notes;
-    vaccinationLocationController.text = editingVaccineData.regionForVaccine;
+    vaccinationLocationController.text = editingVaccineData.regionForVaccine!;
+    await intialRequestsForVaccineDataEntry();
   }
 
   Future<void> submitEditVaccineData(S localozation) async {

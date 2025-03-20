@@ -26,14 +26,15 @@ class VaccineDetailsView extends StatelessWidget {
             toolbarHeight: 0.h,
           ),
           body: BlocConsumer<VaccineViewCubit, VaccineViewState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state.requestStatus == RequestStatus.failure &&
                   state.isDeleteRequest == true) {
-                showError(state.responseMessage);
+                await showError(state.responseMessage);
               }
               if (state.requestStatus == RequestStatus.success &&
                   state.isDeleteRequest == true) {
-                showSuccess(state.responseMessage);
+                await showSuccess(state.responseMessage);
+                if (!context.mounted) return;
                 Navigator.pop(context, true);
               }
             },
@@ -62,7 +63,7 @@ class VaccineDetailsView extends StatelessWidget {
                           );
                           if (result != null && result) {
                             if (!context.mounted) return;
-                            context
+                            await context
                                 .read<VaccineViewCubit>()
                                 .emitVaccineById(documentId);
                           }
