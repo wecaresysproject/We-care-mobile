@@ -1,8 +1,17 @@
 class EmergencyComplaintsApiConstants {
-  static const baseUrl = "http://147.93.57.70/api";
+  static const baseUrl = "http://147.93.57.70:5299/api/";
   //Data Entry
 
   //View Entry
+  static const getAllEmergencyComplaints =
+      "EnterEmergencyComplain/GetAllComplaints";
+  static const getSingleEmergencyComplaintById =
+      "ViewEmergencyComplaint/GetAllComplaintsById";
 
+  static const deleteComplaintById = "EnterEmergencyComplain/DeleteComplaint";
   //filters
+  static const getYearsFiter = "ViewEmergencyComplaint/years";
+  static const getPlaceOfComplaintFilter =
+      "ViewEmergencyComplaint/AllSymptomsLocation";
+  static const getFilteredList = "ViewEmergencyComplaint/filter";
 }

@@ -78,10 +78,19 @@ class CustomContainer extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Text(
-          value,
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-              color: AppColorsManager.textColor, fontWeight: FontWeight.w500),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              maxLines: 1,
+              textAlign: TextAlign.right,
+              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                  color: AppColorsManager.textColor,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
         ),
       ),
     );

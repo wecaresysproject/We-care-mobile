@@ -92,7 +92,7 @@ class MedicalItemCard extends StatelessWidget {
                 .map((row) => _infoRow(row["title"]!, row["value"]!))
                 .toList(),
             const Spacer(
-              flex: 2,
+              flex: 4,
             ),
             InkWell(
               onTap: () => onTap!(itemId),

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
+import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
@@ -13,21 +18,26 @@ class EmergencyComplaintsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            EmergencyComplaintsFiltersRow(),
-            verticalSpacing(16),
-            EmergencyComplaintsViewListBuilder(),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-          ],
+    return BlocProvider(
+      create: (context) => getIt<EmergencyComplaintsViewCubit>()
+        ..getUserEmergencyComplaintsList()
+        ..getFilters(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            children: [
+              ViewAppBar(),
+              EmergencyComplaintsFiltersRow(),
+              verticalSpacing(16),
+              EmergencyComplaintsViewListBuilder(),
+              verticalSpacing(16),
+              XRayDataViewFooterRow(),
+            ],
+          ),
         ),
       ),
     );
@@ -41,19 +51,55 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MedicalItemGridView(
-      items: complaints,
-      onTap: (id) async {
-        Navigator.push(context, MaterialPageRoute(builder: (_) {
-          return EmergencyComplaintsDetailsView();
-        }));
+    return BlocBuilder<EmergencyComplaintsViewCubit,
+        EmergencyComplaintViewState>(
+      buildWhen: (previous, current) =>
+          previous.emergencyComplaints != current.emergencyComplaints,
+      builder: (context, state) {
+        if (state.requestStatus == RequestStatus.loading) {
+          return Expanded(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (state.emergencyComplaints.isEmpty &&
+            state.requestStatus == RequestStatus.success) {
+          return Expanded(
+            child: Center(
+                child: Text(
+              "لا يوجد بيانات",
+              style: AppTextStyles.font22MainBlueWeight700,
+            )),
+          );
+        }
+        return MedicalItemGridView(
+          items: state.emergencyComplaints,
+          onTap: (id) async {
+            final bool result =
+                await Navigator.push(context, MaterialPageRoute(builder: (_) {
+              return EmergencyComplaintsDetailsView(
+                documentId: id,
+              );
+            }));
+            if (result && context.mounted) {
+              await context
+                  .read<EmergencyComplaintsViewCubit>()
+                  .getUserEmergencyComplaintsList();
+              await context.read<EmergencyComplaintsViewCubit>().getFilters();
+            }
+          },
+          titleBuilder: (item) =>
+              item.mainSymptoms.first.complaintbodyPart.substring(2),
+          isExpendingTileTitle: true,
+          infoRowBuilder: (item) => [
+            {"title": "التاريخ:", "value": item.data},
+            {
+              "title": "العرض الرئيسي:",
+              "value": item.mainSymptoms.first.symptomsComplaint
+            },
+          ],
+        );
       },
-      titleBuilder: (item) => item.complaintArea,
-      isExpendingTileTitle: true,
-      infoRowBuilder: (item) => [
-        {"title": "التاريخ:", "value": item.date},
-        {"title": "العرض الرئيسي:", "value": item.symptom},
-      ],
     );
   }
 }
@@ -65,15 +111,31 @@ class EmergencyComplaintsFiltersRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataViewFiltersRow(
-      filters: [
-        FilterConfig(title: 'السنة', options: [], isYearFilter: true),
-        FilterConfig(
-          title: 'مكان الشكوى',
-          options: [],
-        ),
-      ],
-      onApply: (selectedFilters) async {},
+    return BlocBuilder<EmergencyComplaintsViewCubit,
+        EmergencyComplaintViewState>(
+      buildWhen: (previous, current) =>
+          previous.yearsFilter != current.yearsFilter ||
+          previous.bodyPartFilter != current.bodyPartFilter,
+      builder: (context, state) {
+        return DataViewFiltersRow(
+          filters: [
+            FilterConfig(
+                title: 'السنة', options: state.yearsFilter, isYearFilter: true),
+            FilterConfig(
+              title: 'مكان الشكوى',
+              options: state.bodyPartFilter,
+            ),
+          ],
+          onApply: (selectedFilters) async {
+            print("Selected Filters: $selectedFilters");
+            await context
+                .read<EmergencyComplaintsViewCubit>()
+                .getFilteredEmergencyComplaintList(
+                    year: selectedFilters['السنة'],
+                    placeOfComplaint: selectedFilters['مكان الشكوى']);
+          },
+        );
+      },
     );
   }
 }
