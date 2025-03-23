@@ -42,4 +42,9 @@ abstract class EmergencyComplaintsServices {
   );
   @GET(EmergencyComplaintsApiConstants.getAllPlacesOfComplaints)
   Future<dynamic> getAllPlacesOfComplaints(@Query('language') String language);
+
+  @GET(EmergencyComplaintsApiConstants.getRelevantComplaintsToBodyPartName)
+  Future<dynamic> getAllComplaintsRelevantToBodyPartName(
+    @Query('bodyPartName') String bodyPartName,
+  );
 }

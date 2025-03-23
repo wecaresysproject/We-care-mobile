@@ -20,4 +20,18 @@ class EmergencyComplaintsDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAllComplaintsRelevantToBodyPartName({
+    required String bodyPartName,
+  }) async {
+    try {
+      final response = await _emergencyComplaintsServices
+          .getAllComplaintsRelevantToBodyPartName(bodyPartName);
+      final complaints =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

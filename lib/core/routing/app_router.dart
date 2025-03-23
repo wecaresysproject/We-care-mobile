@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -158,11 +155,7 @@ class AppRouter {
         );
       case Routes.addNewComplaintDetails:
         return MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: getIt.get<EmergencyComplaintsDataEntryCubit>()
-              ..getAllRequestsForAddingNewComplaintView(),
-            child: const CreateNewComplaintDetailsView(),
-          ),
+          builder: (context) => CreateNewComplaintDetailsView(),
         );
 
       case Routes.emergenciesComplaintDataView:

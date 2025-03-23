@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -13,9 +14,10 @@ import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.d
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/first_question_details_widget.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/second_question_details_widget.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_data_entry/Presentation/views/widgets/thirst_question_details_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/first_question_details_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/second_question_details_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/thirst_question_details_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/medical_complaint_details_cubit.dart';
 
 import '../../../logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
@@ -36,6 +38,12 @@ class _EmergencyComplaintDataEntryFormFieldsState
         .read<EmergencyComplaintsDataEntryCubit>()
         .personalInfoController;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    getIt<MedicalComplaintDataEntryDetailsCubit>().resetCubitState();
+    super.dispose();
   }
 
   @override
@@ -68,48 +76,11 @@ class _EmergencyComplaintDataEntryFormFieldsState
 
             verticalSpacing(16),
 
-            state.isNewComplaintAddedSuccefully
-                ? ListView.builder(
-                    itemCount: context
-                        .read<EmergencyComplaintsDataEntryCubit>()
-                        .medicalComplaints
-                        .length,
-                    shrinkWrap: true,
-                    physics:
-                        NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
-                    itemBuilder: (context, index) {
-                      final complaint = context
-                          .read<EmergencyComplaintsDataEntryCubit>()
-                          .medicalComplaints[index];
-                      return MedicalComplaintItem(
-                        text: complaint.symptomsRegion,
-                        onDelete: () {
-                          context
-                              .read<EmergencyComplaintsDataEntryCubit>()
-                              .removeNewMedicalComplaint(index);
-                        },
-                      );
-                    },
-                  )
-                : const SizedBox.shrink(),
+            buildMedicalComplaintsList(),
 
-            /// size between each categogry
             verticalSpacing(16),
-            Center(
-              child: AddNewMedicalComplaintButton(
-                text: context
-                        .read<EmergencyComplaintsDataEntryCubit>()
-                        .medicalComplaints
-                        .isEmpty
-                    ? "أضف أعراض مرضية"
-                    : 'أضف أعراض مرضية أخرى ان وجد',
-                onPressed: () async {
-                  await context.pushNamed(
-                    Routes.addNewComplaintDetails,
-                  );
-                },
-              ),
-            ),
+
+            buildAddNewComplainButton(context),
 
             verticalSpacing(16),
             FirstQuestionDetails(),
@@ -141,6 +112,64 @@ class _EmergencyComplaintDataEntryFormFieldsState
             verticalSpacing(71),
           ],
         );
+      },
+    );
+  }
+
+  Center buildAddNewComplainButton(BuildContext context) {
+    return Center(
+      child: AddNewMedicalComplaintButton(
+        text: context
+                .read<MedicalComplaintDataEntryDetailsCubit>()
+                .medicalComplaints
+                .isEmpty
+            ? "أضف أعراض مرضية"
+            : 'أضف أعراض مرضية أخرى ان وجد',
+        onPressed: () async {
+          await context.pushNamed(
+            Routes.addNewComplaintDetails,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildMedicalComplaintsList() {
+    return BlocBuilder<MedicalComplaintDataEntryDetailsCubit,
+        MedicalComplaintDataEntryDetailsState>(
+      // buildWhen: (previous, current) =>
+      //     previous.isNewComplaintAddedSuccefully !=
+      //     current.isNewComplaintAddedSuccefully,
+      builder: (context, state) {
+        return context
+                .read<MedicalComplaintDataEntryDetailsCubit>()
+                .medicalComplaints
+                .isNotEmpty
+            ? ListView.builder(
+                itemCount: context
+                    .read<MedicalComplaintDataEntryDetailsCubit>()
+                    .medicalComplaints
+                    .length,
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
+                itemBuilder: (context, index) {
+                  final complaint = context
+                      .read<MedicalComplaintDataEntryDetailsCubit>()
+                      .medicalComplaints[index];
+                  return MedicalComplaintItem(
+                    text: complaint.symptomsRegion,
+                    onDelete: () {
+                      context
+                          .read<MedicalComplaintDataEntryDetailsCubit>()
+                          .removeNewMedicalComplaint(index);
+                    },
+                  ).paddingBottom(
+                    16,
+                  );
+                },
+              )
+            : const SizedBox.shrink();
       },
     );
   }

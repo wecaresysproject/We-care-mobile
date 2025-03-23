@@ -3,7 +3,8 @@ class EmergencyComplaintsApiConstants {
   //Data Entry
   static const getAllPlacesOfComplaints =
       "/EnterEmergencyComplain/Placeofcomplaint";
-
+  static const getRelevantComplaintsToBodyPartName =
+      "/EnterEmergencyComplain/SymptomsComplaintsFiltered";
   //View Entry
   static const getAllEmergencyComplaints =
       "EnterEmergencyComplain/GetAllComplaints";
