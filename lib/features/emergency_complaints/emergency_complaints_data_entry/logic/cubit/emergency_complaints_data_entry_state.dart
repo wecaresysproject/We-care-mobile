@@ -22,7 +22,14 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final bool firstQuestionAnswer;
   final bool secondQuestionAnswer;
   final bool thirdQuestionAnswer;
-
+  //هل عانيت من شكوى مشابهة سابقًا ؟
+  final String? complaintDiagnosis; // التشخيص
+//هل تتناول أدوية حالية ؟
+  final String? medicineName;
+  final String? medicineDose;
+  //هل أجريت  تدخل طبى طارئ للشكوى ؟
+  final String? emergencyInterventionType; // نوع التدخل
+  final String? emergencyInterventionDate; // تاريخ التدخل
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
@@ -43,6 +50,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.thirdQuestionAnswer = false,
     this.previousComplaintDate,
     this.complaintPlaces = const [],
+    this.complaintDiagnosis,
+    this.medicineName,
+    this.medicineDose,
+    this.emergencyInterventionType,
+    this.emergencyInterventionDate,
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -65,6 +77,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           secondQuestionAnswer: false,
           thirdQuestionAnswer: false,
           previousComplaintDate: null,
+          complaintDiagnosis: null,
+          medicineName: null,
+          medicineDose: null,
+          emergencyInterventionType: null,
+          emergencyInterventionDate: null,
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -89,6 +106,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     bool? isAddNewComplaintFormsValidated,
     bool? isNewComplaintAddedSuccefully,
     List<String>? complaintPlaces,
+    String? complaintDiagnosis,
+    String? medicineName,
+    String? medicineDose,
+    String? emergencyInterventionType,
+    String? emergencyInterventionDate,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -119,6 +141,13 @@ class EmergencyComplaintsDataEntryState extends Equatable {
       isNewComplaintAddedSuccefully:
           isNewComplaintAddedSuccefully ?? this.isNewComplaintAddedSuccefully,
       complaintPlaces: complaintPlaces ?? this.complaintPlaces,
+      complaintDiagnosis: complaintDiagnosis ?? this.complaintDiagnosis,
+      medicineName: medicineName ?? this.medicineName,
+      medicineDose: medicineDose ?? this.medicineDose,
+      emergencyInterventionType:
+          emergencyInterventionType ?? this.emergencyInterventionType,
+      emergencyInterventionDate:
+          emergencyInterventionDate ?? this.emergencyInterventionDate,
     );
   }
 
@@ -143,5 +172,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         previousComplaintDate,
         isNewComplaintAddedSuccefully,
         complaintPlaces,
+        complaintDiagnosis,
+        medicineName,
+        medicineDose,
+        emergencyInterventionType,
+        emergencyInterventionDate,
       ];
 }

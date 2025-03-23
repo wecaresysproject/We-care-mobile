@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/emergency_%20complaints/data/repos/emergency_complaints_view_repo.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
+import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
 
 class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
   EmergencyComplaintsViewCubit(this._emergencyComplaintsViewRepo)

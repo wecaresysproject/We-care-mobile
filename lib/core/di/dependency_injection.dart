@@ -121,7 +121,7 @@ void setupAppCubits() {
       getIt<PrescriptionViewRepo>(),
     ),
   );
-  getIt.registerFactory<EmergencyComplaintsDataEntryCubit>(
+  getIt.registerLazySingleton<EmergencyComplaintsDataEntryCubit>(
     () => EmergencyComplaintsDataEntryCubit(
       getIt<EmergencyComplaintsDataEntryRepo>(),
     ),

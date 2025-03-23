@@ -16,25 +16,15 @@ class EmergencyComplaintsDataEntryCubit
           EmergencyComplaintsDataEntryState.initialState(),
         );
   final EmergencyComplaintsDataEntryRepo _emergencyDataEntryRepo;
-
-  final formKey = GlobalKey<FormState>();
   final personalInfoController = TextEditingController();
+  final complaintDiagnosisController = TextEditingController(); // التشخيص
+
+  final medicineNameController = TextEditingController(); // اسم الدواء
+  final medicineDoseController = TextEditingController(); // الجرعه
+  final emergencyInterventionTypeController =
+      TextEditingController(); // نوع التدخل
+
   List<MedicalComplaint> medicalComplaints = [];
-  void saveNewMedicalComplaint() {
-    medicalComplaints.add(
-      MedicalComplaint(
-        symptomsRegion: state.symptomsDiseaseRegion!,
-        sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
-        natureOfComplaint: state.natureOfComplaint!,
-        severityOfComplaint: state.complaintDegree!,
-      ),
-    );
-    emit(
-      state.copyWith(
-        isNewComplaintAddedSuccefully: true,
-      ),
-    );
-  }
 
   Future<void> getAllRequestsForAddingNewComplaintView() async {
     getAllComplaintsPlaces();
@@ -70,6 +60,10 @@ class EmergencyComplaintsDataEntryCubit
 
   void updateIfHasSameComplaintBeforeDate(String? date) {
     emit(state.copyWith(previousComplaintDate: date));
+  }
+
+  void updateEmergencyInterventionDate(String? date) {
+    emit(state.copyWith(emergencyInterventionDate: date));
   }
 
   void updateSymptomsDiseaseRegion(String? symptom) {
@@ -186,8 +180,11 @@ class EmergencyComplaintsDataEntryCubit
 
   @override
   Future<void> close() {
-    formKey.currentState?.reset();
-    personalInfoController.dispose();
+    complaintDiagnosisController.dispose();
+    medicineNameController.dispose();
+    medicineDoseController.dispose();
+    emergencyInterventionTypeController.dispose();
+
     return super.close();
   }
 }

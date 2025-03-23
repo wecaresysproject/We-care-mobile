@@ -59,6 +59,9 @@ class ThirdQuestionDetails extends StatelessWidget {
                 ),
                 verticalSpacing(8),
                 CustomTextField(
+                  controller: context
+                      .read<EmergencyComplaintsDataEntryCubit>()
+                      .emergencyInterventionTypeController,
                   validator: (value) {},
                   isPassword: false,
                   showSuffixIcon: false,
@@ -67,16 +70,16 @@ class ThirdQuestionDetails extends StatelessWidget {
                 ),
                 verticalSpacing(24),
                 Text(
-                  "تاريخ الشكوى",
+                  "التاريخ",
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(8),
                 DateTimePickerContainer(
                   placeholderText: "يوم / شهر / سنة",
                   onDateSelected: (pickedDate) {
-                    // context
-                    //     .read<EmergencyComplaintsDataEntryCubit>()
-                    //     .ع(pickedDate);
+                    context
+                        .read<EmergencyComplaintsDataEntryCubit>()
+                        .updateEmergencyInterventionDate(pickedDate);
                   },
                 ),
                 verticalSpacing(24),
