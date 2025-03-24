@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/emergency_%20complaints/data/models/get_single_complaint_response_model.dart';
+import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 
 class EmergencyComplaintViewState extends Equatable {
   final RequestStatus requestStatus;

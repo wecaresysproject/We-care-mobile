@@ -10,8 +10,8 @@ import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 
 class EmergencyComplaintsDetailsView extends StatelessWidget {
   const EmergencyComplaintsDetailsView({super.key, required this.documentId});
@@ -86,7 +86,7 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                       natureOfComplaint: symptom.natureOfComplaint,
                       severityOfComplaint: symptom.severityOfComplaint,
                     );
-                  }).toList(),
+                  }),
                   SectionTitleContainer(
                     title: 'شكاوي مشابهه سابقا',
                     iconPath: 'assets/images/symptoms_icon.png',
