@@ -34,6 +34,58 @@ class EmergencyComplaintDataEntryDetailsCubit
     );
   }
 
+  Future<void> updateMedicalComplaint(
+      int index, MedicalComplaint oldComplaintDetails) async {
+    final Box<MedicalComplaint> medicalComplaintsBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    final updatedMedicalComplaint = oldComplaintDetails.updateWith(
+      symptomsRegion: state.symptomsDiseaseRegion,
+      sypmptomsComplaintIssue: state.medicalSymptomsIssue,
+      natureOfComplaint: state.natureOfComplaint,
+      severityOfComplaint: state.complaintDegree,
+    );
+    if (index >= 0 && index < medicalComplaintsBox.length) {
+      await medicalComplaintsBox.put(
+        index,
+        updatedMedicalComplaint,
+      );
+
+      emit(
+        state.copyWith(
+          isEditingComplaintSuccess: true,
+          // isNewComplaintAddedSuccefully:
+          //     true, //TODO: make sate for success in edit mode later
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isEditingComplaintSuccess: false,
+          // isNewComplaintAddedSuccefully:
+          //     true, //TODO: make sate for success in edit mode later
+        ),
+      );
+      throw Exception("Invalid index: $index");
+    }
+  }
+
+  Future<void> loadEmergencyDetailsViewForEditing(
+      MedicalComplaint medicalComplaint) async {
+    emit(
+      state.copyWith(
+        //  isNewComplaintAddedSuccefully: true,
+        isEditingComplaint: true,
+        symptomsDiseaseRegion: medicalComplaint.symptomsRegion,
+        medicalSymptomsIssue: medicalComplaint.sypmptomsComplaintIssue,
+        natureOfComplaint: medicalComplaint.natureOfComplaint,
+        complaintDegree: medicalComplaint.severityOfComplaint,
+      ),
+    );
+    validateRequiredFields();
+    await getAllRequestsForAddingNewComplaintView();
+  }
+
   Future<void> getAllRequestsForAddingNewComplaintView() async {
     await getAllComplaintsPlaces();
   }

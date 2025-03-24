@@ -154,8 +154,12 @@ class AppRouter {
           builder: (context) => const EmergencyComplaintCategoryDataEntryView(),
         );
       case Routes.addNewComplaintDetails:
+        final complaintDetails = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (context) => CreateNewComplaintDetailsView(),
+          builder: (context) => CreateNewComplaintDetailsView(
+            editingComplaintDetails: complaintDetails?['complaint'],
+            complaintId: complaintDetails?['id'],
+          ),
         );
 
       case Routes.emergenciesComplaintDataView:

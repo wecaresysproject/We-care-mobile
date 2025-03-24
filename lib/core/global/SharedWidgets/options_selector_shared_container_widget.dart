@@ -6,11 +6,14 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 
 class OptionSelectorWidget extends StatefulWidget {
   final List<String> options;
+  final String? initialSelectedOption;
   final Function(String)? onOptionSelected;
   final Color containerValidationColor;
+
   const OptionSelectorWidget({
     super.key,
     required this.options,
+    this.initialSelectedOption,
     this.onOptionSelected,
     this.containerValidationColor =
         AppColorsManager.textfieldOutsideBorderColor,
@@ -21,7 +24,14 @@ class OptionSelectorWidget extends StatefulWidget {
 }
 
 class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
-  String? _selectedOption; // Initially no selection
+  String? _selectedOption;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedOption =
+        widget.initialSelectedOption; // Set initial selected value
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +42,9 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
           width: double.infinity,
           padding: EdgeInsets.fromLTRB(7.w, 15.h, 7.w, 10.h),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              10.r,
-            ),
+            borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: widget.containerValidationColor, // Change border if error
+              color: widget.containerValidationColor,
               width: 0.8,
             ),
             color: AppColorsManager.textfieldInsideColor.withAlpha(100),
@@ -55,59 +63,51 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: widget.options.map(
-                  (option) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedOption = option;
-                        });
-                        // Trigger the callback if provided
-                        if (widget.onOptionSelected != null) {
-                          widget.onOptionSelected!(option);
-                        }
-                      },
-                      child: Column(
-                        children: [
-                          // Bullet Indicator (visible only if selected)
-                          Image.asset(
-                            _selectedOption == option
-                                ? "assets/images/selected_option.png"
-                                : "assets/images/default_option.png",
-                            width: 26,
-                            height: 26,
-                            errorBuilder: (context, error, stackTrace) {
-                              // Fallback in case the image fails to load
-                              return Container(
-                                width: 26.w,
-                                height: 26.h,
-                                decoration: BoxDecoration(
-                                  color: AppColorsManager.mainDarkBlue,
-                                  shape: BoxShape.circle,
-                                ),
-                              );
-                            },
+                children: widget.options.map((option) {
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedOption = option;
+                      });
+                      if (widget.onOptionSelected != null) {
+                        widget.onOptionSelected!(option);
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          _selectedOption == option
+                              ? "assets/images/selected_option.png"
+                              : "assets/images/default_option.png",
+                          width: 26,
+                          height: 26,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 26.w,
+                              height: 26.h,
+                              decoration: BoxDecoration(
+                                color: AppColorsManager.mainDarkBlue,
+                                shape: BoxShape.circle,
+                              ),
+                            );
+                          },
+                        ),
+                        Text(
+                          option,
+                          style: AppTextStyles.font14BlueWeight700.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: AppColorsManager.textColor,
                           ),
-                          // Option Text
-                          Text(
-                            option,
-                            style: AppTextStyles.font14BlueWeight700.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: AppColorsManager.textColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ).toList(),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             ],
           ),
         ),
-        if (widget.containerValidationColor ==
-            AppColorsManager
-                .warningColor) // Show error message if required and not selected
+        if (widget.containerValidationColor == AppColorsManager.warningColor)
           Padding(
             padding: EdgeInsets.only(top: 5.h),
             child: Text(

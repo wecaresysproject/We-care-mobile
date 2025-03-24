@@ -11,16 +11,30 @@ import 'package:we_care/core/global/SharedWidgets/options_selector_shared_contai
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 
 class CreateNewComplaintDetailsView extends StatelessWidget {
-  const CreateNewComplaintDetailsView({super.key});
+  const CreateNewComplaintDetailsView({
+    super.key,
+    required this.editingComplaintDetails,
+    required this.complaintId,
+  });
 
+  final MedicalComplaint? editingComplaintDetails;
+  final int? complaintId;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<EmergencyComplaintDataEntryDetailsCubit>()
-        ..getAllRequestsForAddingNewComplaintView(),
+    return BlocProvider<EmergencyComplaintDataEntryDetailsCubit>(
+      create: (context) {
+        final cubit = getIt<EmergencyComplaintDataEntryDetailsCubit>();
+        if (editingComplaintDetails == null) {
+          cubit.getAllRequestsForAddingNewComplaintView();
+        } else {
+          cubit.loadEmergencyDetailsViewForEditing(editingComplaintDetails!);
+        }
+        return cubit;
+      },
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -67,7 +81,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                               : AppColorsManager.textfieldOutsideBorderColor,
                           categoryLabel:
                               "الأعراض المرضية - الشكوى", // Another Dropdown Example
-                          containerHintText:
+                          containerHintText: state.medicalSymptomsIssue ??
                               "اختر الأعراض المستدعية", //state.selectedDisease ??
                           options:
                               state.releatedComplaintsToSelectedBodyPartName,
@@ -93,13 +107,14 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                             "تتناقص مع الوقت",
                           ],
                           categoryLabel: "طبيعة الشكوى",
-                          bottomSheetTitle: "اختر طبيعة الشكوى",
+                          bottomSheetTitle:
+                              state.natureOfComplaint ?? "اختر طبيعة الشكوى",
                           onOptionSelected: (value) async {
                             context
                                 .read<EmergencyComplaintDataEntryDetailsCubit>()
                                 .updateNatureOfComplaint(value);
                           },
-                          containerHintText:
+                          containerHintText: state.natureOfComplaint ??
                               "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
                           usertEntryLabelText: "اضف الوصف من عندك",
                         ),
@@ -120,6 +135,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                             "متوسطة",
                             "كثيرة",
                           ],
+                          initialSelectedOption: state.complaintDegree,
                           onOptionSelected: (p0) {
                             context
                                 .read<EmergencyComplaintDataEntryDetailsCubit>()
@@ -135,15 +151,26 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                               if (!context.mounted) return;
                               context.pop(result: true);
                             }
+                            if (state.isEditingComplaintSuccess) {
+                              await showSuccess("تم تعديل  تفاصيل العرض بنجاح");
+                              if (!context.mounted) return;
+                              context.pop(result: true);
+                            }
                           },
                           child: AppCustomButton(
                             title: "اضافة عرض",
                             onPressed: () async {
                               if (state.isAddNewComplaintFormsValidated) {
-                                await context
-                                    .read<
-                                        EmergencyComplaintDataEntryDetailsCubit>()
-                                    .saveNewMedicalComplaint();
+                                state.isEditingComplaint
+                                    ? await context
+                                        .read<
+                                            EmergencyComplaintDataEntryDetailsCubit>()
+                                        .updateMedicalComplaint(complaintId!,
+                                            editingComplaintDetails!)
+                                    : await context
+                                        .read<
+                                            EmergencyComplaintDataEntryDetailsCubit>()
+                                        .saveNewMedicalComplaint();
                               }
                             },
                             isEnabled: state.isAddNewComplaintFormsValidated,

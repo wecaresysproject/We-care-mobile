@@ -31,4 +31,19 @@ class MedicalComplaint {
   // JSON deserialization
   factory MedicalComplaint.fromJson(Map<String, dynamic> json) =>
       _$MedicalComplaintFromJson(json);
+
+  MedicalComplaint updateWith({
+    String? symptomsRegion,
+    String? sypmptomsComplaintIssue,
+    String? natureOfComplaint,
+    String? severityOfComplaint,
+  }) {
+    return MedicalComplaint(
+      symptomsRegion: symptomsRegion ?? this.symptomsRegion,
+      sypmptomsComplaintIssue:
+          sypmptomsComplaintIssue ?? this.sypmptomsComplaintIssue,
+      natureOfComplaint: natureOfComplaint ?? this.natureOfComplaint,
+      severityOfComplaint: severityOfComplaint ?? this.severityOfComplaint,
+    );
+  }
 }

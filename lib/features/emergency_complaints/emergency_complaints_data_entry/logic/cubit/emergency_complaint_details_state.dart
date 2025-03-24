@@ -11,6 +11,8 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
   final List<String> complaintPlaces;
   final String message; // error or success message
   final List<String> releatedComplaintsToSelectedBodyPartName;
+  final bool isEditingComplaint;
+  final bool isEditingComplaintSuccess;
 
   const MedicalComplaintDataEntryDetailsState({
     this.symptomsDiseaseRegion,
@@ -22,6 +24,8 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     this.complaintPlaces = const [],
     this.releatedComplaintsToSelectedBodyPartName = const [],
     this.message = '',
+    this.isEditingComplaint = false,
+    this.isEditingComplaintSuccess = false,
   });
   MedicalComplaintDataEntryDetailsState copyWith({
     String? symptomsDiseaseRegion,
@@ -33,6 +37,8 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     List<String>? complaintPlaces,
     String? message,
     List<String>? releatedComplaintsToSelectedBodyPartName,
+    bool? isEditingComplaint,
+    bool? isEditingComplaintSuccess,
   }) {
     return MedicalComplaintDataEntryDetailsState(
       symptomsDiseaseRegion:
@@ -49,6 +55,9 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
       releatedComplaintsToSelectedBodyPartName:
           releatedComplaintsToSelectedBodyPartName ??
               this.releatedComplaintsToSelectedBodyPartName,
+      isEditingComplaint: isEditingComplaint ?? this.isEditingComplaint,
+      isEditingComplaintSuccess:
+          isEditingComplaintSuccess ?? this.isEditingComplaintSuccess,
     );
   }
 
@@ -63,6 +72,8 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
           message: '',
           complaintPlaces: const [],
           releatedComplaintsToSelectedBodyPartName: const [],
+          isEditingComplaint: false,
+          // isEditingComplaintSuccess: false, //TODO: recheck this later
         );
 
   @override
@@ -77,5 +88,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
         complaintPlaces,
         message,
         releatedComplaintsToSelectedBodyPartName,
+        isEditingComplaint,
+        isEditingComplaintSuccess,
       ];
 }

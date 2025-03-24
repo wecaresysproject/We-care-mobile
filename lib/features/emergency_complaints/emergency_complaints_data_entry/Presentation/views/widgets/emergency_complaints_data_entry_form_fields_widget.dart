@@ -139,7 +139,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
     return BlocBuilder<EmergencyComplaintsDataEntryCubit,
         EmergencyComplaintsDataEntryState>(
       buildWhen: (previous, current) =>
-          previous.medicalComplaints.length != current.medicalComplaints.length,
+          previous.medicalComplaints != current.medicalComplaints,
       builder: (context, state) {
         return state.medicalComplaints.isNotEmpty
             ? ListView.builder(
@@ -149,17 +149,32 @@ class _EmergencyComplaintDataEntryFormFieldsState
                     NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
                 itemBuilder: (context, index) {
                   final complaint = state.medicalComplaints[index];
-                  return MedicalComplaintItem(
-                    text: complaint.symptomsRegion,
-                    onDelete: () async {
-                      final cubit =
-                          context.read<EmergencyComplaintsDataEntryCubit>();
-                      await cubit.removeAddedMedicalComplaint(index);
-                      await cubit.fetchAllAddedComplaints();
-                      log("xxx: deleted");
+                  return GestureDetector(
+                    onTap: () async {
+                      final bool? result = await context.pushNamed(
+                        Routes.addNewComplaintDetails,
+                        arguments: {
+                          'id': index,
+                          'complaint': complaint,
+                        },
+                      );
+                      if (result != null && context.mounted) {
+                        await context
+                            .read<EmergencyComplaintsDataEntryCubit>()
+                            .fetchAllAddedComplaints();
+                      }
                     },
-                  ).paddingBottom(
-                    16,
+                    child: MedicalComplaintItem(
+                      text: complaint.symptomsRegion,
+                      onDelete: () async {
+                        final cubit =
+                            context.read<EmergencyComplaintsDataEntryCubit>();
+                        await cubit.removeAddedMedicalComplaint(index);
+                        await cubit.fetchAllAddedComplaints();
+                      },
+                    ).paddingBottom(
+                      16,
+                    ),
                   );
                 },
               )
