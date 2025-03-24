@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_api_constants.dart';
 
 part 'emergency_complaints_services.g.dart';
@@ -46,5 +47,11 @@ abstract class EmergencyComplaintsServices {
   @GET(EmergencyComplaintsApiConstants.getRelevantComplaintsToBodyPartName)
   Future<dynamic> getAllComplaintsRelevantToBodyPartName(
     @Query('bodyPartName') String bodyPartName,
+  );
+
+  @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
+  Future<dynamic> postEmergencyDataEntry(
+    @Body() EmergencyComplainRequestBody requestBody,
+    @Query('language') String language,
   );
 }

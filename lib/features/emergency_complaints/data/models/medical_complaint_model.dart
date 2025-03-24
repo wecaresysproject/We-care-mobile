@@ -7,15 +7,19 @@ part 'medical_complaint_model.g.dart';
 @JsonSerializable()
 class MedicalComplaint {
   @HiveField(0)
+  @JsonKey(name: 'symptoms_LocationOfPainOrComplaint')
   final String symptomsRegion; // الأعراض المرضية - المنطقة
 
   @HiveField(1)
+  @JsonKey(name: 'symptoms_Complaint')
   final String sypmptomsComplaintIssue; // الأعراض المرضية - الشكوى
 
   @HiveField(2)
+  @JsonKey(name: 'natureOfComplaint')
   final String natureOfComplaint; // طبيعة الشكوى
 
   @HiveField(3)
+  @JsonKey(name: 'severityOfComplaint')
   final String severityOfComplaint; // حدة الشكوى
 
   MedicalComplaint({

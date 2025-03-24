@@ -158,7 +158,9 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                             }
                           },
                           child: AppCustomButton(
-                            title: "اضافة عرض",
+                            title: state.isEditingComplaint
+                                ? "تَعديلُ مَعْلوماتِ العرض"
+                                : "اضافة عرض",
                             onPressed: () async {
                               if (state.isAddNewComplaintFormsValidated) {
                                 state.isEditingComplaint

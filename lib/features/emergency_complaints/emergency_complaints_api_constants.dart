@@ -5,6 +5,8 @@ class EmergencyComplaintsApiConstants {
       "/EnterEmergencyComplain/Placeofcomplaint";
   static const getRelevantComplaintsToBodyPartName =
       "/EnterEmergencyComplain/SymptomsComplaintsFiltered";
+
+  static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
   //View Entry
   static const getAllEmergencyComplaints =
       "EnterEmergencyComplain/GetAllComplaints";

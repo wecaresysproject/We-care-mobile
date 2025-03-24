@@ -213,11 +213,11 @@ class _EmergencyComplaintDataEntryFormFieldsState
               //     ? await context
               //         .read<EmergencyComplaintsDataEntryCubit>()
               //         .submitEditsOnPrescription()
-              //     : await context
-              //         .read<EmergencyComplaintsDataEntryCubit>()
-              //         .postPrescriptionDataEntry(
-              //           context.translate,
-              //         );
+              await context
+                  .read<EmergencyComplaintsDataEntryCubit>()
+                  .postEmergencyDataEntry(
+                    context.translate,
+                  );
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");
