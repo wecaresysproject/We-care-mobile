@@ -17,7 +17,6 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/first_question_details_widget.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/second_question_details_widget.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/thirst_question_details_widget.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/medical_complaint_details_cubit.dart';
 
 import '../../../logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
@@ -31,18 +30,9 @@ class EmergencyComplaintDataEntryFormFields extends StatefulWidget {
 
 class _EmergencyComplaintDataEntryFormFieldsState
     extends State<EmergencyComplaintDataEntryFormFields> {
-  late TextEditingController personalInfoController;
-  @override
-  void initState() {
-    personalInfoController = context
-        .read<EmergencyComplaintsDataEntryCubit>()
-        .personalInfoController;
-    super.initState();
-  }
-
   @override
   void dispose() {
-    getIt<MedicalComplaintDataEntryDetailsCubit>().resetCubitState();
+    getIt<EmergencyComplaintsDataEntryCubit>().clearAllAddedComplaints();
     super.dispose();
   }
 
@@ -76,11 +66,11 @@ class _EmergencyComplaintDataEntryFormFieldsState
 
             verticalSpacing(16),
 
-            buildMedicalComplaintsList(),
+            buildMedicalComplaintsListBlocBuilder(),
 
             verticalSpacing(16),
 
-            buildAddNewComplainButton(context),
+            buildAddNewComplainButtonBlocBuilder(context),
 
             verticalSpacing(16),
             FirstQuestionDetails(),
@@ -98,7 +88,9 @@ class _EmergencyComplaintDataEntryFormFieldsState
             verticalSpacing(10),
 
             WordLimitTextField(
-              controller: personalInfoController,
+              controller: context
+                  .read<EmergencyComplaintsDataEntryCubit>()
+                  .personalInfoController,
               hintText: "اكتب باختصار اى معلومات مهمة اخرى",
 
               // hintText: state.prescribtionEditedModel?.preDescriptionNotes ??
@@ -116,53 +108,55 @@ class _EmergencyComplaintDataEntryFormFieldsState
     );
   }
 
-  Center buildAddNewComplainButton(BuildContext context) {
-    return Center(
-      child: AddNewMedicalComplaintButton(
-        text: context
-                .read<MedicalComplaintDataEntryDetailsCubit>()
-                .medicalComplaints
-                .isEmpty
-            ? "أضف أعراض مرضية"
-            : 'أضف أعراض مرضية أخرى ان وجد',
-        onPressed: () async {
-          await context.pushNamed(
-            Routes.addNewComplaintDetails,
-          );
-        },
-      ),
+  Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+    return BlocBuilder<EmergencyComplaintsDataEntryCubit,
+        EmergencyComplaintsDataEntryState>(
+      buildWhen: (previous, current) => current.medicalComplaints.isNotEmpty,
+      builder: (context, state) {
+        return Center(
+          child: AddNewMedicalComplaintButton(
+            text: state.medicalComplaints.isEmpty
+                ? "أضف أعراض مرضية"
+                : 'أضف أعراض مرضية أخرى ان وجد',
+            onPressed: () async {
+              final bool? result = await context.pushNamed(
+                Routes.addNewComplaintDetails,
+              );
+
+              if (result != null && context.mounted) {
+                await context
+                    .read<EmergencyComplaintsDataEntryCubit>()
+                    .fetchAllAddedComplaints();
+              }
+            },
+          ),
+        );
+      },
     );
   }
 
-  Widget buildMedicalComplaintsList() {
-    return BlocBuilder<MedicalComplaintDataEntryDetailsCubit,
-        MedicalComplaintDataEntryDetailsState>(
-      // buildWhen: (previous, current) =>
-      //     previous.isNewComplaintAddedSuccefully !=
-      //     current.isNewComplaintAddedSuccefully,
+  Widget buildMedicalComplaintsListBlocBuilder() {
+    return BlocBuilder<EmergencyComplaintsDataEntryCubit,
+        EmergencyComplaintsDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.medicalComplaints.length != current.medicalComplaints.length,
       builder: (context, state) {
-        return context
-                .read<MedicalComplaintDataEntryDetailsCubit>()
-                .medicalComplaints
-                .isNotEmpty
+        return state.medicalComplaints.isNotEmpty
             ? ListView.builder(
-                itemCount: context
-                    .read<MedicalComplaintDataEntryDetailsCubit>()
-                    .medicalComplaints
-                    .length,
+                itemCount: state.medicalComplaints.length,
                 shrinkWrap: true,
                 physics:
                     NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
                 itemBuilder: (context, index) {
-                  final complaint = context
-                      .read<MedicalComplaintDataEntryDetailsCubit>()
-                      .medicalComplaints[index];
+                  final complaint = state.medicalComplaints[index];
                   return MedicalComplaintItem(
                     text: complaint.symptomsRegion,
-                    onDelete: () {
-                      context
-                          .read<MedicalComplaintDataEntryDetailsCubit>()
-                          .removeNewMedicalComplaint(index);
+                    onDelete: () async {
+                      final cubit =
+                          context.read<EmergencyComplaintsDataEntryCubit>();
+                      await cubit.removeAddedMedicalComplaint(index);
+                      await cubit.fetchAllAddedComplaints();
+                      log("xxx: deleted");
                     },
                   ).paddingBottom(
                     16,

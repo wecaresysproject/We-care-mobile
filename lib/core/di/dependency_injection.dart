@@ -3,8 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/medical_complaint_details_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
@@ -132,8 +132,9 @@ void setupAppCubits() {
       getIt<EmergencyComplaintsViewRepo>(),
     ),
   );
-  getIt.registerLazySingleton<MedicalComplaintDataEntryDetailsCubit>(
-    () => MedicalComplaintDataEntryDetailsCubit(
+
+  getIt.registerFactory<EmergencyComplaintDataEntryDetailsCubit>(
+    () => EmergencyComplaintDataEntryDetailsCubit(
       getIt<EmergencyComplaintsDataEntryRepo>(),
     ),
   );

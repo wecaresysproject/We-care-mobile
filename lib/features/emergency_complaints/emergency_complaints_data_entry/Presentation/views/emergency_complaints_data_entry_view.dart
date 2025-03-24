@@ -6,7 +6,6 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/emergency_complaints_data_entry_form_fields_widget.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/medical_complaint_details_cubit.dart';
 
 class EmergencyComplaintCategoryDataEntryView extends StatelessWidget {
   const EmergencyComplaintCategoryDataEntryView({
@@ -14,15 +13,8 @@ class EmergencyComplaintCategoryDataEntryView extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<EmergencyComplaintsDataEntryCubit>(
-          create: (context) => getIt<EmergencyComplaintsDataEntryCubit>(),
-        ),
-        BlocProvider<MedicalComplaintDataEntryDetailsCubit>(
-          create: (context) => getIt<MedicalComplaintDataEntryDetailsCubit>(),
-        ),
-      ],
+    return BlocProvider<EmergencyComplaintsDataEntryCubit>(
+      create: (context) => getIt<EmergencyComplaintsDataEntryCubit>(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

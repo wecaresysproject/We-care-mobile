@@ -1,7 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/emergency_%20complaints/data/models/get_single_complaint_response_model.dart';
-import 'package:we_care/features/emergency_%20complaints/emergency_complaints_services.dart';
+import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 
 class EmergencyComplaintsViewRepo {
   EmergencyComplaintsViewRepo(

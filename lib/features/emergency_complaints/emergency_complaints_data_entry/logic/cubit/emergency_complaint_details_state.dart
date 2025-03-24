@@ -1,4 +1,4 @@
-part of 'medical_complaint_details_cubit.dart';
+part of 'emergency_complaint_details_cubit.dart';
 
 @immutable
 class MedicalComplaintDataEntryDetailsState extends Equatable {

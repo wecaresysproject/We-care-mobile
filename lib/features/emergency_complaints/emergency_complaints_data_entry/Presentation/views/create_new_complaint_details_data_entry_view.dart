@@ -11,15 +11,15 @@ import 'package:we_care/core/global/SharedWidgets/options_selector_shared_contai
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/medical_complaint_details_cubit.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 
 class CreateNewComplaintDetailsView extends StatelessWidget {
   const CreateNewComplaintDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<MedicalComplaintDataEntryDetailsCubit>()
+    return BlocProvider(
+      create: (context) => getIt<EmergencyComplaintDataEntryDetailsCubit>()
         ..getAllRequestsForAddingNewComplaintView(),
       child: Scaffold(
         appBar: AppBar(),
@@ -34,7 +34,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                   haveBackArrow: true,
                 ),
                 verticalSpacing(24),
-                BlocBuilder<MedicalComplaintDataEntryDetailsCubit,
+                BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
                     MedicalComplaintDataEntryDetailsState>(
                   builder: (context, state) {
                     return Column(
@@ -52,7 +52,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           options: state.complaintPlaces,
                           onOptionSelected: (value) {
                             context
-                                .read<MedicalComplaintDataEntryDetailsCubit>()
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
                                 .updateSymptomsDiseaseRegion(value);
                           },
                           bottomSheetTitle: "اختر الأعراض المستدعية",
@@ -73,7 +73,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                               state.releatedComplaintsToSelectedBodyPartName,
                           onOptionSelected: (value) {
                             context
-                                .read<MedicalComplaintDataEntryDetailsCubit>()
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
                                 .updateMedicalSymptomsIssue(value);
                           },
                           bottomSheetTitle: "اختر الأعراض المستدعية",
@@ -96,7 +96,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           bottomSheetTitle: "اختر طبيعة الشكوى",
                           onOptionSelected: (value) async {
                             context
-                                .read<MedicalComplaintDataEntryDetailsCubit>()
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
                                 .updateNatureOfComplaint(value);
                           },
                           containerHintText:
@@ -122,22 +122,18 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           ],
                           onOptionSelected: (p0) {
                             context
-                                .read<MedicalComplaintDataEntryDetailsCubit>()
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
                                 .updateComplaintDegree(p0);
                           },
                         ),
                         verticalSpacing(16),
-                        BlocListener<MedicalComplaintDataEntryDetailsCubit,
+                        BlocListener<EmergencyComplaintDataEntryDetailsCubit,
                             MedicalComplaintDataEntryDetailsState>(
                           listener: (context, state) async {
                             if (state.isNewComplaintAddedSuccefully) {
                               await showSuccess("تم اضافة العرض بنجاح");
                               if (!context.mounted) return;
-
                               context.pop(result: true);
-                              // context
-                              //     .read<EmergencyComplaintsDataEntryCubit>()
-                              //     .custoonEmit();
                             }
                           },
                           child: AppCustomButton(
@@ -146,12 +142,8 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                               if (state.isAddNewComplaintFormsValidated) {
                                 await context
                                     .read<
-                                        MedicalComplaintDataEntryDetailsCubit>()
+                                        EmergencyComplaintDataEntryDetailsCubit>()
                                     .saveNewMedicalComplaint();
-                                // await context
-                                //     .read<
-                                //         MedicalComplaintDataEntryDetailsCubit>()
-                                //     .resetCubitToInitialStates();
                               }
                             },
                             isEnabled: state.isAddNewComplaintFormsValidated,

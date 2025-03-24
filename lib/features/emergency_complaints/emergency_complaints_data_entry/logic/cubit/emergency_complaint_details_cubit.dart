@@ -1,35 +1,37 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 
-part 'medical_complaint_details_state.dart';
+part 'emergency_complaint_details_state.dart';
 
-class MedicalComplaintDataEntryDetailsCubit
+class EmergencyComplaintDataEntryDetailsCubit
     extends Cubit<MedicalComplaintDataEntryDetailsState> {
-  MedicalComplaintDataEntryDetailsCubit(this._emergencyComplaintsDataEntryRepo)
+  EmergencyComplaintDataEntryDetailsCubit(
+      this._emergencyComplaintsDataEntryRepo)
       : super(MedicalComplaintDataEntryDetailsState.initial());
   final EmergencyComplaintsDataEntryRepo _emergencyComplaintsDataEntryRepo;
 
-  List<MedicalComplaint> medicalComplaints = [];
-
   Future<void> saveNewMedicalComplaint() async {
-    medicalComplaints.add(
-      MedicalComplaint(
-        symptomsRegion: state.symptomsDiseaseRegion!,
-        sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
-        natureOfComplaint: state.natureOfComplaint!,
-        severityOfComplaint: state.complaintDegree!,
-      ),
+    final newMedicalComplaint = MedicalComplaint(
+      symptomsRegion: state.symptomsDiseaseRegion!,
+      sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
+      natureOfComplaint: state.natureOfComplaint!,
+      severityOfComplaint: state.complaintDegree!,
     );
+    final Box<MedicalComplaint> medicalComplaintsBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    await medicalComplaintsBox.add(newMedicalComplaint);
+
     emit(
       state.copyWith(
         isNewComplaintAddedSuccefully: true,
       ),
     );
-    await resetCubitToInitialStates();
   }
 
   Future<void> getAllRequestsForAddingNewComplaintView() async {
@@ -82,10 +84,6 @@ class MedicalComplaintDataEntryDetailsCubit
     );
   }
 
-  void removeNewMedicalComplaint(int index) {
-    medicalComplaints.remove(medicalComplaints[index]);
-  }
-
   void validateRequiredFields() {
     if (state.symptomsDiseaseRegion == null ||
         state.natureOfComplaint == null ||
@@ -124,19 +122,5 @@ class MedicalComplaintDataEntryDetailsCubit
   void updateComplaintDegree(String? intensity) {
     emit(state.copyWith(complaintDegree: intensity));
     validateRequiredFields();
-  }
-
-  Future<void> resetCubitToInitialStates() async {
-    await Future.delayed(
-      const Duration(seconds: 1),
-    );
-    emit(
-      MedicalComplaintDataEntryDetailsState.initial(),
-    );
-    validateRequiredFields();
-  }
-
-  resetCubitState() {
-    medicalComplaints = [];
   }
 }

@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 import '../../../data/repos/emergency_complaints_data_entry_repo.dart';
 
@@ -13,6 +15,7 @@ class EmergencyComplaintsDataEntryCubit
       : super(
           EmergencyComplaintsDataEntryState.initialState(),
         );
+  // ignore: unused_field
   final EmergencyComplaintsDataEntryRepo _emergencyDataEntryRepo;
   final personalInfoController = TextEditingController();
   final complaintDiagnosisController = TextEditingController(); // التشخيص
@@ -21,6 +24,49 @@ class EmergencyComplaintsDataEntryCubit
   final medicineDoseController = TextEditingController(); // الجرعه
   final emergencyInterventionTypeController =
       TextEditingController(); // نوع التدخل
+  List<MedicalComplaint> medicalComplaints = [];
+  Future<void> fetchAllAddedComplaints() async {
+    try {
+      final medicalComplaintBox =
+          Hive.box<MedicalComplaint>("medical_complaints");
+      medicalComplaints = medicalComplaintBox.values.toList(growable: true);
+      emit(
+        state.copyWith(
+          medicalComplaints: medicalComplaints,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          medicalComplaints: [],
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> clearAllAddedComplaints() async {
+    try {
+      final medicalComplaintBox =
+          Hive.box<MedicalComplaint>("medical_complaints");
+      await medicalComplaintBox.clear();
+    } catch (e) {
+      emit(
+        state.copyWith(
+          errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> removeAddedMedicalComplaint(int index) async {
+    final Box<MedicalComplaint> medicalComplaintsBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    if (index >= 0 && index < medicalComplaintsBox.length) {
+      await medicalComplaintsBox.deleteAt(index);
+    }
+  }
 
   /// Update Field Values
   void updateDateOfComplaint(String? date) {
@@ -100,6 +146,7 @@ class EmergencyComplaintsDataEntryCubit
 
   @override
   Future<void> close() {
+    personalInfoController.dispose();
     complaintDiagnosisController.dispose();
     medicineNameController.dispose();
     medicineDoseController.dispose();
