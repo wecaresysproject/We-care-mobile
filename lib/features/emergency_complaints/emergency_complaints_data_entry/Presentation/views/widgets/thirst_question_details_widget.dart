@@ -17,15 +17,22 @@ class ThirdQuestionDetails extends StatelessWidget {
         EmergencyComplaintsDataEntryState>(
       buildWhen: (previous, current) =>
           previous.hasReceivedEmergencyCareBefore !=
-          current.hasReceivedEmergencyCareBefore,
+              current.hasReceivedEmergencyCareBefore ||
+          previous.thirdQuestionAnswer != current.thirdQuestionAnswer,
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
+              initialOption: state.thirdQuestionAnswer && state.isEditMode
+                  ? 'نعم'
+                  : !state.isEditMode
+                      ? null
+                      : 'لا',
               question: "هل أجريت  تدخل طبى طارئ للشكوى ؟",
               containerValidationColor:
-                  state.hasReceivedEmergencyCareBefore == null
+                  state.hasReceivedEmergencyCareBefore == null &&
+                          state.thirdQuestionAnswer != true
                       ? AppColorsManager.redBackgroundValidationColor
                       : AppColorsManager.babyBlueColor,
               imagePath: "assets/images/medical_tool_kit.png",
@@ -75,7 +82,8 @@ class ThirdQuestionDetails extends StatelessWidget {
                 ),
                 verticalSpacing(8),
                 DateTimePickerContainer(
-                  placeholderText: "يوم / شهر / سنة",
+                  placeholderText:
+                      state.emergencyInterventionDate ?? "يوم / شهر / سنة",
                   onDateSelected: (pickedDate) {
                     context
                         .read<EmergencyComplaintsDataEntryCubit>()

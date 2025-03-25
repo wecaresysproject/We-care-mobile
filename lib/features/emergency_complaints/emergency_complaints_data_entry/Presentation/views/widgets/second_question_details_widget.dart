@@ -16,15 +16,22 @@ class SecondQuestionDetails extends StatelessWidget {
         EmergencyComplaintsDataEntryState>(
       buildWhen: (previous, current) =>
           previous.isCurrentlyTakingMedication !=
-          current.isCurrentlyTakingMedication,
+              current.isCurrentlyTakingMedication ||
+          previous.secondQuestionAnswer != current.secondQuestionAnswer,
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
+              initialOption: state.secondQuestionAnswer && state.isEditMode
+                  ? 'نعم'
+                  : !state.isEditMode
+                      ? null
+                      : 'لا',
               question: "هل تتناول أدوية حالية ؟",
               containerValidationColor:
-                  state.isCurrentlyTakingMedication == null
+                  state.isCurrentlyTakingMedication == null &&
+                          state.secondQuestionAnswer != true
                       ? AppColorsManager.redBackgroundValidationColor
                       : AppColorsManager.babyBlueColor,
               imagePath: "assets/images/medicines.png",

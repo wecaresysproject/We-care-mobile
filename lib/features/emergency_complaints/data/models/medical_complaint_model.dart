@@ -15,11 +15,9 @@ class MedicalComplaint {
   final String sypmptomsComplaintIssue; // الأعراض المرضية - الشكوى
 
   @HiveField(2)
-  @JsonKey(name: 'natureOfComplaint')
   final String natureOfComplaint; // طبيعة الشكوى
 
   @HiveField(3)
-  @JsonKey(name: 'severityOfComplaint')
   final String severityOfComplaint; // حدة الشكوى
 
   MedicalComplaint({

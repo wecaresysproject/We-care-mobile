@@ -17,16 +17,24 @@ class FirstQuestionDetails extends StatelessWidget {
         EmergencyComplaintsDataEntryState>(
       buildWhen: (previous, current) =>
           previous.hasSimilarComplaintBefore !=
-          current.hasSimilarComplaintBefore,
+              current.hasSimilarComplaintBefore ||
+          previous.firstQuestionAnswer != current.firstQuestionAnswer,
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
+              initialOption: state.firstQuestionAnswer && state.isEditMode
+                  ? 'نعم'
+                  : !state.isEditMode
+                      ? null
+                      : 'لا',
               question: "هل عانيت من شكوى مشابهة سابقًا ؟",
-              containerValidationColor: state.hasSimilarComplaintBefore == null
-                  ? AppColorsManager.redBackgroundValidationColor
-                  : AppColorsManager.babyBlueColor,
+              containerValidationColor:
+                  state.hasSimilarComplaintBefore == null &&
+                          state.firstQuestionAnswer != true
+                      ? AppColorsManager.redBackgroundValidationColor
+                      : AppColorsManager.babyBlueColor,
               imagePath: "assets/images/sick_outline_imoji.png",
               onOptionSelected: (p0) {
                 context
@@ -74,7 +82,8 @@ class FirstQuestionDetails extends StatelessWidget {
                 ),
                 verticalSpacing(8),
                 DateTimePickerContainer(
-                  placeholderText: "يوم / شهر / سنة",
+                  placeholderText:
+                      state.previousComplaintDate ?? "يوم / شهر / سنة",
                   onDateSelected: (pickedDate) {
                     context
                         .read<EmergencyComplaintsDataEntryCubit>()

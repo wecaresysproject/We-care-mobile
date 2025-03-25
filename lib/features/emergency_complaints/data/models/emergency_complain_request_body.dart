@@ -12,7 +12,7 @@ class EmergencyComplainRequestBody {
   final String? personalNote;
   final SimilarComplaint? similarComplaint;
   @JsonKey(name: 'medications')
-  final Medication? medication;
+  final Medications? medication;
   final EmergencyIntervention? emergencyIntervention;
 
   EmergencyComplainRequestBody({
@@ -47,19 +47,19 @@ class SimilarComplaint {
 }
 
 @JsonSerializable()
-class Medication {
+class Medications {
   final String medicationName;
   final String dosage;
 
-  Medication({
+  Medications({
     required this.medicationName,
     required this.dosage,
   });
 
-  factory Medication.fromJson(Map<String, dynamic> json) =>
-      _$MedicationFromJson(json);
+  factory Medications.fromJson(Map<String, dynamic> json) =>
+      _$MedicationsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MedicationToJson(this);
+  Map<String, dynamic> toJson() => _$MedicationsToJson(this);
 }
 
 @JsonSerializable()

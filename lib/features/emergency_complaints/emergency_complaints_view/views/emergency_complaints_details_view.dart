@@ -5,11 +5,13 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 
@@ -49,12 +51,22 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                 children: [
                   DetailsViewAppBar(
                     title: 'الشكاوى المرضية الطارئة',
-                    editFunction: () {},
-                    shareFunction: () {
-                      _shareComplaintDetails(context, state);
+                    editFunction: () async {
+                      final bool? result = await context.pushNamed(
+                        Routes.emergenciesComplaintDataEntryView,
+                        arguments: state.selectedEmergencyComplaint,
+                      );
+                      if (result != null && result && context.mounted) {
+                        await context
+                            .read<EmergencyComplaintsViewCubit>()
+                            .getEmergencyComplaintDetailsById(documentId);
+                      }
                     },
-                    deleteFunction: () {
-                      context
+                    shareFunction: () async {
+                      await _shareComplaintDetails(context, state);
+                    },
+                    deleteFunction: () async {
+                      await context
                           .read<EmergencyComplaintsViewCubit>()
                           .deleteEmergencyComplaintById(documentId);
                     },
@@ -63,7 +75,7 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: "تاريخ ظهور الشكوى",
-                        value: complaint.data,
+                        value: complaint.date,
                         icon: 'assets/images/date_icon.png',
                       ),
                       Spacer(),
@@ -81,8 +93,8 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                     return SymptomContainer(
                       isMainSymptom:
                           index == 0, // First symptom is the main one
-                      symptomArea: symptom.complaintbodyPart,
-                      symptomComplaint: symptom.symptomsComplaint,
+                      symptomArea: symptom.symptomsRegion,
+                      symptomComplaint: symptom.sypmptomsComplaintIssue,
                       natureOfComplaint: symptom.natureOfComplaint,
                       severityOfComplaint: symptom.severityOfComplaint,
                     );
@@ -270,13 +282,13 @@ Future<void> _shareComplaintDetails(
     final text = '''
     🚨 *تفاصيل الشكوى المرضية الطارئة* 🚨
 
-    📅 *تاريخ ظهور الشكوى*: ${complaintDetails.data}
+    📅 *تاريخ ظهور الشكوى*: ${complaintDetails.date}
 
     💡 *الأعراض الرئيسية*:
     ${complaintDetails.mainSymptoms.map((symptom) {
       return '''
-      - *المنطقة*: ${symptom.complaintbodyPart}
-      - *الشكوى*: ${symptom.symptomsComplaint}
+      - *المنطقة*: ${symptom.symptomsRegion}
+      - *الشكوى*: ${symptom.sypmptomsComplaintIssue}
       - *طبيعة الشكوى*: ${symptom.natureOfComplaint}
       - *حدة الشكوى*: ${symptom.severityOfComplaint}
       ''';

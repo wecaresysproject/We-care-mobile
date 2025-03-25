@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
+import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart'
+    as model;
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -48,6 +50,66 @@ class EmergencyComplaintsDataEntryCubit
     }
   }
 
+// when we send list of complaints=> ensure that i send
+  Future<void> loadComplaintForEditing(
+    model.DetailedComplaintModel emergencyComplaint,
+    S locale,
+  ) async {
+    await storeTempUserPastComplaints(emergencyComplaint);
+
+    // return null;
+    var firstQuestionAnswer =
+        emergencyComplaint.similarComplaint.diagnosis == locale.no_data_entered
+            ? false
+            : true;
+    complaintDiagnosisController.text;
+    var secondQuestionAnswer =
+        emergencyComplaint.medications.medicationName == locale.no_data_entered
+            ? false
+            : true;
+    var thirdQuestionAnswer =
+        emergencyComplaint.emergencyIntervention.interventionType ==
+                locale.no_data_entered
+            ? false
+            : true;
+
+    emit(
+      state.copyWith(
+        complaintAppearanceDate: emergencyComplaint.date,
+        medicalComplaints: emergencyComplaint.mainSymptoms,
+        firstQuestionAnswer: firstQuestionAnswer,
+        secondQuestionAnswer: secondQuestionAnswer,
+        thirdQuestionAnswer: thirdQuestionAnswer,
+        previousComplaintDate:
+            emergencyComplaint.similarComplaint.dateOfComplaint,
+        emergencyInterventionDate:
+            emergencyComplaint.emergencyIntervention.interventionDate,
+        hasSimilarComplaintBefore: firstQuestionAnswer ? 'نعم' : 'لا',
+        isCurrentlyTakingMedication: secondQuestionAnswer ? 'نعم' : 'لا',
+        hasReceivedEmergencyCareBefore: thirdQuestionAnswer ? 'نعم' : 'لا',
+        isEditMode: true,
+      ),
+    );
+    complaintDiagnosisController.text =
+        emergencyComplaint.similarComplaint.diagnosis;
+    medicineNameController.text = emergencyComplaint.medications.medicationName;
+    medicineDoseController.text = emergencyComplaint.medications.dosage;
+    emergencyInterventionTypeController.text =
+        emergencyComplaint.emergencyIntervention.interventionType;
+    personalInfoController.text = emergencyComplaint.personalNote;
+  }
+
+  Future<void> storeTempUserPastComplaints(
+      model.DetailedComplaintModel emergencyComplaint) async {
+    final medicalComplaintBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    // Loop through the list and store each complaint in the box
+    for (var oldComplains in emergencyComplaint.mainSymptoms) {
+      await medicalComplaintBox.add(oldComplains);
+    }
+  }
+
   Future<void> postEmergencyDataEntry(S locale) async {
     emit(
       state.copyWith(
@@ -69,7 +131,7 @@ class EmergencyComplaintsDataEntryCubit
         personalNote: personalInfoController.text.isEmpty
             ? locale.no_data_entered
             : personalInfoController.text,
-        medication: Medication(
+        medication: Medications(
           medicationName: medicineNameController.text.isEmpty
               ? locale.no_data_entered
               : medicineNameController.text,

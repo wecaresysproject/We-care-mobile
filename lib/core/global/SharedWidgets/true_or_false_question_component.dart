@@ -9,7 +9,7 @@ class TrueOrFalseQuestionWidget extends StatefulWidget {
   final String question;
   final String imagePath;
   final Color containerValidationColor;
-
+  final String? initialOption; // Add this parameter
   final Function(String) onOptionSelected;
 
   const TrueOrFalseQuestionWidget({
@@ -17,6 +17,7 @@ class TrueOrFalseQuestionWidget extends StatefulWidget {
     required this.question,
     required this.imagePath,
     this.containerValidationColor = AppColorsManager.babyBlueColor,
+    this.initialOption, // Make it optional
     required this.onOptionSelected,
   });
 
@@ -26,7 +27,32 @@ class TrueOrFalseQuestionWidget extends StatefulWidget {
 }
 
 class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
-  String? _selectedOption; // Initially no selection
+  String? _selectedOption;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSelectedOption();
+  }
+
+  @override
+  void didUpdateWidget(TrueOrFalseQuestionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialOption != oldWidget.initialOption) {
+      _initializeSelectedOption();
+    }
+  }
+
+  void _initializeSelectedOption() {
+    if (widget.initialOption != _selectedOption) {
+      setState(() {
+        _selectedOption = widget.initialOption;
+      });
+      if (_selectedOption != null) {
+        widget.onOptionSelected(_selectedOption!);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +61,14 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
       children: [
         Container(
           width: double.infinity,
-
-          padding:
-              EdgeInsets.fromLTRB(8, 8, 16, 0.h), // Padding as per the design
+          padding: EdgeInsets.fromLTRB(8, 8, 16, 0.h),
           decoration: BoxDecoration(
             color: widget.containerValidationColor,
-            borderRadius: BorderRadius.circular(16), // Radius as per the design
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
-            // mainAxisAlignment:
-            //     MainAxisAlignment.spaceBetween, // Space between items
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title and Icon Row
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,7 +77,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                     width: 24.w,
                     height: 24.h,
                   ),
-                  horizontalSpacing(7), // Spacing between icon and title
+                  horizontalSpacing(7),
                   Expanded(
                     child: Text(
                       widget.question,
@@ -66,17 +87,13 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                 ],
               ),
               verticalSpacing(8),
-              // Radio Buttons for "نعم" and "لا" //TODO: make them in different languages
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Transform.scale(
                     scale: 1.4,
                     child: Radio<String>(
-                      value: "نعم", // context.translate.yes,
-                      // fillColor: WidgetStateProperty.all(
-                      //   AppColorsManager.placeHolderColor,
-                      // ),
+                      value: "نعم",
                       groupValue: _selectedOption,
                       activeColor: AppColorsManager.mainDarkBlue,
                       visualDensity:
@@ -86,8 +103,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                         setState(() {
                           _selectedOption = value;
                         });
-                        widget.onOptionSelected(
-                            value!); //TODO check null here laters
+                        widget.onOptionSelected(value!);
                       },
                     ),
                   ),
@@ -97,18 +113,13 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
                       color: AppColorsManager.textColor,
                     ),
                   ),
-                  horizontalSpacing(16), // Spacing between radio buttons
+                  horizontalSpacing(16),
                   Transform.scale(
                     scale: 1.4,
                     child: Radio<String>(
-                      value: "لا", //context.translate.no,
-
-                      // fillColor: WidgetStateProperty.all(
-                      //   AppColorsManager.placeHolderColor,
-                      // ),
+                      value: "لا",
                       visualDensity:
                           VisualDensity(horizontal: -2, vertical: -2),
-                      // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       groupValue: _selectedOption,
                       activeColor: AppColorsManager.mainDarkBlue,
                       onChanged: (String? value) {
@@ -131,8 +142,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
           ),
         ),
         if (widget.containerValidationColor ==
-            AppColorsManager
-                .redBackgroundValidationColor) // Show error message if required and not selected
+            AppColorsManager.redBackgroundValidationColor)
           Padding(
             padding: EdgeInsets.only(top: 4.h),
             child: Text(

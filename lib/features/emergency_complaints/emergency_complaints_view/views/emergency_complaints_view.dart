@@ -89,13 +89,13 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
             }
           },
           titleBuilder: (item) =>
-              item.mainSymptoms.first.complaintbodyPart.substring(2),
+              item.mainSymptoms.first.symptomsRegion.substring(2),
           isExpendingTileTitle: true,
           infoRowBuilder: (item) => [
-            {"title": "التاريخ:", "value": item.data},
+            {"title": "التاريخ:", "value": item.date},
             {
               "title": "العرض الرئيسي:",
-              "value": item.mainSymptoms.first.symptomsComplaint
+              "value": item.mainSymptoms.first.sypmptomsComplaintIssue
             },
           ],
         );

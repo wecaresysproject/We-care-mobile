@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
@@ -150,8 +151,12 @@ class AppRouter {
           builder: (context) => VaccineView(),
         );
       case Routes.emergenciesComplaintDataEntryView:
+        final complaintModelToBeEdited = arguments as DetailedComplaintModel?;
+
         return MaterialPageRoute(
-          builder: (context) => const EmergencyComplaintCategoryDataEntryView(),
+          builder: (context) => EmergencyComplaintCategoryDataEntryView(
+            complaint: complaintModelToBeEdited,
+          ),
         );
       case Routes.addNewComplaintDetails:
         final complaintDetails = arguments as Map<String, dynamic>?;
