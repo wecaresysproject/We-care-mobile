@@ -24,11 +24,10 @@ class ThirdQuestionDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
-              initialOption: state.thirdQuestionAnswer && state.isEditMode
-                  ? 'نعم'
-                  : !state.isEditMode
-                      ? null
-                      : 'لا',
+              initialOption: getInitialOption(
+                thirdQuestionAnswer: state.thirdQuestionAnswer,
+                isEditMode: state.isEditMode,
+              ),
               question: "هل أجريت  تدخل طبى طارئ للشكوى ؟",
               containerValidationColor:
                   state.hasReceivedEmergencyCareBefore == null &&
@@ -48,6 +47,14 @@ class ThirdQuestionDetails extends StatelessWidget {
         );
       },
     );
+  }
+
+  String? getInitialOption(
+      {required bool thirdQuestionAnswer, required bool isEditMode}) {
+    if (isEditMode) {
+      return thirdQuestionAnswer ? 'نعم' : 'لا';
+    }
+    return null;
   }
 
   Widget showOrHideTextField(

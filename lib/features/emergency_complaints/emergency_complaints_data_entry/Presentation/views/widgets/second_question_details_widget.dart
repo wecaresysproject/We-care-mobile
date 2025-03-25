@@ -23,11 +23,10 @@ class SecondQuestionDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
-              initialOption: state.secondQuestionAnswer && state.isEditMode
-                  ? 'نعم'
-                  : !state.isEditMode
-                      ? null
-                      : 'لا',
+              initialOption: getInitialOption(
+                secondQuestionAnswer: state.secondQuestionAnswer,
+                isEditMode: state.isEditMode,
+              ),
               question: "هل تتناول أدوية حالية ؟",
               containerValidationColor:
                   state.isCurrentlyTakingMedication == null &&
@@ -47,6 +46,14 @@ class SecondQuestionDetails extends StatelessWidget {
         );
       },
     );
+  }
+
+  String? getInitialOption(
+      {required bool secondQuestionAnswer, required bool isEditMode}) {
+    if (isEditMode) {
+      return secondQuestionAnswer ? 'نعم' : 'لا';
+    }
+    return null;
   }
 
   Widget showOrHideTextField(

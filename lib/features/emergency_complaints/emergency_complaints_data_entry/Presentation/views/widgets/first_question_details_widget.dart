@@ -24,11 +24,10 @@ class FirstQuestionDetails extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TrueOrFalseQuestionWidget(
-              initialOption: state.firstQuestionAnswer && state.isEditMode
-                  ? 'نعم'
-                  : !state.isEditMode
-                      ? null
-                      : 'لا',
+              initialOption: getInitialOption(
+                firstQuestionAnswer: state.firstQuestionAnswer,
+                isEditMode: state.isEditMode,
+              ),
               question: "هل عانيت من شكوى مشابهة سابقًا ؟",
               containerValidationColor:
                   state.hasSimilarComplaintBefore == null &&
@@ -48,6 +47,14 @@ class FirstQuestionDetails extends StatelessWidget {
         );
       },
     );
+  }
+
+  String? getInitialOption(
+      {required bool firstQuestionAnswer, required bool isEditMode}) {
+    if (isEditMode) {
+      return firstQuestionAnswer ? 'نعم' : 'لا';
+    }
+    return null;
   }
 
   AnimatedSize showOrHideTextField(
