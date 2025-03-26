@@ -113,7 +113,7 @@ final List<Map<String, String>> dataEntryCategories = [
   {
     "title": "الأدوية",
     "image": "assets/images/medicines_icon.png",
-    "route": "/medications"
+    "route": Routes.medcinesDataEntryView,
   },
   {
     "title": "الشكاوى\nالطارئة",

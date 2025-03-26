@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -119,7 +120,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
           current.medicalComplaints.length != previous.medicalComplaints.length,
       builder: (context, state) {
         return Center(
-          child: AddNewMedicalComplaintButton(
+          child: AddNewItemButton(
             text: state.medicalComplaints.isEmpty
                 ? "أضف أعراض مرضية"
                 : 'أضف أعراض مرضية أخرى ان وجد',
@@ -230,47 +231,6 @@ class _EmergencyComplaintDataEntryFormFieldsState
           isEnabled: state.isFormValidated ? true : false,
         );
       },
-    );
-  }
-}
-
-class AddNewMedicalComplaintButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const AddNewMedicalComplaintButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          vertical: 4, horizontal: 16), // Padding from Figma
-      decoration: BoxDecoration(
-        color: const Color(0xFF014C8A), // Main color from Figma
-        borderRadius: BorderRadius.circular(12), // Radius from Figma
-      ),
-      child: TextButton.icon(
-        onPressed: onPressed,
-        icon: const Icon(Icons.add, color: Colors.white, size: 20), // "+" Icon
-        label: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          textDirection: TextDirection.rtl, // Arabic text support
-        ),
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero, // Ensures proper spacing inside Container
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-      ),
     );
   }
 }
