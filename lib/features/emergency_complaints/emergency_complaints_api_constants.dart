@@ -7,6 +7,9 @@ class EmergencyComplaintsApiConstants {
       "/EnterEmergencyComplain/SymptomsComplaintsFiltered";
 
   static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
+  static const editSpecificComplaintDocumentDetail =
+      "/EnterEmergencyComplain/UpdateComplaint";
+
   //View Entry
   static const getAllEmergencyComplaints =
       "EnterEmergencyComplain/GetAllComplaints";

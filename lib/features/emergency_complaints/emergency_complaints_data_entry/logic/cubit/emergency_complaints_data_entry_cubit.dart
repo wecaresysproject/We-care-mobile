@@ -50,6 +50,66 @@ class EmergencyComplaintsDataEntryCubit
     }
   }
 
+  Future<void> updateSpecifcEmergencyDocumentDataDetails(S locale) async {
+    emit(
+      state.copyWith(
+        emergencyComplaintsDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final result =
+        await _emergencyDataEntryRepo.editSpecifcEmergencyDocumentDataDetails(
+      requestBody: EmergencyComplainRequestBody(
+        dateOfComplaint: state.complaintAppearanceDate!,
+        medication: Medications(
+          medicationName: state.secondQuestionAnswer
+              ? medicineNameController.text
+              : locale.no_data_entered,
+          dosage: state.secondQuestionAnswer
+              ? medicineDoseController.text
+              : locale.no_data_entered,
+        ),
+        similarComplaint: SimilarComplaint(
+          diagnosis: state.firstQuestionAnswer
+              ? complaintDiagnosisController.text
+              : locale.no_data_entered,
+          dateOfComplaint: state.firstQuestionAnswer
+              ? state.previousComplaintDate!
+              : locale.no_data_entered,
+        ),
+        emergencyIntervention: EmergencyIntervention(
+          interventionType: state.thirdQuestionAnswer
+              ? emergencyInterventionTypeController.text
+              : locale.no_data_entered,
+          interventionDate: state.thirdQuestionAnswer
+              ? state.emergencyInterventionDate!
+              : locale.no_data_entered,
+        ),
+        userMedicalComplaint: state.medicalComplaints,
+        personalNote: personalInfoController.text,
+      ),
+      language: AppStrings.arabicLang,
+      documentId: state.updatedDocumentId,
+    );
+    result.when(
+      success: (successMessage) async {
+        emit(
+          state.copyWith(
+            emergencyComplaintsDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (message) {
+        emit(
+          state.copyWith(
+            emergencyComplaintsDataEntryStatus: RequestStatus.failure,
+            message: message.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
 // when we send list of complaints=> ensure that i send
   Future<void> loadComplaintForEditing(
     model.DetailedComplaintModel emergencyComplaint,
@@ -58,20 +118,25 @@ class EmergencyComplaintsDataEntryCubit
     await storeTempUserPastComplaints(emergencyComplaint);
 
     // return null;
-    var firstQuestionAnswer =
-        emergencyComplaint.similarComplaint.diagnosis == locale.no_data_entered
-            ? false
-            : true;
-    complaintDiagnosisController.text;
-    var secondQuestionAnswer =
-        emergencyComplaint.medications.medicationName == locale.no_data_entered
-            ? false
-            : true;
-    var thirdQuestionAnswer =
-        emergencyComplaint.emergencyIntervention.interventionType ==
+    var firstQuestionAnswer = emergencyComplaint.similarComplaint.diagnosis !=
+                locale.no_data_entered ||
+            emergencyComplaint.similarComplaint.dateOfComplaint !=
                 locale.no_data_entered
-            ? false
-            : true;
+        ? true
+        : false;
+    complaintDiagnosisController.text;
+    var secondQuestionAnswer = emergencyComplaint.medications.medicationName !=
+                locale.no_data_entered ||
+            emergencyComplaint.medications.dosage != locale.no_data_entered
+        ? true
+        : false;
+    var thirdQuestionAnswer =
+        emergencyComplaint.emergencyIntervention.interventionType !=
+                    locale.no_data_entered ||
+                emergencyComplaint.emergencyIntervention.interventionDate !=
+                    locale.no_data_entered
+            ? true
+            : false;
 
     emit(
       state.copyWith(
@@ -88,6 +153,7 @@ class EmergencyComplaintsDataEntryCubit
         isCurrentlyTakingMedication: secondQuestionAnswer ? 'نعم' : 'لا',
         hasReceivedEmergencyCareBefore: thirdQuestionAnswer ? 'نعم' : 'لا',
         isEditMode: true,
+        updatedDocumentId: emergencyComplaint.id,
       ),
     );
     complaintDiagnosisController.text =

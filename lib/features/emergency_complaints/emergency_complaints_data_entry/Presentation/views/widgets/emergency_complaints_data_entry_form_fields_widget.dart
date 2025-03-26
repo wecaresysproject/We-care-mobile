@@ -206,21 +206,19 @@ class _EmergencyComplaintDataEntryFormFieldsState
         return AppCustomButton(
           isLoading:
               state.emergencyComplaintsDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode
-              //     ? await context
-              //         .read<EmergencyComplaintsDataEntryCubit>()
-              //         .submitEditsOnPrescription()
-              await context
-                  .read<EmergencyComplaintsDataEntryCubit>()
-                  .postEmergencyDataEntry(
-                    context.translate,
-                  );
-              log("xxx:Save Data Entry");
-            } else {
-              log("form not validated");
+              state.isEditMode
+                  ? await context
+                      .read<EmergencyComplaintsDataEntryCubit>()
+                      .updateSpecifcEmergencyDocumentDataDetails(
+                          context.translate)
+                  : await context
+                      .read<EmergencyComplaintsDataEntryCubit>()
+                      .postEmergencyDataEntry(
+                        context.translate,
+                      );
             }
           },
           isEnabled: state.isFormValidated ? true : false,

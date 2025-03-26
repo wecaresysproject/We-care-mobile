@@ -50,4 +50,22 @@ class EmergencyComplaintsDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> editSpecifcEmergencyDocumentDataDetails({
+    required EmergencyComplainRequestBody requestBody,
+    required String language,
+    required String documentId,
+  }) async {
+    try {
+      final response = await _emergencyComplaintsServices
+          .editSpecifcEmergencyDocumentDataDetails(
+        requestBody,
+        language,
+        documentId,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

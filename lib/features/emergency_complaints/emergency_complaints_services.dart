@@ -54,4 +54,11 @@ abstract class EmergencyComplaintsServices {
     @Body() EmergencyComplainRequestBody requestBody,
     @Query('language') String language,
   );
+
+  @PUT(EmergencyComplaintsApiConstants.editSpecificComplaintDocumentDetail)
+  Future<dynamic> editSpecifcEmergencyDocumentDataDetails(
+    @Body() EmergencyComplainRequestBody requestBody,
+    @Query('language') String language,
+    @Query('id') String documentId,
+  );
 }

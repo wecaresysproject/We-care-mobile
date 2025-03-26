@@ -26,6 +26,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final String? emergencyInterventionType; // نوع التدخل
   final String? emergencyInterventionDate; // تاريخ التدخل
   final List<MedicalComplaint> medicalComplaints;
+  final String updatedDocumentId; // تاريخ التدخل
+
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
@@ -45,6 +47,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.emergencyInterventionType,
     this.emergencyInterventionDate,
     this.medicalComplaints = const [],
+    this.updatedDocumentId = '',
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -67,6 +70,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           emergencyInterventionType: null,
           emergencyInterventionDate: null,
           medicalComplaints: const [],
+          updatedDocumentId: '',
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -94,6 +98,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     String? emergencyInterventionType,
     String? emergencyInterventionDate,
     List<MedicalComplaint>? medicalComplaints,
+    String? updatedDocumentId,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -122,6 +127,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
       emergencyInterventionDate:
           emergencyInterventionDate ?? this.emergencyInterventionDate,
       medicalComplaints: medicalComplaints ?? this.medicalComplaints,
+      updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
     );
   }
 
@@ -145,5 +151,6 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         emergencyInterventionType,
         emergencyInterventionDate,
         medicalComplaints,
+        updatedDocumentId,
       ];
 }
