@@ -18,6 +18,7 @@ class UserSelectionContainer extends StatefulWidget {
     this.isDisabled = false,
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
     this.iconColor = AppColorsManager.mainDarkBlue,
+    this.usertEntryLabelText,
   });
 
   final List<String> options;
@@ -29,6 +30,7 @@ class UserSelectionContainer extends StatefulWidget {
   final Color containerBorderColor;
   final bool isDisabled;
   final Color? iconColor;
+  final String? usertEntryLabelText;
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -63,6 +65,8 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
                       widget.onOptionSelected(selected);
                     },
                     allowManualEntry: widget.allowManualEntry,
+                    usertEntryLabelText:
+                        widget.usertEntryLabelText ?? "أدخل اسمًا يدويًا",
                   )
                 : null;
           },
@@ -128,6 +132,7 @@ void showSelectionBottomSheet({
   required String title,
   required List<String> options,
   required Function(String) onItemSelected,
+  required String usertEntryLabelText,
   String? initialSelectedItem,
   bool allowManualEntry = false,
   VoidCallback? onAddNew,
@@ -267,7 +272,7 @@ void showSelectionBottomSheet({
                           child: TextField(
                             controller: manualInputController,
                             decoration: InputDecoration(
-                              labelText: "أدخل اسمًا يدويًا",
+                              labelText: usertEntryLabelText,
                               border: InputBorder.none, // Removes border
                               enabledBorder:
                                   InputBorder.none, // No border when enabled
