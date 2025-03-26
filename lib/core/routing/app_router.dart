@@ -3,6 +3,8 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -170,6 +172,14 @@ class AppRouter {
       case Routes.emergenciesComplaintDataView:
         return MaterialPageRoute(
           builder: (context) => const EmergencyComplaintsView(),
+        );
+      case Routes.medcinesView:
+        return MaterialPageRoute(
+          builder: (context) => MedicinesView(),
+        );
+      case Routes.medcinesDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => MedicinesDataEntryView(),
         );
 
       default:
