@@ -1,10 +1,14 @@
 bool isLoggedInUser = false;
 
 class SurgeriesApiConstants {
-  static const baseUrl = "http://147.93.57.70/api";
+  static const baseUrl = "http://147.93.57.70:5299/api";
   //Data Entry
 
   //View Entry
+  static const getAllSurgeries = "/EnterSectionSurgery";
+  static const getSingleSurgery = "/ViewSectionSurgery/filter-by-id";
 
   //filters
+  static const getSurgeriesFilters = "/ViewSectionSurgery/surgery-info";
+  static const getFilteredSurgeries = "/ViewSectionSurgery/filter";
 }
