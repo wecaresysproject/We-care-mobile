@@ -48,8 +48,17 @@ class WeCareApp extends StatelessWidget {
             scaffoldBackgroundColor: AppColorsManager.scaffoldBackGroundColor,
             fontFamily: AppStrings.cairoFontFamily,
             colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.deepPurple,
+              primaryContainer: AppColorsManager.mainDarkBlue.withAlpha(25),
+              seedColor: AppColorsManager.mainDarkBlue,
+              outline:
+                  AppColorsManager.textfieldOutsideBorderColor.withAlpha(120),
+              tertiaryContainer: AppColorsManager.mainDarkBlue.withAlpha(25),
+              surfaceContainerHighest: Colors.grey.shade100,
+              surfaceContainerHigh: Colors.white,
+              onTertiaryContainer: AppColorsManager.mainDarkBlue,
+              // onSurfaceVariant: AppColorsManager.mainDarkBlue.withAlpha(25),
             ),
+
             appBarTheme: const AppBarTheme(
               elevation: 0,
               backgroundColor: Colors.transparent,

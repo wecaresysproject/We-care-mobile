@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_widget.dart';
+import 'package:we_care/core/global/Helpers/time_picker_handler_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -11,6 +11,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -191,56 +192,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
 
             verticalSpacing(16),
-            UserSelectionContainer(
-              categoryLabel: "الأعراض المرضية - المنطقة",
-              containerHintText:
-                  state.symptomsDiseaseRegion ?? "اختر الأعراض المستدعية",
-              options: [
-                "باطنة",
-                "جراحة",
-                "طبيب عام",
-                "طبيب اطفال",
-                "طبيب جراحة",
-              ],
-              onOptionSelected: (value) {
-                context
-                    .read<MedicinesDataEntryCubit>()
-                    .updateSymptomsDiseaseRegion(value);
-              },
-              bottomSheetTitle: "اختر الأعراض المستدعية",
-            ),
 
-            verticalSpacing(16),
-            UserSelectionContainer(
-              categoryLabel: "الأعراض المرضية - الشكوى",
-              containerHintText:
-                  state.medicalSymptomsIssue ?? "اختر الأعراض المستدعية",
-              options: [
-                "باطنة",
-                "جراحة",
-                "طبيب عام",
-                "طبيب اطفال",
-                "طبيب جراحة",
-              ],
-              onOptionSelected: (value) {
-                context
-                    .read<MedicinesDataEntryCubit>()
-                    .updateMedicalSymptomsIssue(value);
-              },
-              bottomSheetTitle: "اختر الأعراض المستدعية",
-            ),
+            buildMedicalComplaintsListBlocBuilder(),
 
-            verticalSpacing(12),
-            Center(
-              child: AddNewItemButton(
-                text: "أضف عرض اخر ان وجد",
-                onPressed: () {
-                  // context
-                  //     .read<MedicinesDataEntryCubit>()
-                  //     .addNewSymptomsDiseaseRegion();
-                },
-              ),
-            ),
+            buildAddNewComplainButtonBlocBuilder(context),
+
             verticalSpacing(16),
 
             UserSelectionContainer(
@@ -259,6 +215,14 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               containerHintText: "اختر اسم الطبيب",
             ),
+            verticalSpacing(16),
+            Text(
+              "تنبيهات",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            CustomAlarmButton(containerHintText: 'اختر موعد التنبيه'),
+
             verticalSpacing(16),
             Text(
               "ملاحظات شخصية",
@@ -310,33 +274,80 @@ class _MedicinesDataEntryFormFieldsWidgetState
     );
   }
 }
-// Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
-//   return BlocBuilder<EmergencyComplaintsDataEntryCubit,
-//       EmergencyComplaintsDataEntryState>(
-//     buildWhen: (previous, current) =>
-//         current.medicalComplaints.length != previous.medicalComplaints.length,
-//     builder: (context, state) {
-//       return Center(
-//         child: AddNewMedicalComplaintButton(
-//           text: state.medicalComplaints.isEmpty
-//               ? "أضف أعراض مرضية"
-//               : 'أضف أعراض مرضية أخرى ان وجد',
-//           onPressed: () async {
-//             final bool? result = await context.pushNamed(
-//               Routes.addNewComplaintDetails,
-//             );
 
-//             if (result != null && context.mounted) {
-//               await context
-//                   .read<EmergencyComplaintsDataEntryCubit>()
-//                   .fetchAllAddedComplaints();
-//             }
-//           },
-//         ),
-//       );
-//     },
-//   );
-// }
+Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+  return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+    buildWhen: (previous, current) =>
+        current.medicalComplaints.length != previous.medicalComplaints.length,
+    builder: (context, state) {
+      return Center(
+        child: AddNewMedicalComplaintButton(
+          text: state.medicalComplaints.isEmpty
+              ? "أضف أعراض مرضية"
+              : 'أضف أعراض مرضية أخرى ان وجد',
+          onPressed: () async {
+            final bool? result = await context.pushNamed(
+              Routes.medicationSymptomsFormFieldView,
+            );
+
+            if (result != null && context.mounted) {
+              await context
+                  .read<MedicinesDataEntryCubit>()
+                  .fetchAllAddedComplaints();
+            }
+          },
+        ),
+      );
+    },
+  );
+}
+
+Widget buildMedicalComplaintsListBlocBuilder() {
+  return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+    buildWhen: (previous, current) =>
+        previous.medicalComplaints != current.medicalComplaints,
+    builder: (context, state) {
+      return state.medicalComplaints.isNotEmpty
+          ? ListView.builder(
+              itemCount: state.medicalComplaints.length,
+              shrinkWrap: true,
+              physics:
+                  NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
+              itemBuilder: (context, index) {
+                final complaint = state.medicalComplaints[index];
+                return GestureDetector(
+                  onTap: () async {
+                    final bool? result = await context.pushNamed(
+                      Routes.addNewComplaintDetails,
+                      arguments: {
+                        'id': index,
+                        'complaint': complaint,
+                      },
+                    );
+                    if (result != null && context.mounted) {
+                      await context
+                          .read<MedicinesDataEntryCubit>()
+                          .fetchAllAddedComplaints();
+                    }
+                  },
+                  child: SymptomContainer(
+                    medicalComplaint: complaint,
+                    isMainSymptom: true,
+                    onDelete: () async {
+                      final cubit = context.read<MedicinesDataEntryCubit>();
+                      await cubit.removeAddedMedicalComplaint(index);
+                      await cubit.fetchAllAddedComplaints();
+                    },
+                  ).paddingBottom(
+                    16,
+                  ),
+                );
+              },
+            )
+          : const SizedBox.shrink();
+    },
+  );
+}
 
 //   Widget submitEmergencyDataEnteredBlocConsumer() {
 //     return BlocConsumer<EmergencyComplaintsDataEntryCubit,
@@ -399,7 +410,7 @@ class AddNewMedicalComplaintButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           vertical: 4, horizontal: 16), // Padding from Figma
       decoration: BoxDecoration(
-        color: const Color(0xFF014C8A), // Main color from Figma
+        color: AppColorsManager.mainDarkBlue, // Main color from Figma
         borderRadius: BorderRadius.circular(12), // Radius from Figma
       ),
       child: TextButton.icon(
@@ -468,15 +479,6 @@ class SymptomContainer extends StatelessWidget {
                     16,
                   ),
                 ),
-                // InkWell(
-                //   onTap: onDelete,
-                //   child: Image.asset(
-                //     "assets/images/delete_icon.png",
-                //     height: 36.h,
-                //     width: 34.w,
-                //     color: AppColorsManager.warningColor,
-                //   ),
-                // ),
                 IconButton(
                   onPressed: onDelete,
                   padding: EdgeInsets.zero,
@@ -519,6 +521,89 @@ class SymptomContainer extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomAlarmButton extends StatefulWidget {
+  final String? selectedItem;
+  final String containerHintText;
+  final Color? iconColor;
+
+  const CustomAlarmButton({
+    super.key,
+    this.selectedItem,
+    required this.containerHintText,
+    this.iconColor,
+  });
+
+  @override
+  _CustomAlarmButtonState createState() => _CustomAlarmButtonState();
+}
+
+class _CustomAlarmButtonState extends State<CustomAlarmButton> {
+  String? _selectedTime;
+  final TimePickerHandler _timePickerHandler = TimePickerHandler();
+
+  Future<void> _pickTime(BuildContext context) async {
+    TimeOfDay? pickedTime = await _timePickerHandler.showPicker(context);
+    setState(() {
+      _selectedTime = pickedTime?.format(context); // Format the selected time
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _pickTime(context),
+      child: Container(
+        width: double.infinity,
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: AppColorsManager.textfieldOutsideBorderColor,
+            width: 0.8,
+          ),
+          color: AppColorsManager.textfieldInsideColor.withAlpha(100),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            /// Row to include SVG icon and text
+            Row(
+              children: [
+                Image.asset(
+                  "assets/images/alarm_icon.png",
+                  height: 28,
+                  width: 28,
+                  color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  _selectedTime ?? widget.containerHintText,
+                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    color: _selectedTime != null
+                        ? AppColorsManager.textColor
+                        : null,
+                  ),
+                ),
+              ],
+            ),
+
+            /// Arrow icon to indicate dropdown state
+            Image.asset(
+              _selectedTime != null
+                  ? "assets/images/arrow_up_icon.png"
+                  : "assets/images/arrow_down_icon.png",
+              height: 24,
+              width: 16,
+              color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
+            ),
+          ],
+        ),
       ),
     );
   }

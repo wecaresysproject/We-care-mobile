@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -11,6 +13,49 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   // ignore: unused_field
   final MedicinesDataEntryRepo _emergencyDataEntryRepo;
   final personalInfoController = TextEditingController();
+  List<MedicalComplaint> medicalComplaints = [];
+  Future<void> fetchAllAddedComplaints() async {
+    try {
+      final medicalComplaintBox =
+          Hive.box<MedicalComplaint>("medical_complaints");
+      medicalComplaints = medicalComplaintBox.values.toList(growable: true);
+      emit(
+        state.copyWith(
+          medicalComplaints: medicalComplaints,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          medicalComplaints: [],
+          // errorMessage: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> removeAddedMedicalComplaint(int index) async {
+    final Box<MedicalComplaint> medicalComplaintsBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    if (index >= 0 && index < medicalComplaintsBox.length) {
+      await medicalComplaintsBox.deleteAt(index);
+    }
+  }
+
+  Future<void> clearAllAddedComplaints() async {
+    try {
+      final medicalComplaintBox =
+          Hive.box<MedicalComplaint>("medical_complaints");
+      await medicalComplaintBox.clear();
+    } catch (e) {
+      emit(
+        state.copyWith(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   /// Update Field Values
   void updateStartMedicineDate(String? date) {
@@ -66,56 +111,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void updateSelectedDoctorName(String? value) {
     emit(state.copyWith(selectedDoctorName: value));
   }
-  // void updateIfHasSameComplaintBeforeDate(String? date) {
-  //   emit(state.copyWith(previousComplaintDate: date));
-  // }
-
-  // void updateEmergencyInterventionDate(String? date) {
-  //   emit(state.copyWith(emergencyInterventionDate: date));
-  // }
-
-  // bool updateHasPreviousComplaintBefore(String? result) {
-  //   bool hasComplaint = result == 'نعم';
-
-  //   emit(
-  //     state.copyWith(
-  //       hasSimilarComplaintBefore: result,
-  //       firstQuestionAnswer: hasComplaint,
-  //     ),
-  //   );
-
-  //   validateRequiredFields(); // Ensure this method is called
-
-  //   return hasComplaint;
-  // }
-
-  // bool updateIsTakingMedicines(String? result) {
-  //   bool isTakingMedicine = result == 'نعم';
-
-  //   emit(
-  //     state.copyWith(
-  //       isCurrentlyTakingMedication: result,
-  //       secondQuestionAnswer: isTakingMedicine,
-  //     ),
-  //   );
-
-  //   validateRequiredFields(); // Ensure validation runs
-
-  //   return isTakingMedicine;
-  // }
-
-  // bool updateHasReceivedEmergencyCareBefore(String? result) {
-  //   bool hasReceivedCare = result == 'نعم';
-
-  //   emit(state.copyWith(
-  //     hasReceivedEmergencyCareBefore: result,
-  //     thirdQuestionAnswer: hasReceivedCare,
-  //   ));
-
-  //   validateRequiredFields(); // Ensure validation runs
-
-  //   return hasReceivedCare;
-  // }
 
   void validateRequiredFields() {
     if (state.medicineStartDate == null ||
@@ -140,9 +135,9 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     personalInfoController.dispose();
-
+    await clearAllAddedComplaints();
     return super.close();
   }
 }

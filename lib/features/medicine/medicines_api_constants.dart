@@ -7,19 +7,8 @@ class MedicinesApiConstants {
       "/EnterEmergencyComplain/SymptomsComplaintsFiltered";
 
   static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
-  static const editSpecificComplaintDocumentDetail =
-      "/EnterEmergencyComplain/UpdateComplaint";
 
   //View Entry
-  static const getAllEmergencyComplaints =
-      "EnterEmergencyComplain/GetAllComplaints";
-  static const getSingleEmergencyComplaintById =
-      "ViewEmergencyComplaint/GetAllComplaintsById";
 
-  static const deleteComplaintById = "EnterEmergencyComplain/DeleteComplaint";
   //filters
-  static const getYearsFiter = "ViewEmergencyComplaint/years";
-  static const getPlaceOfComplaintFilter =
-      "ViewEmergencyComplaint/AllSymptomsLocation";
-  static const getFilteredList = "ViewEmergencyComplaint/filter";
 }

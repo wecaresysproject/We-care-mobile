@@ -75,7 +75,6 @@ class EmergencyComplaintsDataEntryState extends Equatable {
 
   EmergencyComplaintsDataEntryState copyWith({
     RequestStatus? emergencyComplaintsDataEntryStatus,
-    String? errorMessage,
     bool? isFormValidated,
     String? complaintAppearanceDate,
     String? symptomsDiseaseRegion,

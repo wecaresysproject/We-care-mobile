@@ -13,13 +13,13 @@ abstract class MedicinesServices {
   //   @Query('language') String language,
   // );
 
-  // @GET(EmergencyComplaintsApiConstants.getAllPlacesOfComplaints)
-  // Future<dynamic> getAllPlacesOfComplaints(@Query('language') String language);
+  @GET(MedicinesApiConstants.getAllPlacesOfComplaints)
+  Future<dynamic> getAllPlacesOfComplaints(@Query('language') String language);
 
-  // @GET(EmergencyComplaintsApiConstants.getRelevantComplaintsToBodyPartName)
-  // Future<dynamic> getAllComplaintsRelevantToBodyPartName(
-  //   @Query('bodyPartName') String bodyPartName,
-  // );
+  @GET(MedicinesApiConstants.getRelevantComplaintsToBodyPartName)
+  Future<dynamic> getAllComplaintsRelevantToBodyPartName(
+    @Query('bodyPartName') String bodyPartName,
+  );
 
   // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
   // Future<dynamic> postEmergencyDataEntry(
