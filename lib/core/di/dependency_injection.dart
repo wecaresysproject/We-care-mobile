@@ -15,7 +15,10 @@ import 'package:we_care/features/prescription/data/repos/prescription_data_entry
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
+import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
+import 'package:we_care/features/surgeries/surgeries_services.dart';
+import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_data_entry_repo.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
@@ -152,6 +155,9 @@ void setupAppCubits() {
       getIt<MedicinesDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory(() => SurgeriesViewCubit(
+        getIt<SurgeriesViewRepo>(),
+      ));
 }
 
 void setupAppRepos() {
@@ -242,6 +248,12 @@ void setupAppRepos() {
       getIt<MedicinesServices>(),
     ),
   );
+
+  getIt.registerLazySingleton<SurgeriesViewRepo>(
+    () => SurgeriesViewRepo(
+      surgeriesService: getIt<SurgeriesService>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -273,5 +285,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<MedicinesServices>(
     () => MedicinesServices(dio),
+  );
+  getIt.registerLazySingleton<SurgeriesService>(
+    () => SurgeriesService(dio),
   );
 }

@@ -1,8 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
+import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgery_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
@@ -13,47 +20,92 @@ class SurgeriesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(
-                    title: 'السنة',
-                    options:
-                        List.generate(20, (index) => (2010 + index).toString()),
-                    isYearFilter: true),
-                surgeriesNamesFilters
-              ],
-              onApply: (selectedFilters) {
-                // Handle apply button action
-              },
-            ),
-            verticalSpacing(16),
-            MedicalItemGridView(
-              items: surgeryMockData,
-              onTap: (id) async {
-                Navigator.push(context, MaterialPageRoute(builder: (_) {
-                  return SurgeryDetailsView();
-                }));
-              },
-              titleBuilder: (item) => item.name,
-              infoRowBuilder: (item) => [
-                {"title": "التاريخ:", "value": item.date},
-                {"title": "منطقة العملية:", "value": item.bodyPart},
-                {"title": "حالة العملية:", "value": item.status},
-                {"title": "ملاحظات:", "value": item.notes},
-              ],
-            ),
-            verticalSpacing(16),
-            XRayDataViewFooterRow(),
-          ],
+    return BlocProvider<SurgeriesViewCubit>(
+      create: (context) => getIt<SurgeriesViewCubit>()
+        ..getUserSurgeriesList()
+        ..getSurgeriesFilters(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            children: [
+              ViewAppBar(),
+              BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
+                buildWhen: (previous, current) =>
+                    previous.yearsFilter != current.yearsFilter ||
+                    previous.surgeryNameFilter != current.surgeryNameFilter,
+                builder: (context, state) {
+                  return DataViewFiltersRow(
+                    filters: [
+                      FilterConfig(
+                          title: 'السنة',
+                          options: state.yearsFilter,
+                          isYearFilter: true),
+                      FilterConfig(
+                        title: 'اسم العملية',
+                        options: state.surgeryNameFilter,
+                      ),
+                    ],
+                    onApply: (selectedFilters) {
+                      print("Selected Filters: $selectedFilters");
+                      if (selectedFilters['السنة'] == null) {
+                        BlocProvider.of<SurgeriesViewCubit>(context)
+                            .getFilteredSurgeryList(
+                                surgeryName: selectedFilters['اسم العملية']);
+                      }
+                      BlocProvider.of<SurgeriesViewCubit>(context)
+                          .getFilteredSurgeryList(
+                              year: selectedFilters['السنة'],
+                              surgeryName: selectedFilters['اسم العملية']);
+                    },
+                  );
+                },
+              ),
+              verticalSpacing(16),
+              BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
+                buildWhen: (previous, current) =>
+                    previous.userSurgeries != current.userSurgeries,
+                builder: (context, state) {
+                  if (state.requestStatus == RequestStatus.loading) {
+                    return Expanded(
+                        child:
+                            const Center(child: CircularProgressIndicator()));
+                  } else if (state.userSurgeries.isEmpty &&
+                      state.requestStatus == RequestStatus.success) {
+                    return Expanded(
+                      child: Center(
+                          child: Text(
+                        "لا يوجد بيانات",
+                        style: AppTextStyles.font22MainBlueWeight700,
+                      )),
+                    );
+                  }
+                  return MedicalItemGridView(
+                    items: state.userSurgeries,
+                    onTap: (id) async {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return SurgeryDetailsView(
+                          documentId: id,
+                        );
+                      }));
+                    },
+                    titleBuilder: (item) => item.surgeryName,
+                    infoRowBuilder: (item) => [
+                      {"title": "التاريخ:", "value": item.surgeryDate},
+                      {"title": "منطقة العملية:", "value": item.surgeryRegion},
+                      {"title": "حالة العملية:", "value": item.surgeryStatus},
+                      {"title": "ملاحظات:", "value": item.additionalNotes},
+                    ],
+                  );
+                },
+              ),
+              verticalSpacing(16),
+              XRayDataViewFooterRow(),
+            ],
+          ),
         ),
       ),
     );
