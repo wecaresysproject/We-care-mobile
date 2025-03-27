@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -15,6 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setUpDependencyInjection();
   // To fix texts being hidden bug in flutter_screenutil in release mode.
+  tz.initializeTimeZones();
   await ScreenUtil.ensureScreenSize();
 
   await checkIfLoggedInUser();

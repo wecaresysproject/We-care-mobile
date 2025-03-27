@@ -32,6 +32,8 @@ class Routes {
   static const addNewComplaintDetails = '/addNewComplaintDetails';
   static const medcinesView = '/medcineView';
   static const medcinesDataEntryView = '/medcinesDataEntryView';
+  static const medicationSymptomsFormFieldView =
+      '/medicationSymptomsFormFieldView';
 
   static const emergenciesComplaintDataEntryView =
       '/emergenciesComplaintDataEntryView';

@@ -44,7 +44,7 @@ class EmergencyComplaintsDataEntryCubit
       emit(
         state.copyWith(
           medicalComplaints: [],
-          errorMessage: e.toString(),
+          message: e.toString(),
         ),
       );
     }
@@ -233,6 +233,11 @@ class EmergencyComplaintsDataEntryCubit
         );
       },
     );
+    emit(
+      state.copyWith(
+        emergencyComplaintsDataEntryStatus: RequestStatus.initial,
+      ),
+    );
   }
 
   Future<void> clearAllAddedComplaints() async {
@@ -243,7 +248,7 @@ class EmergencyComplaintsDataEntryCubit
     } catch (e) {
       emit(
         state.copyWith(
-          errorMessage: e.toString(),
+          message: e.toString(),
         ),
       );
     }
@@ -335,13 +340,13 @@ class EmergencyComplaintsDataEntryCubit
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
     personalInfoController.dispose();
     complaintDiagnosisController.dispose();
     medicineNameController.dispose();
     medicineDoseController.dispose();
     emergencyInterventionTypeController.dispose();
-
+    await clearAllAddedComplaints();
     return super.close();
   }
 }

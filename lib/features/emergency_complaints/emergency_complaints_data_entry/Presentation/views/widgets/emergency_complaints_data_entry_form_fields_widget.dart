@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -23,21 +22,8 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 
 import '../../../logic/cubit/emergency_complaints_data_entry_cubit.dart';
 
-class EmergencyComplaintDataEntryFormFields extends StatefulWidget {
+class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
   const EmergencyComplaintDataEntryFormFields({super.key});
-
-  @override
-  State<EmergencyComplaintDataEntryFormFields> createState() =>
-      _EmergencyComplaintDataEntryFormFieldsState();
-}
-
-class _EmergencyComplaintDataEntryFormFieldsState
-    extends State<EmergencyComplaintDataEntryFormFields> {
-  @override
-  void dispose() {
-    getIt<EmergencyComplaintsDataEntryCubit>().clearAllAddedComplaints();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,7 +190,7 @@ class _EmergencyComplaintDataEntryFormFieldsState
         if (state.emergencyComplaintsDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
-          context.pop(result: true);
+          context.pop();
         } else {
           await showError(state.message);
         }

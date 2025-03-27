@@ -1,7 +1,8 @@
-part of 'emergency_complaint_details_cubit.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 @immutable
-class MedicalComplaintDataEntryDetailsState extends Equatable {
+class MedicationSymptomsFormState extends Equatable {
   final String? symptomsDiseaseRegion; // الاعراض المرضية - المنطقه
   final String? medicalSymptomsIssue; // الاعراض المرضية - الشكوي
   final String? natureOfComplaint; // طبيعة الشكوي
@@ -14,7 +15,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
   final bool isEditingComplaint;
   final bool isEditingComplaintSuccess;
 
-  const MedicalComplaintDataEntryDetailsState({
+  const MedicationSymptomsFormState({
     this.symptomsDiseaseRegion,
     this.medicalSymptomsIssue,
     this.natureOfComplaint,
@@ -27,7 +28,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     this.isEditingComplaint = false,
     this.isEditingComplaintSuccess = false,
   });
-  MedicalComplaintDataEntryDetailsState copyWith({
+  MedicationSymptomsFormState copyWith({
     String? symptomsDiseaseRegion,
     String? medicalSymptomsIssue,
     String? natureOfComplaint,
@@ -40,7 +41,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     bool? isEditingComplaint,
     bool? isEditingComplaintSuccess,
   }) {
-    return MedicalComplaintDataEntryDetailsState(
+    return MedicationSymptomsFormState(
       symptomsDiseaseRegion:
           symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
       medicalSymptomsIssue: medicalSymptomsIssue ?? this.medicalSymptomsIssue,
@@ -61,7 +62,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     );
   }
 
-  const MedicalComplaintDataEntryDetailsState.initial()
+  const MedicationSymptomsFormState.initial()
       : this(
           symptomsDiseaseRegion: null,
           natureOfComplaint: null,

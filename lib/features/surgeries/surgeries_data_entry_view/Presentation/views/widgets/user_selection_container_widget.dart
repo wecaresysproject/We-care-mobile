@@ -68,10 +68,10 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
           },
           child: Container(
             width: double.infinity,
-            height: 48.h,
+            height: 52.h,
             padding: EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(
                 color: widget.containerBorderColor, // Change border if error
                 width: 0.8,

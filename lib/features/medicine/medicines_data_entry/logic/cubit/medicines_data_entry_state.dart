@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 @immutable
 class MedicinesDataEntryState extends Equatable {
@@ -17,6 +18,7 @@ class MedicinesDataEntryState extends Equatable {
   final String? medicalSymptomsIssue;
   final String? selectedDoctorName;
   final bool isFormValidated;
+  final List<MedicalComplaint> medicalComplaints;
 
   final bool isEditMode;
   final String message; // error or success message
@@ -37,6 +39,7 @@ class MedicinesDataEntryState extends Equatable {
     this.medicalSymptomsIssue,
     this.symptomsDiseaseRegion,
     this.selectedDoctorName,
+    this.medicalComplaints = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -56,6 +59,7 @@ class MedicinesDataEntryState extends Equatable {
           medicalSymptomsIssue: null,
           symptomsDiseaseRegion: null,
           selectedDoctorName: null,
+          medicalComplaints: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -74,6 +78,7 @@ class MedicinesDataEntryState extends Equatable {
     String? medicalSymptomsIssue,
     String? symptomsDiseaseRegion,
     String? selectedDoctorName,
+    List<MedicalComplaint>? medicalComplaints,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -94,6 +99,7 @@ class MedicinesDataEntryState extends Equatable {
       symptomsDiseaseRegion:
           symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
+      medicalComplaints: medicalComplaints ?? this.medicalComplaints,
     );
   }
 
@@ -114,5 +120,6 @@ class MedicinesDataEntryState extends Equatable {
         medicalSymptomsIssue,
         symptomsDiseaseRegion,
         selectedDoctorName,
+        medicalComplaints,
       ];
 }
