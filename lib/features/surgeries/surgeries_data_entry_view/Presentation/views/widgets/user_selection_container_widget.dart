@@ -81,12 +81,14 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  selectedItem ?? widget.containerHintText,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: selectedItem != null
-                        ? AppColorsManager.textColor
-                        : null,
+                Expanded(
+                  child: Text(
+                    selectedItem ?? widget.containerHintText,
+                    style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      color: selectedItem != null
+                          ? AppColorsManager.textColor
+                          : null,
+                    ),
                   ),
                 ),
                 Image.asset(
@@ -198,18 +200,20 @@ void showSelectionBottomSheet({
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  options[index],
-                                  style: AppTextStyles.font16DarkGreyWeight400
-                                      .copyWith(
-                                    color: isSelected
-                                        ? AppColorsManager.mainDarkBlue
-                                        : Color(0xff555555),
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
+                                Expanded(
+                                  child: Text(
+                                    options[index],
+                                    style: AppTextStyles.font16DarkGreyWeight400
+                                        .copyWith(
+                                      color: isSelected
+                                          ? AppColorsManager.mainDarkBlue
+                                          : Color(0xff555555),
+                                      fontWeight: isSelected
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                    ),
+                                    textAlign: TextAlign.right,
                                   ),
-                                  textAlign: TextAlign.left,
                                 ),
                                 isSelected
                                     ? Image.asset(

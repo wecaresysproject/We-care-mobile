@@ -15,6 +15,8 @@ class SurgeryDataEntryState extends Equatable {
   final String? selectedCountryName;
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
+  final List<String> surgeryNames;
+  final String? selectedSubSurgery; //المنطقة المختاره للعمليات الفرعية
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -30,6 +32,8 @@ class SurgeryDataEntryState extends Equatable {
     this.selectedCountryName,
     this.bodyParts = const [],
     this.subSurgeryRegions = const [],
+    this.surgeryNames = const [],
+    this.selectedSubSurgery,
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -46,6 +50,8 @@ class SurgeryDataEntryState extends Equatable {
           selectedCountryName: null,
           bodyParts: const [],
           subSurgeryRegions: const [],
+          surgeryNames: const [],
+          selectedSubSurgery: null,
         );
 
   SurgeryDataEntryState copyWith({
@@ -62,6 +68,8 @@ class SurgeryDataEntryState extends Equatable {
     String? selectedCountryName,
     List<String>? bodyParts,
     List<String>? subSurgeryRegions,
+    List<String>? surgeryNames,
+    String? selectedSubSurgery,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -81,6 +89,8 @@ class SurgeryDataEntryState extends Equatable {
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       bodyParts: bodyParts ?? this.bodyParts,
       subSurgeryRegions: subSurgeryRegions ?? this.subSurgeryRegions,
+      surgeryNames: surgeryNames ?? this.surgeryNames,
+      selectedSubSurgery: selectedSubSurgery ?? this.selectedSubSurgery,
     );
   }
 
@@ -99,5 +109,7 @@ class SurgeryDataEntryState extends Equatable {
         selectedCountryName,
         bodyParts,
         subSurgeryRegions,
+        surgeryNames,
+        selectedSubSurgery,
       ];
 }

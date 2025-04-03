@@ -9,6 +9,10 @@ class SurgeriesApiConstants {
       "/api/EnterSectionSurgery/surgery-regions";
   static const getSubSurgeriesRegions =
       "/api/EnterSectionSurgery/sub-surgery-regions-connected";
+
+  static const getSurgeryName =
+      "/api/EnterSectionSurgery/surgery-names-connected";
+
   //View Entry
 <<<<<<< HEAD
   static const getAllSurgeries = "/EnterSectionSurgery";

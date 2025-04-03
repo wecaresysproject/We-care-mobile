@@ -38,6 +38,14 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     validateRequiredFields();
   }
 
+  Future<void> updateSelectedSubSurgery(String? value) async {
+    emit(state.copyWith(selectedSubSurgery: value));
+    await emitSurgeryNamesBasedOnRegion(
+      region: state.surgeryBodyPartSelection!,
+      subRegion: value!,
+    );
+  }
+
   Future<void> intialRequestsForDataEntry() async {
     await emitGetAllSurgeriesRegions();
     await emitCountriesData();
@@ -71,6 +79,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   // المناطق العمليه الفرعيه
+
   Future<void> emitGetAllSubSurgeriesRegions(
       {required String selectedRegion}) async {
     final response = await _surgeriesDataEntryRepo.getAllSubSurgeriesRegions(
@@ -82,6 +91,31 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         emit(
           state.copyWith(
             subSurgeryRegions: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitSurgeryNamesBasedOnRegion(
+      {required String region, required String subRegion}) async {
+    final response = await _surgeriesDataEntryRepo.getSurgeryNamesBasedOnRegion(
+      language: AppStrings.arabicLang,
+      region: region,
+      subRegion: subRegion,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            surgeryNames: response,
           ),
         );
       },

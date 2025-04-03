@@ -73,4 +73,22 @@ class SurgeriesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getSurgeryNamesBasedOnRegion({
+    required String language,
+    required String region,
+    required String subRegion,
+  }) async {
+    try {
+      final response = await _surgeriesService.getSurgeryNameBasedOnRegion(
+        region,
+        subRegion,
+        language,
+      );
+      final data = (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

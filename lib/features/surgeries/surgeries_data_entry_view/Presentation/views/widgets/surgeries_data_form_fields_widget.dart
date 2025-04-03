@@ -81,7 +81,9 @@ class _SuergeriesDataEntryFormFieldsState
               containerHintText: "اختر المنطقة التى تمت بها العملية",
               options: state.subSurgeryRegions,
               onOptionSelected: (value) {
-                // context.read<SurgeryDataEntryCubit>().updateXRayType(value);
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedSubSurgery(value);
 
                 log("xxx:Selected: $value");
               },
@@ -96,11 +98,7 @@ class _SuergeriesDataEntryFormFieldsState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "اسم العملية", // Another Dropdown Example
               containerHintText: "اختر اسم العملية",
-              options: [
-                "1اسم العملية",
-                "2اسم العملية",
-                "3اسم العملية",
-              ],
+              options: state.surgeryNames,
               onOptionSelected: (value) {
                 context.read<SurgeryDataEntryCubit>().updateSurgeryName(value);
                 log("xxx:Selected: $value");
