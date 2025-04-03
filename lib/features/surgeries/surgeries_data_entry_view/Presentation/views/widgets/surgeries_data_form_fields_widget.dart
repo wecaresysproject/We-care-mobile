@@ -64,19 +64,15 @@ class _SuergeriesDataEntryFormFieldsState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "العضو",
               containerHintText: "اختر منطقة العمليه",
-              options: [
-                "القلب",
-                "القدم",
-                "الظهر",
-                "الصدر",
-              ],
+              options: state.bodyParts,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context
                     .read<SurgeryDataEntryCubit>()
                     .updateSurgeryBodyPart(value);
               },
-              bottomSheetTitle: 'اختر المنطقة الخاصة بالعمليه',
+              bottomSheetTitle: state.surgeryBodyPartSelection ??
+                  'اختر المنطقة الخاصة بالعمليه',
             ),
 
             verticalSpacing(16),

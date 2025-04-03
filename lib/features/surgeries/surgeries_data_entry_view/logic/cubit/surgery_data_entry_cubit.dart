@@ -38,6 +38,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
+    await emitGetAllSurgeriesRegions();
     await emitCountriesData();
   }
 
@@ -62,6 +63,28 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
           state.copyWith(
             message: error.errors.first,
             surgeryUploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitGetAllSurgeriesRegions() async {
+    final response = await _surgeriesDataEntryRepo.getAllSurgeriesRegions(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            bodyParts: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
           ),
         );
       },

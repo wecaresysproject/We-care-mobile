@@ -22,7 +22,10 @@ abstract class SurgeriesService {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
-
+  @GET(SurgeriesApiConstants.getAllSurgeriesRegions)
+  Future<dynamic> getAllSurgeriesRegions(
+    @Query("language") String language,
+  );
   @GET(SurgeriesApiConstants.getAllSurgeries)
   Future<GetUserSurgeriesResponseModal> getSurgeries(
     @Query("language") String language,

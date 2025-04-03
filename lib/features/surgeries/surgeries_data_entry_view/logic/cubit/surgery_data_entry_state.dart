@@ -13,6 +13,7 @@ class SurgeryDataEntryState extends Equatable {
   final UploadReportRequestStatus surgeryUploadReportStatus;
   final List<String> countriesNames;
   final String? selectedCountryName;
+  final List<String> bodyParts;
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -26,6 +27,7 @@ class SurgeryDataEntryState extends Equatable {
     this.surgeryUploadReportStatus = UploadReportRequestStatus.initial,
     this.countriesNames = const [],
     this.selectedCountryName,
+    this.bodyParts = const [],
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -40,6 +42,7 @@ class SurgeryDataEntryState extends Equatable {
           surgeryUploadReportStatus: UploadReportRequestStatus.initial,
           countriesNames: const [],
           selectedCountryName: null,
+          bodyParts: const [],
         );
 
   SurgeryDataEntryState copyWith({
@@ -54,6 +57,7 @@ class SurgeryDataEntryState extends Equatable {
     UploadReportRequestStatus? surgeryUploadReportStatus,
     List<String>? countriesNames,
     String? selectedCountryName,
+    List<String>? bodyParts,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -71,6 +75,7 @@ class SurgeryDataEntryState extends Equatable {
           surgeryUploadReportStatus ?? this.surgeryUploadReportStatus,
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+      bodyParts: bodyParts ?? this.bodyParts,
     );
   }
 
@@ -87,5 +92,6 @@ class SurgeryDataEntryState extends Equatable {
         surgeryUploadReportStatus,
         countriesNames,
         selectedCountryName,
+        bodyParts,
       ];
 }
