@@ -1,0 +1,44 @@
+import 'dart:io';
+
+import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/core/networking/api_error_handler.dart';
+import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/surgeries/surgeries_services.dart';
+
+class SurgeriesDataEntryRepo {
+  final SurgeriesService _surgeriesService;
+
+  SurgeriesDataEntryRepo({required SurgeriesService surgeriesService})
+      : _surgeriesService = surgeriesService;
+
+  Future<ApiResult<List<CountryModel>>> getCountriesData(
+      {required String language}) async {
+    try {
+      final response = await _surgeriesService.getCountries(language);
+      final countries = (response['data'] as List)
+          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .toList();
+      return ApiResult.success(countries);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _surgeriesService.uploadReportImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+}

@@ -1,13 +1,27 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
 
 part 'surgeries_services.g.dart';
 
 @RestApi(baseUrl: SurgeriesApiConstants.baseUrl)
 abstract class SurgeriesService {
   factory SurgeriesService(Dio dio, {String baseUrl}) = _SurgeriesService;
+
+  @GET("http://147.93.57.70/api/countries")
+  Future<dynamic> getCountries(@Query('language') String language);
+
+  @MultiPart()
+  @POST(SurgeriesApiConstants.uploadReportEndpoint)
+  Future<UploadReportResponseModel> uploadReportImage(
+    @Part() File report,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
 
   @GET(SurgeriesApiConstants.getAllSurgeries)
   Future<GetUserSurgeriesResponseModal> getSurgeries(

@@ -14,7 +14,8 @@ class SurgeriesDataEntryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SurgeryDataEntryCubit>(
-      create: (context) => getIt<SurgeryDataEntryCubit>(),
+      create: (context) =>
+          getIt<SurgeryDataEntryCubit>()..intialRequestsForDataEntry(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

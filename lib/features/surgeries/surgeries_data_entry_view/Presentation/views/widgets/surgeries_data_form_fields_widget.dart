@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -175,20 +177,39 @@ class _SuergeriesDataEntryFormFieldsState
             ),
 
             verticalSpacing(8),
-            SelectImageContainer(
-              imagePath: "assets/images/photo_icon.png",
-              label: " ارفق صورة للتقرير",
-              onTap: () async {
-                await showImagePicker(
-                  context,
-                  onImagePicked: (isImagePicked) {
-                    final picker = getIt.get<ImagePickerService>();
-                    if (isImagePicked && picker.isImagePickedAccepted) {
-                      log("xxx: image path: ${picker.pickedImage?.path}");
-                    }
-                  },
-                );
+            BlocListener<SurgeryDataEntryCubit, SurgeryDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.surgeryUploadReportStatus !=
+                  curr.surgeryUploadReportStatus,
+              listener: (context, state) async {
+                if (state.surgeryUploadReportStatus ==
+                    UploadReportRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.surgeryUploadReportStatus ==
+                    UploadReportRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
+              child: SelectImageContainer(
+                imagePath: "assets/images/photo_icon.png",
+                label: "ارفق صورة",
+                onTap: () async {
+                  await showImagePicker(
+                    context,
+                    onImagePicked: (isImagePicked) async {
+                      final picker = getIt.get<ImagePickerService>();
+                      if (isImagePicked && picker.isImagePickedAccepted) {
+                        await context
+                            .read<SurgeryDataEntryCubit>()
+                            .uploadReportImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
+                      }
+                    },
+                  );
+                },
+              ),
             ),
             verticalSpacing(16),
 
@@ -277,18 +298,15 @@ class _SuergeriesDataEntryFormFieldsState
 
             ///الدولة
             UserSelectionContainer(
-              allowManualEntry: true,
-              options: [
-                "مصر",
-                "الامارات",
-                "السعوديه",
-                "الكويت",
-                "العراق",
-              ],
+              options: state.countriesNames,
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
-              onOptionSelected: (value) {},
-              containerHintText: "اختر اسم الدولة",
+              onOptionSelected: (value) {
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedCountry(value);
+              },
+              containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
             ),
 
             verticalSpacing(16),

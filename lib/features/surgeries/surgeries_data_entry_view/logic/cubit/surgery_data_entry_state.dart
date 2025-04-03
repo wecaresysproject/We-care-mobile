@@ -8,8 +8,11 @@ class SurgeryDataEntryState extends Equatable {
   final String? surgeryDateSelection;
   final String? surgeryBodyPartSelection;
   final String? surgeryNameSelection;
-  final String? xRayTypeSelection;
-  final bool? isXRayPictureSelected;
+  final String message; // error or success message
+  final String? reportImageUploadedUrl;
+  final UploadReportRequestStatus surgeryUploadReportStatus;
+  final List<String> countriesNames;
+  final String? selectedCountryName;
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -18,8 +21,11 @@ class SurgeryDataEntryState extends Equatable {
     this.surgeryDateSelection,
     this.surgeryBodyPartSelection,
     this.surgeryNameSelection,
-    this.xRayTypeSelection,
-    this.isXRayPictureSelected,
+    this.message = '',
+    this.reportImageUploadedUrl,
+    this.surgeryUploadReportStatus = UploadReportRequestStatus.initial,
+    this.countriesNames = const [],
+    this.selectedCountryName,
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -29,8 +35,11 @@ class SurgeryDataEntryState extends Equatable {
           surgeryDateSelection: null,
           surgeryBodyPartSelection: null,
           surgeryNameSelection: null,
-          xRayTypeSelection: null,
-          isXRayPictureSelected: null,
+          message: '',
+          reportImageUploadedUrl: null,
+          surgeryUploadReportStatus: UploadReportRequestStatus.initial,
+          countriesNames: const [],
+          selectedCountryName: null,
         );
 
   SurgeryDataEntryState copyWith({
@@ -40,8 +49,11 @@ class SurgeryDataEntryState extends Equatable {
     String? surgeryDateSelection,
     String? surgeryBodyPartSelection,
     String? surgeryNameSelection,
-    String? xRayTypeSelection,
-    bool? isXRayPictureSelected,
+    String? message,
+    String? reportImageUploadedUrl,
+    UploadReportRequestStatus? surgeryUploadReportStatus,
+    List<String>? countriesNames,
+    String? selectedCountryName,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -52,9 +64,13 @@ class SurgeryDataEntryState extends Equatable {
       surgeryBodyPartSelection:
           surgeryBodyPartSelection ?? this.surgeryBodyPartSelection,
       surgeryNameSelection: surgeryNameSelection ?? this.surgeryNameSelection,
-      xRayTypeSelection: xRayTypeSelection ?? this.xRayTypeSelection,
-      isXRayPictureSelected:
-          isXRayPictureSelected ?? this.isXRayPictureSelected,
+      message: message ?? this.message,
+      reportImageUploadedUrl:
+          reportImageUploadedUrl ?? this.reportImageUploadedUrl,
+      surgeryUploadReportStatus:
+          surgeryUploadReportStatus ?? this.surgeryUploadReportStatus,
+      countriesNames: countriesNames ?? this.countriesNames,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
     );
   }
 
@@ -66,7 +82,10 @@ class SurgeryDataEntryState extends Equatable {
         surgeryDateSelection,
         surgeryBodyPartSelection,
         surgeryNameSelection,
-        xRayTypeSelection,
-        isXRayPictureSelected,
+        message,
+        reportImageUploadedUrl,
+        surgeryUploadReportStatus,
+        countriesNames,
+        selectedCountryName,
       ];
 }
