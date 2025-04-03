@@ -79,12 +79,7 @@ class _SuergeriesDataEntryFormFieldsState
             UserSelectionContainer(
               categoryLabel: "منطقة العملية الفرعية",
               containerHintText: "اختر المنطقة التى تمت بها العملية",
-              options: [
-                "القلب",
-                "القدم",
-                "الظهر",
-                "الصدر",
-              ],
+              options: state.subSurgeryRegions,
               onOptionSelected: (value) {
                 // context.read<SurgeryDataEntryCubit>().updateXRayType(value);
 

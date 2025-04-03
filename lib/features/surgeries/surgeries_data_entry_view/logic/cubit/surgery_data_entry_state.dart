@@ -14,6 +14,7 @@ class SurgeryDataEntryState extends Equatable {
   final List<String> countriesNames;
   final String? selectedCountryName;
   final List<String> bodyParts;
+  final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -28,6 +29,7 @@ class SurgeryDataEntryState extends Equatable {
     this.countriesNames = const [],
     this.selectedCountryName,
     this.bodyParts = const [],
+    this.subSurgeryRegions = const [],
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -43,6 +45,7 @@ class SurgeryDataEntryState extends Equatable {
           countriesNames: const [],
           selectedCountryName: null,
           bodyParts: const [],
+          subSurgeryRegions: const [],
         );
 
   SurgeryDataEntryState copyWith({
@@ -58,6 +61,7 @@ class SurgeryDataEntryState extends Equatable {
     List<String>? countriesNames,
     String? selectedCountryName,
     List<String>? bodyParts,
+    List<String>? subSurgeryRegions,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -76,6 +80,7 @@ class SurgeryDataEntryState extends Equatable {
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       bodyParts: bodyParts ?? this.bodyParts,
+      subSurgeryRegions: subSurgeryRegions ?? this.subSurgeryRegions,
     );
   }
 
@@ -93,5 +98,6 @@ class SurgeryDataEntryState extends Equatable {
         countriesNames,
         selectedCountryName,
         bodyParts,
+        subSurgeryRegions,
       ];
 }

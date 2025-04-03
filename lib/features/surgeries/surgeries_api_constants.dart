@@ -7,6 +7,8 @@ class SurgeriesApiConstants {
   static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
   static const getAllSurgeriesRegions = // العضو
       "/api/EnterSectionSurgery/surgery-regions";
+  static const getSubSurgeriesRegions =
+      "/api/EnterSectionSurgery/sub-surgery-regions-connected";
   //View Entry
 <<<<<<< HEAD
   static const getAllSurgeries = "/EnterSectionSurgery";
