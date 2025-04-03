@@ -58,24 +58,25 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
     });
   }
 
-  // Future<void> deletePrescriptionById(String id) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _prescriptionRepo.deletePrescriptionById(
-  //       id: id, language: AppStrings.arabicLang, userType: 'Patient');
+  Future<void> deleteSurgeryById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _surgeriesViewRepo.deleteSurgeryById(
+      id: id,
+    );
 
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       responseMessage: response,
-  //       isDeleteRequest: true,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //         responseMessage: error.errors.first,
-  //         isDeleteRequest: true));
-  //   });
-  // }
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        responseMessage: response,
+        isDeleteRequest: true,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isDeleteRequest: true));
+    });
+  }
 
   Future<void> getFilteredSurgeryList({int? year, String? surgeryName}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));

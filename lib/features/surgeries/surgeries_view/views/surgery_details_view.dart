@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -15,14 +19,23 @@ class SurgeryDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<SurgeriesViewCubit>()..getSurgeryDetailsById(documentId),
+    return BlocProvider.value(
+      value: getIt<SurgeriesViewCubit>()..getSurgeryDetailsById(documentId),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
-        body: BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
+        body: BlocConsumer<SurgeriesViewCubit, SurgeriesViewState>(
+          listener: (context, state) async {
+            if (state.requestStatus == RequestStatus.success &&
+                state.isDeleteRequest) {
+              Navigator.pop(context);
+              await showSuccess(state.responseMessage);
+            } else if (state.requestStatus == RequestStatus.failure &&
+                state.isDeleteRequest) {
+              await showError(state.responseMessage);
+            }
+          },
           buildWhen: (previous, current) =>
               previous.selectedSurgeryDetails != current.selectedSurgeryDetails,
           builder: (context, state) {
@@ -38,7 +51,13 @@ class SurgeryDetailsView extends StatelessWidget {
               child: Column(
                 spacing: 16.h,
                 children: [
-                  DetailsViewAppBar(title: 'العمليات'),
+                  DetailsViewAppBar(
+                    title: 'العمليات',
+                    deleteFunction: () async => await context
+                        .read<SurgeriesViewCubit>()
+                        .deleteSurgeryById(documentId),
+                    shareFunction: () => _shareSurgeryDetails(context, state),
+                  ),
                   Row(children: [
                     DetailsViewInfoTile(
                       title: "كود ICHI",
@@ -144,5 +163,47 @@ class SurgeryDetailsView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> _shareSurgeryDetails(
+    BuildContext context, SurgeriesViewState state) async {
+  try {
+    final surgeryDetails = state.selectedSurgeryDetails!;
+
+    // 📝 Extract text details
+    final text = '''
+    ⚕️ *تفاصيل العملية* ⚕️
+
+    📅 *التاريخ*: ${surgeryDetails.surgeryDate}
+    🏥 *المستشفى*: ${surgeryDetails.hospitalCenter}
+    🌍 *الدولة*: ${surgeryDetails.country}
+    🧑‍⚕️ *الجراح*: ${surgeryDetails.surgeonName}
+    ⚕️ *طبيب الباطنة*: ${surgeryDetails.anesthesiologistName}
+    🌤 *الحالة*: ${surgeryDetails.surgeryStatus}
+    💪 *التقنية المستخدمة*: ${surgeryDetails.usedTechnique}
+    📃 *التوصيف*: ${surgeryDetails.surgeryDescription}
+    📕 *التعليمات بعد العملية*: ${surgeryDetails.postSurgeryInstructions}
+    ''';
+
+    // 📥 Download images
+    final tempDir = await getTemporaryDirectory();
+    List<String> imagePaths = [];
+
+    if (surgeryDetails.medicalReportImage.startsWith("http")) {
+      final imagePath = await downloadImage(
+          surgeryDetails.medicalReportImage, tempDir, 'medical_report.png');
+      if (imagePath != null) imagePaths.add(imagePath);
+    }
+
+    // 📤 Share text & images
+    if (imagePaths.isNotEmpty) {
+      await Share.shareXFiles(imagePaths.map((path) => XFile(path)).toList(),
+          text: text);
+    } else {
+      await Share.share(text);
+    }
+  } catch (e) {
+    await showError("❌ حدث خطأ أثناء المشاركة");
   }
 }

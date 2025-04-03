@@ -26,4 +26,7 @@ abstract class SurgeriesService {
       @Query("language") String language,
       @Query("surgeryName") String? surgeryName,
       @Query("year") int? year);
+
+  @DELETE(SurgeriesApiConstants.deleteSurgeryById)
+  Future<dynamic> deleteSurgeryById(@Query("id") String id);
 }
