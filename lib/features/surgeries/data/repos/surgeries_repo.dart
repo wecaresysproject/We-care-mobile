@@ -42,18 +42,18 @@ class SurgeriesViewRepo {
     }
   }
 
-  // Future<ApiResult<String>> deletePrescriptionById(
-  //     {required String id,
-  //     required String language,
-  //     required String userType}) async {
-  //   try {
-  //     final response = await prescriptionServices.deletePrescriptionById(
-  //         id, language, userType);
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> deleteSurgeryById({
+    required String id,
+  }) async {
+    try {
+      final response = await surgeriesService.deleteSurgeryById(
+        id,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   Future<ApiResult<GetUserSurgeriesResponseModal>> getFilteredSurgeries({
     required String language,

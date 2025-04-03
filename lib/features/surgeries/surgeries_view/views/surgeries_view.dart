@@ -86,11 +86,20 @@ class SurgeriesView extends StatelessWidget {
                   return MedicalItemGridView(
                     items: state.userSurgeries,
                     onTap: (id) async {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      final result = await Navigator.push(context,
+                          MaterialPageRoute(builder: (_) {
                         return SurgeryDetailsView(
                           documentId: id,
                         );
                       }));
+                      if (context.mounted) {
+                        await context
+                            .read<SurgeriesViewCubit>()
+                            .getUserSurgeriesList();
+                        await context
+                            .read<SurgeriesViewCubit>()
+                            .getSurgeriesFilters();
+                      }
                     },
                     titleBuilder: (item) => item.surgeryName,
                     infoRowBuilder: (item) => [

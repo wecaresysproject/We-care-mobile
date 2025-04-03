@@ -7,6 +7,7 @@ class SurgeriesApiConstants {
   //View Entry
   static const getAllSurgeries = "/EnterSectionSurgery";
   static const getSingleSurgery = "/ViewSectionSurgery/filter-by-id";
+  static const deleteSurgeryById = "/EnterSectionSurgery";
 
   //filters
   static const getSurgeriesFilters = "/ViewSectionSurgery/surgery-info";
