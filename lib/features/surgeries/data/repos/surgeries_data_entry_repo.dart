@@ -4,6 +4,7 @@ import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_services.dart';
 
 class SurgeriesDataEntryRepo {
@@ -146,6 +147,21 @@ class SurgeriesDataEntryRepo {
       final data = (response['data'] as List).map((e) => e as String).toList();
 
       return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postModuleData({
+    required String language,
+    required SurgeryRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _surgeriesService.postSurgeryData(
+        language,
+        requestBody,
+      );
+      return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

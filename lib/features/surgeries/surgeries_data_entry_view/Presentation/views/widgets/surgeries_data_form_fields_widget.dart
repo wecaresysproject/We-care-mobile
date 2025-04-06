@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -208,6 +209,9 @@ class _SuergeriesDataEntryFormFieldsState
               bottomSheetTitle: "اختر حالة العملية",
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSurgeryStatus(value);
               },
               containerHintText: "اختر حالة العملية",
             ),
@@ -276,7 +280,7 @@ class _SuergeriesDataEntryFormFieldsState
             WordLimitTextField(
               hintText: "اكتب باختصار أى تعليمات طبية",
               controller:
-                  context.read<SurgeryDataEntryCubit>().personalNotesController,
+                  context.read<SurgeryDataEntryCubit>().postSurgeryInstructions,
             ),
             verticalSpacing(10),
 
@@ -309,20 +313,52 @@ class _SuergeriesDataEntryFormFieldsState
             ///TODO: handle this button in main view and remove it from here
             /// final section
             verticalSpacing(32),
-            AppCustomButton(
-              title: "ارسال",
-              onPressed: () {
-                if (state.isFormValidated) {
-                  // context.read<XRayDataEntryCubit>().sendForm;
-                  log("xxx:Save Data Entry");
-                } else {
-                  log("form not validated");
-                }
-              },
-              isEnabled: state.isFormValidated ? true : false,
-            ),
+            submitSurgeryEntryButtonBlocConsumer(),
             verticalSpacing(71),
           ],
+        );
+      },
+    );
+  }
+
+  Widget submitSurgeryEntryButtonBlocConsumer() {
+    return BlocConsumer<SurgeryDataEntryCubit, SurgeryDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.surgeriesDataEntryStatus == RequestStatus.failure ||
+          curr.surgeriesDataEntryStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.isFormValidated != curr.isFormValidated ||
+          prev.surgeriesDataEntryStatus != curr.surgeriesDataEntryStatus,
+      listener: (context, state) async {
+        if (state.surgeriesDataEntryStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop(
+              result:
+                  true //! send true back to test analysis details view inn order to check if its updated , then reload the view
+              );
+        } else {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: state.surgeriesDataEntryStatus == RequestStatus.loading,
+          title: context.translate.send,
+          onPressed: () async {
+            if (state.isFormValidated) {
+              // state.isEditMode
+              //     ? await context
+              //         .read<TestAnalysisDataEntryCubit>()
+              //         .submitEditsOnTest()
+              //     :
+              await context.read<SurgeryDataEntryCubit>().postModuleData(
+                    context.translate,
+                  );
+              log("xxx:Save Data Entry");
+            }
+          },
+          isEnabled: state.isFormValidated ? true : false,
         );
       },
     );

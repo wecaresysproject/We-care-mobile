@@ -17,6 +17,7 @@ class SurgeriesApiConstants {
   static const getSurgeryStatus =
       "/api/EnterSectionSurgery/status-surgery"; // التقنيه المستخدمه
   static const surgeryPurpose = "/api/EnterSectionSurgery/purpose";
+  static const postSurgeryEndpoint = "/api/EnterSectionSurgery";
   //View Entry
 <<<<<<< HEAD
   static const getAllSurgeries = "/EnterSectionSurgery";

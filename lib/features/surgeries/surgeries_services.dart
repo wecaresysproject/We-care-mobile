@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
 
 part 'surgeries_services.g.dart';
@@ -61,6 +62,11 @@ abstract class SurgeriesService {
     @Query("surgeryNameName") String surgeryName,
     @Query("usedTechniqueName") String techUsed,
     @Query("language") String language,
+  );
+  @POST(SurgeriesApiConstants.postSurgeryEndpoint)
+  Future<dynamic> postSurgeryData(
+    @Query("language") String language,
+    @Body() SurgeryRequestBodyModel requestBody,
   );
 
   @GET(SurgeriesApiConstants.getSingleSurgery)

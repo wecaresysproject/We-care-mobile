@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'surgery_data_entry_state.dart';
 
@@ -17,6 +19,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   final SurgeriesDataEntryRepo _surgeriesDataEntryRepo;
   final personalNotesController = TextEditingController();
   final suergeryDescriptionController = TextEditingController(); // وصف اضافي
+  final postSurgeryInstructions = TextEditingController();
 
   /// Update Field Values
   void updateSurgeryDate(String? date) {
@@ -38,6 +41,10 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     emit(state.copyWith(surgeryNameSelection: name));
     validateRequiredFields();
     await emitGetAllTechUsed();
+  }
+
+  void updateSurgeryStatus(String? bodyPart) {
+    emit(state.copyWith(selectedSurgeryStatus: bodyPart));
   }
 
   Future<void> updateSelectedTechUsed(String? val) async {
@@ -278,10 +285,59 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     }
   }
 
+  Future<void> postModuleData(S locale) async {
+    final response = await _surgeriesDataEntryRepo.postModuleData(
+      language: AppStrings.arabicLang,
+      requestBody: SurgeryRequestBodyModel(
+        surgeryDate: state.surgeryDateSelection!,
+        surgeryName: state.surgeryNameSelection!,
+        surgeryRegion: state.surgeryBodyPartSelection!,
+        subSurgeryRegion: state.selectedSubSurgery!,
+        usedTechnique: state.selectedTechUsed!,
+        surgeryDescription: suergeryDescriptionController.text.isEmpty
+            ? locale.no_data_entered
+            : suergeryDescriptionController.text,
+        medicalReportImage:
+            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        surgeryStatus: state.selectedSurgeryStatus ?? locale.no_data_entered,
+        hospitalCenter: locale.no_data_entered, //TODO: to be handled later
+        surgeonName: state.surgeryNameSelection ?? locale.no_data_entered,
+        anesthesiologistName:
+            locale.no_data_entered, //TODO: to be handled later
+        postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
+            ? locale.no_data_entered
+            : suergeryDescriptionController.text,
+        country: state.selectedCountryName ?? locale.no_data_entered,
+        additionalNotes: personalNotesController.text.isEmpty
+            ? locale.no_data_entered
+            : personalNotesController.text,
+      ),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response,
+            surgeriesDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            surgeriesDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Future<void> close() {
     personalNotesController.dispose();
     suergeryDescriptionController.dispose();
+    postSurgeryInstructions.dispose();
     return super.close();
   }
 }
