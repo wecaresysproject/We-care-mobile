@@ -80,8 +80,8 @@ class _SuergeriesDataEntryFormFieldsState
               categoryLabel: "منطقة العملية الفرعية",
               containerHintText: "اختر المنطقة التى تمت بها العملية",
               options: state.subSurgeryRegions,
-              onOptionSelected: (value) {
-                context
+              onOptionSelected: (value) async {
+                await context
                     .read<SurgeryDataEntryCubit>()
                     .updateSelectedSubSurgery(value);
 
@@ -99,8 +99,10 @@ class _SuergeriesDataEntryFormFieldsState
               categoryLabel: "اسم العملية", // Another Dropdown Example
               containerHintText: "اختر اسم العملية",
               options: state.surgeryNames,
-              onOptionSelected: (value) {
-                context.read<SurgeryDataEntryCubit>().updateSurgeryName(value);
+              onOptionSelected: (value) async {
+                await context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSurgeryName(value);
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر اسم العملية",
@@ -115,8 +117,10 @@ class _SuergeriesDataEntryFormFieldsState
                 "2الهدف من الاجراء",
                 "3الهدف من الاجراء",
               ],
-              onOptionSelected: (value) {
-                context.read<SurgeryDataEntryCubit>().updateSurgeryName(value);
+              onOptionSelected: (value) async {
+                await context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSurgeryName(value);
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر الهدف من العملية",
@@ -125,13 +129,9 @@ class _SuergeriesDataEntryFormFieldsState
             UserSelectionContainer(
               categoryLabel: "التقنية المستخدمة", // Another Dropdown Example
               containerHintText: "اختر التقنية المستخدمة",
-              options: [
-                "1التقنية المستخدمة",
-                "2التقنية المستخدمة",
-                "3التقنية المستخدمة",
-              ],
+              options: state.allTechUsed,
               onOptionSelected: (value) {
-                context.read<SurgeryDataEntryCubit>().updateSurgeryName(value);
+                // context.read<SurgeryDataEntryCubit>();
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر التقنية المستخدمة",

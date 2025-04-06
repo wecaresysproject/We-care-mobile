@@ -31,12 +31,20 @@ abstract class SurgeriesService {
     @Query("surgeryRegion") String region,
     @Query("language") String language,
   );
+  @GET(SurgeriesApiConstants.getAllTechUsed)
+  Future<dynamic> getAllTechUsed(
+    @Query("surgeryRegion") String region,
+    @Query("subSurgeryRegion") String subSurgeryRegion,
+    @Query("surgeryName") String surgeryName,
+    @Query("language") String language,
+  );
   @GET(SurgeriesApiConstants.getSurgeryName)
   Future<dynamic> getSurgeryNameBasedOnRegion(
     @Query("surgeryRegion") String region,
     @Query("subSurgeryRegion") String subSurgeryRegion,
     @Query("language") String language,
   );
+
   @GET(SurgeriesApiConstants.getAllSurgeries)
   Future<GetUserSurgeriesResponseModal> getSurgeries(
     @Query("language") String language,

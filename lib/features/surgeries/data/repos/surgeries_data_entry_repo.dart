@@ -91,4 +91,25 @@ class SurgeriesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAllTechUsed({
+    required String language,
+    required String region,
+    required String subRegion,
+    required String surgeryName,
+  }) async {
+    try {
+      final response = await _surgeriesService.getAllTechUsed(
+        region,
+        subRegion,
+        surgeryName,
+        language,
+      );
+      final data = (response['data'] as List).map((e) => e as String).toList();
+
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
