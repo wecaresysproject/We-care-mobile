@@ -10,6 +10,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -128,14 +129,23 @@ class _SuergeriesDataEntryFormFieldsState
               bottomSheetTitle: "اختر التقنية المستخدمة",
             ),
             verticalSpacing(16),
-            UserSelectionContainer(
-              categoryLabel: "الهدف من الاجراء",
-              containerHintText: "اختر الهدف من العملية",
-              options: state.surgeryPurposes,
-              onOptionSelected: (value) async {
-                log("xxx:Selected: $value");
-              },
-              bottomSheetTitle: "اختر الهدف من العملية",
+            // UserSelectionContainer(
+            //   categoryLabel: "الهدف من الاجراء",
+            //   containerHintText: "اختر الهدف من العملية",
+            //   options: state.surgeryPurposes,
+            //   onOptionSelected: (value) async {
+            //     log("xxx:Selected: $value");
+            //   },
+            //   bottomSheetTitle: "اختر الهدف من العملية",
+            // ),
+            Text(
+              "الهدف من الاجراء",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            CustomContainer(
+              value: state.surgeryPurpose ?? "الهدف من الاجراء",
+              isExpanded: true,
             ),
             verticalSpacing(16),
 

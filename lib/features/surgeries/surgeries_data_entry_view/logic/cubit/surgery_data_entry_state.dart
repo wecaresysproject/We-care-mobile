@@ -20,7 +20,7 @@ class SurgeryDataEntryState extends Equatable {
   final List<String> allTechUsed;
   final List<String> allSurgeryStatuses;
   final String? selectedTechUsed; //المنطقة المختاره للعمليات الفرعية
-  final List<String> surgeryPurposes;
+  final String? surgeryPurpose;
   final String? selectedSurgeryStatus;
 
   const SurgeryDataEntryState({
@@ -42,7 +42,7 @@ class SurgeryDataEntryState extends Equatable {
     this.allTechUsed = const [],
     this.allSurgeryStatuses = const [],
     this.selectedTechUsed,
-    this.surgeryPurposes = const [],
+    this.surgeryPurpose,
     this.selectedSurgeryStatus,
   }) : super();
 
@@ -65,7 +65,7 @@ class SurgeryDataEntryState extends Equatable {
           allTechUsed: const [],
           allSurgeryStatuses: const [],
           selectedTechUsed: null,
-          surgeryPurposes: const [],
+          surgeryPurpose: null,
           selectedSurgeryStatus: null,
         );
 
@@ -88,7 +88,7 @@ class SurgeryDataEntryState extends Equatable {
     List<String>? allTechUsed,
     List<String>? allSurgeryStatuses,
     String? selectedTechUsed,
-    List<String>? surgeryPurposes,
+    String? surgeryPurpose,
     String? selectedSurgeryStatus,
   }) {
     return SurgeryDataEntryState(
@@ -114,7 +114,7 @@ class SurgeryDataEntryState extends Equatable {
       allTechUsed: allTechUsed ?? this.allTechUsed,
       allSurgeryStatuses: allSurgeryStatuses ?? this.allSurgeryStatuses,
       selectedTechUsed: selectedTechUsed ?? this.selectedTechUsed,
-      surgeryPurposes: surgeryPurposes ?? this.surgeryPurposes,
+      surgeryPurpose: surgeryPurpose ?? this.surgeryPurpose,
       selectedSurgeryStatus:
           selectedSurgeryStatus ?? this.selectedSurgeryStatus,
     );
@@ -140,7 +140,7 @@ class SurgeryDataEntryState extends Equatable {
         allTechUsed,
         allSurgeryStatuses,
         selectedTechUsed,
-        surgeryPurposes,
+        surgeryPurpose,
         selectedSurgeryStatus,
       ];
 }

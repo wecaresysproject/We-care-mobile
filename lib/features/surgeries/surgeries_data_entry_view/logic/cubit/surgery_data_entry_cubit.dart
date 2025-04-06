@@ -250,7 +250,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            surgeryPurposes: response,
+            surgeryPurpose: response,
           ),
         );
       },

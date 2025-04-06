@@ -129,7 +129,7 @@ class SurgeriesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getSurgeryPurpose({
+  Future<ApiResult<String>> getSurgeryPurpose({
     required String language,
     required String region,
     required String subRegion,
@@ -144,7 +144,7 @@ class SurgeriesDataEntryRepo {
         techUsed,
         language,
       );
-      final data = (response['data'] as List).map((e) => e as String).toList();
+      final data = (response['data'][0] as String);
 
       return ApiResult.success(data);
     } catch (error) {
