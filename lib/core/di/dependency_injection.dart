@@ -282,6 +282,11 @@ void setupAppRepos() {
       getIt<MedicinesServices>(),
     ),
   );
+  getIt.registerLazySingleton<MedicinesViewRepo>(
+    () => MedicinesViewRepo(
+      getIt<MedicinesServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {

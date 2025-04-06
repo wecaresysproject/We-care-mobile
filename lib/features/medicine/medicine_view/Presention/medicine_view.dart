@@ -14,59 +14,7 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_r
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicinesView extends StatelessWidget {
-  final List<Map<String, String>> tableData = [
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "CBC",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "سرعة ترسيب كرات الدم الحمراء",
-      "code": "CBC",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "الهرمون المحفز للغدة الدرقية",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-  ];
-
-  MedicinesView({super.key});
+  const MedicinesView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +208,7 @@ class MedicineTable extends StatelessWidget {
                     await context
                         .read<MedicineViewCubit>()
                         .getUserMedicinesList();
+
                     await context
                         .read<MedicineViewCubit>()
                         .getMedicinesFilters();
