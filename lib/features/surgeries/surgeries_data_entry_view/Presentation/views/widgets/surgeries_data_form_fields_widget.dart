@@ -206,11 +206,7 @@ class _SuergeriesDataEntryFormFieldsState
 
             UserSelectionContainer(
               categoryLabel: "حالة العملية",
-              options: [
-                "1حالة العملية",
-                "2حالة العملية",
-                "3حالة العملية",
-              ],
+              options: state.allSurgeryStatuses,
               bottomSheetTitle: "اختر حالة العملية",
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
