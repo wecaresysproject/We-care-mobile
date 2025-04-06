@@ -16,8 +16,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         );
   final SurgeriesDataEntryRepo _surgeriesDataEntryRepo;
   final personalNotesController = TextEditingController();
-  final suergeryDescriptionController =
-      TextEditingController(); // توصيف العملليه
+  final suergeryDescriptionController = TextEditingController(); // وصف اضافي
 
   /// Update Field Values
   void updateSurgeryDate(String? date) {
@@ -44,6 +43,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   Future<void> updateSelectedTechUsed(String? val) async {
     emit(state.copyWith(selectedTechUsed: val));
     await emitSurgeryPurpose();
+    validateRequiredFields();
   }
 
   Future<void> updateSelectedSubSurgery(String? value) async {
@@ -52,6 +52,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       region: state.surgeryBodyPartSelection!,
       subRegion: value!,
     );
+    validateRequiredFields();
   }
 
   Future<void> intialRequestsForDataEntry() async {
@@ -260,7 +261,9 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   void validateRequiredFields() {
     if (state.surgeryDateSelection == null ||
         state.surgeryNameSelection == null ||
-        state.surgeryBodyPartSelection == null) {
+        state.surgeryBodyPartSelection == null ||
+        state.selectedTechUsed == null ||
+        state.selectedSubSurgery == null) {
       emit(
         state.copyWith(
           isFormValidated: false,

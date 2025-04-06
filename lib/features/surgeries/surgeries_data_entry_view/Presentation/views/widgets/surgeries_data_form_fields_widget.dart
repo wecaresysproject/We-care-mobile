@@ -77,6 +77,9 @@ class _SuergeriesDataEntryFormFieldsState
 
             verticalSpacing(16),
             UserSelectionContainer(
+              containerBorderColor: state.selectedSubSurgery == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "منطقة العملية الفرعية",
               containerHintText: "اختر المنطقة التى تمت بها العملية",
               options: state.subSurgeryRegions,
@@ -107,19 +110,11 @@ class _SuergeriesDataEntryFormFieldsState
               },
               bottomSheetTitle: "اختر اسم العملية",
             ),
-
             verticalSpacing(16),
             UserSelectionContainer(
-              categoryLabel: "الهدف من الاجراء", // Another Dropdown Example
-              containerHintText: "اختر الهدف من العملية",
-              options: state.surgeryPurposes,
-              onOptionSelected: (value) async {
-                log("xxx:Selected: $value");
-              },
-              bottomSheetTitle: "اختر الهدف من العملية",
-            ),
-            verticalSpacing(16),
-            UserSelectionContainer(
+              containerBorderColor: state.selectedTechUsed == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "التقنية المستخدمة", // Another Dropdown Example
               containerHintText: "اختر التقنية المستخدمة",
               options: state.allTechUsed,
@@ -132,13 +127,24 @@ class _SuergeriesDataEntryFormFieldsState
               bottomSheetTitle: "اختر التقنية المستخدمة",
             ),
             verticalSpacing(16),
+            UserSelectionContainer(
+              categoryLabel: "الهدف من الاجراء",
+              containerHintText: "اختر الهدف من العملية",
+              options: state.surgeryPurposes,
+              onOptionSelected: (value) async {
+                log("xxx:Selected: $value");
+              },
+              bottomSheetTitle: "اختر الهدف من العملية",
+            ),
+            verticalSpacing(16),
+
             Text(
-              "توصيف العملية",
+              "وصف اضافي للعملية",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
             WordLimitTextField(
-              hintText: "اكتب توصيف العملية",
+              hintText: "اكتب وصف العملية",
               controller: context
                   .read<SurgeryDataEntryCubit>()
                   .suergeryDescriptionController,
