@@ -16,6 +16,7 @@ class SurgeriesApiConstants {
       "/api/EnterSectionSurgery/used-techniques-connected"; // التقنيه المستخدمه
   static const getSurgeryStatus =
       "/api/EnterSectionSurgery/status-surgery"; // التقنيه المستخدمه
+  static const surgeryPurpose = "/api/EnterSectionSurgery/purpose";
   //View Entry
 <<<<<<< HEAD
   static const getAllSurgeries = "/EnterSectionSurgery";

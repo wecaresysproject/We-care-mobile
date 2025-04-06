@@ -54,6 +54,14 @@ abstract class SurgeriesService {
   Future<GetUserSurgeriesResponseModal> getSurgeries(
     @Query("language") String language,
   );
+  @GET(SurgeriesApiConstants.surgeryPurpose)
+  Future<dynamic> getSurgeryPurpose(
+    @Query("surgeryRegionName") String region,
+    @Query("subSurgeryRegionName") String subSurgeryRegion,
+    @Query("surgeryNameName") String surgeryName,
+    @Query("usedTechniqueName") String techUsed,
+    @Query("language") String language,
+  );
 
   @GET(SurgeriesApiConstants.getSingleSurgery)
   Future<dynamic> getSurgeryById(

@@ -16,6 +16,8 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         );
   final SurgeriesDataEntryRepo _surgeriesDataEntryRepo;
   final personalNotesController = TextEditingController();
+  final suergeryDescriptionController =
+      TextEditingController(); // توصيف العملليه
 
   /// Update Field Values
   void updateSurgeryDate(String? date) {
@@ -37,6 +39,11 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     emit(state.copyWith(surgeryNameSelection: name));
     validateRequiredFields();
     await emitGetAllTechUsed();
+  }
+
+  Future<void> updateSelectedTechUsed(String? val) async {
+    emit(state.copyWith(selectedTechUsed: val));
+    await emitSurgeryPurpose();
   }
 
   Future<void> updateSelectedSubSurgery(String? value) async {
@@ -222,6 +229,33 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     );
   }
 
+  Future<void> emitSurgeryPurpose() async {
+    final response = await _surgeriesDataEntryRepo.getSurgeryPurpose(
+      language: AppStrings.arabicLang,
+      region: state.surgeryBodyPartSelection!,
+      subRegion: state.selectedSubSurgery!,
+      surgeryName: state.surgeryNameSelection!,
+      techUsed: state.selectedTechUsed!,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            surgeryPurposes: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.surgeryDateSelection == null ||
@@ -244,6 +278,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   @override
   Future<void> close() {
     personalNotesController.dispose();
+    suergeryDescriptionController.dispose();
     return super.close();
   }
 }

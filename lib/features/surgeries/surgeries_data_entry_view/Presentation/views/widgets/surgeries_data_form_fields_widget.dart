@@ -112,15 +112,8 @@ class _SuergeriesDataEntryFormFieldsState
             UserSelectionContainer(
               categoryLabel: "الهدف من الاجراء", // Another Dropdown Example
               containerHintText: "اختر الهدف من العملية",
-              options: [
-                "1الهدف من الاجراء",
-                "2الهدف من الاجراء",
-                "3الهدف من الاجراء",
-              ],
+              options: state.surgeryPurposes,
               onOptionSelected: (value) async {
-                await context
-                    .read<SurgeryDataEntryCubit>()
-                    .updateSurgeryName(value);
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر الهدف من العملية",
@@ -131,27 +124,26 @@ class _SuergeriesDataEntryFormFieldsState
               containerHintText: "اختر التقنية المستخدمة",
               options: state.allTechUsed,
               onOptionSelected: (value) {
-                // context.read<SurgeryDataEntryCubit>();
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedTechUsed(value);
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر التقنية المستخدمة",
             ),
             verticalSpacing(16),
-            // TODO: use shared custom field instead
-            UserSelectionContainer(
-              categoryLabel: "توصيف العملية", // Another Dropdown Example
-              containerHintText: "اكتب وصف للعملية",
-              options: [
-                "1التقنية المستخدمة",
-                "2التقنية المستخدمة",
-                "3التقنية المستخدمة",
-              ],
-              onOptionSelected: (value) {
-                context.read<SurgeryDataEntryCubit>().updateSurgeryName(value);
-                log("xxx:Selected: $value");
-              },
-              bottomSheetTitle: "اختر التقنية المستخدمة",
+            Text(
+              "توصيف العملية",
+              style: AppTextStyles.font18blackWight500,
             ),
+            verticalSpacing(10),
+            WordLimitTextField(
+              hintText: "اكتب توصيف العملية",
+              controller: context
+                  .read<SurgeryDataEntryCubit>()
+                  .suergeryDescriptionController,
+            ),
+
             verticalSpacing(16),
 
             Text(
@@ -280,6 +272,7 @@ class _SuergeriesDataEntryFormFieldsState
               controller:
                   context.read<SurgeryDataEntryCubit>().personalNotesController,
             ),
+            verticalSpacing(10),
 
             ///الدولة
             UserSelectionContainer(
