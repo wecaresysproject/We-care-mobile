@@ -10,6 +10,8 @@ class MedicinesApiConstants {
 
   //View Entry
   static const getAllMedicines = "MedicineUserEntryPage/GetUserMedicines";
+  static const getSingleMedicine = "MedicineUserEntryPage/GetMedicineById";
+  static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";
 
   //filters
   static const getFilters = "MedicineUserEntryPage/GetUserMedicineFilters";

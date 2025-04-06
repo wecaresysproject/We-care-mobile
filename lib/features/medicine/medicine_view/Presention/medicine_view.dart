@@ -142,7 +142,8 @@ class MedicineTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MedicineViewCubit, MedicineViewState>(
       buildWhen: (previous, current) =>
-          previous.userMedicines != current.userMedicines,
+          previous.userMedicines != current.userMedicines ||
+          previous.requestStatus != current.requestStatus,
       builder: (context, state) {
         if (state.userMedicines.isEmpty &&
             state.requestStatus == RequestStatus.loading) {
@@ -154,7 +155,14 @@ class MedicineTable extends StatelessWidget {
           return Center(
             child: Text(
               "لا توجد بيانات",
-              style: AppTextStyles.font14whiteWeight600,
+              style: AppTextStyles.font22MainBlueWeight700,
+            ),
+          );
+        } else if (state.requestStatus == RequestStatus.failure) {
+          return Center(
+            child: Text(
+              state.responseMessage,
+              style: AppTextStyles.font22MainBlueWeight700,
             ),
           );
         }
@@ -241,10 +249,21 @@ class MedicineTable extends StatelessWidget {
                             color: AppColorsManager.mainDarkBlue,
                             decoration: TextDecoration.underline),
                       ),
-                    ), onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return MedicineDetailsView();
+                    ), onTap: () async {
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return MedicineDetailsView(
+                      documentId: data.id,
+                    );
                   }));
+                  if (context.mounted) {
+                    await context
+                        .read<MedicineViewCubit>()
+                        .getUserMedicinesList();
+                    await context
+                        .read<MedicineViewCubit>()
+                        .getMedicinesFilters();
+                  }
                 }),
                 DataCell(Center(
                   child: Text(data.usageDuration,

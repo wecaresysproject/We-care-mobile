@@ -46,6 +46,34 @@ class MedicinesViewRepo {
     }
   }
 
+  Future<ApiResult<MedicineModel>> getMedicineById({
+    required String id,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response =
+          await _medicinesServices.getSingleMedicine(id, language, userType);
+      return ApiResult.success(MedicineModel.fromJson(response["data"]));
+    } catch (e) {
+      return ApiResult.failure(ApiErrorHandler.handle(e));
+    }
+  }
+
+  Future<ApiResult<String>> deleteMedicineById({
+    required String id,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response =
+          await _medicinesServices.deleteMedicineById(id, language, userType);
+      return ApiResult.success(response["message"]);
+    } catch (e) {
+      return ApiResult.failure(ApiErrorHandler.handle(e));
+    }
+  }
+
   Future<ApiResult<GetMedicinesFiltersResponseModel>> getMedicinesFilters({
     required String language,
     required String userType,

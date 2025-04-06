@@ -42,44 +42,46 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     });
   }
 
-  // Future<void> getSurgeryDetailsById(String id) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _surgeriesViewRepo.getSurgeryDetailsById(
-  //       id: id, language: AppStrings.arabicLang);
+  Future<void> getMedicineDetailsById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _medicinesViewRepo.getMedicineById(
+        id: id, language: AppStrings.arabicLang, userType: 'Patient');
 
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       selectedSurgeryDetails: response,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(requestStatus: RequestStatus.failure));
-  //   });
-  // }
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        selectedSurgeryDetails: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(requestStatus: RequestStatus.failure));
+    });
+  }
 
-  // Future<void> deleteSurgeryById(String id) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _surgeriesViewRepo.deleteSurgeryById(
-  //     id: id,
-  //   );
+  Future<void> deleteMedicineById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _medicinesViewRepo.deleteMedicineById(
+      id: id,
+      language: AppStrings.arabicLang,
+      userType: 'Patient',
+    );
 
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       responseMessage: response,
-  //       isDeleteRequest: true,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //         responseMessage: error.errors.first,
-  //         isDeleteRequest: true));
-  //   });
-  // }
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        responseMessage: response,
+        isDeleteRequest: true,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isDeleteRequest: true));
+    });
+  }
 
   //get filtered medicines
   Future<void> getFilteredMedicinesList(
-      {required final int? year, required final String medicineName}) async {
+      {required final int? year, required final String? medicineName}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _medicinesViewRepo.getFilteredMedicines(
         language: AppStrings.arabicLang,
@@ -94,8 +96,9 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
       ));
     }, failure: (error) {
       emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          responseMessage: error.errors.first));
+        requestStatus: RequestStatus.failure,
+        responseMessage: error.errors.first,
+      ));
     });
   }
 }

@@ -15,6 +15,21 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
   );
 
+  @GET(MedicinesApiConstants.getSingleMedicine)
+  Future<dynamic> getSingleMedicine(
+    @Query('medicineId') String id,
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @DELETE(MedicinesApiConstants.deletemedicineById)
+  Future<dynamic> deleteMedicineById(
+    @Query("medicineId") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+
+  @GET(MedicinesApiConstants.getFilteredMedicines)
   Future<GetAllUserMedicinesResponseModel> getFilteredMedicines(
     @GET(MedicinesApiConstants.getAllMedicines)
     @Query('language')
