@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
 class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
-  MedicinesDataEntryCubit(this._emergencyDataEntryRepo)
+  MedicinesDataEntryCubit(this._medicinesDataEntryRepo)
       : super(
           MedicinesDataEntryState.initialState(),
         );
   // ignore: unused_field
-  final MedicinesDataEntryRepo _emergencyDataEntryRepo;
+  final MedicinesDataEntryRepo _medicinesDataEntryRepo;
   final personalInfoController = TextEditingController();
   List<MedicalComplaint> medicalComplaints = [];
   Future<void> fetchAllAddedComplaints() async {
@@ -32,6 +34,33 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         ),
       );
     }
+  }
+
+  Future<void> initialDataEntryRequests() async {
+    await emitAllMedicinesNames();
+  }
+
+  Future<void> emitAllMedicinesNames() async {
+    final response = await _medicinesDataEntryRepo.getAllMedicinesNames(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            medicinesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> removeAddedMedicalComplaint(int index) async {

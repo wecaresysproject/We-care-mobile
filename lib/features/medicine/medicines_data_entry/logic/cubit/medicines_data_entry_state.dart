@@ -19,6 +19,7 @@ class MedicinesDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final bool isFormValidated;
   final List<MedicalComplaint> medicalComplaints;
+  final List<String> medicinesNames;
 
   final bool isEditMode;
   final String message; // error or success message
@@ -40,6 +41,7 @@ class MedicinesDataEntryState extends Equatable {
     this.symptomsDiseaseRegion,
     this.selectedDoctorName,
     this.medicalComplaints = const [],
+    this.medicinesNames = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -60,6 +62,7 @@ class MedicinesDataEntryState extends Equatable {
           symptomsDiseaseRegion: null,
           selectedDoctorName: null,
           medicalComplaints: const [],
+          medicinesNames: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -79,6 +82,7 @@ class MedicinesDataEntryState extends Equatable {
     String? symptomsDiseaseRegion,
     String? selectedDoctorName,
     List<MedicalComplaint>? medicalComplaints,
+    List<String>? medicinesNames,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -100,6 +104,7 @@ class MedicinesDataEntryState extends Equatable {
           symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
       medicalComplaints: medicalComplaints ?? this.medicalComplaints,
+      medicinesNames: medicinesNames ?? this.medicinesNames,
     );
   }
 
@@ -121,5 +126,6 @@ class MedicinesDataEntryState extends Equatable {
         symptomsDiseaseRegion,
         selectedDoctorName,
         medicalComplaints,
+        medicinesNames,
       ];
 }
