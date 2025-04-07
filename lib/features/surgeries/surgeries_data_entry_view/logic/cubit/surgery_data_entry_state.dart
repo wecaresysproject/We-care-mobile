@@ -8,8 +8,25 @@ class SurgeryDataEntryState extends Equatable {
   final String? surgeryDateSelection;
   final String? surgeryBodyPartSelection;
   final String? surgeryNameSelection;
-  final String? xRayTypeSelection;
-  final bool? isXRayPictureSelected;
+  final String message; // error or success message
+  final String? reportImageUploadedUrl;
+  final UploadReportRequestStatus surgeryUploadReportStatus;
+  final List<String> countriesNames;
+  final String? selectedCountryName;
+  final List<String> bodyParts;
+  final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
+  final List<String> surgeryNames;
+  final String? selectedSubSurgery; //المنطقة المختاره للعمليات الفرعية
+  final List<String> allTechUsed;
+  final List<String> allSurgeryStatuses;
+  final String? selectedTechUsed; //المنطقة المختاره للعمليات الفرعية
+  final String? surgeryPurpose;
+  final String? selectedSurgeryStatus;
+  final bool isEditMode;
+  final String updatedSurgeryId;
+  final String? surgeonName;
+  final String? selectedHospitalCenter;
+  final String? internistName; // طبيب باطنه
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -18,8 +35,25 @@ class SurgeryDataEntryState extends Equatable {
     this.surgeryDateSelection,
     this.surgeryBodyPartSelection,
     this.surgeryNameSelection,
-    this.xRayTypeSelection,
-    this.isXRayPictureSelected,
+    this.message = '',
+    this.reportImageUploadedUrl,
+    this.surgeryUploadReportStatus = UploadReportRequestStatus.initial,
+    this.countriesNames = const [],
+    this.selectedCountryName,
+    this.bodyParts = const [],
+    this.subSurgeryRegions = const [],
+    this.surgeryNames = const [],
+    this.selectedSubSurgery,
+    this.allTechUsed = const [],
+    this.allSurgeryStatuses = const [],
+    this.selectedTechUsed,
+    this.surgeryPurpose,
+    this.selectedSurgeryStatus,
+    this.isEditMode = false,
+    this.updatedSurgeryId = '',
+    this.surgeonName,
+    this.selectedHospitalCenter,
+    this.internistName,
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -29,8 +63,25 @@ class SurgeryDataEntryState extends Equatable {
           surgeryDateSelection: null,
           surgeryBodyPartSelection: null,
           surgeryNameSelection: null,
-          xRayTypeSelection: null,
-          isXRayPictureSelected: null,
+          message: '',
+          reportImageUploadedUrl: null,
+          surgeryUploadReportStatus: UploadReportRequestStatus.initial,
+          countriesNames: const [],
+          selectedCountryName: null,
+          bodyParts: const [],
+          subSurgeryRegions: const [],
+          surgeryNames: const [],
+          selectedSubSurgery: null,
+          allTechUsed: const [],
+          allSurgeryStatuses: const [],
+          selectedTechUsed: null,
+          surgeryPurpose: null,
+          selectedSurgeryStatus: null,
+          isEditMode: false,
+          updatedSurgeryId: '',
+          surgeonName: null,
+          selectedHospitalCenter: null,
+          internistName: null,
         );
 
   SurgeryDataEntryState copyWith({
@@ -40,8 +91,25 @@ class SurgeryDataEntryState extends Equatable {
     String? surgeryDateSelection,
     String? surgeryBodyPartSelection,
     String? surgeryNameSelection,
-    String? xRayTypeSelection,
-    bool? isXRayPictureSelected,
+    String? message,
+    String? reportImageUploadedUrl,
+    UploadReportRequestStatus? surgeryUploadReportStatus,
+    List<String>? countriesNames,
+    String? selectedCountryName,
+    List<String>? bodyParts,
+    List<String>? subSurgeryRegions,
+    List<String>? surgeryNames,
+    String? selectedSubSurgery,
+    List<String>? allTechUsed,
+    List<String>? allSurgeryStatuses,
+    String? selectedTechUsed,
+    String? surgeryPurpose,
+    String? selectedSurgeryStatus,
+    bool? isEditMode,
+    String? updatedSurgeryId,
+    String? surgeonName,
+    String? selectedHospitalCenter,
+    String? internistName,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -52,9 +120,29 @@ class SurgeryDataEntryState extends Equatable {
       surgeryBodyPartSelection:
           surgeryBodyPartSelection ?? this.surgeryBodyPartSelection,
       surgeryNameSelection: surgeryNameSelection ?? this.surgeryNameSelection,
-      xRayTypeSelection: xRayTypeSelection ?? this.xRayTypeSelection,
-      isXRayPictureSelected:
-          isXRayPictureSelected ?? this.isXRayPictureSelected,
+      message: message ?? this.message,
+      reportImageUploadedUrl:
+          reportImageUploadedUrl ?? this.reportImageUploadedUrl,
+      surgeryUploadReportStatus:
+          surgeryUploadReportStatus ?? this.surgeryUploadReportStatus,
+      countriesNames: countriesNames ?? this.countriesNames,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+      bodyParts: bodyParts ?? this.bodyParts,
+      subSurgeryRegions: subSurgeryRegions ?? this.subSurgeryRegions,
+      surgeryNames: surgeryNames ?? this.surgeryNames,
+      selectedSubSurgery: selectedSubSurgery ?? this.selectedSubSurgery,
+      allTechUsed: allTechUsed ?? this.allTechUsed,
+      allSurgeryStatuses: allSurgeryStatuses ?? this.allSurgeryStatuses,
+      selectedTechUsed: selectedTechUsed ?? this.selectedTechUsed,
+      surgeryPurpose: surgeryPurpose ?? this.surgeryPurpose,
+      selectedSurgeryStatus:
+          selectedSurgeryStatus ?? this.selectedSurgeryStatus,
+      isEditMode: isEditMode ?? this.isEditMode,
+      updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
+      surgeonName: surgeonName ?? this.surgeonName,
+      selectedHospitalCenter:
+          selectedHospitalCenter ?? this.selectedHospitalCenter,
+      internistName: internistName ?? this.internistName,
     );
   }
 
@@ -66,7 +154,24 @@ class SurgeryDataEntryState extends Equatable {
         surgeryDateSelection,
         surgeryBodyPartSelection,
         surgeryNameSelection,
-        xRayTypeSelection,
-        isXRayPictureSelected,
+        message,
+        reportImageUploadedUrl,
+        surgeryUploadReportStatus,
+        countriesNames,
+        selectedCountryName,
+        bodyParts,
+        subSurgeryRegions,
+        surgeryNames,
+        selectedSubSurgery,
+        allTechUsed,
+        allSurgeryStatuses,
+        selectedTechUsed,
+        surgeryPurpose,
+        selectedSurgeryStatus,
+        isEditMode,
+        updatedSurgeryId,
+        surgeonName,
+        selectedHospitalCenter,
+        internistName,
       ];
 }

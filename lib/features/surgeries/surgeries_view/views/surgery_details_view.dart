@@ -6,10 +6,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 
@@ -57,6 +59,18 @@ class SurgeryDetailsView extends StatelessWidget {
                         .read<SurgeriesViewCubit>()
                         .deleteSurgeryById(documentId),
                     shareFunction: () => _shareSurgeryDetails(context, state),
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.surgeriesDataEntryView,
+                        arguments: state.selectedSurgeryDetails,
+                      );
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<SurgeriesViewCubit>()
+                            .getSurgeryDetailsById(documentId);
+                      }
+                    },
                   ),
                   Row(children: [
                     DetailsViewInfoTile(
@@ -108,7 +122,7 @@ class SurgeryDetailsView extends StatelessWidget {
                         icon: 'assets/images/ratio.png'),
                   ]),
                   DetailsViewInfoTile(
-                      title: "وصف مفصل",
+                      title: "وصف اضافي للعملية",
                       value: state.selectedSurgeryDetails!.surgeryDescription,
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
@@ -144,7 +158,8 @@ class SurgeryDetailsView extends StatelessWidget {
                       isExpanded: true),
                   DetailsViewInfoTile(
                       title: " توصيف العملية",
-                      value: state.selectedSurgeryDetails!.surgeryDescription,
+                      value: state.selectedSurgeryDetails!.description ??
+                          "لم يتم تحديده",
                       icon: 'assets/images/file_date_icon.png',
                       isExpanded: true),
                   DetailsViewInfoTile(
