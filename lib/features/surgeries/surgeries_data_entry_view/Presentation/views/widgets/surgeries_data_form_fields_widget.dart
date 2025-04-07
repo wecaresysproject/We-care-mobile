@@ -129,15 +129,6 @@ class _SuergeriesDataEntryFormFieldsState
               bottomSheetTitle: "اختر التقنية المستخدمة",
             ),
             verticalSpacing(16),
-            // UserSelectionContainer(
-            //   categoryLabel: "الهدف من الاجراء",
-            //   containerHintText: "اختر الهدف من العملية",
-            //   options: state.surgeryPurposes,
-            //   onOptionSelected: (value) async {
-            //     log("xxx:Selected: $value");
-            //   },
-            //   bottomSheetTitle: "اختر الهدف من العملية",
-            // ),
             Text(
               "الهدف من الاجراء",
               style: AppTextStyles.font18blackWight500,
