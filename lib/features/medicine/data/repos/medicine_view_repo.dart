@@ -16,7 +16,7 @@ class MedicinesViewRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.getAllMedicines(
+      final response = await _medicinesServices.getAllMedicinesNames(
         language,
         userType,
       );

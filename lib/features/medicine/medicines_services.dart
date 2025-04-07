@@ -9,8 +9,8 @@ part 'medicines_services.g.dart';
 abstract class MedicinesServices {
   factory MedicinesServices(Dio dio, {String? baseUrl}) = _MedicinesServices;
 
-  @GET(MedicinesApiConstants.getAllMedicines)
-  Future<GetAllUserMedicinesResponseModel> getAllMedicines(
+  @GET(MedicinesApiConstants.getAllUserMedicines)
+  Future<GetAllUserMedicinesResponseModel> getAllUserMedicines(
     @Query('language') String language,
     @Query('userType') String userType,
   );
@@ -48,7 +48,17 @@ abstract class MedicinesServices {
   Future<dynamic> getAllComplaintsRelevantToBodyPartName(
     @Query('bodyPartName') String bodyPartName,
   );
-
+  @GET(MedicinesApiConstants.getAllMedicinesNames)
+  Future<dynamic> getAllMedicinesNames(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getMedicineDetailsById)
+  Future<dynamic> getMedicineDetailsById(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
   // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
   // Future<dynamic> postEmergencyDataEntry(
   //   @Body() EmergencyComplainRequestBody requestBody,

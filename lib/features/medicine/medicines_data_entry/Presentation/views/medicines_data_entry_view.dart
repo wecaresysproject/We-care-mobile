@@ -16,7 +16,8 @@ class MedicinesDataEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<MedicinesDataEntryCubit>(
       create: (context) {
-        final cubit = getIt<MedicinesDataEntryCubit>();
+        final cubit = getIt<MedicinesDataEntryCubit>()
+          ..initialDataEntryRequests();
 
         /// ✅ Ensures `context` is fully mounted before calling `S.of(context)`
         // WidgetsBinding.instance.addPostFrameCallback(

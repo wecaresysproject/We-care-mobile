@@ -59,10 +59,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "اسم الدواء",
               containerHintText: state.selectedMedicineName ??
                   "اختر اسم الدواء", //state.doctorNameSelection ?? "اختر اسم الطبيب",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
+              options: state.medicinesNames,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
@@ -221,7 +218,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            CustomAlarmButton(containerHintText: 'اختر موعد التنبيه'),
+            // CustomAlarmButton(containerHintText: 'اختر موعد التنبيه'),
 
             verticalSpacing(16),
             Text(

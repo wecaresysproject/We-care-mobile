@@ -34,6 +34,24 @@ class MedicinesDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getAllMedicinesNames({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllMedicinesNames(
+        language,
+        userType,
+      );
+      final medicines = (response['data'] as List)
+          .map((e) => e['tradeName'] as String)
+          .toList();
+      return ApiResult.success(medicines);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<String>> postEmergencyDataEntry(
   //     {required EmergencyComplainRequestBody requestBody,
   //     required String language}) async {
