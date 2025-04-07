@@ -169,11 +169,13 @@ class SurgeriesDataEntryRepo {
 
   Future<ApiResult<String>> updateSurgeryDocumentById({
     required String id,
+    required String langauge,
     required SurgeryRequestBodyModel requestBody,
   }) async {
     try {
       final response = await _surgeriesService.updateSurgeryDocumentById(
         id,
+        langauge,
         requestBody,
       );
       return ApiResult.success(response["message"]);

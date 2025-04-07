@@ -88,6 +88,7 @@ abstract class SurgeriesService {
   @PUT(SurgeriesApiConstants.editSurgeryEndpoint)
   Future<dynamic> updateSurgeryDocumentById(
     @Query("id") String id,
+    @Query("language") String language,
     @Body() SurgeryRequestBodyModel requestBody,
   );
 }

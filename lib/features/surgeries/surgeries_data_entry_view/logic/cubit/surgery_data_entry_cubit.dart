@@ -167,6 +167,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       ),
     );
     final response = await _surgeriesDataEntryRepo.updateSurgeryDocumentById(
+      langauge: AppStrings.arabicLang,
       requestBody: SurgeryRequestBodyModel(
         surgeryDate: state.surgeryDateSelection!,
         surgeryRegion: state.surgeryBodyPartSelection!,
