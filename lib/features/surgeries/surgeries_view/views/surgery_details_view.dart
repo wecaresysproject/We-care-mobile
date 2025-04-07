@@ -125,7 +125,7 @@ class SurgeryDetailsView extends StatelessWidget {
                         icon: 'assets/images/ratio.png'),
                   ]),
                   DetailsViewInfoTile(
-                      title: "وصف مفصل",
+                      title: "وصف اضافي للعملية",
                       value: state.selectedSurgeryDetails!.surgeryDescription,
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
@@ -161,7 +161,8 @@ class SurgeryDetailsView extends StatelessWidget {
                       isExpanded: true),
                   DetailsViewInfoTile(
                       title: " توصيف العملية",
-                      value: state.selectedSurgeryDetails!.surgeryDescription,
+                      value: state.selectedSurgeryDetails!.description ??
+                          "لم يتم تحديده",
                       icon: 'assets/images/file_date_icon.png',
                       isExpanded: true),
                   DetailsViewInfoTile(
