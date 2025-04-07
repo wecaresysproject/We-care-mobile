@@ -22,7 +22,7 @@ class SurgeriesApiConstants {
   static const deleteSurgeryById = "/api/EnterSectionSurgery";
   static const getAllSurgeries = "/api/EnterSectionSurgery";
   static const getSingleSurgery = "/api/ViewSectionSurgery/filter-by-id";
-
+  static const editSurgeryEndpoint = "/api/EnterSectionSurgery";
   //filters
   static const getSurgeriesFilters = "/api/ViewSectionSurgery/surgery-info";
   static const getFilteredSurgeries = "/api/ViewSectionSurgery/filter";

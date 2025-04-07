@@ -84,4 +84,10 @@ abstract class SurgeriesService {
 
   @DELETE(SurgeriesApiConstants.deleteSurgeryById)
   Future<dynamic> deleteSurgeryById(@Query("id") String id);
+
+  @PUT(SurgeriesApiConstants.editSurgeryEndpoint)
+  Future<dynamic> updateSurgeryDocumentById(
+    @Query("id") String id,
+    @Body() SurgeryRequestBodyModel requestBody,
+  );
 }

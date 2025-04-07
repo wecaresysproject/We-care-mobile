@@ -166,4 +166,19 @@ class SurgeriesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> updateSurgeryDocumentById({
+    required String id,
+    required SurgeryRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _surgeriesService.updateSurgeryDocumentById(
+        id,
+        requestBody,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

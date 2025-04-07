@@ -160,6 +160,51 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     );
   }
 
+  Future<void> submitUpdatedSurgery() async {
+    emit(
+      state.copyWith(
+        surgeriesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _surgeriesDataEntryRepo.updateSurgeryDocumentById(
+      requestBody: SurgeryRequestBodyModel(
+        surgeryDate: state.surgeryDateSelection!,
+        surgeryRegion: state.surgeryBodyPartSelection!,
+        subSurgeryRegion: state.selectedSubSurgery!,
+        surgeryName: state.surgeryNameSelection!,
+        usedTechnique: state.selectedTechUsed!,
+        additionalNotes: personalNotesController.text,
+        surgeryDescription: suergeryDescriptionController.text,
+        postSurgeryInstructions: postSurgeryInstructions.text,
+        surgeryStatus: state.selectedSurgeryStatus!,
+        hospitalCenter: state.selectedHospitalCenter!,
+        anesthesiologistName: state.internistName!,
+        country: state.selectedCountryName!,
+        surgeonName: state.surgeonName!,
+        medicalReportImage: state.reportImageUploadedUrl!,
+      ),
+      id: state.updatedSurgeryId,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            surgeriesDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            surgeriesDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> emitGetSurgeryStatus() async {
     final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
       language: AppStrings.arabicLang,

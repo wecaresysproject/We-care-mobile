@@ -365,14 +365,13 @@ class _SuergeriesDataEntryFormFieldsState
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode
-              //     ? await context
-              //         .read<SurgeryDataEntryCubit>()
-              //         .submitEditsOnSurgery()
-              //     :
-              await context.read<SurgeryDataEntryCubit>().postModuleData(
-                    context.translate,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<SurgeryDataEntryCubit>()
+                      .submitUpdatedSurgery()
+                  : await context.read<SurgeryDataEntryCubit>().postModuleData(
+                        context.translate,
+                      );
               log("xxx:Save Data Entry");
             }
           },
