@@ -19,14 +19,9 @@ class SurgeriesApiConstants {
   static const surgeryPurpose = "/api/EnterSectionSurgery/purpose";
   static const postSurgeryEndpoint = "/api/EnterSectionSurgery";
   //View Entry
-<<<<<<< HEAD
-  static const getAllSurgeries = "/EnterSectionSurgery";
-  static const getSingleSurgery = "/ViewSectionSurgery/filter-by-id";
-  static const deleteSurgeryById = "/EnterSectionSurgery";
-=======
+  static const deleteSurgeryById = "/api/EnterSectionSurgery";
   static const getAllSurgeries = "/api/EnterSectionSurgery";
   static const getSingleSurgery = "/api/ViewSectionSurgery/filter-by-id";
->>>>>>> bbba11a (Upload report image)
 
   //filters
   static const getSurgeriesFilters = "/api/ViewSectionSurgery/surgery-info";
