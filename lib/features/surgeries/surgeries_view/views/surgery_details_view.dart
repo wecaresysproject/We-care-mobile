@@ -5,12 +5,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-<<<<<<< HEAD
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
-=======
 import 'package:we_care/core/global/Helpers/extensions.dart';
->>>>>>> 8d63f32 (Enables surgery data editing)
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
