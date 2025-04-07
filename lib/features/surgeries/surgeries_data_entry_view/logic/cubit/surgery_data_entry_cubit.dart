@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -21,10 +22,49 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   final suergeryDescriptionController = TextEditingController(); // وصف اضافي
   final postSurgeryInstructions = TextEditingController();
 
+  Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
+    emit(
+      state.copyWith(
+        surgeryDateSelection: pastSurgery.surgeryDate,
+        surgeryBodyPartSelection: pastSurgery.surgeryRegion,
+        selectedSubSurgery: pastSurgery.subSurgeryRegion,
+        surgeryNameSelection: pastSurgery.surgeryName,
+        selectedTechUsed: pastSurgery.usedTechnique,
+        surgeryPurpose: pastSurgery.purpose,
+        reportImageUploadedUrl: pastSurgery.medicalReportImage,
+        selectedSurgeryStatus: pastSurgery.surgeryStatus,
+        selectedHospitalCenter: pastSurgery.hospitalCenter,
+        internistName: pastSurgery.anesthesiologistName,
+        selectedCountryName: pastSurgery.country,
+        surgeonName: pastSurgery.surgeonName,
+        isEditMode: true,
+        updatedSurgeryId: pastSurgery.id,
+      ),
+    );
+    personalNotesController.text = pastSurgery.additionalNotes;
+    suergeryDescriptionController.text = pastSurgery.surgeryDescription;
+    postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
+
+    validateRequiredFields();
+    await intialRequestsForDataEntry();
+  }
+
   /// Update Field Values
   void updateSurgeryDate(String? date) {
     emit(state.copyWith(surgeryDateSelection: date));
     validateRequiredFields();
+  }
+
+  void updateSelectedHospitalCenter(String? selectedHospital) {
+    emit(state.copyWith(selectedHospitalCenter: selectedHospital));
+  }
+
+  void updateSelectedInternist(String? selectedInternist) {
+    emit(state.copyWith(internistName: selectedInternist));
+  }
+
+  void updateSelectedSurgeonName(String? surgeonName) {
+    emit(state.copyWith(surgeonName: surgeonName));
   }
 
   void updateSelectedCountry(String? selectedCountry) {
@@ -300,10 +340,9 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         medicalReportImage:
             state.reportImageUploadedUrl ?? locale.no_data_entered,
         surgeryStatus: state.selectedSurgeryStatus ?? locale.no_data_entered,
-        hospitalCenter: locale.no_data_entered, //TODO: to be handled later
+        hospitalCenter: state.selectedHospitalCenter ?? locale.no_data_entered,
         surgeonName: state.surgeryNameSelection ?? locale.no_data_entered,
-        anesthesiologistName:
-            locale.no_data_entered, //TODO: to be handled later
+        anesthesiologistName: state.internistName ?? locale.no_data_entered,
         postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
             ? locale.no_data_entered
             : suergeryDescriptionController.text,

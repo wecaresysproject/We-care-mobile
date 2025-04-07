@@ -22,6 +22,11 @@ class SurgeryDataEntryState extends Equatable {
   final String? selectedTechUsed; //المنطقة المختاره للعمليات الفرعية
   final String? surgeryPurpose;
   final String? selectedSurgeryStatus;
+  final bool isEditMode;
+  final String updatedSurgeryId;
+  final String? surgeonName;
+  final String? selectedHospitalCenter;
+  final String? internistName; // طبيب باطنه
 
   const SurgeryDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -44,6 +49,11 @@ class SurgeryDataEntryState extends Equatable {
     this.selectedTechUsed,
     this.surgeryPurpose,
     this.selectedSurgeryStatus,
+    this.isEditMode = false,
+    this.updatedSurgeryId = '',
+    this.surgeonName,
+    this.selectedHospitalCenter,
+    this.internistName,
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -67,6 +77,11 @@ class SurgeryDataEntryState extends Equatable {
           selectedTechUsed: null,
           surgeryPurpose: null,
           selectedSurgeryStatus: null,
+          isEditMode: false,
+          updatedSurgeryId: '',
+          surgeonName: null,
+          selectedHospitalCenter: null,
+          internistName: null,
         );
 
   SurgeryDataEntryState copyWith({
@@ -90,6 +105,11 @@ class SurgeryDataEntryState extends Equatable {
     String? selectedTechUsed,
     String? surgeryPurpose,
     String? selectedSurgeryStatus,
+    bool? isEditMode,
+    String? updatedSurgeryId,
+    String? surgeonName,
+    String? selectedHospitalCenter,
+    String? internistName,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -117,6 +137,12 @@ class SurgeryDataEntryState extends Equatable {
       surgeryPurpose: surgeryPurpose ?? this.surgeryPurpose,
       selectedSurgeryStatus:
           selectedSurgeryStatus ?? this.selectedSurgeryStatus,
+      isEditMode: isEditMode ?? this.isEditMode,
+      updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
+      surgeonName: surgeonName ?? this.surgeonName,
+      selectedHospitalCenter:
+          selectedHospitalCenter ?? this.selectedHospitalCenter,
+      internistName: internistName ?? this.internistName,
     );
   }
 
@@ -142,5 +168,10 @@ class SurgeryDataEntryState extends Equatable {
         selectedTechUsed,
         surgeryPurpose,
         selectedSurgeryStatus,
+        isEditMode,
+        updatedSurgeryId,
+        surgeonName,
+        selectedHospitalCenter,
+        internistName,
       ];
 }

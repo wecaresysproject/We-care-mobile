@@ -47,8 +47,11 @@ class _SuergeriesDataEntryFormFieldsState
               containerBorderColor: state.surgeryDateSelection == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText:
-                  isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
+              placeholderText: state.surgeryDateSelection == null
+                  ? isArabic()
+                      ? "يوم / شهر / سنة"
+                      : "Date / Month / Year"
+                  : state.surgeryDateSelection!,
               onDateSelected: (pickedDate) {
                 context
                     .read<SurgeryDataEntryCubit>()
@@ -65,7 +68,8 @@ class _SuergeriesDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "العضو",
-              containerHintText: "اختر منطقة العمليه",
+              containerHintText:
+                  state.surgeryBodyPartSelection ?? "اختر منطقة العمليه",
               options: state.bodyParts,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
@@ -83,7 +87,8 @@ class _SuergeriesDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "منطقة العملية الفرعية",
-              containerHintText: "اختر المنطقة التى تمت بها العملية",
+              containerHintText: state.selectedSubSurgery ??
+                  "اختر المنطقة التى تمت بها العملية",
               options: state.subSurgeryRegions,
               onOptionSelected: (value) async {
                 await context
@@ -102,7 +107,8 @@ class _SuergeriesDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "اسم العملية", // Another Dropdown Example
-              containerHintText: "اختر اسم العملية",
+              containerHintText:
+                  state.surgeryNameSelection ?? "اختر اسم العملية",
               options: state.surgeryNames,
               onOptionSelected: (value) async {
                 await context
@@ -118,7 +124,8 @@ class _SuergeriesDataEntryFormFieldsState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "التقنية المستخدمة", // Another Dropdown Example
-              containerHintText: "اختر التقنية المستخدمة",
+              containerHintText:
+                  state.selectedTechUsed ?? "اختر التقنية المستخدمة",
               options: state.allTechUsed,
               onOptionSelected: (value) {
                 context
@@ -214,7 +221,8 @@ class _SuergeriesDataEntryFormFieldsState
                     .read<SurgeryDataEntryCubit>()
                     .updateSurgeryStatus(value);
               },
-              containerHintText: "اختر حالة العملية",
+              containerHintText:
+                  state.selectedSurgeryStatus ?? "اختر حالة العملية",
             ),
 
             verticalSpacing(16),
@@ -223,14 +231,17 @@ class _SuergeriesDataEntryFormFieldsState
 
             UserSelectionContainer(
               categoryLabel: "المستشفى / المركز",
-              containerHintText: "اختر اسم المستشفى/المركز",
+              containerHintText:
+                  state.selectedHospitalCenter ?? "اختر اسم المستشفى/المركز",
               options: [
                 "مستشفى القلب",
                 "مستشفى العين الدولى",
                 "مستشفى 57357",
               ],
               onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedHospitalCenter(value);
               },
               bottomSheetTitle: 'اختر اسم المستشفى/المركز',
             ),
@@ -242,14 +253,16 @@ class _SuergeriesDataEntryFormFieldsState
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "اسم الجراح",
-              containerHintText: "اختر اسم الطبيب الجراح",
+              containerHintText: state.surgeonName ?? "اختر اسم الطبيب الجراح",
               options: [
                 "دكتور محمد محمد",
                 "دكتور كريم محمد",
                 "دكتور رشا محمد",
               ],
               onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedSurgeonName(value);
               },
               bottomSheetTitle: "اختر اسم الطبيب الجراح",
             ),
@@ -267,8 +280,12 @@ class _SuergeriesDataEntryFormFieldsState
               ],
               categoryLabel: "اسم طبيب الباطنة",
               bottomSheetTitle: "اختر اسم طبيب الباطنة",
-              onOptionSelected: (value) {},
-              containerHintText: "اختر اسم طبيب الباطنة",
+              onOptionSelected: (value) {
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .updateSelectedInternist(value);
+              },
+              containerHintText: state.internistName ?? "اختر اسم طبيب الباطنة",
             ),
 
             verticalSpacing(16),
@@ -350,8 +367,8 @@ class _SuergeriesDataEntryFormFieldsState
             if (state.isFormValidated) {
               // state.isEditMode
               //     ? await context
-              //         .read<TestAnalysisDataEntryCubit>()
-              //         .submitEditsOnTest()
+              //         .read<SurgeryDataEntryCubit>()
+              //         .submitEditsOnSurgery()
               //     :
               await context.read<SurgeryDataEntryCubit>().postModuleData(
                     context.translate,

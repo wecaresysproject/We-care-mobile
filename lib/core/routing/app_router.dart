@@ -11,6 +11,7 @@ import 'package:we_care/features/prescription/Presentation_view/views/prescripti
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
+import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';
@@ -139,8 +140,11 @@ class AppRouter {
           builder: (context) => const SurgeriesView(),
         );
       case Routes.surgeriesDataEntryView:
+        final surgeryDetails = arguments as SurgeryModel?;
         return MaterialPageRoute(
-          builder: (context) => const SurgeriesDataEntryView(),
+          builder: (context) => SurgeriesDataEntryView(
+            existingSurgeryModel: surgeryDetails,
+          ),
         );
       case Routes.vaccineDataEntryView:
         final vaccineDetails = arguments as UserVaccineModel?;
