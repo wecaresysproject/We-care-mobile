@@ -25,6 +25,7 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> medicalDoses;
   final String medicineId;
   final List<MedicineBasicInfoModel>? medicinesBasicInfo;
+  final List<String> dosageFrequencies; // عدد مرات الجرعات
 
   final bool isEditMode;
   final String message; // error or success message
@@ -50,6 +51,7 @@ class MedicinesDataEntryState extends Equatable {
     this.medicineForms = const [],
     this.medicalDoses = const [],
     this.medicinesBasicInfo = const [],
+    this.dosageFrequencies = const [],
     this.medicineId = '',
   }) : super();
 
@@ -75,58 +77,59 @@ class MedicinesDataEntryState extends Equatable {
           medicineForms: const [],
           medicalDoses: const [],
           medicinesBasicInfo: const [],
+          dosageFrequencies: const [],
           medicineId: '',
         );
 
-  MedicinesDataEntryState copyWith({
-    RequestStatus? emergencyComplaintsDataEntryStatus,
-    bool? isFormValidated,
-    String? message,
-    bool? isEditMode,
-    String? medicineStartDate,
-    String? selectedMedicineName,
-    String? selectedMedicalForm,
-    String? selectedDose,
-    String? selectedNoOfDose,
-    String? doseDuration,
-    String? timePeriods,
-    String? selectedChronicDisease,
-    String? medicalSymptomsIssue,
-    String? symptomsDiseaseRegion,
-    String? selectedDoctorName,
-    List<MedicalComplaint>? medicalComplaints,
-    List<String>? medicinesNames,
-    List<String>? medicineForms,
-    List<String>? medicalDoses,
-    String? medicineId,
-    List<MedicineBasicInfoModel>? medicinesBasicInfo,
-  }) {
+  MedicinesDataEntryState copyWith(
+      {RequestStatus? emergencyComplaintsDataEntryStatus,
+      bool? isFormValidated,
+      String? message,
+      bool? isEditMode,
+      String? medicineStartDate,
+      String? selectedMedicineName,
+      String? selectedMedicalForm,
+      String? selectedDose,
+      String? selectedNoOfDose,
+      String? doseDuration,
+      String? timePeriods,
+      String? selectedChronicDisease,
+      String? medicalSymptomsIssue,
+      String? symptomsDiseaseRegion,
+      String? selectedDoctorName,
+      List<MedicalComplaint>? medicalComplaints,
+      List<String>? medicinesNames,
+      List<String>? medicineForms,
+      List<String>? medicalDoses,
+      String? medicineId,
+      List<MedicineBasicInfoModel>? medicinesBasicInfo,
+      List<String>? dosageFrequencies}) {
     return MedicinesDataEntryState(
-      medicinesDataEntryStatus:
-          emergencyComplaintsDataEntryStatus ?? medicinesDataEntryStatus,
-      isFormValidated: isFormValidated ?? this.isFormValidated,
-      message: message ?? this.message,
-      isEditMode: isEditMode ?? this.isEditMode,
-      medicineStartDate: medicineStartDate ?? this.medicineStartDate,
-      selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
-      selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
-      selectedDose: selectedDose ?? this.selectedDose,
-      selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
-      doseDuration: doseDuration ?? this.doseDuration,
-      timePeriods: timePeriods ?? this.timePeriods,
-      selectedChronicDisease:
-          selectedChronicDisease ?? this.selectedChronicDisease,
-      medicalSymptomsIssue: medicalSymptomsIssue ?? this.medicalSymptomsIssue,
-      symptomsDiseaseRegion:
-          symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
-      selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
-      medicalComplaints: medicalComplaints ?? this.medicalComplaints,
-      medicinesNames: medicinesNames ?? this.medicinesNames,
-      medicineForms: medicineForms ?? this.medicineForms,
-      medicalDoses: medicalDoses ?? this.medicalDoses,
-      medicineId: medicineId ?? this.medicineId,
-      medicinesBasicInfo: medicinesBasicInfo ?? this.medicinesBasicInfo,
-    );
+        medicinesDataEntryStatus:
+            emergencyComplaintsDataEntryStatus ?? medicinesDataEntryStatus,
+        isFormValidated: isFormValidated ?? this.isFormValidated,
+        message: message ?? this.message,
+        isEditMode: isEditMode ?? this.isEditMode,
+        medicineStartDate: medicineStartDate ?? this.medicineStartDate,
+        selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
+        selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
+        selectedDose: selectedDose ?? this.selectedDose,
+        selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
+        doseDuration: doseDuration ?? this.doseDuration,
+        timePeriods: timePeriods ?? this.timePeriods,
+        selectedChronicDisease:
+            selectedChronicDisease ?? this.selectedChronicDisease,
+        medicalSymptomsIssue: medicalSymptomsIssue ?? this.medicalSymptomsIssue,
+        symptomsDiseaseRegion:
+            symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
+        selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
+        medicalComplaints: medicalComplaints ?? this.medicalComplaints,
+        medicinesNames: medicinesNames ?? this.medicinesNames,
+        medicineForms: medicineForms ?? this.medicineForms,
+        medicalDoses: medicalDoses ?? this.medicalDoses,
+        medicineId: medicineId ?? this.medicineId,
+        medicinesBasicInfo: medicinesBasicInfo ?? this.medicinesBasicInfo,
+        dosageFrequencies: dosageFrequencies ?? this.dosageFrequencies);
   }
 
   @override
@@ -152,5 +155,6 @@ class MedicinesDataEntryState extends Equatable {
         medicalDoses,
         medicineId,
         medicinesBasicInfo,
+        dosageFrequencies,
       ];
 }

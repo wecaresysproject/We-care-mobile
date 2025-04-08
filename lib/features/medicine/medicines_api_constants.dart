@@ -15,7 +15,14 @@ class MedicinesApiConstants {
 
   static const getMedcineDosesByForms =
       "MedicineUserEntryPage/GetMedicineDosesByForm";
+  static const getAllDosageFrequencies =
+      "MedicineUserEntryPage/GetAllDosageFrequencies";
 
+  static const getMedicineUsageDurationCategroies =
+      "MedicineUserEntryPage/GetAllUsageCategories";
+
+  static const getAllDurationsForCategory =
+      "MedicineUserEntryPage/GetDurationsForCategory";
   //View Entry
   static const getSingleMedicine = "MedicineUserEntryPage/GetMedicineById";
   static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";

@@ -76,6 +76,59 @@ class MedicinesDataEntryRepo {
     }
   }
 
+  /// عدد مرات الجرعه
+  Future<ApiResult<List<String>>> getAllDosageFrequencies({
+    required String langauge,
+    required String userType,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllDosageFrequencies(
+        langauge,
+        userType,
+      );
+      final data = (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// مدة الاستخدام
+  Future<ApiResult<List<String>>> getAllUsageCategories({
+    required String langauge,
+    required String userType,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllUsageCategories(
+        langauge,
+        userType,
+      );
+      final data = (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// المدد الزمنيه
+  Future<ApiResult<List<String>>> getAllDurationsForCategory({
+    required String langauge,
+    required String userType,
+    required String category,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllDurationsForCategory(
+        langauge,
+        userType,
+        category,
+      );
+      final data = (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<List<MedicineBasicInfoModel>>> getAllMedicinesNames({
     required String language,
     required String userType,
