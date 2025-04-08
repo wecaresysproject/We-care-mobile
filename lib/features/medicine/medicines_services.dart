@@ -59,6 +59,20 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
     @Query('medicineId') String medicineId,
   );
+
+  @GET(MedicinesApiConstants.getMedcineForms)
+  Future<dynamic> getMedcineForms(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
+  @GET(MedicinesApiConstants.getMedcineDosesByForms)
+  Future<dynamic> getMedcineDosesByForms(
+    @Query('form') String form,
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
   // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
   // Future<dynamic> postEmergencyDataEntry(
   //   @Body() EmergencyComplainRequestBody requestBody,
