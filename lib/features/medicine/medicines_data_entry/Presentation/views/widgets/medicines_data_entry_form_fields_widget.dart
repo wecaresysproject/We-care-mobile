@@ -127,10 +127,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "مدة الاستخدام",
               containerHintText:
                   state.doseDuration ?? "اختر مدة استخدام الدواء",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
+              options: state.allUsageCategories,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
