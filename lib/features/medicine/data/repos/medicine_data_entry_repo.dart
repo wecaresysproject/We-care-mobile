@@ -1,5 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 
 class MedicinesDataEntryRepo {
@@ -12,6 +14,46 @@ class MedicinesDataEntryRepo {
     try {
       final response =
           await _medicinesServices.getAllPlacesOfComplaints(language);
+      final complaints =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getMedcineForms({
+    required String language,
+    required String userType,
+    required String medicineId,
+  }) async {
+    try {
+      final response = await _medicinesServices.getMedcineForms(
+        language,
+        userType,
+        medicineId,
+      );
+      final complaints =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getMedcineDosesByForms({
+    required String language,
+    required String userType,
+    required String medicineId,
+    required String medicineForm,
+  }) async {
+    try {
+      final response = await _medicinesServices.getMedcineDosesByForms(
+        medicineForm,
+        language,
+        userType,
+        medicineId,
+      );
       final complaints =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(complaints);
@@ -34,7 +76,7 @@ class MedicinesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getAllMedicinesNames({
+  Future<ApiResult<List<MedicineBasicInfoModel>>> getAllMedicinesNames({
     required String language,
     required String userType,
   }) async {
@@ -44,9 +86,28 @@ class MedicinesDataEntryRepo {
         userType,
       );
       final medicines = (response['data'] as List)
-          .map((e) => e['tradeName'] as String)
+          .map((e) => MedicineBasicInfoModel.fromJson(e))
           .toList();
       return ApiResult.success(medicines);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicineDetailsModel>> getMedicineDetailsById({
+    required String language,
+    required String userType,
+    required String medicineId,
+  }) async {
+    try {
+      final response = await _medicinesServices.getMedicineDetailsById(
+        language,
+        userType,
+        medicineId,
+      );
+      final medicineDetails = MedicineDetailsModel.fromJson(response['data']);
+
+      return ApiResult.success(medicineDetails);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

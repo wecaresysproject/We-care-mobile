@@ -60,8 +60,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText: state.selectedMedicineName ??
                   "اختر اسم الدواء", //state.doctorNameSelection ?? "اختر اسم الطبيب",
               options: state.medicinesNames,
-              onOptionSelected: (value) {
-                context
+              onOptionSelected: (value) async {
+                await context
                     .read<MedicinesDataEntryCubit>()
                     .updateSelectedMedicineName(value);
               },
@@ -70,21 +70,18 @@ class _MedicinesDataEntryFormFieldsWidgetState
 
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.wayToUseMedicine == null
+              containerBorderColor: state.selectedMedicalForm == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "طريقة الاستخدام (الاشكال الدوائية)",
-              containerHintText: state.wayToUseMedicine ??
-                  state.wayToUseMedicine ??
+              containerHintText: state.selectedMedicalForm ??
+                  state.selectedMedicalForm ??
                   "اختر طريقة الاستخدام", //state.doctorNameSelection ?? "اختر اسم الطبيب",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
-              onOptionSelected: (value) {
-                context
+              options: state.medicineForms,
+              onOptionSelected: (value) async {
+                await context
                     .read<MedicinesDataEntryCubit>()
-                    .updateWayToUseMedicine(value);
+                    .updateSelectedMedicalForm(value);
               },
               bottomSheetTitle: "اختر طريقة الاستخدام",
             ),
@@ -96,10 +93,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "الجرعة",
               containerHintText: state.selectedDose ?? "اختر كمية الجرعة",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
+              options: state.medicalDoses,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()

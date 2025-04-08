@@ -47,10 +47,98 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     );
     response.when(
       success: (response) {
+        final medcineNames = response.map((e) => e.tradeName).toList();
         emit(
           state.copyWith(
-            medicinesNames: response,
+            medicinesNames: medcineNames,
+            medicinesBasicInfo: response,
           ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  void getMedcineIdByName(String selectedMedicineName) {
+    for (final medcineInfo in state.medicinesBasicInfo!) {
+      if (medcineInfo.tradeName == selectedMedicineName) {
+        emit(
+          state.copyWith(
+            medicineId: medcineInfo.id,
+          ),
+        );
+        return;
+      }
+    }
+  }
+
+  Future<void> emitMedicineforms() async {
+    final response = await _medicinesDataEntryRepo.getMedcineForms(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+      medicineId: state.medicineId,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            medicineForms: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitMedcineDosesByForms() async {
+    final response = await _medicinesDataEntryRepo.getMedcineDosesByForms(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+      medicineId: state.medicineId,
+      medicineForm: state.selectedMedicalForm ?? "", //TODO: handle this later
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            medicalDoses: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getMedicineDetails(String medicineId) async {
+    final response = await _medicinesDataEntryRepo.getMedicineDetailsById(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+      medicineId: medicineId,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+              // medicineDetails: response,
+              ),
         );
       },
       failure: (error) {
@@ -92,13 +180,16 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateSelectedMedicineName(String? date) {
-    emit(state.copyWith(selectedMedicineName: date));
+  Future<void> updateSelectedMedicineName(String? medicineName) async {
+    emit(state.copyWith(selectedMedicineName: medicineName));
     validateRequiredFields();
+    getMedcineIdByName(medicineName!);
+    await emitMedicineforms();
   }
 
-  void updateWayToUseMedicine(String? date) {
-    emit(state.copyWith(wayToUseMedicine: date));
+  Future<void> updateSelectedMedicalForm(String? form) async {
+    emit(state.copyWith(selectedMedicalForm: form));
+    await emitMedcineDosesByForms();
     validateRequiredFields();
   }
 
@@ -144,7 +235,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void validateRequiredFields() {
     if (state.medicineStartDate == null ||
         state.selectedMedicineName == null ||
-        state.wayToUseMedicine == null ||
+        state.selectedMedicalForm == null ||
         state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
