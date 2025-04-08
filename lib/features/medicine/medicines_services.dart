@@ -73,6 +73,22 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
     @Query('medicineId') String medicineId,
   );
+  @GET(MedicinesApiConstants.getAllDosageFrequencies)
+  Future<dynamic> getAllDosageFrequencies(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getMedicineUsageDurationCategroies)
+  Future<dynamic> getAllUsageCategories(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getAllDurationsForCategory)
+  Future<dynamic> getAllDurationsForCategory(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('category') String category,
+  );
   // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
   // Future<dynamic> postEmergencyDataEntry(
   //   @Body() EmergencyComplainRequestBody requestBody,

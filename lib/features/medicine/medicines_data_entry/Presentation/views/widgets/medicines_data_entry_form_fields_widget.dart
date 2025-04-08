@@ -110,10 +110,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "عدد مرات الجرعة",
               containerHintText:
                   state.selectedNoOfDose ?? "اختر عدد مرات التناول ",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
+              options: state.dosageFrequencies,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
