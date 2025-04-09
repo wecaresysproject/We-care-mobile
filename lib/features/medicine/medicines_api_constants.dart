@@ -1,5 +1,5 @@
 class MedicinesApiConstants {
-  static const baseUrl = "http://147.93.57.70:5299/api/";
+  static const baseUrl = "http://147.93.57.70/api/";
   //Data Entry
   static const getAllPlacesOfComplaints =
       "/EnterEmergencyComplain/Placeofcomplaint";
@@ -9,6 +9,12 @@ class MedicinesApiConstants {
   static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
 
   //View Entry
+  static const getAllMedicines = "MedicineUserEntryPage/GetUserMedicines";
+  static const getSingleMedicine = "MedicineUserEntryPage/GetMedicineById";
+  static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";
 
   //filters
+  static const getFilters = "MedicineUserEntryPage/GetUserMedicineFilters";
+  static const getFilteredMedicines =
+      "MedicineUserEntryPage/SearchUserMedicineDocuments";
 }
