@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 
@@ -166,20 +167,22 @@ class MedicinesDataEntryRepo {
     }
   }
 
-  // Future<ApiResult<String>> postEmergencyDataEntry(
-  //     {required EmergencyComplainRequestBody requestBody,
-  //     required String language}) async {
-  //   try {
-  //     final response =
-  //         await _emergencyComplaintsServices.postEmergencyDataEntry(
-  //       requestBody,
-  //       language,
-  //     );
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> postMedicinesDataEntry({
+    required MedicineDataEntryRequestBody requestBody,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _medicinesServices.postMedicineDataEntry(
+        requestBody,
+        language,
+        userType,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<String>> editSpecifcEmergencyDocumentDataDetails({
   //   required EmergencyComplainRequestBody requestBody,
