@@ -31,9 +31,7 @@ abstract class MedicinesServices {
 
   @GET(MedicinesApiConstants.getFilteredMedicines)
   Future<GetAllUserMedicinesResponseModel> getFilteredMedicines(
-    @GET(MedicinesApiConstants.getAllMedicines)
-    @Query('language')
-    String language,
+    @Query('language') String language,
     @Query('userType') String userType,
     @Query('year') int? year,
     @Query('medicineName') String? medicineName,
