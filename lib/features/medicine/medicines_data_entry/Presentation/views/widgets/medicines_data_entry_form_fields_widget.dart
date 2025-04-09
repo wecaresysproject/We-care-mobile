@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/time_picker_handler_helper.dart';
@@ -128,8 +130,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText:
                   state.doseDuration ?? "اختر مدة استخدام الدواء",
               options: state.allUsageCategories,
-              onOptionSelected: (value) {
-                context
+              onOptionSelected: (value) async {
+                await context
                     .read<MedicinesDataEntryCubit>()
                     .updateSelectedDoseDuration(value);
               },
@@ -144,10 +146,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "المدد الزمنية",
               containerHintText:
                   state.timePeriods ?? "اختر المدة الزمنية لمدة الاستخدام",
-              options: [
-                "اسم الدواء",
-                "اسم الدواء",
-              ],
+              options: state.allDurationsBasedOnCategory,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
@@ -206,7 +205,14 @@ class _MedicinesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            // CustomAlarmButton(containerHintText: 'اختر موعد التنبيه'),
+            CustomAlarmButton(
+              containerHintText: 'اختر موعد التنبيه',
+              onTimePicked: (selectedAlarmTime) {
+                context
+                    .read<MedicinesDataEntryCubit>()
+                    .updateSelectedAlarmTime(selectedAlarmTime);
+              },
+            ),
 
             verticalSpacing(16),
             Text(
@@ -229,28 +235,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
             /// final section
             verticalSpacing(32),
 
-            // submitEmergencyDataEnteredBlocConsumer(),
-            AppCustomButton(
-              // isLoading: state.emergencyComplaintsDataEntryStatus ==
-              //     RequestStatus.loading,
-              title:
-                  state.isEditMode ? "تحديت البيانات" : context.translate.send,
-              onPressed: () async {
-                if (state.isFormValidated) {
-                  // state.isEditMode
-                  //     ? await context
-                  //         .read<EmergencyComplaintsDataEntryCubit>()
-                  //         .updateSpecifcEmergencyDocumentDataDetails(
-                  //             context.translate)
-                  //     : await context
-                  //         .read<EmergencyComplaintsDataEntryCubit>()
-                  //         .postEmergencyDataEntry(
-                  //           context.translate,
-                  //         );
-                }
-              },
-              isEnabled: state.isFormValidated ? true : false,
-            ),
+            submitEmergencyDataEnteredBlocConsumer(),
 
             verticalSpacing(71),
           ],
@@ -334,50 +319,47 @@ Widget buildMedicalComplaintsListBlocBuilder() {
   );
 }
 
-//   Widget submitEmergencyDataEnteredBlocConsumer() {
-//     return BlocConsumer<EmergencyComplaintsDataEntryCubit,
-//         EmergencyComplaintsDataEntryState>(
-//       listenWhen: (prev, curr) =>
-//           curr.emergencyComplaintsDataEntryStatus == RequestStatus.failure ||
-//           curr.emergencyComplaintsDataEntryStatus == RequestStatus.success,
-//       buildWhen: (prev, curr) =>
-//           prev.isFormValidated != curr.isFormValidated ||
-//           prev.emergencyComplaintsDataEntryStatus !=
-//               curr.emergencyComplaintsDataEntryStatus,
-//       listener: (context, state) async {
-//         if (state.emergencyComplaintsDataEntryStatus == RequestStatus.success) {
-//           await showSuccess(state.message);
-//           if (!context.mounted) return;
-//           context.pop(result: true);
-//         } else {
-//           await showError(state.message);
-//         }
-//       },
-//       builder: (context, state) {
-//     return AppCustomButton(
-//       isLoading:
-//           state.emergencyComplaintsDataEntryStatus == RequestStatus.loading,
-//       title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
-//       onPressed: () async {
-//         if (state.isFormValidated) {
-//           state.isEditMode
-//               ? await context
-//                   .read<EmergencyComplaintsDataEntryCubit>()
-//                   .updateSpecifcEmergencyDocumentDataDetails(
-//                       context.translate)
-//               : await context
-//                   .read<EmergencyComplaintsDataEntryCubit>()
-//                   .postEmergencyDataEntry(
-//                     context.translate,
-//                   );
-//         }
-//       },
-//       isEnabled: state.isFormValidated ? true : false,
-//     );
-//   },
-// );
-//   }
-// }
+Widget submitEmergencyDataEnteredBlocConsumer() {
+  return BlocConsumer<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+    listenWhen: (prev, curr) =>
+        curr.medicinesDataEntryStatus == RequestStatus.failure ||
+        curr.medicinesDataEntryStatus == RequestStatus.success,
+    buildWhen: (prev, curr) =>
+        prev.isFormValidated != curr.isFormValidated ||
+        prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
+    listener: (context, state) async {
+      if (state.medicinesDataEntryStatus == RequestStatus.success) {
+        await showSuccess(state.message);
+        if (!context.mounted) return;
+        context.pop(result: true);
+      } else {
+        await showError(state.message);
+      }
+    },
+    builder: (context, state) {
+      return AppCustomButton(
+        isLoading: state.medicinesDataEntryStatus == RequestStatus.loading,
+        title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
+        onPressed: () async {
+          if (state.isFormValidated) {
+            // state.isEditMode
+            //     ? await context
+            //         .read<MedicinesDataEntryCubit>()
+            //         .updateSpecifcEmergencyDocumentDataDetails(
+            //             context.translate)
+            //     :
+            await context
+                .read<MedicinesDataEntryCubit>()
+                .postMedicinesDataEntry(
+                  context.translate,
+                );
+          }
+        },
+        isEnabled: state.isFormValidated ? true : false,
+      );
+    },
+  );
+}
 
 class AddNewMedicalComplaintButton extends StatelessWidget {
   final String text;
@@ -515,19 +497,20 @@ class CustomAlarmButton extends StatefulWidget {
   final String? selectedItem;
   final String containerHintText;
   final Color? iconColor;
-
+  final Function(String?) onTimePicked;
   const CustomAlarmButton({
     super.key,
     this.selectedItem,
     required this.containerHintText,
     this.iconColor,
+    required this.onTimePicked,
   });
 
   @override
-  _CustomAlarmButtonState createState() => _CustomAlarmButtonState();
+  CustomAlarmButtonState createState() => CustomAlarmButtonState();
 }
 
-class _CustomAlarmButtonState extends State<CustomAlarmButton> {
+class CustomAlarmButtonState extends State<CustomAlarmButton> {
   String? _selectedTime;
   final TimePickerHandler _timePickerHandler = TimePickerHandler();
 
@@ -541,7 +524,10 @@ class _CustomAlarmButtonState extends State<CustomAlarmButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _pickTime(context),
+      onTap: () async {
+        await _pickTime(context);
+        widget.onTimePicked(_selectedTime);
+      },
       child: Container(
         width: double.infinity,
         height: 52,

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
 part 'medicines_services.g.dart';
@@ -89,11 +90,12 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
     @Query('category') String category,
   );
-  // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
-  // Future<dynamic> postEmergencyDataEntry(
-  //   @Body() EmergencyComplainRequestBody requestBody,
-  //   @Query('language') String language,
-  // );
+  @POST(MedicinesApiConstants.postDataEntryEndpoint)
+  Future<dynamic> postMedicineDataEntry(
+    @Body() MedicineDataEntryRequestBody requestBody,
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
 
   // @PUT(EmergencyComplaintsApiConstants.editSpecificComplaintDocumentDetail)
   // Future<dynamic> editSpecifcEmergencyDocumentDataDetails(

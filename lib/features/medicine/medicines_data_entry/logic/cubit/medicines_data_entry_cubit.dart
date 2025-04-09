@@ -4,8 +4,10 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   MedicinesDataEntryCubit(this._medicinesDataEntryRepo)
@@ -175,6 +177,30 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     );
   }
 
+  Future<void> emitAllDurationsForCategory() async {
+    final response = await _medicinesDataEntryRepo.getAllDurationsForCategory(
+      langauge: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+      category: state.doseDuration!,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            allDurationsBasedOnCategory: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getMedicineDetails(String medicineId) async {
     final response = await _medicinesDataEntryRepo.getMedicineDetailsById(
       language: AppStrings.arabicLang,
@@ -193,6 +219,56 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postMedicinesDataEntry(S locale) async {
+    emit(
+      state.copyWith(
+        medicinesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _medicinesDataEntryRepo.postMedicinesDataEntry(
+      userType: UserTypes.patient.name,
+      requestBody: MedicineDataEntryRequestBody(
+        startDate: state.medicineStartDate!,
+        medicineName: state.selectedMedicineName!,
+        usageMethod: state.selectedMedicalForm!,
+        dosage: state.selectedDose!,
+        dosageFrequency: state.selectedNoOfDose ??
+            locale.no_data_entered, // "مرتين يوميًا (كل 12 ساعة)"
+        usageDuration: state.doseDuration!,
+        timeDuration: state.timePeriods!,
+        chronicDiseaseMedicine: locale.no_data_entered,
+        regionSymptoms: state.symptomsDiseaseRegion ?? locale.no_data_entered,
+        complaintSymptoms: "",
+        doctorName: state.selectedDoctorName ?? locale.no_data_entered,
+        reminder: "",
+        reminderStatus: false,
+        personalNotes: personalInfoController.text.isNotEmpty
+            ? personalInfoController.text
+            : locale.no_data_entered,
+        // medicalComplaints: state.medicalComplaints,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            medicinesDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            medicinesDataEntryStatus: RequestStatus.failure,
           ),
         );
       },
@@ -220,6 +296,14 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         ),
       );
     }
+  }
+
+  void updateSelectedAlarmTime(String? alarmTime) {
+    emit(
+      state.copyWith(
+        selectedAlarmTime: alarmTime,
+      ),
+    );
   }
 
   /// Update Field Values
@@ -251,8 +335,9 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateSelectedDoseDuration(String? doseDuration) {
+  Future<void> updateSelectedDoseDuration(String? doseDuration) async {
     emit(state.copyWith(doseDuration: doseDuration));
+    await emitAllDurationsForCategory();
     validateRequiredFields();
   }
 

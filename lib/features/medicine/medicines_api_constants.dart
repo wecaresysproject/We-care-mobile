@@ -3,14 +3,15 @@ class MedicinesApiConstants {
   //http://147.93.57.70:5299/api/EnterEmergencyComplain/SymptomsComplaints
   //Data Entry
   static const getAllPlacesOfComplaints =
-      "/EnterEmergencyComplain/SymptomsComplaints";
+      "http://147.93.57.70:5299/api/EnterEmergencyComplain/Placeofcomplaint";
   static const getRelevantComplaintsToBodyPartName =
-      "EnterEmergencyComplain/SymptomsComplaintsFiltered";
+      "http://147.93.57.70:5299/api/EnterEmergencyComplain/SymptomsComplaintsFiltered";
   static const getAllMedicinesNames = "MedicineUserEntryPage/GetAllMedicines";
   static const getMedicineDetailsById =
       "MedicineUserEntryPage/GetMedicineDetailsById";
 
-  static const postDataEntryEndpoint = "";
+  static const postDataEntryEndpoint =
+      "MedicineUserEntryPage/AddMedicineUserEntry";
   static const getMedcineForms = "MedicineUserEntryPage/GetMedicineFormsOnly";
 
   static const getMedcineDosesByForms =
