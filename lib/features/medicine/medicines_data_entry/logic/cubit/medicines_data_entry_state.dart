@@ -22,6 +22,7 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> medicineForms;
   final List<String> medicalDoses;
   final String medicineId;
+  final String updatedDocumentId;
   final List<MedicineBasicInfoModel>? medicinesBasicInfo;
   final List<String> dosageFrequencies; // عدد مرات الجرعات
   final List<String> allUsageCategories; // مدة الاستخدام
@@ -54,6 +55,7 @@ class MedicinesDataEntryState extends Equatable {
     this.allUsageCategories = const [],
     this.allDurationsBasedOnCategory = const [],
     this.medicineId = '',
+    this.updatedDocumentId = '',
     this.selectedAlarmTime,
   }) : super();
 
@@ -81,6 +83,7 @@ class MedicinesDataEntryState extends Equatable {
           allUsageCategories: const [],
           allDurationsBasedOnCategory: const [],
           medicineId: '',
+          updatedDocumentId: '',
           selectedAlarmTime: null,
         );
 
@@ -108,6 +111,7 @@ class MedicinesDataEntryState extends Equatable {
     List<String>? allUsageCategories,
     List<String>? allDurationsBasedOnCategory,
     String? selectedAlarmTime,
+    String? updatedDocumentId,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -136,6 +140,7 @@ class MedicinesDataEntryState extends Equatable {
       allDurationsBasedOnCategory:
           allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
       selectedAlarmTime: selectedAlarmTime ?? this.selectedAlarmTime,
+      updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
     );
   }
 
@@ -164,5 +169,6 @@ class MedicinesDataEntryState extends Equatable {
         allUsageCategories,
         allDurationsBasedOnCategory,
         selectedAlarmTime,
+        updatedDocumentId,
       ];
 }

@@ -98,8 +98,8 @@ abstract class MedicinesServices {
   );
 
   @PUT(MedicinesApiConstants.editDataEntryEndpoint)
-  Future<dynamic> editSpecifcEmergencyDocumentDataDetails(
-    @Body() MedicineModel requestBody,
+  Future<dynamic> editSpecifcMedicineDataDetails(
+    @Body() MedicineDataEntryRequestBody requestBody,
     @Query('language') String language,
     @Query('medicineId') String medicineId,
     @Query('userType') String userType,

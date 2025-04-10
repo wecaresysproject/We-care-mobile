@@ -16,7 +16,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       : super(
           MedicinesDataEntryState.initialState(),
         );
-  // ignore: unused_field
   final MedicinesDataEntryRepo _medicinesDataEntryRepo;
   final personalInfoController = TextEditingController();
   List<MedicalComplaint> medicalComplaints = [];
@@ -56,11 +55,61 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         medicalComplaints: pastDataEntered.mainSymptoms,
         selectedDoctorName: pastDataEntered.doctorName,
         selectedAlarmTime: pastDataEntered.reminder,
+        isEditMode: true,
+        updatedDocumentId: pastDataEntered.id,
       ),
     );
     personalInfoController.text = pastDataEntered.personalNotes;
     validateRequiredFields();
     await initialDataEntryRequests();
+  }
+
+  Future<void> submitEditsForMedicine() async {
+    emit(
+      state.copyWith(
+        medicinesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _medicinesDataEntryRepo.editSpecifcMedicineDataDetails(
+      medicineId: state.updatedDocumentId,
+      requestBody: MedicineDataEntryRequestBody(
+        startDate: state.medicineStartDate!,
+        medicineName: state.selectedMedicineName!,
+        usageMethod: state.selectedMedicalForm!,
+        dosage: state.selectedDose!,
+        dosageFrequency: state.selectedNoOfDose!,
+        usageDuration: state.doseDuration!,
+        timeDuration: state.timePeriods!,
+        chronicDiseaseMedicine: state.selectedChronicDisease!,
+        doctorName: state.selectedDoctorName!,
+        reminder: state.selectedAlarmTime!,
+        reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,
+        personalNotes: personalInfoController.text,
+        userMedicalComplaint: state.medicalComplaints,
+      ),
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            medicinesDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            medicinesDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> initialDataEntryRequests() async {
@@ -72,7 +121,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   Future<void> emitAllMedicinesNames() async {
     final response = await _medicinesDataEntryRepo.getAllMedicinesNames(
       language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     response.when(
       success: (response) {
@@ -110,7 +159,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   Future<void> emitMedicineforms() async {
     final response = await _medicinesDataEntryRepo.getMedcineForms(
       language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
       medicineId: state.medicineId,
     );
     response.when(
@@ -257,7 +306,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       ),
     );
     final response = await _medicinesDataEntryRepo.postMedicinesDataEntry(
-      userType: UserTypes.patient.name,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: MedicineDataEntryRequestBody(
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,

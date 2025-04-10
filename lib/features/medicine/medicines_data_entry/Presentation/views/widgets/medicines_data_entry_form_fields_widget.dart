@@ -342,17 +342,15 @@ Widget submitEmergencyDataEnteredBlocConsumer() {
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
-            // state.isEditMode
-            //     ? await context
-            //         .read<MedicinesDataEntryCubit>()
-            //         .updateSpecifcEmergencyDocumentDataDetails(
-            //             context.translate)
-            //     :
-            await context
-                .read<MedicinesDataEntryCubit>()
-                .postMedicinesDataEntry(
-                  context.translate,
-                );
+            state.isEditMode
+                ? await context
+                    .read<MedicinesDataEntryCubit>()
+                    .submitEditsForMedicine()
+                : await context
+                    .read<MedicinesDataEntryCubit>()
+                    .postMedicinesDataEntry(
+                      context.translate,
+                    );
           }
         },
         isEnabled: state.isFormValidated ? true : false,
