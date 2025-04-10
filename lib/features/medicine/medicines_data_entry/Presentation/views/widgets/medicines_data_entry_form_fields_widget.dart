@@ -191,13 +191,13 @@ class _MedicinesDataEntryFormFieldsWidgetState
                 "د / رشا مصطفى",
               ],
               categoryLabel: "اسم الطبيب",
-              bottomSheetTitle: state.selectedDoctorName ?? "اختر اسم الطبيب",
+              bottomSheetTitle: "اختر اسم الطبيب",
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
                     .updateSelectedDoctorName(value);
               },
-              containerHintText: "اختر اسم الطبيب",
+              containerHintText: state.selectedDoctorName ?? "اختر اسم الطبيب",
             ),
             verticalSpacing(16),
             Text(
@@ -206,7 +206,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(10),
             CustomAlarmButton(
-              containerHintText: 'اختر موعد التنبيه',
+              containerHintText: state.selectedAlarmTime ?? 'اختر موعد التنبيه',
               onTimePicked: (selectedAlarmTime) {
                 context
                     .read<MedicinesDataEntryCubit>()

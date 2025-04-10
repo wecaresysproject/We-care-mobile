@@ -3,6 +3,7 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
@@ -187,8 +188,11 @@ class AppRouter {
           builder: (context) => MedicinesView(),
         );
       case Routes.medcinesDataEntryView:
+        final medicineModel = arguments as MedicineModel?;
         return MaterialPageRoute(
-          builder: (context) => MedicinesDataEntryView(),
+          builder: (context) => MedicinesDataEntryView(
+            medicineToEdit: medicineModel,
+          ),
         );
       case Routes.medicationSymptomsFormFieldView:
         return MaterialPageRoute(

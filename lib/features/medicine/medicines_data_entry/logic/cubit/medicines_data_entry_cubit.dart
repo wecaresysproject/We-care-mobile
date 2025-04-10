@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -37,6 +38,29 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         ),
       );
     }
+  }
+
+  Future<void> loadMedicinesDataEnteredForEditing(
+    MedicineModel pastDataEntered,
+  ) async {
+    emit(
+      state.copyWith(
+        medicineStartDate: pastDataEntered.startDate,
+        selectedMedicineName: pastDataEntered.medicineName,
+        selectedMedicalForm: pastDataEntered.usageMethod,
+        selectedDose: pastDataEntered.dosage,
+        selectedNoOfDose: pastDataEntered.dosageFrequency,
+        doseDuration: pastDataEntered.usageDuration,
+        timePeriods: pastDataEntered.timeDuration,
+        selectedChronicDisease: pastDataEntered.chronicDiseaseMedicine,
+        medicalComplaints: pastDataEntered.mainSymptoms,
+        selectedDoctorName: pastDataEntered.doctorName,
+        selectedAlarmTime: pastDataEntered.reminder,
+      ),
+    );
+    personalInfoController.text = pastDataEntered.personalNotes;
+    validateRequiredFields();
+    await initialDataEntryRequests();
   }
 
   Future<void> initialDataEntryRequests() async {
