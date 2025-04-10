@@ -15,8 +15,6 @@ class MedicinesDataEntryState extends Equatable {
   final String? doseDuration;
   final String? timePeriods;
   final String? selectedChronicDisease;
-  final String? symptomsDiseaseRegion;
-  final String? medicalSymptomsIssue;
   final String? selectedDoctorName;
   final bool isFormValidated;
   final List<MedicalComplaint> medicalComplaints;
@@ -46,8 +44,6 @@ class MedicinesDataEntryState extends Equatable {
     this.doseDuration,
     this.timePeriods,
     this.selectedChronicDisease,
-    this.medicalSymptomsIssue,
-    this.symptomsDiseaseRegion,
     this.selectedDoctorName,
     this.medicalComplaints = const [],
     this.medicinesNames = const [],
@@ -75,8 +71,6 @@ class MedicinesDataEntryState extends Equatable {
           doseDuration: null,
           timePeriods: null,
           selectedChronicDisease: null,
-          medicalSymptomsIssue: null,
-          symptomsDiseaseRegion: null,
           selectedDoctorName: null,
           medicalComplaints: const [],
           medicinesNames: const [],
@@ -103,8 +97,6 @@ class MedicinesDataEntryState extends Equatable {
     String? doseDuration,
     String? timePeriods,
     String? selectedChronicDisease,
-    String? medicalSymptomsIssue,
-    String? symptomsDiseaseRegion,
     String? selectedDoctorName,
     List<MedicalComplaint>? medicalComplaints,
     List<String>? medicinesNames,
@@ -132,9 +124,6 @@ class MedicinesDataEntryState extends Equatable {
       timePeriods: timePeriods ?? this.timePeriods,
       selectedChronicDisease:
           selectedChronicDisease ?? this.selectedChronicDisease,
-      medicalSymptomsIssue: medicalSymptomsIssue ?? this.medicalSymptomsIssue,
-      symptomsDiseaseRegion:
-          symptomsDiseaseRegion ?? this.symptomsDiseaseRegion,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
       medicalComplaints: medicalComplaints ?? this.medicalComplaints,
       medicinesNames: medicinesNames ?? this.medicinesNames,
@@ -164,8 +153,6 @@ class MedicinesDataEntryState extends Equatable {
         doseDuration,
         timePeriods,
         selectedChronicDisease,
-        medicalSymptomsIssue,
-        symptomsDiseaseRegion,
         selectedDoctorName,
         medicalComplaints,
         medicinesNames,

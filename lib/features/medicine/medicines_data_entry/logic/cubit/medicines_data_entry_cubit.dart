@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
@@ -32,7 +33,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       emit(
         state.copyWith(
           medicalComplaints: [],
-          // errorMessage: e.toString(),
+          message: e.toString(),
         ),
       );
     }
@@ -238,20 +239,17 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
         dosage: state.selectedDose!,
-        dosageFrequency: state.selectedNoOfDose ??
-            locale.no_data_entered, // "مرتين يوميًا (كل 12 ساعة)"
+        dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
         chronicDiseaseMedicine: locale.no_data_entered,
-        regionSymptoms: state.symptomsDiseaseRegion ?? locale.no_data_entered,
-        complaintSymptoms: "",
         doctorName: state.selectedDoctorName ?? locale.no_data_entered,
-        reminder: "",
-        reminderStatus: false,
+        reminder: state.selectedAlarmTime ?? locale.no_data_entered,
+        reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,
         personalNotes: personalInfoController.text.isNotEmpty
             ? personalInfoController.text
             : locale.no_data_entered,
-        // medicalComplaints: state.medicalComplaints,
+        userMedicalComplaint: state.medicalComplaints,
       ),
       language: AppStrings.arabicLang,
     );
@@ -348,17 +346,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
   void updateSelectedChronicDisease(String? value) {
     emit(state.copyWith(selectedChronicDisease: value));
-  }
-
-  Future<void> updateSymptomsDiseaseRegion(String? symptom) async {
-    emit(state.copyWith(symptomsDiseaseRegion: symptom));
-    // await getAllRelevantComplaintsToSelectedBodyPart(symptom!);
-    validateRequiredFields();
-  }
-
-  void updateMedicalSymptomsIssue(String? issue) {
-    emit(state.copyWith(medicalSymptomsIssue: issue));
-    validateRequiredFields();
   }
 
   void updateSelectedDoctorName(String? value) {

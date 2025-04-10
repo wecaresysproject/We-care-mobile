@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 part 'medicine_data_entry_request_body.g.dart';
 
@@ -12,10 +13,10 @@ class MedicineDataEntryRequestBody {
   final String usageDuration;
   final String timeDuration;
   final String chronicDiseaseMedicine;
-  final String regionSymptoms;
-  final String complaintSymptoms;
   final String doctorName;
   final String reminder;
+  @JsonKey(name: 'mainSymptoms')
+  final List<MedicalComplaint> userMedicalComplaint;
   final bool reminderStatus;
   final String personalNotes;
 
@@ -28,12 +29,11 @@ class MedicineDataEntryRequestBody {
     required this.usageDuration,
     required this.timeDuration,
     required this.chronicDiseaseMedicine,
-    required this.regionSymptoms,
-    required this.complaintSymptoms,
     required this.doctorName,
     required this.reminder,
     required this.reminderStatus,
     required this.personalNotes,
+    required this.userMedicalComplaint,
   });
 
   factory MedicineDataEntryRequestBody.fromJson(Map<String, dynamic> json) =>
