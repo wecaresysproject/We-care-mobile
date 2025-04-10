@@ -20,6 +20,7 @@ import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presen
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/vaccine_data_entry_view.dart';
 import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.dart';
+import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
@@ -95,8 +96,11 @@ class AppRouter {
           builder: (context) => MedicalCategoriesTypesView(),
         );
       case Routes.xrayCategoryDataEntryView:
+        final xrayDetailsModel = arguments as RadiologyData?;
         return MaterialPageRoute(
-          builder: (context) => XrayCategoryDataEntryView(),
+          builder: (context) => XrayCategoryDataEntryView(
+            editingXRayDetailsData: xrayDetailsModel,
+          ),
         );
 
       case Routes.prescriptionView:

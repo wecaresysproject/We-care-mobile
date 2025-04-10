@@ -23,6 +23,8 @@ class XRayDataEntryState extends Equatable {
   final String xRayReportUploadedUrl;
   final UploadImageRequestStatus xRayImageRequestStatus;
   final UploadReportRequestStatus xRayReportRequestStatus;
+  final RadiologyData? xRayEditedModel;
+  final bool isEditMode;
 
   const XRayDataEntryState({
     this.selectedPupose,
@@ -44,6 +46,8 @@ class XRayDataEntryState extends Equatable {
     this.xRayReportUploadedUrl = '',
     this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
     this.xRayReportRequestStatus = UploadReportRequestStatus.initial,
+    this.xRayEditedModel,
+    this.isEditMode = false,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -60,6 +64,7 @@ class XRayDataEntryState extends Equatable {
           selectedCountryName: null,
           xRayImageRequestStatus: UploadImageRequestStatus.initial,
           xRayReportRequestStatus: UploadReportRequestStatus.initial,
+          isEditMode: false,
         );
 
   XRayDataEntryState copyWith({
@@ -82,6 +87,8 @@ class XRayDataEntryState extends Equatable {
     String? xRayReportUploadedUrl,
     UploadImageRequestStatus? xRayImageRequestStatus,
     UploadReportRequestStatus? xRayReportRequestStatus,
+    RadiologyData? xRayEditedModel,
+    bool? isEditMode,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -114,6 +121,8 @@ class XRayDataEntryState extends Equatable {
           xRayImageRequestStatus ?? this.xRayImageRequestStatus,
       xRayReportRequestStatus:
           xRayReportRequestStatus ?? this.xRayReportRequestStatus,
+      xRayEditedModel: xRayEditedModel ?? this.xRayEditedModel,
+      isEditMode: isEditMode ?? this.isEditMode,
     );
   }
 
@@ -138,5 +147,7 @@ class XRayDataEntryState extends Equatable {
         xRayReportUploadedUrl,
         xRayImageRequestStatus,
         xRayReportRequestStatus,
+        xRayEditedModel,
+        isEditMode,
       ];
 }

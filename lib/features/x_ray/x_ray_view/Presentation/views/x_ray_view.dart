@@ -10,7 +10,6 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_r
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
 
-import 'widgets/medical_test_card.dart';
 import 'widgets/x_ray_data_filters_row.dart';
 import 'widgets/x_ray_data_grid_view.dart';
 import 'x_ray_details_view.dart';
@@ -84,13 +83,20 @@ class XRayView extends StatelessWidget {
                     } else if (state.requestStatus == RequestStatus.success) {
                       return MedicalItemGridView(
                         items: state.userRadiologyData,
-                        onTap: (id) => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => XRayDetailsView(
-                                documentId: id,
-                              ),
-                            )),
+                        onTap: (id) async {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => XRayDetailsView(
+                                  documentId: id,
+                                ),
+                              ));
+                          if (context.mounted) {
+                            await context
+                                .read<XRayViewCubit>()
+                                .emitUserRadiologyData();
+                          }
+                        },
                         titleBuilder: (item) => item.radioType,
                         infoRowBuilder: (item) => [
                           {"title": "التاريخ:", "value": item.radiologyDate},

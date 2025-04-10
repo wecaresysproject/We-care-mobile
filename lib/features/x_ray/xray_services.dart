@@ -36,6 +36,20 @@ abstract class XRayApiServices {
     @Query("radioType") String? radioType,
     @Query("bodyPart") String? bodyPart,
   );
+
+  @DELETE(XrayApiConstants.deleteXraybyid)
+  Future<dynamic> deleteRadiologyDocument(
+    @Query("documentId") String id,
+    @Query("language") String language,
+  );
+
+  @PUT(XrayApiConstants.updateXrayDocumentDetails)
+  Future<dynamic> updateRadiologyDocumentDetails(
+    @Body() XrayDataEntryRequestBodyModel xrayDataEntryRequestBodyModel,
+    @Query('language') String language,
+    @Query('documentId') String documentId,
+  );
+
   @GET(XrayApiConstants.getBodyParts)
   Future<List<BodyPartsResponseModel>> getBodyPartsData();
 

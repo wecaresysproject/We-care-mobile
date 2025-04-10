@@ -1,11 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
-import 'package:we_care/generated/l10n.dart';
 
 class XRayViewCubit extends Cubit<XRayViewState> {
   XRayViewCubit(this._xRayRepo) : super(XRayViewState.initial());
@@ -97,6 +95,27 @@ class XRayViewCubit extends Cubit<XRayViewState> {
         responseMessage: error.errors.first,
         requestStatus: RequestStatus.failure,
       ));
+    });
+  }
+
+  Future<void> deleteMedicineById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _xRayRepo.deleteRadiologyDocumentById(
+      id: id,
+      language: AppStrings.arabicLang,
+    );
+
+    result.when(success: (response) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        responseMessage: response,
+        isDeleteRequest: true,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isDeleteRequest: true));
     });
   }
 }

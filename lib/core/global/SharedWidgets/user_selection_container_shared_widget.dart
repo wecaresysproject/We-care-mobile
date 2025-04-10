@@ -19,6 +19,7 @@ class UserSelectionContainer extends StatefulWidget {
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
     this.iconColor = AppColorsManager.mainDarkBlue,
     this.usertEntryLabelText,
+    this.isEditMode = false,
   });
 
   final List<String> options;
@@ -31,6 +32,7 @@ class UserSelectionContainer extends StatefulWidget {
   final bool isDisabled;
   final Color? iconColor;
   final String? usertEntryLabelText;
+  final bool isEditMode;
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -57,7 +59,9 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
                     onAddNew: () {},
                     title: widget.bottomSheetTitle,
                     options: widget.options,
-                    initialSelectedItem: selectedItem,
+                    initialSelectedItem: widget.isEditMode
+                        ? widget.containerHintText
+                        : selectedItem,
                     onItemSelected: (selected) {
                       setState(() {
                         selectedItem = selected;
