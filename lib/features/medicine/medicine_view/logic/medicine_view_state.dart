@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 
 class MedicineViewState extends Equatable {
   final RequestStatus requestStatus;

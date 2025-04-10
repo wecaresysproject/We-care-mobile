@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 part 'get_all_user_medicines_responce_model.g.dart';
 
@@ -31,8 +32,7 @@ class MedicineModel {
   String usageDuration;
   String timeDuration;
   String chronicDiseaseMedicine;
-  String regionSymptoms;
-  String complaintSymptoms;
+  List<MedicalComplaint> mainSymptoms;
   String doctorName;
   String reminder;
   bool reminderStatus;
@@ -50,8 +50,7 @@ class MedicineModel {
     required this.usageDuration,
     required this.timeDuration,
     required this.chronicDiseaseMedicine,
-    required this.regionSymptoms,
-    required this.complaintSymptoms,
+    required this.mainSymptoms,
     required this.doctorName,
     required this.reminder,
     required this.reminderStatus,
