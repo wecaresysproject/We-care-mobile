@@ -174,9 +174,6 @@ class _SuergeriesDataEntryFormFieldsState
 
             verticalSpacing(8),
             BlocListener<SurgeryDataEntryCubit, SurgeryDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.surgeryUploadReportStatus !=
-                  curr.surgeryUploadReportStatus,
               listener: (context, state) async {
                 if (state.surgeryUploadReportStatus ==
                     UploadReportRequestStatus.success) {
