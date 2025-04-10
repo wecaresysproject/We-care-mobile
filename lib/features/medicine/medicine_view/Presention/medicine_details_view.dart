@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 
@@ -127,12 +128,22 @@ class MedicineDetailsView extends StatelessWidget {
                           value: state.selectestMedicineDetails!.doctorName,
                           icon: 'assets/images/doctor_icon.png'),
                     ]),
-                    DetailsViewInfoTile(
-                      title: 'الاعراض المرضية',
-                      value: state.selectestMedicineDetails!.regionSymptoms,
-                      icon: 'assets/images/symptoms_icon.png',
-                      isExpanded: true,
-                    ),
+                    // Display the main symptoms using SymptomContainer
+                    ...state.selectestMedicineDetails!.mainSymptoms
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                      final index = entry.key;
+                      final symptom = entry.value;
+                      return SymptomContainer(
+                        isMainSymptom:
+                            index == 0, // First symptom is the main one
+                        symptomArea: symptom.symptomsRegion,
+                        symptomComplaint: symptom.sypmptomsComplaintIssue,
+                        natureOfComplaint: symptom.natureOfComplaint,
+                        severityOfComplaint: symptom.severityOfComplaint,
+                      );
+                    }),
                     DetailsViewInfoTile(
                       title: 'الملاحظات الشخصية ',
                       value: state.selectestMedicineDetails!.personalNotes,
@@ -181,7 +192,7 @@ void _shareDetails(BuildContext context) {
 • مدة الاستخدام: ${medicine.usageDuration}
 • تاريخ انتهاء العلاج: ${medicine.timeDuration}
 • اسم الطبيب: ${medicine.doctorName}
-• الأعراض المرضية: ${medicine.regionSymptoms}
+• الأعراض المرضية: ${medicine.mainSymptoms.join(', ')}
 • الملاحظات الشخصية: ${medicine.personalNotes}
 • التنبيهات: ${medicine.reminderStatus ? 'مفعل' : 'غير مفعل'}
 • وقت التنبيه: ${medicine.reminder}

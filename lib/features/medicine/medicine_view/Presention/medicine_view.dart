@@ -266,13 +266,18 @@ class MedicineTable extends StatelessWidget {
                   }
                 }),
                 DataCell(Center(
-                  child: Text(data.usageDuration,
-                      style: AppTextStyles.font14whiteWeight600
-                          .copyWith(color: AppColorsManager.textColor)),
+                  child: FittedBox(
+                    child: Text(data.usageDuration.substring(0, 15),
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.font14whiteWeight600
+                            .copyWith(color: AppColorsManager.textColor)),
+                  ),
                 )),
                 DataCell(Center(
                   child: Text(
-                    data.chronicDiseaseMedicine,
+                    data.chronicDiseaseMedicine == 'لم يتم ادخال بيانات'
+                        ? '-'
+                        : data.chronicDiseaseMedicine,
                     style: AppTextStyles.font14whiteWeight600
                         .copyWith(color: AppColorsManager.textColor),
                   ),
