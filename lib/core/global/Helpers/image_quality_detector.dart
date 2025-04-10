@@ -22,9 +22,8 @@ class ImagePickerService {
   Future<bool> pickImageFromCamera(S localozation) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 100,
+      requestFullMetadata: false,
     ); //TODO: check  imageQuality: 100 later
-
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
@@ -49,7 +48,7 @@ class ImagePickerService {
   Future<bool> pickImageFromGallery(S localozation) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 100,
+      requestFullMetadata: false,
     ); //TODO: check  imageQuality: 100 later
 
     if (pickedFile != null) {
