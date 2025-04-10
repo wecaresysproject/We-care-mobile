@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
+import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -104,6 +105,73 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         );
       },
     );
+  }
+
+  Future<void> submitEditsOnXRayDocument(S localozation) async {
+    emit(
+      state.copyWith(
+        xRayDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
+    final response = await _xRayDataEntryRepo.updateXRayDocumentDetails(
+      requestBody: XrayDataEntryRequestBodyModel(
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+        language: AppStrings.arabicLang, //TODO: to change later
+        radiologyDate: state.xRayDateSelection!,
+        bodyPartName: state.xRayBodyPartSelection!,
+        radiologyType: state.xRayTypeSelection!,
+        radiologyTypePurposes: state.selectedPupose,
+        photo: state.xRayPictureUploadedUrl,
+        report: state.xRayReportUploadedUrl,
+        cause: localozation.no_data_entered,
+        radiologyDoctor: localozation.no_data_entered,
+        hospital: localozation.no_data_entered,
+        curedDoctor: localozation.no_data_entered,
+        country: state.selectedCountryName,
+        radiologyNote: personalNotesController.text,
+      ),
+      documentId: state.xRayEditedModel!.id!,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            xRayDataEntryStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            xRayDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> loadXrayDetailsDataForEditing(
+      RadiologyData editingRadiologyDetailsData) async {
+    emit(
+      state.copyWith(
+        xRayDateSelection: editingRadiologyDetailsData.radiologyDate,
+        isEditMode: true,
+        xRayBodyPartSelection: editingRadiologyDetailsData.bodyPart,
+        xRayTypeSelection: editingRadiologyDetailsData.radioType,
+        selectedPupose: editingRadiologyDetailsData.periodicUsage,
+        xRayPictureUploadedUrl: editingRadiologyDetailsData.radiologyPhoto,
+        xRayReportUploadedUrl: editingRadiologyDetailsData.report,
+        xRayEditedModel: editingRadiologyDetailsData,
+        isXRayPictureSelected: true,
+      ),
+    );
+    personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;
+    validateRequiredFields();
+    await intialRequestsForXRayDataEntry();
   }
 
   void updateXRaySelectedPupose(String? selectedPupose) {

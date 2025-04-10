@@ -16,6 +16,7 @@ import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.d
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
+import 'package:we_care/generated/l10n.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
@@ -45,8 +46,8 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               containerBorderColor: state.xRayDateSelection == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText:
-                  isArabic() ? "يوم / شهر / سنة" : "Date / Month / Year",
+              placeholderText: state.xRayDateSelection ??
+                  (isArabic() ? "يوم / شهر / سنة" : "Day / Month / Year"),
               onDateSelected: (pickedDate) {
                 context.read<XRayDataEntryCubit>().updateXRayDate(pickedDate);
                 log("xxx: pickedDate: $pickedDate"); //! 2024-02-14
@@ -61,7 +62,9 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "منطقة الأشعة",
-              containerHintText: "اختر العضو الخاص بالأشعة",
+              containerHintText:
+                  state.xRayBodyPartSelection ?? "اختر العضو الخاص بالأشعة",
+              isEditMode: state.isEditMode,
               options: state.bodyPartNames,
               onOptionSelected: (selectedbodyPartName) async {
                 await context
@@ -77,7 +80,8 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "النوع",
-              containerHintText: "اختر نوع الأشعة",
+              isEditMode: state.isEditMode,
+              containerHintText: state.xRayTypeSelection ?? "اختر نوع الأشعة",
               options: state.radiologyTypesBasedOnBodyPartNameSelected,
               onOptionSelected: (value) async {
                 context.read<XRayDataEntryCubit>().updateXRayType(value);
@@ -89,8 +93,10 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             UserSelectionContainer(
               categoryLabel:
                   "نوعية الاحتياج للأشعة", // Another Dropdown Example
-              containerHintText: "اختر نوعية احتياجك للأشعة",
+              containerHintText:
+                  state.selectedPupose ?? "اختر نوعية احتياجك للأشعة",
               options: state.puposesOfSelectedXRayType,
+              isEditMode: state.isEditMode,
               onOptionSelected: (selectedPupose) {
                 log("xxx:Selected: $selectedPupose");
                 context
@@ -120,8 +126,9 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                 }
               },
               child: SelectImageContainer(
-                containerBorderColor: (state.isXRayPictureSelected == null) ||
-                        (state.isXRayPictureSelected == false)
+                containerBorderColor: ((state.isXRayPictureSelected == null) ||
+                            (state.isXRayPictureSelected == false)) &&
+                        state.xRayPictureUploadedUrl.isEmpty
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
@@ -332,9 +339,15 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
           title: context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              await context.read<XRayDataEntryCubit>().postRadiologyDataEntry(
-                    context.translate,
-                  );
+              if (state.isEditMode) {
+                await context
+                    .read<XRayDataEntryCubit>()
+                    .submitEditsOnXRayDocument(S.of(context));
+              } else {
+                await context.read<XRayDataEntryCubit>().postRadiologyDataEntry(
+                      context.translate,
+                    );
+              }
               log("xxx:Save Data Entry");
             } else {
               log("form not validated");

@@ -10,6 +10,7 @@ class XRayViewState extends Equatable {
   final List<int> yearsFilter;
   final List<String> xrayTypeFilter;
   final List<String> bodyPartFilter;
+  final bool isDeleteRequest;
 
   const XRayViewState({
     this.responseMessage = '',
@@ -19,6 +20,7 @@ class XRayViewState extends Equatable {
     this.yearsFilter = const [],
     this.xrayTypeFilter = const ['الكل'],
     this.bodyPartFilter = const ['الكل'],
+    this.isDeleteRequest = false,
   });
 
   factory XRayViewState.initial() {
@@ -30,6 +32,7 @@ class XRayViewState extends Equatable {
       yearsFilter: const [],
       xrayTypeFilter: const ['الكل'],
       bodyPartFilter: const ['الكل'],
+      isDeleteRequest: false,
     );
   }
 
@@ -41,6 +44,7 @@ class XRayViewState extends Equatable {
     List<int>? yearsFilter,
     List<String>? xrayTypeFilter,
     List<String>? bodyPartFilter,
+    bool? isDeleteRequest,
   }) {
     return XRayViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -51,6 +55,7 @@ class XRayViewState extends Equatable {
       yearsFilter: yearsFilter ?? this.yearsFilter,
       xrayTypeFilter: xrayTypeFilter ?? this.xrayTypeFilter,
       bodyPartFilter: bodyPartFilter ?? this.bodyPartFilter,
+      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
     );
   }
 
@@ -62,6 +67,7 @@ class XRayViewState extends Equatable {
         selectedRadiologyDocument,
         yearsFilter,
         xrayTypeFilter,
-        bodyPartFilter
+        bodyPartFilter,
+        isDeleteRequest,
       ];
 }

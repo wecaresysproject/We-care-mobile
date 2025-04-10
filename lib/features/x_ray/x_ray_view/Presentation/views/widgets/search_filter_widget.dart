@@ -75,44 +75,55 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return OverlayEntry(
-      builder: (context) => Positioned(
-        left: 16,
-        right: 16,
-        top: offset.dy + renderBox.size.height + 5.h,
-        child: Material(
-          elevation: 4.0,
-          borderRadius: BorderRadius.circular(12.0),
-          child: Container(
-            width: screenWidth,
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: _closeOverlay, // This closes the overlay on outside tap
+        child: Stack(
+          children: [
+            Positioned(
+              left: 16,
+              right: 16,
+              top: offset.dy + renderBox.size.height + 5.h,
+              child: Material(
+                elevation: 4.0,
+                borderRadius: BorderRadius.circular(12.0),
+                child: Container(
+                  width: screenWidth,
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {}, // Prevent taps inside from bubbling up
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      padding: EdgeInsets.all(0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: widget.isYearFilter ? 5 : 3,
+                        crossAxisSpacing: widget.isYearFilter ? 15.w : 8.w,
+                        mainAxisSpacing: widget.isYearFilter ? 16.h : 16.h,
+                        childAspectRatio: widget.isYearFilter ? 2 : 3,
+                      ),
+                      itemCount: widget.filterList.length,
+                      itemBuilder: (context, index) {
+                        return FilterChipItem(
+                          label: widget.filterList[index].toString(),
+                          isSelected: index == _selectedIndex,
+                          onTap: () => _onChipSelected(index),
+                        );
+                      },
+                    ),
+                  ),
+                ),
               ),
-              borderRadius: BorderRadius.circular(12.0),
             ),
-            child: GridView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              padding: EdgeInsets.all(0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: widget.isYearFilter ? 5 : 3,
-                crossAxisSpacing: widget.isYearFilter ? 15.w : 8.w,
-                mainAxisSpacing: widget.isYearFilter ? 16.h : 16.h,
-                childAspectRatio: widget.isYearFilter ? 2 : 3,
-              ),
-              itemCount: widget.filterList.length,
-              itemBuilder: (context, index) {
-                return FilterChipItem(
-                  label: widget.filterList[index].toString(),
-                  isSelected: index == _selectedIndex,
-                  onTap: () => _onChipSelected(index),
-                );
-              },
-            ),
-          ),
+          ],
         ),
       ),
     );

@@ -100,4 +100,20 @@ class XRayDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> updateXRayDocumentDetails({
+    required requestBody,
+    required String documentId,
+  }) async {
+    try {
+      final response = await _xRayApiServices.updateRadiologyDocumentDetails(
+        requestBody,
+        requestBody.language,
+        documentId,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

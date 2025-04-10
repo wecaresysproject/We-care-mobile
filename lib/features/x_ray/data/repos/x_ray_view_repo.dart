@@ -59,4 +59,17 @@ class XRayViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> deleteRadiologyDocumentById({
+    required String id,
+    required String language,
+  }) async {
+    try {
+      final response =
+          await xRayApiServices.deleteRadiologyDocument(id, language);
+      return ApiResult.success(response["message"]);
+    } catch (e) {
+      return ApiResult.failure(ApiErrorHandler.handle(e));
+    }
+  }
 }
