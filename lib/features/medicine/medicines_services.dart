@@ -97,10 +97,11 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
   );
 
-  // @PUT(EmergencyComplaintsApiConstants.editSpecificComplaintDocumentDetail)
-  // Future<dynamic> editSpecifcEmergencyDocumentDataDetails(
-  //   @Body() EmergencyComplainRequestBody requestBody,
-  //   @Query('language') String language,
-  //   @Query('id') String documentId,
-  // );
+  @PUT(MedicinesApiConstants.editDataEntryEndpoint)
+  Future<dynamic> editSpecifcEmergencyDocumentDataDetails(
+    @Body() MedicineModel requestBody,
+    @Query('language') String language,
+    @Query('medicineId') String medicineId,
+    @Query('userType') String userType,
+  );
 }

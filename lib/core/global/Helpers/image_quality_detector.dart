@@ -23,6 +23,7 @@ class ImagePickerService {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.camera,
       requestFullMetadata: false,
+      imageQuality: 100, //no compression
     ); //TODO: check  imageQuality: 100 later
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path); // Convert XFile to File
@@ -49,6 +50,7 @@ class ImagePickerService {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
       requestFullMetadata: false,
+      imageQuality: 100, //no compression
     ); //TODO: check  imageQuality: 100 later
 
     if (pickedFile != null) {
