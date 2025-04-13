@@ -29,6 +29,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
             title: dataEntryCategories[index]["title"]!,
             imagePath: dataEntryCategories[index]["image"]!,
             routeName: dataEntryCategories[index]["route"]!,
+            isActive: dataEntryCategories[index]["isActive"] ?? false,
           );
         },
       ),
@@ -40,12 +41,14 @@ class CategoryItem extends StatelessWidget {
   final String title;
   final String imagePath;
   final String routeName;
+  final bool isActive;
 
   const CategoryItem({
     super.key,
     required this.title,
     required this.imagePath,
     required this.routeName,
+    this.isActive = false,
   });
 
   @override
@@ -54,12 +57,14 @@ class CategoryItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: () async {
-            await context.pushNamed(routeName);
-          },
+          onTap: isActive
+              ? () async {
+                  await context.pushNamed(routeName);
+                }
+              : null, // Disable interaction if not active
           child: Container(
-            width: 99.w,
-            height: 88.h,
+            width: 99.w - 99.w * 0.09,
+            height: 88.h - 88.h * 0.09,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40.r),
               gradient: const LinearGradient(
@@ -100,7 +105,10 @@ class CategoryItem extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.font18blackWight500,
+            style: AppTextStyles.font18blackWight500.copyWith(
+              fontWeight: FontWeight.w400,
+              fontSize: 16.sp,
+            ),
           ),
         )
       ],
@@ -109,36 +117,42 @@ class CategoryItem extends StatelessWidget {
 }
 
 // Categories with Named Routes
-final List<Map<String, String>> dataEntryCategories = [
+final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأدوية",
     "image": "assets/images/medicines_icon.png",
     "route": Routes.medcinesDataEntryView,
+    "isActive": true,
   },
   {
     "title": "الشكاوى\nالطارئة",
     "image": "assets/images/urgent_icon.png",
     "route": Routes.emergenciesComplaintDataEntryView,
+    "isActive": true,
   },
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
     "route": Routes.prescriptionCategoryDataEntryView,
+    "isActive": true,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
     "route": Routes.testAnalsisDataEntryView,
+    "isActive": true,
   },
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
     "route": Routes.xrayCategoryDataEntryView,
+    "isActive": true,
   },
   {
     "title": "العمليات\nالجراحية",
     "image": "assets/images/surgery_icon.png",
     "route": Routes.surgeriesDataEntryView,
+    "isActive": true,
   },
   {
     "title": "المناظير\nالطبيه",
@@ -189,6 +203,7 @@ final List<Map<String, String>> dataEntryCategories = [
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
     "route": Routes.vaccineDataEntryView,
+    "isActive": true
   },
   {
     "title": "متابعة\n الحمل",

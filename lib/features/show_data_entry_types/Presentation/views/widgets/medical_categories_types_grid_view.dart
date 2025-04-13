@@ -32,6 +32,7 @@ class MedicalCategoriesTypesGridView extends StatelessWidget {
             imagePath: categoriesView[index]["image"]!,
             routeName: categoriesView[index]["route"]!,
             notificationCount: index % 2 == 0 ? 1 : 10,
+            isActive: categoriesView[index]["isActive"],
           );
         },
       ),
@@ -44,6 +45,7 @@ class MedicalCategoryItem extends StatelessWidget {
   final String imagePath;
   final String routeName;
   final int? notificationCount; // Added notification count
+  final bool isActive;
 
   const MedicalCategoryItem({
     super.key,
@@ -51,6 +53,7 @@ class MedicalCategoryItem extends StatelessWidget {
     required this.imagePath,
     required this.routeName,
     this.notificationCount, // Optional parameter for the badge
+    this.isActive = false,
   });
 
   @override
@@ -59,16 +62,19 @@ class MedicalCategoryItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: () async {
-            await context.pushNamed(routeName);
-          },
+          onTap: isActive
+              ? () async {
+                  await context.pushNamed(routeName);
+                }
+              : null, // Disable interaction if not active
+
           child: Stack(
             clipBehavior: Clip.none, // Allows badge to overflow
             children: [
               // Main Category Container
               Container(
-                width: 99.w,
-                height: 88.h,
+                width: 99.w - 99.w * 0.09,
+                height: 88.h - 88.h * 0.09,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(40.r),
                   gradient: const LinearGradient(
@@ -99,14 +105,16 @@ class MedicalCategoryItem extends StatelessWidget {
               ),
 
               // Notification Badge (Only shows if notificationCount > 0)
-              if (notificationCount != null && notificationCount! > 0)
+              if (isActive &&
+                  notificationCount != null &&
+                  notificationCount! > 0)
                 Positioned(
-                  top: 60.h,
-                  right: -5.w,
+                  top: 60.h - 12.h,
+                  right: -4.5.w,
                   child: Container(
-                    height: 30.31.h,
+                    transformAlignment: Alignment.center,
                     padding: EdgeInsets.symmetric(
-                      horizontal: 8.w,
+                      horizontal: 3.w,
                       vertical: 0.h,
                     ),
                     alignment: Alignment.center,
@@ -136,6 +144,23 @@ class MedicalCategoryItem extends StatelessWidget {
                     ),
                   ),
                 ),
+              // Dim Overlay if not active
+              if (!isActive)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(40.r),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.hourglass_empty,
+                        color: Colors.white,
+                        size: 32.sp,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -150,7 +175,10 @@ class MedicalCategoryItem extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.font18blackWight500,
+            style: AppTextStyles.font18blackWight500.copyWith(
+              fontWeight: FontWeight.w400,
+              fontSize: 16.sp,
+            ),
           ),
         ),
       ],
@@ -159,130 +187,155 @@ class MedicalCategoryItem extends StatelessWidget {
 }
 
 // Categories with Named Routes
-final List<Map<String, String>> categoriesView = [
+final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الأدوية",
     "image": "assets/images/medicines_icon.png",
     "route": Routes.medcinesView,
+    "isActive": true,
   },
   {
     "title": "الشكاوى\nالطارئة",
     "image": "assets/images/urgent_icon.png",
     "route": Routes.emergenciesComplaintDataView,
+    "isActive": true,
   },
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
     "route": Routes.prescriptionView,
+    "isActive": true,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
     "route": Routes.medicalAnalysisView,
+    "isActive": true,
   },
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
     "route": Routes.xRayDataView,
+    "isActive": true,
   },
   {
     "title": "العمليات\nالجراحية",
     "image": "assets/images/surgery_icon.png",
     "route": Routes.surgeriesView,
+    "isActive": true,
   },
   {
     "title": "المناظير\nالطبيه",
     "image": "assets/images/machine_icon.png",
     "route": "/tumors",
+    "isActive": false,
   },
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
-    "route": "/organic_disorders"
+    "route": "/organic_disorders",
+    "isActive": false,
   },
   {
     "title": "الأورام",
     "image": "assets/images/tumor_icon.png",
-    "route": "/biological_regulation"
+    "route": "/biological_regulation",
+    "isActive": false,
   },
   {
     "title": "الأمراض\n الوراثيه",
     "image": "assets/images/icon_family.png",
-    "route": "/allergy"
+    "route": "/allergy",
+    "isActive": false,
   },
   {
     "title": "الغسيل\nالكلوى",
     "image": "assets/images/kidney_wash.png",
-    "route": "/other_sections"
+    "route": "/other_sections",
+    "isActive": false,
   },
   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
-    "route": "/genetic_disorders"
+    "route": "/genetic_disorders",
+    "isActive": false,
   },
   {
     "title": "العيون",
     "image": "assets/images/hand_icon.png", //TODO: Change Icon مشفثق
     "route": "/eye_care",
+    "isActive": false,
   },
   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
     "route": "/dental",
+    "isActive": false,
   },
   {
     "title": "العلاج\nالطبيعى",
     "image": "assets/images/physical_therapy.png",
-    "route": "/other_sections"
+    "route": "/other_sections",
+    "isActive": false,
   },
   {
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
     "route": Routes.vaccineView,
+    "isActive": true,
   },
   {
     "title": "متابعة\n الحمل",
     "image": "assets/images/pergenant_woman.png",
-    "route": "/specializations"
+    "route": "/specializations",
+    "isActive": false,
   },
   {
     "title": "علاج مشاكل\nالانجاب",
     "image": "assets/images/baby_icon.png",
-    "route": "/psychological_disorders"
+    "route": "/psychological_disorders",
+    "isActive": false,
   },
   {
     "title": "الحروق",
     "image": "assets/images/fire_icon.png",
-    "route": "/cosmetic_procedures"
+    "route": "/cosmetic_procedures",
+    "isActive": false,
   },
   {
     "title": "الجراحات\nالتجميلية",
     "image": "assets/images/woman.png",
-    "route": "/dietary_habits"
+    "route": "/dietary_habits",
+    "isActive": false,
   },
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
-    "route": "/general_health"
+    "route": "/general_health",
+    "isActive": false,
   },
   {
     "title": "السلوكيات\nالخطرة",
     "image": "assets/images/red_icon.png",
-    "route": "/risky_behaviors"
+    "route": "/risky_behaviors",
+    "isActive": false,
   },
   {
     "title": "الصحه\nالعامه",
     "image": "assets/images/heart_icon.png",
-    "route": "/mental_issues"
+    "route": "/mental_issues",
+    "isActive": false,
   },
   {
     "title": "العادات\nالغذائية",
     "image": "assets/images/spoon_icon.png",
-    "route": "/mental_issues"
+    "route": "/mental_issues",
+    "isActive": false,
   },
   {
     "title": "المكملات\nالغذائية",
     "image": "assets/images/chemical_medicine.png",
-    "route": "/mental_issues"
+    "route": "/mental_issues",
+    "isActive": false,
   },
 ];
