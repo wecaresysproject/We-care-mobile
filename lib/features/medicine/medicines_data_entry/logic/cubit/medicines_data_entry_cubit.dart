@@ -42,6 +42,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   Future<void> loadMedicinesDataEnteredForEditing(
     MedicineModel pastDataEntered,
   ) async {
+    await storeTempUserPastComplaints(pastDataEntered.mainSymptoms);
+
     emit(
       state.copyWith(
         medicineStartDate: pastDataEntered.startDate,
@@ -62,6 +64,17 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     personalInfoController.text = pastDataEntered.personalNotes;
     validateRequiredFields();
     await initialDataEntryRequests();
+  }
+
+  Future<void> storeTempUserPastComplaints(
+      List<MedicalComplaint> emergencyComplaints) async {
+    final medicalComplaintBox =
+        Hive.box<MedicalComplaint>("medical_complaints");
+
+    // Loop through the list and store each complaint in the box
+    for (var oldComplains in emergencyComplaints) {
+      await medicalComplaintBox.add(oldComplains);
+    }
   }
 
   Future<void> submitEditsForMedicine() async {
