@@ -5,8 +5,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
@@ -65,6 +67,18 @@ class MedicineDetailsView extends StatelessWidget {
                       },
                       shareFunction: () {
                         _shareDetails(context);
+                      },
+                      editFunction: () async {
+                        final result = await context.pushNamed(
+                          Routes.medcinesDataEntryView,
+                          arguments: state.selectestMedicineDetails,
+                        );
+                        if (result != null && result) {
+                          if (!context.mounted) return;
+                          await context
+                              .read<MedicineViewCubit>()
+                              .getMedicineDetailsById(documentId);
+                        }
                       },
                     ),
                     Row(children: [

@@ -277,6 +277,7 @@ void setupAppRepos() {
       () => SurgeriesDataEntryRepo(
             surgeriesService: getIt<SurgeriesService>(),
           ));
+
   getIt.registerLazySingleton<MedicinesViewRepo>(
     () => MedicinesViewRepo(
       getIt<MedicinesServices>(),

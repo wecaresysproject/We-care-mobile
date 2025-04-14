@@ -33,7 +33,10 @@ class MedicalDataEntryCategoryTypesView extends StatelessWidget {
               verticalSpacing(3),
               Text(
                 "البيانات الاساسيه",
-                style: AppTextStyles.font18blackWight500,
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                ),
               ),
             ],
           ),

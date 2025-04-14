@@ -113,8 +113,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
             verticalSpacing(10),
             BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
               listener: (context, state) async {
                 if (state.xRayImageRequestStatus ==
                     UploadImageRequestStatus.success) {
@@ -169,8 +167,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             verticalSpacing(8),
             BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayReportRequestStatus != curr.xRayReportRequestStatus,
               listener: (context, state) async {
                 if (state.xRayReportRequestStatus ==
                     UploadReportRequestStatus.success) {

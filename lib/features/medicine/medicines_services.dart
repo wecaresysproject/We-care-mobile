@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
 part 'medicines_services.g.dart';
@@ -9,8 +10,8 @@ part 'medicines_services.g.dart';
 abstract class MedicinesServices {
   factory MedicinesServices(Dio dio, {String? baseUrl}) = _MedicinesServices;
 
-  @GET(MedicinesApiConstants.getAllMedicines)
-  Future<GetAllUserMedicinesResponseModel> getAllMedicines(
+  @GET(MedicinesApiConstants.getAllUserMedicines)
+  Future<GetAllUserMedicinesResponseModel> getAllUserMedicines(
     @Query('language') String language,
     @Query('userType') String userType,
   );
@@ -48,17 +49,59 @@ abstract class MedicinesServices {
   Future<dynamic> getAllComplaintsRelevantToBodyPartName(
     @Query('bodyPartName') String bodyPartName,
   );
+  @GET(MedicinesApiConstants.getAllMedicinesNames)
+  Future<dynamic> getAllMedicinesNames(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getMedicineDetailsById)
+  Future<dynamic> getMedicineDetailsById(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
 
-  // @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
-  // Future<dynamic> postEmergencyDataEntry(
-  //   @Body() EmergencyComplainRequestBody requestBody,
-  //   @Query('language') String language,
-  // );
+  @GET(MedicinesApiConstants.getMedcineForms)
+  Future<dynamic> getMedcineForms(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
+  @GET(MedicinesApiConstants.getMedcineDosesByForms)
+  Future<dynamic> getMedcineDosesByForms(
+    @Query('form') String form,
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('medicineId') String medicineId,
+  );
+  @GET(MedicinesApiConstants.getAllDosageFrequencies)
+  Future<dynamic> getAllDosageFrequencies(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getMedicineUsageDurationCategroies)
+  Future<dynamic> getAllUsageCategories(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+  @GET(MedicinesApiConstants.getAllDurationsForCategory)
+  Future<dynamic> getAllDurationsForCategory(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('category') String category,
+  );
+  @POST(MedicinesApiConstants.postDataEntryEndpoint)
+  Future<dynamic> postMedicineDataEntry(
+    @Body() MedicineDataEntryRequestBody requestBody,
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
 
-  // @PUT(EmergencyComplaintsApiConstants.editSpecificComplaintDocumentDetail)
-  // Future<dynamic> editSpecifcEmergencyDocumentDataDetails(
-  //   @Body() EmergencyComplainRequestBody requestBody,
-  //   @Query('language') String language,
-  //   @Query('id') String documentId,
-  // );
+  @PUT(MedicinesApiConstants.editDataEntryEndpoint)
+  Future<dynamic> editSpecifcMedicineDataDetails(
+    @Body() MedicineDataEntryRequestBody requestBody,
+    @Query('language') String language,
+    @Query('medicineId') String medicineId,
+    @Query('userType') String userType,
+  );
 }

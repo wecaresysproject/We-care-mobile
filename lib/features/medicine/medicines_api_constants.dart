@@ -1,17 +1,35 @@
 class MedicinesApiConstants {
   static const baseUrl = "http://147.93.57.70/api/";
+  //http://147.93.57.70:5299/api/EnterEmergencyComplain/SymptomsComplaints
   //Data Entry
   static const getAllPlacesOfComplaints =
-      "/EnterEmergencyComplain/Placeofcomplaint";
+      "http://147.93.57.70:5299/api/EnterEmergencyComplain/Placeofcomplaint";
   static const getRelevantComplaintsToBodyPartName =
-      "/EnterEmergencyComplain/SymptomsComplaintsFiltered";
+      "http://147.93.57.70:5299/api/EnterEmergencyComplain/SymptomsComplaintsFiltered";
+  static const getAllMedicinesNames = "MedicineUserEntryPage/GetAllMedicines";
+  static const getMedicineDetailsById =
+      "MedicineUserEntryPage/GetMedicineDetailsById";
 
-  static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
+  static const postDataEntryEndpoint =
+      "MedicineUserEntryPage/AddMedicineUserEntry";
+  static const editDataEntryEndpoint =
+      "MedicineUserEntryPage/EditUserMedicineDocument";
+  static const getMedcineForms = "MedicineUserEntryPage/GetMedicineFormsOnly";
 
+  static const getMedcineDosesByForms =
+      "MedicineUserEntryPage/GetMedicineDosesByForm";
+  static const getAllDosageFrequencies =
+      "MedicineUserEntryPage/GetAllDosageFrequencies";
+
+  static const getMedicineUsageDurationCategroies =
+      "MedicineUserEntryPage/GetAllUsageCategories";
+
+  static const getAllDurationsForCategory =
+      "MedicineUserEntryPage/GetDurationsForCategory";
   //View Entry
-  static const getAllMedicines = "MedicineUserEntryPage/GetUserMedicines";
   static const getSingleMedicine = "MedicineUserEntryPage/GetMedicineById";
   static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";
+  static const getAllUserMedicines = "MedicineUserEntryPage/GetUserMedicines";
 
   //filters
   static const getFilters = "MedicineUserEntryPage/GetUserMedicineFilters";

@@ -34,7 +34,7 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(

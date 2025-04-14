@@ -115,7 +115,7 @@ class EmergencyComplaintsDataEntryCubit
     model.DetailedComplaintModel emergencyComplaint,
     S locale,
   ) async {
-    await storeTempUserPastComplaints(emergencyComplaint);
+    await storeTempUserPastComplaints(emergencyComplaint.mainSymptoms);
 
     // return null;
     var firstQuestionAnswer = emergencyComplaint.similarComplaint.diagnosis !=
@@ -166,12 +166,12 @@ class EmergencyComplaintsDataEntryCubit
   }
 
   Future<void> storeTempUserPastComplaints(
-      model.DetailedComplaintModel emergencyComplaint) async {
+      List<MedicalComplaint> emergencyComplaints) async {
     final medicalComplaintBox =
         Hive.box<MedicalComplaint>("medical_complaints");
 
     // Loop through the list and store each complaint in the box
-    for (var oldComplains in emergencyComplaint.mainSymptoms) {
+    for (var oldComplains in emergencyComplaints) {
       await medicalComplaintBox.add(oldComplains);
     }
   }
