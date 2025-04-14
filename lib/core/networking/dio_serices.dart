@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:we_care/core/networking/api_error_handler.dart';
 
 import '../Database/cach_helper.dart';
 import 'auth_api_constants.dart';
@@ -13,6 +15,9 @@ class DioServices {
   DioServices._();
 
   static Dio? dio;
+
+  /// Cancel token to cancel requests
+  static CancelToken cancelToken = CancelToken();
 
   static Dio getDio() {
     //*solve handCheck certificate exception
@@ -32,10 +37,57 @@ class DioServices {
         ..options.receiveTimeout = timeOut;
       addDioHeaders(); //TODO: check it later
       addDioInterceptor();
+      addCancelableInterceptor();
+      addRetryInterceptor();
       return dio!;
     } else {
       return dio!;
     }
+  }
+
+  static void addRetryInterceptor() {
+    dio!.interceptors.add(
+      InterceptorsWrapper(
+        onError: (DioException error, handler) async {
+          if (error.response?.statusCode == 500) {
+            // Retry logic
+            final RequestOptions options = error.requestOptions;
+            log('Retrying...');
+            final response = await dio!.request(
+              options.path,
+              options: Options(
+                method: options.method,
+                headers: options.headers,
+                contentType: options.contentType,
+                receiveTimeout: options.receiveTimeout,
+                sendTimeout: options.sendTimeout,
+              ),
+            );
+            return handler.resolve(response); // Return the new response
+          }
+          return handler.next(error); // Propagate error if no retry
+        },
+      ),
+    );
+  }
+
+  static void addCancelableInterceptor() async {
+    dio!.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          options.cancelToken = cancelToken;
+          return handler.next(options);
+        },
+        onResponse: (response, handler) async {
+          return handler.next(response);
+        },
+        onError: (DioException e, handler) {
+          ApiErrorHandler.handle(e);
+
+          return handler.next(e);
+        },
+      ),
+    );
   }
 
   static void addDioHeaders() async {
@@ -64,5 +116,11 @@ class DioServices {
         ),
       );
     }
+  }
+
+  // This method allows cancellation of requests
+  static void cancelRequests([String? reason]) {
+    cancelToken.cancel(reason); // Cancel all requests with this token
+    cancelToken = CancelToken(); // reset after cancellation
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:we_care/core/models/country_response_model.dart';
@@ -56,7 +55,6 @@ class XRayDataEntryRepo {
     try {
       final response =
           await _xRayApiServices.postRadiologyDataEntry(requestBody);
-      log(" xxx postRadiologyDataEntry response : $response");
       return ApiResult.success(
         XrayDataEntryResponseBodyModel.fromJson(
           response['data'],
