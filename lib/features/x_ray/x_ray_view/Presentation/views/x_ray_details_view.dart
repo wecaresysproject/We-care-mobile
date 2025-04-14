@@ -97,6 +97,9 @@ class XRayDetailsView extends StatelessWidget {
                       value: radiologyData.symptoms ?? 'لم يتم ادخاله',
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
+                                 DetailsViewImageWithTitleTile(
+                      image: radiologyData.radiologyPhoto,
+                      title: "صورة الأشعة"),
                   Row(children: [
                     DetailsViewInfoTile(
                         title: "الطبيب المعالج",
@@ -124,9 +127,6 @@ class XRayDetailsView extends StatelessWidget {
                       value: radiologyData.radiologyNote ?? 'لم يتم ادخاله',
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
-                  DetailsViewImageWithTitleTile(
-                      image: radiologyData.radiologyPhoto,
-                      title: "صورة الأشعة"),
                   DetailsViewImageWithTitleTile(
                       //  image: radiologyData.report,
                       image: '',

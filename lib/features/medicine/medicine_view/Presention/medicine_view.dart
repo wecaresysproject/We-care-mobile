@@ -48,7 +48,7 @@ class MedicinesView extends StatelessWidget {
                             options: state.yearsFilter,
                             isYearFilter: true),
                         FilterConfig(
-                            title: ' الاسم', options: state.medicineNameFilter),
+                            title: ' اسم الدواء', options: state.medicineNameFilter),
                       ],
                       onApply: (selectedFilters) {
                         print("Selected Filters: $selectedFilters");
@@ -216,7 +216,7 @@ class MedicineTable extends StatelessWidget {
                 }),
                 DataCell(Center(
                   child: FittedBox(
-                    child: Text(data.usageDuration.substring(0, 15),
+                    child: Text(data.usageDuration,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.font14whiteWeight600
                             .copyWith(color: AppColorsManager.textColor)),

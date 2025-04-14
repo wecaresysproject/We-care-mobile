@@ -78,7 +78,7 @@ class PrescriptionDetailsView extends StatelessWidget {
                         icon: 'assets/images/date_icon.png'),
                     Spacer(),
                     DetailsViewInfoTile(
-                      title: "المرض",
+                      title: "التشخيص",
                       value: state.selectedPrescriptionDetails!.disease,
                       icon: 'assets/images/symptoms_icon.png',
                     ),
@@ -107,6 +107,12 @@ class PrescriptionDetailsView extends StatelessWidget {
                       value: state.selectedPrescriptionDetails!.cause,
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
+                  DetailsViewInfoTile(
+                      title: "ملاحظات",
+                      value: state
+                          .selectedPrescriptionDetails!.preDescriptionNotes,
+                      icon: 'assets/images/notes_icon.png',
+                      isExpanded: true),
                   Row(children: [
                     DetailsViewInfoTile(
                         title: "الدولة",
@@ -118,12 +124,6 @@ class PrescriptionDetailsView extends StatelessWidget {
                         value: state.selectedPrescriptionDetails!.governate,
                         icon: 'assets/images/hospital_icon.png'),
                   ]),
-                  DetailsViewInfoTile(
-                      title: "ملاحظات",
-                      value: state
-                          .selectedPrescriptionDetails!.preDescriptionNotes,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
                 ],
               ),
             );
@@ -144,6 +144,7 @@ Future<void> _shareDetails(
     🩺 *تفاصيل الروشتة* 🩺
 
     📅 *التاريخ*: ${prescriptionDetails.preDescriptionDate}
+    👩‍⚕️ *الاعراض *: ${prescriptionDetails.cause}
     🔬 * المرض*: ${prescriptionDetails.disease}
     👨‍⚕️ *الطبيب المعالج*: ${prescriptionDetails.doctorName}
     🏥 *التخصص*: ${prescriptionDetails.doctorSpecialty}

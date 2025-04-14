@@ -12,6 +12,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
+import 'package:intl/intl.dart';
 
 class MedicineDetailsView extends StatelessWidget {
   const MedicineDetailsView({
@@ -89,7 +90,13 @@ class MedicineDetailsView extends StatelessWidget {
                       Spacer(),
                       DetailsViewInfoTile(
                         title: "مستمر/متوقف",
-                        value: state.selectestMedicineDetails!.dosageFrequency,
+                        // value: MedicineStatusHelper.determineMedicineStatus(
+                        //   state.selectestMedicineDetails!.startDate,
+                        //   state.selectestMedicineDetails!.usageDuration,
+                        // ),
+                        value: state.selectestMedicineDetails!.chronicDiseaseMedicine=='نعم'
+                            ? 'مستمر'
+                            : 'متوقف',
                         icon: 'assets/images/doctor_name.png',
                       ),
                     ]),
@@ -120,21 +127,21 @@ class MedicineDetailsView extends StatelessWidget {
                     ]),
                     Row(children: [
                       DetailsViewInfoTile(
-                          title: "عدد مرات في اليوم",
+                          title: "عدد مرات الجرعة  ",
                           value:
                               state.selectestMedicineDetails!.dosageFrequency,
                           icon: 'assets/images/times_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
-                        title: " مدة الاستخدام",
-                        value: state.selectestMedicineDetails!.usageDuration,
+                        title: " المدد الزمنية",
+                        value: state.selectestMedicineDetails!.timeDuration,
                         icon: 'assets/images/time_icon.png',
                       ),
                     ]),
                     Row(children: [
                       DetailsViewInfoTile(
-                          title: "تاريخ انتهاء العلاح ",
-                          value: state.selectestMedicineDetails!.timeDuration,
+                          title: "مدة الاستخدام",
+                          value: state.selectestMedicineDetails!.usageDuration,
                           icon: 'assets/images/date_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
@@ -213,4 +220,75 @@ void _shareDetails(BuildContext context) {
 ''';
 
   Share.share(shareContent, subject: 'تفاصيل دواء من تطبيق WeCare');
+}
+
+class MedicineStatusHelper {
+  static String determineMedicineStatus(String startDate, String timeDuration) {
+    try {
+      // Parse the start date (format: "dd/MM/yyyy")
+      final dateParts = startDate.split('/');
+      if (dateParts.length != 3) return "غير معروف";
+
+      final day = int.parse(dateParts[0]);
+      final month = int.parse(dateParts[1]);
+      final year = int.parse(dateParts[2]);
+      final startDateTime = DateTime(year, month, day);
+
+      final today = DateTime.now();
+
+      // Calculate end date based on timeDuration
+      final endDateTime = _calculateEndDate(startDateTime, timeDuration);
+
+      // Compare with today's date
+      if (endDateTime == null) {
+        return "مستمر"; // No end date case
+      }
+
+      return today.isBefore(endDateTime) ? "مستمر" : "متوقف";
+    } catch (e) {
+      return "غير معروف"; // In case of any parsing errors
+    }
+  }
+
+  static DateTime? _calculateEndDate(DateTime startDate, String timeDuration) {
+    if (timeDuration.isEmpty || timeDuration == "لم يتم ادخال بيانات") {
+      return null;
+    }
+
+    // Handle different duration formats
+    if (timeDuration.contains("المدد الزمنية الطويلة")) {
+      return null; // Consider long durations as ongoing
+    }
+
+    // Parse specific durations
+    if (timeDuration.contains("سنة واحدة")) {
+      return DateTime(startDate.year + 1, startDate.month, startDate.day);
+    }
+    if (timeDuration.contains("شهرين")) {
+      return DateTime(startDate.year, startDate.month + 2, startDate.day);
+    }
+    if (timeDuration.contains("3 أشهر")) {
+      return DateTime(startDate.year, startDate.month + 3, startDate.day);
+    }
+    if (timeDuration.contains("6 أشهر")) {
+      return DateTime(startDate.year, startDate.month + 6, startDate.day);
+    }
+    if (timeDuration.contains("9 أشهر")) {
+      return DateTime(startDate.year, startDate.month + 9, startDate.day);
+    }
+    if (timeDuration.contains("سنتين")) {
+      return DateTime(startDate.year + 2, startDate.month, startDate.day);
+    }
+    if (timeDuration.contains("3 سنوات")) {
+      return DateTime(startDate.year + 3, startDate.month, startDate.day);
+    }
+    if (timeDuration.contains("6 أسابيع")) {
+      return startDate.add(Duration(days: 6 * 7));
+    }
+    if (timeDuration.contains("مدى الحياة")) {
+      return null;
+    }
+
+    return null; // Default for unknown durations
+  }
 }
