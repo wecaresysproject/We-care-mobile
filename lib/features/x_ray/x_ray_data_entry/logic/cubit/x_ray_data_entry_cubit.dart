@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
@@ -26,10 +28,11 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
 
   Future<void> emitBodyPartsData() async {
     final response = await _xRayDataEntryRepo.getBodyPartsData();
+    if (isClosed) return;
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             bodyPartsDataModels: response,
             bodyPartNames: response.map((e) => e.bodyPartName).toList(),
@@ -37,7 +40,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -50,17 +53,18 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     final response = await _xRayDataEntryRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
+    if (isClosed) return;
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             countriesNames: response.map((e) => e.name).toList(),
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -77,8 +81,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForXRayDataEntry() async {
+    if (isClosed) return;
     await emitBodyPartsData();
     await emitCountriesData();
   }
@@ -365,6 +369,15 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   @override
   Future<void> close() {
     personalNotesController.dispose();
+    DioServices.cancelRequests(
+      "Iam closing all requests of xRayDataEntryCubit",
+    );
+    log('xxx: xray');
     return super.close();
+  }
+
+  /// this method is used to emit state only if cubit is not closed
+  void safeEmit(XRayDataEntryState newState) {
+    if (!isClosed) emit(newState);
   }
 }
