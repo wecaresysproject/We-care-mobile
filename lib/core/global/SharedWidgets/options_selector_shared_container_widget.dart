@@ -75,25 +75,31 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          _selectedOption == option
-                              ? "assets/images/selected_option.png"
-                              : "assets/images/default_option.png",
-                          width: 26,
-                          height: 26,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: 26.w,
-                              height: 26.h,
-                              decoration: BoxDecoration(
-                                color: AppColorsManager.mainDarkBlue,
-                                shape: BoxShape.circle,
-                              ),
-                            );
-                          },
+                        AnimatedScale(
+                          scale: _selectedOption == option ? 1.12 : .9,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeOut,
+                          child: Image.asset(
+                            _selectedOption == option
+                                ? "assets/images/selected_option.png"
+                                : "assets/images/default_option.png",
+                            width: 26,
+                            height: 26,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                width: 26.w,
+                                height: 26.h,
+                                decoration: BoxDecoration(
+                                  color: AppColorsManager.mainDarkBlue,
+                                  shape: BoxShape.circle,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                         Text(
                           option,
+                          softWrap: true,
                           style: AppTextStyles.font14BlueWeight700.copyWith(
                             fontWeight: FontWeight.w600,
                             color: AppColorsManager.textColor,

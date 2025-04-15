@@ -62,7 +62,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                               : AppColorsManager.textfieldOutsideBorderColor,
                           categoryLabel: "الأعراض المرضية - المنطقة",
                           containerHintText: state.symptomsDiseaseRegion ??
-                              "اختر الأعراض المستدعية",
+                              "اختر منطقة الاعراض المرضية",
                           options: state.complaintPlaces,
                           onOptionSelected: (value) {
                             context
@@ -133,7 +133,9 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           options: [
                             "قليلة",
                             "متوسطة",
-                            "كثيرة",
+                            "شديدة",
+                            "شديدة جدا",
+                            "غير محتملة",
                           ],
                           initialSelectedOption: state.complaintDegree,
                           onOptionSelected: (p0) {
