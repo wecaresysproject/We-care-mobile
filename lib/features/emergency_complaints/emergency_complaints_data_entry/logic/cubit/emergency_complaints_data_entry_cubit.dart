@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart'
@@ -25,7 +26,6 @@ class EmergencyComplaintsDataEntryCubit
   final personalInfoController = TextEditingController();
   final complaintDiagnosisController = TextEditingController(); // التشخيص
 
-  final medicineNameController = TextEditingController(); // اسم الدواء
   final medicineDoseController = TextEditingController(); // الجرعه
   final emergencyInterventionTypeController =
       TextEditingController(); // نوع التدخل
@@ -50,6 +50,37 @@ class EmergencyComplaintsDataEntryCubit
     }
   }
 
+  Future<void> emitAllMedicinesNames() async {
+    final response = await _emergencyDataEntryRepo.getAllMedicinesNames(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (medcineNames) {
+        emit(
+          state.copyWith(
+            medicines: medcineNames,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  void updateSelectedMedicineName(String medicine) {
+    emit(
+      state.copyWith(
+        selectedMedicineName: medicine,
+      ),
+    );
+  }
+
   Future<void> updateSpecifcEmergencyDocumentDataDetails(S locale) async {
     emit(
       state.copyWith(
@@ -62,7 +93,7 @@ class EmergencyComplaintsDataEntryCubit
         dateOfComplaint: state.complaintAppearanceDate!,
         medication: Medications(
           medicationName: state.secondQuestionAnswer
-              ? medicineNameController.text
+              ? state.selectedMedicineName!
               : locale.no_data_entered,
           dosage: state.secondQuestionAnswer
               ? medicineDoseController.text
@@ -154,13 +185,13 @@ class EmergencyComplaintsDataEntryCubit
         hasReceivedEmergencyCareBefore: thirdQuestionAnswer ? 'نعم' : 'لا',
         isEditMode: true,
         updatedDocumentId: emergencyComplaint.id,
+        selectedMedicineName: emergencyComplaint.medications.medicationName,
       ),
     );
     complaintDiagnosisController.text =
         emergencyComplaint.similarComplaint.diagnosis == locale.no_data_entered
             ? ''
             : emergencyComplaint.similarComplaint.diagnosis;
-    medicineNameController.text = emergencyComplaint.medications.medicationName;
     medicineDoseController.text = emergencyComplaint.medications.dosage;
     emergencyInterventionTypeController.text =
         emergencyComplaint.emergencyIntervention.interventionType;
@@ -200,9 +231,7 @@ class EmergencyComplaintsDataEntryCubit
             ? locale.no_data_entered
             : personalInfoController.text,
         medication: Medications(
-          medicationName: medicineNameController.text.isEmpty
-              ? locale.no_data_entered
-              : medicineNameController.text,
+          medicationName: state.selectedMedicineName ?? locale.no_data_entered,
           dosage: medicineDoseController.text.isEmpty
               ? locale.no_data_entered
               : medicineDoseController.text,
@@ -294,7 +323,7 @@ class EmergencyComplaintsDataEntryCubit
     return hasComplaint;
   }
 
-  bool updateIsTakingMedicines(String? result) {
+  Future<bool> updateIsTakingMedicines(String? result) async {
     bool isTakingMedicine = result == 'نعم';
 
     emit(
@@ -305,7 +334,7 @@ class EmergencyComplaintsDataEntryCubit
     );
 
     validateRequiredFields(); // Ensure validation runs
-
+    await emitAllMedicinesNames();
     return isTakingMedicine;
   }
 
@@ -345,7 +374,6 @@ class EmergencyComplaintsDataEntryCubit
   Future<void> close() async {
     personalInfoController.dispose();
     complaintDiagnosisController.dispose();
-    medicineNameController.dispose();
     medicineDoseController.dispose();
     emergencyInterventionTypeController.dispose();
     await clearAllAddedComplaints();
