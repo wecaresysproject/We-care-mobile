@@ -157,7 +157,9 @@ class EmergencyComplaintsDataEntryCubit
       ),
     );
     complaintDiagnosisController.text =
-        emergencyComplaint.similarComplaint.diagnosis;
+        emergencyComplaint.similarComplaint.diagnosis == locale.no_data_entered
+            ? ''
+            : emergencyComplaint.similarComplaint.diagnosis;
     medicineNameController.text = emergencyComplaint.medications.medicationName;
     medicineDoseController.text = emergencyComplaint.medications.dosage;
     emergencyInterventionTypeController.text =
