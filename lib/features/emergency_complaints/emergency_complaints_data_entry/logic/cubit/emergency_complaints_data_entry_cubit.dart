@@ -192,13 +192,19 @@ class EmergencyComplaintsDataEntryCubit
         emergencyComplaint.similarComplaint.diagnosis == locale.no_data_entered
             ? ''
             : emergencyComplaint.similarComplaint.diagnosis;
-    medicineDoseController.text = emergencyComplaint.medications.dosage;
+    medicineDoseController.text =
+        emergencyComplaint.medications.dosage == locale.no_data_entered
+            ? ''
+            : emergencyComplaint.medications.dosage;
     emergencyInterventionTypeController.text =
         emergencyComplaint.emergencyIntervention.interventionType ==
                 locale.no_data_entered
             ? ''
             : emergencyComplaint.emergencyIntervention.interventionType;
-    personalInfoController.text = emergencyComplaint.personalNote;
+    personalInfoController.text =
+        emergencyComplaint.personalNote == locale.no_data_entered
+            ? ''
+            : emergencyComplaint.personalNote;
   }
 
   Future<void> storeTempUserPastComplaints(
