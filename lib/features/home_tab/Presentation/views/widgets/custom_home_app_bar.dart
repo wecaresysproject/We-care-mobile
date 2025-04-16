@@ -79,20 +79,10 @@ class HomeCustomAppBarWidget extends StatelessWidget {
           ),
         ),
         horizontalSpacing(8),
-        Container(
-          // padding: EdgeInsets.all(2.w), // Border thickness
-          // decoration: BoxDecoration(
-          //   borderRadius: BorderRadius.circular(25.r),
-          //   border: Border.all(
-          //     color: Colors.blueGrey,
-          //     width: 2.5.w,
-          //   ),
-          // ),
-          child: CircleAvatar(
-            radius: 32.r,
-            backgroundImage: AssetImage(
-              "assets/images/we_care_logo.png",
-            ),
+        CircleAvatar(
+          radius: 39.r,
+          backgroundImage: AssetImage(
+            "assets/images/we_care_logo.png",
           ),
         ),
       ],
