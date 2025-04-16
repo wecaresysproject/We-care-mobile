@@ -170,6 +170,11 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
   Future<void> uploadPrescriptionImagePicked(
       {required String imagePath}) async {
+    emit(
+      state.copyWith(
+        prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
     final response = await _prescriptionDataEntryRepo.uploadPrescriptionImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,

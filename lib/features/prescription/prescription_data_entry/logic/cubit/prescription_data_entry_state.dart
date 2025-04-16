@@ -58,7 +58,6 @@ class PrescriptionDataEntryState extends Equatable {
 
   PrescriptionDataEntryState copyWith({
     RequestStatus? preceriptionDataEntryStatus,
-    String? errorMessage,
     bool? isFormValidated,
     String? preceriptionDateSelection,
     String? doctorNameSelection,

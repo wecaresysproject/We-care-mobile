@@ -155,6 +155,13 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               ),
             ),
 
+            // verticalSpacing(8),
+            // if (state.xRayPictureUploadedUrl.isNotEmpty)
+            //   imageWithMenuItem(
+            //     state.xRayPictureUploadedUrl,
+            //     context,
+            //   ),
+
             verticalSpacing(16),
             Text(
               "التقرير الطبي",
@@ -361,3 +368,67 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
     );
   }
 }
+
+// Widget imageWithMenuItem(String imageUrl, BuildContext context) {
+//   return Container(
+//     height: 100.h,
+//     padding: EdgeInsets.all(8.r),
+//     decoration: BoxDecoration(
+//       color: Colors.grey[200],
+//       borderRadius: BorderRadius.circular(12.r),
+//     ),
+//     child: Row(
+//       children: [
+//         IconButton(
+//           onPressed: () {},
+//           padding: EdgeInsets.zero,
+//           alignment: Alignment.topCenter,
+//           icon: Icon(
+//             Icons.delete,
+//             size: 28.sp,
+//             color: AppColorsManager.warningColor,
+//           ),
+//         ),
+//         Spacer(),
+//         // Image on the left with tap action
+//         GestureDetector(
+//           onTap: () {
+//             showImagePreview(context, imageUrl);
+//           },
+//           child: ClipRRect(
+//             borderRadius: BorderRadius.circular(8.r),
+//             child: CachedNetworkImage(
+//               imageUrl: imageUrl,
+//               width: 80.w,
+//               height: 80.w,
+//               fit: BoxFit.cover,
+//             ),
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
+// // Preview Dialog Function
+// void showImagePreview(BuildContext context, String imageUrl) {
+//   showDialog(
+//     context: context,
+//     barrierDismissible: false,
+//     builder: (context) {
+//       Future.delayed(Duration(seconds: 1), () {
+//         if (!context.mounted) return;
+
+//         Navigator.of(context).pop();
+//       });
+
+//       return Dialog(
+//         backgroundColor: Colors.transparent,
+//         child: CachedNetworkImage(
+//           imageUrl: imageUrl,
+//           fit: BoxFit.contain,
+//         ),
+//       );
+//     },
+//   );
+// }

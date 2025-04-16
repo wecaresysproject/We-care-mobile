@@ -153,6 +153,11 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   Future<void> uploadLaboratoryTestImagePicked(
       {required String imagePath}) async {
+    emit(
+      state.copyWith(
+        testImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
     final response = await _testAnalysisDataEntryRepo.uploadLaboratoryTestImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
@@ -252,6 +257,11 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   Future<void> uploadLaboratoryTestReportPicked(
       {required String imagePath}) async {
+    emit(
+      state.copyWith(
+        testReportRequestStatus: UploadReportRequestStatus.initial,
+      ),
+    );
     final response =
         await _testAnalysisDataEntryRepo.uploadLaboratoryReportImage(
       contentType: AppStrings.contentTypeMultiPartValue,

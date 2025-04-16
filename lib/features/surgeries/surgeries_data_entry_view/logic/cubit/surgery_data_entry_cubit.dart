@@ -109,6 +109,11 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        surgeryUploadReportStatus: UploadReportRequestStatus.initial,
+      ),
+    );
     final response = await _surgeriesDataEntryRepo.uploadReportImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
