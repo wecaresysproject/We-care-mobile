@@ -124,6 +124,13 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
                     await context
                         .read<EmergencyComplaintsDataEntryCubit>()
                         .fetchAllAddedComplaints();
+
+                    if (!context.mounted) return;
+
+                    ///to rebuild submitted button if user added new complain.
+                    context
+                        .read<EmergencyComplaintsDataEntryCubit>()
+                        .validateRequiredFields();
                   }
                 },
               ),

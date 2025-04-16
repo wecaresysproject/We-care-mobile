@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -152,6 +154,9 @@ class _PrescriptionDataEntryFormFieldsState
               verticalSpacing(10),
               BlocListener<PrescriptionDataEntryCubit,
                   PrescriptionDataEntryState>(
+                listenWhen: (prev, curr) =>
+                    prev.prescriptionImageRequestStatus !=
+                    curr.prescriptionImageRequestStatus,
                 listener: (context, state) async {
                   if (state.prescriptionImageRequestStatus ==
                       UploadImageRequestStatus.success) {
@@ -163,11 +168,12 @@ class _PrescriptionDataEntryFormFieldsState
                   }
                 },
                 child: SelectImageContainer(
-                  containerBorderColor:
-                      (state.isPrescriptionPictureSelected == null) ||
-                              (state.isPrescriptionPictureSelected == false)
-                          ? AppColorsManager.warningColor
-                          : AppColorsManager.textfieldOutsideBorderColor,
+                  containerBorderColor: ((state.isPrescriptionPictureSelected ==
+                                  null) ||
+                              (state.isPrescriptionPictureSelected == false)) &&
+                          state.prescriptionPictureUploadedUrl.isEmpty
+                      ? AppColorsManager.warningColor
+                      : AppColorsManager.textfieldOutsideBorderColor,
                   imagePath: "assets/images/photo_icon.png",
                   label: "ارفق صورة",
                   onTap: () async {
@@ -193,6 +199,12 @@ class _PrescriptionDataEntryFormFieldsState
               ),
 
               verticalSpacing(16),
+              // verticalSpacing(8),
+              // if (state.prescriptionPictureUploadedUrl.isNotEmpty)
+              //   imageWithMenuItem(
+              //     state.prescriptionPictureUploadedUrl,
+              //     context,
+              //   ),
 
               ///الدولة
               UserSelectionContainer(
@@ -298,4 +310,68 @@ class _PrescriptionDataEntryFormFieldsState
       },
     );
   }
+}
+
+Widget imageWithMenuItem(String imageUrl, BuildContext context) {
+  return Container(
+    height: 100.h,
+    padding: EdgeInsets.all(8.r),
+    decoration: BoxDecoration(
+      color: Colors.grey[200],
+      borderRadius: BorderRadius.circular(12.r),
+    ),
+    child: Row(
+      children: [
+        // IconButton(
+        //   onPressed: () {},
+        //   padding: EdgeInsets.zero,
+        //   alignment: Alignment.topCenter,
+        //   icon: Icon(
+        //     Icons.delete,
+        //     size: 28.sp,
+        //     color: AppColorsManager.warningColor,
+        //   ),
+        // ),
+        Spacer(),
+        // Image on the left with tap action
+        GestureDetector(
+          onTap: () {
+            showImagePreview(context, imageUrl);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.r),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              width: 80.w,
+              height: 80.w,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+// Preview Dialog Function
+void showImagePreview(BuildContext context, String imageUrl) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      Future.delayed(Duration(seconds: 1), () {
+        if (!context.mounted) return;
+
+        Navigator.of(context).pop();
+      });
+
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.contain,
+        ),
+      );
+    },
+  );
 }

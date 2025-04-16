@@ -51,6 +51,7 @@ class XRayViewCubit extends Cubit<XRayViewState> {
         requestStatus: RequestStatus.failure,
       ));
     });
+    return null;
   }
 
   Future<void> emitFilters() async {

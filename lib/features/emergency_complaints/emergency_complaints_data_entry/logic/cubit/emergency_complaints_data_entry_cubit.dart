@@ -298,9 +298,18 @@ class EmergencyComplaintsDataEntryCubit
     final Box<MedicalComplaint> medicalComplaintsBox =
         Hive.box<MedicalComplaint>("medical_complaints");
 
-    if (index >= 0 && index < medicalComplaintsBox.length) {
-      await medicalComplaintsBox.deleteAt(index);
-    }
+    if (index < 0 || index >= medicalComplaintsBox.length) return;
+
+    await medicalComplaintsBox.deleteAt(index);
+
+    final updatedComplaints = medicalComplaintsBox.values.toList();
+
+    //* in order to validate after that if there is at least one medical complaints , to ennable save button or not
+    emit(
+      state.copyWith(medicalComplaints: updatedComplaints),
+    );
+
+    validateRequiredFields();
   }
 
   /// Update Field Values
@@ -364,7 +373,8 @@ class EmergencyComplaintsDataEntryCubit
     if (state.complaintAppearanceDate == null ||
         state.hasSimilarComplaintBefore == null ||
         state.isCurrentlyTakingMedication == null ||
-        state.hasReceivedEmergencyCareBefore == null) {
+        state.hasReceivedEmergencyCareBefore == null ||
+        state.medicalComplaints.isEmpty) {
       emit(
         state.copyWith(
           isFormValidated: false,

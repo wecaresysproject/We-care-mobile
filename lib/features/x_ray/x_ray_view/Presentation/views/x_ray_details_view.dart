@@ -56,14 +56,16 @@ class XRayDetailsView extends StatelessWidget {
                           .deleteMedicineById(documentId);
                     },
                     editFunction: () async {
-                      await context.pushNamed(
+                      final result = await context.pushNamed(
                         Routes.xrayCategoryDataEntryView,
                         arguments: state.selectedRadiologyDocument!,
                       );
-                      if (!context.mounted) return;
-                      await context
-                          .read<XRayViewCubit>()
-                          .emitspecificUserRadiologyDocument(documentId);
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<XRayViewCubit>()
+                            .emitspecificUserRadiologyDocument(documentId);
+                      }
                     },
                     shareFunction: () async {
                       await shareXRayDetails(context, state);
@@ -97,7 +99,7 @@ class XRayDetailsView extends StatelessWidget {
                       value: radiologyData.symptoms ?? 'لم يتم ادخاله',
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
-                                 DetailsViewImageWithTitleTile(
+                  DetailsViewImageWithTitleTile(
                       image: radiologyData.radiologyPhoto,
                       isShareEnabled: true,
                       title: "صورة الأشعة"),
@@ -129,8 +131,9 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
                   DetailsViewImageWithTitleTile(
-                       image: radiologyData.report,
-                      title: "صورة التقرير"),
+                    image: radiologyData.report,
+                    title: "صورة التقرير",
+                  ),
                 ],
               ),
             ),

@@ -56,10 +56,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     if (isClosed) return;
 
     response.when(
-      success: (response) {
+      success: (countries) {
         safeEmit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: countries,
           ),
         );
       },
@@ -263,6 +263,11 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> uploadXrayImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        xRayImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
     final response = await _xRayDataEntryRepo.uploadRadiologyImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
@@ -290,6 +295,11 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> uploadXrayReportPicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        xRayReportRequestStatus: UploadReportRequestStatus.initial,
+      ),
+    );
     final response = await _xRayDataEntryRepo.uploadRadiologyReportImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
