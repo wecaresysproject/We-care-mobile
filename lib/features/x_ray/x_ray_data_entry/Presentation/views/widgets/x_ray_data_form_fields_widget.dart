@@ -329,7 +329,8 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
         if (state.xRayDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
-          context.pop();
+          //* in order to catch it again to rebuild details view
+          context.pop(result: true);
         } else {
           await showError(state.message);
         }

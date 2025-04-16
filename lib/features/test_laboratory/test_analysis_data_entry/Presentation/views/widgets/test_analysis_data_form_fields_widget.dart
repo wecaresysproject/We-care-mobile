@@ -68,6 +68,9 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(10),
             BlocListener<TestAnalysisDataEntryCubit,
                 TestAnalysisDataEntryState>(
+              listenWhen: (previous, current) =>
+                  previous.testImageRequestStatus !=
+                  current.testImageRequestStatus,
               listener: (context, state) async {
                 if (state.testImageRequestStatus ==
                     UploadImageRequestStatus.success) {
@@ -121,6 +124,9 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(8),
             BlocListener<TestAnalysisDataEntryCubit,
                 TestAnalysisDataEntryState>(
+              listenWhen: (previous, current) =>
+                  previous.testReportRequestStatus !=
+                  current.testReportRequestStatus,
               listener: (context, state) async {
                 if (state.testReportRequestStatus ==
                     UploadReportRequestStatus.success) {
