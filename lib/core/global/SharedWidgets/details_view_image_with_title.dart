@@ -47,12 +47,15 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
             ],
           ),
           verticalSpacing(8),
-          image != ""
+          image != "لم يتم ادخال بيانات" || image != ""
               ? Image.network(
                   image!,
                   height: 278.h,
                   width: double.infinity,
                   fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                 return   Center(child: CircularProgressIndicator());
+                  },
                 )
               : CustomContainer(
                   value: 'لم يتم رفع صورة',

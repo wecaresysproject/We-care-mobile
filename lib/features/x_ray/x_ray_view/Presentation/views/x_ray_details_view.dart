@@ -99,6 +99,7 @@ class XRayDetailsView extends StatelessWidget {
                       isExpanded: true),
                                  DetailsViewImageWithTitleTile(
                       image: radiologyData.radiologyPhoto,
+                      isShareEnabled: true,
                       title: "صورة الأشعة"),
                   Row(children: [
                     DetailsViewInfoTile(
@@ -128,8 +129,7 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
                   DetailsViewImageWithTitleTile(
-                      //  image: radiologyData.report,
-                      image: '',
+                       image: radiologyData.report,
                       title: "صورة التقرير"),
                 ],
               ),
