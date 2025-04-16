@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -113,21 +114,17 @@ class FullScreenImageViewer extends StatelessWidget {
       appBar: AppBar(
     leading: BackButton(
           color: Colors.white,
-          onPressed: () => Navigator.pop(context), // اضغط مرة للخروج
+          onPressed: () => Navigator.pop(context), 
         ),
       ),
       body: GestureDetector(
-        onDoubleTap: () => Navigator.pop(context), // اضغط مرة للخروج
+        onDoubleTap: () => Navigator.pop(context), 
         child: Center(
-          child: InteractiveViewer(
-            panEnabled: true,
-            minScale: 1,
-            maxScale: 5,
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.contain,
+          child:PhotoView(
+              backgroundDecoration:
+                  BoxDecoration(color: Colors.white),
+              imageProvider: NetworkImage(imageUrl),
             ),
-          ),
         ),
       ),
     );
