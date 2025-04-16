@@ -119,7 +119,9 @@ class MedicineSyptomsDetailsView extends StatelessWidget {
                           options: [
                             "قليلة",
                             "متوسطة",
-                            "كثيرة",
+                            "شديدة",
+                            "شديدة جدا",
+                            "غير محتملة",
                           ],
                           initialSelectedOption: state.complaintDegree,
                           onOptionSelected: (p0) {
