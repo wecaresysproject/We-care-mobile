@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,9 +13,6 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
-import 'package:collection/collection.dart';
-//import intl
-import 'package:intl/intl.dart';
 
 class MedicineDetailsView extends StatelessWidget {
   const MedicineDetailsView({
@@ -108,38 +106,40 @@ class MedicineDetailsView extends StatelessWidget {
                       // ),
                     ]),
                     Row(children: [
-                        DetailsViewInfoTile(
+                      DetailsViewInfoTile(
                         title: " الجرعه",
                         value: state.selectestMedicineDetails!.dosage,
                         icon: 'assets/images/hugeicons_medicine-01.png',
                       ),
                       Spacer(),
-                     DetailsViewInfoTile(
+                      DetailsViewInfoTile(
                           title: "عدد مرات الجرعة  ",
                           value:
                               state.selectestMedicineDetails!.dosageFrequency,
                           icon: 'assets/images/times_icon.png'),
                     ]),
 
-                      Row(children: [
-              
+                    Row(children: [
                       DetailsViewInfoTile(
                         title: " المدد الزمنية",
                         value: state.selectestMedicineDetails!.timeDuration,
                         icon: 'assets/images/time_icon.png',
                       ),
                       Spacer(),
-                         DetailsViewInfoTile(
+                      DetailsViewInfoTile(
                         title: "مستمر/متوقف",
-                        value: calculateMedicineStatus(
-                          state.selectestMedicineDetails!.startDate,
-                          state.selectestMedicineDetails!.usageDuration,
-                        ),
-                      
+                        // value: MedicineStatusHelper.determineMedicineStatus(
+                        //   state.selectestMedicineDetails!.startDate,
+                        //   state.selectestMedicineDetails!.usageDuration,
+                        // ),
+                        value: state.selectestMedicineDetails!
+                                    .chronicDiseaseMedicine ==
+                                'نعم'
+                            ? 'مستمر'
+                            : 'متوقف',
                         icon: 'assets/images/doctor_name.png',
                       ),
-
-                    ]), 
+                    ]),
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "تاريخ بدء الدواء",
@@ -153,12 +153,13 @@ class MedicineDetailsView extends StatelessWidget {
                         icon: 'assets/images/medicine_icon.png',
                       ),
                     ]),
-                                 DetailsViewInfoTile(
-                          title: "اسم الطبيب ",
-                          value: state.selectestMedicineDetails!.doctorName,
-                          icon: 'assets/images/doctor_icon.png',
-                          isExpanded: true,),
-                   
+                    DetailsViewInfoTile(
+                      title: "اسم الطبيب ",
+                      value: state.selectestMedicineDetails!.doctorName,
+                      icon: 'assets/images/doctor_icon.png',
+                      isExpanded: true,
+                    ),
+
                     // Display the main symptoms using SymptomContainer
                     ...state.selectestMedicineDetails!.mainSymptoms
                         .asMap()
@@ -203,9 +204,7 @@ class MedicineDetailsView extends StatelessWidget {
           )),
     );
   }
-
 }
-
 
 String calculateMedicineStatus(String startDateStr, String durationStr) {
   try {
@@ -269,11 +268,9 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
   }
 }
 
-
-
-
 void _shareDetails(BuildContext context) {
-  final medicine = context.read<MedicineViewCubit>().state.selectestMedicineDetails;
+  final medicine =
+      context.read<MedicineViewCubit>().state.selectestMedicineDetails;
   if (medicine == null) return;
 
   final shareContent = '''
@@ -290,8 +287,7 @@ void _shareDetails(BuildContext context) {
 👨‍⚕️ اسم الطبيب: ${medicine.doctorName}
 
 🧠 *الأعراض المرضية:*
-${medicine.mainSymptoms.mapIndexed((i, s) =>
-    '- ${i == 0 ? '🌟 (رئيسي)' : '🔹'} منطقة: ${s.symptomsRegion}, الشكوى: ${s.sypmptomsComplaintIssue}, طبيعة الشكوى: ${s.natureOfComplaint}, الشدة: ${s.severityOfComplaint}').join('\n')}
+${medicine.mainSymptoms.mapIndexed((i, s) => '- ${i == 0 ? '🌟 (رئيسي)' : '🔹'} منطقة: ${s.symptomsRegion}, الشكوى: ${s.sypmptomsComplaintIssue}, طبيعة الشكوى: ${s.natureOfComplaint}, الشدة: ${s.severityOfComplaint}').join('\n')}
 
 📝 الملاحظات الشخصية: ${medicine.personalNotes.isNotEmpty == true ? medicine.personalNotes : "لا توجد"}
 
@@ -301,4 +297,3 @@ ${medicine.mainSymptoms.mapIndexed((i, s) =>
 
   Share.share(shareContent, subject: '📄 تفاصيل دواء من تطبيق WeCare');
 }
-

@@ -331,7 +331,10 @@ Widget submitEmergencyDataEnteredBlocConsumer() {
       if (state.medicinesDataEntryStatus == RequestStatus.success) {
         await showSuccess(state.message);
         if (!context.mounted) return;
-        context.pop(result: true);
+        //* in order to catch it again to rebuild details view
+        context.pop(
+          result: true,
+        );
       } else {
         await showError(state.message);
       }

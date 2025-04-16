@@ -56,14 +56,16 @@ class XRayDetailsView extends StatelessWidget {
                           .deleteMedicineById(documentId);
                     },
                     editFunction: () async {
-                      await context.pushNamed(
+                      final result = await context.pushNamed(
                         Routes.xrayCategoryDataEntryView,
                         arguments: state.selectedRadiologyDocument!,
                       );
-                      if (!context.mounted) return;
-                      await context
-                          .read<XRayViewCubit>()
-                          .emitspecificUserRadiologyDocument(documentId);
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<XRayViewCubit>()
+                            .emitspecificUserRadiologyDocument(documentId);
+                      }
                     },
                     shareFunction: () async {
                       await shareXRayDetails(context, state);

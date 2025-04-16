@@ -152,6 +152,9 @@ class _PrescriptionDataEntryFormFieldsState
               verticalSpacing(10),
               BlocListener<PrescriptionDataEntryCubit,
                   PrescriptionDataEntryState>(
+                listenWhen: (prev, curr) =>
+                    prev.prescriptionImageRequestStatus !=
+                    curr.prescriptionImageRequestStatus,
                 listener: (context, state) async {
                   if (state.prescriptionImageRequestStatus ==
                       UploadImageRequestStatus.success) {
