@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
-import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/true_or_false_question_component.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
@@ -83,20 +83,29 @@ class FirstQuestionDetails extends StatelessWidget {
                   hintText: "اكتب التشخيص الذى تم",
                 ),
                 verticalSpacing(24),
-                Text(
-                  "تاريخ الشكوى",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(8),
-                DateTimePickerContainer(
-                  placeholderText:
-                      state.previousComplaintDate ?? "يوم / شهر / سنة",
-                  onDateSelected: (pickedDate) {
+                UserSelectionContainer(
+                  options: [
+                    "من يوم",
+                    "من ايام",
+                    "من اسبوع",
+                    "من اسابيع",
+                    "من شهر",
+                    "من اشهر قليلة",
+                    "من عدة اشهر",
+                    "من سنة",
+                    "من سنوات قليلة",
+                    "من عدة سنوات",
+                  ],
+                  categoryLabel: "تاريخ الشكوى",
+                  bottomSheetTitle: "اختر تاريخ الشكوى",
+                  onOptionSelected: (value) {
                     context
                         .read<EmergencyComplaintsDataEntryCubit>()
-                        .updateIfHasSameComplaintBeforeDate(pickedDate);
+                        .updateIfHasSameComplaintBeforeDate(value);
                   },
-                ),
+                  containerHintText:
+                      state.previousComplaintDate ?? "اختر تاريخ الشكوى",
+                )
               ],
             )
           : const SizedBox.shrink(), // Hide when false

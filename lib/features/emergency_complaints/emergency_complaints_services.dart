@@ -61,4 +61,9 @@ abstract class EmergencyComplaintsServices {
     @Query('language') String language,
     @Query('id') String documentId,
   );
+  @GET(EmergencyComplaintsApiConstants.getAllMedicineNames)
+  Future<dynamic> getAllMedicinesNames(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
 }

@@ -9,7 +9,8 @@ class EmergencyComplaintsApiConstants {
   static const postDataEntryEndpoint = "/EnterEmergencyComplain/EnterComplaint";
   static const editSpecificComplaintDocumentDetail =
       "/EnterEmergencyComplain/UpdateComplaint";
-
+  static const getAllMedicineNames =
+      "http://147.93.57.70/api/MedicineUserEntryPage/GetAllMedicines";
   //View Entry
   static const getAllEmergencyComplaints =
       "/EnterEmergencyComplain/GetAllComplaints";

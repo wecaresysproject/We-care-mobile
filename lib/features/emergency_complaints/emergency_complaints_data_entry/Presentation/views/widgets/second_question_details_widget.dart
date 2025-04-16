@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/true_or_false_question_component.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
@@ -17,7 +18,8 @@ class SecondQuestionDetails extends StatelessWidget {
       buildWhen: (previous, current) =>
           previous.isCurrentlyTakingMedication !=
               current.isCurrentlyTakingMedication ||
-          previous.secondQuestionAnswer != current.secondQuestionAnswer,
+          previous.secondQuestionAnswer != current.secondQuestionAnswer ||
+          current.medicines != previous.medicines,
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,8 +36,8 @@ class SecondQuestionDetails extends StatelessWidget {
                       ? AppColorsManager.redBackgroundValidationColor
                       : AppColorsManager.babyBlueColor,
               imagePath: "assets/images/medicines.png",
-              onOptionSelected: (p0) {
-                context
+              onOptionSelected: (p0) async {
+                await context
                     .read<EmergencyComplaintsDataEntryCubit>()
                     .updateIsTakingMedicines(p0);
               },
@@ -66,20 +68,17 @@ class SecondQuestionDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 verticalSpacing(8),
-                Text(
-                  "اسم الدواء",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(8),
-                CustomTextField(
-                  controller: context
-                      .read<EmergencyComplaintsDataEntryCubit>()
-                      .medicineNameController,
-                  validator: (value) {},
-                  isPassword: false,
-                  showSuffixIcon: false,
-                  keyboardType: TextInputType.name,
-                  hintText: "اكتب اسم الدواء",
+                UserSelectionContainer(
+                  options: state.medicines,
+                  categoryLabel: state.selectedMedicineName ?? "اسم الدواء",
+                  bottomSheetTitle: "اختر اسم الدواء",
+                  onOptionSelected: (value) {
+                    context
+                        .read<EmergencyComplaintsDataEntryCubit>()
+                        .updateSelectedMedicineName(value);
+                  },
+                  containerHintText:
+                      state.selectedMedicineName ?? "اكتب اسم الدواء",
                 ),
                 verticalSpacing(24),
                 Text(

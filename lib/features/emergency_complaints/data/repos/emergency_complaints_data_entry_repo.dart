@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
+import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 
 import '../../emergency_complaints_services.dart';
 
@@ -64,6 +65,25 @@ class EmergencyComplaintsDataEntryRepo {
         documentId,
       );
       return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllMedicinesNames({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _emergencyComplaintsServices.getAllMedicinesNames(
+        language,
+        userType,
+      );
+      final medicineNames = (response['data'] as List)
+          .map((e) => MedicineBasicInfoModel.fromJson(e).tradeName)
+          .toList();
+
+      return ApiResult.success(medicineNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -17,6 +18,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/first_question_details_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/medical_complains_list_view_widget.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/second_question_details_widget.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/thirst_question_details_widget.dart';
 
@@ -57,7 +59,7 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
                 ? verticalSpacing(16)
                 : SizedBox.shrink(),
 
-            buildMedicalComplaintsListBlocBuilder(),
+            MedicalComplaintsListBlocBuilder(),
 
             verticalSpacing(16),
 
@@ -106,72 +108,40 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
           current.medicalComplaints.length != previous.medicalComplaints.length,
       builder: (context, state) {
         return Center(
-          child: AddNewItemButton(
-            text: state.medicalComplaints.isEmpty
-                ? "أضف أعراض مرضية"
-                : 'أضف أعراض مرضية أخرى ان وجد',
-            onPressed: () async {
-              final bool? result = await context.pushNamed(
-                Routes.addNewComplaintDetails,
-              );
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              AddNewItemButton(
+                text: state.medicalComplaints.isEmpty
+                    ? "اضف الاعراض المرضية"
+                    : 'أضف أعراض مرضية أخرى ان وجد',
+                onPressed: () async {
+                  final bool? result = await context.pushNamed(
+                    Routes.addNewComplaintDetails,
+                  );
 
-              if (result != null && context.mounted) {
-                await context
-                    .read<EmergencyComplaintsDataEntryCubit>()
-                    .fetchAllAddedComplaints();
-              }
-            },
+                  if (result != null && context.mounted) {
+                    await context
+                        .read<EmergencyComplaintsDataEntryCubit>()
+                        .fetchAllAddedComplaints();
+                  }
+                },
+              ),
+              Positioned(
+                top: -2, // move it up (negative means up)
+                left: -120,
+                child: Lottie.asset(
+                  'assets/images/hand_animation.json',
+                  width: 120, // adjust sizes
+                  height: 120,
+                  addRepaintBoundary: true,
+                  repeat: true,
+                  alignment: Alignment.center,
+                ),
+              ),
+            ],
           ),
         );
-      },
-    );
-  }
-
-  Widget buildMedicalComplaintsListBlocBuilder() {
-    return BlocBuilder<EmergencyComplaintsDataEntryCubit,
-        EmergencyComplaintsDataEntryState>(
-      buildWhen: (previous, current) =>
-          previous.medicalComplaints != current.medicalComplaints,
-      builder: (context, state) {
-        return state.medicalComplaints.isNotEmpty
-            ? ListView.builder(
-                itemCount: state.medicalComplaints.length,
-                shrinkWrap: true,
-                physics:
-                    NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
-                itemBuilder: (context, index) {
-                  final complaint = state.medicalComplaints[index];
-                  return GestureDetector(
-                    onTap: () async {
-                      final bool? result = await context.pushNamed(
-                        Routes.addNewComplaintDetails,
-                        arguments: {
-                          'id': index,
-                          'complaint': complaint,
-                        },
-                      );
-                      if (result != null && context.mounted) {
-                        await context
-                            .read<EmergencyComplaintsDataEntryCubit>()
-                            .fetchAllAddedComplaints();
-                      }
-                    },
-                    child: SymptomContainer(
-                      medicalComplaint: complaint,
-                      isMainSymptom: true,
-                      onDelete: () async {
-                        final cubit =
-                            context.read<EmergencyComplaintsDataEntryCubit>();
-                        await cubit.removeAddedMedicalComplaint(index);
-                        await cubit.fetchAllAddedComplaints();
-                      },
-                    ).paddingBottom(
-                      16,
-                    ),
-                  );
-                },
-              )
-            : const SizedBox.shrink();
       },
     );
   }
@@ -221,54 +191,7 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
   }
 }
 
-class MedicalComplaintItem extends StatelessWidget {
-  final String text;
-  final VoidCallback onDelete;
-
-  const MedicalComplaintItem({
-    super.key,
-    required this.text,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 48.h,
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColorsManager
-              .textfieldOutsideBorderColor, // Change border if error
-          width: 0.8,
-        ),
-        color: AppColorsManager.textfieldInsideColor.withAlpha(100),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            text,
-            style: AppTextStyles.font16DarkGreyWeight400
-                .copyWith(color: AppColorsManager.textColor),
-          ),
-          InkWell(
-            onTap: onDelete,
-            child: Image.asset(
-              "assets/images/delete_icon.png",
-              height: 36.h,
-              width: 34.w,
-              color: AppColorsManager.warningColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
+//TODO: refactor it by removing and used shared one from the 'العرض'
 class SymptomContainer extends StatelessWidget {
   const SymptomContainer({
     super.key,
@@ -313,15 +236,6 @@ class SymptomContainer extends StatelessWidget {
                     16,
                   ),
                 ),
-                // InkWell(
-                //   onTap: onDelete,
-                //   child: Image.asset(
-                //     "assets/images/delete_icon.png",
-                //     height: 36.h,
-                //     width: 34.w,
-                //     color: AppColorsManager.warningColor,
-                //   ),
-                // ),
                 IconButton(
                   onPressed: onDelete,
                   padding: EdgeInsets.zero,

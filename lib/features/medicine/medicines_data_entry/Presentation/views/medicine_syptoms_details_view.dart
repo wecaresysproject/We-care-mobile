@@ -58,7 +58,7 @@ class MedicineSyptomsDetailsView extends StatelessWidget {
                           allowManualEntry: true,
                           categoryLabel: "الأعراض المرضية - المنطقة",
                           containerHintText: state.symptomsDiseaseRegion ??
-                              "اختر الأعراض المستدعية",
+                              "اختر منطقة الاعراض المرضية",
                           options: state.complaintPlaces,
                           onOptionSelected: (value) {
                             context
