@@ -37,12 +37,12 @@ class XRayDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
+  Future<ApiResult<List<String>>> getCountriesData(
       {required String language}) async {
     try {
       final response = await _xRayApiServices.getCountries(language);
       final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .map((e) => CountryModel.fromJson(e).name)
           .toList();
       return ApiResult.success(countries);
     } catch (error) {

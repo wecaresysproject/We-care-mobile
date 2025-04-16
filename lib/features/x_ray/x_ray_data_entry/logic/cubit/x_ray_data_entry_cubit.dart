@@ -56,10 +56,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     if (isClosed) return;
 
     response.when(
-      success: (response) {
+      success: (countries) {
         safeEmit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: countries,
           ),
         );
       },
