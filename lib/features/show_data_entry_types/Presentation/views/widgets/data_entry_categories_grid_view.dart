@@ -62,39 +62,60 @@ class CategoryItem extends StatelessWidget {
                   await context.pushNamed(routeName);
                 }
               : null, // Disable interaction if not active
-          child: Container(
-            width: 99.w - 99.w * 0.09,
-            height: 88.h - 88.h * 0.09,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40.r),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFCDE1F8),
-                  Color(0xFFE7E9EB),
-                ],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(75),
-                  offset: const Offset(3, 4),
-                  blurRadius: 4,
+          child: Stack(
+            children: [
+              Container(
+                width: 99.w - 99.w * 0.09,
+                height: 88.h - 88.h * 0.09,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40.r),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFFCDE1F8),
+                      Color(0xFFE7E9EB),
+                    ],
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(75),
+                      offset: const Offset(3, 4),
+                      blurRadius: 4,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            padding: EdgeInsets.symmetric(
-              vertical: 18.h,
-              horizontal: 24.w,
-            ),
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
-                height: 51.h,
-                width: 52.w,
+                padding: EdgeInsets.symmetric(
+                  vertical: 18.h,
+                  horizontal: 24.w,
+                ),
+                child: Center(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    height: 51.h,
+                    width: 52.w,
+                  ),
+                ),
               ),
-            ),
+              // Dim Overlay if not active
+              if (!isActive)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.35),
+                      borderRadius: BorderRadius.circular(40.r),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.hourglass_empty,
+                        color: Colors.white,
+                        size: 32.sp,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         verticalSpacing(8.h),
