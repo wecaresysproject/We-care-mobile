@@ -75,13 +75,13 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
         return MedicalItemGridView(
           items: state.emergencyComplaints,
           onTap: (id) async {
-            final bool result =
+            
                 await Navigator.push(context, MaterialPageRoute(builder: (_) {
               return EmergencyComplaintsDetailsView(
                 documentId: id,
               );
             }));
-            if (result && context.mounted) {
+            if (context.mounted) {
               await context
                   .read<EmergencyComplaintsViewCubit>()
                   .getUserEmergencyComplaintsList();

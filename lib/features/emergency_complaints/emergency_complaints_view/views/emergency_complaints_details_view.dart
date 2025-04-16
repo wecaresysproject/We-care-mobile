@@ -52,11 +52,11 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                   DetailsViewAppBar(
                     title: 'الشكاوى المرضية الطارئة',
                     editFunction: () async {
-                      final bool? result = await context.pushNamed(
+                      await context.pushNamed(
                         Routes.emergenciesComplaintDataEntryView,
                         arguments: state.selectedEmergencyComplaint,
                       );
-                      if (result != null && result && context.mounted) {
+                      if (context.mounted) {
                         await context
                             .read<EmergencyComplaintsViewCubit>()
                             .getEmergencyComplaintDetailsById(documentId);
@@ -71,21 +71,13 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                           .deleteEmergencyComplaintById(documentId);
                     },
                   ),
-                  Row(
-                    children: [
                       DetailsViewInfoTile(
                         title: "تاريخ ظهور الشكوى",
                         value: complaint.date,
                         icon: 'assets/images/date_icon.png',
+                        isExpanded: true,
                       ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: "طبيعة الشكوى",
-                        value: "مستمرة",
-                        icon: 'assets/images/file_icon.png',
-                      ),
-                    ],
-                  ),
+            
                   // Display the main symptoms using SymptomContainer
                   ...complaint.mainSymptoms.asMap().entries.map((entry) {
                     final index = entry.key;

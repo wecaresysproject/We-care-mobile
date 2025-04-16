@@ -46,7 +46,37 @@ class DetailsViewAppBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   CustomActionButton(
-                    onTap: deleteFunction,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('تأكيد الحذف'),
+                            content: Text(
+                                'هل أنت متأكد من أنك تريد حذف هذا العنصر؟'),
+                            actions: [
+                              TextButton(
+                                child: Text('لا'),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // يغلق الـ dialog
+                                },
+                              ),
+                              TextButton(
+                                child: Text('نعم'),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // يغلق الـ dialog
+                                  if (deleteFunction != null) {
+                                    deleteFunction!(); // ينفذ دالة الحذف
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     title: 'حذف',
                     icon: 'assets/images/delete.png',
                     color: AppColorsManager.warningColor,
