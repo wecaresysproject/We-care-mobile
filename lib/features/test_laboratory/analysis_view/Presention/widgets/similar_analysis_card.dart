@@ -90,13 +90,19 @@ class SimilarAnalysisCard extends StatelessWidget {
               InterpretationDetailsContainerWithTitleRow(
                   content: recommendation, title: 'التوصيات'),
               if (isEditing)
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 16.0),
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+             decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   child: TextField(
                     keyboardType: TextInputType.number,
                     controller: context
                         .read<TestAnalysisViewCubit>()
                         .resultEditingController,
+                  
                     decoration: InputDecoration(
                       labelText: 'النتيجة الجديدة',
                     ),

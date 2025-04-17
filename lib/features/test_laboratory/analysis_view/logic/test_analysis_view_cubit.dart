@@ -15,8 +15,8 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await testAnalysisViewRepo.gettFilters();
-
     response.when(success: (response) async {
+     response.add(0);
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
         yearsFilter: response,

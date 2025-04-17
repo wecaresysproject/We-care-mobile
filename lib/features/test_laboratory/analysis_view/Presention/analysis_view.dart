@@ -12,62 +12,13 @@ import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analys
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
+import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicalAnalysisView extends StatelessWidget {
-  final List<Map<String, String>> tableData = [
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "CBC",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "سرعة ترسيب كرات الدم الحمراء",
-      "code": "CBC",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "الهرمون المحفز للغدة الدرقية",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-    {
-      "date": "4/7/2024",
-      "name": "صوديوم",
-      "code": "NA",
-      "standard": "39",
-      "result": "1307"
-    },
-  ];
+ 
 
-  MedicalAnalysisView({super.key});
+ const MedicalAnalysisView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +44,10 @@ class MedicalAnalysisView extends StatelessWidget {
                         isYearFilter: true,
                         filterList: state.yearsFilter,
                         onFilterSelected: (filterTitle, selectedValue) {
+                          if(selectedValue == 0) {
+                            context.read<TestAnalysisViewCubit>().emitTests();
+                            return;
+                          }
                           if (selectedValue == null) {
                             context.read<TestAnalysisViewCubit>().emitTests();
                             return;

@@ -52,7 +52,7 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
           verticalSpacing(8),
           (image != null && image!.isNotEmpty && image != "لم يتم ادخال بيانات")
               ? GestureDetector(
-                  onDoubleTap: () {
+                  onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => FullScreenImageViewer(imageUrl: image!),
@@ -62,8 +62,7 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
                   child: Image.network(
                     image!,
                     width: double.infinity,
-                    height: 278.h,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                   ),
                 )
               : const CustomContainer(
@@ -118,7 +117,7 @@ class FullScreenImageViewer extends StatelessWidget {
         ),
       ),
       body: GestureDetector(
-        onDoubleTap: () => Navigator.pop(context), 
+        onTap: () => Navigator.pop(context), 
         child: Center(
           child:PhotoView(
               backgroundDecoration:
