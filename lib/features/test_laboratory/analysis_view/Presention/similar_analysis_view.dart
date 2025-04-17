@@ -1,7 +1,5 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -73,6 +71,7 @@ class SimilarAnalysisView extends StatelessWidget {
                     ListView.builder(
                         shrinkWrap: true,
                         itemCount: similarTestsResponse.similarTests.length,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return SimilarAnalysisCard(
                               id: similarTestsResponse.similarTests[index].id,

@@ -113,7 +113,7 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
                       itemCount: widget.filterList.length,
                       itemBuilder: (context, index) {
                         return FilterChipItem(
-                          label: widget.filterList[index].toString(),
+                          label: widget.filterList[index]==0?" الكل": widget.filterList[index].toString(),
                           isSelected: index == _selectedIndex,
                           onTap: () => _onChipSelected(index),
                         );

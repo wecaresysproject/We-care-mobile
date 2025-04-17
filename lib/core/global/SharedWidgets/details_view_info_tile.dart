@@ -31,7 +31,7 @@ class DetailsViewInfoTile extends StatelessWidget {
             Text(
               title,
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.mainDarkBlue, fontSize: 18.sp),
+                  color: AppColorsManager.mainDarkBlue, fontSize: 16.5.sp),
             ),
           ],
         ),

@@ -51,9 +51,17 @@ class DetailsViewAppBar extends StatelessWidget {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text('تأكيد الحذف'),
+                            title: Text('تأكيد الحذف',
+                                style: AppTextStyles.font16DarkGreyWeight400
+                                    .copyWith(
+                                        color: AppColorsManager.mainDarkBlue,
+                                       )),
                             content: Text(
-                                'هل أنت متأكد من أنك تريد حذف هذا العنصر؟'),
+                                'هل أنت متأكد من أنك تريد حذف هذا العنصر؟',
+                                style: AppTextStyles.font16DarkGreyWeight400
+                                    .copyWith(
+                                        fontSize: 14.sp
+                                       )),  
                             actions: [
                               TextButton(
                                 child: Text('لا'),
