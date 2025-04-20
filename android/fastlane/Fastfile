@@ -1,0 +1,20 @@
+default_platform(:android)
+
+# Please make sure each time you run this lane to upgrade project version from .yaml file
+platform :android do
+  desc "Distribute Android build to Firebase App Distribution"
+  lane :firebase_distribution do
+    sh "flutter clean"
+    sh "flutter build apk --release --flavor production --target lib/main_production.dart --no-tree-shake-icons"
+    firebase_app_distribution(
+      app: dotenv.env["FIREBASE_APP_ID"],
+      firebase_cli_token: dotenv.env["FIREBASE_CLI_TOKEN"],
+      release_notes: "🚀 New Android release",
+      android_artifact_type: "APK",
+      android_artifact_path: "../build/app/outputs/flutter-apk/app-production-release.apk",
+      testers: "ayanady22193@gmail.com, kareemabdeen222@gmail.com",
+      # groups: "qa-team",
+      # apk_path: "../build/app/outputs/flutter-apk/app-release.apk"
+    )
+  end
+end
