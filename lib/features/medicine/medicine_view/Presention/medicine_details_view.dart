@@ -9,6 +9,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -82,62 +83,47 @@ class MedicineDetailsView extends StatelessWidget {
                         }
                       },
                     ),
-                    Row(children: [
+                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                       DetailsViewInfoTile(
                           title: "اسم الدواء",
+                          isPartiallyExpanded: true,
                           value: state.selectestMedicineDetails!.medicineName,
                           icon: 'assets/images/doctor_name.png'),
                       Spacer(),
+                      Text(
+                        "معلومات عن الدواء",
+                        style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColorsManager.mainDarkBlue,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ]),
+                    Row(children: [
                       DetailsViewInfoTile(
                         title: "الشكل الدوائي",
                         value: " اقراص",
                         icon: 'assets/images/symptoms_icon.png',
                       ),
-                      // DetailsViewInfoTile(
-                      //   title: "مستمر/متوقف",
-                      //   // value: MedicineStatusHelper.determineMedicineStatus(
-                      //   //   state.selectestMedicineDetails!.startDate,
-                      //   //   state.selectestMedicineDetails!.usageDuration,
-                      //   // ),
-                      //   value: state.selectestMedicineDetails!.chronicDiseaseMedicine=='نعم'
-                      //       ? 'مستمر'
-                      //       : 'متوقف',
-                      //   icon: 'assets/images/doctor_name.png',
-                      // ),
-                    ]),
-                    Row(children: [
+                      Spacer(),
                       DetailsViewInfoTile(
                         title: " الجرعه",
                         value: state.selectestMedicineDetails!.dosage,
                         icon: 'assets/images/hugeicons_medicine-01.png',
                       ),
-                      Spacer(),
+                    ]),
+
+                    Row(children: [
                       DetailsViewInfoTile(
                           title: "عدد مرات الجرعة  ",
                           value:
                               state.selectestMedicineDetails!.dosageFrequency,
                           icon: 'assets/images/times_icon.png'),
-                    ]),
-
-                    Row(children: [
-                      DetailsViewInfoTile(
-                        title: " المدد الزمنية",
-                        value: state.selectestMedicineDetails!.timeDuration,
-                        icon: 'assets/images/time_icon.png',
-                      ),
                       Spacer(),
                       DetailsViewInfoTile(
-                        title: "مستمر/متوقف",
-                        // value: MedicineStatusHelper.determineMedicineStatus(
-                        //   state.selectestMedicineDetails!.startDate,
-                        //   state.selectestMedicineDetails!.usageDuration,
-                        // ),
-                        value: state.selectestMedicineDetails!
-                                    .chronicDiseaseMedicine ==
-                                'نعم'
-                            ? 'مستمر'
-                            : 'متوقف',
-                        icon: 'assets/images/doctor_name.png',
+                        title: " مدة العلاج",
+                        value: state.selectestMedicineDetails!.timeDuration,
+                        icon: 'assets/images/time_icon.png',
                       ),
                     ]),
                     Row(children: [
@@ -147,17 +133,30 @@ class MedicineDetailsView extends StatelessWidget {
                           icon: 'assets/images/date_icon.png'),
                       Spacer(),
                       DetailsViewInfoTile(
-                        title: " دواء مرض مزمن",
-                        value: state
-                            .selectestMedicineDetails!.chronicDiseaseMedicine,
-                        icon: 'assets/images/medicine_icon.png',
+                        title: "مستمر/متوقف",
+                        value: state.selectestMedicineDetails!
+                                    .chronicDiseaseMedicine ==
+                                'نعم'
+                            ? 'مستمر'
+                            : 'متوقف',
+                        icon: 'assets/images/doctor_name.png',
                       ),
                     ]),
-                    DetailsViewInfoTile(
-                      title: "اسم الطبيب ",
-                      value: state.selectestMedicineDetails!.doctorName,
-                      icon: 'assets/images/doctor_icon.png',
-                      isExpanded: true,
+                    Row(
+                      children: [
+                        DetailsViewInfoTile(
+                          title: "اسم الطبيب ",
+                          value: state.selectestMedicineDetails!.doctorName,
+                          icon: 'assets/images/doctor_icon.png',
+                        ),
+                        Spacer(),
+                        DetailsViewInfoTile(
+                          title: " دواء مرض مزمن",
+                          value: state
+                              .selectestMedicineDetails!.chronicDiseaseMedicine,
+                          icon: 'assets/images/medicine_icon.png',
+                        ),
+                      ],
                     ),
 
                     // Display the main symptoms using SymptomContainer

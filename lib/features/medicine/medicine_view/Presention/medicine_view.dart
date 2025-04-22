@@ -48,7 +48,7 @@ class MedicinesView extends StatelessWidget {
                             options: state.yearsFilter,
                             isYearFilter: true),
                         FilterConfig(
-                            title: ' اسم الدواء', options: state.medicineNameFilter),
+                            title: 'اسم الدواء', options:state.medicineNameFilter,isMedicineFilter: true),
                       ],
                       onApply: (selectedFilters) {
                         print("Selected Filters: $selectedFilters");
@@ -56,7 +56,7 @@ class MedicinesView extends StatelessWidget {
                             .getFilteredMedicinesList(
                                 year: selectedFilters['السنة'],
                                 medicineName:
-                                    selectedFilters[' الاسم'].toString());
+                                    selectedFilters['اسم الدواء'].toString());
                       },
                     );
                   },
@@ -169,7 +169,7 @@ class MedicineTable extends StatelessWidget {
                         child: Text(
                       "امراض مزمنة",
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.font14whiteWeight600,
+                      style: AppTextStyles.font14whiteWeight600.copyWith(fontSize: 12.sp),
                     )),
                   )),
             ],
@@ -192,7 +192,7 @@ class MedicineTable extends StatelessWidget {
                 DataCell(
                     Center(
                       child: Text(
-                        data.medicineName,
+                        data.medicineName.split(' ').first,
                         style: AppTextStyles.font14whiteWeight600.copyWith(
                             color: AppColorsManager.mainDarkBlue,
                             decoration: TextDecoration.underline),
@@ -216,7 +216,7 @@ class MedicineTable extends StatelessWidget {
                 }),
                 DataCell(Center(
                   child: FittedBox(
-                    child: Text(data.usageDuration,
+                    child: Text(data.timeDuration,
                         overflow: TextOverflow.ellipsis,
                         style: AppTextStyles.font14whiteWeight600
                             .copyWith(color: AppColorsManager.textColor)),

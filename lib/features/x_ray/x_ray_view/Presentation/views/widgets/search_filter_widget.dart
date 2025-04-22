@@ -10,6 +10,7 @@ class SearchFilterWidget extends StatefulWidget {
   final bool isYearFilter;
   final List<dynamic> filterList;
   final Function(String, dynamic) onFilterSelected;
+  final bool isMedicineFilter;
 
   const SearchFilterWidget({
     super.key,
@@ -17,6 +18,7 @@ class SearchFilterWidget extends StatefulWidget {
     this.isYearFilter = false,
     required this.filterList,
     required this.onFilterSelected,
+    this.isMedicineFilter = false,
   });
 
   @override
@@ -72,7 +74,6 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     Offset offset = renderBox.localToGlobal(Offset.zero);
-    double screenWidth = MediaQuery.of(context).size.width;
 
     return OverlayEntry(
       builder: (context) => GestureDetector(
@@ -81,15 +82,14 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
         child: Stack(
           children: [
             Positioned(
-              left: 16,
-              right: 16,
+              left: offset.dx,
               top: offset.dy + renderBox.size.height + 5.h,
+              width: renderBox.size.width,
               child: Material(
                 elevation: 4.0,
                 borderRadius: BorderRadius.circular(12.0),
                 child: Container(
-                  width: screenWidth,
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                  padding: EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
@@ -100,22 +100,20 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
                   ),
                   child: GestureDetector(
                     onTap: () {}, // Prevent taps inside from bubbling up
-                    child: GridView.builder(
+                    child: ListView.builder(
                       shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      padding: EdgeInsets.all(0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: widget.isYearFilter ? 5 : 3,
-                        crossAxisSpacing: widget.isYearFilter ? 15.w : 8.w,
-                        mainAxisSpacing: widget.isYearFilter ? 16.h : 16.h,
-                        childAspectRatio: widget.isYearFilter ? 2 : 3,
-                      ),
+                      physics: NeverScrollableScrollPhysics(),
                       itemCount: widget.filterList.length,
                       itemBuilder: (context, index) {
-                        return FilterChipItem(
-                          label: widget.filterList[index]==0?" الكل": widget.filterList[index].toString(),
-                          isSelected: index == _selectedIndex,
-                          onTap: () => _onChipSelected(index),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 6.0),
+                          child: FilterChipItem(
+                            label: widget.filterList[index] == 0
+                                ? "الكل"
+                                : widget.isMedicineFilter? widget.filterList[index].toString().split(' ').first: widget.filterList[index].toString(),
+                            isSelected: index == _selectedIndex,
+                            onTap: () => _onChipSelected(index),
+                          ),
                         );
                       },
                     ),
