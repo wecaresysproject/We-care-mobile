@@ -30,6 +30,16 @@ class SimilarAnalysisView extends StatelessWidget {
           if (state.requestStatus == RequestStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (state.requestStatus == RequestStatus.failure) {
+            return Scaffold(
+              body: Center(
+                child: Text(
+                  state.message ?? 'حدث خطأ ما',
+                  style: AppTextStyles.font14blackWeight400,
+                ),
+              ),
+            );
+          }
           final similarTestsResponse = state.getSimilarTestsResponseModel!.data;
           // Generate dynamic chart data from API response
           final List<AnalysisData> dynamicChartData =

@@ -37,6 +37,7 @@ class _DataViewFiltersRowState extends State<DataViewFiltersRow> {
             filterList: filter.options,
             isYearFilter: filter.isYearFilter,
             onFilterSelected: onFilterSelected,
+            isMedicineFilter: filter.isMedicineFilter,
           ),
           if (filter != widget.filters.last) Spacer(flex: 1),
         ],
@@ -55,11 +56,13 @@ class FilterConfig {
   final String title;
   final List<dynamic> options;
   final bool isYearFilter;
+  final bool isMedicineFilter;
 
   FilterConfig({
     required this.title,
     required this.options,
     this.isYearFilter = false,
+    this.isMedicineFilter = false,
   });
 }
 

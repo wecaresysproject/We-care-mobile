@@ -10,6 +10,7 @@ class DetailsViewInfoTile extends StatelessWidget {
   final String icon;
   final bool isExpanded;
   final bool isMultiContainer;
+  final bool isPartiallyExpanded;
 
   const DetailsViewInfoTile(
       {super.key,
@@ -17,7 +18,8 @@ class DetailsViewInfoTile extends StatelessWidget {
       required this.value,
       required this.icon,
       this.isMultiContainer = false,
-      this.isExpanded = false});
+      this.isExpanded = false,
+      this.isPartiallyExpanded = false});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,7 @@ class DetailsViewInfoTile extends StatelessWidget {
         SizedBox(
           width: isExpanded
               ? MediaQuery.of(context).size.width - 32.w
-              : (MediaQuery.of(context).size.width * 0.5) - 27.w,
+              : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
           child: CustomContainer(
             value: value,
             isExpanded: isExpanded,

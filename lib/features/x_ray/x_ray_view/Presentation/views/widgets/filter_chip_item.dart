@@ -35,7 +35,7 @@ class FilterChipItem extends StatelessWidget {
         ),
         child: Center(
           child: Row(
-            mainAxisSize: MainAxisSize.min, // Prevents unnecessary expansion
+        //    mainAxisSize: MainAxisSize.min, // Prevents unnecessary expansion
             children: [
               if (isSelected)
                 Image.asset('assets/images/check_icon.png',
