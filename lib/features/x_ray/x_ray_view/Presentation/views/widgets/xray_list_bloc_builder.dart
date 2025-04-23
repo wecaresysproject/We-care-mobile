@@ -27,7 +27,7 @@ class XrayListBlocBuilder extends StatelessWidget {
             color: AppColorsManager.mainDarkBlue,
             backgroundColor: Colors.white,
           )));
-        } else if(state.requestStatus==RequestStatus.failure){
+        } else if (state.requestStatus==RequestStatus.failure){
              return Expanded(
             child: Center(
               child: Text( 'حدث خطأ في تحميل البيانات',

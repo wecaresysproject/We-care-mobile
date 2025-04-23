@@ -148,6 +148,16 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SectionTitleContainer(
+                    title: "ملاحظات شخصية",
+                    iconPath: 'assets/images/notes_icon.png',
+                  ),
+                  DetailsViewInfoTile(
+                    title: "ملاحظات شخصية",
+                    value: complaint.personalNote,
+                    icon: 'assets/images/notes_icon.png',
+                    isExpanded: true,
+                  ),
                 ],
               ),
             );

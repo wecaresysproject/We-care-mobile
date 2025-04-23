@@ -13,12 +13,14 @@ class DetailsViewAppBar extends StatelessWidget {
       this.editFunction,
       this.deleteFunction,
       this.shareFunction,
+      this.showShareButtonOnly = false,
       this.showActionButtons = true});
   final String title;
   final Function()? editFunction;
   final Function()? deleteFunction;
   final Function()? shareFunction;
   final bool showActionButtons;
+  final bool showShareButtonOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class DetailsViewAppBar extends StatelessWidget {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  CustomActionButton(
+             !showShareButtonOnly?     CustomActionButton(
                     onTap: () {
                       showDialog(
                         context: context,
@@ -88,19 +90,19 @@ class DetailsViewAppBar extends StatelessWidget {
                     title: 'حذف',
                     icon: 'assets/images/delete.png',
                     color: AppColorsManager.warningColor,
-                  ),
+                  ):SizedBox.shrink(),
                   horizontalSpacing(8.w),
                   CustomActionButton(
                       onTap: shareFunction,
                       title: 'ارسال',
                       icon: 'assets/images/share.png'),
                   horizontalSpacing(8.w),
-                  CustomActionButton(
+               !showShareButtonOnly?   CustomActionButton(
                     onTap: editFunction,
                     title: 'تعديل',
                     icon: 'assets/images/edit.png',
                     color: AppColorsManager.mainDarkBlue,
-                  )
+                  ):SizedBox.shrink()
                 ],
               )
             : SizedBox.shrink()
