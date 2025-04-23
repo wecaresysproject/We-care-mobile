@@ -7,6 +7,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
@@ -51,7 +52,18 @@ Future<void> main() async {
   );
 }
 
+//* Check if this is the first app launch after install.
+//* SharedPreferences is cleared on uninstall, but secure storage is not.
+//* So if the key is missing, we treat it as a fresh install and clear secure data.
 Future<void> checkIfLoggedInUser() async {
+  final isFirstRun = await CacheHelper.getBool(AppStrings.hasRunBefore);
+
+  if (!isFirstRun) {
+    // First app launch after install – clear secure storage
+    await CacheHelper.clearAllSecuredData();
+    await CacheHelper.setData(AppStrings.hasRunBefore, true);
+  }
+
   String? userToken =
       await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey);
   if (userToken.isEmptyOrNull) {
