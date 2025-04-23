@@ -18,6 +18,8 @@ import 'package:we_care/features/prescription/data/repos/prescription_data_entry
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
+import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
+import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
@@ -283,6 +285,12 @@ void setupAppRepos() {
       getIt<MedicinesServices>(),
     ),
   );
+
+  getIt.registerLazySingleton(
+    () => CategoriesRepository(
+      getIt<CategoriesServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -317,5 +325,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<SurgeriesService>(
     () => SurgeriesService(dio),
+  );
+  getIt.registerLazySingleton<CategoriesServices>(
+    () => CategoriesServices(dio),
   );
 }

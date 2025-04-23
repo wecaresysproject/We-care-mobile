@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/show_data_entry_types/Data/Models/all_categories_tickets_count.dart';
+import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 
 class MedicalCategoriesTypesGridView extends StatelessWidget {
   const MedicalCategoriesTypesGridView({
@@ -13,29 +16,48 @@ class MedicalCategoriesTypesGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
-        itemCount: categoriesView.length,
-        physics: const BouncingScrollPhysics(),
-        clipBehavior: Clip.none,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent:
-              148.h, //! Fixed height for each item until text overflows
-          childAspectRatio: .85,
-          crossAxisSpacing: 13.w,
-          mainAxisSpacing: 32.h,
-        ),
-        itemBuilder: (context, index) {
-          return MedicalCategoryItem(
-            title: categoriesView[index]["title"]!,
-            imagePath: categoriesView[index]["image"]!,
-            routeName: categoriesView[index]["route"]!,
-            notificationCount: index % 2 == 0 ? 1 : 10,
-            isActive: categoriesView[index]["isActive"],
-          );
-        },
+    return FutureBuilder(
+      future: getIt.get<CategoriesRepository>().getAllCategoriesTicketsCount(
+        "ar",'Patient'
       ),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return 
+      Expanded(
+        child: GridView.builder(
+          itemCount: categoriesView.length,
+          physics: const BouncingScrollPhysics(),
+          clipBehavior: Clip.none,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisExtent:
+                148.h, //! Fixed height for each item until text overflows
+            childAspectRatio: .85,
+            crossAxisSpacing: 13.w,
+            mainAxisSpacing: 32.h,
+          ),
+itemBuilder: (context, index) {
+  final counts = snapshot.data!; // This is CategoriesTicketsCount
+  final categoryName = categoriesView[index]["title"]!;
+
+  final count = getCategoryCountByArabicTitle(counts, categoryName);
+
+  return MedicalCategoryItem(
+    title: categoryName,
+    imagePath: categoriesView[index]["image"]!,
+    routeName: categoriesView[index]["route"]!,
+    notificationCount: count,
+    isActive: categoriesView[index]["isActive"],
+  );
+}
+
+
+        ),
+      );
+      },
+ 
     );
   }
 }
@@ -339,3 +361,38 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": false,
   },
 ];
+
+const Map<String, String> _arabicTitleToField = {
+  "التحاليل الطبية": "labTest",
+  "العمليات\nالجراحية": "surgery",
+  "الشكاوى\nالطارئة": "emergency",
+  "الأشعة": "radiology",
+  "الأدوية": "medicine",
+  "التطعيمات": "vaccine",
+  "روشتة الأطباء": "predescription",
+};
+
+
+int getCategoryCountByArabicTitle(CategoriesTicketsCount countData, String arabicTitle) {
+  final fieldName = _arabicTitleToField[arabicTitle];
+  if (fieldName == null) return 0;
+
+  switch (fieldName) {
+    case 'labTest':
+      return countData.labTest;
+    case 'surgery':
+      return countData.surgery;
+    case 'emergency':
+      return countData.emergency;
+    case 'radiology':
+      return countData.radiology;
+    case 'medicine':
+      return countData.medicine;
+    case 'vaccine':
+      return countData.vaccine;
+    case 'predescription':
+      return countData.predescription;
+    default:
+      return 0;
+  }
+}

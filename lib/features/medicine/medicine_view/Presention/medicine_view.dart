@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_details_view.dart';
+import 'package:we_care/features/medicine/medicine_view/Presention/similar_date_medicine_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
@@ -182,12 +183,23 @@ class MedicineTable extends StatelessWidget {
                       child: Text(data.startDate,
                           maxLines: 1,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                          )),
+                            style: AppTextStyles.font14whiteWeight600.copyWith(
+                            color: AppColorsManager.mainDarkBlue,
+                            decoration: TextDecoration.underline),)
                     ),
                   ),
+                   onTap: () async {
+                   final sameDateMedicines= await context
+                          .read<MedicineViewCubit>()
+                          .getMedicinesByDate( data.startDate);
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return SameDateMedicineDetailsView(
+                      medicines: sameDateMedicines,
+                      date: data.startDate,
+                    );
+                  }));            
+                }
                 ),
                 DataCell(
                     Center(

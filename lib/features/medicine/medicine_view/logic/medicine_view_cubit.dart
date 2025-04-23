@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 
@@ -9,6 +10,12 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
       : super(MedicineViewState.initial());
   final MedicinesViewRepo _medicinesViewRepo;
 
+  List<MedicineModel> getMedicinesByDate(String targetDate) {
+  return state.userMedicines.where((medicine) {
+    final medicineDate = medicine.startDate;
+    return medicineDate==targetDate; 
+  }).toList();
+}
   Future<void> getMedicinesFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _medicinesViewRepo.getMedicinesFilters(

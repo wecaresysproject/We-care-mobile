@@ -82,9 +82,9 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
         child: Stack(
           children: [
             Positioned(
-              left: offset.dx,
+              left:widget.filterTitle=="اسم العملية"? offset.dx-150: offset.dx,
               top: offset.dy + renderBox.size.height + 5.h,
-              width: renderBox.size.width,
+              width: !widget.isYearFilter? widget.filterTitle=="اسم العملية"?renderBox.size.width*3.5:renderBox.size.width*1.45:renderBox.size.width,
               child: Material(
                 elevation: 4.0,
                 borderRadius: BorderRadius.circular(12.0),

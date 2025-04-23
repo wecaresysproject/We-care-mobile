@@ -67,7 +67,7 @@ class CustomContainer extends StatelessWidget {
     return SizedBox(
       width: isExpanded
           ? MediaQuery.of(context).size.width - 32.w
-          : (MediaQuery.of(context).size.width * 0.5) - 24.w,
+          : (MediaQuery.of(context).size.width * 0.46) - 24.w,
       child: Container(
         padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
         margin: EdgeInsets.zero,
