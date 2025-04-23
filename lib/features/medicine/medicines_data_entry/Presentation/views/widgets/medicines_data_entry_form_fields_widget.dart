@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -184,12 +185,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
 
             UserSelectionContainer(
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
+              allowManualEntry: true,
+              options: doctorsList,
               categoryLabel: "اسم الطبيب",
               bottomSheetTitle: "اختر اسم الطبيب",
               onOptionSelected: (value) {
