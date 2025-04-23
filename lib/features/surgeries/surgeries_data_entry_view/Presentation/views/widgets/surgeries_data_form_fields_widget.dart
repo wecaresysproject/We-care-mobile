@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -17,8 +18,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
 
-import 'select_image_container_widget.dart';
-import 'user_selection_container_widget.dart';
+import '../../../../../../core/global/SharedWidgets/select_image_container_shared_widget.dart';
+import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
 class SuergeriesDataEntryFormFields extends StatefulWidget {
   const SuergeriesDataEntryFormFields({super.key});
@@ -230,14 +231,11 @@ class _SuergeriesDataEntryFormFieldsState
             /// "المستشفى / المركز"
 
             UserSelectionContainer(
+              allowManualEntry: true,
               categoryLabel: "المستشفى / المركز",
               containerHintText:
                   state.selectedHospitalCenter ?? "اختر اسم المستشفى/المركز",
-              options: [
-                "مستشفى القلب",
-                "مستشفى العين الدولى",
-                "مستشفى 57357",
-              ],
+              options: hosptitalsNames,
               onOptionSelected: (value) {
                 context
                     .read<SurgeryDataEntryCubit>()
@@ -254,11 +252,7 @@ class _SuergeriesDataEntryFormFieldsState
               allowManualEntry: true,
               categoryLabel: "اسم الجراح",
               containerHintText: state.surgeonName ?? "اختر اسم الطبيب الجراح",
-              options: [
-                "دكتور محمد محمد",
-                "دكتور كريم محمد",
-                "دكتور رشا محمد",
-              ],
+              options: doctorsList,
               onOptionSelected: (value) {
                 context
                     .read<SurgeryDataEntryCubit>()
@@ -272,12 +266,8 @@ class _SuergeriesDataEntryFormFieldsState
             /// "اسم طبيب الباطنة"
 
             UserSelectionContainer(
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
+              allowManualEntry: true,
+              options: doctorsList,
               categoryLabel: "اسم طبيب الباطنة",
               bottomSheetTitle: "اختر اسم طبيب الباطنة",
               onOptionSelected: (value) {

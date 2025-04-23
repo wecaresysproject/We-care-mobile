@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -71,12 +72,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "اسم الطبيب",
                 containerHintText:
                     state.doctorNameSelection ?? "اختر اسم الطبيب",
-                options: [
-                  "د / محمد محمد",
-                  "د / كريم محمد",
-                  "د / رشا محمد",
-                  "د / رشا مصطفى",
-                ],
+                options: doctorsList,
                 onOptionSelected: (value) {
                   log("xxx:Selected: $value");
                   context
@@ -88,19 +84,14 @@ class _PrescriptionDataEntryFormFieldsState
 
               verticalSpacing(16),
               UserSelectionContainer(
+                allowManualEntry: true,
                 containerBorderColor: state.doctorSpecialitySelection == null
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 categoryLabel: "التخصص",
                 containerHintText:
                     state.doctorSpecialitySelection ?? "اختر تخصص",
-                options: [
-                  "باطنة",
-                  "جراحة",
-                  "طبيب عام",
-                  "طبيب اطفال",
-                  "طبيب جراحة",
-                ],
+                options: medicalSpecialties,
                 onOptionSelected: (value) {
                   context
                       .read<PrescriptionDataEntryCubit>()
