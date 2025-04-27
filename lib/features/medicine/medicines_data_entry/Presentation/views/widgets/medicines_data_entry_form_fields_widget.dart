@@ -197,9 +197,14 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText: state.selectedDoctorName ?? "اختر اسم الطبيب",
             ),
             verticalSpacing(16),
-            Text(
-              "تنبيهات",
-              style: AppTextStyles.font18blackWight500,
+            InkWell(
+              onTap: () async {
+                await context.pushNamed(Routes.alarmHomeView);
+              },
+              child: Text(
+                "تنبيهات",
+                style: AppTextStyles.font18blackWight500,
+              ),
             ),
             verticalSpacing(10),
             CustomAlarmButton(
