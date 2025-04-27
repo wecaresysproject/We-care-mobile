@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,23 +31,20 @@ class AnalysisLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sortedData = data..sort((a, b) => a.x.compareTo(b.x));
-    final double minY = data.map((d) => d.y).reduce((a, b) => a < b ? a : b);
+    final double minY = 0; // Force starting from 0
     final double maxY = data.map((d) => d.y).reduce((a, b) => a > b ? a : b);
 
-    final double yAxisPadding = 10;
-    final double dynamicMinY = (minY - yAxisPadding).clamp(0, double.infinity);
+    // Calculate y-axis padding (10% of range or fixed value for very small ranges)
+    final double yAxisPadding = max((maxY - minY) * 0.1, 0.5);
     final double dynamicMaxY = maxY + yAxisPadding;
 
-    final yRange = dynamicMaxY - dynamicMinY;
-    final targetStepCount = data.length;
-    final rawInterval = yRange / targetStepCount;
-    final niceInterval = rawInterval <= 10
-        ? 5
-        : rawInterval <= 20
-            ? 10
-            : rawInterval <= 50
-                ? 20
-                : 50;
+    // Calculate optimal integer interval
+    final double yRange = dynamicMaxY - minY;
+    final double rawInterval = yRange / 5; // Aim for about 5 labels
+    final int niceInterval = _calculateNiceInterval(rawInterval);
+
+    // Adjust max to align with nice intervals
+    final int alignedMaxY = (dynamicMaxY / niceInterval).ceil() * niceInterval;
 
     final spots = sortedData.map((d) => FlSpot(d.x.toDouble(), d.y)).toList();
 
@@ -83,7 +82,7 @@ class AnalysisLineChart extends StatelessWidget {
                   LineChartData(
                     minX: sortedData.first.x.toDouble(),
                     maxX: sortedData.last.x.toDouble(),
-                    minY: dynamicMinY,
+                    minY: 0,
                     maxY: dynamicMaxY,
                     backgroundColor: Colors.transparent,
                     gridData: FlGridData(
@@ -99,7 +98,21 @@ class AnalysisLineChart extends StatelessWidget {
                         strokeWidth: 1,
                       ),
                     ),
-                    borderData: FlBorderData(show: false),
+                    borderData: FlBorderData(
+                      show: true,
+                      border: Border(
+                        bottom: BorderSide(
+                          color: Colors.grey,
+                          width: 1.5,
+                        ),
+                        left: BorderSide(
+                          color: Colors.grey,
+                          width: 1.5,
+                        ),
+                        right: BorderSide.none,
+                        top: BorderSide.none,
+                      ),
+                    ),
                     titlesData: FlTitlesData(
                       show: true,
                       leftTitles: AxisTitles(
@@ -113,7 +126,8 @@ class AnalysisLineChart extends StatelessWidget {
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                             showTitles: true,
-                            reservedSize: 60, // more space for vertical labels
+                            interval: 1,
+                            reservedSize: 65, // more space for vertical labels
                             getTitlesWidget: (value, meta) {
                               final matchedData = sortedData.firstWhere(
                                 (d) => d.x.toDouble() == value,
@@ -121,26 +135,16 @@ class AnalysisLineChart extends StatelessWidget {
                                     AnalysisData(x: 0, y: 0, label: ''),
                               );
 
-                              if (matchedData.label.isNotEmpty) {
-                                int spacingFactor = data.length > 8 ? 2 : 1;
-                                if (matchedData.x % spacingFactor != 0) {
-                                  return const SizedBox.shrink();
-                                }
+                              return Transform.rotate(
+                                angle: -90 * (pi / 180), 
+                                origin: const Offset(18, -10),
 
-                                final verticalDate =
-                                    matchedData.label.split('/').join('\n');
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    verticalDate,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(fontSize: 10),
-                                  ),
-                                );
-                              }
-
-                              return const SizedBox.shrink();
+                                child: Text(
+                                  matchedData.label,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 11),
+                                ),
+                              );
                             }),
                       ),
                       rightTitles:
@@ -154,7 +158,7 @@ class AnalysisLineChart extends StatelessWidget {
                         return indicators.map((index) {
                           return TouchedSpotIndicatorData(
                             FlLine(color: Colors.transparent),
-                            FlDotData(show: false),
+                            FlDotData(show: true),
                           );
                         }).toList();
                       },
@@ -164,11 +168,12 @@ class AnalysisLineChart extends StatelessWidget {
                         tooltipMargin: 8,
                         getTooltipItems: (spots) => spots.map((spot) {
                           return LineTooltipItem(
-                            '${spot.y.toStringAsFixed(0)}',
+                              spot.y == spot.y.truncate() ? spot.y.toInt().toString() : spot.y.toString(),
+
                             const TextStyle(
                               color: Colors.brown,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
                             ),
                           );
                         }).toList(),
@@ -222,9 +227,12 @@ class AnalysisLineChart extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text(
-                "المعيار",
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              Padding(
+                padding: const EdgeInsets.only(top:16),
+                child: const Text(
+                  "المعيار",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
               ),
             ],
           ),
@@ -232,4 +240,19 @@ class AnalysisLineChart extends StatelessWidget {
       ],
     );
   }
+}
+
+int _calculateNiceInterval(double rawInterval) {
+  if (rawInterval <= 0) return 1;
+
+  // Calculate magnitude (power of 10)
+  final double magnitude =
+      pow(10, (log(rawInterval) / ln10).floor()).toDouble();
+  final double normalized = rawInterval / magnitude;
+
+  // Find the nearest "nice" number (1, 2, 5, 10)
+  if (normalized <= 2) return 1 * magnitude.toInt();
+  if (normalized <= 5) return 2 * magnitude.toInt();
+  if (normalized <= 10) return 5 * magnitude.toInt();
+  return 10 * magnitude.toInt();
 }
