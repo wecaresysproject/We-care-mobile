@@ -12,6 +12,7 @@ import 'package:we_care/features/emergency_complaints/data/models/medical_compla
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
+import 'package:we_care/features/medicine/medicine_view/Presention/medicine_ocr_scanner.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -93,6 +94,24 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       );
     }
   }
+
+  Future<void> openMedicineScanner(BuildContext context) async {
+  final medicineName = await Navigator.push<String>(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MedicineOCRScanner(
+        onMedicineDetected: (text) {
+          // يمكنك إضافة فلترة إضافية هنا
+          return text;
+        },
+      ),
+    ),
+  );
+
+  if (medicineName != null) {
+    updateSelectedMedicineName(medicineName);
+  }
+}
 
   Future<void> loadMedicinesDataEnteredForEditing(
     MedicineModel pastDataEntered,
