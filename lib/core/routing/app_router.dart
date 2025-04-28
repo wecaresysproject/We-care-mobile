@@ -5,6 +5,7 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
@@ -194,6 +195,7 @@ class AppRouter {
             medicineToEdit: medicineModel,
           ),
         );
+
       case Routes.medicationSymptomsFormFieldView:
         return MaterialPageRoute(
           builder: (context) => MedicineSyptomsDetailsView(
@@ -201,7 +203,10 @@ class AppRouter {
             complaintId: 2,
           ),
         );
-
+      case Routes.alarmHomeView:
+        return MaterialPageRoute(
+          builder: (context) => AlarmHomeScreen(),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

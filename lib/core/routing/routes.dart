@@ -37,4 +37,5 @@ class Routes {
 
   static const emergenciesComplaintDataEntryView =
       '/emergenciesComplaintDataEntryView';
+  static const alarmHomeView = '/alarmHomeView';
 }

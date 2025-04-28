@@ -1,8 +1,10 @@
+import 'package:alarm/alarm.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
@@ -11,6 +13,8 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/utils/logging.dart';
 import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
@@ -21,6 +25,10 @@ Future<void> main() async {
   await ScreenUtil.ensureScreenSize();
 
   await checkIfLoggedInUser();
+  await Notifications.init();
+
+  //* The plugin redirects the user to auto-start permission screen to allow auto-start and fix background problems in some phones.
+  // await getAutoStartPermission();
 
   await Hive.initFlutter();
   Hive.registerAdapter(MedicalComplaintAdapter());
@@ -35,20 +43,21 @@ Future<void> main() async {
       //     Brightness.dark, // Dark icons for navigation bar
     ),
   );
+
   // Lock the app to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]).then(
-    (_) {
-      runApp(
-        DevicePreview(
-          enabled: true,
-          builder: (context) => WeCareApp(
-            appRouter: AppRouter(),
-          ),
-        ),
-      );
-    },
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  setupLogging(showDebugLogs: true);
+
+  await Alarm.init();
+
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => WeCareApp(
+        appRouter: AppRouter(),
+      ),
+    ),
   );
 }
 
@@ -70,5 +79,16 @@ Future<void> checkIfLoggedInUser() async {
     isLoggedInUser = false;
   } else {
     isLoggedInUser = true;
+  }
+}
+
+Future<void> checkAndroidScheduleExactAlarmPermission() async {
+  final status = await Permission.scheduleExactAlarm.status;
+  print('Schedule exact alarm permission: $status.');
+  if (status.isDenied) {
+    print('Requesting schedule exact alarm permission...');
+    final res = await Permission.scheduleExactAlarm.request();
+    print(
+        'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
   }
 }

@@ -1,3 +1,4 @@
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -32,6 +33,8 @@ class MedicinesDataEntryState extends Equatable {
   final bool isEditMode;
   final String message; // error or success message
 
+  final AlarmSettings? ringingAlarm;
+
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
@@ -57,6 +60,7 @@ class MedicinesDataEntryState extends Equatable {
     this.medicineId = '',
     this.updatedDocumentId = '',
     this.selectedAlarmTime,
+    this.ringingAlarm,
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -85,6 +89,7 @@ class MedicinesDataEntryState extends Equatable {
           medicineId: '',
           updatedDocumentId: '',
           selectedAlarmTime: null,
+          ringingAlarm: null,
         );
 
   MedicinesDataEntryState copyWith({
@@ -112,6 +117,7 @@ class MedicinesDataEntryState extends Equatable {
     List<String>? allDurationsBasedOnCategory,
     String? selectedAlarmTime,
     String? updatedDocumentId,
+    AlarmSettings? ringingAlarm,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -141,6 +147,7 @@ class MedicinesDataEntryState extends Equatable {
           allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
       selectedAlarmTime: selectedAlarmTime ?? this.selectedAlarmTime,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
+      ringingAlarm: ringingAlarm ?? this.ringingAlarm,
     );
   }
 
@@ -170,5 +177,6 @@ class MedicinesDataEntryState extends Equatable {
         allDurationsBasedOnCategory,
         selectedAlarmTime,
         updatedDocumentId,
+        ringingAlarm,
       ];
 }

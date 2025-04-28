@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,7 +9,6 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/time_picker_handler_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -16,6 +18,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -203,12 +206,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(10),
             CustomAlarmButton(
-              containerHintText: state.selectedAlarmTime ?? 'اختر موعد التنبيه',
-              onTimePicked: (selectedAlarmTime) {
-                context
-                    .read<MedicinesDataEntryCubit>()
-                    .updateSelectedAlarmTime(selectedAlarmTime);
-              },
+              containerHintText: state.selectedAlarmTime != null
+                  ? 'تم ظبط منبه الدواء علي ${state.selectedAlarmTime}'
+                  : 'اختر موعد التنبيه',
             ),
 
             verticalSpacing(16),
@@ -492,16 +492,10 @@ class SymptomContainer extends StatelessWidget {
 }
 
 class CustomAlarmButton extends StatefulWidget {
-  final String? selectedItem;
   final String containerHintText;
-  final Color? iconColor;
-  final Function(String?) onTimePicked;
   const CustomAlarmButton({
     super.key,
-    this.selectedItem,
     required this.containerHintText,
-    this.iconColor,
-    required this.onTimePicked,
   });
 
   @override
@@ -510,21 +504,24 @@ class CustomAlarmButton extends StatefulWidget {
 
 class CustomAlarmButtonState extends State<CustomAlarmButton> {
   String? _selectedTime;
-  final TimePickerHandler _timePickerHandler = TimePickerHandler();
-
-  Future<void> _pickTime(BuildContext context) async {
-    TimeOfDay? pickedTime = await _timePickerHandler.showPicker(context);
-    setState(() {
-      _selectedTime = pickedTime?.format(context); // Format the selected time
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await _pickTime(context);
-        widget.onTimePicked(_selectedTime);
+        final cubit = context.read<MedicinesDataEntryCubit>();
+        final repeatEvery =
+            cubit.getRepeatDurationFromText(cubit.state.selectedNoOfDose!);
+        final totalDuartion =
+            cubit.getTotalDurationFromText(cubit.state.timePeriods!);
+
+        //!handle null values here later
+        await openAlarmBottomSheet(
+          null,
+          repeatEvery: repeatEvery!,
+          totalDuration: totalDuartion!,
+        );
+        // await context.pushNamed(Routes.alarmHomeView);
       },
       child: Container(
         width: double.infinity,
@@ -548,15 +545,15 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
                   "assets/images/alarm_icon.png",
                   height: 28,
                   width: 28,
-                  color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
+                  color: AppColorsManager.mainDarkBlue,
                 ),
                 const SizedBox(width: 16),
                 Text(
                   _selectedTime ?? widget.containerHintText,
                   style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: _selectedTime != null
+                    color: _selectedTime.isNotNull
                         ? AppColorsManager.textColor
-                        : null,
+                        : AppColorsManager.placeHolderColor,
                   ),
                 ),
               ],
@@ -569,11 +566,46 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
                   : "assets/images/arrow_down_icon.png",
               height: 24,
               width: 16,
-              color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
+              color: AppColorsManager.mainDarkBlue,
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> openAlarmBottomSheet(
+    AlarmSettings? settings, {
+    required Duration repeatEvery,
+    required Duration totalDuration,
+  }) async {
+    String? selectedAlarmTime;
+    final res = await showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.85,
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            onSave: (selectedDateTime) {
+              selectedAlarmTime = selectedDateTime.toArabicTime();
+            },
+            repeatEvery: repeatEvery,
+            totalDuration: totalDuration,
+          ),
+        );
+      },
+    );
+
+    if (res != null && res == true && mounted) {
+      context.read<MedicinesDataEntryCubit>().loadAlarms();
+      context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
+            selectedAlarmTime!,
+          );
+    }
   }
 }
