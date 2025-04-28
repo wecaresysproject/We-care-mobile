@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/utils/alarm_set.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/ring.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/shortcut_button.dart';
@@ -31,7 +32,7 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
       (_) => AlarmPermissions.checkAndroidScheduleExactAlarmPermission(),
     );
     unawaited(loadAlarms());
-    ringSubscription ??= Alarm.ringing.listen(ringingAlarmsChanged);
+    ringSubscription ??= Alarm.ringing.listen(onAlarmRingingChanged);
     updateSubscription ??= Alarm.scheduled.listen(
       (_) {
         unawaited(loadAlarms());
@@ -87,7 +88,9 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
                             hour: alarms[index].dateTime.hour,
                             minute: alarms[index].dateTime.minute,
                           ).format(context),
-                          onPressed: () => navigateToAlarmScreen(alarms[index]),
+                          onPressed: () => openAlarmBottomSheet(
+                            alarms[index],
+                          ),
                           onDismissed: () async {
                             await Alarm.stop(alarms[index].id);
                             await loadAlarms();
@@ -97,10 +100,13 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
                     )
                   : Center(
                       child: Text(
-                        'No alarms set',
+                        'لا يوجد موعد محدد مسبق لهذا للدواء',
+                        softWrap: true,
+                        textAlign: TextAlign.center,
                         style:
                             Theme.of(context).textTheme.titleMedium!.copyWith(
                                   color: Colors.black,
+                                  fontSize: 20.sp,
                                 ),
                       ),
                     ),
@@ -109,7 +115,7 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
         ),
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -122,13 +128,19 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
               heroTag: null,
               child: Text(
                 'STOP ALL',
-                textScaler: TextScaler.linear(0.9),
+                textScaler: TextScaler.linear(0.8),
                 textAlign: TextAlign.center,
+                softWrap: true,
               ),
             ),
             FloatingActionButton(
-              onPressed: () => navigateToAlarmScreen(null),
-              child: const Icon(Icons.alarm_add_rounded, size: 33),
+              onPressed: () async {
+                await openAlarmBottomSheet(null);
+              },
+              child: const Icon(
+                Icons.alarm_add_rounded,
+                size: 33,
+              ),
             ),
           ],
         ),
@@ -140,25 +152,28 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
     updatedAlarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-    setState(() {
-      alarms = updatedAlarms;
-    });
+    setState(
+      () {
+        alarms = updatedAlarms;
+      },
+    );
   }
 
   ///called immediately after the alarm rings
-  Future<void> ringingAlarmsChanged(AlarmSet alarms) async {
+  Future<void> onAlarmRingingChanged(AlarmSet alarms) async {
     if (alarms.alarms.isEmpty) return;
     await Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (context) =>
-            MedicineAlarmRingingScreen(alarmSettings: alarms.alarms.first),
+        builder: (context) => MedicineAlarmRingingScreen(
+          alarmSettings: alarms.alarms.first,
+        ),
       ),
     );
     unawaited(loadAlarms());
   }
 
-  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+  Future<void> openAlarmBottomSheet(AlarmSettings? settings) async {
     final res = await showModalBottomSheet<bool?>(
       context: context,
       isScrollControlled: true,
@@ -168,7 +183,12 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.85,
-          child: ExampleAlarmEditScreen(alarmSettings: settings),
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            onSave: (selectedDateTime) {},
+            totalDuration: Duration(),
+            repeatEvery: Duration(),
+          ),
         );
       },
     );

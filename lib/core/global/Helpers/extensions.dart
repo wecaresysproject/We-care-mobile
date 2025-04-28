@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import '../../../generated/l10n.dart';
 
@@ -206,6 +207,7 @@ extension PaddingExtension on Widget {
 // check for nullabilty over all types
 extension NullableExtension<T> on T? {
   bool get isNotNull => this != null;
+  bool get isNull => this == null;
 }
 
 extension StringExtensions on String? {
@@ -220,5 +222,16 @@ extension StringExtensions on String? {
 extension WidgetVisibility on Widget {
   Widget visible(bool isVisible) {
     return isVisible ? this : const SizedBox.shrink();
+  }
+}
+
+extension ArabicTimeFormat on DateTime {
+  String toArabicTime() {
+    String time = DateFormat('h:mm a', 'ar').format(this);
+    return time
+        .replaceAll('AM', 'ص')
+        .replaceAll('PM', 'م')
+        .replaceAll('ص', 'ص')
+        .replaceAll('م', 'م'); // extra safety
   }
 }

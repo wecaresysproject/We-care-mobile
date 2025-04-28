@@ -1,16 +1,26 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 
-class ExampleAlarmEditScreen extends StatefulWidget {
-  const ExampleAlarmEditScreen({super.key, this.alarmSettings});
+class AlarmEditScreen extends StatefulWidget {
+  const AlarmEditScreen({
+    super.key,
+    this.alarmSettings,
+    required this.onSave,
+    required this.totalDuration,
+    required this.repeatEvery,
+  });
 
   final AlarmSettings? alarmSettings;
+  final void Function(DateTime selectedDateTime) onSave;
+  final Duration? totalDuration;
+  final Duration? repeatEvery;
 
   @override
-  State<ExampleAlarmEditScreen> createState() => _ExampleAlarmEditScreenState();
+  State<AlarmEditScreen> createState() => _AlarmEditScreenState();
 }
 
-class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
+class _AlarmEditScreenState extends State<AlarmEditScreen> {
   bool loading = false;
 
   late bool creating;
@@ -87,6 +97,47 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
     }
   }
 
+  AlarmSettings buildAlarmSettingsForTime(DateTime dateTime) {
+    final id = DateTime.now().millisecondsSinceEpoch % 100000 +
+        dateTime.millisecondsSinceEpoch % 10000;
+
+    final VolumeSettings volumeSettings;
+    if (staircaseFade) {
+      volumeSettings = VolumeSettings.staircaseFade(
+        volume: volume,
+        fadeSteps: [
+          VolumeFadeStep(Duration.zero, 0),
+          VolumeFadeStep(const Duration(seconds: 15), 0.03),
+          VolumeFadeStep(const Duration(seconds: 20), 0.5),
+          VolumeFadeStep(const Duration(seconds: 30), 1),
+        ],
+      );
+    } else if (fadeDuration != null) {
+      volumeSettings = VolumeSettings.fade(
+        volume: volume,
+        fadeDuration: fadeDuration!,
+      );
+    } else {
+      volumeSettings = VolumeSettings.fixed(volume: volume);
+    }
+
+    return AlarmSettings(
+      id: id,
+      dateTime: dateTime,
+      loopAudio: loopAudio,
+      vibrate: vibrate,
+      assetAudioPath: assetAudio,
+      volumeSettings: volumeSettings,
+      allowAlarmOverlap: true,
+      warningNotificationOnKill: true,
+      notificationSettings: NotificationSettings(
+        title: 'Alarm for your medication',
+        body: 'It\'s time to take your medicine',
+        icon: 'notification_icon',
+      ),
+    );
+  }
+
   AlarmSettings buildAlarmSettings() {
     final id = creating
         ? DateTime.now().millisecondsSinceEpoch % 10000 + 1
@@ -120,6 +171,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
       assetAudioPath: assetAudio,
       volumeSettings: volumeSettings,
       allowAlarmOverlap: true,
+      warningNotificationOnKill: true,
       notificationSettings: NotificationSettings(
         title: 'Alarm example',
         body: 'Your alarm ($id) is ringing',
@@ -130,19 +182,69 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
     return alarmSettings;
   }
 
-  void saveAlarm() {
+  Future<void> saveAlarm() async {
+    await Alarm.stopAll();
+
     if (loading) return;
     setState(() => loading = true);
-    Alarm.set(alarmSettings: buildAlarmSettings()).then((res) {
-      if (res && mounted) Navigator.pop(context, true);
-      setState(() => loading = false);
-    });
+
+    // حدد البداية
+    DateTime start = selectedDateTime;
+
+    // اختار الريبيت (مثلا كل 8 ساعات)
+    Duration? repeatEvery = widget.repeatEvery;
+
+    // اختار المدة الكلية (مثلا لمدة أسبوع)
+    Duration? totalDuration = widget.totalDuration;
+    if (repeatEvery.isNull || totalDuration.isNull) {
+      Alarm.set(alarmSettings: buildAlarmSettings()).then((res) {
+        if (res && mounted) Navigator.pop(context, true);
+        setState(() => loading = false);
+      });
+      return;
+    }
+    // ولد كل أوقات التنبيه
+    final alarmTimes = generateAlarmTimes(
+      start: start,
+      repeatEvery: repeatEvery!,
+      totalDuration: totalDuration!,
+    );
+
+    // احجز كل المنبهات
+    for (var time in alarmTimes) {
+      final settings = buildAlarmSettingsForTime(time);
+      await Alarm.set(alarmSettings: settings);
+    }
+
+    if (mounted) {
+      widget.onSave(selectedDateTime);
+      Navigator.pop(context, true);
+    }
+
+    setState(() => loading = false);
   }
 
   void deleteAlarm() {
     Alarm.stop(widget.alarmSettings!.id).then((res) {
       if (res && mounted) Navigator.pop(context, true);
     });
+  }
+
+  List<DateTime> generateAlarmTimes({
+    required DateTime start,
+    required Duration repeatEvery,
+    required Duration totalDuration,
+  }) {
+    List<DateTime> times = [];
+    DateTime current = start;
+    DateTime end = start.add(totalDuration);
+
+    while (current.isBefore(end)) {
+      times.add(current);
+      current = current.add(repeatEvery);
+    }
+
+    return times;
   }
 
   @override
@@ -166,7 +268,9 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
                 ),
               ),
               TextButton(
-                onPressed: saveAlarm,
+                onPressed: () async {
+                  await saveAlarm();
+                },
                 child: loading
                     ? const CircularProgressIndicator()
                     : Text(
