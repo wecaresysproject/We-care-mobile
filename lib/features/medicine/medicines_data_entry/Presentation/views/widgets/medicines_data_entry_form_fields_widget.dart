@@ -18,6 +18,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/medicine_view/Presention/medicine_ocr_scanner.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -77,17 +78,18 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
             Column(
               children: [
-                // Text(
-                //   "أو قم بمسح علبة الدواء",
-                //   style: AppTextStyles.font16DarkGreyWeight400,
-                // ),
                 verticalSpacing(8),
                 AppCustomButton(
                   title: "فتح ماسح الأدوية",
                   onPressed: () async {
-                    await context
-                        .read<MedicinesDataEntryCubit>()
-                        .openMedicineScanner(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MedicineOCRScanner(
+                          title: "Medicine Scanner",
+                        ),
+                      ),
+                    );
                   },
                 ),
                 verticalSpacing(8),
