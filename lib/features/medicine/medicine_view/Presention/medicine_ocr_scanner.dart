@@ -1,75 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 
 class MedicineOCRScanner extends StatefulWidget {
   final Function(String) onMedicineDetected;
 
-  const MedicineOCRScanner({Key? key, required this.onMedicineDetected}) 
-      : super(key: key);
+  const MedicineOCRScanner({super.key, required this.onMedicineDetected});
 
   @override
-  _MedicineOCRScannerState createState() => _MedicineOCRScannerState();
+  MedicineOCRScannerState createState() => MedicineOCRScannerState();
 }
 
-class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
+class MedicineOCRScannerState extends State<MedicineOCRScanner> {
   String _extractedText = "";
-  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("مسح علبة الدواء"),
-      ),
-      body: Stack(
-        children: [
-          ScalableOCR(
-            paintboxCustom: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = 4.0
-              ..color = Colors.green,
-            boxLeftOff: 0.2,
-            boxBottomOff: 0.7,
-            boxRightOff: 0.2,
-            boxTopOff: 0.3,
-            boxHeight: 150,
-            getScannedText: (text) {
-              setState(() {
-                _extractedText = text;
-              });
-              _processExtractedText(text);
-            },
-            // overlay: Container(
-            //   alignment: Alignment.topCenter,
-            //   margin: EdgeInsets.only(top: 100),
-            //   child: Text(
-            //     "ضع اسم الدواء داخل المستطيل",
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 20,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
-          ),
-          Positioned(
-            bottom: 20,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_extractedText.isNotEmpty) {
-                    widget.onMedicineDetected(_extractedText);
-                    Navigator.pop(context);
-                  }
-                },
-                child: Text("تأكيد اسم الدواء"),
-              ),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            "مسح علبة الدواء",
+            style: TextStyle(
+              color: Colors.white,
             ),
           ),
-        ],
+        ),
+        body: Stack(
+          children: [
+            ScalableOCR(
+              paintboxCustom: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 4.0
+                ..color = Colors.green,
+              boxHeight: 350,
+              getScannedText: (text) {
+                setState(() {
+                  _extractedText = text;
+                });
+                _processExtractedText(text);
+              },
+            ),
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_extractedText.isEmpty) {
+                      widget.onMedicineDetected(_extractedText);
+                      context.pop();
+                    }
+                  },
+                  child: Text(
+                    "تأكيد اسم الدواء",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

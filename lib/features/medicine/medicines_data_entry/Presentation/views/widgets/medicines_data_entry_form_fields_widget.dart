@@ -75,27 +75,29 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
 
             verticalSpacing(16),
-Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
-    Text(
-      "أو قم بمسح علبة الدواء",
-      style: AppTextStyles.font16DarkGreyWeight400,
-    ),
-    verticalSpacing(8),
-    AppCustomButton(
-      title: "فتح ماسح الأدوية",
-      onPressed: () async {
-        await context.read<MedicinesDataEntryCubit>().openMedicineScanner(context);
-      },
-    ),
-    verticalSpacing(8),
-    Text(
-      "توجيه المستطيل على اسم الدواء فقط",
-      style: AppTextStyles.font14BlueWeight700,
-    ),
-  ],
-),
+            Column(
+              children: [
+                // Text(
+                //   "أو قم بمسح علبة الدواء",
+                //   style: AppTextStyles.font16DarkGreyWeight400,
+                // ),
+                verticalSpacing(8),
+                AppCustomButton(
+                  title: "فتح ماسح الأدوية",
+                  onPressed: () async {
+                    await context
+                        .read<MedicinesDataEntryCubit>()
+                        .openMedicineScanner(context);
+                  },
+                ),
+                verticalSpacing(8),
+                Text(
+                  "توجيه المستطيل على اسم الدواء فقط",
+                  style: AppTextStyles.font14BlueWeight700,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
 
             verticalSpacing(16),
             UserSelectionContainer(

@@ -96,22 +96,29 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> openMedicineScanner(BuildContext context) async {
-  final medicineName = await Navigator.push<String>(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MedicineOCRScanner(
-        onMedicineDetected: (text) {
-          // يمكنك إضافة فلترة إضافية هنا
-          return text;
-        },
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MedicineOCRScanner(
+          onMedicineDetected: (text) {
+            emit(
+              state.copyWith(
+                scnnedMedicineName: text,
+              ),
+            );
+          },
+        ),
       ),
-    ),
-  );
+    );
+    final matchedMedicine = state.medicinesNames.firstWhere(
+      (medicineName) => medicineName == state.scnnedMedicineName,
+      orElse: () => '',
+    );
 
-  if (medicineName != null) {
-    updateSelectedMedicineName(medicineName);
+    if (matchedMedicine.isNotEmpty) {
+      await updateSelectedMedicineName(matchedMedicine);
+    }
   }
-}
 
   Future<void> loadMedicinesDataEnteredForEditing(
     MedicineModel pastDataEntered,
