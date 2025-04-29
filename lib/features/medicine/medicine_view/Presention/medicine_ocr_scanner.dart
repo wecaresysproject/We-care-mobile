@@ -86,16 +86,17 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
 class MedicineOCRScanner extends StatefulWidget {
   const MedicineOCRScanner({
     super.key,
     required this.title,
-    required this.onMedicineDetected,
   });
-  final Function(String) onMedicineDetected;
 
   final String title;
 
@@ -179,50 +180,10 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
               Column(
                 children: [
                   ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          loading = true;
-                          cameraSelection = cameraSelection == 0 ? 1 : 0;
-                        });
-                        Future.delayed(const Duration(milliseconds: 150), () {
-                          setState(() {
-                            loading = false;
-                          });
-                        });
-                      },
-                      child: const Text("Switch Camera")),
-                  ElevatedButton(
-                      onPressed: () async {
-                        setState(() {
-                          loading = true;
-                          torchOn = !torchOn;
-                        });
-                        Future.delayed(const Duration(milliseconds: 150), () {
-                          setState(() {
-                            loading = false;
-                          });
-                        });
-                      },
-                      child: const Text("Toggle Torch")),
-                  ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          loading = true;
-                          lockCamera = !lockCamera;
-                        });
-                        Future.delayed(const Duration(milliseconds: 150), () {
-                          setState(() {
-                            loading = false;
-                          });
-                        });
-                      },
-                      child: const Text("Toggle Lock Camera")),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (text.isEmpty) {
-                        widget.onMedicineDetected(text);
-                        context.pop();
-                      }
+                    onPressed: () async {
+                      await context
+                          .read<MedicinesDataEntryCubit>()
+                          .onMedicineNameDetected(text);
                     },
                     child: const Text(
                       "تأكيد اسم الدواء",
@@ -230,6 +191,44 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
                         color: Colors.white,
                       ),
                     ),
+                  ),
+                  BlocConsumer<MedicinesDataEntryCubit,
+                      MedicinesDataEntryState>(
+                    listener: (context, state) async {
+                      if (state.matchedMedicineNamesWithScannedText.isEmpty &&
+                          state.message.isNotEmpty) {
+                        await showError(state.message);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state
+                          .matchedMedicineNamesWithScannedText.isNotEmpty) {
+                        return Container(
+                          height: 100,
+                          width: double.infinity,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state
+                                  .matchedMedicineNamesWithScannedText.length,
+                              itemBuilder: (context, index) {
+                                return Text(
+                                  state.matchedMedicineNamesWithScannedText[
+                                      index],
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    },
                   ),
                 ],
               )

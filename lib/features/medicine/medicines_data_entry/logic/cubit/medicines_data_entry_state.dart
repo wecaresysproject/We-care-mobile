@@ -35,6 +35,7 @@ class MedicinesDataEntryState extends Equatable {
   final String message; // error or success message
 
   final AlarmSettings? ringingAlarm;
+  final List<String> matchedMedicineNamesWithScannedText; // المدد الزمنيه
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -63,6 +64,7 @@ class MedicinesDataEntryState extends Equatable {
     this.selectedAlarmTime,
     this.ringingAlarm,
     this.scnnedMedicineName,
+    this.matchedMedicineNamesWithScannedText = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -93,6 +95,7 @@ class MedicinesDataEntryState extends Equatable {
           selectedAlarmTime: null,
           ringingAlarm: null,
           scnnedMedicineName: null,
+          matchedMedicineNamesWithScannedText: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -122,6 +125,7 @@ class MedicinesDataEntryState extends Equatable {
     String? updatedDocumentId,
     AlarmSettings? ringingAlarm,
     String? scnnedMedicineName,
+    List<String>? matchedMedicineNamesWithScannedText,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -153,6 +157,9 @@ class MedicinesDataEntryState extends Equatable {
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
       ringingAlarm: ringingAlarm ?? this.ringingAlarm,
       scnnedMedicineName: scnnedMedicineName ?? this.scnnedMedicineName,
+      matchedMedicineNamesWithScannedText:
+          matchedMedicineNamesWithScannedText ??
+              this.matchedMedicineNamesWithScannedText,
     );
   }
 
@@ -184,5 +191,6 @@ class MedicinesDataEntryState extends Equatable {
         updatedDocumentId,
         ringingAlarm,
         scnnedMedicineName,
+        matchedMedicineNamesWithScannedText,
       ];
 }
