@@ -40,7 +40,6 @@ class MedicineOCRScannerState extends State<MedicineOCRScanner> {
                 setState(() {
                   _extractedText = text;
                 });
-                _processExtractedText(text);
               },
             ),
             Positioned(
