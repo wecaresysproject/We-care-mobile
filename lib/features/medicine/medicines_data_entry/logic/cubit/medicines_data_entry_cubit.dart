@@ -100,6 +100,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       context,
       MaterialPageRoute(
         builder: (context) => MedicineOCRScanner(
+          title: "Medicine Scanner",
           onMedicineDetected: (text) {
             emit(
               state.copyWith(
