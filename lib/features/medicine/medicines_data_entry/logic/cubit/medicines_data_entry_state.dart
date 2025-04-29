@@ -29,6 +29,7 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> allUsageCategories; // مدة الاستخدام
   final List<String> allDurationsBasedOnCategory; // المدد الزمنيه
   final String? selectedAlarmTime;
+  final String? scnnedMedicineName;
 
   final bool isEditMode;
   final String message; // error or success message
@@ -61,6 +62,7 @@ class MedicinesDataEntryState extends Equatable {
     this.updatedDocumentId = '',
     this.selectedAlarmTime,
     this.ringingAlarm,
+    this.scnnedMedicineName,
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -90,6 +92,7 @@ class MedicinesDataEntryState extends Equatable {
           updatedDocumentId: '',
           selectedAlarmTime: null,
           ringingAlarm: null,
+          scnnedMedicineName: null,
         );
 
   MedicinesDataEntryState copyWith({
@@ -118,6 +121,7 @@ class MedicinesDataEntryState extends Equatable {
     String? selectedAlarmTime,
     String? updatedDocumentId,
     AlarmSettings? ringingAlarm,
+    String? scnnedMedicineName,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -148,6 +152,7 @@ class MedicinesDataEntryState extends Equatable {
       selectedAlarmTime: selectedAlarmTime ?? this.selectedAlarmTime,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
       ringingAlarm: ringingAlarm ?? this.ringingAlarm,
+      scnnedMedicineName: scnnedMedicineName ?? this.scnnedMedicineName,
     );
   }
 
@@ -178,5 +183,6 @@ class MedicinesDataEntryState extends Equatable {
         selectedAlarmTime,
         updatedDocumentId,
         ringingAlarm,
+        scnnedMedicineName,
       ];
 }
