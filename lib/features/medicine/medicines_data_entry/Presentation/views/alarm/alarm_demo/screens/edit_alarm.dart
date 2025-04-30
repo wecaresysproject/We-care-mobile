@@ -1,6 +1,14 @@
+import 'dart:developer';
+
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
+import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
 class AlarmEditScreen extends StatefulWidget {
   const AlarmEditScreen({
@@ -9,12 +17,14 @@ class AlarmEditScreen extends StatefulWidget {
     required this.onSave,
     required this.totalDuration,
     required this.repeatEvery,
+    required this.medicineName,
   });
 
   final AlarmSettings? alarmSettings;
   final void Function(DateTime selectedDateTime) onSave;
   final Duration? totalDuration;
   final Duration? repeatEvery;
+  final String? medicineName; //! we should handle it in case its null
 
   @override
   State<AlarmEditScreen> createState() => _AlarmEditScreenState();
@@ -31,6 +41,10 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   late Duration? fadeDuration;
   late bool staircaseFade;
   late String assetAudio;
+
+  /// lustral => 12 , 23 , 45 , etc...
+  List<MedicineAlarmModel> alarmsPerMedicine = [];
+  List<int> medicineAlarmIds = [];
 
   @override
   void initState() {
@@ -100,6 +114,8 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   AlarmSettings buildAlarmSettingsForTime(DateTime dateTime) {
     final id = DateTime.now().millisecondsSinceEpoch % 100000 +
         dateTime.millisecondsSinceEpoch % 10000;
+    // alarmsPerMedicine[widget.medicineName!].add(id);
+    medicineAlarmIds.add(id);
 
     final VolumeSettings volumeSettings;
     if (staircaseFade) {
@@ -216,12 +232,33 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       await Alarm.set(alarmSettings: settings);
     }
 
+    await saveAlarmsCreatedPerMedicineInLocalStorage();
+
     if (mounted) {
       widget.onSave(selectedDateTime);
       Navigator.pop(context, true);
     }
 
     setState(() => loading = false);
+  }
+
+  Future<void> saveAlarmsCreatedPerMedicineInLocalStorage() async {
+    alarmsPerMedicine.add(
+      MedicineAlarmModel(
+        alarmId: medicineAlarmIds,
+        medicineName: widget.medicineName!,
+      ),
+    );
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    if (box.isEmpty) {
+      await box.add(alarmsPerMedicine); // First time: use add
+    } else {
+      await box.putAt(0, alarmsPerMedicine); // Already exists: update
+    }
+
+    log('xxx: saveAlarmsCreatedPerMedicineInLocalStorage successfully with Hive');
   }
 
   void deleteAlarm() {
@@ -261,10 +298,13 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
                 onPressed: () => Navigator.pop(context, false),
                 child: Text(
                   'Cancel',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Colors.blueAccent),
+                  style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  // style: Theme.of(context)
+                  //     .textTheme
+                  //     .titleLarge!
+                  //     .copyWith(color: Colors.blueAccent),
                 ),
               ),
               TextButton(
@@ -275,32 +315,34 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
                     ? const CircularProgressIndicator()
                     : Text(
                         'Save',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: Colors.blueAccent),
+                        style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
               ),
             ],
           ),
           Text(
             getDay(),
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(color: Colors.blueAccent.withValues(alpha: 0.8)),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
           ),
           RawMaterialButton(
             onPressed: pickTime,
-            fillColor: Colors.grey[200],
+            fillColor: AppColorsManager.babyBlueColor,
             child: Container(
               margin: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  24.r,
+                ),
+              ),
               child: Text(
                 TimeOfDay.fromDateTime(selectedDateTime).format(context),
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium!
-                    .copyWith(color: Colors.blueAccent),
+                style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                      color: AppColorsManager.mainDarkBlue,
+                    ),
               ),
             ),
           ),

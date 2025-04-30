@@ -27,7 +27,7 @@ class DateTimePickerContainer extends StatefulWidget {
 
 class DatePickerContainerState extends State<DateTimePickerContainer> {
   DateTime? selectedDate;
-  final DateFormat dateFormat = DateFormat('dd/MM/yyyy', 'en');
+  final DateFormat dateFormat = DateFormat('yyyy-MM-dd', 'en');
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(

@@ -1,3 +1,4 @@
+import 'package:alarm/alarm.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,20 +12,34 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
+import 'package:we_care/features/medicine/medicines_api_constants.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
 import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setUpDependencyInjection();
-  // To fix texts being hidden bug in flutter_screenutil in release mode.
-  tz.initializeTimeZones();
-  await ScreenUtil.ensureScreenSize();
 
-  await checkIfLoggedInUser();
+  tz.initializeTimeZones();
 
   await Hive.initFlutter();
   Hive.registerAdapter(MedicalComplaintAdapter());
   await Hive.openBox<MedicalComplaint>("medical_complaints");
+  Hive.registerAdapter(MedicineAlarmModelAdapter());
+  await Hive.openBox<MedicineAlarmModel>(
+    MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey,
+  );
+
+  await setUpDependencyInjection();
+
+  // To fix texts being hidden bug in flutter_screenutil in release mode.
+  await ScreenUtil.ensureScreenSize();
+
+  await checkIfLoggedInUser();
+
+  await Notifications.init();
+
+  await Alarm.init();
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
@@ -35,20 +50,17 @@ Future<void> main() async {
       //     Brightness.dark, // Dark icons for navigation bar
     ),
   );
+
   // Lock the app to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]).then(
-    (_) {
-      runApp(
-        DevicePreview(
-          enabled: true,
-          builder: (context) => WeCareApp(
-            appRouter: AppRouter(),
-          ),
-        ),
-      );
-    },
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  runApp(
+    DevicePreview(
+      enabled: true,
+      builder: (context) => WeCareApp(
+        appRouter: AppRouter(),
+      ),
+    ),
   );
 }
 

@@ -1,9 +1,15 @@
+import 'dart:developer';
+
+import 'package:alarm/alarm.dart';
 import 'package:bloc/bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
+import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
 class MedicineViewCubit extends Cubit<MedicineViewState> {
   MedicineViewCubit(this._medicinesViewRepo)
@@ -11,11 +17,12 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   final MedicinesViewRepo _medicinesViewRepo;
 
   List<MedicineModel> getMedicinesByDate(String targetDate) {
-  return state.userMedicines.where((medicine) {
-    final medicineDate = medicine.startDate;
-    return medicineDate==targetDate; 
-  }).toList();
-}
+    return state.userMedicines.where((medicine) {
+      final medicineDate = medicine.startDate;
+      return medicineDate == targetDate;
+    }).toList();
+  }
+
   Future<void> getMedicinesFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _medicinesViewRepo.getMedicinesFilters(
@@ -107,5 +114,42 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
         responseMessage: error.errors.first,
       ));
     });
+  }
+
+  Future<void> cancelAlarmsCreatedBeforePerMedicine(String medicineName) async {
+    final alarmsId = getAlarmsForMedicine(medicineName);
+    for (final id in alarmsId) {
+      await Alarm.stop(id);
+    }
+    await removeMedicineAlarms(medicineName);
+  }
+
+  List<int> getAlarmsForMedicine(String medicineName) {
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    final medicineAlarms = box.values.first;
+
+    if (medicineAlarms.isEmpty) return [];
+
+    final medicineAlarmsId = medicineAlarms.firstWhere(
+      (storedMedcine) => storedMedcine.medicineName == medicineName,
+    );
+    return medicineAlarmsId.alarmId;
+  }
+
+  Future<void> removeMedicineAlarms(String medicineName) async {
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    if (box.isEmpty) return;
+
+    final key = box.keys.first;
+    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
+
+    alarms.removeWhere((model) => model.medicineName == medicineName);
+
+    await box.put(key, alarms);
+    log('Removed alarms for $medicineName');
   }
 }
