@@ -17,9 +17,6 @@ class MedicineScannerCubit extends Cubit<MedicineScannerState> {
         medicinesScannerStatus: RequestStatus.loading,
       ),
     );
-    if (query.isEmpty) {
-      query = 'A';
-    }
     final response = await _medicinesDataEntryRepo.getMatchedMedicines(
       language: AppStrings.arabicLang,
       userType: 'Patient',

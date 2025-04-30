@@ -4,10 +4,7 @@ import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -21,9 +18,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
-import 'package:we_care/features/medicine/medicine_view/Presention/medicine_ocr_scanner.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -78,45 +74,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر اسم الدواء",
             ),
-
             verticalSpacing(16),
-            Column(
-              children: [
-                verticalSpacing(8),
-                AppCustomButton(
-                  title: "فتح ماسح الأدوية",
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            BlocProvider<MedicineScannerCubit>(
-                          create: (context) => getIt<MedicineScannerCubit>(),
-                          child: MedicineOCRScanner(
-                            title: "Medicine Scanner",
-                          ),
-                        ),
-                      ),
-                    );
-                                  final selectedMedicineName=  await CacheHelper.getString("medicineName");
 
-            //  if(mounted&&selectedMedicineName!=null){
-            //          await context
-            //             .read<MedicinesDataEntryCubit>()
-            //             .updateSelectedMedicineName(selectedMedicineName);
-
-            //             await CacheHelper.removeData("medicineName");
-            //  }
-                  },
-                ),
-                verticalSpacing(8),
-                Text(
-                  "توجيه المستطيل على اسم الدواء فقط",
-                  style: AppTextStyles.font14BlueWeight700,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+            MedicneNameScannerContainer(mounted: mounted, state: state),
 
             verticalSpacing(16),
             UserSelectionContainer(
