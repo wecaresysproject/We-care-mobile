@@ -4,7 +4,10 @@ import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -85,11 +88,21 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MedicineOCRScanner(
-                          title: "Medicine Scanner",
+                        builder: (context) =>
+                            BlocProvider<MedicinesDataEntryCubit>(
+                          create: (context) => getIt<MedicinesDataEntryCubit>()..initialDataEntryRequests(),
+                          child: MedicineOCRScanner(
+                            title: "Medicine Scanner",
+                          ),
                         ),
                       ),
                     );
+             if(mounted){
+              final selectedMedicineName=  await CacheHelper.getString("medicineName");
+                     await context
+                        .read<MedicinesDataEntryCubit>()
+                        .updateSelectedMedicineName(selectedMedicineName);
+             }
                   },
                 ),
                 verticalSpacing(8),

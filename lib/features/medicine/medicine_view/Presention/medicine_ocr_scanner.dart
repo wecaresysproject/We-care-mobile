@@ -88,7 +88,11 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -214,11 +218,24 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
                               itemCount: state
                                   .matchedMedicineNamesWithScannedText.length,
                               itemBuilder: (context, index) {
-                                return Text(
-                                  state.matchedMedicineNamesWithScannedText[
-                                      index],
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                return InkWell(
+                                  onTap: () async {
+                                    await CacheHelper.setData(
+                                        "medicineName",
+                                        state
+                                            .matchedMedicineNamesWithScannedText[
+                                                index]
+                                            .toString());
+                               
+                                     context.pop();
+                                    
+                                  },
+                                  child: Text(
+                                    state.matchedMedicineNamesWithScannedText[
+                                        index],
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 );
                               },

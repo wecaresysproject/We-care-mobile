@@ -106,19 +106,10 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   void getMatchedNamesListWithscannedText() {
-    emit(
-      state.copyWith(
-        medicinesNames: [
-          'ogmantine ',
-          'ogmantine ',
-          'ogmantine ',
-          'ogmantine ',
-        ],
-      ),
-    );
+
     final matchedMedicine = state.medicinesNames.where(
       (medicineName) {
-        return medicineName.contains(state.scnnedMedicineName ?? 'ogmantine ')
+        return medicineName.contains(state.scnnedMedicineName?? "") 
             ? true
             : false;
       },
