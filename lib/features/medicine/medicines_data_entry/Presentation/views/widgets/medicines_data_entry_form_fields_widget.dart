@@ -214,8 +214,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(10),
             CustomAlarmButton(
-              containerHintText: state.selectedAlarmTime != null
-                  ? 'تم ظبط منبه الدواء علي ${state.selectedAlarmTime}'
+              containerHintText: state.selectedAlarmTime != null &&
+                      state.selectedAlarmTime != ''
+                  ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
                   : 'اختر موعد التنبيه',
             ),
 
@@ -556,7 +557,6 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
                   width: 28,
                   color: AppColorsManager.mainDarkBlue,
                 ),
-                const SizedBox(width: 16),
                 Text(
                   _selectedTime ?? widget.containerHintText,
                   style: AppTextStyles.font16DarkGreyWeight400.copyWith(
@@ -569,7 +569,10 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
             ),
 
             IconButton(
-              icon: Icon(Icons.delete),
+              icon: Icon(
+                Icons.delete,
+                size: 28,
+              ),
               onPressed: () async {
                 await cancelAlarmsCreatedBeforePerMedicine(medicineName!);
               },
@@ -627,9 +630,9 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
     }
     await removeMedicineAlarms(medicineName);
     if (!mounted) return;
-    // context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
-    //       null,
-    //     );
+    context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
+          "",
+        );
   }
 
   List<int> getAlarmsForMedicine(String medicineName) {
