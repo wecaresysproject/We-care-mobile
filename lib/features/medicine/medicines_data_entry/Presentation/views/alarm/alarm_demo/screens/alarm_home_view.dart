@@ -188,6 +188,7 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
             onSave: (selectedDateTime) {},
             totalDuration: Duration(),
             repeatEvery: Duration(),
+            medicineName: '',
           ),
         );
       },

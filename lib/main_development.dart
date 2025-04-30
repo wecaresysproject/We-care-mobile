@@ -13,26 +13,35 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
+import 'package:we_care/features/medicine/medicines_api_constants.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/utils/logging.dart';
 import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setUpDependencyInjection();
-  // To fix texts being hidden bug in flutter_screenutil in release mode.
   tz.initializeTimeZones();
-  await ScreenUtil.ensureScreenSize();
-
-  await checkIfLoggedInUser();
-  await Notifications.init();
-
-  //* The plugin redirects the user to auto-start permission screen to allow auto-start and fix background problems in some phones.
-  // await getAutoStartPermission();
 
   await Hive.initFlutter();
   Hive.registerAdapter(MedicalComplaintAdapter());
   await Hive.openBox<MedicalComplaint>("medical_complaints");
+
+  Hive.registerAdapter(MedicineAlarmModelAdapter());
+  await Hive.openBox<List<MedicineAlarmModel>>(
+      MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+  await setUpDependencyInjection();
+
+  // To fix texts being hidden bug in flutter_screenutil in release mode.
+  await ScreenUtil.ensureScreenSize();
+
+  await checkIfLoggedInUser();
+
+  await Notifications.init();
+
+  //* The plugin redirects the user to auto-start permission screen to allow auto-start and fix background problems in some phones.
+  // await getAutoStartPermission();
 
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(

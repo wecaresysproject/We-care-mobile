@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:alarm/model/alarm_settings.dart';
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -18,6 +20,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
+import 'package:we_care/features/medicine/medicines_api_constants.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
@@ -210,8 +214,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(10),
             CustomAlarmButton(
-              containerHintText: state.selectedAlarmTime != null
-                  ? 'تم ظبط منبه الدواء علي ${state.selectedAlarmTime}'
+              containerHintText: state.selectedAlarmTime != null &&
+                      state.selectedAlarmTime != ''
+                  ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
                   : 'اختر موعد التنبيه',
             ),
 
@@ -508,7 +513,7 @@ class CustomAlarmButton extends StatefulWidget {
 
 class CustomAlarmButtonState extends State<CustomAlarmButton> {
   String? _selectedTime;
-
+  String? medicineName;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -518,12 +523,13 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
             cubit.getRepeatDurationFromText(cubit.state.selectedNoOfDose!);
         final totalDuartion =
             cubit.getTotalDurationFromText(cubit.state.timePeriods!);
-
+        medicineName = cubit.state.selectedMedicineName;
         //!handle null values here later
         await openAlarmBottomSheet(
           null,
           repeatEvery: repeatEvery!,
           totalDuration: totalDuartion!,
+          medicineName: medicineName!,
         );
         // await context.pushNamed(Routes.alarmHomeView);
       },
@@ -551,7 +557,6 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
                   width: 28,
                   color: AppColorsManager.mainDarkBlue,
                 ),
-                const SizedBox(width: 16),
                 Text(
                   _selectedTime ?? widget.containerHintText,
                   style: AppTextStyles.font16DarkGreyWeight400.copyWith(
@@ -563,13 +568,14 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
               ],
             ),
 
-            /// Arrow icon to indicate dropdown state
-            Image.asset(
-              _selectedTime != null
-                  ? "assets/images/arrow_up_icon.png"
-                  : "assets/images/arrow_down_icon.png",
-              height: 24,
-              width: 16,
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                size: 28,
+              ),
+              onPressed: () async {
+                await cancelAlarmsCreatedBeforePerMedicine(medicineName!);
+              },
               color: AppColorsManager.mainDarkBlue,
             ),
           ],
@@ -582,6 +588,7 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
     AlarmSettings? settings, {
     required Duration repeatEvery,
     required Duration totalDuration,
+    required String medicineName,
   }) async {
     String? selectedAlarmTime;
     final res = await showModalBottomSheet<bool?>(
@@ -600,16 +607,60 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
             },
             repeatEvery: repeatEvery,
             totalDuration: totalDuration,
+            medicineName: medicineName,
           ),
         );
       },
     );
 
     if (res != null && res == true && mounted) {
-      context.read<MedicinesDataEntryCubit>().loadAlarms();
+      await context.read<MedicinesDataEntryCubit>().loadAlarms();
+      if (!mounted) return;
       context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
             selectedAlarmTime!,
           );
     }
+  }
+
+  Future<void> cancelAlarmsCreatedBeforePerMedicine(String medicineName) async {
+    final alarmsId = getAlarmsForMedicine(medicineName);
+    for (final id in alarmsId) {
+      await Alarm.stop(id);
+      log('xxx: cancelAlarmsCreatedBeforePerMedicine successfully');
+    }
+    await removeMedicineAlarms(medicineName);
+    if (!mounted) return;
+    context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
+          "",
+        );
+  }
+
+  List<int> getAlarmsForMedicine(String medicineName) {
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    final medicineAlarms = box.values.first;
+
+    if (medicineAlarms.isEmpty) return [];
+
+    final medicineAlarmsId = medicineAlarms.firstWhere(
+      (storedMedcine) => storedMedcine.medicineName == medicineName,
+    );
+    return medicineAlarmsId.alarmId;
+  }
+
+  Future<void> removeMedicineAlarms(String medicineName) async {
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    if (box.isEmpty) return;
+
+    final key = box.keys.first;
+    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
+
+    alarms.removeWhere((model) => model.medicineName == medicineName);
+
+    await box.put(key, alarms);
+    log('Removed alarms for $medicineName');
   }
 }

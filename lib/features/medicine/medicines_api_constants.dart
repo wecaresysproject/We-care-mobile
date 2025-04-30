@@ -38,4 +38,8 @@ class MedicinesApiConstants {
   static const getFilters = "MedicineUserEntryPage/GetUserMedicineFilters";
   static const getFilteredMedicines =
       "MedicineUserEntryPage/SearchUserMedicineDocuments";
+
+  /// medicine alarms local database key
+  static const alarmsScheduledPerMedicineBoxKey =
+      "alarmsScheduledPerMedicineBoxKey";
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,6 +68,14 @@ class MedicineDetailsView extends StatelessWidget {
                       deleteFunction: () async {
                         await BlocProvider.of<MedicineViewCubit>(context)
                             .deleteMedicineById(documentId);
+                        if (!context.mounted) return;
+                        unawaited(
+                          context
+                              .read<MedicineViewCubit>()
+                              .cancelAlarmsCreatedBeforePerMedicine(
+                                state.selectestMedicineDetails!.medicineName,
+                              ),
+                        );
                       },
                       shareFunction: () {
                         _shareDetails(context);

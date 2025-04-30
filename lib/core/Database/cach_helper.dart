@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +42,35 @@ class CacheHelper {
       default:
         return null;
     }
+  }
+
+  /// Get a Map<String, List<int>> from SharedPreferences with given [key].
+  static Future<Map<String, List<int>>> getIntListMap(String key) async {
+    debugPrint('SharedPrefHelper : getIntListMap with key: $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    final jsonString = sharedPreferences.getString(key);
+    if (jsonString == null) return {};
+
+    final decodedMap = jsonDecode(jsonString) as Map<String, dynamic>;
+
+    return decodedMap.map(
+      (k, v) => MapEntry(k, List<int>.from(v)),
+    );
+  }
+
+  static Future<void> setIntListMap(
+      String key, Map<String, List<int>> value) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final jsonString = jsonEncode(value);
+    await sharedPreferences.setString(key, jsonString);
+  }
+
+  /// Get list of dynamic from shared preferences with given [key].
+  static Future getDynamicList(String key) async {
+    debugPrint('SharedPrefHelper : getBool with key : $key');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.get(key) ?? [];
   }
 
   /// Gets a bool value from SharedPreferences with given [key].
