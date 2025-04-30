@@ -26,6 +26,9 @@ class MedicinesApiConstants {
 
   static const getAllDurationsForCategory =
       "MedicineUserEntryPage/GetDurationsForCategory";
+
+  static const getMatchedMedicines =
+"/MedicineUserEntryPage/SearchMedicinesByName";    
   //View Entry
   static const getSingleMedicine = "MedicineUserEntryPage/GetMedicineById";
   static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";

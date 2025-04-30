@@ -19,6 +19,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -73,31 +74,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر اسم الدواء",
             ),
-
             verticalSpacing(16),
-            Column(
-              children: [
-                // Text(
-                //   "أو قم بمسح علبة الدواء",
-                //   style: AppTextStyles.font16DarkGreyWeight400,
-                // ),
-                verticalSpacing(8),
-                AppCustomButton(
-                  title: "فتح ماسح الأدوية",
-                  onPressed: () async {
-                    await context
-                        .read<MedicinesDataEntryCubit>()
-                        .openMedicineScanner(context);
-                  },
-                ),
-                verticalSpacing(8),
-                Text(
-                  "توجيه المستطيل على اسم الدواء فقط",
-                  style: AppTextStyles.font14BlueWeight700,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+
+            MedicneNameScannerContainer(mounted: mounted, state: state),
 
             verticalSpacing(16),
             UserSelectionContainer(

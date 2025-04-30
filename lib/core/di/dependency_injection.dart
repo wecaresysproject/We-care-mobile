@@ -11,6 +11,7 @@ import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.da
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medication_symptoms_form_cubit.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
@@ -177,6 +178,11 @@ void setupAppCubits() {
   getIt.registerFactory<MedicineViewCubit>(
     () => MedicineViewCubit(
       getIt<MedicinesViewRepo>(),
+    ),
+  );
+  getIt.registerFactory<MedicineScannerCubit>(
+    () => MedicineScannerCubit(
+      getIt<MedicinesDataEntryRepo>(),
     ),
   );
 }
