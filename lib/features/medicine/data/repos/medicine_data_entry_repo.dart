@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
+import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
@@ -127,6 +128,28 @@ class MedicinesDataEntryRepo {
       return ApiResult.success(data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+      Future<ApiResult<List<MatchedMedicineModel>>> getMatchedMedicines({
+    required String language,
+    required String userType,
+    required String medicineName,
+  }) async {
+    try {
+      final response = await _medicinesServices.getMatchedMedicines(
+        medicineName,
+        language,
+        userType,
+      );
+      // Assuming response['data'] is a List of medicine items
+    final List<dynamic> dataList = response['data'];
+    final List<MatchedMedicineModel> matchedMedicines = dataList
+        .map((item) => MatchedMedicineModel.fromJson(item))
+        .toList();
+
+    return ApiResult.success(matchedMedicines);
+    } catch (e) {
+      return ApiResult.failure(ApiErrorHandler.handle(e));
     }
   }
 

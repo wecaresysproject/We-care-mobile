@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
+import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
 @immutable
 class MedicinesDataEntryState extends Equatable {
@@ -29,13 +30,13 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> allUsageCategories; // مدة الاستخدام
   final List<String> allDurationsBasedOnCategory; // المدد الزمنيه
   final String? selectedAlarmTime;
-  final String? scnnedMedicineName;
+ 
 
   final bool isEditMode;
   final String message; // error or success message
 
   final AlarmSettings? ringingAlarm;
-  final List<String> matchedMedicineNamesWithScannedText; // المدد الزمنيه
+  final List<MatchedMedicineModel> matchedMedicines;
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -63,8 +64,7 @@ class MedicinesDataEntryState extends Equatable {
     this.updatedDocumentId = '',
     this.selectedAlarmTime,
     this.ringingAlarm,
-    this.scnnedMedicineName,
-    this.matchedMedicineNamesWithScannedText = const [],
+    this.matchedMedicines = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -94,8 +94,7 @@ class MedicinesDataEntryState extends Equatable {
           updatedDocumentId: '',
           selectedAlarmTime: null,
           ringingAlarm: null,
-          scnnedMedicineName: null,
-          matchedMedicineNamesWithScannedText: const [],
+          matchedMedicines: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -124,8 +123,7 @@ class MedicinesDataEntryState extends Equatable {
     String? selectedAlarmTime,
     String? updatedDocumentId,
     AlarmSettings? ringingAlarm,
-    String? scnnedMedicineName,
-    List<String>? matchedMedicineNamesWithScannedText,
+    List<MatchedMedicineModel>? matchedMedicines,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -156,10 +154,7 @@ class MedicinesDataEntryState extends Equatable {
       selectedAlarmTime: selectedAlarmTime ?? this.selectedAlarmTime,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
       ringingAlarm: ringingAlarm ?? this.ringingAlarm,
-      scnnedMedicineName: scnnedMedicineName ?? this.scnnedMedicineName,
-      matchedMedicineNamesWithScannedText:
-          matchedMedicineNamesWithScannedText ??
-              this.matchedMedicineNamesWithScannedText,
+      matchedMedicines: matchedMedicines ?? this.matchedMedicines,
     );
   }
 
@@ -190,7 +185,6 @@ class MedicinesDataEntryState extends Equatable {
         selectedAlarmTime,
         updatedDocumentId,
         ringingAlarm,
-        scnnedMedicineName,
-        matchedMedicineNamesWithScannedText,
+        
       ];
 }

@@ -23,6 +23,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_ocr_scanner.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -89,20 +90,23 @@ class _MedicinesDataEntryFormFieldsWidgetState
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            BlocProvider<MedicinesDataEntryCubit>(
-                          create: (context) => getIt<MedicinesDataEntryCubit>()..initialDataEntryRequests(),
+                            BlocProvider<MedicineScannerCubit>(
+                          create: (context) => getIt<MedicineScannerCubit>(),
                           child: MedicineOCRScanner(
                             title: "Medicine Scanner",
                           ),
                         ),
                       ),
                     );
-             if(mounted){
-              final selectedMedicineName=  await CacheHelper.getString("medicineName");
-                     await context
-                        .read<MedicinesDataEntryCubit>()
-                        .updateSelectedMedicineName(selectedMedicineName);
-             }
+                                  final selectedMedicineName=  await CacheHelper.getString("medicineName");
+
+            //  if(mounted&&selectedMedicineName!=null){
+            //          await context
+            //             .read<MedicinesDataEntryCubit>()
+            //             .updateSelectedMedicineName(selectedMedicineName);
+
+            //             await CacheHelper.removeData("medicineName");
+            //  }
                   },
                 ),
                 verticalSpacing(8),

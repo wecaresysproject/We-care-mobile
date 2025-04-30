@@ -94,41 +94,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     }
   }
 
-  Future<void> onMedicineNameDetected(String? scannedText) async {
-    emit(
-      state.copyWith(
-        scnnedMedicineName: scannedText,
-      ),
-    );
-    getMatchedNamesListWithscannedText();
-    //!Later called when user select
-    // await updateSelectedMedicineName(matchedMedicine);
-  }
 
-  void getMatchedNamesListWithscannedText() {
-
-    final matchedMedicine = state.medicinesNames.where(
-      (medicineName) {
-        return medicineName.contains(state.scnnedMedicineName?? "") 
-            ? true
-            : false;
-      },
-    ).toList();
-
-    if (matchedMedicine.isNotEmpty) {
-      emit(
-        state.copyWith(
-          matchedMedicineNamesWithScannedText: matchedMedicine,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          message: "لم يتم العثور على الدواء",
-        ),
-      );
-    }
-  }
 
   Future<void> loadMedicinesDataEnteredForEditing(
     MedicineModel pastDataEntered,

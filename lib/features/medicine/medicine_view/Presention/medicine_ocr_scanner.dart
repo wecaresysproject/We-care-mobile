@@ -1,100 +1,15 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
-// import 'package:we_care/core/global/Helpers/extensions.dart';
-
-// class MedicineOCRScanner extends StatefulWidget {
-//   final Function(String) onMedicineDetected;
-
-//   const MedicineOCRScanner({super.key, required this.onMedicineDetected});
-
-//   @override
-//   MedicineOCRScannerState createState() => MedicineOCRScannerState();
-// }
-
-// class MedicineOCRScannerState extends State<MedicineOCRScanner> {
-//   String _extractedText = "";
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//         backgroundColor: Colors.black,
-//         appBar: AppBar(
-//           centerTitle: true,
-//           title: Text(
-//             "مسح علبة الدواء",
-//             style: TextStyle(
-//               color: Colors.white,
-//             ),
-//           ),
-//         ),
-//         body: Stack(
-//           children: [
-//             ScalableOCR(
-//               paintboxCustom: Paint()
-//                 ..style = PaintingStyle.stroke
-//                 ..strokeWidth = 4.0
-//                 ..color = Colors.green,
-//               boxHeight: 350,
-//               getScannedText: (text) {
-//                 setState(() {
-//                   _extractedText = text;
-//                 });
-//               },
-//             ),
-//             Positioned(
-//               bottom: 20,
-//               left: 0,
-//               right: 0,
-//               child: Center(
-//                 child: ElevatedButton(
-//                   onPressed: () {
-// if (_extractedText.isEmpty) {
-//   widget.onMedicineDetected(_extractedText);
-//   context.pop();
-// }
-//                   },
-//                   child: Text(
-//                     "تأكيد اسم الدواء",
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _processExtractedText(String fullText) {
-//     // معالجة النص لاستخراج اسم الدواء فقط
-//     // يمكنك إضافة منطقك الخاص هنا لتصفية النتائج
-//     final lines = fullText.split('\n');
-//     for (var line in lines) {
-//       if (line.trim().isNotEmpty) {
-//         widget.onMedicineDetected(line.trim());
-//         break;
-//       }
-//     }
-//   }
-// }
-
 import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_scalable_ocr/flutter_scalable_ocr.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state';
+
 
 class MedicineOCRScanner extends StatefulWidget {
   const MedicineOCRScanner({
@@ -186,8 +101,10 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
                   ElevatedButton(
                     onPressed: () async {
                       await context
-                          .read<MedicinesDataEntryCubit>()
-                          .onMedicineNameDetected(text);
+                          .read<MedicineScannerCubit>()
+                          .getMatchedMedicines(
+                            query: text,
+                          );
                     },
                     child: const Text(
                       "تأكيد اسم الدواء",
@@ -196,55 +113,123 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> {
                       ),
                     ),
                   ),
-                  BlocConsumer<MedicinesDataEntryCubit,
-                      MedicinesDataEntryState>(
-                    listener: (context, state) async {
-                      if (state.matchedMedicineNamesWithScannedText.isEmpty &&
-                          state.message.isNotEmpty) {
-                        await showError(state.message);
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state
-                          .matchedMedicineNamesWithScannedText.isNotEmpty) {
-                        return Container(
-                          height: 100,
-                          width: double.infinity,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state
-                                  .matchedMedicineNamesWithScannedText.length,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () async {
-                                    await CacheHelper.setData(
-                                        "medicineName",
-                                        state
-                                            .matchedMedicineNamesWithScannedText[
-                                                index]
-                                            .toString());
-                               
-                                     context.pop();
-                                    
-                                  },
-                                  child: Text(
-                                    state.matchedMedicineNamesWithScannedText[
-                                        index],
-                                    style: const TextStyle(
-                                      color: Colors.black,
+               BlocConsumer<MedicineScannerCubit, MedicineScannerState>(
+  listener: (context, state) async {
+    if (state.matchedMedicines.isEmpty && state.message.isNotEmpty) {
+      await showError(state.message);
+    }
+  },
+  builder: (context, state) {
+    if (state.matchedMedicines.isNotEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(12),
+              child: Text(
+                'Select Medicine',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            Divider(height: 1),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.3,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: state.matchedMedicines.length,
+                itemBuilder: (context, index) {
+                  final medicine = state.matchedMedicines[index];
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () async {
+                        await CacheHelper.setData(
+                          "medicineName",
+                          medicine.medicineName.toString(),
+                        );
+                        context.pop();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: index == state.matchedMedicines.length - 1
+                                ? BorderSide.none
+                                : BorderSide(
+                                    color: Colors.grey.shade200, width: 1),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.medication_outlined,
+                                color: Theme.of(context).primaryColor),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    medicine.medicineName.toString(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black87,
                                     ),
                                   ),
-                                );
-                              },
+                                  if (
+                                      medicine.medicineName.isNotEmpty)
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        medicine.medicineName.toString(),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.grey.shade600,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        return SizedBox.shrink();
-                      }
+                            Icon(Icons.chevron_right,
+                                color: Colors.grey.shade400),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return SizedBox.shrink();
+  
                     },
                   ),
                 ],
