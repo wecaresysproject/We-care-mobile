@@ -10,6 +10,7 @@ class VaccineViewState extends Equatable {
   final List<String> vaccineTypesFilter;
   final UserVaccineModel? selectedVaccine;
   final bool isDeleteRequest;
+  final bool isLoadingMore;
 
   const VaccineViewState({
     this.responseMessage = '',
@@ -19,6 +20,7 @@ class VaccineViewState extends Equatable {
     this.vaccineTypesFilter = const [],
     this.selectedVaccine,
     this.isDeleteRequest = false,
+    this.isLoadingMore = false,
   });
 
   factory VaccineViewState.initial() {
@@ -30,6 +32,7 @@ class VaccineViewState extends Equatable {
       vaccineTypesFilter: [],
       selectedVaccine: null,
       isDeleteRequest: false,
+      isLoadingMore: false,
     );
   }
 
@@ -41,6 +44,7 @@ class VaccineViewState extends Equatable {
     List<String>? vaccineTypesFilter,
     UserVaccineModel? selectedVaccine,
     bool? isDeleteRequest,
+    bool? isLoadingMore,
   }) {
     return VaccineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -50,6 +54,7 @@ class VaccineViewState extends Equatable {
       vaccineTypesFilter: vaccineTypesFilter ?? this.vaccineTypesFilter,
       selectedVaccine: selectedVaccine ?? this.selectedVaccine,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -62,5 +67,6 @@ class VaccineViewState extends Equatable {
         vaccineTypesFilter,
         selectedVaccine,
         isDeleteRequest,
+        isLoadingMore,
       ];
 }

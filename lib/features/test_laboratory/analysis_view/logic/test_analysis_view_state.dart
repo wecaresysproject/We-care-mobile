@@ -15,6 +15,7 @@ class TestAnalysisViewState extends Equatable {
   final bool isEditing;
   final String? editingId;
   final String? currentResult;
+  final bool isLoadingMore;
 
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
@@ -27,6 +28,7 @@ class TestAnalysisViewState extends Equatable {
     this.isEditing = false,
     this.editingId,
     this.currentResult,
+    this.isLoadingMore = false,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -41,6 +43,7 @@ class TestAnalysisViewState extends Equatable {
       isEditing: false,
       editingId: null,
       currentResult: null,
+      isLoadingMore: false,
     );
   }
 
@@ -54,6 +57,7 @@ class TestAnalysisViewState extends Equatable {
       GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
       bool? isEditing,
       String? editingId,
+      bool? isLoadingMore,
       String? currentResult}) {
     return TestAnalysisViewState(
         requestStatus: requestStatus ?? this.requestStatus,
@@ -68,6 +72,7 @@ class TestAnalysisViewState extends Equatable {
             getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
         isEditing: isEditing ?? this.isEditing,
         editingId: editingId ?? this.editingId,
+        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
         currentResult: currentResult ?? this.currentResult);
   }
 
@@ -82,6 +87,7 @@ class TestAnalysisViewState extends Equatable {
         getSimilarTestsResponseModel,
         isEditing,
         editingId,
-        currentResult
+        currentResult,
+        isLoadingMore,
       ];
 }

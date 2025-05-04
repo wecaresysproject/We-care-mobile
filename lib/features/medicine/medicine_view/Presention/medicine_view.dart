@@ -21,7 +21,7 @@ class MedicinesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<MedicineViewCubit>(
       create: (context) => getIt<MedicineViewCubit>()
-        ..getUserMedicinesList()
+        ..getUserMedicinesList(page: 1, pageSize: 10)
         ..getMedicinesFilters(),
       child: RefreshIndicator(
         onRefresh: () async {
@@ -71,7 +71,7 @@ class MedicinesView extends StatelessWidget {
                 verticalSpacing(16),
                 Expanded(flex: 9, child: MedicineTable()),
                 verticalSpacing(16),
-                XRayDataViewFooterRow(),
+                MedicineViewFooterRow(),
                 Spacer(
                   flex: 1,
                 ),
@@ -122,9 +122,9 @@ class MedicineTable extends StatelessWidget {
             headingRowColor: WidgetStateProperty.all(
                 AppColorsManager.mainDarkBlue), // Header Background Color
 
-            columnSpacing: 4.w,
+            columnSpacing: 3.2.w,
             dataRowHeight: 60.h,
-            horizontalMargin: 9,
+            horizontalMargin: 5.5.w,
             showBottomBorder: true,
             border: TableBorder.all(
               borderRadius: BorderRadius.circular(16.r),
@@ -164,29 +164,23 @@ class MedicineTable extends StatelessWidget {
                   )),
               DataColumn(
                   headingRowAlignment: MainAxisAlignment.center,
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Center(
-                        child: Text(
-                      "امراض مزمنة",
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.font14whiteWeight600.copyWith(fontSize: 12.sp),
-                    )),
-                  )),
+                  label: Center(
+                      child: Text(
+                    "امراض مزمنة",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.font14whiteWeight600.copyWith(fontSize: 13.sp),
+                  ))),
             ],
             rows: state.userMedicines.map((data) {
               return DataRow(cells: [
                 DataCell(
                   Center(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(data.startDate,
-                          maxLines: 1,
-                          textAlign: TextAlign.center,
-                            style: AppTextStyles.font14whiteWeight600.copyWith(
-                            color: AppColorsManager.mainDarkBlue,
-                            decoration: TextDecoration.underline),)
-                    ),
+                    child: Text(data.startDate,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                          style: AppTextStyles.font14whiteWeight600.copyWith(
+                          color: AppColorsManager.mainDarkBlue,
+                          decoration: TextDecoration.underline),),
                   ),
                    onTap: () async {
                    final sameDateMedicines= await context
@@ -227,12 +221,11 @@ class MedicineTable extends StatelessWidget {
                   }
                 }),
                 DataCell(Center(
-                  child: FittedBox(
-                    child: Text(data.timeDuration,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.font14whiteWeight600
-                            .copyWith(color: AppColorsManager.textColor)),
-                  ),
+                  child: Text(data.timeDuration,
+                      maxLines: 3,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.font14whiteWeight600
+                          .copyWith(color: AppColorsManager.textColor,fontSize: 13.sp)),
                 )),
                 DataCell(Center(
                   child: Text(
@@ -286,6 +279,113 @@ class CustomAppContainer extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class MedicineViewFooterRow extends StatelessWidget {
+  const MedicineViewFooterRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MedicineViewCubit, MedicineViewState>(
+      builder: (context, state) {
+        final cubit = context.read<MedicineViewCubit>();
+        return Column(
+          children: [
+            // Loading indicator that appears above the footer when loading more items
+            if (state.isLoadingMore)
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: LinearProgressIndicator(
+                  minHeight: 2.h,
+                  color: AppColorsManager.mainDarkBlue,
+                  backgroundColor: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                ),
+              ),
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Load More Button
+                ElevatedButton(
+                  onPressed: state.isLoadingMore || !cubit.hasMore
+                      ? null
+                      : () => cubit.loadMoreMedicines(),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(158.w, 32.h),
+                    backgroundColor: state.isLoadingMore || !cubit.hasMore
+                        ? Colors.grey
+                        : AppColorsManager.mainDarkBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: state.isLoadingMore
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 16.w,
+                              height: 16.h,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Text(
+                              "جاري التحميل...",
+                              style: AppTextStyles.font14whiteWeight600,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "عرض المزيد" ,
+                              style: AppTextStyles.font14whiteWeight600.copyWith(
+                                color: !cubit.hasMore ? Colors.black : Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Icon(
+                              Icons.expand_more,
+                              color:!cubit.hasMore ? Colors.black : Colors.white,
+                              size: 20.sp,
+                            ),
+                          ],
+                        ),
+                ),
+                
+                // Items Count Badge
+                Container(
+                  width: 47.w,
+                  height: 28.h,
+                  padding: EdgeInsets.symmetric(horizontal: 6.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(11.r),
+                    border: Border.all(
+                      color: Color(0xFF014C8A),
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "+${cubit.pageSize}",
+                      style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                        color: AppColorsManager.mainDarkBlue,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

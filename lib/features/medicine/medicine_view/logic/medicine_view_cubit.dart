@@ -15,6 +15,10 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   MedicineViewCubit(this._medicinesViewRepo)
       : super(MedicineViewState.initial());
   final MedicinesViewRepo _medicinesViewRepo;
+  int currentPage = 1;
+  final int pageSize = 10;
+  bool hasMore = true;
+  bool isLoadingMore = false;
 
   List<MedicineModel> getMedicinesByDate(String targetDate) {
     return state.userMedicines.where((medicine) {
@@ -39,22 +43,58 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     });
   }
 
-  Future<void> getUserMedicinesList() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
+  Future<void> getUserMedicinesList({int? page, int? pageSize}) async {
+    // If loading more, set the flag
+    if (page != null && page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
+      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      currentPage = 1;
+      hasMore = true;
+    }
+
     final result = await _medicinesViewRepo.getAllMedicines(
-        language: AppStrings.arabicLang, userType: 'Patient');
+      language: AppStrings.arabicLang, 
+      userType: 'Patient', 
+      page: page ?? currentPage, 
+      pageSize: pageSize ?? this.pageSize
+    );
+
     result.when(success: (response) {
+      final newMedicines = response.medicineList;
+      
+      // Update hasMore based on whether we got a full page of results
+      hasMore = newMedicines.length >= (pageSize ?? this.pageSize);
+      
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userMedicines: response.medicineList,
+        userMedicines: page == 1 || page == null 
+          ? newMedicines 
+          : [...state.userMedicines, ...newMedicines],
         responseMessage: response.message,
+        isLoadingMore: false,
       ));
+      
+      if (page == null || page == 1) {
+        currentPage = 1;
+      } else {
+        currentPage = page;
+      }
     }, failure: (error) {
       emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          responseMessage: error.errors.first));
+        requestStatus: RequestStatus.failure,
+        responseMessage: error.errors.first,
+        isLoadingMore: false,
+      ));
     });
   }
+
+  Future<void> loadMoreMedicines() async {
+    if (!hasMore || isLoadingMore) return;
+    
+    await getUserMedicinesList(page: currentPage + 1);
+  }
+
 
   Future<void> getMedicineDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));

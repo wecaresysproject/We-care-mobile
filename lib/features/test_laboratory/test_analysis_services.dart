@@ -28,6 +28,9 @@ abstract class TestAnalysisSerices {
   @GET(TestAnalysisApiConstants.getUserTests)
   Future<GetUserAnalysisReponseModel> getUserTests(
     @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('page') int page,
+    @Query('pageSize') int pageSize,
   );
 
   @GET(TestAnalysisApiConstants.getFilteredTestsByYear)

@@ -10,6 +10,7 @@ class MedicineViewState extends Equatable {
   final List<int> yearsFilter;
   final List<String> medicineNameFilter;
   final bool isDeleteRequest;
+  final bool isLoadingMore;
 
   const MedicineViewState({
     this.responseMessage = '',
@@ -19,6 +20,7 @@ class MedicineViewState extends Equatable {
     this.userMedicines = const [],
     this.selectestMedicineDetails,
     this.isDeleteRequest = false,
+    this.isLoadingMore = false,
   });
 
   factory MedicineViewState.initial() {
@@ -30,6 +32,7 @@ class MedicineViewState extends Equatable {
       userMedicines: const [],
       selectestMedicineDetails: null,
       isDeleteRequest: false,
+      isLoadingMore: false,
     );
   }
 
@@ -41,6 +44,7 @@ class MedicineViewState extends Equatable {
     List<MedicineModel>? userMedicines,
     MedicineModel? selectedSurgeryDetails,
     bool? isDeleteRequest,
+    bool? isLoadingMore,
   }) {
     return MedicineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -50,6 +54,7 @@ class MedicineViewState extends Equatable {
       userMedicines: userMedicines ?? this.userMedicines,
       selectestMedicineDetails: selectedSurgeryDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -62,5 +67,6 @@ class MedicineViewState extends Equatable {
         userMedicines,
         selectestMedicineDetails,
         isDeleteRequest,
+        isLoadingMore
       ];
 }

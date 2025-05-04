@@ -41,7 +41,9 @@ abstract class PrescriptionServices {
 
   @GET(PrescriptionApiConstants.getUserPrescriptionList)
   Future<GetUserPrescriptionsResponseModel> getUserPrescriptionList(
-      @Query("language") String language);
+      @Query("language") String language,
+      @Query("UserType") String userType,
+      {@Query("page") int? page, @Query("pageSize") int? pageSize});
 
   @GET(PrescriptionApiConstants.getUserPrescriptionDetailsById)
   Future<dynamic> getUserPrescriptionDetailsById(

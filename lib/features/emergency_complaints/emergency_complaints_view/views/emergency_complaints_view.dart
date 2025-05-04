@@ -35,7 +35,7 @@ class EmergencyComplaintsView extends StatelessWidget {
               verticalSpacing(16),
               EmergencyComplaintsViewListBuilder(),
               verticalSpacing(16),
-              XRayDataViewFooterRow(),
+              EmergencyComplaintsFooterRow(),
             ],
           ),
         ),
@@ -75,8 +75,7 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
         return MedicalItemGridView(
           items: state.emergencyComplaints,
           onTap: (id) async {
-            
-                await Navigator.push(context, MaterialPageRoute(builder: (_) {
+            await Navigator.push(context, MaterialPageRoute(builder: (_) {
               return EmergencyComplaintsDetailsView(
                 documentId: id,
               );
@@ -197,33 +196,118 @@ class XRayDataViewFooterRow extends StatelessWidget {
   }
 }
 
-final List<EmergencyComplaint> complaints = [
-  EmergencyComplaint(
-      id: "1", complaintArea: "الرأس", date: "25/1/2025", symptom: "صداع نصفي"),
-  EmergencyComplaint(
-      id: "2",
-      complaintArea: "الرأس",
-      date: "25/1/2025",
-      symptom: "صعوبة في التنفس"),
-  EmergencyComplaint(
-      id: "3", complaintArea: "الرأس", date: "25/1/2025", symptom: "تنميل"),
-  EmergencyComplaint(
-      id: "4",
-      complaintArea: "الظهر",
-      date: "25/1/2025",
-      symptom: "انخفاض درجة الحرارة"),
-];
+class EmergencyComplaintsFooterRow extends StatelessWidget {
+  const EmergencyComplaintsFooterRow({super.key});
 
-class EmergencyComplaint {
-  final String id;
-  final String complaintArea;
-  final String date;
-  final String symptom;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EmergencyComplaintsViewCubit,
+        EmergencyComplaintViewState>(
+      builder: (context, state) {
+        final cubit = context.read<EmergencyComplaintsViewCubit>();
+        return Column(
+          children: [
+            // Loading indicator that appears above the footer when loading more items
+            if (state.isLoadingMore)
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: LinearProgressIndicator(
+                  minHeight: 2.h,
+                  color: AppColorsManager.mainDarkBlue,
+                  backgroundColor:
+                      AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                ),
+              ),
 
-  EmergencyComplaint({
-    required this.id,
-    required this.complaintArea,
-    required this.date,
-    required this.symptom,
-  });
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Load More Button
+                ElevatedButton(
+                  onPressed: state.isLoadingMore || !cubit.hasMore
+                      ? null
+                      : () => cubit.loadMoreMedicines(),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(158.w, 32.h),
+                    backgroundColor: state.isLoadingMore || !cubit.hasMore
+                        ? Colors.grey
+                        : AppColorsManager.mainDarkBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: state.isLoadingMore
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 16.w,
+                              height: 16.h,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Text(
+                              "جاري التحميل...",
+                              style: AppTextStyles.font14whiteWeight600,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "عرض المزيد",
+                              style:
+                                  AppTextStyles.font14whiteWeight600.copyWith(
+                                color: !cubit.hasMore
+                                    ? Colors.black
+                                    : Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Icon(
+                              Icons.expand_more,
+                              color:
+                                  !cubit.hasMore ? Colors.black : Colors.white,
+                              size: 20.sp,
+                            ),
+                          ],
+                        ),
+                ),
+
+                // Items Count Badge
+                !cubit.hasMore
+                    ? SizedBox.shrink()
+                    : Container(
+                        width: 47.w,
+                        height: 28.h,
+                        padding: EdgeInsets.symmetric(horizontal: 6.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(11.r),
+                          border: Border.all(
+                            color: Color(0xFF014C8A),
+                            width: 2,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "+${cubit.pageSize}",
+                            style:
+                                AppTextStyles.font16DarkGreyWeight400.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

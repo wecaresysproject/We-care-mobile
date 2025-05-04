@@ -54,6 +54,9 @@ abstract class SurgeriesService {
   @GET(SurgeriesApiConstants.getAllSurgeries)
   Future<GetUserSurgeriesResponseModal> getSurgeries(
     @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("page") int page,
+    @Query("pageSize") int pageSize,
   );
   @GET(SurgeriesApiConstants.surgeryPurpose)
   Future<dynamic> getSurgeryPurpose(

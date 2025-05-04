@@ -14,11 +14,15 @@ class MedicinesViewRepo {
   Future<ApiResult<GetAllUserMedicinesResponseModel>> getAllMedicines({
     required String language,
     required String userType,
+    int page = 1,
+    int pageSize = 10,
   }) async {
     try {
       final response = await _medicinesServices.getAllUserMedicines(
         language,
         userType,
+        page,
+        pageSize,
       );
       return ApiResult.success(response);
     } catch (error) {
