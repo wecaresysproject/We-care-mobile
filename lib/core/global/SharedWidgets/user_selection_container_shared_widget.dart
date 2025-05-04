@@ -177,7 +177,7 @@ void showSelectionBottomSheet({
                 TextEditingController();
 
             searchController.addListener(() {
-              final query = searchController.text.toLowerCase();
+              final query = normalizeArabic(searchController.text);
               setState(() {
                 filteredOptions = options
                     .where((item) => item.toLowerCase().contains(query))

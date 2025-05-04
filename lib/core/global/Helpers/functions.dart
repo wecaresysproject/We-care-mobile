@@ -41,3 +41,13 @@ Future<String?> downloadImage(
     return null;
   }
 }
+
+/// Function to normalize Arabic text used in search feature
+String normalizeArabic(String input) {
+  return input
+      .replaceAll(RegExp(r'[أإآا]'), 'ا') // كل الألفات → ا
+      .replaceAll('ة', 'ه') // التاء المربوطة → ه
+      .replaceAll('ى', 'ي') // الألف المقصورة → ي
+      .toLowerCase()
+      .trim();
+}
