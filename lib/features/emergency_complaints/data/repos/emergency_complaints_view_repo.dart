@@ -12,10 +12,13 @@ class EmergencyComplaintsViewRepo {
 
   Future<ApiResult<List<DetailedComplaintModel>>> getAllEmergencyComplaints({
     required String language,
+    int? page ,
+    int? pageSize,
   }) async {
     try {
       final response = await _emergencyComplaintsServices
-          .getAllEmergencyComplaints(language);
+          .getAllEmergencyComplaints(language,
+              'Patient', page ?? 1, pageSize ?? 10);
       return ApiResult.success(
         (response["complaints"] as List)
             .map<DetailedComplaintModel>(

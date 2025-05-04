@@ -37,7 +37,7 @@ class PrescriptionView extends StatelessWidget {
               verticalSpacing(16),
               PrescriptionViewListBuilder(),
               verticalSpacing(16),
-              XRayDataViewFooterRow(),
+              PrescriptionViewFooterRow(),
             ],
           ),
         ),
@@ -138,105 +138,118 @@ class PrescriptionsViewFilersRow extends StatelessWidget {
     );
   }
 }
-
-class XRayDataViewFooterRow extends StatelessWidget {
-  const XRayDataViewFooterRow({super.key});
+class PrescriptionViewFooterRow extends StatelessWidget {
+  const PrescriptionViewFooterRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            fixedSize: const Size(158, 32),
-            backgroundColor: AppColorsManager.mainDarkBlue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.r),
+    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+      builder: (context, state) {
+        final cubit = context.read<PrescriptionViewCubit>();
+        return Column(
+          children: [
+            // Loading indicator that appears above the footer when loading more items
+            if (state.isLoadingMore)
+              Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: LinearProgressIndicator(
+                  minHeight: 2.h,
+                  color: AppColorsManager.mainDarkBlue,
+                  backgroundColor:
+                      AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                ),
+              ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Load More Button
+                ElevatedButton(
+                  onPressed: state.isLoadingMore || !cubit.hasMore
+                      ? null
+                      : () => cubit.loadMoreMedicines(),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size(158.w, 32.h),
+                    backgroundColor: state.isLoadingMore || !cubit.hasMore
+                        ? Colors.grey
+                        : AppColorsManager.mainDarkBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: state.isLoadingMore
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 16.w,
+                              height: 16.h,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Text(
+                              "جاري التحميل...",
+                              style: AppTextStyles.font14whiteWeight600,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "عرض المزيد",
+                              style:
+                                  AppTextStyles.font14whiteWeight600.copyWith(
+                                color: !cubit.hasMore
+                                    ? Colors.black
+                                    : Colors.white,
+                              ),
+                            ),
+                            horizontalSpacing(8.w),
+                            Icon(
+                              Icons.expand_more,
+                              color:
+                                  !cubit.hasMore ? Colors.black : Colors.white,
+                              size: 20.sp,
+                            ),
+                          ],
+                        ),
+                ),
+
+                // Items Count Badge
+                !cubit.hasMore
+                    ? SizedBox.shrink()
+                    : Container(
+                        width: 47.w,
+                        height: 28.h,
+                        padding: EdgeInsets.symmetric(horizontal: 6.w),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(11.r),
+                          border: Border.all(
+                            color: Color(0xFF014C8A),
+                            width: 2,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "+${cubit.pageSize}",
+                            style:
+                                AppTextStyles.font16DarkGreyWeight400.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+              ],
             ),
-            padding: EdgeInsets.zero, // No default padding
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "عرض المزيد",
-                style: AppTextStyles.font14whiteWeight600,
-              ),
-              horizontalSpacing(8),
-              Icon(
-                Icons.expand_more,
-                color: Colors.white,
-                weight: 100,
-                size: 24.sp,
-              ),
-            ],
-          ),
-        ),
-        Container(
-          width: 47.w,
-          height: 28.h,
-          padding: const EdgeInsets.symmetric(horizontal: 6),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(11.r),
-            border: Border.all(color: Color(0xFF014C8A), width: 2),
-          ),
-          child: Center(
-            child: Text(
-              "+10",
-              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-              ),
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
 
-List<PrescriptionData> prescriptionMockData = [
-  PrescriptionData(
-    id: '1',
-    title: "د/ مصطفى محمود",
-    specialty: "أنف وأذن وحنجرة",
-    date: "25/1/2025",
-    condition: "التهاب جيوب أنفية",
-  ),
-  PrescriptionData(
-    id: '2',
-    title: "د/ أحمد علي",
-    specialty: "باطنة",
-    date: "10/2/2025",
-    condition: "ارتفاع ضغط الدم",
-  ),
-  PrescriptionData(
-    id: '3',
-    title: "د/ سارة حسن",
-    specialty: "جلدية",
-    date: "5/3/2025",
-    condition: "أكزيما حادة",
-  ),
-  PrescriptionData(
-    id: '4',
-    title: "د/ رشا محمود",
-    specialty: "قلب وأوعية دموية",
-    date: "15/4/2025",
-    condition: "صداع مزمن",
-  ),
-  PrescriptionData(
-    id: '5',
-    title: "د/ محمد خالد",
-    specialty: "قلب وأوعية دموية",
-    date: "20/5/2025",
-    condition: "صداع مزمن",
-  ),
-  PrescriptionData(
-    id: '6',
-    title: "د/ مصطفى حسن",
-    specialty: "قلب وأوعية دموية",
-    date: "25/6/2025",
-    condition: "صداع مزمن",
-  ),
-];

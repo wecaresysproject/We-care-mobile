@@ -8,6 +8,60 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
   EmergencyComplaintsViewCubit(this._emergencyComplaintsViewRepo)
       : super(EmergencyComplaintViewState.initial());
   final EmergencyComplaintsViewRepo _emergencyComplaintsViewRepo;
+      int currentPage = 1;
+  final int pageSize = 10;
+  bool hasMore = true;
+  bool isLoadingMore = false;
+
+    Future<void> getUserEmergencyComplaintsList({int? page, int? pageSize}) async {
+    // If loading more, set the flag
+    if (page != null && page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
+      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      currentPage = 1;
+      hasMore = true;
+    }
+
+    final result = await _emergencyComplaintsViewRepo.getAllEmergencyComplaints(
+      language: AppStrings.arabicLang,
+      page: page ?? currentPage, 
+      pageSize: pageSize ?? this.pageSize
+    );
+
+    result.when(success: (response) {
+      final newEmergencyComplaints = response;
+      
+      // Update hasMore based on whether we got a full page of results
+      hasMore = newEmergencyComplaints.length >= (pageSize ?? this.pageSize);
+      
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        emergencyComplaints: page == 1 || page == null 
+          ? newEmergencyComplaints 
+          : [...state.emergencyComplaints, ...newEmergencyComplaints],
+        isLoadingMore: false,
+      ));
+      
+      if (page == null || page == 1) {
+        currentPage = 1;
+      } else {
+        currentPage = page;
+      }
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        isLoadingMore: false,
+      ));
+    });
+  }
+
+  Future<void> loadMoreMedicines() async {
+    if (!hasMore || isLoadingMore) return;
+    
+    await getUserEmergencyComplaintsList(page: currentPage + 1);
+  }
+
 
   Future<void> getYearFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -45,23 +99,6 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
     await getPlaceOfComplaintFilter();
   }
 
-  Future<void> getUserEmergencyComplaintsList() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _emergencyComplaintsViewRepo.getAllEmergencyComplaints(
-      language: AppStrings.arabicLang,
-    );
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        emergencyComplaints: response,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          responseMessage: error.errors.first));
-    });
-  }
 
   Future<void> getEmergencyComplaintDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));

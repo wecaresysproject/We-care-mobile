@@ -27,7 +27,8 @@ abstract class VaccineApiServices {
 
   @GET(VaccineApiConstants.getUserVaccines)
   Future<GetUserVaccinesResponseModel> getUserVaccines(
-      @Query('language') String language, @Query('userType') String userType);
+      @Query('language') String language, @Query('userType') String userType,
+      {@Query('page') int? page, @Query('pageSize') int? pageSize});
 
   @GET(VaccineApiConstants.getVaccinesFilters)
   Future<dynamic> getVaccinesFilters(

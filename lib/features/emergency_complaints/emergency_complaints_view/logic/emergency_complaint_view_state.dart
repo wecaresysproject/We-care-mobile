@@ -10,6 +10,7 @@ class EmergencyComplaintViewState extends Equatable {
   final List<String> yearsFilter;
   final List<String> bodyPartFilter;
   final bool isDeleteRequest;
+  final bool isLoadingMore;
 
   const EmergencyComplaintViewState({
     this.responseMessage = '',
@@ -19,6 +20,7 @@ class EmergencyComplaintViewState extends Equatable {
     this.emergencyComplaints = const [],
     this.selectedEmergencyComplaint,
     this.isDeleteRequest = false,
+    this.isLoadingMore = false,
   });
 
   factory EmergencyComplaintViewState.initial() {
@@ -30,6 +32,7 @@ class EmergencyComplaintViewState extends Equatable {
       emergencyComplaints: const [],
       selectedEmergencyComplaint: null,
       isDeleteRequest: false,
+      isLoadingMore: false,
     );
   }
 
@@ -41,6 +44,7 @@ class EmergencyComplaintViewState extends Equatable {
     List<DetailedComplaintModel>? emergencyComplaints,
     DetailedComplaintModel? selectedEmergencyComplaint,
     bool? isDeleteRequest,
+    bool? isLoadingMore,
   }) {
     return EmergencyComplaintViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -51,6 +55,7 @@ class EmergencyComplaintViewState extends Equatable {
       selectedEmergencyComplaint:
           selectedEmergencyComplaint ?? this.selectedEmergencyComplaint,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -63,5 +68,6 @@ class EmergencyComplaintViewState extends Equatable {
         emergencyComplaints,
         selectedEmergencyComplaint,
         isDeleteRequest,
+        isLoadingMore,
       ];
 }

@@ -13,6 +13,9 @@ abstract class EmergencyComplaintsServices {
   @GET(EmergencyComplaintsApiConstants.getAllEmergencyComplaints)
   Future<dynamic> getAllEmergencyComplaints(
     @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('page') int page,
+    @Query('pageSize') int pageSize,
   );
 
   @GET(EmergencyComplaintsApiConstants.getYearsFiter)

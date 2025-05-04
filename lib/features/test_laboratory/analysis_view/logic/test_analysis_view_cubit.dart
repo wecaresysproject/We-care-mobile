@@ -10,6 +10,60 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       : super(TestAnalysisViewState.initial());
   final TestAnalysisViewRepo testAnalysisViewRepo;
   final resultEditingController = TextEditingController();
+    int currentPage = 1;
+  final int pageSize = 10;
+  bool hasMore = true;
+  bool isLoadingMore = false;
+
+    Future<void> emitTests({int? page, int? pageSize}) async {
+    // If loading more, set the flag
+    if (page != null && page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
+      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      currentPage = 1;
+      hasMore = true;
+    }
+
+    final result = await testAnalysisViewRepo.getTests(
+      page: page ?? currentPage, 
+      pageSize: pageSize ?? this.pageSize
+    );
+
+    result.when(success: (response) {
+      final newTestAnalysisTests = response.data;
+      
+      // Update hasMore based on whether we got a full page of results
+      hasMore = newTestAnalysisTests.length >= (pageSize ?? this.pageSize);
+      
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        analysisSummarizedDataList: page == 1 || page == null 
+          ? newTestAnalysisTests 
+          : [...state.analysisSummarizedDataList, ...newTestAnalysisTests],
+        message: response.message,
+        isLoadingMore: false,
+      ));
+      
+      if (page == null || page == 1) {
+        currentPage = 1;
+      } else {
+        currentPage = page;
+      }
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        message: error.errors.first,
+        isLoadingMore: false,
+      ));
+    });
+  }
+
+  Future<void> loadMoreMedicines() async {
+    if (!hasMore || isLoadingMore) return;
+    
+    await emitTests(page: currentPage + 1);
+  }
 
   Future<void> emitFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -20,23 +74,6 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
         yearsFilter: response,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.failure,
-      ));
-    });
-  }
-
-  Future<void> emitTests() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-
-    final response = await testAnalysisViewRepo.getTests();
-
-    response.when(success: (response) async {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        analysisSummarizedDataList: response.data,
       ));
     }, failure: (error) {
       emit(state.copyWith(

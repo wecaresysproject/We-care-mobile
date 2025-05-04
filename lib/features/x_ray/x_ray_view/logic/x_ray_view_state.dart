@@ -11,6 +11,7 @@ class XRayViewState extends Equatable {
   final List<String> xrayTypeFilter;
   final List<String> bodyPartFilter;
   final bool isDeleteRequest;
+  final bool isLoadingMore;
 
   const XRayViewState({
     this.responseMessage = '',
@@ -21,6 +22,7 @@ class XRayViewState extends Equatable {
     this.xrayTypeFilter = const ['الكل'],
     this.bodyPartFilter = const ['الكل'],
     this.isDeleteRequest = false,
+    this.isLoadingMore = false,
   });
 
   factory XRayViewState.initial() {
@@ -33,6 +35,7 @@ class XRayViewState extends Equatable {
       xrayTypeFilter: const ['الكل'],
       bodyPartFilter: const ['الكل'],
       isDeleteRequest: false,
+      isLoadingMore: false,
     );
   }
 
@@ -45,6 +48,7 @@ class XRayViewState extends Equatable {
     List<String>? xrayTypeFilter,
     List<String>? bodyPartFilter,
     bool? isDeleteRequest,
+    bool? isLoadingMore,
   }) {
     return XRayViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -56,6 +60,7 @@ class XRayViewState extends Equatable {
       xrayTypeFilter: xrayTypeFilter ?? this.xrayTypeFilter,
       bodyPartFilter: bodyPartFilter ?? this.bodyPartFilter,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -69,5 +74,6 @@ class XRayViewState extends Equatable {
         xrayTypeFilter,
         bodyPartFilter,
         isDeleteRequest,
+        isLoadingMore,
       ];
 }

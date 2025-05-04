@@ -14,6 +14,8 @@ abstract class MedicinesServices {
   Future<GetAllUserMedicinesResponseModel> getAllUserMedicines(
     @Query('language') String language,
     @Query('userType') String userType,
+    @Query('page') int page,
+    @Query('pageSize') int pageSize,
   );
 
   @GET(MedicinesApiConstants.getSingleMedicine)
