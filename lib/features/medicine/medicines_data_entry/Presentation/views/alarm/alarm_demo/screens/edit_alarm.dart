@@ -114,7 +114,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   AlarmSettings buildAlarmSettingsForTime(DateTime dateTime) {
     final id = DateTime.now().millisecondsSinceEpoch % 100000 +
         dateTime.millisecondsSinceEpoch % 10000;
-    // alarmsPerMedicine[widget.medicineName!].add(id);
+
     medicineAlarmIds.add(id);
 
     final VolumeSettings volumeSettings;
@@ -150,6 +150,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
         title: 'Alarm for your medication',
         body: 'It\'s time to take your medicine',
         icon: 'notification_icon',
+        stopButton: 'Stop the alarm',
       ),
     );
   }
@@ -301,10 +302,6 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
                   style: AppTextStyles.font22MainBlueWeight700.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
-                  // style: Theme.of(context)
-                  //     .textTheme
-                  //     .titleLarge!
-                  //     .copyWith(color: Colors.blueAccent),
                 ),
               ),
               TextButton(

@@ -26,7 +26,7 @@ Future<void> main() async {
   Hive.registerAdapter(MedicalComplaintAdapter());
   await Hive.openBox<MedicalComplaint>("medical_complaints");
   Hive.registerAdapter(MedicineAlarmModelAdapter());
-  await Hive.openBox<MedicineAlarmModel>(
+  await Hive.openBox<List<MedicineAlarmModel>>(
     MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey,
   );
 
