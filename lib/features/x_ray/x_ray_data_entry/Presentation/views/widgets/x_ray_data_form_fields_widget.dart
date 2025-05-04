@@ -72,6 +72,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     .updateXRayBodyPart(selectedbodyPartName);
               },
               bottomSheetTitle: 'اختر العضو الخاص بالأشعة',
+              searchHintText: "ابحث عن العضو الخاص بالأشعة",
             ),
 
             verticalSpacing(16),
@@ -87,6 +88,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                 context.read<XRayDataEntryCubit>().updateXRayType(value);
               },
               bottomSheetTitle: 'اختر نوع الأشعة',
+              searchHintText: "ابحث عن نوع الأشعة",
             ),
 
             verticalSpacing(16),
@@ -104,6 +106,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     .updateXRaySelectedPupose(selectedPupose);
               },
               bottomSheetTitle: "اختر نوعية احتياجك للأشعة",
+              searchHintText: "ابحث عن نوعية احتياجك للأشعة",
             ),
 
             verticalSpacing(16),
@@ -227,6 +230,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                 log("xxx:Selected: $value");
               },
               containerHintText: "اختر الأعراض المستدعية",
+              searchHintText: "ابحث عن الأعراض المستدعية",
             ),
 
             verticalSpacing(16),
@@ -247,6 +251,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر اسم طبيب الأشعة',
+              searchHintText: "ابحث عن اسم طبيب الأشعة",
             ),
 
             verticalSpacing(16),
@@ -266,6 +271,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر اسم المستشفى/المركز',
+              searchHintText: "ابحث عن اسم المستشفى/المركز",
             ),
 
             verticalSpacing(16),
@@ -284,6 +290,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
               bottomSheetTitle: "اختر اسم الطبيب المعالج ",
               onOptionSelected: (value) {},
               containerHintText: "اختر اسم الطبيب المعالج (جراح/باطنة)",
+              searchHintText: "ابحث عن اسم الطبيب المعالج",
             ),
 
             verticalSpacing(16),
@@ -299,6 +306,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
                     .updateSelectedCountry(selectedCountry);
               },
               containerHintText: "اختر اسم الدولة",
+              searchHintText: "ابحث عن اسم الدولة",
             ),
 
             verticalSpacing(16),

@@ -179,6 +179,7 @@ class _TestAnalysisDataEntryFormFieldsState
               },
               containerHintText:
                   state.selectedNoOftimesTestPerformed ?? "اختر دورية التحليل",
+              searchHintText: "ابحث عن دورية التحليل",
             ),
 
             verticalSpacing(16),
@@ -201,6 +202,7 @@ class _TestAnalysisDataEntryFormFieldsState
               },
               containerHintText: state.selectedSymptomsForProcedure ??
                   "اختر الأعراض المستدعية",
+              searchHintText: "ابحث عن الأعراض المستدعية",
             ),
 
             verticalSpacing(16),
@@ -220,6 +222,7 @@ class _TestAnalysisDataEntryFormFieldsState
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر اسم المستشفى/المركز',
+              searchHintText: "ابحث عن اسم المستشفى/المركز",
             ),
 
             verticalSpacing(16),
@@ -239,6 +242,7 @@ class _TestAnalysisDataEntryFormFieldsState
               },
               containerHintText:
                   state.selectedDoctorName ?? "اختر اسم الطبيب المعالج ",
+              searchHintText: "ابحث عن اسم الطبيب المعالج ",
             ),
 
             verticalSpacing(16),
@@ -254,6 +258,7 @@ class _TestAnalysisDataEntryFormFieldsState
                     .updateSelectedCountry(selectedCountry);
               },
               containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
+              searchHintText: "ابحث عن اسم الدولة",
             ),
 
             ///TODO: handle this button in main view and remove it from here
@@ -345,6 +350,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                           },
                           iconColor: AppColorsManager.disAbledIconColor,
                           bottomSheetTitle: 'اختر اسم التحليل',
+                          searchHintText: "ابحث عن اسم التحليل",
                         )
                       : UserSelectionContainer(
                           isDisabled: false,
@@ -363,6 +369,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                           },
                           iconColor: AppColorsManager.mainDarkBlue,
                           bottomSheetTitle: 'اختر اسم التحليل',
+                          searchHintText: "ابحث عن اسم التحليل",
                         ),
                 ),
                 horizontalSpacing(16),
@@ -384,6 +391,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                             log("xxx:Selected: $value");
                           },
                           bottomSheetTitle: 'اختر اسم المجموعة',
+                          searchHintText: "ابحث عن اسم المجموعة",
                         )
                       : UserSelectionContainer(
                           containerBorderColor: state
@@ -399,6 +407,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                                 .updateGroupNameSelection(value);
                           },
                           bottomSheetTitle: 'اختر اسم المجموعة',
+                          searchHintText: "ابحث عن اسم المجموعة",
                         ),
                 ),
                 horizontalSpacing(16),
@@ -420,6 +429,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                             log("xxx:Selected: $value");
                           },
                           bottomSheetTitle: 'اختر الرمز',
+                          searchHintText: "ابحث عن الرمز",
                         )
                       : UserSelectionContainer(
                           containerBorderColor: state
@@ -436,6 +446,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                             log("xxx:Selected: $value");
                           },
                           bottomSheetTitle: 'اختر الرمز',
+                          searchHintText: "ابحث عن الرمز",
                         ),
                 ),
               ],

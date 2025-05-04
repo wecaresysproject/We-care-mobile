@@ -70,6 +70,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                                 .updateSymptomsDiseaseRegion(value);
                           },
                           bottomSheetTitle: "اختر الأعراض المستدعية",
+                          searchHintText: "ابحث عن منطقة الاعراض المرضية",
                         ),
 
                         verticalSpacing(16),
@@ -91,6 +92,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                                 .updateMedicalSymptomsIssue(value);
                           },
                           bottomSheetTitle: "اختر الأعراض المستدعية",
+                          searchHintText: "ابحث عن شكوى",
                         ),
 
                         verticalSpacing(16),
@@ -116,7 +118,9 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           },
                           containerHintText: state.natureOfComplaint ??
                               "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
+
                           usertEntryLabelText: "اضف الوصف من عندك",
+                          searchHintText: "ابحث عن طبيعة الشكوى",
                         ),
                         verticalSpacing(16),
                         // Title

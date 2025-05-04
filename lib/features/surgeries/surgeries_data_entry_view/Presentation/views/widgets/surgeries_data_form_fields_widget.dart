@@ -80,6 +80,7 @@ class _SuergeriesDataEntryFormFieldsState
               },
               bottomSheetTitle: state.surgeryBodyPartSelection ??
                   'اختر المنطقة الخاصة بالعمليه',
+              searchHintText: "ابحث عن المنطقة",
             ),
 
             verticalSpacing(16),
@@ -99,6 +100,7 @@ class _SuergeriesDataEntryFormFieldsState
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: 'اختر المنطقة التى تمت بها العملية',
+              searchHintText: "ابحث عن المنطقة",
             ),
 
             verticalSpacing(16),
@@ -118,6 +120,7 @@ class _SuergeriesDataEntryFormFieldsState
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر اسم العملية",
+              searchHintText: "ابحث عن اسم العملية",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -135,6 +138,7 @@ class _SuergeriesDataEntryFormFieldsState
                 log("xxx:Selected: $value");
               },
               bottomSheetTitle: "اختر التقنية المستخدمة",
+              searchHintText: "ابحث عن التقنية المستخدمة",
             ),
             verticalSpacing(16),
             Text(
@@ -224,6 +228,7 @@ class _SuergeriesDataEntryFormFieldsState
               },
               containerHintText:
                   state.selectedSurgeryStatus ?? "اختر حالة العملية",
+              searchHintText: "ابحث عن حالة العملية",
             ),
 
             verticalSpacing(16),
@@ -242,6 +247,7 @@ class _SuergeriesDataEntryFormFieldsState
                     .updateSelectedHospitalCenter(value);
               },
               bottomSheetTitle: 'اختر اسم المستشفى/المركز',
+              searchHintText: "ابحث عن المستشفى/المركز",
             ),
 
             verticalSpacing(16),
@@ -259,6 +265,7 @@ class _SuergeriesDataEntryFormFieldsState
                     .updateSelectedSurgeonName(value);
               },
               bottomSheetTitle: "اختر اسم الطبيب الجراح",
+              searchHintText: "ابحث عن اسم الطبيب الجراح",
             ),
 
             verticalSpacing(16),
@@ -276,6 +283,7 @@ class _SuergeriesDataEntryFormFieldsState
                     .updateSelectedInternist(value);
               },
               containerHintText: state.internistName ?? "اختر اسم طبيب الباطنة",
+              searchHintText: "ابحث عن اسم طبيب الباطنة",
             ),
 
             verticalSpacing(16),
@@ -303,6 +311,7 @@ class _SuergeriesDataEntryFormFieldsState
                     .updateSelectedCountry(value);
               },
               containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
+              searchHintText: "ابحث عن اسم الدولة",
             ),
 
             verticalSpacing(16),

@@ -103,6 +103,7 @@ class FirstQuestionDetails extends StatelessWidget {
                         .read<EmergencyComplaintsDataEntryCubit>()
                         .updateIfHasSameComplaintBeforeDate(value);
                   },
+                  searchHintText: "ابحث عن تاريخ الشكوى",
                   containerHintText:
                       state.previousComplaintDate ?? "اختر تاريخ الشكوى",
                 )

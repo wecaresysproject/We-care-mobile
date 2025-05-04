@@ -77,6 +77,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedMedicineName(value);
               },
               bottomSheetTitle: "اختر اسم الدواء",
+              searchHintText: "ابحث عن اسم الدواء",
             ),
             verticalSpacing(16),
 
@@ -98,6 +99,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedMedicalForm(value);
               },
               bottomSheetTitle: "اختر طريقة الاستخدام",
+              searchHintText: "ابحث عن طريقة الاستخدام",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -114,6 +116,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedDose(value);
               },
               bottomSheetTitle: "اختر كمية الجرعة",
+              searchHintText: "ابحث عن كمية الجرعة",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -130,6 +133,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .read<MedicinesDataEntryCubit>()
                     .updateSelectedDoseFrequency(value);
               },
+              searchHintText: "ابحث عن عدد مرات التناول ",
               bottomSheetTitle: "اختر عدد مرات التناول ",
             ),
             verticalSpacing(16),
@@ -148,6 +152,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedDoseDuration(value);
               },
               bottomSheetTitle: "اختر مدة استخدام الدواء",
+              searchHintText: "ابحث عن مدة استخدام الدواء",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -165,6 +170,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedTimePeriod(value);
               },
               bottomSheetTitle: "اختر المدة الزمنية لمدة الاستخدام",
+              searchHintText: "ابحث عن المدة الزمنية لمدة الاستخدام",
             ),
             verticalSpacing(16),
 
@@ -185,6 +191,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedChronicDisease(value);
               },
               bottomSheetTitle: "اختر اسم دواء مرض مزمن",
+              searchHintText: "ابحث عن اسم دواء مرض مزمن",
             ),
 
             verticalSpacing(16),
@@ -206,6 +213,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
                     .updateSelectedDoctorName(value);
               },
               containerHintText: state.selectedDoctorName ?? "اختر اسم الطبيب",
+              searchHintText: "ابحث عن اسم الطبيب",
             ),
             verticalSpacing(16),
             Text(
