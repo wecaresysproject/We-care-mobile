@@ -79,6 +79,7 @@ class SecondQuestionDetails extends StatelessWidget {
                   },
                   containerHintText:
                       state.selectedMedicineName ?? "اكتب اسم الدواء",
+                  searchHintText: "ابحث عن اسم الدواء",
                 ),
                 verticalSpacing(24),
                 Text(

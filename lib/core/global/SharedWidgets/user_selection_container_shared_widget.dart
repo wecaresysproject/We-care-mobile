@@ -20,6 +20,7 @@ class UserSelectionContainer extends StatefulWidget {
     this.iconColor = AppColorsManager.mainDarkBlue,
     this.usertEntryLabelText,
     this.isEditMode = false,
+    required this.searchHintText,
   });
 
   final List<String> options;
@@ -33,6 +34,7 @@ class UserSelectionContainer extends StatefulWidget {
   final Color? iconColor;
   final String? usertEntryLabelText;
   final bool isEditMode;
+  final String searchHintText;
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -55,6 +57,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
           onTap: () {
             !widget.isDisabled
                 ? showSelectionBottomSheet(
+                    searchHintText: widget.searchHintText,
                     context: context,
                     onAddNew: () {},
                     title: widget.bottomSheetTitle,
@@ -137,6 +140,7 @@ void showSelectionBottomSheet({
   required List<String> options,
   required Function(String) onItemSelected,
   required String usertEntryLabelText,
+  required String searchHintText,
   String? initialSelectedItem,
   bool allowManualEntry = false,
   VoidCallback? onAddNew,
@@ -153,170 +157,201 @@ void showSelectionBottomSheet({
     builder: (context) {
       String? selectedItem = initialSelectedItem; // Track selected item
 
-      return StatefulBuilder(
-        builder: (context, setState) {
-          TextEditingController manualInputController = TextEditingController();
-
-          return Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: 16.w, vertical: allowManualEntry ? 30.h : 8.h), //8
-            child: Column(
-              mainAxisSize:
-                  allowManualEntry ? MainAxisSize.max : MainAxisSize.min,
-              children: [
-                verticalSpacing(12),
-
-                // Close Button & Title
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      title,
-                      style: AppTextStyles.font18blackWight500.copyWith(
-                        color: AppColorsManager.textfieldOutsideBorderColor,
-                      ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Image.asset(
-                        "assets/images/close_icon.png",
-                        height: 20,
-                        width: 20,
-                      ),
-                    )
-                  ],
-                ),
-                verticalSpacing(20),
-
-                // Options List
-                SizedBox(
-                  height: context.screenHeight * 0.5,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: options.length,
-                    itemBuilder: (context, index) {
-                      bool isSelected = selectedItem == options[index];
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedItem = options[index]; // Update selection
-                          });
-                          onItemSelected(
-                              options[index]); // Return selected item
-                          Navigator.pop(context); // Close bottom sheet
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 11,
-                                vertical: 12,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    // Ensures text does not overflow
-                                    child: Text(
-                                      options[index],
-                                      overflow: TextOverflow
-                                          .ellipsis, // Prevents overflow, adds "..."
-                                      maxLines: 2, // Limits to one line
-                                      softWrap:
-                                          false, // Prevents text from wrapping
-                                      style: AppTextStyles
-                                          .font16DarkGreyWeight400
-                                          .copyWith(
-                                        color: isSelected
-                                            ? AppColorsManager.mainDarkBlue
-                                            : Color(0xff555555),
-                                        fontWeight: isSelected
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                      ),
-                                      textAlign: isArabic()
-                                          ? TextAlign.right
-                                          : TextAlign.left,
-                                    ),
-                                  ),
-                                  isSelected
-                                      ? Image.asset(
-                                          "assets/images/check_right.png",
-                                          height: 15,
-                                          width: 20,
-                                        )
-                                      : SizedBox.shrink(),
-                                ],
-                              ),
-                            ),
-                            Divider(
-                              height: 1,
-                              thickness: 0.3,
-                              indent: 14,
-                              color: AppColorsManager.placeHolderColor,
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                // Add New Option Button (Optional)
-                if (allowManualEntry && onAddNew != null)
-                  Padding(
-                    padding: EdgeInsets.only(top: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: manualInputController,
-                            decoration: InputDecoration(
-                              labelText: usertEntryLabelText,
-                              border: InputBorder.none, // Removes border
-                              enabledBorder:
-                                  InputBorder.none, // No border when enabled
-                              focusedBorder:
-                                  InputBorder.none, // No border when focused
-                              labelStyle: AppTextStyles.font16DarkGreyWeight400
-                                  .copyWith(
-                                color: Color(0xff555555),
-                              ),
-                              hintStyle: AppTextStyles.font16DarkGreyWeight400
-                                  .copyWith(
-                                color: Color(0xff555555),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            if (manualInputController.text.isNotEmpty) {
-                              setState(() {
-                                selectedItem = manualInputController.text;
-                              });
-                              onItemSelected(manualInputController.text);
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: Image.asset(
-                            "assets/images/plus_icon.png",
-                            height: 28,
-                            width: 48,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-          );
+      TextEditingController searchController = TextEditingController();
+      List<String> filteredOptions =
+          List.from(options); // Initialize with API options
+      searchController.addListener(
+        () {
+          filteredOptions = options;
         },
+      );
+      return DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.85, // 85% of screen height
+        minChildSize: 0.85,
+        maxChildSize: 0.85,
+
+        builder: (context, scrollController) => StatefulBuilder(
+          builder: (context, setState) {
+            TextEditingController manualInputController =
+                TextEditingController();
+
+            searchController.addListener(() {
+              final query = searchController.text.toLowerCase();
+              setState(() {
+                filteredOptions = options
+                    .where((item) => item.toLowerCase().contains(query))
+                    .toList();
+              });
+            });
+
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: allowManualEntry ? 30.h : 8.h,
+              ),
+              child: Column(
+                mainAxisSize:
+                    allowManualEntry ? MainAxisSize.max : MainAxisSize.min,
+                children: [
+                  verticalSpacing(12),
+
+                  // Title and Close button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: AppTextStyles.font18blackWight500.copyWith(
+                          color: AppColorsManager.textfieldOutsideBorderColor,
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Image.asset(
+                          "assets/images/close_icon.png",
+                          height: 20,
+                          width: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalSpacing(12),
+
+                  // 🔍 Search Field
+                  TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                      hintText: searchHintText,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
+                    ),
+                  ),
+                  verticalSpacing(16),
+
+                  // List of filtered options
+                  SizedBox(
+                    height: context.screenHeight * 0.5,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: filteredOptions.length,
+                      itemBuilder: (context, index) {
+                        final option = filteredOptions[index];
+                        final isSelected = selectedItem == option;
+
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedItem = option;
+                            });
+                            onItemSelected(option);
+                            Navigator.pop(context);
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 11, vertical: 12),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        option,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        softWrap: false,
+                                        style: AppTextStyles
+                                            .font16DarkGreyWeight400
+                                            .copyWith(
+                                          color: isSelected
+                                              ? AppColorsManager.mainDarkBlue
+                                              : Color(0xff555555),
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                        textAlign: isArabic()
+                                            ? TextAlign.right
+                                            : TextAlign.left,
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      Image.asset(
+                                        "assets/images/check_right.png",
+                                        height: 15,
+                                        width: 20,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              Divider(
+                                height: 1,
+                                thickness: 0.3,
+                                indent: 14,
+                                color: AppColorsManager.placeHolderColor,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Optional Manual Entry
+                  if (allowManualEntry && onAddNew != null)
+                    Padding(
+                      padding: EdgeInsets.only(top: 24),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: manualInputController,
+                              decoration: InputDecoration(
+                                labelText: usertEntryLabelText,
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                labelStyle: AppTextStyles
+                                    .font16DarkGreyWeight400
+                                    .copyWith(
+                                  color: Color(0xff555555),
+                                ),
+                                hintStyle: AppTextStyles.font16DarkGreyWeight400
+                                    .copyWith(
+                                  color: Color(0xff555555),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              if (manualInputController.text.isNotEmpty) {
+                                setState(() {
+                                  selectedItem = manualInputController.text;
+                                });
+                                onItemSelected(manualInputController.text);
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: Image.asset(
+                              "assets/images/plus_icon.png",
+                              height: 28,
+                              width: 48,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       );
     },
   );

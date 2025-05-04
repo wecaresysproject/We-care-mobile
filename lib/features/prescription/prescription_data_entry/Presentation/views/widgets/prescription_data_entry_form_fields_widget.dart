@@ -80,6 +80,7 @@ class _PrescriptionDataEntryFormFieldsState
                       .updateDoctorName(value);
                 },
                 bottomSheetTitle: "اختر اسم الطبيب",
+                searchHintText: "ابحث عن اسم الطبيب",
               ),
 
               verticalSpacing(16),
@@ -100,6 +101,7 @@ class _PrescriptionDataEntryFormFieldsState
                   log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: "اختر تخصص الطبيب",
+                searchHintText: "ابحث عن التخصص",
               ),
 
               verticalSpacing(16),
@@ -135,6 +137,7 @@ class _PrescriptionDataEntryFormFieldsState
                   log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: "اختر المرض الذى تم تشخيصه",
+                searchHintText: "ابحث عن المرض",
               ),
 
               verticalSpacing(16),
@@ -212,6 +215,7 @@ class _PrescriptionDataEntryFormFieldsState
                 },
                 containerHintText:
                     state.selectedCountryName ?? "اختر اسم الدولة",
+                searchHintText: "ابحث عن الدولة",
               ),
 
               verticalSpacing(16),
@@ -229,6 +233,7 @@ class _PrescriptionDataEntryFormFieldsState
                       .emitCitiesData();
                 },
                 containerHintText: state.selectedCityName ?? "اختر المدينة",
+                searchHintText: "ابحث عن المدينة",
               ),
 
               verticalSpacing(16),

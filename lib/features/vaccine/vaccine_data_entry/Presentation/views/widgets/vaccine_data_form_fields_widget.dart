@@ -70,6 +70,7 @@ class _VaccineDataEntryFormFieldsState
                     .updateSelectedVaccineCategory(value);
               },
               bottomSheetTitle: "اختر فئة اللقاح",
+              searchHintText: "ابحث عن فئة اللقاح",
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -83,6 +84,7 @@ class _VaccineDataEntryFormFieldsState
                 context.read<VaccineDataEntryCubit>().updateVaccineeName(value);
               },
               bottomSheetTitle: "اختر اسم الطعم",
+              searchHintText: "ابحث عن اسم الطعم",
             ),
 
             verticalSpacing(16),
@@ -101,6 +103,7 @@ class _VaccineDataEntryFormFieldsState
                     .updateDoseArrangement(doseArrangment);
               },
               bottomSheetTitle: "اختر ترتيب الجرعة",
+              searchHintText: "ابحث عن ترتيب الجرعة",
             ),
             verticalSpacing(16),
             Text(
@@ -145,6 +148,7 @@ class _VaccineDataEntryFormFieldsState
                     );
               },
               bottomSheetTitle: "اختر الدولة التى تم فيها التطعيم",
+              searchHintText: "ابحث عن الدولة",
             ),
 
             verticalSpacing(16),
