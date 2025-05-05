@@ -5,7 +5,6 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/similar_analysis_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
@@ -191,6 +190,7 @@ class MedicalAnalysisView extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => AnalysisDetailsView(
                       documentId: data.id,
+                      testName: data.testName,
                     ),
                   ),
                 );

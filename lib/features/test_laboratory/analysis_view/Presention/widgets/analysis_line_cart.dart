@@ -43,10 +43,14 @@ class AnalysisLineChart extends StatelessWidget {
     final double rawInterval = yRange / 5; // Aim for about 5 labels
     final int niceInterval = _calculateNiceInterval(rawInterval);
 
-    // Adjust max to align with nice intervals
-    final int alignedMaxY = (dynamicMaxY / niceInterval).ceil() * niceInterval;
 
     final spots = sortedData.map((d) => FlSpot(d.x.toDouble(), d.y)).toList();
+    
+    // Calculate x-axis padding
+    final double xAxisPadding = 0.05; // Add padding of 0.5 units
+    final double minX = sortedData.first.x.toDouble() - xAxisPadding;
+    final double maxX = sortedData.last.x.toDouble() + xAxisPadding;
+    
 
     return Column(
       children: [
@@ -80,8 +84,8 @@ class AnalysisLineChart extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: LineChart(
                   LineChartData(
-                    minX: sortedData.first.x.toDouble(),
-                    maxX: sortedData.last.x.toDouble(),
+                    minX: minX, // Use padded minX instead of first data point
+                    maxX: maxX, // Use padded maxX for consistency
                     minY: 0,
                     maxY: dynamicMaxY,
                     backgroundColor: Colors.transparent,
@@ -129,16 +133,20 @@ class AnalysisLineChart extends StatelessWidget {
                             interval: 1,
                             reservedSize: 65, // more space for vertical labels
                             getTitlesWidget: (value, meta) {
+                              // Only show labels for actual data points
                               final matchedData = sortedData.firstWhere(
                                 (d) => d.x.toDouble() == value,
                                 orElse: () =>
                                     AnalysisData(x: 0, y: 0, label: ''),
                               );
+                              
+                              if (matchedData.label.isEmpty) {
+                                return const SizedBox.shrink();
+                              }
 
                               return Transform.rotate(
                                 angle: -90 * (pi / 180), 
                                 origin: const Offset(18, -10),
-
                                 child: Text(
                                   matchedData.label,
                                   textAlign: TextAlign.center,
@@ -169,7 +177,6 @@ class AnalysisLineChart extends StatelessWidget {
                         getTooltipItems: (spots) => spots.map((spot) {
                           return LineTooltipItem(
                               spot.y == spot.y.truncate() ? spot.y.toInt().toString() : spot.y.toString(),
-
                             const TextStyle(
                               color: Colors.brown,
                               fontSize: 11,
@@ -200,21 +207,33 @@ class AnalysisLineChart extends StatelessWidget {
                           color: Colors.blue.shade900.withOpacity(0.1),
                         ),
                       ),
+                      // Normal Minimum line
                       LineChartBarData(
-                        spots: sortedData
-                            .map((d) => FlSpot(d.x.toDouble(), normalMin))
-                            .toList(),
+                        spots: sortedData.length > 1
+                            ? sortedData.map((d) => FlSpot(d.x.toDouble(), normalMin)).toList()
+                            : [
+                                FlSpot(minX, normalMin),
+                                FlSpot(maxX, normalMin),
+                              ],
                         isCurved: false,
-                        color: Colors.transparent,
-                        barWidth: 0,
+                        color: AppColorsManager.mainDarkBlue.withOpacity(0.6),
+                        barWidth: 1,
+                        dotData: FlDotData(show: false),
+                        dashArray: [5, 5], // Dashed line for visibility
                       ),
+                      // Normal Maximum line
                       LineChartBarData(
-                        spots: sortedData
-                            .map((d) => FlSpot(d.x.toDouble(), normalMax))
-                            .toList(),
+                        spots: sortedData.length > 1
+                            ? sortedData.map((d) => FlSpot(d.x.toDouble(), normalMax)).toList()
+                            : [
+                                FlSpot(minX, normalMax),
+                                FlSpot(maxX, normalMax),
+                              ],
                         isCurved: false,
-                        color: Colors.transparent,
-                        barWidth: 0,
+                        color: AppColorsManager.mainDarkBlue.withOpacity(0.6),
+                        barWidth: 1,
+                        dotData: FlDotData(show: false),
+                        dashArray: [5, 5], // Dashed line for visibility
                       ),
                     ],
                     betweenBarsData: [
