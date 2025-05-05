@@ -147,10 +147,10 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       allowAlarmOverlap: true,
       warningNotificationOnKill: true,
       notificationSettings: NotificationSettings(
-        title: 'Alarm for your medication',
-        body: 'It\'s time to take your medicine',
+        title: 'Medication Reminder',
+        body: 'Take your medicine now.',
         icon: 'notification_icon',
-        stopButton: 'Stop the alarm',
+        stopButton: 'Stop',
       ),
     );
   }
@@ -189,11 +189,17 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       volumeSettings: volumeSettings,
       allowAlarmOverlap: true,
       warningNotificationOnKill: true,
-      notificationSettings: NotificationSettings(
-        title: 'Alarm example',
-        body: 'Your alarm ($id) is ringing',
-        stopButton: 'Stop the alarm',
+      // notificationSettings: NotificationSettings(
+      //   title: 'Alarm example',
+      //   body: 'Your alarm ($id) is ringing',
+      //   stopButton: 'Stop the alarm',
+      //   icon: 'notification_icon',
+      // ),
+      notificationSettings: const NotificationSettings(
+        title: 'Medication Reminder',
+        body: 'Take your medicine now.',
         icon: 'notification_icon',
+        stopButton: 'Stop',
       ),
     );
     return alarmSettings;

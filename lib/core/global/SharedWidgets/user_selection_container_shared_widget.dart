@@ -5,6 +5,12 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
+enum OptionsLoadingState {
+  loading,
+  loaded,
+  error,
+}
+
 class UserSelectionContainer extends StatefulWidget {
   const UserSelectionContainer({
     super.key,
@@ -21,6 +27,10 @@ class UserSelectionContainer extends StatefulWidget {
     this.userEntryLabelText,
     this.isEditMode = false,
     this.initialValue,
+    this.loadingState = OptionsLoadingState.loaded,
+    this.onRetryPressed,
+    this.loadingErrorMessage = "حدث خطأ في تحميل البيانات",
+    this.loadingText = "جاري التحميل...",
   });
 
   final List<String> options;
@@ -35,7 +45,13 @@ class UserSelectionContainer extends StatefulWidget {
   final Color? iconColor;
   final String? userEntryLabelText;
   final bool isEditMode;
-  final String? initialValue; //* used to intialize selected item in edit mode
+  final String? initialValue; // Used to initialize selected item in edit mode
+
+  // New properties for loading state
+  final OptionsLoadingState loadingState;
+  final VoidCallback? onRetryPressed;
+  final String loadingErrorMessage;
+  final String loadingText;
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -82,7 +98,19 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   void _showSelectionSheet() {
-    if (widget.isDisabled) return;
+    if (widget.isDisabled || widget.loadingState == OptionsLoadingState.loading)
+      return;
+
+    // Don't show the bottom sheet if there's an error and no retry option
+    if (widget.loadingState == OptionsLoadingState.error &&
+        widget.onRetryPressed == null) return;
+
+    // For error state with retry option, trigger retry instead of showing sheet
+    if (widget.loadingState == OptionsLoadingState.error &&
+        widget.onRetryPressed != null) {
+      widget.onRetryPressed!();
+      return;
+    }
 
     _showSelectionBottomSheet(
       context: context,
@@ -103,9 +131,9 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   Widget _buildSelectionContainer() {
-    final String containerDisplayText =
-        _selectedItem ?? widget.containerHintText;
-    final bool hasSelection = _selectedItem != null;
+    final String containerDisplayText = _getContainerDisplayText();
+    final bool hasSelection = _selectedItem != null &&
+        widget.loadingState == OptionsLoadingState.loaded;
 
     return GestureDetector(
       onTap: _showSelectionSheet,
@@ -119,38 +147,92 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
             color: widget.containerBorderColor,
             width: 0.8,
           ),
-          color: AppColorsManager.textfieldInsideColor.withAlpha(100),
+          color: widget.loadingState == OptionsLoadingState.error
+              ? Colors.red.withOpacity(0.05)
+              : AppColorsManager.textfieldInsideColor.withAlpha(100),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                containerDisplayText,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: hasSelection ? AppColorsManager.textColor : null,
+              child: widget.loadingState == OptionsLoadingState.loading
+                  ? _buildLoadingIndicator()
+                  : Text(
+                      containerDisplayText,
+                      style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                        // color: hasSelection ? AppColorsManager.textColor : null,
+                        color: widget.loadingState == OptionsLoadingState.error
+                            ? Colors.red.shade700
+                            : hasSelection
+                                ? AppColorsManager.textColor
+                                : null,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      softWrap: true,
+                    ),
+            ),
+            if (widget.loadingState == OptionsLoadingState.error &&
+                widget.onRetryPressed != null)
+              GestureDetector(
+                onTap: widget.onRetryPressed,
+                child: Icon(
+                  Icons.refresh,
+                  color: Colors.red.shade700,
+                  size: 20,
                 ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                softWrap: true,
+              )
+            else if (widget.loadingState != OptionsLoadingState.loading)
+              Image.asset(
+                hasSelection
+                    ? "assets/images/arrow_up_icon.png"
+                    : "assets/images/arrow_down_icon.png",
+                height: 24.h,
+                width: 16.w,
+                color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
               ),
-            ),
-            Image.asset(
-              hasSelection
-                  ? "assets/images/arrow_up_icon.png"
-                  : "assets/images/arrow_down_icon.png",
-              height: 24.h,
-              width: 16.w,
-              color: widget.iconColor ?? AppColorsManager.mainDarkBlue,
-            ),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildLoadingIndicator() {
+    return Row(
+      children: [
+        SizedBox(
+          height: 16,
+          width: 16,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              AppColorsManager.mainDarkBlue,
+            ),
+          ),
+        ),
+        SizedBox(width: 8),
+        Text(
+          widget.loadingText,
+          style: AppTextStyles.font16DarkGreyWeight400,
+        ),
+      ],
+    );
+  }
+
+  String _getContainerDisplayText() {
+    if (widget.loadingState == OptionsLoadingState.loading) {
+      return widget.loadingText;
+    } else if (widget.loadingState == OptionsLoadingState.error) {
+      return widget.loadingErrorMessage;
+    } else {
+      return _selectedItem ?? widget.containerHintText;
+    }
+  }
+
   bool _shouldShowErrorMessage() {
-    return _selectedItem == null;
+    // Only show required field error when in loaded state and no selection
+    return widget.loadingState == OptionsLoadingState.loaded &&
+        _selectedItem == null;
   }
 }
 
@@ -271,8 +353,7 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
       expand: false,
       initialChildSize: 0.85,
       minChildSize: 0.5, // Allow smaller size for better UX
-      maxChildSize:
-          0.95, // Allow slightly larger for more content //! add an slightly animation when i scroll up from the list upward
+      maxChildSize: 0.95, // Allow slightly larger for more content
       builder: (context, scrollController) => Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,

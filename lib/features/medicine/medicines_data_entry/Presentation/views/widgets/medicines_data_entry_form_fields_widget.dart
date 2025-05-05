@@ -68,8 +68,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "اسم الدواء",
-              containerHintText: state.selectedMedicineName ??
-                  "اختر اسم الدواء", //state.doctorNameSelection ?? "اختر اسم الطبيب",
+              containerHintText:
+                  state.selectedMedicineName ?? "اختر اسم الدواء",
               options: state.medicinesNames,
               onOptionSelected: (value) async {
                 await context
@@ -78,6 +78,13 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر اسم الدواء",
               searchHintText: "ابحث عن اسم الدواء",
+              allowManualEntry: true,
+              loadingState: state.medicinesNamesOptionsLoadingState,
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllMedicinesNames();
+              },
             ),
             verticalSpacing(16),
 
@@ -226,6 +233,16 @@ class _MedicinesDataEntryFormFieldsWidgetState
                       state.selectedAlarmTime != ''
                   ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
                   : 'اختر موعد التنبيه',
+            ),
+            verticalSpacing(10),
+
+            Text(
+              'إذا لم يظهر زر الإيقاف، افتح مركز الإشعارات واسحب الإشعار لأسفل لرؤية الزر.',
+              style: AppTextStyles.font14BlueWeight700.copyWith(
+                color: AppColorsManager.warningColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
 
             verticalSpacing(16),
