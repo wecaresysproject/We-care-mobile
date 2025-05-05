@@ -9,55 +9,99 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Models/all_categories_tickets_count.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 
-class MedicalCategoriesTypesGridView extends StatelessWidget {
+class MedicalCategoriesTypesGridView extends StatefulWidget {
   const MedicalCategoriesTypesGridView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getIt.get<CategoriesRepository>().getAllCategoriesTicketsCount(
-        "ar",'Patient'
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return 
-      Expanded(
-        child: GridView.builder(
-          itemCount: categoriesView.length,
-          physics: const BouncingScrollPhysics(),
-          clipBehavior: Clip.none,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisExtent:
-                148.h, //! Fixed height for each item until text overflows
-            childAspectRatio: .85,
-            crossAxisSpacing: 13.w,
-            mainAxisSpacing: 32.h,
-          ),
-itemBuilder: (context, index) {
-  final counts = snapshot.data!; // This is CategoriesTicketsCount
-  final categoryName = categoriesView[index]["title"]!;
-
-  final count = getCategoryCountByArabicTitle(counts, categoryName);
-
-  return MedicalCategoryItem(
-    title: categoryName,
-    imagePath: categoriesView[index]["image"]!,
-    routeName: categoriesView[index]["route"]!,
-    notificationCount: count,
-    isActive: categoriesView[index]["isActive"],
-  );
+  State<MedicalCategoriesTypesGridView> createState() =>
+      _MedicalCategoriesTypesGridViewState();
 }
 
+class _MedicalCategoriesTypesGridViewState
+    extends State<MedicalCategoriesTypesGridView> with WidgetsBindingObserver {
+  // Future to hold the latest data
+  late Future<CategoriesTicketsCount> _ticketsFuture;
 
-        ),
-      );
+  @override
+  void initState() {
+    super.initState();
+    // Register as an observer to detect when app comes to foreground
+    WidgetsBinding.instance.addObserver(this);
+    // Initialize the future
+    _refreshData();
+  }
+
+  @override
+  void dispose() {
+    // Clean up observer when widget is removed
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Refresh data when app comes back to foreground
+    if (state == AppLifecycleState.resumed) {
+      _refreshData();
+    }
+  }
+
+  // Method to refresh the data
+  void _refreshData() {
+    setState(() {
+      _ticketsFuture = getIt
+          .get<CategoriesRepository>()
+          .getAllCategoriesTicketsCount("ar", 'Patient');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _ticketsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Expanded(child: const Center(child: CircularProgressIndicator()));
+        }
+        return Expanded(
+          child: GridView.builder(
+            itemCount: categoriesView.length,
+            physics: const BouncingScrollPhysics(),
+            clipBehavior: Clip.none,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisExtent:
+                  148.h, //! Fixed height for each item until text overflows
+              childAspectRatio: .85,
+              crossAxisSpacing: 13.w,
+              mainAxisSpacing: 32.h,
+            ),
+            itemBuilder: (context, index) {
+              final counts = snapshot.data!; 
+              final categoryName = categoriesView[index]["title"]!;
+              final count = getCategoryCountByArabicTitle(counts, categoryName);
+
+              return MedicalCategoryItem(
+                title: categoryName,
+                imagePath: categoriesView[index]["image"]!,
+                routeName: categoriesView[index]["route"]!,
+                notificationCount: count,
+                isActive: categoriesView[index]["isActive"],
+                onTap: categoriesView[index]["isActive"]
+                    ? () async {
+                         await context
+                            .pushNamed(categoriesView[index]["route"]!);
+                        // Refresh data when returning from navigated screen
+                        _refreshData();
+                      }
+                    : null,
+              );
+            },
+          ),
+        );
       },
- 
     );
   }
 }
@@ -66,16 +110,18 @@ class MedicalCategoryItem extends StatelessWidget {
   final String title;
   final String imagePath;
   final String routeName;
-  final int? notificationCount; // Added notification count
+  final int? notificationCount;
   final bool isActive;
+  final VoidCallback? onTap; 
 
   const MedicalCategoryItem({
     super.key,
     required this.title,
     required this.imagePath,
     required this.routeName,
-    this.notificationCount, // Optional parameter for the badge
+    this.notificationCount, 
     this.isActive = false,
+    this.onTap,
   });
 
   @override
@@ -84,12 +130,7 @@ class MedicalCategoryItem extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: isActive
-              ? () async {
-                  await context.pushNamed(routeName);
-                }
-              : null, // Disable interaction if not active
-
+          onTap: onTap,
           child: Stack(
             clipBehavior: Clip.none, // Allows badge to overflow
             children: [
@@ -208,7 +249,6 @@ class MedicalCategoryItem extends StatelessWidget {
   }
 }
 
-// Categories with Named Routes
 final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الأدوية",
@@ -349,7 +389,7 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": false,
   },
   {
-    "title": "العادات\nالغذائية",
+    "title": "العادات\nالغذائية",
     "image": "assets/images/spoon_icon.png",
     "route": "/mental_issues",
     "isActive": false,
@@ -372,8 +412,8 @@ const Map<String, String> _arabicTitleToField = {
   "روشتة الأطباء": "predescription",
 };
 
-
-int getCategoryCountByArabicTitle(CategoriesTicketsCount countData, String arabicTitle) {
+int getCategoryCountByArabicTitle(
+    CategoriesTicketsCount countData, String arabicTitle) {
   final fieldName = _arabicTitleToField[arabicTitle];
   if (fieldName == null) return 0;
 

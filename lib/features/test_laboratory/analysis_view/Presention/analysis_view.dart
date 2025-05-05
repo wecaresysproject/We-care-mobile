@@ -191,6 +191,7 @@ class MedicalAnalysisView extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => AnalysisDetailsView(
                       documentId: data.id,
+                      testName: data.testName,
                     ),
                   ),
                 );

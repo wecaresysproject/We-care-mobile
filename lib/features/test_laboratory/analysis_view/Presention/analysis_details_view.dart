@@ -18,7 +18,8 @@ import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analys
 
 class AnalysisDetailsView extends StatelessWidget {
   final String documentId;
-  const AnalysisDetailsView({super.key, required this.documentId});
+  final String testName;
+  const AnalysisDetailsView({super.key, required this.documentId,  required this.testName});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,7 @@ class AnalysisDetailsView extends StatelessWidget {
                             .read<TestAnalysisViewCubit>()
                             .emitDeleteTest(
                               documentId,
-                              state.selectedAnalysisDetails!.groupName,
+                              testName,
                             );
                         await showSuccess('تم حذف التحليل بنجاح');
                         if (!context.mounted) return;
