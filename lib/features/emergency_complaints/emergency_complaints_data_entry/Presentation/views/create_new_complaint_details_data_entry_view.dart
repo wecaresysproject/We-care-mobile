@@ -119,7 +119,7 @@ class CreateNewComplaintDetailsView extends StatelessWidget {
                           containerHintText: state.natureOfComplaint ??
                               "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
 
-                          usertEntryLabelText: "اضف الوصف من عندك",
+                          userEntryLabelText: "اضف الوصف من عندك",
                           searchHintText: "ابحث عن طبيعة الشكوى",
                         ),
                         verticalSpacing(16),
