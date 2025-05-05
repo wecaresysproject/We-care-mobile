@@ -35,7 +35,7 @@ class UserSelectionContainer extends StatefulWidget {
   final Color? iconColor;
   final String? userEntryLabelText;
   final bool isEditMode;
-  final String? initialValue;
+  final String? initialValue; //* used to intialize selected item in edit mode
 
   @override
   State<UserSelectionContainer> createState() => _UserSelectionContainerState();
@@ -56,27 +56,6 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
     if (widget.initialValue != oldWidget.initialValue) {
       _selectedItem = widget.initialValue;
     }
-  }
-
-  void _showSelectionSheet() {
-    if (widget.isDisabled) return;
-
-    _showSelectionBottomSheet(
-      context: context,
-      title: widget.bottomSheetTitle,
-      options: widget.options,
-      initialSelectedItem:
-          widget.isEditMode ? widget.containerHintText : _selectedItem,
-      onItemSelected: (selected) {
-        setState(() {
-          _selectedItem = selected;
-        });
-        widget.onOptionSelected(selected);
-      },
-      allowManualEntry: widget.allowManualEntry,
-      userEntryLabelText: widget.userEntryLabelText ?? "أدخل اسمًا يدويًا",
-      searchHintText: widget.searchHintText,
-    );
   }
 
   @override
@@ -102,8 +81,30 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
     );
   }
 
+  void _showSelectionSheet() {
+    if (widget.isDisabled) return;
+
+    _showSelectionBottomSheet(
+      context: context,
+      title: widget.bottomSheetTitle,
+      options: widget.options,
+      initialSelectedItem:
+          widget.isEditMode ? widget.containerHintText : _selectedItem,
+      onItemSelected: (selected) {
+        setState(() {
+          _selectedItem = selected;
+        });
+        widget.onOptionSelected(selected);
+      },
+      allowManualEntry: widget.allowManualEntry,
+      userEntryLabelText: widget.userEntryLabelText ?? "أدخل اسمًا يدويًا",
+      searchHintText: widget.searchHintText,
+    );
+  }
+
   Widget _buildSelectionContainer() {
-    final String displayText = _selectedItem ?? widget.containerHintText;
+    final String containerDisplayText =
+        _selectedItem ?? widget.containerHintText;
     final bool hasSelection = _selectedItem != null;
 
     return GestureDetector(
@@ -125,7 +126,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
           children: [
             Expanded(
               child: Text(
-                displayText,
+                containerDisplayText,
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                   color: hasSelection ? AppColorsManager.textColor : null,
                 ),
@@ -149,7 +150,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   bool _shouldShowErrorMessage() {
-    return widget.containerBorderColor == AppColorsManager.warningColor;
+    return _selectedItem == null;
   }
 }
 
@@ -233,7 +234,7 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
   }
 
   void _filterOptions() {
-    final query = normalizeArabic(_searchController.text.trim());
+    final query = normalizeArabic(_searchController.text);
 
     if (query.isEmpty) {
       setState(() {
@@ -270,7 +271,8 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
       expand: false,
       initialChildSize: 0.85,
       minChildSize: 0.5, // Allow smaller size for better UX
-      maxChildSize: 0.95, // Allow slightly larger for more content
+      maxChildSize:
+          0.95, // Allow slightly larger for more content //! add an slightly animation when i scroll up from the list upward
       builder: (context, scrollController) => Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 16.w,
