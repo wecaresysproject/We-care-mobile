@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -93,8 +94,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       );
     }
   }
-
-
 
   Future<void> loadMedicinesDataEnteredForEditing(
     MedicineModel pastDataEntered,
@@ -189,6 +188,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitAllMedicinesNames() async {
+    emit(
+      state.copyWith(
+        medicinesNamesOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getAllMedicinesNames(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
@@ -200,6 +204,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           state.copyWith(
             medicinesNames: medcineNames,
             medicinesBasicInfo: response,
+            medicinesNamesOptionsLoadingState: OptionsLoadingState.loaded,
           ),
         );
       },
@@ -207,6 +212,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            isLoading: false,
+            medicinesNamesOptionsLoadingState: OptionsLoadingState.error,
           ),
         );
       },
