@@ -180,7 +180,7 @@ void showSelectionBottomSheet({
               final query = normalizeArabic(searchController.text);
               setState(() {
                 filteredOptions = options
-                    .where((item) => item.toLowerCase().contains(query))
+                    .where((item) => normalizeArabic(item).contains(query))
                     .toList();
               });
             });
