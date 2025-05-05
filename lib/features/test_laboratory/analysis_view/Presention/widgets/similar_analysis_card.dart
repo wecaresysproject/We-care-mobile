@@ -181,9 +181,9 @@ class SimilarAnalysisCard extends StatelessWidget {
             itemCount: value.length,
             itemBuilder: (context, index) => Container(
               margin: EdgeInsets.symmetric(vertical: 2.w),
-              padding: label == 'الاسم' || label == 'النتيجة'
+              padding: label == 'الاسم' || label == 'النتيجة'|| label == 'المعيار'
                   ? EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h)
-                  : EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+                  : EdgeInsets.symmetric(horizontal: 0.w, vertical: 4.h),
               decoration: BoxDecoration(
                 color: isHighlightValue ? borderColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),
@@ -193,6 +193,7 @@ class SimilarAnalysisCard extends StatelessWidget {
                 value[index],
                 style: AppTextStyles.font14whiteWeight600.copyWith(
                   color: isHighlightValue ? Colors.white : Colors.black,
+                  fontSize:  label == 'التاريخ' ? 11.5.sp : 14.sp,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,
