@@ -230,9 +230,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   bool _shouldShowErrorMessage() {
-    // Only show required field error when in loaded state and no selection
-    return widget.loadingState == OptionsLoadingState.loaded &&
-        _selectedItem == null;
+    return widget.containerBorderColor == AppColorsManager.warningColor;
   }
 }
 
