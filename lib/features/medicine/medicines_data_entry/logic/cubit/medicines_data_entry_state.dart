@@ -2,7 +2,6 @@ import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
@@ -31,12 +30,17 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> allUsageCategories; // مدة الاستخدام
   final List<String> allDurationsBasedOnCategory; // المدد الزمنيه
   final String? selectedAlarmTime;
-  final OptionsLoadingState medicinesNamesOptionsLoadingState;
   final bool isEditMode;
   final String message; // error or success message
 
   final AlarmSettings? ringingAlarm;
   final List<MatchedMedicineModel> matchedMedicines;
+  final OptionsLoadingState medicinesNamesOptionsLoadingState;
+  final OptionsLoadingState medicalFormsOptionsLoadingState;
+  final OptionsLoadingState medicalDosesOptionsLoadingState;
+  final OptionsLoadingState dosageFrequenciesOptionsLoadingState;
+  final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
+  final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -66,6 +70,12 @@ class MedicinesDataEntryState extends Equatable {
     this.ringingAlarm,
     this.matchedMedicines = const [],
     this.medicinesNamesOptionsLoadingState = OptionsLoadingState.loading,
+    this.medicalFormsOptionsLoadingState = OptionsLoadingState.loading,
+    this.medicalDosesOptionsLoadingState = OptionsLoadingState.loading,
+    this.dosageFrequenciesOptionsLoadingState = OptionsLoadingState.loading,
+    this.allUsageCategoriesOptionsLoadingState = OptionsLoadingState.loading,
+    this.allDurationsBasedOnCategoryOptionsLoadingState =
+        OptionsLoadingState.loading,
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -97,6 +107,12 @@ class MedicinesDataEntryState extends Equatable {
           ringingAlarm: null,
           matchedMedicines: const [],
           medicinesNamesOptionsLoadingState: OptionsLoadingState.loading,
+          medicalFormsOptionsLoadingState: OptionsLoadingState.loading,
+          medicalDosesOptionsLoadingState: OptionsLoadingState.loading,
+          dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loading,
+          allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
+          allDurationsBasedOnCategoryOptionsLoadingState:
+              OptionsLoadingState.loading,
         );
 
   MedicinesDataEntryState copyWith({
@@ -128,6 +144,11 @@ class MedicinesDataEntryState extends Equatable {
     List<MatchedMedicineModel>? matchedMedicines,
     bool? isLoading,
     OptionsLoadingState? medicinesNamesOptionsLoadingState,
+    OptionsLoadingState? medicalFormsOptionsLoadingState,
+    OptionsLoadingState? medicalDosesOptionsLoadingState,
+    OptionsLoadingState? dosageFrequenciesOptionsLoadingState,
+    OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
+    OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -161,6 +182,19 @@ class MedicinesDataEntryState extends Equatable {
       matchedMedicines: matchedMedicines ?? this.matchedMedicines,
       medicinesNamesOptionsLoadingState: medicinesNamesOptionsLoadingState ??
           this.medicinesNamesOptionsLoadingState,
+      medicalFormsOptionsLoadingState: medicalFormsOptionsLoadingState ??
+          this.medicalFormsOptionsLoadingState,
+      medicalDosesOptionsLoadingState: medicalDosesOptionsLoadingState ??
+          this.medicalDosesOptionsLoadingState,
+      dosageFrequenciesOptionsLoadingState:
+          dosageFrequenciesOptionsLoadingState ??
+              this.dosageFrequenciesOptionsLoadingState,
+      allUsageCategoriesOptionsLoadingState:
+          allUsageCategoriesOptionsLoadingState ??
+              this.allUsageCategoriesOptionsLoadingState,
+      allDurationsBasedOnCategoryOptionsLoadingState:
+          allDurationsBasedOnCategoryOptionsLoadingState ??
+              this.allDurationsBasedOnCategoryOptionsLoadingState,
     );
   }
 
@@ -193,5 +227,10 @@ class MedicinesDataEntryState extends Equatable {
         ringingAlarm,
         matchedMedicines,
         medicinesNamesOptionsLoadingState,
+        medicalFormsOptionsLoadingState,
+        medicalDosesOptionsLoadingState,
+        dosageFrequenciesOptionsLoadingState,
+        allUsageCategoriesOptionsLoadingState,
+        allDurationsBasedOnCategoryOptionsLoadingState,
       ];
 }

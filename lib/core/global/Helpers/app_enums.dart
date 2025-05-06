@@ -16,3 +16,9 @@ enum UploadReportRequestStatus {
   success,
   failure,
 }
+
+enum OptionsLoadingState {
+  loading,
+  loaded,
+  error,
+}
