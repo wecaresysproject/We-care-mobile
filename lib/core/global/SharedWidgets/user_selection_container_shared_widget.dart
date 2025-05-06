@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-
-enum OptionsLoadingState {
-  loading,
-  loaded,
-  error,
-}
 
 class UserSelectionContainer extends StatefulWidget {
   const UserSelectionContainer({
@@ -98,12 +93,16 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   void _showSelectionSheet() {
-    if (widget.isDisabled || widget.loadingState == OptionsLoadingState.loading)
+    if (widget.isDisabled ||
+        widget.loadingState == OptionsLoadingState.loading) {
       return;
+    }
 
     // Don't show the bottom sheet if there's an error and no retry option
     if (widget.loadingState == OptionsLoadingState.error &&
-        widget.onRetryPressed == null) return;
+        widget.onRetryPressed == null) {
+      return;
+    }
 
     // For error state with retry option, trigger retry instead of showing sheet
     if (widget.loadingState == OptionsLoadingState.error &&
@@ -230,9 +229,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
   }
 
   bool _shouldShowErrorMessage() {
-    // Only show required field error when in loaded state and no selection
-    return widget.loadingState == OptionsLoadingState.loaded &&
-        _selectedItem == null;
+    return widget.containerBorderColor == AppColorsManager.warningColor;
   }
 }
 

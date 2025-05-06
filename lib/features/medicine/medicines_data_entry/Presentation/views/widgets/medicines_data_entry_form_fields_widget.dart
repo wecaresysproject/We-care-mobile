@@ -1,28 +1,21 @@
-import 'dart:async';
-import 'dart:developer';
-
-import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive/hive.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/add_new_medical_complaint_button.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
-import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
-import 'package:we_care/features/medicine/medicines_api_constants.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/emergency_complaints_data_entry_form_fields_widget.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/custom_alarm_button.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -88,7 +81,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            MedicneNameScannerContainer(mounted: mounted, state: state),
+            MedicneNameScannerContainer(state: state),
 
             verticalSpacing(16),
             UserSelectionContainer(
@@ -98,8 +91,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "طريقة الاستخدام (الاشكال الدوائية)",
               containerHintText: state.selectedMedicalForm ??
                   state.selectedMedicalForm ??
-                  "اختر طريقة الاستخدام", //state.doctorNameSelection ?? "اختر اسم الطبيب",
+                  "اختر طريقة الاستخدام",
               options: state.medicineForms,
+              loadingState: state.medicalFormsOptionsLoadingState,
               onOptionSelected: (value) async {
                 await context
                     .read<MedicinesDataEntryCubit>()
@@ -107,6 +101,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر طريقة الاستخدام",
               searchHintText: "ابحث عن طريقة الاستخدام",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitMedicineforms();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -117,6 +116,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               categoryLabel: "الجرعة",
               containerHintText: state.selectedDose ?? "اختر كمية الجرعة",
               options: state.medicalDoses,
+              loadingState: state.medicalDosesOptionsLoadingState,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
@@ -124,6 +124,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر كمية الجرعة",
               searchHintText: "ابحث عن كمية الجرعة",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitMedcineDosesByForms();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -135,6 +140,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText:
                   state.selectedNoOfDose ?? "اختر عدد مرات التناول ",
               options: state.dosageFrequencies,
+              loadingState: state.dosageFrequenciesOptionsLoadingState,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
@@ -142,6 +148,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               searchHintText: "ابحث عن عدد مرات التناول ",
               bottomSheetTitle: "اختر عدد مرات التناول ",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllDosageFrequencies();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -153,6 +164,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText:
                   state.doseDuration ?? "اختر مدة استخدام الدواء",
               options: state.allUsageCategories,
+              loadingState: state.allUsageCategoriesOptionsLoadingState,
               onOptionSelected: (value) async {
                 await context
                     .read<MedicinesDataEntryCubit>()
@@ -160,6 +172,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر مدة استخدام الدواء",
               searchHintText: "ابحث عن مدة استخدام الدواء",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .getAllUsageCategories();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -171,6 +188,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
               containerHintText:
                   state.timePeriods ?? "اختر المدة الزمنية لمدة الاستخدام",
               options: state.allDurationsBasedOnCategory,
+              loadingState:
+                  state.allDurationsBasedOnCategoryOptionsLoadingState,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
@@ -178,6 +197,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر المدة الزمنية لمدة الاستخدام",
               searchHintText: "ابحث عن المدة الزمنية لمدة الاستخدام",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllDurationsForCategory();
+              },
             ),
             verticalSpacing(16),
 
@@ -205,7 +229,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
 
             buildMedicalComplaintsListBlocBuilder(),
 
-            buildAddNewComplainButtonBlocBuilder(context),
+            buildAddNewComplainButtonBlocBuilder(),
 
             verticalSpacing(16),
 
@@ -257,9 +281,6 @@ class _MedicinesDataEntryFormFieldsWidgetState
                   .read<MedicinesDataEntryCubit>()
                   .personalInfoController,
               hintText: "اكتب باختصار اى معلومات مهمة اخرى",
-
-              // hintText: state.prescribtionEditedModel?.preDescriptionNotes ??
-              //     "اكتب باختصار اى معلومات مهمة اخرى",
             ),
 
             ///TODO: handle this button in main view and remove it from here
@@ -276,7 +297,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
   }
 }
 
-Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+Widget buildAddNewComplainButtonBlocBuilder() {
   return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
     buildWhen: (previous, current) =>
         current.medicalComplaints.length != previous.medicalComplaints.length,
@@ -391,301 +412,4 @@ Widget submitEmergencyDataEnteredBlocConsumer() {
       );
     },
   );
-}
-
-class AddNewMedicalComplaintButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const AddNewMedicalComplaintButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-          vertical: 4, horizontal: 16), // Padding from Figma
-      decoration: BoxDecoration(
-        color: AppColorsManager.mainDarkBlue, // Main color from Figma
-        borderRadius: BorderRadius.circular(12), // Radius from Figma
-      ),
-      child: TextButton.icon(
-        onPressed: onPressed,
-        icon: const Icon(Icons.add, color: Colors.white, size: 20), // "+" Icon
-        label: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-          textDirection: TextDirection.rtl, // Arabic text support
-        ),
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero, // Ensures proper spacing inside Container
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-      ),
-    );
-  }
-}
-
-class SymptomContainer extends StatelessWidget {
-  const SymptomContainer({
-    super.key,
-    required this.isMainSymptom,
-    required this.medicalComplaint,
-    required this.onDelete,
-  });
-
-  final bool isMainSymptom;
-
-  final MedicalComplaint medicalComplaint;
-  final VoidCallback onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: isMainSymptom
-          ? EdgeInsets.all(8)
-          : EdgeInsets.only(left: 8, right: 8, bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Column(
-        children: [
-          if (isMainSymptom) // Conditionally render the main symptom title
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    "العرض المرضي الرئيسي",
-                    style: AppTextStyles.font18blackWight500.copyWith(
-                      color: AppColorsManager.mainDarkBlue,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
-                  ).paddingBottom(
-                    16,
-                  ),
-                ),
-                IconButton(
-                  onPressed: onDelete,
-                  padding: EdgeInsets.zero,
-                  alignment: Alignment.topCenter,
-                  icon: Icon(
-                    Icons.delete,
-                    size: 28.sp,
-                    color: AppColorsManager.warningColor,
-                  ),
-                )
-              ],
-            ),
-          DetailsViewInfoTile(
-            title: "الأعراض المرضية - المنطقة",
-            value: medicalComplaint.symptomsRegion.substring(2).trim(),
-            isExpanded: true,
-            icon: 'assets/images/symptoms_icon.png',
-          ),
-          verticalSpacing(16),
-          DetailsViewInfoTile(
-            title: "الأعراض المرضية - الشكوى",
-            value: medicalComplaint.sypmptomsComplaintIssue,
-            isExpanded: true,
-            icon: 'assets/images/symptoms_icon.png',
-          ),
-          verticalSpacing(16),
-          Row(
-            children: [
-              DetailsViewInfoTile(
-                title: "طبيعة الشكوى",
-                value: medicalComplaint.natureOfComplaint,
-                icon: 'assets/images/file_icon.png',
-              ),
-              Spacer(),
-              DetailsViewInfoTile(
-                title: "حدة الشكوى",
-                value: medicalComplaint.severityOfComplaint,
-                icon: 'assets/images/heart_rate_search_icon.png',
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomAlarmButton extends StatefulWidget {
-  final String containerHintText;
-  const CustomAlarmButton({
-    super.key,
-    required this.containerHintText,
-  });
-
-  @override
-  CustomAlarmButtonState createState() => CustomAlarmButtonState();
-}
-
-class CustomAlarmButtonState extends State<CustomAlarmButton> {
-  String? _selectedTime;
-  String? medicineName;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        final cubit = context.read<MedicinesDataEntryCubit>();
-        final repeatEvery =
-            cubit.getRepeatDurationFromText(cubit.state.selectedNoOfDose!);
-        final totalDuartion =
-            cubit.getTotalDurationFromText(cubit.state.timePeriods!);
-        medicineName = cubit.state.selectedMedicineName;
-        //!handle null values here later
-        await openAlarmBottomSheet(
-          null,
-          repeatEvery: repeatEvery!,
-          totalDuration: totalDuartion!,
-          medicineName: medicineName!,
-        );
-        // await context.pushNamed(Routes.alarmHomeView);
-      },
-      child: Container(
-        width: double.infinity,
-        height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColorsManager.textfieldOutsideBorderColor,
-            width: 0.8,
-          ),
-          color: AppColorsManager.textfieldInsideColor.withAlpha(100),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            /// Row to include SVG icon and text
-            Row(
-              children: [
-                Image.asset(
-                  "assets/images/alarm_icon.png",
-                  height: 28,
-                  width: 28,
-                  color: AppColorsManager.mainDarkBlue,
-                ),
-                Text(
-                  _selectedTime ?? widget.containerHintText,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: _selectedTime.isNotNull
-                        ? AppColorsManager.textColor
-                        : AppColorsManager.placeHolderColor,
-                  ),
-                ),
-              ],
-            ),
-
-            IconButton(
-              icon: Icon(
-                Icons.delete,
-                size: 28,
-              ),
-              onPressed: () async {
-                await cancelAlarmsCreatedBeforePerMedicine(medicineName!);
-              },
-              color: AppColorsManager.mainDarkBlue,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> openAlarmBottomSheet(
-    AlarmSettings? settings, {
-    required Duration repeatEvery,
-    required Duration totalDuration,
-    required String medicineName,
-  }) async {
-    String? selectedAlarmTime;
-    final res = await showModalBottomSheet<bool?>(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.85,
-          child: AlarmEditScreen(
-            alarmSettings: settings,
-            onSave: (selectedDateTime) {
-              selectedAlarmTime = selectedDateTime.toArabicTime();
-            },
-            repeatEvery: repeatEvery,
-            totalDuration: totalDuration,
-            medicineName: medicineName,
-          ),
-        );
-      },
-    );
-
-    if (res != null && res == true && mounted) {
-      await context.read<MedicinesDataEntryCubit>().loadAlarms();
-      if (!mounted) return;
-      context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
-            selectedAlarmTime!,
-          );
-    }
-  }
-
-  Future<void> cancelAlarmsCreatedBeforePerMedicine(String medicineName) async {
-    final alarmsId = getAlarmsForMedicine(medicineName);
-    for (final id in alarmsId) {
-      await Alarm.stop(id);
-      log('xxx: cancelAlarmsCreatedBeforePerMedicine successfully');
-    }
-    await removeMedicineAlarms(medicineName);
-    if (!mounted) return;
-    context.read<MedicinesDataEntryCubit>().updateSelectedAlarmTime(
-          "",
-        );
-  }
-
-  List<int> getAlarmsForMedicine(String medicineName) {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
-
-    final medicineAlarms = box.values.first;
-
-    if (medicineAlarms.isEmpty) return [];
-
-    final medicineAlarmsId = medicineAlarms.firstWhere(
-      (storedMedcine) => storedMedcine.medicineName == medicineName,
-    );
-    return medicineAlarmsId.alarmId;
-  }
-
-  Future<void> removeMedicineAlarms(String medicineName) async {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
-
-    if (box.isEmpty) return;
-
-    final key = box.keys.first;
-    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
-
-    alarms.removeWhere((model) => model.medicineName == medicineName);
-
-    await box.put(key, alarms);
-    log('Removed alarms for $medicineName');
-  }
 }

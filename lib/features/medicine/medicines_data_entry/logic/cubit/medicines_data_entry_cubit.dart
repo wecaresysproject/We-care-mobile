@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -234,6 +233,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitMedicineforms() async {
+    emit(
+      state.copyWith(
+        medicalFormsOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getMedcineForms(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
@@ -244,6 +248,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             medicineForms: response,
+            medicalFormsOptionsLoadingState: OptionsLoadingState.loaded,
           ),
         );
       },
@@ -251,6 +256,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            medicalFormsOptionsLoadingState: OptionsLoadingState.error,
           ),
         );
       },
@@ -258,6 +264,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitMedcineDosesByForms() async {
+    emit(
+      state.copyWith(
+        medicalDosesOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getMedcineDosesByForms(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name,
@@ -269,6 +280,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             medicalDoses: response,
+            medicalDosesOptionsLoadingState: OptionsLoadingState.loaded,
           ),
         );
       },
@@ -276,6 +288,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            medicalDosesOptionsLoadingState: OptionsLoadingState.error,
           ),
         );
       },
@@ -283,6 +296,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitAllDosageFrequencies() async {
+    emit(
+      state.copyWith(
+        dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getAllDosageFrequencies(
       langauge: AppStrings.arabicLang,
       userType: UserTypes.patient.name,
@@ -292,6 +310,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             dosageFrequencies: response,
+            dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loaded,
           ),
         );
       },
@@ -299,6 +318,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            dosageFrequenciesOptionsLoadingState: OptionsLoadingState.error,
           ),
         );
       },
@@ -306,6 +326,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> getAllUsageCategories() async {
+    emit(
+      state.copyWith(
+        allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getAllUsageCategories(
       langauge: AppStrings.arabicLang,
       userType: UserTypes.patient.name,
@@ -315,6 +340,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             allUsageCategories: response,
+            allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loaded,
           ),
         );
       },
@@ -322,6 +348,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            allUsageCategoriesOptionsLoadingState: OptionsLoadingState.error,
           ),
         );
       },
@@ -329,6 +356,12 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitAllDurationsForCategory() async {
+    emit(
+      state.copyWith(
+        allDurationsBasedOnCategoryOptionsLoadingState:
+            OptionsLoadingState.loading,
+      ),
+    );
     final response = await _medicinesDataEntryRepo.getAllDurationsForCategory(
       langauge: AppStrings.arabicLang,
       userType: UserTypes.patient.name,
@@ -339,6 +372,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             allDurationsBasedOnCategory: response,
+            allDurationsBasedOnCategoryOptionsLoadingState:
+                OptionsLoadingState.loaded,
           ),
         );
       },
@@ -346,6 +381,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            allDurationsBasedOnCategoryOptionsLoadingState:
+                OptionsLoadingState.error,
           ),
         );
       },

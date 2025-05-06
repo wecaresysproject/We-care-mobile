@@ -51,3 +51,7 @@ String normalizeArabic(String input) {
       .toLowerCase()
       .trim();
 }
+
+String extractFirstMedicineName(String input) {
+  return input.split(' ').first;
+}
