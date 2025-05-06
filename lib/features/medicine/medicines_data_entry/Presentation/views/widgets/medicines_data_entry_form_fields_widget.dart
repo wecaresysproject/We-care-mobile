@@ -101,6 +101,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر طريقة الاستخدام",
               searchHintText: "ابحث عن طريقة الاستخدام",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitMedicineforms();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -119,6 +124,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر كمية الجرعة",
               searchHintText: "ابحث عن كمية الجرعة",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitMedcineDosesByForms();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -138,6 +148,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               searchHintText: "ابحث عن عدد مرات التناول ",
               bottomSheetTitle: "اختر عدد مرات التناول ",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllDosageFrequencies();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -157,6 +172,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر مدة استخدام الدواء",
               searchHintText: "ابحث عن مدة استخدام الدواء",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .getAllUsageCategories();
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(
@@ -177,6 +197,11 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
               bottomSheetTitle: "اختر المدة الزمنية لمدة الاستخدام",
               searchHintText: "ابحث عن المدة الزمنية لمدة الاستخدام",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllDurationsForCategory();
+              },
             ),
             verticalSpacing(16),
 
@@ -204,7 +229,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
 
             buildMedicalComplaintsListBlocBuilder(),
 
-            buildAddNewComplainButtonBlocBuilder(context),
+            buildAddNewComplainButtonBlocBuilder(),
 
             verticalSpacing(16),
 
@@ -272,7 +297,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
   }
 }
 
-Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+Widget buildAddNewComplainButtonBlocBuilder() {
   return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
     buildWhen: (previous, current) =>
         current.medicalComplaints.length != previous.medicalComplaints.length,

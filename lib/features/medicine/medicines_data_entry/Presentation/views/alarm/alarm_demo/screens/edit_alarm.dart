@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
@@ -117,6 +118,8 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
 
     medicineAlarmIds.add(id);
 
+    final medicineName = extractFirstMedicineName(widget.medicineName!);
+
     final VolumeSettings volumeSettings;
     if (staircaseFade) {
       volumeSettings = VolumeSettings.staircaseFade(
@@ -147,10 +150,10 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       allowAlarmOverlap: true,
       warningNotificationOnKill: true,
       notificationSettings: NotificationSettings(
-        title: 'Medication Reminder',
-        body: 'Take your medicine now.',
+        title: 'تنيهة الدواء',
+        body: "حان الان موعد تناول $medicineName",
         icon: 'notification_icon',
-        stopButton: 'Stop',
+        stopButton: 'اوقف التنبيه',
       ),
     );
   }
@@ -159,6 +162,8 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
     final id = creating
         ? DateTime.now().millisecondsSinceEpoch % 10000 + 1
         : widget.alarmSettings!.id;
+
+    final medicineName = extractFirstMedicineName(widget.medicineName!);
 
     final VolumeSettings volumeSettings;
     if (staircaseFade) {
@@ -179,7 +184,6 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
     } else {
       volumeSettings = VolumeSettings.fixed(volume: volume);
     }
-
     final alarmSettings = AlarmSettings(
       id: id,
       dateTime: selectedDateTime,
@@ -189,17 +193,11 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       volumeSettings: volumeSettings,
       allowAlarmOverlap: true,
       warningNotificationOnKill: true,
-      // notificationSettings: NotificationSettings(
-      //   title: 'Alarm example',
-      //   body: 'Your alarm ($id) is ringing',
-      //   stopButton: 'Stop the alarm',
-      //   icon: 'notification_icon',
-      // ),
-      notificationSettings: const NotificationSettings(
-        title: 'Medication Reminder',
-        body: 'Take your medicine now.',
+      notificationSettings: NotificationSettings(
+        title: 'تنيهة الدواء',
+        body: "حان الان موعد تناول $medicineName",
         icon: 'notification_icon',
-        stopButton: 'Stop',
+        stopButton: 'اوقف التنبيه',
       ),
     );
     return alarmSettings;
