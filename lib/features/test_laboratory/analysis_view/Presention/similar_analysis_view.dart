@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/analysis_line_cart.dart';
@@ -28,7 +29,7 @@ class SimilarAnalysisView extends StatelessWidget {
             current.isEditing == false,
         builder: (context, state) {
           if (state.requestStatus == RequestStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return LoadingStateView();
           }
           if (state.requestStatus == RequestStatus.failure) {
             return Scaffold(

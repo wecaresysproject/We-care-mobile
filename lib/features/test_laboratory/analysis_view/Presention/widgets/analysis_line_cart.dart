@@ -32,25 +32,25 @@ class AnalysisLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortedData = data..sort((a, b) => a.x.compareTo(b.x));
     final double minY = 0; // Force starting from 0
-    final double maxY = data.map((d) => d.y).reduce((a, b) => a > b ? a : b);
+    final double maxDataY = data.map((d) => d.y).reduce((a, b) => a > b ? a : b);
+    
+    // Consider all relevant values for determining the chart's max Y
+    final double effectiveMaxY = [maxDataY, normalMax].reduce(max);
 
     // Calculate y-axis padding (10% of range or fixed value for very small ranges)
-    final double yAxisPadding = max((maxY - minY) * 0.1, 0.5);
-    final double dynamicMaxY = maxY + yAxisPadding;
+    final double yAxisPadding = max((effectiveMaxY - minY) * 0.1, 0.5);
+    final double dynamicMaxY = effectiveMaxY + yAxisPadding;
 
-    // Calculate optimal integer interval
+    // Calculate optimal integer interval based on all relevant values
     final double yRange = dynamicMaxY - minY;
-    final double rawInterval = yRange / 5; // Aim for about 5 labels
-    final int niceInterval = _calculateNiceInterval(rawInterval);
-
+    final int niceInterval = _calculateNiceInterval(yRange);
 
     final spots = sortedData.map((d) => FlSpot(d.x.toDouble(), d.y)).toList();
     
     // Calculate x-axis padding
-    final double xAxisPadding = 0.05; // Add padding of 0.5 units
+    final double xAxisPadding = 0.05; // Add padding of 0.05 units
     final double minX = sortedData.first.x.toDouble() - xAxisPadding;
     final double maxX = sortedData.last.x.toDouble() + xAxisPadding;
-    
 
     return Column(
       children: [
@@ -84,8 +84,8 @@ class AnalysisLineChart extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.3,
                 child: LineChart(
                   LineChartData(
-                    minX: minX, // Use padded minX instead of first data point
-                    maxX: maxX, // Use padded maxX for consistency
+                    minX: minX,
+                    maxX: maxX,
                     minY: 0,
                     maxY: dynamicMaxY,
                     backgroundColor: Colors.transparent,
@@ -261,17 +261,21 @@ class AnalysisLineChart extends StatelessWidget {
   }
 }
 
-int _calculateNiceInterval(double rawInterval) {
-  if (rawInterval <= 0) return 1;
+int _calculateNiceInterval(double yRange) {
+  if (yRange <= 0) return 1;
 
+  // Aim for 4-7 divisions on the y-axis for readability
+  final int targetDivisions = 5;
+  double rawInterval = yRange / targetDivisions;
+  
   // Calculate magnitude (power of 10)
-  final double magnitude =
-      pow(10, (log(rawInterval) / ln10).floor()).toDouble();
+  final double magnitude = pow(10, (log(rawInterval) / ln10).floor()).toDouble();
   final double normalized = rawInterval / magnitude;
 
-  // Find the nearest "nice" number (1, 2, 5, 10)
-  if (normalized <= 2) return 1 * magnitude.toInt();
-  if (normalized <= 5) return 2 * magnitude.toInt();
-  if (normalized <= 10) return 5 * magnitude.toInt();
-  return 10 * magnitude.toInt();
+  // Find the nearest "nice" number (1, 2, 2.5, 5, 10)
+  if (normalized < 1.5) return (1 * magnitude).toInt();
+  if (normalized < 2.3) return (2 * magnitude).toInt();
+  if (normalized < 3.5) return (2.5 * magnitude).toInt();
+  if (normalized < 7.5) return (5 * magnitude).toInt();
+  return (10 * magnitude).toInt();
 }

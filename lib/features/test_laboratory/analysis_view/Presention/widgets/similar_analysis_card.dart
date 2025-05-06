@@ -181,9 +181,9 @@ class SimilarAnalysisCard extends StatelessWidget {
             itemCount: value.length,
             itemBuilder: (context, index) => Container(
               margin: EdgeInsets.symmetric(vertical: 2.w),
-              padding: label == 'الاسم' || label == 'النتيجة'|| label == 'المعيار'
+              padding: label == 'الاسم' || label == 'النتيجة'
                   ? EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h)
-                  : EdgeInsets.symmetric(horizontal: 0.w, vertical: 4.h),
+                  : EdgeInsets.symmetric(horizontal: 0.w, vertical: 3.h),
               decoration: BoxDecoration(
                 color: isHighlightValue ? borderColor : Colors.transparent,
                 borderRadius: BorderRadius.circular(12),

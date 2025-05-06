@@ -15,6 +15,11 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
   bool hasMore = true;
   bool isLoadingMore = false;
 
+  Future<void> init() async {
+    await emitTests();
+    await emitFilters();
+  }
+
     Future<void> emitTests({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {

@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/empty_state_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/similar_analysis_view.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/analysis_view_footer_row.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
@@ -14,81 +20,112 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/sea
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicalAnalysisView extends StatelessWidget {
- 
-
- const MedicalAnalysisView({super.key});
+  const MedicalAnalysisView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TestAnalysisViewCubit>(
-      create: (context) => getIt<TestAnalysisViewCubit>()
-        ..emitFilters()
-        ..emitTests(),
-      child: BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              toolbarHeight: 0,
-            ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  ViewAppBar(),
-                  Row(
-                    children: [
-                      SearchFilterWidget(
-                        filterTitle: 'السنة',
-                        isYearFilter: true,
-                        filterList: state.yearsFilter,
-                        onFilterSelected: (filterTitle, selectedValue) {
-                          if(selectedValue == 0) {
-                            context.read<TestAnalysisViewCubit>().emitTests();
-                            return;
-                          }
-                          if (selectedValue == null) {
-                            context.read<TestAnalysisViewCubit>().emitTests();
-                            return;
-                          } else {
-                            context
-                                .read<TestAnalysisViewCubit>()
-                                .emitFilteredData(selectedValue);
-                          }
-                        },
+      create: (context) => getIt<TestAnalysisViewCubit>()..init(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    ViewAppBar(),
+                    
+                    _buildFilterAndCountSection(context, state),
+                    
+                    verticalSpacing(8),
+                    
+                  state.analysisSummarizedDataList.isNotEmpty?  Text(
+                      "اضغط على التاريخ لعرض التحليل\nاضغط على النتيجة لعرض تحاليك المماثلة",
+                      style: AppTextStyles.customTextStyle,
+                      textAlign: TextAlign.center,
+                    ):SizedBox.shrink(),      
+                    verticalSpacing(16),
+                    Expanded(
+                      flex: 12,
+                      child: _buildMainContent(context, state),
+                    ),
+                                        if (state.requestStatus != RequestStatus.loading && state.requestStatus != RequestStatus.failure && state.analysisSummarizedDataList.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        child: AnalysisViewFooterRow(),
                       ),
-                      Spacer(),
-                      CustomAppContainer(
-                          label: 'العدد',
-                          value: state.analysisSummarizedDataList.length),
-                    ],
-                  ),
-                  verticalSpacing(8),
-                  Text(
-                    "اضغط على التاريخ لعرض التحليل\nاضغط على النتيجة لعرض تحاليك المماثلة",
-                    style: AppTextStyles.customTextStyle,
-                    textAlign: TextAlign.center,
-                  ),
-                  verticalSpacing(16),
-                  Expanded(
-                    flex: 12,
-                    child:
-                        buildTable(context, state.analysisSummarizedDataList),
-                  ),
-                  verticalSpacing(16),
-                  AnalysisViewFooterRow(),
-                  Spacer(
-                    flex: 1,
-                  ),
-                ],
-              ),
+                    
+                    Spacer(flex: 1),
+                  ],
+                );
+              },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildTable(BuildContext context,
+  Widget _buildFilterAndCountSection(BuildContext context, TestAnalysisViewState state) {
+    if (state.requestStatus == RequestStatus.loading || state.requestStatus == RequestStatus.failure) {
+      return SizedBox.shrink();
+    }
+    
+    return Row(
+      children: [
+        SearchFilterWidget(
+          filterTitle: 'السنة',
+          isYearFilter: true,
+          filterList: state.yearsFilter,
+          onFilterSelected: (filterTitle, selectedValue) {
+            if (selectedValue == 0 || selectedValue == null) {
+              context.read<TestAnalysisViewCubit>().emitTests();
+              return;
+            } else {
+              context
+                  .read<TestAnalysisViewCubit>()
+                  .emitFilteredData(selectedValue);
+            }
+          },
+        ),
+        Spacer(),
+        CustomAppContainer(
+            label: 'العدد',
+            value: state.analysisSummarizedDataList.length),
+      ],
+    );
+  }
+
+  Widget _buildMainContent(BuildContext context, TestAnalysisViewState state) {
+    // Initial loading state
+    if (state.requestStatus == RequestStatus.loading) {
+      return LoadingStateView();
+    }
+    
+    if (state.requestStatus == RequestStatus.failure) {
+      return ErrorViewWidget(
+        errorMessage: state.message ?? "حدث خطأ غير متوقع",
+        onRetry: () => context.read<TestAnalysisViewCubit>().init(),
+      );
+    }
+    
+    if (state.analysisSummarizedDataList.isEmpty) {
+      return EmptyStateWidget(
+        message: "لا توجد تحاليل متاحة",
+        imagePath: "assets/images/medical_file_icon.png", 
+        buttonText: "تحديث",
+        onButtonPressed: () => context.read<TestAnalysisViewCubit>().init(),
+      );
+    }
+    
+    return buildAnalysisTable(context, state.analysisSummarizedDataList);
+  }
+
+  Widget buildAnalysisTable(BuildContext context,
       List<AnalysisSummarizedData> analysisSummarizedData) {
     final ScrollController controller = ScrollController();
     return SingleChildScrollView(
@@ -96,7 +133,7 @@ class MedicalAnalysisView extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: DataTable(
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        headingRowColor: WidgetStateProperty.all(
+        headingRowColor: MaterialStateProperty.all(
             Color(0xFF014C8A)), // Header Background Color
         headingTextStyle: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold), // Header Text
@@ -110,62 +147,11 @@ class MedicalAnalysisView extends StatelessWidget {
           width: .3,
         ),
         columns: [
-          DataColumn(
-              headingRowAlignment: MainAxisAlignment.center,
-              label: Center(
-                  child: Text(
-                "التاريخ",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    fontSize: 16.sp),
-              ))),
-          DataColumn(
-              headingRowAlignment: MainAxisAlignment.center,
-              label: Center(
-                  child: Text(
-                "الاسم",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    fontSize: 16.sp),
-              ))),
-          DataColumn(
-              headingRowAlignment: MainAxisAlignment.center,
-              label: Center(
-                child: Text(
-                  "الرمز",
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                      fontSize: 16.sp),
-                ),
-              )),
-          DataColumn(
-              headingRowAlignment: MainAxisAlignment.center,
-              label: Center(
-                  child: Text(
-                "المعيار",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    fontSize: 16.sp),
-              ))),
-          DataColumn(
-              headingRowAlignment: MainAxisAlignment.center,
-              label: Center(
-                  child: Text(
-                "النتيجة",
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                    fontSize: 16.sp),
-              ))),
+          _buildDataColumn("التاريخ"),
+          _buildDataColumn("الاسم"),
+          _buildDataColumn("الرمز"),
+          _buildDataColumn("المعيار"),
+          _buildDataColumn("النتيجة"),
         ],
         rows: analysisSummarizedData.map((data) {
           return DataRow(cells: [
@@ -184,70 +170,12 @@ class MedicalAnalysisView extends StatelessWidget {
                       )),
                 ),
               ),
-              onTap: () async {
-                final result = await Navigator.push<bool>(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AnalysisDetailsView(
-                      documentId: data.id,
-                      testName: data.testName,
-                    ),
-                  ),
-                );
-                if (result != null as bool? && context.mounted) {
-                  await context.read<TestAnalysisViewCubit>().emitTests();
-                }
-              },
+              onTap: () => _navigateToDetailsView(context, data),
             ),
-            DataCell(Center(
-              child: Text(
-                data.testName,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            )),
-            DataCell(Center(
-              child: Text(
-                data.code,
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            )),
-            DataCell(Center(
-              child: Text(
-                data.standardRate ?? '-',
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            )),
+            _buildDataCellCenter(data.testName, maxLines: 2),
+            _buildDataCellCenter(data.code),
+            _buildDataCellCenter(data.standardRate ?? '-', color: Colors.black),
             DataCell(
-              onTap: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SimilarAnalysisView(
-                      testName: data.testName,
-                    ),
-                  ),
-                );
-
-                if (context.mounted) {
-                  await context.read<TestAnalysisViewCubit>().emitTests();
-                }
-              },
               Center(
                 child: Text(data.result.toString(),
                     maxLines: 3,
@@ -258,166 +186,75 @@ class MedicalAnalysisView extends StatelessWidget {
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w600)),
               ),
+              onTap: () => _navigateToSimilarAnalysisView(context, data),
             ),
           ]);
         }).toList(),
       ),
     );
   }
-}
 
-
-class AnalysisViewFooterRow extends StatelessWidget {
-  const AnalysisViewFooterRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
-      builder: (context, state) {
-        final cubit = context.read<TestAnalysisViewCubit>();
-        return Column(
-          children: [
-            // Loading indicator that appears above the footer when loading more items
-            if (state.isLoadingMore)
-              Padding(
-                padding: EdgeInsets.only(bottom: 8.h),
-                child: LinearProgressIndicator(
-                  minHeight: 2.h,
-                  color: AppColorsManager.mainDarkBlue,
-                  backgroundColor:
-                      AppColorsManager.mainDarkBlue.withOpacity(0.1),
-                ),
-              ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Load More Button
-                ElevatedButton(
-                  onPressed: state.isLoadingMore || !cubit.hasMore
-                      ? null
-                      : () => cubit.loadMoreMedicines(),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(158.w, 32.h),
-                    backgroundColor: state.isLoadingMore || !cubit.hasMore
-                        ? Colors.grey
-                        : AppColorsManager.mainDarkBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: state.isLoadingMore
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 16.w,
-                              height: 16.h,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            horizontalSpacing(8.w),
-                            Text(
-                              "جاري التحميل...",
-                              style: AppTextStyles.font14whiteWeight600,
-                            ),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "عرض المزيد",
-                              style:
-                                  AppTextStyles.font14whiteWeight600.copyWith(
-                                color: !cubit.hasMore
-                                    ? Colors.black
-                                    : Colors.white,
-                              ),
-                            ),
-                            horizontalSpacing(8.w),
-                            Icon(
-                              Icons.expand_more,
-                              color:
-                                  !cubit.hasMore ? Colors.black : Colors.white,
-                              size: 20.sp,
-                            ),
-                          ],
-                        ),
-                ),
-
-                // Items Count Badge
-                !cubit.hasMore
-                    ? SizedBox.shrink()
-                    : Container(
-                        width: 47.w,
-                        height: 28.h,
-                        padding: EdgeInsets.symmetric(horizontal: 6.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(11.r),
-                          border: Border.all(
-                            color: Color(0xFF014C8A),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "+${cubit.pageSize}",
-                            style:
-                                AppTextStyles.font16DarkGreyWeight400.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            ),
-                          ),
-                        ),
-                      ),
-              ],
-            ),
-          ],
-        );
-      },
+  DataColumn _buildDataColumn(String title) {
+    return DataColumn(
+      headingRowAlignment: MainAxisAlignment.center,
+      label: Center(
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+              fontWeight: FontWeight.w500,
+              color: Colors.white,
+              fontSize: 16.sp),
+        ),
+      ),
     );
   }
-}
 
-
-
-class CustomAppContainer extends StatelessWidget {
-  const CustomAppContainer({
-    super.key,
-    required this.label,
-    required this.value,
-  });
-
-  final String label;
-  final int value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColorsManager.secondaryColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.font12blackWeight400
-                .copyWith(fontWeight: FontWeight.w500),
+  DataCell _buildDataCellCenter(String text, {int maxLines = 3, Color? color}) {
+    return DataCell(
+      Center(
+        child: Text(
+          text,
+          maxLines: maxLines,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: color ?? Colors.black87,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
           ),
-          horizontalSpacing(8),
-          Text(
-            value.toString(),
-            style: AppTextStyles.font16DarkGreyWeight400
-                .copyWith(color: AppColorsManager.mainDarkBlue),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  Future<void> _navigateToDetailsView(BuildContext context, AnalysisSummarizedData data) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AnalysisDetailsView(
+          documentId: data.id,
+          testName: data.testName,
+        ),
+      ),
+    );
+    
+    if (result == true && context.mounted) {
+      await context.read<TestAnalysisViewCubit>().emitTests();
+    }
+  }
+
+  Future<void> _navigateToSimilarAnalysisView(BuildContext context, AnalysisSummarizedData data) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SimilarAnalysisView(
+          testName: data.testName,
+        ),
+      ),
+    );
+
+    if (context.mounted) {
+      await context.read<TestAnalysisViewCubit>().emitTests();
+    }
   }
 }

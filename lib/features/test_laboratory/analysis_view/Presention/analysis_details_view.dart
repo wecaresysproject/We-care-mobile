@@ -12,6 +12,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
@@ -39,10 +40,7 @@ class AnalysisDetailsView extends StatelessWidget {
         builder: (context, state) {
           if (state.requestStatus == RequestStatus.loading &&
               !state.isDeleteRequest) {
-            return Scaffold(
-              body: const Center(child: CircularProgressIndicator()),
-              backgroundColor: Colors.white,
-            );
+            return LoadingStateView();
           }
           return Scaffold(
             appBar: AppBar(
