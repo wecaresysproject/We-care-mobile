@@ -10,9 +10,16 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
   final bool isNewComplaintAddedSuccefully;
   final List<String> complaintPlaces;
   final String message; // error or success message
-  final List<String> releatedComplaintsToSelectedBodyPartName;
+  final List<String>
+      releatedComplaintsToSelectedBodyPartName; // الاعراض المرضية - الشكوي
   final bool isEditingComplaint;
   final bool isEditingComplaintSuccess;
+  final List<String>
+      complaintPlacesRelativeToMainRegion; // الاعراض المرضية - العضو/الجزء
+  final OptionsLoadingState complaintPlacesRelativeToMainRegionLoadingState;
+  final String?
+      selectedOrganOrPartSymptom; // الاعراض المرضية - العضو/الجزء  => الجزء المختار
+  final OptionsLoadingState mainRegionComplainsLoadingState;
 
   const MedicalComplaintDataEntryDetailsState({
     this.symptomsDiseaseRegion,
@@ -26,6 +33,11 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     this.message = '',
     this.isEditingComplaint = false,
     this.isEditingComplaintSuccess = false,
+    this.complaintPlacesRelativeToMainRegion = const [],
+    this.selectedOrganOrPartSymptom,
+    this.mainRegionComplainsLoadingState = OptionsLoadingState.loading,
+    this.complaintPlacesRelativeToMainRegionLoadingState =
+        OptionsLoadingState.loading,
   });
   MedicalComplaintDataEntryDetailsState copyWith({
     String? symptomsDiseaseRegion,
@@ -39,6 +51,10 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     List<String>? releatedComplaintsToSelectedBodyPartName,
     bool? isEditingComplaint,
     bool? isEditingComplaintSuccess,
+    List<String>? complaintPlacesRelativeToMainRegion,
+    String? selectedOrganOrPartSymptom,
+    OptionsLoadingState? mainRegionComplainsLoadingState,
+    OptionsLoadingState? complaintPlacesRelativeToMainRegionLoadingState,
   }) {
     return MedicalComplaintDataEntryDetailsState(
       symptomsDiseaseRegion:
@@ -58,6 +74,16 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
       isEditingComplaint: isEditingComplaint ?? this.isEditingComplaint,
       isEditingComplaintSuccess:
           isEditingComplaintSuccess ?? this.isEditingComplaintSuccess,
+      complaintPlacesRelativeToMainRegion:
+          complaintPlacesRelativeToMainRegion ??
+              this.complaintPlacesRelativeToMainRegion,
+      selectedOrganOrPartSymptom:
+          selectedOrganOrPartSymptom ?? this.selectedOrganOrPartSymptom,
+      mainRegionComplainsLoadingState: mainRegionComplainsLoadingState ??
+          this.mainRegionComplainsLoadingState,
+      complaintPlacesRelativeToMainRegionLoadingState:
+          complaintPlacesRelativeToMainRegionLoadingState ??
+              this.complaintPlacesRelativeToMainRegionLoadingState,
     );
   }
 
@@ -74,6 +100,11 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
           releatedComplaintsToSelectedBodyPartName: const [],
           isEditingComplaint: false,
           isEditingComplaintSuccess: false, //TODO: recheck this later
+          complaintPlacesRelativeToMainRegion: const [],
+          selectedOrganOrPartSymptom: null,
+          mainRegionComplainsLoadingState: OptionsLoadingState.loading,
+          complaintPlacesRelativeToMainRegionLoadingState:
+              OptionsLoadingState.loading,
         );
 
   @override
@@ -90,5 +121,9 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
         releatedComplaintsToSelectedBodyPartName,
         isEditingComplaint,
         isEditingComplaintSuccess,
+        complaintPlacesRelativeToMainRegion,
+        selectedOrganOrPartSymptom,
+        mainRegionComplainsLoadingState,
+        complaintPlacesRelativeToMainRegionLoadingState,
       ];
 }

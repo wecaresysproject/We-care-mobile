@@ -23,4 +23,6 @@ class EmergencyComplaintsApiConstants {
   static const getPlaceOfComplaintFilter =
       "/ViewEmergencyComplaint/AllSymptomsLocation";
   static const getFilteredList = "/ViewEmergencyComplaint/filter";
+  static const getAllOrganOrPartSymptomsRelativeToMainRegionEndPoint =
+      "/EnterEmergencyComplain/BodyPartsByMainArea";
 }
