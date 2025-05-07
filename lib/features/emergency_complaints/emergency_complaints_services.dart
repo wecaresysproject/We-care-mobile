@@ -49,7 +49,9 @@ abstract class EmergencyComplaintsServices {
 
   @GET(EmergencyComplaintsApiConstants.getRelevantComplaintsToBodyPartName)
   Future<dynamic> getAllComplaintsRelevantToBodyPartName(
-    @Query('bodyPartName') String bodyPartName,
+    @Query('mainArea') String mainArea,
+    @Query('bodyPart') String bodyPartName,
+    @Query('language') String language,
   );
 
   @POST(EmergencyComplaintsApiConstants.postDataEntryEndpoint)
@@ -68,5 +70,11 @@ abstract class EmergencyComplaintsServices {
   Future<dynamic> getAllMedicinesNames(
     @Query('language') String language,
     @Query('userType') String userType,
+  );
+  @GET(EmergencyComplaintsApiConstants
+      .getAllOrganOrPartSymptomsRelativeToMainRegionEndPoint)
+  Future<dynamic> getAllOrganOrPartSymptomsRelativeToMainRegion(
+    @Query('mainArea') String mainArea,
+    @Query('language') String language,
   );
 }

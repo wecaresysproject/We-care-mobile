@@ -199,6 +199,7 @@ class AppRouter {
       case Routes.medicationSymptomsFormFieldView:
         return MaterialPageRoute(
           builder: (context) => MedicineSyptomsDetailsView(
+            //* null to path through getAllRequestsForAddingNewComplaintView flow
             editingComplaintDetails: null,
             complaintId: 2,
           ),

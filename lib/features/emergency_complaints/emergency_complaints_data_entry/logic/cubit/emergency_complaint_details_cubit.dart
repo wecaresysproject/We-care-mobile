@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
@@ -91,6 +92,11 @@ class EmergencyComplaintDataEntryDetailsCubit
   }
 
   Future<void> getAllComplaintsPlaces() async {
+    emit(
+      state.copyWith(
+        mainRegionComplainsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
     final response =
         await _emergencyComplaintsDataEntryRepo.getAllPlacesOfComplaints(
       language: AppStrings.arabicLang,
@@ -100,6 +106,36 @@ class EmergencyComplaintDataEntryDetailsCubit
         emit(
           state.copyWith(
             complaintPlaces: complaints,
+            mainRegionComplainsLoadingState: OptionsLoadingState.loaded,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            mainRegionComplainsLoadingState: OptionsLoadingState.error,
+          ),
+        );
+      },
+    );
+  }
+
+// الاعراض المرضية - الشكوى
+  Future<void> getAllRelevantComplaintsToSelectedBodyPart(
+    String selectedBodyPartName,
+  ) async {
+    final response = await _emergencyComplaintsDataEntryRepo
+        .getAllComplaintsRelevantToBodyPartName(
+      language: AppStrings.arabicLang,
+      bodyPartName: selectedBodyPartName,
+      mainArea: state.symptomsDiseaseRegion!,
+    );
+    response.when(
+      success: (complaints) {
+        emit(
+          state.copyWith(
+            releatedComplaintsToSelectedBodyPartName: complaints,
           ),
         );
       },
@@ -113,24 +149,37 @@ class EmergencyComplaintDataEntryDetailsCubit
     );
   }
 
-  Future<void> getAllRelevantComplaintsToSelectedBodyPart(
-      String selectedBodyPartName) async {
+  // الاعراض المرضية - العضو/الجزء
+  Future<void> getAllOrganOrPartSymptomsRelativeToMainRegion(
+      String selectedMainRegion) async {
+    emit(
+      state.copyWith(
+        complaintPlacesRelativeToMainRegionLoadingState:
+            OptionsLoadingState.loading,
+      ),
+    );
     final response = await _emergencyComplaintsDataEntryRepo
-        .getAllComplaintsRelevantToBodyPartName(
-      // language: AppStrings.arabicLang,
-      bodyPartName: selectedBodyPartName,
+        .getAllOrganOrPartSymptomsRelativeToMainRegion(
+      language: AppStrings.arabicLang,
+      mainRegion: selectedMainRegion,
     );
     response.when(
-      success: (complaints) {
+      success: (response) {
         emit(
           state.copyWith(
-            releatedComplaintsToSelectedBodyPartName: complaints,
+            complaintPlacesRelativeToMainRegion: response,
+            complaintPlacesRelativeToMainRegionLoadingState:
+                OptionsLoadingState.loaded,
           ),
         );
       },
       failure: (error) {
         emit(
-          state.copyWith(),
+          state.copyWith(
+            message: error.errors.first,
+            complaintPlacesRelativeToMainRegionLoadingState:
+                OptionsLoadingState.error,
+          ),
         );
       },
     );
@@ -140,7 +189,8 @@ class EmergencyComplaintDataEntryDetailsCubit
     if (state.symptomsDiseaseRegion == null ||
         state.natureOfComplaint == null ||
         state.medicalSymptomsIssue == null ||
-        state.complaintDegree == null) {
+        state.complaintDegree == null ||
+        state.selectedOrganOrPartSymptom == null) {
       emit(
         state.copyWith(
           isAddNewComplaintFormsValidated: false,
@@ -157,7 +207,14 @@ class EmergencyComplaintDataEntryDetailsCubit
 
   Future<void> updateSymptomsDiseaseRegion(String? symptom) async {
     emit(state.copyWith(symptomsDiseaseRegion: symptom));
-    await getAllRelevantComplaintsToSelectedBodyPart(symptom!);
+    await getAllOrganOrPartSymptomsRelativeToMainRegion(symptom!);
+    await getAllRelevantComplaintsToSelectedBodyPart(symptom);
+    validateRequiredFields();
+  }
+
+  Future<void> updateSelectedOrganOrPartSymptom(String? value) async {
+    emit(state.copyWith(selectedOrganOrPartSymptom: value));
+    // await getAllRelevantComplaintsToSelectedBodyPart(symptom!);
     validateRequiredFields();
   }
 
