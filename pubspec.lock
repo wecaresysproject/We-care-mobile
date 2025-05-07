@@ -167,21 +167,21 @@ packages:
     source: hosted
     version: "1.3.1"
   camera:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: camera
-      sha256: dfa8fc5a1adaeb95e7a54d86a5bd56f4bb0e035515354c8ac6d262e35cec2ec8
+      sha256: "413d2b34fe28496c35c69ede5b232fb9dd5ca2c3a4cb606b14efc1c7546cc8cb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.6"
-  camera_android:
+    version: "0.11.1"
+  camera_android_camerax:
     dependency: transitive
     description:
-      name: camera_android
-      sha256: bd9737671a00d979e0310a946e5be2fdc621b6a36b95378755cb3e4498e61485
+      name: camera_android_camerax
+      sha256: f0dcbce91623f75030840609de9b64d0d73f86df279c6e9588c1501245a05eb2
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.10+2"
+    version: "0.6.15+2"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -600,14 +600,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.28"
-  flutter_scalable_ocr:
-    dependency: "direct main"
-    description:
-      name: flutter_scalable_ocr
-      sha256: f9e6ba789bad4d82187f34d1b4bfa4e6555eeaedf67075d683a8af2483c510ce
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.1"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -734,18 +726,18 @@ packages:
     dependency: transitive
     description:
       name: google_mlkit_commons
-      sha256: "7e9a6d6e66b44aa8cfe944bda9bc3346c52486dd890ca49e5bc98845cda40d7f"
+      sha256: "8f40fbac10685cad4715d11e6a0d86837d9ad7168684dfcad29610282a88e67a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.0"
+    version: "0.11.0"
   google_mlkit_text_recognition:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_mlkit_text_recognition
-      sha256: e7609cec8de3022680a36ead8a8bafa9fd2360ea018a728feaad12dcb0e3c177
+      sha256: "96173ad4dd7fd06c660e22ac3f9e9f1798a517fe7e48bee68eeec83853224224"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0"
+    version: "0.15.0"
   graphs:
     dependency: transitive
     description:

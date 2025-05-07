@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/global/theming/color_manager.dart' as core_colors;
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_ocr_scanner.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
@@ -66,7 +66,7 @@ class MedicneNameScannerContainer extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColorsManager.mainDarkBlue,
+                      backgroundColor: core_colors.AppColorsManager.mainDarkBlue,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(
@@ -87,7 +87,7 @@ class MedicneNameScannerContainer extends StatelessWidget {
               const Text(
                 "برجاء توجيه الكاميرا على الاسم الإنجليزي للدواء المطبوع على العبوة",
                 style: TextStyle(
-                  color: AppColorsManager.mainDarkBlue,
+                  color: core_colors.AppColorsManager.mainDarkBlue,
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.right,
