@@ -77,4 +77,9 @@ abstract class EmergencyComplaintsServices {
     @Query('mainArea') String mainArea,
     @Query('language') String language,
   );
+  @GET(EmergencyComplaintsApiConstants.searchBySyptomsEndpoint)
+  Future<dynamic> searchBySyptoms(
+    @Query('keyWord') String keyWord,
+    @Query('language') String language,
+  );
 }

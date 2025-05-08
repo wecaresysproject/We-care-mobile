@@ -9,15 +9,17 @@ class MedicalComplaint {
   @HiveField(0)
   @JsonKey(name: 'symptoms_LocationOfPainOrComplaint')
   final String symptomsRegion; // الأعراض المرضية - المنطقة
-
   @HiveField(1)
+  @JsonKey(name: 'partOfPlaceOfComplaints')
+  final String partOrOrganOfComplaints; //الأعراض المرضية - الجزء أو العضو
+  @HiveField(2)
   @JsonKey(name: 'symptoms_Complaint')
   final String sypmptomsComplaintIssue; // الأعراض المرضية - الشكوى
 
-  @HiveField(2)
+  @HiveField(3)
   final String natureOfComplaint; // طبيعة الشكوى
 
-  @HiveField(3)
+  @HiveField(4)
   final String severityOfComplaint; // حدة الشكوى
 
   MedicalComplaint({
@@ -25,6 +27,7 @@ class MedicalComplaint {
     required this.sypmptomsComplaintIssue,
     required this.natureOfComplaint,
     required this.severityOfComplaint,
+    required this.partOrOrganOfComplaints,
   });
 
   // JSON serialization
@@ -39,6 +42,7 @@ class MedicalComplaint {
     String? sypmptomsComplaintIssue,
     String? natureOfComplaint,
     String? severityOfComplaint,
+    String? partOrOrganOfComplaints,
   }) {
     return MedicalComplaint(
       symptomsRegion: symptomsRegion ?? this.symptomsRegion,
@@ -46,6 +50,8 @@ class MedicalComplaint {
           sypmptomsComplaintIssue ?? this.sypmptomsComplaintIssue,
       natureOfComplaint: natureOfComplaint ?? this.natureOfComplaint,
       severityOfComplaint: severityOfComplaint ?? this.severityOfComplaint,
+      partOrOrganOfComplaints:
+          partOrOrganOfComplaints ?? this.partOrOrganOfComplaints,
     );
   }
 }

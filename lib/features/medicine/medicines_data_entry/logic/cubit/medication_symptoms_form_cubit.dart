@@ -16,6 +16,7 @@ class MedicationSymptomsFormCubit extends Cubit<MedicationSymptomsFormState> {
       sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
       natureOfComplaint: state.natureOfComplaint!,
       severityOfComplaint: state.complaintDegree!,
+      partOrOrganOfComplaints: "", //state.selectedOrganOrPartSymptom!,
     );
     final Box<MedicalComplaint> medicalComplaintsBox =
         Hive.box<MedicalComplaint>("medical_complaints");

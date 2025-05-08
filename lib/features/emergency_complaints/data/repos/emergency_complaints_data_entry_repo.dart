@@ -1,7 +1,9 @@
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
+import 'package:we_care/features/medicine/data/models/body_symptom.dart';
 
 import '../../emergency_complaints_services.dart';
 
@@ -106,6 +108,23 @@ class EmergencyComplaintsDataEntryRepo {
       final complaints =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<BodySymptom>>> searchForMedicalIssueComplains(
+    String query,
+  ) async {
+    try {
+      final response = await _emergencyComplaintsServices.searchBySyptoms(
+        query,
+        AppStrings.arabicLang,
+      );
+      final bodySymptoms = (response['data'] as List)
+          .map((e) => BodySymptom.fromJson(e))
+          .toList();
+      return ApiResult.success(bodySymptoms);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

@@ -25,4 +25,7 @@ class EmergencyComplaintsApiConstants {
   static const getFilteredList = "/ViewEmergencyComplaint/filter";
   static const getAllOrganOrPartSymptomsRelativeToMainRegionEndPoint =
       "/EnterEmergencyComplain/BodyPartsByMainArea";
+
+  static const searchBySyptomsEndpoint =
+      "/EnterEmergencyComplain/SearchKeywords";
 }
