@@ -20,6 +20,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
   final String?
       selectedOrganOrPartSymptom; // الاعراض المرضية - العضو/الجزء  => الجزء المختار
   final OptionsLoadingState mainRegionComplainsLoadingState;
+  final List<BodySymptom> bodySyptomsResults;
 
   const MedicalComplaintDataEntryDetailsState({
     this.symptomsDiseaseRegion,
@@ -38,6 +39,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     this.mainRegionComplainsLoadingState = OptionsLoadingState.loading,
     this.complaintPlacesRelativeToMainRegionLoadingState =
         OptionsLoadingState.loading,
+    this.bodySyptomsResults = const [],
   });
   MedicalComplaintDataEntryDetailsState copyWith({
     String? symptomsDiseaseRegion,
@@ -55,6 +57,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     String? selectedOrganOrPartSymptom,
     OptionsLoadingState? mainRegionComplainsLoadingState,
     OptionsLoadingState? complaintPlacesRelativeToMainRegionLoadingState,
+    List<BodySymptom>? bodySyptomsResults,
   }) {
     return MedicalComplaintDataEntryDetailsState(
       symptomsDiseaseRegion:
@@ -84,6 +87,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
       complaintPlacesRelativeToMainRegionLoadingState:
           complaintPlacesRelativeToMainRegionLoadingState ??
               this.complaintPlacesRelativeToMainRegionLoadingState,
+      bodySyptomsResults: bodySyptomsResults ?? this.bodySyptomsResults,
     );
   }
 
@@ -105,6 +109,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
           mainRegionComplainsLoadingState: OptionsLoadingState.loading,
           complaintPlacesRelativeToMainRegionLoadingState:
               OptionsLoadingState.loading,
+          bodySyptomsResults: const [],
         );
 
   @override
@@ -125,5 +130,6 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
         selectedOrganOrPartSymptom,
         mainRegionComplainsLoadingState,
         complaintPlacesRelativeToMainRegionLoadingState,
+        bodySyptomsResults,
       ];
 }

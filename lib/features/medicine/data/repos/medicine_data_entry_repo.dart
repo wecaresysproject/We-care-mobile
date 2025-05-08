@@ -130,7 +130,8 @@ class MedicinesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
-      Future<ApiResult<List<MatchedMedicineModel>>> getMatchedMedicines({
+
+  Future<ApiResult<List<MatchedMedicineModel>>> getMatchedMedicines({
     required String language,
     required String userType,
     required String medicineName,
@@ -142,12 +143,11 @@ class MedicinesDataEntryRepo {
         userType,
       );
       // Assuming response['data'] is a List of medicine items
-    final List<dynamic> dataList = response['data'];
-    final List<MatchedMedicineModel> matchedMedicines = dataList
-        .map((item) => MatchedMedicineModel.fromJson(item))
-        .toList();
+      final List<dynamic> dataList = response['data'];
+      final List<MatchedMedicineModel> matchedMedicines =
+          dataList.map((item) => MatchedMedicineModel.fromJson(item)).toList();
 
-    return ApiResult.success(matchedMedicines);
+      return ApiResult.success(matchedMedicines);
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));
     }

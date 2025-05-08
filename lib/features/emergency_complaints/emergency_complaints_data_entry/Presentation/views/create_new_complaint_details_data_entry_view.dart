@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/test.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -126,8 +128,9 @@ Widget _bodyRegionSearchTab(
                     },
                     bottomSheetTitle: "اختر العضو/الجزء",
                     searchHintText: "ابحث عن العضو",
-                    loadingState:
-                        state.complaintPlacesRelativeToMainRegionLoadingState,
+                    loadingState: state.isEditingComplaint
+                        ? OptionsLoadingState.loaded
+                        : state.complaintPlacesRelativeToMainRegionLoadingState,
                   ),
 
                   verticalSpacing(16),
@@ -137,7 +140,7 @@ Widget _bodyRegionSearchTab(
                         ? AppColorsManager.warningColor
                         : AppColorsManager.textfieldOutsideBorderColor,
                     categoryLabel:
-                        "الأعراض المرضية - الشكوى", // Another Dropdown Example
+                        "الأعراض المرضية - الشكوى", // Another Dropdown Example§
                     containerHintText: state.medicalSymptomsIssue ??
                         "اختر الأعراض المستدعية", //state.selectedDisease ??
                     options: state.releatedComplaintsToSelectedBodyPartName,
@@ -256,129 +259,125 @@ Widget _symptomSearchTab(
       horizontal: 16.w,
       vertical: 36.h,
     ),
-    child: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
-              MedicalComplaintDataEntryDetailsState>(
-            builder: (context, state) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  UserSelectionContainer(
-                    containerBorderColor: state.medicalSymptomsIssue == null
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
-                    categoryLabel:
-                        "الأعراض المرضية - الشكوى", // Another Dropdown Example
-                    containerHintText: state.medicalSymptomsIssue ??
-                        "اختر الأعراض المستدعية", //state.selectedDisease ??
-                    options: state.releatedComplaintsToSelectedBodyPartName,
-                    onOptionSelected: (value) {
-                      context
-                          .read<EmergencyComplaintDataEntryDetailsCubit>()
-                          .updateMedicalSymptomsIssue(value);
-                    },
-                    bottomSheetTitle: "اختر الأعراض المستدعية",
-                    searchHintText: "ابحث عن شكوى",
-                  ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
+            MedicalComplaintDataEntryDetailsState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomUserSelectionContainer(
+                  containerBorderColor: state.medicalSymptomsIssue == null
+                      ? AppColorsManager.warningColor
+                      : AppColorsManager.textfieldOutsideBorderColor,
+                  categoryLabel:
+                      "الأعراض المرضية - الشكوى", // Another Dropdown Example
+                  containerHintText: state.medicalSymptomsIssue ??
+                      "اختر الأعراض المستدعية", //state.selectedDisease ??
+                  // options: state.releatedComplaintsToSelectedBodyPartName,
+                  onOptionSelected: (value) {
+                    context
+                        .read<EmergencyComplaintDataEntryDetailsCubit>()
+                        .updateMedicalSymptomsIssue(value);
+                  },
+                  bottomSheetTitle: "اختر الأعراض المستدعية",
+                  searchHintText: "ابحث عن شكوى",
+                ),
 
-                  verticalSpacing(16),
+                verticalSpacing(16),
 
-                  UserSelectionContainer(
-                    allowManualEntry: true,
-                    containerBorderColor: state.natureOfComplaint == null
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
-                    options: [
-                      "مستمرة",
-                      "منقطعة",
-                      "تزايد مع الوقت",
-                      "تتناقص مع الوقت",
-                    ],
-                    categoryLabel: "طبيعة الشكوى",
-                    bottomSheetTitle:
-                        state.natureOfComplaint ?? "اختر طبيعة الشكوى",
-                    onOptionSelected: (value) async {
-                      context
-                          .read<EmergencyComplaintDataEntryDetailsCubit>()
-                          .updateNatureOfComplaint(value);
-                    },
-                    containerHintText: state.natureOfComplaint ??
-                        "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
+                UserSelectionContainer(
+                  allowManualEntry: true,
+                  containerBorderColor: state.natureOfComplaint == null
+                      ? AppColorsManager.warningColor
+                      : AppColorsManager.textfieldOutsideBorderColor,
+                  options: [
+                    "مستمرة",
+                    "منقطعة",
+                    "تزايد مع الوقت",
+                    "تتناقص مع الوقت",
+                  ],
+                  categoryLabel: "طبيعة الشكوى",
+                  bottomSheetTitle:
+                      state.natureOfComplaint ?? "اختر طبيعة الشكوى",
+                  onOptionSelected: (value) async {
+                    context
+                        .read<EmergencyComplaintDataEntryDetailsCubit>()
+                        .updateNatureOfComplaint(value);
+                  },
+                  containerHintText: state.natureOfComplaint ??
+                      "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
 
-                    userEntryLabelText: "اضف الوصف من عندك",
-                    searchHintText: "ابحث عن طبيعة الشكوى",
-                  ),
-                  verticalSpacing(16),
-                  // Title
-                  Text(
-                    "حدة الشكوى",
-                    style: AppTextStyles.font18blackWight500,
-                  ),
-                  verticalSpacing(10),
-                  OptionSelectorWidget(
-                    containerValidationColor: state.complaintDegree == null
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
-                    options: [
-                      "قليلة",
-                      "متوسطة",
-                      "شديدة",
-                      "شديدة جدا",
-                      "غير محتملة",
-                    ],
-                    initialSelectedOption: state.complaintDegree,
-                    onOptionSelected: (p0) {
-                      context
-                          .read<EmergencyComplaintDataEntryDetailsCubit>()
-                          .updateComplaintDegree(p0);
-                    },
-                  ),
-                  verticalSpacing(16),
-                  BlocListener<EmergencyComplaintDataEntryDetailsCubit,
-                      MedicalComplaintDataEntryDetailsState>(
-                    listener: (context, state) async {
-                      if (state.isNewComplaintAddedSuccefully) {
-                        await showSuccess("تم اضافة العرض بنجاح");
-                        if (!context.mounted) return;
-                        context.pop(result: true);
+                  userEntryLabelText: "اضف الوصف من عندك",
+                  searchHintText: "ابحث عن طبيعة الشكوى",
+                ),
+                verticalSpacing(16),
+                // Title
+                Text(
+                  "حدة الشكوى",
+                  style: AppTextStyles.font18blackWight500,
+                ),
+                verticalSpacing(10),
+                OptionSelectorWidget(
+                  containerValidationColor: state.complaintDegree == null
+                      ? AppColorsManager.warningColor
+                      : AppColorsManager.textfieldOutsideBorderColor,
+                  options: [
+                    "قليلة",
+                    "متوسطة",
+                    "شديدة",
+                    "شديدة جدا",
+                    "غير محتملة",
+                  ],
+                  initialSelectedOption: state.complaintDegree,
+                  onOptionSelected: (p0) {
+                    context
+                        .read<EmergencyComplaintDataEntryDetailsCubit>()
+                        .updateComplaintDegree(p0);
+                  },
+                ),
+                verticalSpacing(16),
+                BlocListener<EmergencyComplaintDataEntryDetailsCubit,
+                    MedicalComplaintDataEntryDetailsState>(
+                  listener: (context, state) async {
+                    if (state.isNewComplaintAddedSuccefully) {
+                      await showSuccess("تم اضافة العرض بنجاح");
+                      if (!context.mounted) return;
+                      context.pop(result: true);
+                    }
+                    if (state.isEditingComplaintSuccess) {
+                      await showSuccess("تم تعديل  تفاصيل العرض بنجاح");
+                      if (!context.mounted) return;
+                      context.pop(result: true);
+                    }
+                  },
+                  child: AppCustomButton(
+                    title: state.isEditingComplaint
+                        ? "تَعديلُ مَعْلوماتِ العرض"
+                        : "اضافة عرض",
+                    onPressed: () async {
+                      if (state.isAddNewComplaintFormsValidated) {
+                        state.isEditingComplaint
+                            ? await context
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
+                                .updateMedicalComplaint(
+                                    complaintId!, editingComplaintDetails!)
+                            : await context
+                                .read<EmergencyComplaintDataEntryDetailsCubit>()
+                                .saveNewMedicalComplaint();
                       }
-                      if (state.isEditingComplaintSuccess) {
-                        await showSuccess("تم تعديل  تفاصيل العرض بنجاح");
-                        if (!context.mounted) return;
-                        context.pop(result: true);
-                      }
                     },
-                    child: AppCustomButton(
-                      title: state.isEditingComplaint
-                          ? "تَعديلُ مَعْلوماتِ العرض"
-                          : "اضافة عرض",
-                      onPressed: () async {
-                        if (state.isAddNewComplaintFormsValidated) {
-                          state.isEditingComplaint
-                              ? await context
-                                  .read<
-                                      EmergencyComplaintDataEntryDetailsCubit>()
-                                  .updateMedicalComplaint(
-                                      complaintId!, editingComplaintDetails!)
-                              : await context
-                                  .read<
-                                      EmergencyComplaintDataEntryDetailsCubit>()
-                                  .saveNewMedicalComplaint();
-                        }
-                      },
-                      isEnabled: state.isAddNewComplaintFormsValidated,
-                    ),
+                    isEnabled: state.isAddNewComplaintFormsValidated,
                   ),
-                  // verticalSpacing(90),
-                ],
-              );
-            },
-          )
-        ],
-      ),
+                ),
+                // verticalSpacing(90),
+              ],
+            );
+          },
+        )
+      ],
     ),
   );
 }

@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
+import 'package:we_care/features/medicine/data/models/body_symptom.dart';
 
 part 'emergency_complaint_details_state.dart';
 
@@ -16,12 +17,34 @@ class EmergencyComplaintDataEntryDetailsCubit
       : super(MedicalComplaintDataEntryDetailsState.initial());
   final EmergencyComplaintsDataEntryRepo _emergencyComplaintsDataEntryRepo;
 
+  // Future<void> sysptomsSearch(String query) async {
+  //   // emit(SearchState.loading());
+
+  //   final result = await _emergencyComplaintsDataEntryRepo
+  //       .searchForMedicalIssueComplains(query);
+  //   result.when(
+  //     success: (result) {
+  //       final syptomsDescription = result.map((e) => e.description).toList();
+  //       // emit(SearchState.loaded(syptomsDescription));
+  //       emit(
+  //         state.copyWith(
+  //           bodySyptomsResults: result,
+  //         ),
+  //       );
+  //     },
+  //     failure: (error) {
+  //       // emit(SearchState.error(error.errors.first));
+  //     },
+  //   );
+  // }
+
   Future<void> saveNewMedicalComplaint() async {
     final newMedicalComplaint = MedicalComplaint(
       symptomsRegion: state.symptomsDiseaseRegion!,
       sypmptomsComplaintIssue: state.medicalSymptomsIssue!,
       natureOfComplaint: state.natureOfComplaint!,
       severityOfComplaint: state.complaintDegree!,
+      partOrOrganOfComplaints: state.selectedOrganOrPartSymptom!,
     );
     final Box<MedicalComplaint> medicalComplaintsBox =
         Hive.box<MedicalComplaint>("medical_complaints");
@@ -45,6 +68,7 @@ class EmergencyComplaintDataEntryDetailsCubit
       sypmptomsComplaintIssue: state.medicalSymptomsIssue,
       natureOfComplaint: state.natureOfComplaint,
       severityOfComplaint: state.complaintDegree,
+      partOrOrganOfComplaints: state.selectedOrganOrPartSymptom,
     );
     if (index >= 0 && index < medicalComplaintsBox.length) {
       await medicalComplaintsBox.put(
@@ -81,6 +105,7 @@ class EmergencyComplaintDataEntryDetailsCubit
         medicalSymptomsIssue: medicalComplaint.sypmptomsComplaintIssue,
         natureOfComplaint: medicalComplaint.natureOfComplaint,
         complaintDegree: medicalComplaint.severityOfComplaint,
+        selectedOrganOrPartSymptom: medicalComplaint.partOrOrganOfComplaints,
       ),
     );
     validateRequiredFields();
