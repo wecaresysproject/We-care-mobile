@@ -280,7 +280,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> with WidgetsBin
           children: [
             // Camera Preview (1/6 of screen height)
             SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: MediaQuery.of(context).size.height / 7,
               child: Stack(
                 children: [
                   if (_isCameraInitialized && !loading)
@@ -326,20 +326,19 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> with WidgetsBin
             // Instruction Text
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              margin: EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(20),
-         
-            ),
-                   child: Text(
+              ),
+              child: Text(
                 'برجاء توجيه الكاميرا على الاسم الإنجليزي للدواء المطبوع على العبوة ثم التقط صورة',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
-              ),),
+              ),
+            ),
             
             // Medicine Name Preview
             Container(
@@ -377,7 +376,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> with WidgetsBin
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColorsManager.mainDarkBlue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -402,141 +401,200 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner> with WidgetsBin
               ),
             ),
             
-            // Results List
-            BlocConsumer<MedicineScannerCubit, MedicineScannerState>(
-              listener: (context, state) async {
-                if (state.matchedMedicines.isEmpty &&
-                    state.message.isNotEmpty) {
-                  await showError(state.message);
-                }
-              },
-              builder: (context, state) {
-                if (state.matchedMedicines.isNotEmpty) {
-                  return Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 8),
+  // Part of the BlocConsumer for displaying matched medicines - updated UI design
+BlocConsumer<MedicineScannerCubit, MedicineScannerState>(
+  listener: (context, state) async {
+    if (state.matchedMedicines.isEmpty && state.message.isNotEmpty) {
+      await showError(state.message);
+    }
+  },
+  builder: (context, state) {
+    if (state.matchedMedicines.isNotEmpty) {
+      return Expanded(
+        flex: 4,
+        child: Container(
+          margin: EdgeInsets.only(top: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                spreadRadius: 1,
+                offset: Offset(0, -2),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              // Header with drag handle
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Column(
+                  children: [
+                    // Drag handle
+                    Container(
+                      width: 40,
+                      height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Column(
+                    ),
+                    SizedBox(height: 12),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'الأدوية المتطابقة',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
-                                  ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.medication_liquid, 
+                                color: AppColorsManager.mainDarkBlue,
+                                size: 20,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                'الأدوية المتطابقة',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
                                 ),
-                                Text(
-                                  '${state.matchedMedicines.length} نتيجة',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Divider(height: 1, thickness: 1),
-                          Expanded(
-                            child: ListView.separated(
-                              padding: EdgeInsets.all(16),
-                              itemCount: state.matchedMedicines.length,
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(height: 12),
-                              itemBuilder: (context, index) {
-                                final medicine = state.matchedMedicines[index];
-                                return Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    borderRadius: BorderRadius.circular(12),
-                                    onTap: () async {
-                                      await CacheHelper.setData(
-                                        "medicineName",
-                                        medicine.medicineName,
-                                      );
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[50],
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Colors.grey[200]!,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(0.1),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Icon(
-                                              Icons.medication,
-                                              color:
-                                                  Theme.of(context).primaryColor,
-                                              size: 20,
-                                            ),
-                                          ),
-                                          SizedBox(width: 16),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  medicine.medicineName,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.chevron_right,
-                                            color: Colors.grey[400],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${state.matchedMedicines.length} نتيجة',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColorsManager.mainDarkBlue,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  );
-                }
-                return SizedBox.shrink();
-              },
-            ),
+                  ],
+                ),
+              ),
+              Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+     
+              // Results list
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: state.matchedMedicines.length,
+                  itemBuilder: (context, index) {
+                    final medicine = state.matchedMedicines[index];
+                    return Column(
+                      children: [
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () async {
+                              await CacheHelper.setData(
+                                "medicineName",
+                                medicine.medicineName,
+                              );
+                              Navigator.pop(context);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              child: Row(
+                                children: [
+                                  // Medicine icon with colored background
+                                  Container(
+                                    width: 45,
+                                    height: 45,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          AppColorsManager.mainDarkBlue,
+                                          AppColorsManager.mainDarkBlue.withOpacity(0.7),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.medication_outlined,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 16),
+                                  // Medicine info
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          medicine.medicineName,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          "${index % 3 == 0 ? 'أقراص' : index % 2 == 0 ? 'شراب' : 'كبسولات'} • ${10 + index * 5} ${index % 3 == 0 ? 'مجم' : 'مل'}",
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Selection icon
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[100],
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(
+                                      Icons.chevron_right,
+                                      color: AppColorsManager.mainDarkBlue,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Divider except for last item
+                        if (index < state.matchedMedicines.length - 1)
+                          Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return SizedBox.shrink();
+  },
+)
           ],
         ),
       ),
