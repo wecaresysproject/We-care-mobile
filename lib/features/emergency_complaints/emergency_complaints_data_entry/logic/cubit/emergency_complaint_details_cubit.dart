@@ -46,14 +46,6 @@ class EmergencyComplaintDataEntryDetailsCubit
     );
   }
 
-  void resetSearch() {
-    emit(
-      state.copyWith(
-          // searchResultState: SearchResultState.initial,
-          ),
-    );
-  }
-
   Future<void> saveNewMedicalComplaint() async {
     final newMedicalComplaint = MedicalComplaint(
       symptomsRegion: state.symptomsDiseaseRegion!,

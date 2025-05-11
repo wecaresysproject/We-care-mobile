@@ -332,9 +332,6 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
         const Spacer(),
         GestureDetector(
           onTap: () {
-            context
-                .read<EmergencyComplaintDataEntryDetailsCubit>()
-                .resetSearch();
             Navigator.pop(context);
           },
           child: Image.asset(
