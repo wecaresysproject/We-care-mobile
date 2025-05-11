@@ -8,7 +8,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/test.dart';
+import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -128,7 +128,8 @@ Widget _bodyRegionSearchTab(
                     },
                     bottomSheetTitle: "اختر العضو/الجزء",
                     searchHintText: "ابحث عن العضو",
-                    loadingState: state.isEditingComplaint
+                    loadingState: state.isEditingComplaint ||
+                            state.bodySyptomsResults.isNotEmpty
                         ? OptionsLoadingState.loaded
                         : state.complaintPlacesRelativeToMainRegionLoadingState,
                   ),
@@ -268,7 +269,7 @@ Widget _symptomSearchTab(
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomUserSelectionContainer(
+                SearchableUserSelectorContainer(
                   containerBorderColor: state.medicalSymptomsIssue == null
                       ? AppColorsManager.warningColor
                       : AppColorsManager.textfieldOutsideBorderColor,

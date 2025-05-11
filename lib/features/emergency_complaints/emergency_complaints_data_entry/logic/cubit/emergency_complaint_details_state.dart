@@ -21,6 +21,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
       selectedOrganOrPartSymptom; // الاعراض المرضية - العضو/الجزء  => الجزء المختار
   final OptionsLoadingState mainRegionComplainsLoadingState;
   final List<BodySymptom> bodySyptomsResults;
+  final SearchResultState searchResultState;
 
   const MedicalComplaintDataEntryDetailsState({
     this.symptomsDiseaseRegion,
@@ -40,6 +41,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     this.complaintPlacesRelativeToMainRegionLoadingState =
         OptionsLoadingState.loading,
     this.bodySyptomsResults = const [],
+    this.searchResultState = SearchResultState.initial,
   });
   MedicalComplaintDataEntryDetailsState copyWith({
     String? symptomsDiseaseRegion,
@@ -58,6 +60,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
     OptionsLoadingState? mainRegionComplainsLoadingState,
     OptionsLoadingState? complaintPlacesRelativeToMainRegionLoadingState,
     List<BodySymptom>? bodySyptomsResults,
+    SearchResultState? searchResultState,
   }) {
     return MedicalComplaintDataEntryDetailsState(
       symptomsDiseaseRegion:
@@ -88,6 +91,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
           complaintPlacesRelativeToMainRegionLoadingState ??
               this.complaintPlacesRelativeToMainRegionLoadingState,
       bodySyptomsResults: bodySyptomsResults ?? this.bodySyptomsResults,
+      searchResultState: searchResultState ?? this.searchResultState,
     );
   }
 
@@ -110,6 +114,7 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
           complaintPlacesRelativeToMainRegionLoadingState:
               OptionsLoadingState.loading,
           bodySyptomsResults: const [],
+          searchResultState: SearchResultState.initial,
         );
 
   @override
@@ -131,5 +136,14 @@ class MedicalComplaintDataEntryDetailsState extends Equatable {
         mainRegionComplainsLoadingState,
         complaintPlacesRelativeToMainRegionLoadingState,
         bodySyptomsResults,
+        searchResultState,
       ];
+}
+
+enum SearchResultState {
+  initial,
+  loading,
+  loaded,
+  error,
+  empty,
 }
