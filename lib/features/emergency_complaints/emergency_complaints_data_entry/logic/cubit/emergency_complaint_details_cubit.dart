@@ -17,26 +17,34 @@ class EmergencyComplaintDataEntryDetailsCubit
       : super(MedicalComplaintDataEntryDetailsState.initial());
   final EmergencyComplaintsDataEntryRepo _emergencyComplaintsDataEntryRepo;
 
-  // Future<void> sysptomsSearch(String query) async {
-  //   // emit(SearchState.loading());
+  Future<void> sysptomsSearch(String query) async {
+    emit(
+      state.copyWith(
+        searchResultState: SearchResultState.loading,
+      ),
+    );
 
-  //   final result = await _emergencyComplaintsDataEntryRepo
-  //       .searchForMedicalIssueComplains(query);
-  //   result.when(
-  //     success: (result) {
-  //       final syptomsDescription = result.map((e) => e.description).toList();
-  //       // emit(SearchState.loaded(syptomsDescription));
-  //       emit(
-  //         state.copyWith(
-  //           bodySyptomsResults: result,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       // emit(SearchState.error(error.errors.first));
-  //     },
-  //   );
-  // }
+    final result = await _emergencyComplaintsDataEntryRepo
+        .searchForMedicalIssueComplains(query);
+    result.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            searchResultState: SearchResultState.loaded,
+            bodySyptomsResults: result,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            searchResultState: SearchResultState.error,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> saveNewMedicalComplaint() async {
     final newMedicalComplaint = MedicalComplaint(
@@ -250,11 +258,25 @@ class EmergencyComplaintDataEntryDetailsCubit
 
   void updateMedicalSymptomsIssue(String? issue) {
     emit(state.copyWith(medicalSymptomsIssue: issue));
+    updateMainAreaAndBodyPartSymptoms(issue!);
     validateRequiredFields();
   }
 
   void updateComplaintDegree(String? intensity) {
     emit(state.copyWith(complaintDegree: intensity));
     validateRequiredFields();
+  }
+
+  void updateMainAreaAndBodyPartSymptoms(String issueDescription) {
+    for (var element in state.bodySyptomsResults) {
+      if (element.description == issueDescription) {
+        emit(
+          state.copyWith(
+            symptomsDiseaseRegion: element.mainArea,
+            selectedOrganOrPartSymptom: element.bodyPart,
+          ),
+        );
+      }
+    }
   }
 }

@@ -3,16 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/cubits/cubit/medical_complains_search_cubit.dart';
-import 'package:we_care/core/global/cubits/cubit/medical_complains_search_cubit_state.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 
-class CustomUserSelectionContainer extends StatefulWidget {
-  const CustomUserSelectionContainer({
+class SearchableUserSelectorContainer extends StatefulWidget {
+  const SearchableUserSelectorContainer({
     super.key,
     required this.categoryLabel,
     required this.bottomSheetTitle,
@@ -48,12 +46,12 @@ class CustomUserSelectionContainer extends StatefulWidget {
   final Duration searchDebounceTime;
 
   @override
-  State<CustomUserSelectionContainer> createState() =>
-      _CustomUserSelectionContainerState();
+  State<SearchableUserSelectorContainer> createState() =>
+      _SearchableUserSelectorContainerState();
 }
 
-class _CustomUserSelectionContainerState
-    extends State<CustomUserSelectionContainer> {
+class _SearchableUserSelectorContainerState
+    extends State<SearchableUserSelectorContainer> {
   String? _selectedItem;
 
   @override
@@ -63,7 +61,7 @@ class _CustomUserSelectionContainerState
   }
 
   @override
-  void didUpdateWidget(CustomUserSelectionContainer oldWidget) {
+  void didUpdateWidget(SearchableUserSelectorContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.initialValue != oldWidget.initialValue) {
       _selectedItem = widget.initialValue;
@@ -97,8 +95,9 @@ class _CustomUserSelectionContainerState
     if (widget.isDisabled) {
       return;
     }
-
+    final cubit = context.read<EmergencyComplaintDataEntryDetailsCubit>();
     _showApiSearchBottomSheet(
+      cubit: cubit,
       context: context,
       title: widget.bottomSheetTitle,
       initialSelectedItem:
@@ -180,32 +179,34 @@ void _showApiSearchBottomSheet({
   required String loadingText,
   required Duration searchDebounceTime,
   String? initialSelectedItem,
+  required EmergencyComplaintDataEntryDetailsCubit cubit,
   bool allowManualEntry = false,
 }) {
   showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(18.r),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(18.r),
+        ),
       ),
-    ),
-    builder: (context) => BlocProvider<SearchCubit>(
-      create: (context) => getIt<SearchCubit>(),
-      child: _ApiSearchBottomSheet(
-        title: title,
-        onItemSelected: onItemSelected,
-        userEntryLabelText: userEntryLabelText,
-        initialSelectedItem: initialSelectedItem,
-        allowManualEntry: allowManualEntry,
-        searchHintText: searchHintText,
-        emptyResultMessage: emptyResultMessage,
-        loadingText: loadingText,
-        searchDebounceTime: searchDebounceTime,
-      ),
-    ),
-  );
+      builder: (context) {
+        return BlocProvider<EmergencyComplaintDataEntryDetailsCubit>.value(
+          value: cubit,
+          child: _ApiSearchBottomSheet(
+            title: title,
+            onItemSelected: onItemSelected,
+            userEntryLabelText: userEntryLabelText,
+            initialSelectedItem: initialSelectedItem,
+            allowManualEntry: allowManualEntry,
+            searchHintText: searchHintText,
+            emptyResultMessage: emptyResultMessage,
+            loadingText: loadingText,
+            searchDebounceTime: searchDebounceTime,
+          ),
+        );
+      });
 }
 
 class _ApiSearchBottomSheet extends StatefulWidget {
@@ -267,7 +268,10 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
       if (searchText.isEmpty) {
         return;
       }
-      context.read<SearchCubit>().sysptomsSearch(searchText);
+
+      context
+          .read<EmergencyComplaintDataEntryDetailsCubit>()
+          .sysptomsSearch(searchText);
     });
   }
 
@@ -328,7 +332,6 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
         const Spacer(),
         GestureDetector(
           onTap: () {
-            context.read<SearchCubit>().resetSearch();
             Navigator.pop(context);
           },
           child: Image.asset(
@@ -358,9 +361,10 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
 
   Widget _buildResultsList(ScrollController scrollController) {
     return Expanded(
-      child: BlocBuilder<SearchCubit, SearchState>(
+      child: BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
+          MedicalComplaintDataEntryDetailsState>(
         builder: (context, state) {
-          switch (state.state) {
+          switch (state.searchResultState) {
             case SearchResultState.initial:
               return Center(
                 child: Text(
@@ -404,7 +408,7 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
                     Icon(Icons.error_outline, color: Colors.red, size: 48),
                     verticalSpacing(16),
                     Text(
-                      state.errorMessage ?? "حدث خطأ في البحث",
+                      state.message ?? "حدث خطأ في البحث",
                       style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                         color: Colors.red,
                       ),
@@ -416,9 +420,12 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
             case SearchResultState.loaded:
               return ListView.builder(
                 controller: scrollController,
-                itemCount: state.results.length,
+                itemCount: state.bodySyptomsResults.length,
                 itemBuilder: (context, index) {
-                  final option = state.results[index];
+                  final results = state.bodySyptomsResults
+                      .map((e) => e.description)
+                      .toList();
+                  final option = results[index];
                   final isSelected = _selectedItem == option;
 
                   return _OptionItem(
