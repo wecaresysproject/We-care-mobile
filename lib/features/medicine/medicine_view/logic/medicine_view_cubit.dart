@@ -20,6 +20,11 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   bool hasMore = true;
   bool isLoadingMore = false;
 
+  Future<void> init() async {
+    await getMedicinesFilters();
+    await getUserMedicinesList(page: 1, pageSize: 10);
+  }
+
   List<MedicineModel> getMedicinesByDate(String targetDate) {
     return state.userMedicines.where((medicine) {
       final medicineDate = medicine.startDate;
@@ -54,27 +59,26 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     }
 
     final result = await _medicinesViewRepo.getAllMedicines(
-      language: AppStrings.arabicLang, 
-      userType: 'Patient', 
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        language: AppStrings.arabicLang,
+        userType: 'Patient',
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newMedicines = response.medicineList;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newMedicines.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userMedicines: page == 1 || page == null 
-          ? newMedicines 
-          : [...state.userMedicines, ...newMedicines],
+        userMedicines: page == 1 || page == null
+            ? newMedicines
+            : [...state.userMedicines, ...newMedicines],
         responseMessage: response.message,
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -91,10 +95,9 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await getUserMedicinesList(page: currentPage + 1);
   }
-
 
   Future<void> getMedicineDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
