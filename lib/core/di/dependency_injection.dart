@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/core/global/cubits/cubit/medical_complains_search_cubit.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
@@ -183,6 +184,11 @@ void setupAppCubits() {
   getIt.registerFactory<MedicineScannerCubit>(
     () => MedicineScannerCubit(
       getIt<MedicinesDataEntryRepo>(),
+    ),
+  );
+  getIt.registerFactory<SearchCubit>(
+    () => SearchCubit(
+      getIt<EmergencyComplaintsDataEntryRepo>(),
     ),
   );
 }
