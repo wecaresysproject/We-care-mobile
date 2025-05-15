@@ -44,21 +44,24 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                   onTap: () {
                     context.pushNamed(Routes.medicalDataEntryTypesView);
                   },
-                  imagePath: "assets/images/edit_icon.png",
+                  imagePath: "assets/images/we_care_sys_data_entry.png",
                   text: isArabic()
                       ? "ادخال بيانات\nسجلك الطبي"
                       : "Enter medical\n record data",
                   textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
                     fontSize: 24.sp,
                   ),
+                  isTextFirst: true,
                 ),
                 verticalSpacing(88),
                 CustomImageWithTextButtonHomeWidget(
                   onTap: () {
                     context.pushNamed(Routes.medicalCategoriesTypesView);
                   },
-                  imagePath: "assets/images/show_medical_history.png",
-                  text: isArabic() ? "عرض سجلك\nالطبي" : "View medical\nrecord",
+                  imagePath: "assets/images/we_care_sys_show_data.png",
+                  text: isArabic()
+                      ? "عرض بيانات\nسجلك الطبي"
+                      : "View medical\nrecord",
                   textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
                     fontSize: 24.sp,
                   ),
