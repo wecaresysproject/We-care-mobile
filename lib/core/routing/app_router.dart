@@ -7,6 +7,8 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/medicines_data_entry_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/family_tree_data_entry_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -232,6 +234,14 @@ class AppRouter {
       case Routes.geneticDiseasesDataEnrtyView:
         return MaterialPageRoute(
           builder: (context) => const GeneticDiseasesDataEntryView(),
+        );
+      case Routes.familyTreeDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyTreeDataEntryView(),
+        );
+      case Routes.geneticDiseaeseMainView:
+        return MaterialPageRoute(
+          builder: (context) => const GeneticDiseaeseMainView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
