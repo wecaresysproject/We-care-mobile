@@ -4,26 +4,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
-import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicines_data_entry_form_fields_widget.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/genetic_diseases_data_entry_form_fields_widget.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 
-class MedicinesDataEntryView extends StatelessWidget {
-  const MedicinesDataEntryView({
+class GeneticDiseasesDataEntryView extends StatelessWidget {
+  const GeneticDiseasesDataEntryView({
     super.key,
-    this.medicineToEdit,
+    // this.medicineToEdit,
   });
-  final MedicineModel? medicineToEdit;
+  // final MedicineModel? medicineToEdit;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MedicinesDataEntryCubit>(
+    return BlocProvider<GeneticDiseasesDataEntryCubit>(
       create: (context) {
-        final cubit = getIt<MedicinesDataEntryCubit>();
-        if (medicineToEdit != null) {
-          cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
-        } else {
-          cubit.initialDataEntryRequests();
-        }
+        final cubit = getIt<GeneticDiseasesDataEntryCubit>();
+        // if (medicineToEdit != null) {
+        //   cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
+        // } else {
+        //   cubit.initialDataEntryRequests();
+        // }
         return cubit;
       },
       child: Scaffold(
@@ -39,7 +38,7 @@ class MedicinesDataEntryView extends StatelessWidget {
                   haveBackArrow: true,
                 ),
                 verticalSpacing(24),
-                MedicinesDataEntryFormFieldsWidget(),
+                GeneticDiseasesDataEntryFormFieldsWidget(),
               ],
             ),
           ),
