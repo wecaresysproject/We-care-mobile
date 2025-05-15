@@ -8,7 +8,8 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
   final String text;
   final String imagePath;
   final TextStyle? textStyle;
-  final void Function()? onTap;
+  final VoidCallback? onTap;
+  final bool isTextFirst;
 
   const CustomImageWithTextButtonHomeWidget({
     super.key,
@@ -16,6 +17,7 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
     required this.imagePath,
     this.textStyle,
     this.onTap,
+    this.isTextFirst = false,
   });
 
   @override
@@ -23,45 +25,52 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 144.h,
-        width: 252.w,
+        height: 183.h,
+        width: 355.w,
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(
-          horizontal: 2.w,
-          vertical: 38.h,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 2.w),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
-
-          borderRadius: BorderRadius.circular(88.r), // Rounded edges
+          borderRadius: BorderRadius.circular(70.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black26, // Shadow color
-              blurRadius: 8,
-              offset: const Offset(2, 2), // Shadow position
+              color: Colors.black26,
+              blurRadius: 8.r,
+              offset: const Offset(2, 2),
             ),
           ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              imagePath,
-              width: 72.w,
-              height: 66.h,
-              cacheWidth: 1000,
-              cacheHeight: 1000,
-            ),
-            horizontalSpacing(20),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font22WhiteWeight600,
-              ),
-            ),
-          ],
+          children: isTextFirst
+              ? [_buildText(), horizontalSpacing(20), _buildImage()]
+              : [_buildImage(), horizontalSpacing(20), _buildText()],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the image widget with preset dimensions and caching.
+  Widget _buildImage() {
+    return Image.asset(
+      imagePath,
+      width: 101.w,
+      height: 151.h,
+      cacheWidth: 1000,
+      cacheHeight: 1000,
+    );
+  }
+
+  /// Builds the text widget with default or custom styling.
+  Widget _buildText() {
+    return Flexible(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          style: textStyle ?? AppTextStyles.font22WhiteWeight600,
         ),
       ),
     );
