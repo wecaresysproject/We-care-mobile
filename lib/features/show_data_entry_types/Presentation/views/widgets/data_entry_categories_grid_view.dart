@@ -213,7 +213,8 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
-    "route": "/dental",
+    "route": Routes.dentalDataEntryView,
+    "isActive": true,
   },
   {
     "title": "العلاج\nالطبيعى",

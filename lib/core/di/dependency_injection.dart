@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
+import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
+import 'package:we_care/features/dental_module/dental_services.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
@@ -185,6 +188,11 @@ void setupAppCubits() {
       getIt<MedicinesDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory<DentalDataEntryCubit>(
+    () => DentalDataEntryCubit(
+      getIt<DentalDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -297,6 +305,11 @@ void setupAppRepos() {
       getIt<CategoriesServices>(),
     ),
   );
+  getIt.registerLazySingleton(
+    () => DentalDataEntryRepo(
+      dentalService: getIt<DentalService>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -334,5 +347,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<CategoriesServices>(
     () => CategoriesServices(dio),
+  );
+  getIt.registerLazySingleton<DentalService>(
+    () => DentalService(dio),
   );
 }
