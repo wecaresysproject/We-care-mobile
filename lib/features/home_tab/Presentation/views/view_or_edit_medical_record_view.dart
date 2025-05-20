@@ -41,8 +41,8 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                 ),
                 verticalSpacing(60),
                 CustomImageWithTextButtonHomeWidget(
-                  onTap: () {
-                    context.pushNamed(Routes.medicalDataEntryTypesView);
+                  onTap: () async {
+                    await context.pushNamed(Routes.medicalDataEntryTypesView);
                   },
                   imagePath: "assets/images/we_care_sys_data_entry.png",
                   text: isArabic()
@@ -55,8 +55,8 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                 ),
                 verticalSpacing(88),
                 CustomImageWithTextButtonHomeWidget(
-                  onTap: () {
-                    context.pushNamed(Routes.medicalCategoriesTypesView);
+                  onTap: () async {
+                    await context.pushNamed(Routes.medicalCategoriesTypesView);
                   },
                   imagePath: "assets/images/we_care_sys_show_data.png",
                   text: isArabic()
