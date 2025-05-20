@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
@@ -203,6 +204,10 @@ class AppRouter {
             editingComplaintDetails: null,
             complaintId: 2,
           ),
+        );
+      case Routes.dentalDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => DentalDataEntryView(),
         );
       case Routes.alarmHomeView:
         return MaterialPageRoute(

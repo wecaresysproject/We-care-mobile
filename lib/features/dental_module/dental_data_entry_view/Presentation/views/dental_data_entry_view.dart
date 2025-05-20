@@ -4,24 +4,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
-import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
+import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/widgets/dental_data_form_fields_widget.dart';
+import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
 
-import 'widgets/surgeries_data_form_fields_widget.dart';
-
-class SurgeriesDataEntryView extends StatelessWidget {
-  const SurgeriesDataEntryView({super.key, this.existingSurgeryModel});
-  final SurgeryModel? existingSurgeryModel;
+class DentalDataEntryView extends StatelessWidget {
+  const DentalDataEntryView({
+    super.key,
+  });
+  // final SurgeryModel? existingSurgeryModel;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SurgeryDataEntryCubit>(
+    return BlocProvider<DentalDataEntryCubit>(
       create: (context) {
-        var cubit = getIt<SurgeryDataEntryCubit>();
-        if (existingSurgeryModel != null) {
-          cubit.loadPastSurgeryDataForEditing(existingSurgeryModel!);
-        } else {
-          cubit.intialRequestsForDataEntry();
-        }
+        var cubit = getIt<DentalDataEntryCubit>();
+        // if (existingSurgeryModel != null) {
+        //   cubit.loadPastSurgeryDataForEditing(existingSurgeryModel!);
+        // } else {
+        //   cubit.intialRequestsForDataEntry();
+        // }
         return cubit;
       },
       child: Scaffold(
@@ -37,7 +37,7 @@ class SurgeriesDataEntryView extends StatelessWidget {
                   haveBackArrow: true,
                 ),
                 verticalSpacing(24),
-                SuergeriesDataEntryFormFields(),
+                DentalDataFormFieldsWidget(),
               ],
             ),
           ),

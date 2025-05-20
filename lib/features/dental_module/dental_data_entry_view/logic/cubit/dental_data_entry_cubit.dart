@@ -1,0 +1,194 @@
+import 'dart:io';
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
+
+part 'dental_data_entry_state.dart';
+
+class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
+  DentalDataEntryCubit(this._dentalDataEntryRepo)
+      : super(
+          DentalDataEntryState.initialState(),
+        );
+  final DentalDataEntryRepo _dentalDataEntryRepo;
+  final additionalNotesController = TextEditingController();
+
+  // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
+  //   emit(
+  //     state.copyWith(
+  //       surgeryDateSelection: pastSurgery.surgeryDate,
+  //       surgeryBodyPartSelection: pastSurgery.surgeryRegion,
+  //       selectedSubSurgery: pastSurgery.subSurgeryRegion,
+  //       surgeryNameSelection: pastSurgery.surgeryName,
+  //       selectedTechUsed: pastSurgery.usedTechnique,
+  //       surgeryPurpose: pastSurgery.purpose,
+  //       reportImageUploadedUrl: pastSurgery.medicalReportImage,
+  //       selectedSurgeryStatus: pastSurgery.surgeryStatus,
+  //       selectedHospitalCenter: pastSurgery.hospitalCenter,
+  //       internistName: pastSurgery.anesthesiologistName,
+  //       selectedCountryName: pastSurgery.country,
+  //       surgeonName: pastSurgery.surgeonName,
+  //       isEditMode: true,
+  //       updatedSurgeryId: pastSurgery.id,
+  //     ),
+  //   );
+  //   personalNotesController.text = pastSurgery.additionalNotes;
+  //   suergeryDescriptionController.text = pastSurgery.surgeryDescription;
+  //   postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
+
+  //   validateRequiredFields();
+  //   await intialRequestsForDataEntry();
+  // }
+
+  /// Update Field Values
+  void updateStartIssueDate(String? date) {
+    emit(state.copyWith(startIssueDateSelection: date));
+    validateRequiredFields();
+  }
+
+  void updateMedicalProcedureDate(String? date) {
+    emit(state.copyWith(medicalProcedureDateSelection: date));
+  }
+
+  void updatePrimaryMedicalProcedure(String? val) {
+    emit(state.copyWith(primaryMedicalProcedureSelection: val));
+  }
+
+  void updateSecodaryMedicalProcedure(String? val) {
+    emit(state.copyWith(secondaryMedicalProcedureSelection: val));
+  }
+
+  void updateOralPathologySelection(String? val) {
+    emit(state.copyWith(oralPathologySelection: val));
+  }
+
+  void updateSelectedHospitalCenter(String? selectedHospital) {
+    emit(state.copyWith(selectedHospitalCenter: selectedHospital));
+  }
+
+  void updateSelectedTreatingDoctor(String? val) {
+    emit(state.copyWith(treatingDoctor: val));
+  }
+
+  void updateSelectedCountry(String? selectedCountry) {
+    emit(state.copyWith(selectedCountryName: selectedCountry));
+  }
+
+  // void uploadXrayImagePicked(String? imagePath) {
+  //   emit(state.copyWith(xrayImageUploadedUrl: imagePath));
+  // }
+
+  void updateTypeOfSyptom(String? value) {
+    emit(state.copyWith(syptomTypeSelection: value));
+    validateRequiredFields();
+  }
+
+  void updateNatureOfComplaint(String? val) {
+    emit(state.copyWith(natureOfComplaintSelection: val));
+    validateRequiredFields();
+  }
+
+  void updateSurroundingGumsStatus(String? status) {
+    emit(state.copyWith(selectedSurroundingGumStatus: status));
+  }
+
+  Future<void> updateComplaintDegree(String? val) async {
+    emit(state.copyWith(complaintDegree: val));
+    validateRequiredFields();
+  }
+
+//مدة الاعراض
+  Future<void> updateSyptomsPeriod(String? value) async {
+    emit(state.copyWith(selectedSyptomsPeriod: value));
+    validateRequiredFields();
+  }
+
+  Future<void> intialRequestsForDataEntry() async {
+    await emitCountriesData();
+  }
+
+  Future<void> uploadReportImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        uploadReportStatus: UploadReportRequestStatus.initial,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.uploadReportImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            reportImageUploadedUrl: response.reportUrl,
+            uploadReportStatus: UploadReportRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitCountriesData() async {
+    final response = await _dentalDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            countriesNames: response.map((e) => e.name).toList(),
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  void validateRequiredFields() {
+    if (state.startIssueDateSelection == null ||
+        state.syptomTypeSelection == null ||
+        state.selectedSyptomsPeriod == null ||
+        state.natureOfComplaintSelection == null ||
+        state.complaintDegree == null) {
+      emit(
+        state.copyWith(
+          isFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isFormValidated: true,
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<void> close() {
+    additionalNotesController.dispose();
+    return super.close();
+  }
+}
