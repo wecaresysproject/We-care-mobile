@@ -3,7 +3,6 @@ part of 'dental_data_entry_cubit.dart';
 @immutable
 class DentalDataEntryState extends Equatable {
   final RequestStatus dentalDataEntryStatus;
-  final String? errorMessage;
   final bool isFormValidated;
   final String? startIssueDateSelection;
   final String? syptomTypeSelection;
@@ -24,22 +23,14 @@ class DentalDataEntryState extends Equatable {
   final String? oralPathologySelection; //التحاليل الطبية الفموية
   final List<String> countriesNames;
   final String? selectedCountryName;
-  final List<String> bodyParts;
-  final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
-  final List<String> surgeryNames;
   final String? selectedSyptomsPeriod; //مدة الاعراض
-  final List<String> allTechUsed;
-  final List<String> allSurgeryStatuses;
-  final String? selectedTechUsed; //المنطقة المختاره للعمليات الفرعية
-  final String? surgeryPurpose;
   final bool isEditMode;
-  final String updatedSurgeryId;
   final String? selectedHospitalCenter;
   final String? treatingDoctor; // طبيب باطنه
+  final String updatedTeethId;
 
   const DentalDataEntryState({
     this.dentalDataEntryStatus = RequestStatus.initial,
-    this.errorMessage,
     this.isFormValidated = false,
     this.startIssueDateSelection,
     this.syptomTypeSelection,
@@ -58,16 +49,9 @@ class DentalDataEntryState extends Equatable {
     this.oralPathologySelection,
     this.countriesNames = const [],
     this.selectedCountryName,
-    this.bodyParts = const [],
-    this.subSurgeryRegions = const [],
-    this.surgeryNames = const [],
     this.selectedSyptomsPeriod,
-    this.allTechUsed = const [],
-    this.allSurgeryStatuses = const [],
-    this.selectedTechUsed,
-    this.surgeryPurpose,
     this.isEditMode = false,
-    this.updatedSurgeryId = '',
+    this.updatedTeethId = '',
     this.selectedHospitalCenter,
     this.treatingDoctor,
   }) : super();
@@ -93,23 +77,15 @@ class DentalDataEntryState extends Equatable {
           oralPathologySelection: null,
           countriesNames: const [],
           selectedCountryName: null,
-          bodyParts: const [],
-          subSurgeryRegions: const [],
-          surgeryNames: const [],
           selectedSyptomsPeriod: null,
-          allTechUsed: const [],
-          allSurgeryStatuses: const [],
-          selectedTechUsed: null,
-          surgeryPurpose: null,
           isEditMode: false,
-          updatedSurgeryId: '',
+          updatedTeethId: '',
           selectedHospitalCenter: null,
           treatingDoctor: null,
         );
 
   DentalDataEntryState copyWith({
     RequestStatus? dentalDataEntryStatus,
-    String? errorMessage,
     bool? isFormValidated,
     String? startIssueDateSelection,
     String? medicalProcedureDateSelection,
@@ -128,23 +104,15 @@ class DentalDataEntryState extends Equatable {
     String? oralPathologySelection,
     List<String>? countriesNames,
     String? selectedCountryName,
-    List<String>? bodyParts,
-    List<String>? subSurgeryRegions,
-    List<String>? surgeryNames,
     String? selectedSyptomsPeriod,
-    List<String>? allTechUsed,
-    List<String>? allSurgeryStatuses,
-    String? selectedTechUsed,
-    String? surgeryPurpose,
     bool? isEditMode,
-    String? updatedSurgeryId,
+    String? updatedTeethId,
     String? selectedHospitalCenter,
     String? treatingDoctor,
   }) {
     return DentalDataEntryState(
       dentalDataEntryStatus:
           dentalDataEntryStatus ?? this.dentalDataEntryStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       startIssueDateSelection:
           startIssueDateSelection ?? this.startIssueDateSelection,
@@ -173,17 +141,10 @@ class DentalDataEntryState extends Equatable {
           oralPathologySelection ?? this.oralPathologySelection,
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-      bodyParts: bodyParts ?? this.bodyParts,
-      subSurgeryRegions: subSurgeryRegions ?? this.subSurgeryRegions,
-      surgeryNames: surgeryNames ?? this.surgeryNames,
       selectedSyptomsPeriod:
           selectedSyptomsPeriod ?? this.selectedSyptomsPeriod,
-      allTechUsed: allTechUsed ?? this.allTechUsed,
-      allSurgeryStatuses: allSurgeryStatuses ?? this.allSurgeryStatuses,
-      selectedTechUsed: selectedTechUsed ?? this.selectedTechUsed,
-      surgeryPurpose: surgeryPurpose ?? this.surgeryPurpose,
       isEditMode: isEditMode ?? this.isEditMode,
-      updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
+      updatedTeethId: updatedTeethId ?? this.updatedTeethId,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
       treatingDoctor: treatingDoctor ?? this.treatingDoctor,
@@ -193,7 +154,6 @@ class DentalDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         dentalDataEntryStatus,
-        errorMessage,
         isFormValidated,
         startIssueDateSelection,
         syptomTypeSelection,
@@ -212,16 +172,9 @@ class DentalDataEntryState extends Equatable {
         oralPathologySelection,
         countriesNames,
         selectedCountryName,
-        bodyParts,
-        subSurgeryRegions,
-        surgeryNames,
         selectedSyptomsPeriod,
-        allTechUsed,
-        allSurgeryStatuses,
-        selectedTechUsed,
-        surgeryPurpose,
         isEditMode,
-        updatedSurgeryId,
+        updatedTeethId,
         selectedHospitalCenter,
         treatingDoctor,
       ];

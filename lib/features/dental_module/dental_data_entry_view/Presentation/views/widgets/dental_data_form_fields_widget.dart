@@ -12,14 +12,14 @@ import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
-
-import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 
 class DentalDataFormFieldsWidget extends StatefulWidget {
   const DentalDataFormFieldsWidget({super.key});
@@ -70,7 +70,11 @@ class _DentalDataFormFieldsWidgetState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "نوع العرض",
               containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
@@ -87,7 +91,11 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "مدة الأعراض",
               containerHintText:
                   state.selectedSyptomsPeriod ?? "اختر مدة استمرار الأعراض",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               onOptionSelected: (value) async {
                 await context
                     .read<DentalDataEntryCubit>()
@@ -108,7 +116,11 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "طبيعة الشكوي",
               containerHintText:
                   state.natureOfComplaintSelection ?? "اختر الحالة",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -167,7 +179,11 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الرئيسى",
               containerHintText: state.primaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -183,7 +199,11 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الفرعي",
               containerHintText: state.secondaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى الفرعى",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -283,8 +303,7 @@ class _DentalDataFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            UserSelectionContainer(
-              options: [],
+            SearchableUserSelectorContainer(
               categoryLabel: "التحاليل الطبية الفموية",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
@@ -335,8 +354,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             /// حالة اللثه المحيطه
-            UserSelectionContainer(
-              options: [],
+            SearchableUserSelectorContainer(
               categoryLabel: "حالة اللثه المحيطة",
               bottomSheetTitle: "اختر حالة اللثه المحيطة",
               onOptionSelected: (value) {
@@ -388,8 +406,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             ///الدولة
-            UserSelectionContainer(
-              options: [],
+            SearchableUserSelectorContainer(
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (value) {
