@@ -1,224 +1,294 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
-class SurgeryDetailsView extends StatelessWidget {
-  const SurgeryDetailsView({super.key, required this.documentId});
-  final String documentId;
+class DentalOperationDetailsView extends StatelessWidget {
+  const DentalOperationDetailsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<SurgeriesViewCubit>()..getSurgeryDetailsById(documentId),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0.h,
-        ),
-        body: BlocConsumer<SurgeriesViewCubit, SurgeriesViewState>(
-          listener: (context, state) async {
-            if (state.requestStatus == RequestStatus.success &&
-                state.isDeleteRequest) {
-              Navigator.pop(context);
-              await showSuccess(state.responseMessage);
-            } else if (state.requestStatus == RequestStatus.failure &&
-                state.isDeleteRequest) {
-              await showError(state.responseMessage);
-            }
-          },
-          buildWhen: (previous, current) =>
-              previous.selectedSurgeryDetails != current.selectedSurgeryDetails,
-          builder: (context, state) {
-            if (state.requestStatus == RequestStatus.loading ||
-                state.selectedSurgeryDetails == null) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
-              child: Column(
-                spacing: 16.h,
-                children: [
-                  DetailsViewAppBar(
-                    title: 'العمليات',
-                    deleteFunction: () async => await context
-                        .read<SurgeriesViewCubit>()
-                        .deleteSurgeryById(documentId),
-                    shareFunction: () => _shareSurgeryDetails(context, state),
-                    editFunction: () async {
-                      final result = await context.pushNamed(
-                        Routes.surgeriesDataEntryView,
-                        arguments: state.selectedSurgeryDetails,
-                      );
-                      if (result != null && result) {
-                        if (!context.mounted) return;
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getSurgeryDetailsById(documentId);
-                      }
-                    },
-                  ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "كود ICHI",
-                      value: state.selectedSurgeryDetails!.ichiCode ?? "-",
-                      icon: 'assets/images/data_search_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: state.selectedSurgeryDetails!.surgeryDate,
-                        icon: 'assets/images/date_icon.png'),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "العضو",
-                      value: state.selectedSurgeryDetails!.surgeryRegion,
-                      icon: 'assets/images/body_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "المنطقة الفرعية ",
-                        value: state.selectedSurgeryDetails!.subSurgeryRegion,
-                        icon: 'assets/images/body_icon.png'),
-                  ]),
-                  DetailsViewInfoTile(
-                    title: 'اسم العملية',
-                    value: state.selectedSurgeryDetails!.surgeryName,
-                    icon: 'assets/images/doctor_name.png',
-                    isExpanded: true,
-                  ),
-                  DetailsViewInfoTile(
-                    title: ' الهدف من الاجراء',
-                    value: state.selectedSurgeryDetails!.purpose ??
-                        "لم يتم تحديده",
-                    icon: 'assets/images/chat_question_icon.png',
-                    isExpanded: true,
-                  ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "التقنية المستخدمة",
-                      value: state.selectedSurgeryDetails!.usedTechnique,
-                      icon: 'assets/images/data_search_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "حالة العملية",
-                        value: state.selectedSurgeryDetails!.surgeryStatus,
-                        icon: 'assets/images/ratio.png'),
-                  ]),
-                  DetailsViewInfoTile(
-                      title: "وصف اضافي للعملية",
-                      value: state.selectedSurgeryDetails!.surgeryDescription,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "الجراح ",
-                      value: state.selectedSurgeryDetails!.surgeonName,
-                      icon: 'assets/images/surgery_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "طبيب الباطنة ",
-                      value: state.selectedSurgeryDetails!.anesthesiologistName,
-                      icon: 'assets/images/doctor_icon.png',
-                    ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: state.selectedSurgeryDetails!.country,
-                        icon: 'assets/images/country_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "المستشفي",
-                        value: state.selectedSurgeryDetails!.hospitalCenter,
-                        icon: 'assets/images/hospital_icon.png'),
-                  ]),
-                  DetailsViewInfoTile(
-                      title: " تعليمات بعد العملية",
-                      value:
-                          state.selectedSurgeryDetails!.postSurgeryInstructions,
-                      icon: 'assets/images/symptoms_icon.png',
-                      isExpanded: true),
-                  DetailsViewInfoTile(
-                      title: " توصيف العملية",
-                      value: state.selectedSurgeryDetails!.description ??
-                          "لم يتم تحديده",
-                      icon: 'assets/images/file_date_icon.png',
-                      isExpanded: true),
-                  DetailsViewInfoTile(
-                      title: " ملاحظات شخصية",
-                      value: state.selectedSurgeryDetails!.additionalNotes,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
-                  DetailsViewImageWithTitleTile(
-                    image: state.selectedSurgeryDetails!.medicalReportImage,
-                    title: "التقرير الطبي",
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 0.h),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
+        child: Column(
+          children: [
+            DetailsViewAppBar(title: 'علاج العصبي'),
+            verticalSpacing(16),
+            SymptomContainer(
+              complaintDate: "2023-10-01",
+              complaintReason: "التهاب في اللثة",
+              symptomComplaint: "صعوبة في التنفس / ارتفاع درجة الحرارة",
+              natureOfComplaint: "مستمرة",
+              severityOfComplaint: "هذا النص مثال",
+            ),
+            verticalSpacing(16),
+            MedicalOperationsComponent(
+              operationStartDate: "2023-10-01",
+              mainMedicalOperation: "علاج العصب",
+              secendoryMedicalOperation: "حشو عصب",
+              operationDetailedDescription:
+                  "تم إجراء عملية علاج العصب بنجاح، وتم حشو العصب بشكل كامل.",
+              operationType: "جراحي",
+              operationLevelOfPain: "خفيف",
+              operationRecoveryDuration: "3 أسابيع",
+              useOfAnesthesia: "نعم",
+            ),
+            verticalSpacing(16),
+            Row(children: [
+              DetailsViewInfoTile(
+                title: "الدولة",
+                value: "مصر",
+                icon: 'assets/images/country_icon.png',
               ),
-            );
-          },
+              Spacer(),
+              DetailsViewInfoTile(
+                title: "المستشفي",
+                value: "دار الفؤاد",
+                icon: 'assets/images/hospital_icon.png',
+              ),
+            ]),
+
+            DetailsViewInfoTile(
+              title: " ملاحظات شخصية",
+              value:
+                  "هذا الإجراء مؤلم قليلًا، يستحسن في المستقبل الكشف الدوري لتفادي مثل هذه الحالات.",
+              icon: 'assets/images/notes_icon.png',
+              isExpanded: true,
+            ),
+
+            DetailsViewImageWithTitleTile(
+              image:
+                  "assets/images/x_ray_sample.png" , // Replace with actual image URL or asset
+              title: "التقرير الطبي",
+            ),
+            DetailsViewImageWithTitleTile(
+              image:
+                 "assets/images/x_ray_sample.png" , 
+              title: "اللقطة السنية",
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-Future<void> _shareSurgeryDetails(
-    BuildContext context, SurgeriesViewState state) async {
-  try {
-    final surgeryDetails = state.selectedSurgeryDetails!;
 
-    // 📝 Extract text details
-    final text = '''
-    ⚕️ *تفاصيل العملية* ⚕️
+class SymptomContainer extends StatelessWidget {
+  const SymptomContainer({
+    super.key,
+    required this.complaintDate,
+    required this.symptomComplaint,
+    required this.natureOfComplaint,
+    required this.severityOfComplaint,
+    required this.complaintReason,
+  });
 
-    📅 *التاريخ*: ${surgeryDetails.surgeryDate}
-    🏥 *المستشفى*: ${surgeryDetails.hospitalCenter}
-    🌍 *الدولة*: ${surgeryDetails.country}
-    🧑‍⚕️ *الجراح*: ${surgeryDetails.surgeonName}
-    ⚕️ *طبيب الباطنة*: ${surgeryDetails.anesthesiologistName}
-    🌤 *الحالة*: ${surgeryDetails.surgeryStatus}
-    💪 *التقنية المستخدمة*: ${surgeryDetails.usedTechnique}
-    📃 *التوصيف*: ${surgeryDetails.surgeryDescription}
-    📕 *التعليمات بعد العملية*: ${surgeryDetails.postSurgeryInstructions}
-    ''';
+   final String complaintDate; 
+  final String symptomComplaint; 
+  final String natureOfComplaint; 
+  final String severityOfComplaint;
+  final String complaintReason;
 
-    // 📥 Download images
-    final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding:  EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        children: [
+            Row(
+              children: [
+                Text(
+                  "الشكوي المرضية",
+                  style: AppTextStyles.font18blackWight500.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.start,),
+                Spacer(),
+                     CustomActionButton(
+                  onTap: () {
+                    
+                  },
+                  title: 'ارسال',
+                  icon: 'assets/images/share.png',
+                ),
 
-    if (surgeryDetails.medicalReportImage.startsWith("http")) {
-      final imagePath = await downloadImage(
-          surgeryDetails.medicalReportImage, tempDir, 'medical_report.png');
-      if (imagePath != null) imagePaths.add(imagePath);
-    }
+              ],
+            ),
+          verticalSpacing(8),
+          DetailsViewInfoTile(
+            title: "تاريخ الشكوى",
+            value: complaintDate,
+            icon: 'assets/images/date_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+          DetailsViewInfoTile(
+            title: " الشكوى",
+            value: symptomComplaint,
+            isExpanded: true,
+            icon: 'assets/images/symptoms_icon.png',
+          ),
+          verticalSpacing(16),
+                 DetailsViewInfoTile(
+            title: "الاسباب المحتملة ",
+            value: complaintReason,
+            icon: 'assets/images/notes_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+        
+              DetailsViewInfoTile(
+                title: "طبيعة الشكوى",
+                value: natureOfComplaint,
+                icon: 'assets/images/file_icon.png',
+                isExpanded: true,
+              ),
+          verticalSpacing(16),
+              DetailsViewInfoTile(
+                title: "حدة الشكوى",
+                value: severityOfComplaint,
+                icon: 'assets/images/heart_rate_search_icon.png',
+                isExpanded: true,
+              ),
+            ],
+     
+       
+      ),
+    );
+  }
+}
 
-    // 📤 Share text & images
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles(imagePaths.map((path) => XFile(path)).toList(),
-          text: text);
-    } else {
-      await Share.share(text);
-    }
-  } catch (e) {
-    await showError("❌ حدث خطأ أثناء المشاركة");
+class MedicalOperationsComponent extends StatelessWidget {
+  const MedicalOperationsComponent({
+    super.key,
+    required this.operationStartDate,
+    required this.mainMedicalOperation,
+    required this.secendoryMedicalOperation,
+    required this.operationDetailedDescription,
+    required this.operationType,
+    required this.operationLevelOfPain,
+    required this.operationRecoveryDuration,
+    required this.useOfAnesthesia,
+  });
+
+  final String operationStartDate;
+  final String mainMedicalOperation;
+  final String secendoryMedicalOperation;
+  final String operationDetailedDescription;
+  final String operationType;
+  final String operationLevelOfPain;
+  final String operationRecoveryDuration;
+  final String useOfAnesthesia;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+   Row(
+              children: [
+                Text(
+                  "الإجراء الطبي",
+                  style: AppTextStyles.font18blackWight500.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.start,),
+                Spacer(),
+                     CustomActionButton(
+                  onTap: () {
+                    
+                  },
+                  title: 'ارسال',
+                  icon: 'assets/images/share.png',
+                ),
+
+              ],
+            ),
+          verticalSpacing(8),
+          DetailsViewInfoTile(
+            title: "تاريخ الإجراء",
+            value: operationStartDate,
+            icon: 'assets/images/date_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+          DetailsViewInfoTile(
+            title: "الإجراء الطبي الرئيسي",
+            value: mainMedicalOperation,
+            icon: 'assets/images/data_search_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+          DetailsViewInfoTile(
+            title: "الإجراء الطبي الفرعي",
+            value: secendoryMedicalOperation,
+            icon: 'assets/images/data_search_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+           DetailsViewInfoTile(
+            title: "الوصف التفصيلي للإجراء",
+            value: operationDetailedDescription,
+            icon: 'assets/images/notes_icon.png',
+            isExpanded: true,
+          ),
+          verticalSpacing(16),
+       Row(
+            children: [
+              DetailsViewInfoTile(
+                title: "نوع الإجراء",
+                value: operationType,
+                icon: 'assets/images/file_icon.png',
+              ),
+              Spacer(),
+              DetailsViewInfoTile(
+                title: "مستوى الألم",
+                value: operationLevelOfPain,
+                icon: 'assets/images/heart_rate_search_icon.png',
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          Row(
+            children: [
+              DetailsViewInfoTile(
+                title: "استخدام التخدير",
+                value: useOfAnesthesia,
+                icon: 'assets/images/file_icon.png',
+              ),
+              Spacer(),
+                      DetailsViewInfoTile(
+            title: "مدة الشفاء",
+            value: operationRecoveryDuration,
+            icon: 'assets/images/notes_icon.png',
+          ),
+            
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

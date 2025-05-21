@@ -1,117 +1,339 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
-import 'package:we_care/features/surgeries/surgeries_view/views/surgery_details_view.dart';
+import 'package:we_care/features/dental/dental_view/views/tooth_operations_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
-class SurgeriesView extends StatelessWidget {
-  const SurgeriesView({super.key});
+class ToothAnatomyView extends StatelessWidget {
+  const ToothAnatomyView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<SurgeriesViewCubit>(
-      create: (context) => getIt<SurgeriesViewCubit>()
-        ..getUserSurgeriesList()
-        ..getSurgeriesFilters(),
+    return DefaultTabController(
+      length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0.h,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100.h),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Column(
+              children: [
+                CustomAppBarWidget(
+                  haveBackArrow: true,
+                ),
+                verticalSpacing(8),
+                // TabBar
+                Material(
+                  color: Colors.white,
+                  child: TabBar(
+                    labelColor: AppColorsManager.mainDarkBlue,
+                    dividerColor: Colors.transparent,
+                    indicatorColor: AppColorsManager.mainDarkBlue,
+                    tabs: const [
+                      Tab(text: "عرض 3D"),
+                      Tab(text: "عرض بفلتر البحث"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Column(
-            children: [
-              ViewAppBar(),
-              BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
-                buildWhen: (previous, current) =>
-                    previous.yearsFilter != current.yearsFilter ||
-                    previous.surgeryNameFilter != current.surgeryNameFilter,
-                builder: (context, state) {
-                  return DataViewFiltersRow(
+        body: TabBarView(
+          physics: BouncingScrollPhysics(),
+          children: [
+            ToothOverlay(
+              toothWithDataList: {11, 22, 41, 36},
+              overlayTitle: "“من فضلك اختر السن لعرض التفاصيل ”",
+              selectedActionsList: [77, 88, 99],
+              onTap: (toothNumber) {
+                // Handle tap event
+                print('Tooth $toothNumber tapped');
+                navigateToToothDetail(toothNumber, context);
+              },
+            ),
+            SingleChildScrollView(
+              child: Column(children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: DataViewFiltersRow(
                     filters: [
+                      FilterConfig(title: "السنة", options: [2023, 2022, 2021]),
                       FilterConfig(
-                          title: 'السنة',
-                          options: state.yearsFilter,
-                          isYearFilter: true),
-                      FilterConfig(
-                        title: 'اسم العملية',
-                        options: state.surgeryNameFilter,
+                          title: "النوع", options: ["علاج العصب", "حشو عصب"]),
+                      FilterConfig(title: "رقم السن", options: ["١", "٢", "٣"]),
+                    ],
+                    onApply: (selectedOption) {
+                      // Handle apply button action
+                      print('Apply button pressed');
+                    },
+                  ),
+                ),
+                verticalSpacing(8),
+                ToothOverlay(
+                  toothWithDataList: {},
+                  overlayTitle: "",
+                  selectedActionsList: [],
+                  onTap: (toothNumber) {
+                    // Handle tap event
+                    print('Tooth $toothNumber tapped');
+                    navigateToToothDetail(toothNumber, context);
+                  },
+                ),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ToothOverlay extends StatelessWidget {
+  final Set<int> toothWithDataList;
+  final List<int> selectedActionsList;
+  final String overlayTitle;
+  final Function(int) onTap;
+
+  const ToothOverlay({
+    super.key,
+    this.toothWithDataList = const {},
+    this.selectedActionsList = const [],
+    required this.overlayTitle,
+    required this.onTap,
+  });
+
+  static const List<int> fdiNumbers = [
+    // Upper right
+    18, 17, 16, 15, 14, 13, 12, 11,
+    // Upper left
+    21, 22, 23, 24, 25, 26, 27, 28,
+    // Lower left
+    38, 37, 36, 35, 34, 33, 32, 31,
+    // Lower right
+    41, 42, 43, 44, 45, 46, 47, 48,
+  ];
+
+  static const List<Offset> toothRelativePositions = [
+    // Upper right (18-11)
+    Offset(0.180, 0.280),
+    Offset(0.195, 0.235),
+    Offset(0.210, 0.190),
+    Offset(0.225, 0.150),
+    Offset(0.245, 0.110),
+    Offset(0.279, 0.075),
+    Offset(0.347, 0.050),
+    Offset(0.440, 0.040),
+
+    // Upper left (21-28)
+    Offset(0.535, 0.040),
+    Offset(0.625, 0.050),
+    Offset(0.689, 0.075),
+    Offset(0.730, 0.110),
+    Offset(0.760, 0.150),
+    Offset(0.770, 0.190),
+    Offset(0.786, 0.235),
+    Offset(0.799, 0.280),
+
+    // Lower left (38-31)
+    Offset(0.799, 0.330), //38
+    Offset(0.785, 0.375), //37
+    Offset(0.762, 0.420), //36
+    Offset(0.735, 0.458), //35
+    Offset(0.705, 0.493), //34
+    Offset(0.646, 0.520), //33
+    Offset(0.580, 0.530), //32
+    Offset(0.519, 0.535), //31
+
+    // Lower right (41-48)
+    Offset(0.460, 0.535), //41
+    Offset(0.400, 0.530), //42
+    Offset(0.336, 0.520), //43
+    Offset(0.280, 0.493), //44
+    Offset(0.239, 0.458), //45
+    Offset(0.210, 0.420), //46
+    Offset(0.189, 0.375), //47
+    Offset(0.170, 0.330), //48
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
+    final double imageHeight = height * 0.6; // Adjust as needed
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          if (overlayTitle.isNotEmpty)
+            Text(
+              overlayTitle,
+              style: AppTextStyles.font20blackWeight600,
+            ),
+          Stack(
+            children: [
+              Image.asset(
+                'assets/images/teeth_diagram.png',
+                width: double.infinity,
+                height: imageHeight,
+              ),
+              AspectRatio(
+                aspectRatio: 900 / 1707,
+                child: Stack(
+                  children: List.generate(fdiNumbers.length, (index) {
+                    final pos = toothRelativePositions[index];
+                    final number = fdiNumbers[index];
+                    return Positioned(
+                      left: (pos.dx * width - 8),
+                      top: (pos.dy * height - 8),
+                      child: ToothCircle(
+                        number: number,
+                        hasData: toothWithDataList.contains(number),
+                        onTap: () => onTap(number),
                       ),
-                    ],
-                    onApply: (selectedFilters) {
-                      print("Selected Filters: $selectedFilters");
-                      if (selectedFilters['السنة'] == null) {
-                        BlocProvider.of<SurgeriesViewCubit>(context)
-                            .getFilteredSurgeryList(
-                                surgeryName: selectedFilters['اسم العملية']);
-                      }
-                      BlocProvider.of<SurgeriesViewCubit>(context)
-                          .getFilteredSurgeryList(
-                              year: selectedFilters['السنة'],
-                              surgeryName: selectedFilters['اسم العملية']);
-                    },
-                  );
-                },
-              ),
-              verticalSpacing(16),
-              BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
-                buildWhen: (previous, current) =>
-                    previous.userSurgeries != current.userSurgeries,
-                builder: (context, state) {
-                  if (state.requestStatus == RequestStatus.loading) {
-                    return Expanded(
-                        child:
-                            const Center(child: CircularProgressIndicator()));
-                  } else if (state.userSurgeries.isEmpty &&
-                      state.requestStatus == RequestStatus.success) {
-                    return Expanded(
-                      child: Center(
-                          child: Text(
-                        "لا يوجد بيانات",
-                        style: AppTextStyles.font22MainBlueWeight700,
-                      )),
                     );
-                  }
-                  return MedicalItemGridView(
-                    items: state.userSurgeries,
-                    onTap: (id) async {
-                      final result = await Navigator.push(context,
-                          MaterialPageRoute(builder: (_) {
-                        return SurgeryDetailsView(
-                          documentId: id,
-                        );
-                      }));
-                      if (context.mounted) {
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getUserSurgeriesList();
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getSurgeriesFilters();
-                      }
-                    },
-                    titleBuilder: (item) => item.surgeryName,
-                    infoRowBuilder: (item) => [
-                      {"title": "التاريخ:", "value": item.surgeryDate},
-                      {"title": "منطقة العملية:", "value": item.surgeryRegion},
-                      {"title": "حالة العملية:", "value": item.surgeryStatus},
-                      {"title": "ملاحظات:", "value": item.additionalNotes},
-                    ],
-                  );
-                },
+                  }),
+                ),
               ),
-              verticalSpacing(16),
-              SurgeriesFooterRow(),
+              CustomToothActionButton(
+                  title: "اللثة العلوية\n يسار",
+                  horizontalPosition: 0.35 * width,
+                  verticalPosition: 0.15 * height,
+                  hasDataPreviously: selectedActionsList.contains(55),
+                  onTap: () => onTap(55)),
+              CustomToothActionButton(
+                  title: "للثة العلوية \n يمين",
+                  horizontalPosition: 0.50 * width,
+                  verticalPosition: 0.15 * height,
+                  hasDataPreviously: selectedActionsList.contains(66),
+                  onTap: () => onTap(66)),
+              CustomToothActionButton(
+                  title: "للثة السفلية \n يسار",
+                  horizontalPosition: 0.35 * width,
+                  verticalPosition: 0.37 * height,
+                  hasDataPreviously: selectedActionsList.contains(77),
+                  onTap: () => onTap(77)),
+              CustomToothActionButton(
+                  title: "للثة السفلية \n يمين",
+                  horizontalPosition: 0.50 * width,
+                  verticalPosition: 0.37 * height,
+                  hasDataPreviously: selectedActionsList.contains(88),
+                  onTap: () => onTap(88)),
+              CustomToothActionButton(
+                  title: "الفك العلوي",
+                  horizontalPosition: 0.06 * width,
+                  verticalPosition: 0.02 * height,
+                  hasDataPreviously: selectedActionsList.contains(99),
+                  onTap: () => onTap(99)),
+              CustomToothActionButton(
+                  title: "الفك السفلي",
+                  horizontalPosition: 0.06 * width,
+                  verticalPosition: 0.55 * height,
+                  hasDataPreviously: selectedActionsList.contains(100),
+                  onTap: () => onTap(100)),
+              CustomToothActionButton(
+                  title: "اللثة السفلية",
+                  horizontalPosition: 0.80 * width,
+                  verticalPosition: 0.02 * height,
+                  hasDataPreviously: selectedActionsList.contains(111),
+                  onTap: () => onTap(111)),
+              CustomToothActionButton(
+                  title: "اللثة العلوية",
+                  horizontalPosition: 0.80 * width,
+                  verticalPosition: 0.55 * height,
+                  hasDataPreviously: selectedActionsList.contains(122),
+                  onTap: () => onTap(122)),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomToothActionButton extends StatelessWidget {
+  const CustomToothActionButton({
+    super.key,
+    required this.title,
+    required this.horizontalPosition,
+    required this.verticalPosition,
+    required this.onTap,
+    this.hasDataPreviously = false,
+  });
+
+  final String title;
+  final double horizontalPosition;
+  final double verticalPosition;
+  final Function() onTap;
+  final bool hasDataPreviously;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: horizontalPosition,
+      top: verticalPosition,
+      child: InkWell(
+        onTap: hasDataPreviously ? onTap : null,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: hasDataPreviously
+                      ? Colors.red
+                      : const Color.fromARGB(255, 195, 192, 192),
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                width: 43.w,
+                height: 43.h,
+              ),
+              Center(
+                child: Text(
+                  title,
+                  style: AppTextStyles.font12blackWeight400
+                      .copyWith(fontWeight: FontWeight.w600, fontSize: 10.sp),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ]),
+      ),
+    );
+  }
+}
+
+class ToothCircle extends StatelessWidget {
+  final int number;
+  final bool hasData;
+  final Function onTap;
+
+  const ToothCircle(
+      {super.key,
+      required this.number,
+      required this.hasData,
+      required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: hasData ? () => onTap() : null,
+      child: Container(
+        width: 25,
+        height: 25,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color:
+              hasData ? Colors.red : const Color.fromARGB(255, 195, 192, 192),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          '$number',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -119,117 +341,11 @@ class SurgeriesView extends StatelessWidget {
   }
 }
 
-class SurgeriesFooterRow extends StatelessWidget {
-  const SurgeriesFooterRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
-      builder: (context, state) {
-        final cubit = context.read<SurgeriesViewCubit>();
-        return Column(
-          children: [
-            // Loading indicator that appears above the footer when loading more items
-            if (state.isLoadingMore)
-              Padding(
-                padding: EdgeInsets.only(bottom: 8.h),
-                child: LinearProgressIndicator(
-                  minHeight: 2.h,
-                  color: AppColorsManager.mainDarkBlue,
-                  backgroundColor:
-                      AppColorsManager.mainDarkBlue.withOpacity(0.1),
-                ),
-              ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Load More Button
-                ElevatedButton(
-                  onPressed: state.isLoadingMore || !cubit.hasMore
-                      ? null
-                      : () => cubit.loadMoreMedicines(),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(158.w, 32.h),
-                    backgroundColor: state.isLoadingMore || !cubit.hasMore
-                        ? Colors.grey
-                        : AppColorsManager.mainDarkBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16.r),
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: state.isLoadingMore
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 16.w,
-                              height: 16.h,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            horizontalSpacing(8.w),
-                            Text(
-                              "جاري التحميل...",
-                              style: AppTextStyles.font14whiteWeight600,
-                            ),
-                          ],
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "عرض المزيد",
-                              style:
-                                  AppTextStyles.font14whiteWeight600.copyWith(
-                                color: !cubit.hasMore
-                                    ? Colors.black
-                                    : Colors.white,
-                              ),
-                            ),
-                            horizontalSpacing(8.w),
-                            Icon(
-                              Icons.expand_more,
-                              color:
-                                  !cubit.hasMore ? Colors.black : Colors.white,
-                              size: 20.sp,
-                            ),
-                          ],
-                        ),
-                ),
-
-                // Items Count Badge
-                !cubit.hasMore
-                    ? SizedBox.shrink()
-                    : Container(
-                        width: 47.w,
-                        height: 28.h,
-                        padding: EdgeInsets.symmetric(horizontal: 6.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(11.r),
-                          border: Border.all(
-                            color: Color(0xFF014C8A),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "+${cubit.pageSize}",
-                            style:
-                                AppTextStyles.font16DarkGreyWeight400.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            ),
-                          ),
-                        ),
-                      ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
+void navigateToToothDetail(int toothNumber, BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ToothOperationsView(),
+    ),
+  );
 }
