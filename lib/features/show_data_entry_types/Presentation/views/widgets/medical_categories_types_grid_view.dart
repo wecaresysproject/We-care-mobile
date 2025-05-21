@@ -331,8 +331,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
-    "route": "/dental",
-    "isActive": false,
+    "route": Routes.toothAnatomyView,
+    "isActive": true,
   },
   {
     "title": "العلاج\nالطبيعى",
