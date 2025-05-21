@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/dental/dental_view/views/tooth_operations_view.dart';
+import 'package:we_care/features/dental_module/dental_view/views/tooth_operations_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
 class ToothAnatomyView extends StatelessWidget {
@@ -16,11 +17,12 @@ class ToothAnatomyView extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.h),
+          preferredSize: Size.fromHeight(110.h),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Column(
               children: [
+                verticalSpacing(10.h),
                 CustomAppBarWidget(
                   haveBackArrow: true,
                 ),
@@ -61,10 +63,11 @@ class ToothAnatomyView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: DataViewFiltersRow(
                     filters: [
-                      FilterConfig(title: "السنة", options: [2023, 2022, 2021]),
+                      FilterConfig(title: "السنة", options: [2023, 2022, 2021,"الكل"]),
                       FilterConfig(
-                          title: "النوع", options: ["علاج العصب", "حشو عصب"]),
-                      FilterConfig(title: "رقم السن", options: ["١", "٢", "٣"]),
+                          title: "النوع", options: ["علاج عصب", "حشو عصب"]),
+                      FilterConfig(title: "رقم السن", options: ["السن 11", "السن 22",
+                          "السن 33", "السن 44"]),
                     ],
                     onApply: (selectedOption) {
                       // Handle apply button action
@@ -171,7 +174,8 @@ class ToothOverlay extends StatelessWidget {
             Text(
               overlayTitle,
               style: AppTextStyles.font20blackWeight600,
-            ),
+              textAlign: TextAlign.center,
+            ).paddingSymmetricHorizontal(16),
           Stack(
             children: [
               Image.asset(
@@ -294,7 +298,7 @@ class CustomToothActionButton extends StatelessWidget {
                 child: Text(
                   title,
                   style: AppTextStyles.font12blackWeight400
-                      .copyWith(fontWeight: FontWeight.w600, fontSize: 10.sp),
+                      .copyWith(fontWeight: FontWeight.w600, fontSize: 9.sp),
                   textAlign: TextAlign.center,
                 ),
               ),
