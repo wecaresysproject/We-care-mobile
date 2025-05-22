@@ -80,10 +80,6 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     emit(state.copyWith(selectedCountryName: selectedCountry));
   }
 
-  // void uploadXrayImagePicked(String? imagePath) {
-  //   emit(state.copyWith(xrayImageUploadedUrl: imagePath));
-  // }
-
   void updateTypeOfSyptom(String? value) {
     emit(state.copyWith(syptomTypeSelection: value));
     validateRequiredFields();
@@ -115,7 +111,8 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     await emitComaplainsDurations();
     await emitComplainNatures();
     await emitDoctorNames();
-
+    await emitAllGumsconditions();
+    await emitAllOralMedicalTests();
     await emitCountriesData();
   }
 
@@ -281,6 +278,54 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             mainProcedures: mainProcedures,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitAllGumsconditions() async {
+    final response = await _dentalDataEntryRepo.getAllGumsconditions(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            allGumsConditions: result,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitAllOralMedicalTests() async {
+    final response = await _dentalDataEntryRepo.getAllOralMedicalTests(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            allOralMedicalTests: result,
           ),
         );
       },

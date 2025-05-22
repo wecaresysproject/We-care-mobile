@@ -155,6 +155,40 @@ class DentalDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAllGumsconditions({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllGumsconditions(
+        userType,
+        language,
+      );
+      final allGumsConditions =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(allGumsConditions);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllOralMedicalTests({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllOralMedicalTests(
+        userType,
+        language,
+      );
+      final allOralMedicalTests =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(allOralMedicalTests);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
   // Future<ApiResult<String>> postModuleData({
   //   required String language,
   //   required SurgeryRequestBodyModel requestBody,

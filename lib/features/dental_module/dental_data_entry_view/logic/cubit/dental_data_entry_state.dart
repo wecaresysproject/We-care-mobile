@@ -12,9 +12,11 @@ class DentalDataEntryState extends Equatable {
   final List<String> mainProcedures;
   final List<String> secondaryProcedures;
   final List<String> doctorNames; //اسماء الاطباء
-  final List<String> complainDurations; //اسماء الاطباء
-  final List<String> complainTypes; //اسماء الاطباء
-  final List<String> complainNatures; //اسماء الاطباء
+  final List<String> complainDurations;
+  final List<String> complainTypes;
+  final List<String> complainNatures;
+  final List<String> allGumsConditions; //حالة اللثة
+  final List<String> allOralMedicalTests; //التحاليل الطبية الفموية
 
   final String? medicalProcedureDateSelection; //تاريخ اجراء العملية
   final String? primaryMedicalProcedureSelection; //"الاجراء الطبى الرئيسى"
@@ -51,6 +53,8 @@ class DentalDataEntryState extends Equatable {
     this.complainDurations = const [],
     this.complainTypes = const [],
     this.complainNatures = const [],
+    this.allGumsConditions = const [],
+    this.allOralMedicalTests = const [],
     this.primaryMedicalProcedureSelection,
     this.secondaryMedicalProcedureSelection,
     this.selectedSurroundingGumStatus,
@@ -84,6 +88,8 @@ class DentalDataEntryState extends Equatable {
           complainDurations: const [],
           complainTypes: const [],
           complainNatures: const [],
+          allGumsConditions: const [],
+          allOralMedicalTests: const [],
           primaryMedicalProcedureSelection: null,
           secondaryMedicalProcedureSelection: null,
           selectedSurroundingGumStatus: null,
@@ -115,6 +121,8 @@ class DentalDataEntryState extends Equatable {
     List<String>? complainDurations,
     List<String>? complainTypes,
     List<String>? complainNatures,
+    List<String>? allGumsConditions,
+    List<String>? allOralMedicalTests,
     String? secondaryMedicalProcedureSelection,
     String? syptomTypeSelection,
     String? natureOfComplaintSelection,
@@ -147,6 +155,8 @@ class DentalDataEntryState extends Equatable {
       complainDurations: complainDurations ?? this.complainDurations,
       complainTypes: complainTypes ?? this.complainTypes,
       complainNatures: complainNatures ?? this.complainNatures,
+      allGumsConditions: allGumsConditions ?? this.allGumsConditions,
+      allOralMedicalTests: allOralMedicalTests ?? this.allOralMedicalTests,
       medicalProcedureDateSelection:
           medicalProcedureDateSelection ?? this.medicalProcedureDateSelection,
       primaryMedicalProcedureSelection: primaryMedicalProcedureSelection ??
@@ -197,6 +207,8 @@ class DentalDataEntryState extends Equatable {
         complainDurations,
         complainTypes,
         complainNatures,
+        allGumsConditions,
+        allOralMedicalTests,
         primaryMedicalProcedureSelection,
         secondaryMedicalProcedureSelection,
         selectedSurroundingGumStatus,

@@ -283,11 +283,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             UserSelectionContainer(
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.allOralMedicalTests,
               categoryLabel: "التحاليل الطبية الفموية",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
@@ -299,6 +295,7 @@ class _DentalDataFormFieldsWidgetState
                   "اختر التحاليل الطبية الفموية",
               searchHintText: "ابحث عن التحاليل الطبية الفموية",
             ),
+
             verticalSpacing(8),
             BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
               listenWhen: (prev, curr) =>
@@ -339,11 +336,7 @@ class _DentalDataFormFieldsWidgetState
 
             /// حالة اللثه المحيطه
             UserSelectionContainer(
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.allGumsConditions,
               categoryLabel: "حالة اللثه المحيطة",
               bottomSheetTitle: "اختر حالة اللثه المحيطة",
               onOptionSelected: (value) {
