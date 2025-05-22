@@ -69,11 +69,7 @@ class _DentalDataFormFieldsWidgetState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "نوع العرض",
               containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainTypes,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
@@ -90,11 +86,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "مدة الأعراض",
               containerHintText:
                   state.selectedSyptomsPeriod ?? "اختر مدة استمرار الأعراض",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainDurations,
               onOptionSelected: (value) async {
                 await context
                     .read<DentalDataEntryCubit>()
@@ -115,11 +107,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "طبيعة الشكوي",
               containerHintText:
                   state.natureOfComplaintSelection ?? "اختر الحالة",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainNatures,
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()

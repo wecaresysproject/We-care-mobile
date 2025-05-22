@@ -111,6 +111,9 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
 
   Future<void> intialRequestsForDataEntry() async {
     await emitPrimaryMedicalProcedures();
+    await emitComplainTypes();
+    await emitComaplainsDurations();
+    await emitComplainNatures();
     await emitDoctorNames();
 
     await emitCountriesData();
@@ -158,6 +161,78 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitComaplainsDurations() async {
+    final response = await _dentalDataEntryRepo.getAllComaplainsDurations(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            complainDurations: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitComplainNatures() async {
+    final response = await _dentalDataEntryRepo.getAllComplainNatures(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            complainNatures: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitComplainTypes() async {
+    final response = await _dentalDataEntryRepo.getAllComplainTypes(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            complainTypes: response,
           ),
         );
       },

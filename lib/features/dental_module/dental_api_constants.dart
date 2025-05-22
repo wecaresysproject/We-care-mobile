@@ -11,7 +11,10 @@ class DentalApiConstants {
   static const getAllsecondaryMedicalProcedure =
       "/TeethDataEntry/GetAllSubProcedureNames";
   static const getAllDoctors = "/Doctor/GetAllDcotors";
-
+  static const getAllComplainTypes = "/TeethDataEntry/GetAllComplaintTypes";
+  static const getAllComplainNatures = "/TeethDataEntry/GetAllComplaintNatures";
+  static const getAllComplainsDurations =
+      "/TeethDataEntry/GetAllComplaintDurations";
   //View Entry
 
   //filters
