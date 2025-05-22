@@ -18,7 +18,7 @@ abstract class DentalService {
 
   @MultiPart()
   @POST(DentalApiConstants.uploadReportEndpoint)
-  Future<UploadReportResponseModel> uploadReportImage(
+  Future<UploadReportResponseModel> uploadTeethReport(
     @Part() File report,
     @Header("Content-Type") String contentType,
     @Query("language") String language,

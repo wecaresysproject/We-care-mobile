@@ -13,13 +13,13 @@ class DentalDataEntryRepo {
   DentalDataEntryRepo({required DentalService dentalService})
       : _dentalService = dentalService;
 
-  Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
+  Future<ApiResult<UploadReportResponseModel>> uploadTeethReport({
     required String language,
     required String contentType,
     required File image,
   }) async {
     try {
-      final response = await _dentalService.uploadReportImage(
+      final response = await _dentalService.uploadTeethReport(
         image,
         contentType,
         language,

@@ -111,10 +111,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => DentalAnatomyDiagramEntryView(),
         );
-      case Routes.toothAnatomyView:  
+      case Routes.toothAnatomyView:
         return MaterialPageRoute(
-          builder: (context) => ToothAnatomyView(
-          ),
+          builder: (context) => ToothAnatomyView(),
         );
       case Routes.prescriptionView:
         return MaterialPageRoute(

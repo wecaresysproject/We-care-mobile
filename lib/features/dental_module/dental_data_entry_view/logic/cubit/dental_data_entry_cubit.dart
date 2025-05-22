@@ -116,13 +116,13 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     await emitCountriesData();
   }
 
-  Future<void> uploadReportImagePicked({required String imagePath}) async {
+  Future<void> uploadTeethReport({required String imagePath}) async {
     emit(
       state.copyWith(
         uploadReportStatus: UploadReportRequestStatus.initial,
       ),
     );
-    final response = await _dentalDataEntryRepo.uploadReportImage(
+    final response = await _dentalDataEntryRepo.uploadTeethReport(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
       image: File(imagePath),

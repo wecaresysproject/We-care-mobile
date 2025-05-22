@@ -12,7 +12,6 @@ import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -244,7 +243,7 @@ class _DentalDataFormFieldsWidgetState
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         await context
                             .read<DentalDataEntryCubit>()
-                            .uploadReportImagePicked(
+                            .uploadTeethReport(
                               imagePath: picker.pickedImage!.path,
                             );
                       }
@@ -295,7 +294,12 @@ class _DentalDataFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               categoryLabel: "التحاليل الطبية الفموية",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
@@ -346,7 +350,12 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             /// حالة اللثه المحيطه
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               categoryLabel: "حالة اللثه المحيطة",
               bottomSheetTitle: "اختر حالة اللثه المحيطة",
               onOptionSelected: (value) {
