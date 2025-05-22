@@ -12,7 +12,6 @@ import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -179,13 +178,9 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الرئيسى",
               containerHintText: state.primaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
-              onOptionSelected: (value) {
-                context
+              options: state.mainProcedures,
+              onOptionSelected: (value) async {
+                await context
                     .read<DentalDataEntryCubit>()
                     .updatePrimaryMedicalProcedure(value);
               },
@@ -199,11 +194,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الفرعي",
               containerHintText: state.secondaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى الفرعى",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.secondaryProcedures,
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -252,7 +243,7 @@ class _DentalDataFormFieldsWidgetState
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         await context
                             .read<DentalDataEntryCubit>()
-                            .uploadReportImagePicked(
+                            .uploadTeethReport(
                               imagePath: picker.pickedImage!.path,
                             );
                       }
@@ -303,7 +294,12 @@ class _DentalDataFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               categoryLabel: "التحاليل الطبية الفموية",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
@@ -354,7 +350,12 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             /// حالة اللثه المحيطه
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
+              options: [
+                "test1",
+                "test2",
+                "test3",
+              ],
               categoryLabel: "حالة اللثه المحيطة",
               bottomSheetTitle: "اختر حالة اللثه المحيطة",
               onOptionSelected: (value) {
@@ -372,7 +373,7 @@ class _DentalDataFormFieldsWidgetState
             ///"اسم طبيب المعالج"
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "اسم طبيب المعالج",
               bottomSheetTitle: "اختر اسم طبيب المعالج",
               onOptionSelected: (value) {
@@ -406,7 +407,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             ///الدولة
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (value) {
@@ -416,6 +417,7 @@ class _DentalDataFormFieldsWidgetState
               },
               containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
               searchHintText: "ابحث عن اسم الدولة",
+              options: state.countriesNames,
             ),
 
             verticalSpacing(16),
