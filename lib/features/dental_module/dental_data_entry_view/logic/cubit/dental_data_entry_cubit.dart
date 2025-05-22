@@ -155,7 +155,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
       },

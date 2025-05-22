@@ -11,8 +11,10 @@ part 'dental_services.g.dart';
 abstract class DentalService {
   factory DentalService(Dio dio, {String? baseUrl}) = _DentalService;
 
-  @GET("http://147.93.57.70/api/countries")
-  Future<dynamic> getCountries(@Query('language') String language);
+  @GET(DentalApiConstants.getAllCountries)
+  Future<dynamic> getCountries(
+    @Query('language') String language,
+  );
 
   @MultiPart()
   @POST(DentalApiConstants.uploadReportEndpoint)

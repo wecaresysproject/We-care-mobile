@@ -12,19 +12,6 @@ class DentalDataEntryRepo {
   DentalDataEntryRepo({required DentalService dentalService})
       : _dentalService = dentalService;
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _dentalService.getCountries(language);
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
   Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
     required String language,
     required String contentType,
@@ -84,6 +71,19 @@ class DentalDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getCountriesData(
+      {required String language}) async {
+    try {
+      final response = await _dentalService.getCountries(language);
+      final countries = (response['data'] as List)
+          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .toList();
+      final countriesNames = countries.map((e) => e.name).toList();
+      return ApiResult.success(countriesNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
   // Future<ApiResult<String>> postModuleData({
   //   required String language,
   //   required SurgeryRequestBodyModel requestBody,

@@ -398,7 +398,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             ///الدولة
-            SearchableUserSelectorContainer(
+            UserSelectionContainer(
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (value) {
@@ -408,6 +408,7 @@ class _DentalDataFormFieldsWidgetState
               },
               containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
               searchHintText: "ابحث عن اسم الدولة",
+              options: state.countriesNames,
             ),
 
             verticalSpacing(16),
