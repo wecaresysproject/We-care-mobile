@@ -42,6 +42,48 @@ class DentalDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getAllMainMedicalProcedure({
+    required String userType,
+    required String language,
+  }) async {
+    try {
+      final response = await _dentalService.getAllMainMedicalProcedures(
+        userType,
+        language,
+      );
+      final procedures = (response['data'] as List)
+          .map<String>(
+            (e) => e.toString(),
+          )
+          .toList();
+      return ApiResult.success(procedures);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllSecondaryMedicalProcedure({
+    required String mainProcedure,
+    required String userType,
+    required String language,
+  }) async {
+    try {
+      final response = await _dentalService.getAllSecondaryMedicalProcedure(
+        mainProcedure,
+        userType,
+        language,
+      );
+      final secondaryProcedures = (response['data'] as List)
+          .map<String>(
+            (e) => e.toString(),
+          )
+          .toList();
+      return ApiResult.success(secondaryProcedures);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<String>> postModuleData({
   //   required String language,
   //   required SurgeryRequestBodyModel requestBody,

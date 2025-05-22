@@ -179,13 +179,9 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الرئيسى",
               containerHintText: state.primaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
-              onOptionSelected: (value) {
-                context
+              options: state.mainProcedures,
+              onOptionSelected: (value) async {
+                await context
                     .read<DentalDataEntryCubit>()
                     .updatePrimaryMedicalProcedure(value);
               },
@@ -199,11 +195,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "الاجراء الطبى الفرعي",
               containerHintText: state.secondaryMedicalProcedureSelection ??
                   "اختر نوع الاجراء الطبى الفرعى",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.secondaryProcedures,
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()

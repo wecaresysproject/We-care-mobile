@@ -9,6 +9,8 @@ class DentalDataEntryState extends Equatable {
   final String? natureOfComplaintSelection; //طبيعة الشكوى
   final String message; // error or success message
   final String? complaintDegree; //حدة الشكوى
+  final List<String> mainProcedures;
+  final List<String> secondaryProcedures;
   final String? medicalProcedureDateSelection; //تاريخ اجراء العملية
   final String? primaryMedicalProcedureSelection; //"الاجراء الطبى الرئيسى"
   final String? secondaryMedicalProcedureSelection; //"الاجراء الطبى الفرعي"
@@ -38,6 +40,8 @@ class DentalDataEntryState extends Equatable {
     this.message = '',
     this.complaintDegree,
     this.medicalProcedureDateSelection,
+    this.mainProcedures = const [],
+    this.secondaryProcedures = const [],
     this.primaryMedicalProcedureSelection,
     this.secondaryMedicalProcedureSelection,
     this.selectedSurroundingGumStatus,
@@ -65,6 +69,8 @@ class DentalDataEntryState extends Equatable {
           natureOfComplaintSelection: null,
           complaintDegree: null,
           medicalProcedureDateSelection: null,
+          mainProcedures: const [],
+          secondaryProcedures: const [],
           primaryMedicalProcedureSelection: null,
           secondaryMedicalProcedureSelection: null,
           selectedSurroundingGumStatus: null,
@@ -88,6 +94,8 @@ class DentalDataEntryState extends Equatable {
     RequestStatus? dentalDataEntryStatus,
     bool? isFormValidated,
     String? startIssueDateSelection,
+    List<String>? mainProcedures,
+    List<String>? secondaryProcedures,
     String? medicalProcedureDateSelection,
     String? primaryMedicalProcedureSelection,
     String? secondaryMedicalProcedureSelection,
@@ -116,6 +124,8 @@ class DentalDataEntryState extends Equatable {
       isFormValidated: isFormValidated ?? this.isFormValidated,
       startIssueDateSelection:
           startIssueDateSelection ?? this.startIssueDateSelection,
+      mainProcedures: mainProcedures ?? this.mainProcedures,
+      secondaryProcedures: secondaryProcedures ?? this.secondaryProcedures,
       medicalProcedureDateSelection:
           medicalProcedureDateSelection ?? this.medicalProcedureDateSelection,
       primaryMedicalProcedureSelection: primaryMedicalProcedureSelection ??
@@ -160,6 +170,8 @@ class DentalDataEntryState extends Equatable {
         natureOfComplaintSelection,
         complaintDegree,
         medicalProcedureDateSelection,
+        mainProcedures,
+        secondaryProcedures,
         primaryMedicalProcedureSelection,
         secondaryMedicalProcedureSelection,
         selectedSurroundingGumStatus,

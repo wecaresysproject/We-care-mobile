@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
 
@@ -54,8 +55,9 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     emit(state.copyWith(medicalProcedureDateSelection: date));
   }
 
-  void updatePrimaryMedicalProcedure(String? val) {
+  Future<void> updatePrimaryMedicalProcedure(String? val) async {
     emit(state.copyWith(primaryMedicalProcedureSelection: val));
+    await emitSecondaryMedicalProcedures();
   }
 
   void updateSecodaryMedicalProcedure(String? val) {
@@ -108,6 +110,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
+    await emitPrimaryMedicalProcedures();
     await emitCountriesData();
   }
 
@@ -153,6 +156,56 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             countriesNames: response.map((e) => e.name).toList(),
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitPrimaryMedicalProcedures() async {
+    final response = await _dentalDataEntryRepo.getAllMainMedicalProcedure(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (mainProcedures) {
+        emit(
+          state.copyWith(
+            mainProcedures: mainProcedures,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitSecondaryMedicalProcedures() async {
+    final response = await _dentalDataEntryRepo.getAllSecondaryMedicalProcedure(
+      mainProcedure: state.primaryMedicalProcedureSelection ??
+          "", //TODO: to change null to empty string
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (secondaryProcedures) {
+        emit(
+          state.copyWith(
+            secondaryProcedures: secondaryProcedures,
           ),
         );
       },
