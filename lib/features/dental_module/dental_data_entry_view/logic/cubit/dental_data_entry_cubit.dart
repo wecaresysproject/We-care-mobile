@@ -106,14 +106,18 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
-    await emitPrimaryMedicalProcedures();
-    await emitComplainTypes();
-    await emitComaplainsDurations();
-    await emitComplainNatures();
-    await emitDoctorNames();
-    await emitAllGumsconditions();
-    await emitAllOralMedicalTests();
-    await emitCountriesData();
+    await Future.wait(
+      [
+        emitPrimaryMedicalProcedures(),
+        emitComplainTypes(),
+        emitComaplainsDurations(),
+        emitComplainNatures(),
+        emitDoctorNames(),
+        emitAllGumsconditions(),
+        emitAllOralMedicalTests(),
+        emitCountriesData(),
+      ],
+    );
   }
 
   Future<void> uploadTeethReport({required String imagePath}) async {
