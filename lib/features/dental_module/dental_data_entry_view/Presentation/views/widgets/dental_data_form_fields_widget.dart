@@ -364,7 +364,7 @@ class _DentalDataFormFieldsWidgetState
             ///"اسم طبيب المعالج"
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "اسم طبيب المعالج",
               bottomSheetTitle: "اختر اسم طبيب المعالج",
               onOptionSelected: (value) {

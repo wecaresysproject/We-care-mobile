@@ -11,6 +11,8 @@ class DentalDataEntryState extends Equatable {
   final String? complaintDegree; //حدة الشكوى
   final List<String> mainProcedures;
   final List<String> secondaryProcedures;
+  final List<String> doctorNames; //اسماء الاطباء
+
   final String? medicalProcedureDateSelection; //تاريخ اجراء العملية
   final String? primaryMedicalProcedureSelection; //"الاجراء الطبى الرئيسى"
   final String? secondaryMedicalProcedureSelection; //"الاجراء الطبى الفرعي"
@@ -42,6 +44,7 @@ class DentalDataEntryState extends Equatable {
     this.medicalProcedureDateSelection,
     this.mainProcedures = const [],
     this.secondaryProcedures = const [],
+    this.doctorNames = const [],
     this.primaryMedicalProcedureSelection,
     this.secondaryMedicalProcedureSelection,
     this.selectedSurroundingGumStatus,
@@ -71,6 +74,7 @@ class DentalDataEntryState extends Equatable {
           medicalProcedureDateSelection: null,
           mainProcedures: const [],
           secondaryProcedures: const [],
+          doctorNames: const [],
           primaryMedicalProcedureSelection: null,
           secondaryMedicalProcedureSelection: null,
           selectedSurroundingGumStatus: null,
@@ -98,6 +102,7 @@ class DentalDataEntryState extends Equatable {
     List<String>? secondaryProcedures,
     String? medicalProcedureDateSelection,
     String? primaryMedicalProcedureSelection,
+    List<String>? doctorNames,
     String? secondaryMedicalProcedureSelection,
     String? syptomTypeSelection,
     String? natureOfComplaintSelection,
@@ -126,6 +131,7 @@ class DentalDataEntryState extends Equatable {
           startIssueDateSelection ?? this.startIssueDateSelection,
       mainProcedures: mainProcedures ?? this.mainProcedures,
       secondaryProcedures: secondaryProcedures ?? this.secondaryProcedures,
+      doctorNames: doctorNames ?? this.doctorNames,
       medicalProcedureDateSelection:
           medicalProcedureDateSelection ?? this.medicalProcedureDateSelection,
       primaryMedicalProcedureSelection: primaryMedicalProcedureSelection ??
@@ -172,6 +178,7 @@ class DentalDataEntryState extends Equatable {
         medicalProcedureDateSelection,
         mainProcedures,
         secondaryProcedures,
+        doctorNames,
         primaryMedicalProcedureSelection,
         secondaryMedicalProcedureSelection,
         selectedSurroundingGumStatus,

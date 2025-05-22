@@ -111,6 +111,8 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
 
   Future<void> intialRequestsForDataEntry() async {
     await emitPrimaryMedicalProcedures();
+    await emitDoctorNames();
+
     await emitCountriesData();
   }
 
@@ -156,6 +158,30 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await _dentalDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
           ),
         );
       },

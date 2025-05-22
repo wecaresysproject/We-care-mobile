@@ -35,4 +35,9 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
   );
+  @GET(DentalApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 }
