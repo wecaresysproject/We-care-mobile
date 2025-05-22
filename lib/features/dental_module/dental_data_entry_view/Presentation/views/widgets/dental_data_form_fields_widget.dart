@@ -69,11 +69,7 @@ class _DentalDataFormFieldsWidgetState
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "نوع العرض",
               containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainTypes,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
@@ -90,11 +86,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "مدة الأعراض",
               containerHintText:
                   state.selectedSyptomsPeriod ?? "اختر مدة استمرار الأعراض",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainDurations,
               onOptionSelected: (value) async {
                 await context
                     .read<DentalDataEntryCubit>()
@@ -115,11 +107,7 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "طبيعة الشكوي",
               containerHintText:
                   state.natureOfComplaintSelection ?? "اختر الحالة",
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.complainNatures,
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -295,11 +283,7 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             UserSelectionContainer(
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.allOralMedicalTests,
               categoryLabel: "التحاليل الطبية الفموية",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
@@ -311,6 +295,7 @@ class _DentalDataFormFieldsWidgetState
                   "اختر التحاليل الطبية الفموية",
               searchHintText: "ابحث عن التحاليل الطبية الفموية",
             ),
+
             verticalSpacing(8),
             BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
               listenWhen: (prev, curr) =>
@@ -351,11 +336,7 @@ class _DentalDataFormFieldsWidgetState
 
             /// حالة اللثه المحيطه
             UserSelectionContainer(
-              options: [
-                "test1",
-                "test2",
-                "test3",
-              ],
+              options: state.allGumsConditions,
               categoryLabel: "حالة اللثه المحيطة",
               bottomSheetTitle: "اختر حالة اللثه المحيطة",
               onOptionSelected: (value) {

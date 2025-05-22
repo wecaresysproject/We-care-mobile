@@ -40,4 +40,29 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
   );
+  @GET(DentalApiConstants.getAllComplainsDurations)
+  Future<dynamic> getAllComaplainsDurations(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
+  @GET(DentalApiConstants.getAllComplainNatures)
+  Future<dynamic> getAllComplainNatures(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
+  @GET(DentalApiConstants.getAllComplainTypes)
+  Future<dynamic> getAllComplainTypes(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
+  @GET(DentalApiConstants.getAllGumsconditions)
+  Future<dynamic> getAllGumsconditions(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+  @GET(DentalApiConstants.getAllOralMedicalTests)
+  Future<dynamic> getAllOralMedicalTests(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
 }

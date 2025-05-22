@@ -104,6 +104,91 @@ class DentalDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAllComplainTypes({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllComplainTypes(
+        userType,
+        language,
+      );
+      final complainTypes =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(complainTypes);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllComplainNatures({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllComplainNatures(
+        userType,
+        language,
+      );
+      final complainNatures =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(complainNatures);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllComaplainsDurations({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllComaplainsDurations(
+        userType,
+        language,
+      );
+      final complainDurations =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(complainDurations);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllGumsconditions({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllGumsconditions(
+        userType,
+        language,
+      );
+      final allGumsConditions =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(allGumsConditions);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllOralMedicalTests({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _dentalService.getAllOralMedicalTests(
+        userType,
+        language,
+      );
+      final allOralMedicalTests =
+          (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(allOralMedicalTests);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
   // Future<ApiResult<String>> postModuleData({
   //   required String language,
   //   required SurgeryRequestBodyModel requestBody,
