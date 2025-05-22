@@ -24,7 +24,7 @@ class DentalAnatomyDiagramEntryView extends StatelessWidget {
             ).paddingSymmetricHorizontal(16),
             verticalSpacing(16),
             ToothOverlay(
-              toothWithDataList: {11,18,48},
+              toothWithDataList: [11,18,48],
               selectedActionsList: [55],
                 overlayTitle:
                     "“من فضلك اختر السن المصاب لادخال البيانات الخاصة به”",

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
+import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operations_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
@@ -13,82 +18,102 @@ class ToothAnatomyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(110.h),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            child: Column(
-              children: [
-                verticalSpacing(10.h),
-                CustomAppBarWidget(
-                  haveBackArrow: true,
-                ),
-                verticalSpacing(8),
-                // TabBar
-                Material(
-                  color: Colors.white,
-                  child: TabBar(
-                    labelColor: AppColorsManager.mainDarkBlue,
-                    dividerColor: Colors.transparent,
-                    indicatorColor: AppColorsManager.mainDarkBlue,
-                    tabs: const [
-                      Tab(text: "عرض 3D"),
-                      Tab(text: "عرض بفلتر البحث"),
-                    ],
+    return BlocProvider<DentalViewCubit>(
+      create: (context) => getIt<DentalViewCubit>()..getDefectedTooth(),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(110.h),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                children: [
+                  verticalSpacing(10.h),
+                  CustomAppBarWidget(
+                    haveBackArrow: true,
                   ),
-                ),
-              ],
+                  verticalSpacing(8),
+                  // TabBar
+                  Material(
+                    color: Colors.white,
+                    child: TabBar(
+                      labelColor: AppColorsManager.mainDarkBlue,
+                      dividerColor: Colors.transparent,
+                      indicatorColor: AppColorsManager.mainDarkBlue,
+                      tabs: const [
+                        Tab(text: "عرض 3D"),
+                        Tab(text: "عرض بفلتر البحث"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        body: TabBarView(
-          physics: BouncingScrollPhysics(),
-          children: [
-            ToothOverlay(
-              toothWithDataList: {11, 22, 41, 36},
-              overlayTitle: "“من فضلك اختر السن لعرض التفاصيل ”",
-              selectedActionsList: [77, 88, 99],
-              onTap: (toothNumber) {
-                // Handle tap event
-                print('Tooth $toothNumber tapped');
-                navigateToToothDetail(toothNumber, context);
-              },
-            ),
-            SingleChildScrollView(
-              child: Column(children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: DataViewFiltersRow(
-                    filters: [
-                      FilterConfig(title: "السنة", options: [2023, 2022, 2021,"الكل"]),
-                      FilterConfig(
-                          title: "النوع", options: ["علاج عصب", "حشو عصب"]),
-                      FilterConfig(title: "رقم السن", options: ["السن 11", "السن 22",
-                          "السن 33", "السن 44"]),
-                    ],
-                    onApply: (selectedOption) {
-                      // Handle apply button action
-                      print('Apply button pressed');
+          body: BlocBuilder<DentalViewCubit, DentalViewState>(
+            builder: (context, state) {
+              if (state.requestStatus==RequestStatus.loading) {
+              
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return TabBarView(
+                physics: BouncingScrollPhysics(),
+                children: [
+                  ToothOverlay(
+                    toothWithDataList: state.defectedToothList ?? [],
+                    overlayTitle: "“من فضلك اختر السن لعرض التفاصيل ”",
+                    selectedActionsList: [],
+                    onTap: (toothNumber) {
+                      // Handle tap event
+                      print('Tooth $toothNumber tapped');
+                      navigateToToothDetail(toothNumber, context);
                     },
                   ),
-                ),
-                verticalSpacing(8),
-                ToothOverlay(
-                  toothWithDataList: {},
-                  overlayTitle: "",
-                  selectedActionsList: [],
-                  onTap: (toothNumber) {
-                    // Handle tap event
-                    print('Tooth $toothNumber tapped');
-                    navigateToToothDetail(toothNumber, context);
-                  },
-                ),
-              ]),
-            ),
-          ],
+                  SingleChildScrollView(
+                    child: Column(children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: DataViewFiltersRow(
+                          filters: [
+                            FilterConfig(
+                                title: "السنة",
+                                options: [2023, 2022, 2021, "الكل"]),
+                            FilterConfig(
+                                title: "النوع",
+                                options: ["علاج عصب", "حشو عصب"]),
+                            FilterConfig(title: "رقم السن", options: [
+                              "السن 11",
+                              "السن 22",
+                              "السن 33",
+                              "السن 44"
+                            ]),
+                          ],
+                          onApply: (selectedOption) {
+                            // Handle apply button action
+                            print('Apply button pressed');
+                          },
+                        ),
+                      ),
+                      verticalSpacing(8),
+                      ToothOverlay(
+                        toothWithDataList: [],
+                        overlayTitle: "",
+                        selectedActionsList: [],
+                        onTap: (toothNumber) {
+                          // Handle tap event
+                          print('Tooth $toothNumber tapped');
+                          navigateToToothDetail(toothNumber, context);
+                        },
+                      ),
+                    ]),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
@@ -96,14 +121,14 @@ class ToothAnatomyView extends StatelessWidget {
 }
 
 class ToothOverlay extends StatelessWidget {
-  final Set<int> toothWithDataList;
+  final List<int> toothWithDataList;
   final List<int> selectedActionsList;
   final String overlayTitle;
   final Function(int) onTap;
 
   const ToothOverlay({
     super.key,
-    this.toothWithDataList = const {},
+    this.toothWithDataList = const [],
     this.selectedActionsList = const [],
     required this.overlayTitle,
     required this.onTap,
@@ -203,26 +228,26 @@ class ToothOverlay extends StatelessWidget {
               ),
               CustomToothActionButton(
                   title: "اللثة العلوية\n يسار",
-                  horizontalPosition: 0.35 * width,
+                  horizontalPosition: 0.33 * width,
                   verticalPosition: 0.15 * height,
                   hasDataPreviously: selectedActionsList.contains(55),
                   onTap: () => onTap(55)),
               CustomToothActionButton(
                   title: "للثة العلوية \n يمين",
-                  horizontalPosition: 0.50 * width,
+                  horizontalPosition: 0.516 * width,
                   verticalPosition: 0.15 * height,
                   hasDataPreviously: selectedActionsList.contains(66),
                   onTap: () => onTap(66)),
               CustomToothActionButton(
-                  title: "للثة السفلية \n يسار",
-                  horizontalPosition: 0.35 * width,
-                  verticalPosition: 0.37 * height,
+                  title: "اللثة السفلية \n يسار",
+                  horizontalPosition: 0.33 * width,
+                  verticalPosition: 0.355 * height,
                   hasDataPreviously: selectedActionsList.contains(77),
                   onTap: () => onTap(77)),
               CustomToothActionButton(
-                  title: "للثة السفلية \n يمين",
-                  horizontalPosition: 0.50 * width,
-                  verticalPosition: 0.37 * height,
+                  title: "اللثة السفلية \n يمين",
+                  horizontalPosition: 0.516 * width,
+                  verticalPosition: 0.355 * height,
                   hasDataPreviously: selectedActionsList.contains(88),
                   onTap: () => onTap(88)),
               CustomToothActionButton(
@@ -238,13 +263,13 @@ class ToothOverlay extends StatelessWidget {
                   hasDataPreviously: selectedActionsList.contains(100),
                   onTap: () => onTap(100)),
               CustomToothActionButton(
-                  title: "اللثة السفلية",
+                  title: "اللثة العلوية",
                   horizontalPosition: 0.80 * width,
                   verticalPosition: 0.02 * height,
                   hasDataPreviously: selectedActionsList.contains(111),
                   onTap: () => onTap(111)),
               CustomToothActionButton(
-                  title: "اللثة العلوية",
+                  title: "اللثة السفلية",
                   horizontalPosition: 0.80 * width,
                   verticalPosition: 0.55 * height,
                   hasDataPreviously: selectedActionsList.contains(122),
@@ -298,7 +323,7 @@ class CustomToothActionButton extends StatelessWidget {
                 child: Text(
                   title,
                   style: AppTextStyles.font12blackWeight400
-                      .copyWith(fontWeight: FontWeight.w600, fontSize: 9.sp),
+                      .copyWith(fontWeight: FontWeight.w800, fontSize: 9.sp),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -349,7 +374,9 @@ void navigateToToothDetail(int toothNumber, BuildContext context) {
   Navigator.push(
     context,
     MaterialPageRoute(
-      builder: (context) => ToothOperationsView(),
+      builder: (context) => ToothOperationsView(
+       selectedTooth: toothNumber,
+      ),
     ),
   );
 }

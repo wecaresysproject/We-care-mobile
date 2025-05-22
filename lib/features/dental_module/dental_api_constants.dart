@@ -19,6 +19,12 @@ class DentalApiConstants {
   static const getAllComplainsDurations =
       "/TeethDataEntry/GetAllComplaintDurations";
   //View Entry
+  static const getDefectedTooth = "/TeethDataEntry/GetAllTeethNumbersForUser";
+  static const getDocumentsByToothNumber =
+      "/TeethDataEntry/GetTeethDocumentsByNumber";
+
+  static const getToothOperationDetailsById =
+      "/TeethDataEntry/GetTeethDocumentById";    
 
   //filters
 }

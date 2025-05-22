@@ -1,0 +1,100 @@
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'get_tooth_operation_details_by_id.g.dart';
+
+@JsonSerializable()
+class GetToothOpertionDetailsByIdResponseModel {
+  bool success;
+  String message;
+  @JsonKey(name: 'data')
+ToothOperationDetails toothOperationDetails;
+
+  GetToothOpertionDetailsByIdResponseModel(
+      {required this.success,
+      required this.message,
+      required this.toothOperationDetails});
+
+  factory GetToothOpertionDetailsByIdResponseModel.fromJson(
+          Map<String, dynamic> json) =>
+      _$GetToothOpertionDetailsByIdResponseModelFromJson(json);
+}
+
+
+@JsonSerializable()
+class ToothOperationDetails {
+  MedicalComplaints medicalComplaints;
+  Procedure procedure;
+  String medicalReportImage;
+  String xRayImage;
+  String lymphAnalysis;
+  String lymphAnalysisImage;
+  String gumCondition;
+  String treatingDoctor;
+  String hospital;
+  String country;
+  String additionalNotes;
+
+  ToothOperationDetails(
+      {required this.medicalComplaints,
+      required this.procedure,
+      required this.medicalReportImage,
+      required this.xRayImage,
+      required this.lymphAnalysis,
+      required this.lymphAnalysisImage,
+      required this.gumCondition,
+      required this.treatingDoctor,
+      required this.hospital,
+      required this.country,
+      required this.additionalNotes});
+
+  factory ToothOperationDetails.fromJson(Map<String, dynamic> json) =>
+      _$ToothOperationDetailsFromJson(json);
+}
+
+
+@JsonSerializable()
+class MedicalComplaints {
+  String symptomStartDate;
+  String symptomType;
+  String symptomDuration;
+  String complaintNature;
+  String painNature;
+  String teethNumber;
+
+  MedicalComplaints(
+      {required this.symptomStartDate,
+      required this.symptomType,
+      required this.symptomDuration,
+      required this.complaintNature,
+      required this.painNature,
+      required this.teethNumber});
+factory  MedicalComplaints.fromJson(Map<String, dynamic> json) =>
+      _$MedicalComplaintsFromJson(json);
+
+}
+
+@JsonSerializable()
+class Procedure {
+  String procedureDate;
+  String primaryProcedure;
+  String subProcedure;
+  String patientDescription;
+  String procedureType;
+  String painLevel;
+  String anesthesia;
+  String recoveryTime;
+
+  Procedure(
+      {required this.procedureDate,
+      required this.primaryProcedure,
+      required this.subProcedure,
+      required this.patientDescription,
+      required this.procedureType,
+      required this.painLevel,
+      required this.anesthesia,
+      required this.recoveryTime});
+factory Procedure.fromJson(Map<String, dynamic> json) =>
+      _$ProcedureFromJson(json);
+
+}

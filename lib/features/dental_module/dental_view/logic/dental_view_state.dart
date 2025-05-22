@@ -1,73 +1,62 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
+import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 
-class SurgeriesViewState extends Equatable {
+class DentalViewState extends Equatable {
   final RequestStatus requestStatus;
-  final String responseMessage;
-  final List<SurgeryModel> userSurgeries;
-  final SurgeryModel? selectedSurgeryDetails;
-  final List<int> yearsFilter;
-  final List<String> surgeryNameFilter;
-  final bool isDeleteRequest;
-  final bool isLoadingMore;
+  final String? message;
+  final List<int>? defectedToothList;
+  final List<ToothDocument>? selectedToothList;
+  final bool? isLoadingMore;
+  final bool? hasMore;
+  final int? currentPage;
+  final ToothOperationDetails ? selectedToothOperationDetails;
 
-  const SurgeriesViewState({
-    this.responseMessage = '',
+  const DentalViewState({
     this.requestStatus = RequestStatus.initial,
-    this.yearsFilter = const [],
-    this.surgeryNameFilter = const ['الكل'],
-    this.userSurgeries = const [],
-    this.selectedSurgeryDetails,
-    this.isDeleteRequest = false,
-    this.isLoadingMore = false,
+    this.message,
+    this.defectedToothList,
+    this.selectedToothList,
+    this.isLoadingMore,
+    this.hasMore,
+    this.currentPage,
+    this.selectedToothOperationDetails,
   });
-
-  factory SurgeriesViewState.initial() {
-    return SurgeriesViewState(
-      responseMessage: '',
-      requestStatus: RequestStatus.initial,
-      yearsFilter: const [],
-      surgeryNameFilter: const ['الكل'],
-      userSurgeries: const [],
-      selectedSurgeryDetails: null,
-      isDeleteRequest: false,
-      isLoadingMore: false,
-    );
-  }
-
-  SurgeriesViewState copyWith({
-    String? responseMessage,
-    RequestStatus? requestStatus,
-    List<int>? yearsFilter,
-    List<String>? surgeryNameFilter,
-    List<SurgeryModel>? userSurgeries,
-    SurgeryModel? selectedSurgeryDetails,
-    bool? isDeleteRequest,
-    bool? isLoadingMore,
-  }) {
-    return SurgeriesViewState(
-      responseMessage: responseMessage ?? this.responseMessage,
-      requestStatus: requestStatus ?? this.requestStatus,
-      yearsFilter: yearsFilter ?? this.yearsFilter,
-      surgeryNameFilter: surgeryNameFilter ?? this.surgeryNameFilter,
-      userSurgeries: userSurgeries ?? this.userSurgeries,
-      selectedSurgeryDetails: selectedSurgeryDetails,
-      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
-      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-    );
-  }
-
+  const DentalViewState.initial()
+      : requestStatus = RequestStatus.initial,
+        message = null,
+        isLoadingMore = false,
+        hasMore = true,
+        currentPage = 1,
+        selectedToothOperationDetails = null,
+        selectedToothList = null,
+        defectedToothList = null;
+        
+  
   @override
-  List<Object?> get props => [
-        responseMessage,
-        requestStatus,
-        yearsFilter,
-        surgeryNameFilter,
-        userSurgeries,
-        selectedSurgeryDetails,
-        isDeleteRequest,
-        isLoadingMore,
-      ];
-}
+  List<Object?> get props => [message, defectedToothList, requestStatus, selectedToothList, isLoadingMore, hasMore, currentPage, selectedToothOperationDetails];
+
+  DentalViewState copyWith({
+    String? message,
+    List<int>? defectedToothList,
+    RequestStatus? requestStatus,
+    List<ToothDocument>? selectedToothList,
+    bool? isLoadingMore,
+    bool? hasMore,
+    int? currentPage,
+    ToothOperationDetails ? selectedToothOperationDetails,
+  }) {
+    return DentalViewState(
+      message: message ?? this.message,
+      defectedToothList: defectedToothList ?? this.defectedToothList,
+      requestStatus: requestStatus ?? this.requestStatus,
+      selectedToothList: selectedToothList ?? this.selectedToothList,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
+      currentPage: currentPage ?? this.currentPage,
+      selectedToothOperationDetails: selectedToothOperationDetails ?? this.selectedToothOperationDetails,
+    );
+  }
+
+} 

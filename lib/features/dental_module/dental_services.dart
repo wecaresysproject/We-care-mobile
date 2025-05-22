@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
 import 'package:we_care/features/dental_module/dental_api_constants.dart';
 
 part 'dental_services.g.dart';
@@ -64,5 +65,27 @@ abstract class DentalService {
   Future<dynamic> getAllOralMedicalTests(
     @Query("userType") String userType,
     @Query("language") String language,
+  );
+
+  @GET(DentalApiConstants.getDefectedTooth)
+  Future<dynamic> getDefectedTooth(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
+
+  @GET(DentalApiConstants.getDocumentsByToothNumber)
+  Future<GetToothDocumentsResponseModel> getDocumentsByToothNumber(
+    @Query("teethNumber") String toothNumber,
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+    @Query("page") int page,
+    @Query("pageSize") int pageSize,
+  );
+
+  @GET(DentalApiConstants.getToothOperationDetailsById)
+  Future<dynamic> getToothOperationDetailsById(
+    @Query("id") String id,
+    @Query("usertype") String userType,
+    @Query("Language") String language,
   );
 }
