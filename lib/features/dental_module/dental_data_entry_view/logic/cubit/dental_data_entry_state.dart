@@ -24,9 +24,11 @@ class DentalDataEntryState extends Equatable {
   final String? selectedSurroundingGumStatus; //حالة اللثة المحيطة
   final String? reportImageUploadedUrl;
   final String? xrayImageUploadedUrl;
+  final String? lymphAnalysisImageUploadedUrl;
 
   final UploadReportRequestStatus uploadReportStatus;
   final UploadImageRequestStatus xRayImageRequestStatus;
+  final UploadImageRequestStatus lymphAnalysisImageStatus;
   final UploadImageRequestStatus
       oralPathologyReportStatus; // التحاليل الطبية الفموية
   final String? oralPathologySelection; //التحاليل الطبية الفموية
@@ -60,9 +62,11 @@ class DentalDataEntryState extends Equatable {
     this.selectedSurroundingGumStatus,
     this.reportImageUploadedUrl,
     this.xrayImageUploadedUrl,
+    this.lymphAnalysisImageUploadedUrl,
     this.uploadReportStatus = UploadReportRequestStatus.initial,
     this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
     this.oralPathologyReportStatus = UploadImageRequestStatus.initial,
+    this.lymphAnalysisImageStatus = UploadImageRequestStatus.initial,
     this.oralPathologySelection,
     this.countriesNames = const [],
     this.selectedCountryName,
@@ -99,6 +103,8 @@ class DentalDataEntryState extends Equatable {
           uploadReportStatus: UploadReportRequestStatus.initial,
           xRayImageRequestStatus: UploadImageRequestStatus.initial,
           oralPathologyReportStatus: UploadImageRequestStatus.initial,
+          lymphAnalysisImageStatus: UploadImageRequestStatus.initial,
+          lymphAnalysisImageUploadedUrl: null,
           oralPathologySelection: null,
           countriesNames: const [],
           selectedCountryName: null,
@@ -131,9 +137,11 @@ class DentalDataEntryState extends Equatable {
     String? message,
     String? reportImageUploadedUrl,
     String? xrayImageUploadedUrl,
+    String? lymphAnalysisImageUploadedUrl,
     UploadReportRequestStatus? uploadReportStatus,
     UploadImageRequestStatus? xRayImageRequestStatus,
     UploadImageRequestStatus? oralPathologyReportStatus,
+    UploadImageRequestStatus? lymphAnalysisImageStatus,
     String? oralPathologySelection,
     List<String>? countriesNames,
     String? selectedCountryName,
@@ -176,6 +184,10 @@ class DentalDataEntryState extends Equatable {
       uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       xRayImageRequestStatus:
           xRayImageRequestStatus ?? this.xRayImageRequestStatus,
+      lymphAnalysisImageStatus:
+          lymphAnalysisImageStatus ?? this.lymphAnalysisImageStatus,
+      lymphAnalysisImageUploadedUrl:
+          lymphAnalysisImageUploadedUrl ?? this.lymphAnalysisImageUploadedUrl,
       oralPathologyReportStatus:
           oralPathologyReportStatus ?? this.oralPathologyReportStatus,
       oralPathologySelection:
@@ -218,6 +230,8 @@ class DentalDataEntryState extends Equatable {
         uploadReportStatus,
         xRayImageRequestStatus,
         oralPathologyReportStatus,
+        lymphAnalysisImageStatus,
+        lymphAnalysisImageUploadedUrl,
         oralPathologySelection,
         countriesNames,
         selectedCountryName,

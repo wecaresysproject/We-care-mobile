@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
 import 'package:we_care/features/dental_module/dental_api_constants.dart';
@@ -21,6 +22,21 @@ abstract class DentalService {
   @POST(DentalApiConstants.uploadReportEndpoint)
   Future<UploadReportResponseModel> uploadTeethReport(
     @Part() File report,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+  @MultiPart()
+  @POST(DentalApiConstants.uploadXrayImageEndpoint)
+  Future<UploadImageResponseModel> uploadXrayImage(
+    @Part() File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+
+  @MultiPart()
+  @POST(DentalApiConstants.uploadLymphAnalysisImage)
+  Future<UploadImageResponseModel> uploadLymphAnalysisImage(
+    @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );

@@ -152,6 +152,70 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
   }
 
+  Future<void> uploadXrayImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        xRayImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.uploadXrayImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            xrayImageUploadedUrl: response.imageUrl,
+            xRayImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            xRayImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadLymphAnalysisImage({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        lymphAnalysisImageStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.uploadLymphAnalysisImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            lymphAnalysisImageUploadedUrl: response.imageUrl,
+            lymphAnalysisImageStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            lymphAnalysisImageStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> emitCountriesData() async {
     final response = await _dentalDataEntryRepo.getCountriesData(
       language: AppStrings.arabicLang,
