@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'dental_data_entry_state.dart';
 
@@ -377,6 +379,65 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postOneTeethReportDetails(S locale) async {
+    emit(
+      state.copyWith(
+        dentalDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.postOneTeethReportDetails(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      requestBody: SingleTeethReportRequestBody(
+        teethNumber: "1", //TODO: to change this to dynamic value
+        symptomStartDate: state.startIssueDateSelection!,
+        symptomType: state.syptomTypeSelection!,
+        symptomDuration: state.selectedSyptomsPeriod!,
+        complaintNature: state.natureOfComplaintSelection!,
+        complaintDegree: state.complaintDegree!,
+        procedureDate:
+            state.medicalProcedureDateSelection ?? locale.no_data_entered,
+        primaryProcedure:
+            state.primaryMedicalProcedureSelection ?? locale.no_data_entered,
+        subProcedure:
+            state.secondaryMedicalProcedureSelection ?? locale.no_data_entered,
+        additionalNotes: additionalNotesController.text.isNotEmpty
+            ? additionalNotesController.text
+            : locale.no_data_entered,
+        medicalReportImage:
+            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        xRayImage: state.xrayImageUploadedUrl ?? locale.no_data_entered,
+        lymphAnalysis:
+            state.oralPathologySelection ?? locale.no_data_entered, //!check
+        lymphAnalysisImage:
+            state.lymphAnalysisImageUploadedUrl ?? locale.no_data_entered,
+        gumCondition:
+            state.selectedSurroundingGumStatus ?? locale.no_data_entered,
+        treatingDoctor: state.treatingDoctor ?? locale.no_data_entered,
+        hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
+        country: state.selectedCountryName ?? locale.no_data_entered,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            dentalDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            dentalDataEntryStatus: RequestStatus.failure,
           ),
         );
       },

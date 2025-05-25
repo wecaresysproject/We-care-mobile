@@ -9,6 +9,8 @@ class DentalApiConstants {
       "/FileUpload/upload-image"; // الاشعه السينيه
   static const uploadLymphAnalysisImage =
       "/FileUpload/upload-image"; // التحاليل الطبيه الفمويه
+  static const postOneTeethReportDetails =
+      "/TeethDataEntry/AddTeethPerUser"; // Post Single Teeth Report
 
   static const getAllCountries = "/countries";
   static const getAllMainMedicalProcedures =

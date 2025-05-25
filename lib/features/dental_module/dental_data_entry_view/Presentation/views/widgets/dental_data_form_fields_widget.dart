@@ -457,9 +457,12 @@ class _DentalDataFormFieldsWidgetState
               //     ? await context
               //         .read<DentalDataEntryCubit>()
               //         .submitUpdatedSurgery()
-              //     : await context.read<DentalDataEntryCubit>().postModuleData(
-              //           context.translate,
-              //         );
+              //     :
+              await context
+                  .read<DentalDataEntryCubit>()
+                  .postOneTeethReportDetails(
+                    context.translate,
+                  );
               log("xxx:Save Data Entry");
             }
           },

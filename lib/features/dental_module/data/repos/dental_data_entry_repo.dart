@@ -6,6 +6,7 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
+import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/dental_services.dart';
 
 class DentalDataEntryRepo {
@@ -224,20 +225,23 @@ class DentalDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
-  // Future<ApiResult<String>> postModuleData({
-  //   required String language,
-  //   required SurgeryRequestBodyModel requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.postSurgeryData(
-  //       language,
-  //       requestBody,
-  //     );
-  //     return ApiResult.success(response["message"]);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+
+  Future<ApiResult<String>> postOneTeethReportDetails({
+    required String language,
+    required String userType,
+    required SingleTeethReportRequestBody requestBody,
+  }) async {
+    try {
+      final response = await _dentalService.postOneTeethReportDetails(
+        requestBody,
+        language,
+        userType,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<String>> updateSurgeryDocumentById({
   //   required String id,

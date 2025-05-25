@@ -5,6 +5,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
+import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/dental_api_constants.dart';
 
 part 'dental_services.g.dart';
@@ -39,6 +40,13 @@ abstract class DentalService {
     @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
+  );
+
+  @POST(DentalApiConstants.postOneTeethReportDetails)
+  Future<dynamic> postOneTeethReportDetails(
+    @Body() SingleTeethReportRequestBody xrayDataEntryRequestBodyModel,
+    @Query('Language') String language,
+    @Query('usertype') String userType,
   );
 
   @GET(DentalApiConstants.getAllMainMedicalProcedures)
