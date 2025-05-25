@@ -1,21 +1,41 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
+import 'package:we_care/features/dental_module/data/repos/dental_repo.dart';
+import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 
-class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
-  SurgeriesViewCubit(this._surgeriesViewRepo)
-      : super(SurgeriesViewState.initial());
-  final SurgeriesViewRepo _surgeriesViewRepo;
-
+class DentalViewCubit extends Cubit<DentalViewState> {
+  final DentalRepo dentalRepository;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
-    Future<void> getUserSurgeriesList({int? page, int? pageSize}) async {
-    // If loading more, set the flag
+  DentalViewCubit({
+    required this.dentalRepository,
+  }) : super(const DentalViewState.initial());
+
+  Future<void> getDefectedTooth() async {
+    emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));
+    final result = await dentalRepository.getDefectedTooth(
+        userType: 'Patient', language: 'ar');
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+            defectedToothList: data, requestStatus: RequestStatus.success));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+            message: error.errors.first, requestStatus: RequestStatus.failure));
+      },
+    );
+  }
+
+  Future<void> getDocumentsByToothNumber({
+    required String toothNumber,
+    int? page,
+    int? pageSize,
+  }) async {
+    // If loading more, set the loadingMore flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
     } else {
@@ -24,114 +44,96 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
       hasMore = true;
     }
 
-    final result = await _surgeriesViewRepo.getUserSurgeriesList(
-      language: AppStrings.arabicLang,
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
+    final result = await dentalRepository.getDocumentsByToothNumber(
+      toothNumber: toothNumber,
+      userType: 'Patient',
+      language: 'ar',
+      page: page ?? currentPage,
+      pageSize: pageSize ?? this.pageSize,
     );
 
-    result.when(success: (response) {
-      final newSurgeriesList = response.surgeries;
-      
-      // Update hasMore based on whether we got a full page of results
-      hasMore = newSurgeriesList.length >= (pageSize ?? this.pageSize);
-      
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        userSurgeries: page == 1 || page == null 
-          ? newSurgeriesList 
-          : [...state.userSurgeries, ...newSurgeriesList],
-        isLoadingMore: false,
-      ));
-      
-      if (page == null || page == 1) {
-        currentPage = 1;
-      } else {
-        currentPage = page;
-      }
-    }, failure: (error) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.failure,
-        isLoadingMore: false,
-      ));
-    });
+    result.when(
+      success: (data) {
+        final newDocuments = data.toothDocuments;
+
+        hasMore = newDocuments.length >= (pageSize ?? this.pageSize);
+
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          selectedToothList: page == 1 || page == null
+              ? newDocuments
+              : state.selectedToothList! + newDocuments,
+          isLoadingMore: false,
+        ));
+
+        if (page == null || page == 1) {
+          currentPage = 1;
+        } else {
+          currentPage = page;
+        }
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+          isLoadingMore: false,
+        ));
+      },
+    );
   }
 
-  Future<void> loadMoreMedicines() async {
+  Future<void> loadMoreDocuments(String toothNumber) async {
     if (!hasMore || isLoadingMore) return;
-    
-    await getUserSurgeriesList(page: currentPage + 1);
+
+    await getDocumentsByToothNumber(
+        toothNumber: toothNumber, page: currentPage + 1);
   }
 
-  Future<void> getSurgeriesFilters() async {
+  Future<void> getToothOperationDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result =
-        await _surgeriesViewRepo.gettFilters(language: AppStrings.arabicLang);
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        yearsFilter: response.years,
-        surgeryNameFilter: response.surgeryNames,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(requestStatus: RequestStatus.failure));
-    });
-  }
-
-  Future<void> getSurgeryDetailsById(String id) async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.getSurgeryDetailsById(
-        id: id, language: AppStrings.arabicLang);
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        selectedSurgeryDetails: response,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(requestStatus: RequestStatus.failure));
-    });
-  }
-
-  Future<void> deleteSurgeryById(String id) async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.deleteSurgeryById(
+    final result = await dentalRepository.getToothOperationDetailsById(
       id: id,
+      userType: 'Patient',
+      language: 'ar',
     );
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        responseMessage: response,
-        isDeleteRequest: true,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          selectedToothOperationDetails: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
           requestStatus: RequestStatus.failure,
-          responseMessage: error.errors.first,
-          isDeleteRequest: true));
-    });
+          message: error.errors.first,
+        ));
+      },
+    );
   }
 
-  Future<void> getFilteredSurgeryList({int? year, String? surgeryName}) async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.getFilteredSurgeries(
-      language: AppStrings.arabicLang,
-      surgeryName: surgeryName,
-      year: year,
+  Future<void> deleteToothOperationDetailsById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading, isDeleteRequest: true));
+    final result = await dentalRepository.deleteToothOperationDetailsById(
+      id: id,
+      userType: 'Patient',
+      language: 'ar',
     );
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        userSurgeries: response.surgeries,
-        responseMessage: response.message,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(
+    result.when(
+      success: (message) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          message: message,
+          isDeleteRequest: true,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
           requestStatus: RequestStatus.failure,
-          responseMessage: error.errors.first));
-    });
+          message: error.errors.first,
+          isDeleteRequest: true
+        ));
+      },
+    );
   }
 }

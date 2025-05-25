@@ -1,45 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
+import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operation_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class ToothOperationsView extends StatelessWidget {
-  const ToothOperationsView({super.key});
+  const ToothOperationsView({super.key, required this.selectedTooth});
+  final int selectedTooth;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            verticalSpacing(16),
-            MedicalItemGridView(
-              items: mockDentalRecords,
-              onTap: (id) async {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => DentalOperationDetailsView(),
-                ));
-              },
-              titleBuilder: (item) => item.tooth,
-              infoRowBuilder: (item) => [
-                {"title": "السن:", "value": item.tooth},
-                {"title": "تاريخ الأعراض:", "value": item.date.toString()},
-                {"title": "الإجراء الطبي:", "value": item.procedure},
-                {"title": "نوع الألم:", "value": item.painLevel},
-              ],
-            ),
-            verticalSpacing(16),
-            ToothOperationsFooterRow(),
-          ],
+    return BlocProvider.value(
+      value: getIt<DentalViewCubit>()
+        ..getDocumentsByToothNumber(toothNumber: selectedTooth.toString()),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          child: Column(
+            children: [
+              ViewAppBar(),
+              verticalSpacing(16),
+              BlocBuilder<DentalViewCubit, DentalViewState>(
+                buildWhen: (previous, current) =>
+                    previous.selectedToothList != current.selectedToothList,
+                builder: (context, state) {
+                  if (state.requestStatus == RequestStatus.loading) {
+                    return Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (state.requestStatus == RequestStatus.failure) {
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          state.message ?? "حدث خطأ",
+                          style: AppTextStyles.font16DarkGreyWeight400,
+                        ),
+                      ),
+                    );
+                  } else if (state.selectedToothList == null ||
+                      state.selectedToothList!.isEmpty) {
+                    return Expanded(
+                      child: Center(
+                        child: Text(
+                          "لا توجد بيانات",
+                          style: AppTextStyles.font22MainBlueWeight700,
+                        ),
+                      ),
+                    );
+                  }
+                  return MedicalItemGridView(
+                    items: state.selectedToothList!,
+                    onTap: (id) async {
+                      final result = Navigator.push<bool>(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DentalOperationDetailsView(
+                              documentId: id,
+                            ),
+                          )).then(
+                        (value) async {
+                          await context
+                              .read<DentalViewCubit>()
+                              .getDocumentsByToothNumber(
+                                  toothNumber: selectedTooth.toString());
+                        },
+                      );
+                    },
+                    titleBuilder: (item) => 'السن ${item.teethNumber}',
+                    infoRowBuilder: (item) => [
+                      {"title": "السن:", "value": item.teethNumber},
+                      {
+                        "title": "تاريخ الأعراض:",
+                        "value": item.symptomStartDate
+                      },
+                      {
+                        "title": "الإجراء الطبي:",
+                        "value": item.primaryProcedure
+                      },
+                      {"title": "نوع الألم:", "value": item.painNature},
+                    ],
+                  );
+                },
+              ),
+              verticalSpacing(16),
+              ToothOperationsFooterRow(),
+            ],
+          ),
         ),
       ),
     );
