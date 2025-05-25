@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'dental_data_entry_state.dart';
 
@@ -106,14 +108,18 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
-    await emitPrimaryMedicalProcedures();
-    await emitComplainTypes();
-    await emitComaplainsDurations();
-    await emitComplainNatures();
-    await emitDoctorNames();
-    await emitAllGumsconditions();
-    await emitAllOralMedicalTests();
-    await emitCountriesData();
+    await Future.wait(
+      [
+        emitPrimaryMedicalProcedures(),
+        emitComplainTypes(),
+        emitComaplainsDurations(),
+        emitComplainNatures(),
+        emitDoctorNames(),
+        emitAllGumsconditions(),
+        emitAllOralMedicalTests(),
+        emitCountriesData(),
+      ],
+    );
   }
 
   Future<void> uploadTeethReport({required String imagePath}) async {
@@ -142,6 +148,70 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
           state.copyWith(
             message: error.errors.first,
             uploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadXrayImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        xRayImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.uploadXrayImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            xrayImageUploadedUrl: response.imageUrl,
+            xRayImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            xRayImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadLymphAnalysisImage({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        lymphAnalysisImageStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.uploadLymphAnalysisImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            lymphAnalysisImageUploadedUrl: response.imageUrl,
+            lymphAnalysisImageStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            lymphAnalysisImageStatus: UploadImageRequestStatus.failure,
           ),
         );
       },
@@ -309,6 +379,65 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postOneTeethReportDetails(S locale, String teethNumber) async {
+    emit(
+      state.copyWith(
+        dentalDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.postOneTeethReportDetails(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      requestBody: SingleTeethReportRequestBody(
+        teethNumber: teethNumber, //TODO: to change this to dynamic value
+        symptomStartDate: state.startIssueDateSelection!,
+        symptomType: state.syptomTypeSelection!,
+        symptomDuration: state.selectedSyptomsPeriod!,
+        complaintNature: state.natureOfComplaintSelection!,
+        complaintDegree: state.complaintDegree!,
+        procedureDate:
+            state.medicalProcedureDateSelection ?? locale.no_data_entered,
+        primaryProcedure:
+            state.primaryMedicalProcedureSelection ?? locale.no_data_entered,
+        subProcedure:
+            state.secondaryMedicalProcedureSelection ?? locale.no_data_entered,
+        additionalNotes: additionalNotesController.text.isNotEmpty
+            ? additionalNotesController.text
+            : locale.no_data_entered,
+        medicalReportImage:
+            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        xRayImage: state.xrayImageUploadedUrl ?? locale.no_data_entered,
+        lymphAnalysis:
+            state.oralPathologySelection ?? locale.no_data_entered, //!check
+        lymphAnalysisImage:
+            state.lymphAnalysisImageUploadedUrl ?? locale.no_data_entered,
+        gumCondition:
+            state.selectedSurroundingGumStatus ?? locale.no_data_entered,
+        treatingDoctor: state.treatingDoctor ?? locale.no_data_entered,
+        hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
+        country: state.selectedCountryName ?? locale.no_data_entered,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            dentalDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            dentalDataEntryStatus: RequestStatus.failure,
           ),
         );
       },

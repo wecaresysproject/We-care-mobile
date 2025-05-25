@@ -21,8 +21,8 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
 
 class DentalDataFormFieldsWidget extends StatefulWidget {
-  const DentalDataFormFieldsWidget({super.key});
-
+  const DentalDataFormFieldsWidget({super.key, this.toothNumber});
+  final String? toothNumber;
   @override
   State<DentalDataFormFieldsWidget> createState() =>
       _DentalDataFormFieldsWidgetState();
@@ -134,8 +134,8 @@ class _DentalDataFormFieldsWidgetState
                 "غير محتملة",
               ],
               initialSelectedOption: state.complaintDegree,
-              onOptionSelected: (value) {
-                context
+              onOptionSelected: (value) async {
+                await context
                     .read<DentalDataEntryCubit>()
                     .updateComplaintDegree(value);
               },
@@ -269,11 +269,12 @@ class _DentalDataFormFieldsWidgetState
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         //!imaplement uploading image to server
-                        // context
-                        //     .read<DentalDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       picker.pickedImage!.path,
-                        //     );
+                        log("xxx:Picked Image Path: ${picker.pickedImage!.path}");
+                        await context
+                            .read<DentalDataEntryCubit>()
+                            .uploadXrayImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -299,14 +300,14 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(8),
             BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
               listenWhen: (prev, curr) =>
-                  prev.oralPathologyReportStatus !=
-                  curr.oralPathologyReportStatus,
+                  prev.lymphAnalysisImageStatus !=
+                  curr.lymphAnalysisImageStatus,
               listener: (context, state) async {
-                if (state.oralPathologyReportStatus ==
+                if (state.lymphAnalysisImageStatus ==
                     UploadImageRequestStatus.success) {
                   await showSuccess(state.message);
                 }
-                if (state.oralPathologyReportStatus ==
+                if (state.lymphAnalysisImageStatus ==
                     UploadImageRequestStatus.failure) {
                   await showError(state.message);
                 }
@@ -321,11 +322,11 @@ class _DentalDataFormFieldsWidgetState
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         //!imaplement uploading image to server
-                        // context
-                        //     .read<DentalDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<DentalDataEntryCubit>()
+                            .uploadLymphAnalysisImage(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -418,7 +419,7 @@ class _DentalDataFormFieldsWidgetState
             ///TODO: handle this button in main view and remove it from here
             /// final section
             verticalSpacing(32),
-            submitSurgeryEntryButtonBlocConsumer(),
+            buildSubmitDataEntryButtonBlocConsumer(widget.toothNumber!),
             verticalSpacing(71),
           ],
         );
@@ -426,7 +427,7 @@ class _DentalDataFormFieldsWidgetState
     );
   }
 
-  Widget submitSurgeryEntryButtonBlocConsumer() {
+  Widget buildSubmitDataEntryButtonBlocConsumer(String toothNumber) {
     return BlocConsumer<DentalDataEntryCubit, DentalDataEntryState>(
       listenWhen: (prev, curr) =>
           curr.dentalDataEntryStatus == RequestStatus.failure ||
@@ -456,9 +457,13 @@ class _DentalDataFormFieldsWidgetState
               //     ? await context
               //         .read<DentalDataEntryCubit>()
               //         .submitUpdatedSurgery()
-              //     : await context.read<DentalDataEntryCubit>().postModuleData(
-              //           context.translate,
-              //         );
+              //     :
+              await context
+                  .read<DentalDataEntryCubit>()
+                  .postOneTeethReportDetails(
+                    context.translate,
+                    toothNumber,
+                  );
               log("xxx:Save Data Entry");
             }
           },

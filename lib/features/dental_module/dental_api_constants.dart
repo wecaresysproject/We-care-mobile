@@ -5,6 +5,13 @@ class DentalApiConstants {
 
   //Data Entry
   static const uploadReportEndpoint = "/FileUpload/upload-report"; //! to change
+  static const uploadXrayImageEndpoint =
+      "/FileUpload/upload-image"; // الاشعه السينيه
+  static const uploadLymphAnalysisImage =
+      "/FileUpload/upload-image"; // التحاليل الطبيه الفمويه
+  static const postOneTeethReportDetails =
+      "/TeethDataEntry/AddTeethPerUser"; // Post Single Teeth Report
+
   static const getAllCountries = "/countries";
   static const getAllMainMedicalProcedures =
       "/TeethDataEntry/GetAllMainProcedures";
