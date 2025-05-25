@@ -21,8 +21,8 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
 
 class DentalDataFormFieldsWidget extends StatefulWidget {
-  const DentalDataFormFieldsWidget({super.key});
-
+  const DentalDataFormFieldsWidget({super.key, this.toothNumber});
+  final String? toothNumber;
   @override
   State<DentalDataFormFieldsWidget> createState() =>
       _DentalDataFormFieldsWidgetState();
@@ -419,7 +419,7 @@ class _DentalDataFormFieldsWidgetState
             ///TODO: handle this button in main view and remove it from here
             /// final section
             verticalSpacing(32),
-            buildSubmitDataEntryButtonBlocConsumer(),
+            buildSubmitDataEntryButtonBlocConsumer(widget.toothNumber!),
             verticalSpacing(71),
           ],
         );
@@ -427,7 +427,7 @@ class _DentalDataFormFieldsWidgetState
     );
   }
 
-  Widget buildSubmitDataEntryButtonBlocConsumer() {
+  Widget buildSubmitDataEntryButtonBlocConsumer(String toothNumber) {
     return BlocConsumer<DentalDataEntryCubit, DentalDataEntryState>(
       listenWhen: (prev, curr) =>
           curr.dentalDataEntryStatus == RequestStatus.failure ||
@@ -462,6 +462,7 @@ class _DentalDataFormFieldsWidgetState
                   .read<DentalDataEntryCubit>()
                   .postOneTeethReportDetails(
                     context.translate,
+                    toothNumber,
                   );
               log("xxx:Save Data Entry");
             }

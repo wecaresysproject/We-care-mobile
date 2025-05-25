@@ -215,8 +215,12 @@ class AppRouter {
           ),
         );
       case Routes.dentalDataEntryView:
+        final result = arguments as Map<String, dynamic>?;
+
         return MaterialPageRoute(
-          builder: (context) => DentalDataEntryView(),
+          builder: (context) => DentalDataEntryView(
+            toothNumber: result?['toothNumber']!,
+          ),
         );
       case Routes.alarmHomeView:
         return MaterialPageRoute(

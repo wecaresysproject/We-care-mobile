@@ -53,8 +53,7 @@ class ToothAnatomyView extends StatelessWidget {
           ),
           body: BlocBuilder<DentalViewCubit, DentalViewState>(
             builder: (context, state) {
-              if (state.requestStatus==RequestStatus.loading) {
-              
+              if (state.requestStatus == RequestStatus.loading) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
@@ -125,11 +124,13 @@ class ToothOverlay extends StatelessWidget {
   final List<int> selectedActionsList;
   final String overlayTitle;
   final Function(int) onTap;
+  final bool isComingFromDataEntry;
 
   const ToothOverlay({
     super.key,
     this.toothWithDataList = const [],
     this.selectedActionsList = const [],
+    this.isComingFromDataEntry = false,
     required this.overlayTitle,
     required this.onTap,
   });
@@ -219,6 +220,7 @@ class ToothOverlay extends StatelessWidget {
                       top: (pos.dy * height - 8),
                       child: ToothCircle(
                         number: number,
+                        isComingFromDataEntry: isComingFromDataEntry,
                         hasData: toothWithDataList.contains(number),
                         onTap: () => onTap(number),
                       ),
@@ -227,53 +229,69 @@ class ToothOverlay extends StatelessWidget {
                 ),
               ),
               CustomToothActionButton(
-                  title: "اللثة العلوية\n يسار",
-                  horizontalPosition: 0.33 * width,
-                  verticalPosition: 0.15 * height,
-                  hasDataPreviously: selectedActionsList.contains(55),
-                  onTap: () => onTap(55)),
+                title: "اللثة العلوية\n يسار",
+                horizontalPosition: 0.33 * width,
+                verticalPosition: 0.15 * height,
+                hasDataPreviously: selectedActionsList.contains(55),
+                onTap: () => onTap(55),
+                isComingFromDataEntry: isComingFromDataEntry,
+              ),
               CustomToothActionButton(
-                  title: "للثة العلوية \n يمين",
-                  horizontalPosition: 0.516 * width,
-                  verticalPosition: 0.15 * height,
-                  hasDataPreviously: selectedActionsList.contains(66),
-                  onTap: () => onTap(66)),
+                title: "للثة العلوية \n يمين",
+                horizontalPosition: 0.516 * width,
+                verticalPosition: 0.15 * height,
+                hasDataPreviously: selectedActionsList.contains(66),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(66),
+              ),
               CustomToothActionButton(
-                  title: "اللثة السفلية \n يسار",
-                  horizontalPosition: 0.33 * width,
-                  verticalPosition: 0.355 * height,
-                  hasDataPreviously: selectedActionsList.contains(77),
-                  onTap: () => onTap(77)),
+                title: "اللثة السفلية \n يسار",
+                horizontalPosition: 0.33 * width,
+                verticalPosition: 0.355 * height,
+                hasDataPreviously: selectedActionsList.contains(77),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(77),
+              ),
               CustomToothActionButton(
-                  title: "اللثة السفلية \n يمين",
-                  horizontalPosition: 0.516 * width,
-                  verticalPosition: 0.355 * height,
-                  hasDataPreviously: selectedActionsList.contains(88),
-                  onTap: () => onTap(88)),
+                title: "اللثة السفلية \n يمين",
+                horizontalPosition: 0.516 * width,
+                verticalPosition: 0.355 * height,
+                hasDataPreviously: selectedActionsList.contains(88),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(88),
+              ),
               CustomToothActionButton(
-                  title: "الفك العلوي",
-                  horizontalPosition: 0.06 * width,
-                  verticalPosition: 0.02 * height,
-                  hasDataPreviously: selectedActionsList.contains(99),
-                  onTap: () => onTap(99)),
+                title: "الفك العلوي",
+                horizontalPosition: 0.06 * width,
+                verticalPosition: 0.02 * height,
+                hasDataPreviously: selectedActionsList.contains(99),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(99),
+              ),
               CustomToothActionButton(
-                  title: "الفك السفلي",
-                  horizontalPosition: 0.06 * width,
-                  verticalPosition: 0.55 * height,
-                  hasDataPreviously: selectedActionsList.contains(100),
-                  onTap: () => onTap(100)),
+                title: "الفك السفلي",
+                horizontalPosition: 0.06 * width,
+                verticalPosition: 0.55 * height,
+                hasDataPreviously: selectedActionsList.contains(100),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(100),
+              ),
               CustomToothActionButton(
-                  title: "اللثة العلوية",
-                  horizontalPosition: 0.80 * width,
-                  verticalPosition: 0.02 * height,
-                  hasDataPreviously: selectedActionsList.contains(111),
-                  onTap: () => onTap(111)),
+                title: "اللثة العلوية",
+                horizontalPosition: 0.80 * width,
+                verticalPosition: 0.02 * height,
+                hasDataPreviously: selectedActionsList.contains(111),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(111),
+              ),
               CustomToothActionButton(
-                  title: "اللثة السفلية",
-                  horizontalPosition: 0.80 * width,
-                  verticalPosition: 0.55 * height,
-                  hasDataPreviously: selectedActionsList.contains(122),
-                  onTap: () => onTap(122)),
+                title: "اللثة السفلية",
+                horizontalPosition: 0.80 * width,
+                verticalPosition: 0.55 * height,
+                hasDataPreviously: selectedActionsList.contains(122),
+                isComingFromDataEntry: isComingFromDataEntry,
+                onTap: () => onTap(122),
+              ),
             ],
           ),
         ],
@@ -290,6 +308,7 @@ class CustomToothActionButton extends StatelessWidget {
     required this.verticalPosition,
     required this.onTap,
     this.hasDataPreviously = false,
+    this.isComingFromDataEntry = false,
   });
 
   final String title;
@@ -297,6 +316,7 @@ class CustomToothActionButton extends StatelessWidget {
   final double verticalPosition;
   final Function() onTap;
   final bool hasDataPreviously;
+  final bool isComingFromDataEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +324,7 @@ class CustomToothActionButton extends StatelessWidget {
       left: horizontalPosition,
       top: verticalPosition,
       child: InkWell(
-        onTap: hasDataPreviously ? onTap : null,
+        onTap: hasDataPreviously || isComingFromDataEntry ? onTap : null,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -337,17 +357,20 @@ class ToothCircle extends StatelessWidget {
   final int number;
   final bool hasData;
   final Function onTap;
+  final bool isComingFromDataEntry;
 
-  const ToothCircle(
-      {super.key,
-      required this.number,
-      required this.hasData,
-      required this.onTap});
+  const ToothCircle({
+    super.key,
+    required this.number,
+    required this.hasData,
+    required this.onTap,
+    this.isComingFromDataEntry = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: hasData ? () => onTap() : null,
+      onTap: hasData || isComingFromDataEntry ? () => onTap() : null,
       child: Container(
         width: 25,
         height: 25,
@@ -375,7 +398,7 @@ void navigateToToothDetail(int toothNumber, BuildContext context) {
     context,
     MaterialPageRoute(
       builder: (context) => ToothOperationsView(
-       selectedTooth: toothNumber,
+        selectedTooth: toothNumber,
       ),
     ),
   ).then((value) async {

@@ -385,7 +385,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
   }
 
-  Future<void> postOneTeethReportDetails(S locale) async {
+  Future<void> postOneTeethReportDetails(S locale, String teethNumber) async {
     emit(
       state.copyWith(
         dentalDataEntryStatus: RequestStatus.loading,
@@ -394,7 +394,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     final response = await _dentalDataEntryRepo.postOneTeethReportDetails(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: SingleTeethReportRequestBody(
-        teethNumber: "1", //TODO: to change this to dynamic value
+        teethNumber: teethNumber, //TODO: to change this to dynamic value
         symptomStartDate: state.startIssueDateSelection!,
         symptomType: state.syptomTypeSelection!,
         symptomDuration: state.selectedSyptomsPeriod!,
