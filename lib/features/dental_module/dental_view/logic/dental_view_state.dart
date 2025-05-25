@@ -12,6 +12,7 @@ class DentalViewState extends Equatable {
   final bool? hasMore;
   final int? currentPage;
   final ToothOperationDetails ? selectedToothOperationDetails;
+  final bool isDeleteRequest;
 
   const DentalViewState({
     this.requestStatus = RequestStatus.initial,
@@ -22,6 +23,7 @@ class DentalViewState extends Equatable {
     this.hasMore,
     this.currentPage,
     this.selectedToothOperationDetails,
+    this.isDeleteRequest = false,
   });
   const DentalViewState.initial()
       : requestStatus = RequestStatus.initial,
@@ -30,12 +32,15 @@ class DentalViewState extends Equatable {
         hasMore = true,
         currentPage = 1,
         selectedToothOperationDetails = null,
+        isDeleteRequest = false,
         selectedToothList = null,
         defectedToothList = null;
+
         
   
   @override
-  List<Object?> get props => [message, defectedToothList, requestStatus, selectedToothList, isLoadingMore, hasMore, currentPage, selectedToothOperationDetails];
+  List<Object?> get props => [message, defectedToothList, requestStatus, selectedToothList, isLoadingMore,  
+   hasMore, currentPage, selectedToothOperationDetails, isDeleteRequest];
 
   DentalViewState copyWith({
     String? message,
@@ -46,6 +51,7 @@ class DentalViewState extends Equatable {
     bool? hasMore,
     int? currentPage,
     ToothOperationDetails ? selectedToothOperationDetails,
+    bool? isDeleteRequest,
   }) {
     return DentalViewState(
       message: message ?? this.message,
@@ -55,6 +61,7 @@ class DentalViewState extends Equatable {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
+      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       selectedToothOperationDetails: selectedToothOperationDetails ?? this.selectedToothOperationDetails,
     );
   }

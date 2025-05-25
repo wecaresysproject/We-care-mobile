@@ -31,7 +31,20 @@ class DentalOperationDetailsView extends StatelessWidget {
         appBar: AppBar(toolbarHeight: 0.h),
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
-          child: BlocBuilder<DentalViewCubit, DentalViewState>(
+          child: BlocConsumer<DentalViewCubit, DentalViewState>(
+              listener: (context, state) {
+                  if (state.requestStatus == RequestStatus.failure &&
+                      state.message != null &&
+                      state.isDeleteRequest) {
+                    showError(state.message!);
+                  }
+                  if (state.requestStatus == RequestStatus.success &&
+                      state.isDeleteRequest &&
+                      state.message != null) {
+                    showSuccess(state.message ?? "تم الحذف بنجاح");
+                    Navigator.pop(context, true);
+                  }
+                },
             buildWhen: (previous, current) =>
                 previous.selectedToothOperationDetails !=
                 current.selectedToothOperationDetails,
@@ -60,6 +73,9 @@ class DentalOperationDetailsView extends StatelessWidget {
               return Column(
                 children: [
                   DetailsViewAppBar(
+                      deleteFunction: () => context
+                          .read<DentalViewCubit>()
+                          .deleteToothOperationDetailsById(documentId),
                       shareFunction: () => shareDentalDetails(context, state),
                       title: state.selectedToothOperationDetails!.procedure
                           .primaryProcedure),

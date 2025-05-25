@@ -88,4 +88,11 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
   );
+
+  @DELETE(DentalApiConstants.deleteToothOperationDetailsById)
+  Future<dynamic> deleteToothOperationDetailsById(
+    @Query("id") String id,
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 }

@@ -24,7 +24,10 @@ class DentalApiConstants {
       "/TeethDataEntry/GetTeethDocumentsByNumber";
 
   static const getToothOperationDetailsById =
-      "/TeethDataEntry/GetTeethDocumentById";    
+      "/TeethDataEntry/GetTeethDocumentById";  
+
+  static const deleteToothOperationDetailsById =
+      "/TeethDataEntry/DeleteTeethDocument";      
 
   //filters
 }

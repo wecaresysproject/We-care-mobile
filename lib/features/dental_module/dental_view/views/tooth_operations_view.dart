@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -32,41 +34,52 @@ class ToothOperationsView extends StatelessWidget {
               ViewAppBar(),
               verticalSpacing(16),
               BlocBuilder<DentalViewCubit, DentalViewState>(
-                buildWhen: (previous, current) => 
+                buildWhen: (previous, current) =>
                     previous.selectedToothList != current.selectedToothList,
                 builder: (context, state) {
-                    if (state.requestStatus == RequestStatus.loading) {
-                      return Expanded(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    } else if (state.requestStatus == RequestStatus.failure) {
-                      return Center(
+                  if (state.requestStatus == RequestStatus.loading) {
+                    return Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (state.requestStatus == RequestStatus.failure) {
+                    return Expanded(
+                      child: Center(
                         child: Text(
                           state.message ?? "حدث خطأ",
                           style: AppTextStyles.font16DarkGreyWeight400,
                         ),
-                      );
-                    } else if (state.selectedToothList == null ||
-                        state.selectedToothList!.isEmpty) {
-                      return Center(
+                      ),
+                    );
+                  } else if (state.selectedToothList == null ||
+                      state.selectedToothList!.isEmpty) {
+                    return Expanded(
+                      child: Center(
                         child: Text(
                           "لا توجد بيانات",
                           style: AppTextStyles.font22MainBlueWeight700,
                         ),
-                      );
-                    }
+                      ),
+                    );
+                  }
                   return MedicalItemGridView(
                     items: state.selectedToothList!,
                     onTap: (id) async {
-                      Navigator.push(
+                      final result = Navigator.push<bool>(
                           context,
                           MaterialPageRoute(
                             builder: (context) => DentalOperationDetailsView(
                               documentId: id,
                             ),
-                          ));
+                          )).then(
+                        (value) async {
+                          await context
+                              .read<DentalViewCubit>()
+                              .getDocumentsByToothNumber(
+                                  toothNumber: selectedTooth.toString());
+                        },
+                      );
                     },
                     titleBuilder: (item) => 'السن ${item.teethNumber}',
                     infoRowBuilder: (item) => [
@@ -75,7 +88,10 @@ class ToothOperationsView extends StatelessWidget {
                         "title": "تاريخ الأعراض:",
                         "value": item.symptomStartDate
                       },
-                      {"title": "الإجراء الطبي:", "value": item.primaryProcedure},
+                      {
+                        "title": "الإجراء الطبي:",
+                        "value": item.primaryProcedure
+                      },
                       {"title": "نوع الألم:", "value": item.painNature},
                     ],
                   );

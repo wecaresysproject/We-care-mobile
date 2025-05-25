@@ -10,7 +10,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/medical_test_card.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';

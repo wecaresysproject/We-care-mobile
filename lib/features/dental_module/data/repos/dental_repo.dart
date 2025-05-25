@@ -56,6 +56,20 @@ class DentalRepo {
     }
   }
 
+  //delete tooth operation details by id
+  Future<ApiResult<String>> deleteToothOperationDetailsById({
+    required String id,
+    required String userType,
+    required String language,
+  }) async {
+    try {
+      final response = await dentalService.deleteToothOperationDetailsById(id, userType, language);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<GetSurgeriesFiltersResponseModel>> gettFilters(
   //     {required String language}) async {
   //   try {

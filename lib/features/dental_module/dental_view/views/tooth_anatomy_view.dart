@@ -378,5 +378,11 @@ void navigateToToothDetail(int toothNumber, BuildContext context) {
        selectedTooth: toothNumber,
       ),
     ),
-  );
+  ).then((value) async {
+    if (value == true && context.mounted) {
+      await context.read<DentalViewCubit>().getDocumentsByToothNumber(
+            toothNumber: toothNumber.toString(),
+          );
+    }
+  });
 }
