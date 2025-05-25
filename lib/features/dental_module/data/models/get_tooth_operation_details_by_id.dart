@@ -60,15 +60,13 @@ class MedicalComplaints {
   String symptomDuration;
   String complaintNature;
   String painNature;
-  String teethNumber;
 
   MedicalComplaints(
       {required this.symptomStartDate,
       required this.symptomType,
       required this.symptomDuration,
       required this.complaintNature,
-      required this.painNature,
-      required this.teethNumber});
+      required this.painNature,});
 factory  MedicalComplaints.fromJson(Map<String, dynamic> json) =>
       _$MedicalComplaintsFromJson(json);
 

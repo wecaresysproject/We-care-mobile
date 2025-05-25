@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
@@ -57,6 +60,7 @@ class DentalOperationDetailsView extends StatelessWidget {
               return Column(
                 children: [
                   DetailsViewAppBar(
+                      shareFunction: () => shareDentalDetails(context, state),
                       title: state.selectedToothOperationDetails!.procedure
                           .primaryProcedure),
                   verticalSpacing(16),
@@ -109,7 +113,7 @@ class DentalOperationDetailsView extends StatelessWidget {
                   DetailsViewImageWithTitleTile(
                     image: state.selectedToothOperationDetails!
                         .lymphAnalysisImage, // Replace with actual image URL or asset
-                    title: "التحاليل الطبية الفموية ", 
+                    title: "التحاليل الطبية الفموية ",
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
@@ -137,7 +141,6 @@ class DentalOperationDetailsView extends StatelessWidget {
                     icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),
-                  
                 ],
               );
             },
@@ -187,7 +190,16 @@ class SymptomContainer extends StatelessWidget {
               ),
               Spacer(),
               CustomActionButton(
-                onTap: () {},
+                onTap: () {
+                  final shareContent = '''
+📆 تاريخ الشكوى: $complaintDate
+📋 الشكوى: $complaintReason
+🧠 طبيعة الشكوى: $natureOfComplaint
+🔥 حدة الشكوى: $severityOfComplaint
+🧪 نوع الأعراض: $symptomComplaint
+''';
+                  Share.share(shareContent);
+                },
                 title: 'ارسال',
                 icon: 'assets/images/share.png',
               ),
@@ -280,7 +292,20 @@ class MedicalOperationsComponent extends StatelessWidget {
               ),
               Spacer(),
               CustomActionButton(
-                onTap: () {},
+                onTap: () {
+                  final shareContent = '''
+🛠️ الإجراء الطبي  
+📅 التاريخ: $operationStartDate
+🔧 الرئيسي: $mainMedicalOperation
+📎 الفرعي: $secendoryMedicalOperation
+📝 وصف: $operationDetailedDescription 
+🏷️ النوع: $operationType
+💥 الألم: $operationLevelOfPain
+⏳ مدة الشفاء: $operationRecoveryDuration
+💉 نوع التخدير: $useOfAnesthesia
+''';
+                  Share.share(shareContent);
+                },
                 title: 'ارسال',
                 icon: 'assets/images/share.png',
               ),
@@ -349,5 +374,68 @@ class MedicalOperationsComponent extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Future<void> shareDentalDetails(
+    BuildContext context, DentalViewState state) async {
+  final dentalData = state.selectedToothOperationDetails;
+  if (dentalData != null) {
+    final shareContent = '''
+🦷 تفاصيل الإجراء السني
+
+📆 تاريخ الشكوى: ${dentalData.medicalComplaints.symptomStartDate}
+📋 الشكوى: ${dentalData.medicalComplaints.symptomDuration}
+🧠 طبيعة الشكوى: ${dentalData.medicalComplaints.complaintNature}
+🔥 حدة الشكوى: ${dentalData.medicalComplaints.painNature}
+🧪 نوع الأعراض: ${dentalData.medicalComplaints.symptomType}
+
+🛠️ الإجراء الطبي:
+📅 التاريخ: ${dentalData.procedure.procedureDate}
+🔧 الرئيسي: ${dentalData.procedure.primaryProcedure}
+📎 الفرعي: ${dentalData.procedure.subProcedure}
+📝 وصف: ${dentalData.procedure.patientDescription}
+🏷️ النوع: ${dentalData.procedure.procedureType}
+💥 الألم: ${dentalData.procedure.painLevel}
+⏳ مدة الشفاء: ${dentalData.procedure.recoveryTime}
+💉 نوع التخدير: ${dentalData.procedure.anesthesia}
+
+👨‍⚕️ الطبيب المعالج: ${dentalData.treatingDoctor}
+🏥 المستشفى: ${dentalData.hospital}
+🌍 الدولة: ${dentalData.country}
+📌 ملاحظات إضافية: ${dentalData.additionalNotes}
+''';
+
+    // تحميل الصور
+    final tempDir = await getTemporaryDirectory();
+    List<String> imagePaths = [];
+
+    if (dentalData.medicalReportImage.startsWith("http")) {
+      final path = await downloadImage(
+          dentalData.medicalReportImage, tempDir, 'report.png');
+      if (path != null) imagePaths.add(path);
+    }
+
+    if (dentalData.xRayImage.startsWith("http")) {
+      final path =
+          await downloadImage(dentalData.xRayImage, tempDir, 'xray.png');
+      if (path != null) imagePaths.add(path);
+    }
+
+    if (dentalData.lymphAnalysisImage.startsWith("http")) {
+      final path = await downloadImage(
+          dentalData.lymphAnalysisImage, tempDir, 'lymph.png');
+      if (path != null) imagePaths.add(path);
+    }
+
+    // المشاركة
+    if (imagePaths.isNotEmpty) {
+      await Share.shareXFiles(imagePaths.map((e) => XFile(e)).toList(),
+          text: shareContent);
+    } else {
+      await Share.share(shareContent);
+    }
+  } else {
+    showError("لا توجد بيانات للمشاركة.");
   }
 }
