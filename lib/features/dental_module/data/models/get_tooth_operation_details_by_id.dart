@@ -55,12 +55,12 @@ class ToothOperationDetails {
 
 @JsonSerializable()
 class MedicalComplaints {
-  String symptomStartDate;
-  String symptomType;
-  String reasonExcpected;
-  String symptomDuration;
-  String complaintNature;
-  String painNature;
+  String? symptomStartDate;
+  String? symptomType;
+  String? reasonExcpected;
+  String? symptomDuration;
+  String? complaintNature;
+  String? painNature;
 
   MedicalComplaints({
     required this.symptomStartDate,
@@ -77,14 +77,14 @@ class MedicalComplaints {
 
 @JsonSerializable()
 class Procedure {
-  String procedureDate;
-  String primaryProcedure;
-  String subProcedure;
-  String patientDescription;
-  String procedureType;
-  String painLevel;
-  String anesthesia;
-  String recoveryTime;
+  String? procedureDate;
+  String? primaryProcedure;
+  String? subProcedure;
+  String? patientDescription;
+  String? procedureType;
+  String? painLevel;
+  String? anesthesia;
+  String? recoveryTime;
 
   Procedure(
       {required this.procedureDate,
