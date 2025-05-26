@@ -84,9 +84,9 @@ class DentalOperationDetailsView extends StatelessWidget {
                     complaintDate: state.selectedToothOperationDetails!
                         .medicalComplaints.symptomStartDate,
                     complaintReason: state.selectedToothOperationDetails!
-                        .medicalComplaints.symptomType,
+                        .medicalComplaints.reasonExcpected,
                     symptomComplaint: state.selectedToothOperationDetails!
-                        .medicalComplaints.symptomDuration,
+                        .medicalComplaints.symptomType,
                     natureOfComplaint: state.selectedToothOperationDetails!
                         .medicalComplaints.complaintNature,
                     severityOfComplaint: state.selectedToothOperationDetails!

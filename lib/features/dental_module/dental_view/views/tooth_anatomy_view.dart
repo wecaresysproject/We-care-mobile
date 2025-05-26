@@ -19,7 +19,7 @@ class ToothAnatomyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DentalViewCubit>(
-      create: (context) => getIt<DentalViewCubit>()..getDefectedTooth(),
+      create: (context) => getIt<DentalViewCubit>()..getDefectedTooth()..getToothFilters(),
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -79,26 +79,24 @@ class ToothAnatomyView extends StatelessWidget {
                           filters: [
                             FilterConfig(
                                 title: "السنة",
-                                options: [2023, 2022, 2021, "الكل"]),
+                                options: state.yearsFilter ?? []),
                             FilterConfig(
-                                title: "النوع",
-                                options: ["علاج عصب", "حشو عصب"]),
-                            FilterConfig(title: "رقم السن", options: [
-                              "السن 11",
-                              "السن 22",
-                              "السن 33",
-                              "السن 44"
-                            ]),
+                                title:"نوع الاجراء الطبي",
+                                options: state.procedureTypeFilter ?? []),
+                            FilterConfig(title: "رقم السن", options: state.toothNumberFilter ?? []),
                           ],
                           onApply: (selectedOption) {
-                            // Handle apply button action
-                            print('Apply button pressed');
+                            context.read<DentalViewCubit>().getFilteredToothDocuments(
+                              year: selectedOption['السنة'] as int?,
+                              procedureType: selectedOption["نوع الاجراء الطبي"] as String?,
+                              toothNumber: selectedOption['رقم السن'] as String?,
+                            );
                           },
                         ),
                       ),
                       verticalSpacing(8),
                       ToothOverlay(
-                        toothWithDataList: [],
+                        toothWithDataList: state.filteredDefectedToothList ?? [],
                         overlayTitle: "",
                         selectedActionsList: [],
                         onTap: (toothNumber) {

@@ -89,6 +89,61 @@ class DentalViewCubit extends Cubit<DentalViewState> {
         toothNumber: toothNumber, page: currentPage + 1);
   }
 
+  Future<void> getToothFilters() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await dentalRepository.getToothFilters(
+      userType: 'Patient',
+      language: 'ar',
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          yearsFilter: data.years,
+          toothNumberFilter: data.teethNumbers,
+          procedureTypeFilter: data.subProcedures,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  // Fetch filtered tooth documents based on selected filters
+  Future<void> getFilteredToothDocuments({
+    int? year,
+    String? toothNumber,
+    String? procedureType,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await dentalRepository.getFilteredToothDocuments(
+      userType: 'Patient',
+      language: 'ar',
+      year: year,
+      toothNumber: toothNumber,
+      procedureType: procedureType,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          filteredDefectedToothList: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+          filteredDefectedToothList: null,
+        ));
+      },
+    );
+  }
+
   Future<void> getToothOperationDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await dentalRepository.getToothOperationDetailsById(
@@ -113,7 +168,8 @@ class DentalViewCubit extends Cubit<DentalViewState> {
   }
 
   Future<void> deleteToothOperationDetailsById(String id) async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading, isDeleteRequest: true));
+    emit(state.copyWith(
+        requestStatus: RequestStatus.loading, isDeleteRequest: true));
     final result = await dentalRepository.deleteToothOperationDetailsById(
       id: id,
       userType: 'Patient',
@@ -129,10 +185,9 @@ class DentalViewCubit extends Cubit<DentalViewState> {
       },
       failure: (error) {
         emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          message: error.errors.first,
-          isDeleteRequest: true
-        ));
+            requestStatus: RequestStatus.failure,
+            message: error.errors.first,
+            isDeleteRequest: true));
       },
     );
   }
