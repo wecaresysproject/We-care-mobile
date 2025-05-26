@@ -127,12 +127,12 @@ class CategoryItem extends StatelessWidget {
 
               // Conditionally show corner image if provided
               Positioned(
-                top: -10,
-                left: -10,
+                top: -23,
+                left: -1,
                 child: Image.asset(
                   cornerImagePath,
-                  width: 30.w,
-                  height: 30.h,
+                  width: 35.w,
+                  height: 35.h,
                 ),
               ),
             ],
