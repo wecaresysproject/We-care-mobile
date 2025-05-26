@@ -48,6 +48,13 @@ abstract class DentalService {
     @Query('Language') String language,
     @Query('usertype') String userType,
   );
+  @PUT(DentalApiConstants.editOneTeethReportDetails)
+  Future<dynamic> updateOneTeethReportDetails(
+    @Body() SingleTeethReportRequestBody requestBody,
+    @Query('Language') String language,
+    @Query('id') String documentId,
+    @Query('usertype') String userType,
+  );
 
   @GET(DentalApiConstants.getAllMainMedicalProcedures)
   Future<dynamic> getAllMainMedicalProcedures(
@@ -119,7 +126,7 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
   );
-  
+
   @GET(DentalApiConstants.getToothFilters)
   Future<dynamic> getToothFilters(
     @Query("usertype") String userType,
@@ -134,5 +141,4 @@ abstract class DentalService {
     @Query("year") int? year,
     @Query("subProcedure") String? procedureType,
   );
-
 }

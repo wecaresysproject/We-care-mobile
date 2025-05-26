@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -20,32 +21,42 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   final DentalDataEntryRepo _dentalDataEntryRepo;
   final additionalNotesController = TextEditingController();
 
-  // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeryDateSelection: pastSurgery.surgeryDate,
-  //       surgeryBodyPartSelection: pastSurgery.surgeryRegion,
-  //       selectedSubSurgery: pastSurgery.subSurgeryRegion,
-  //       surgeryNameSelection: pastSurgery.surgeryName,
-  //       selectedTechUsed: pastSurgery.usedTechnique,
-  //       surgeryPurpose: pastSurgery.purpose,
-  //       reportImageUploadedUrl: pastSurgery.medicalReportImage,
-  //       selectedSurgeryStatus: pastSurgery.surgeryStatus,
-  //       selectedHospitalCenter: pastSurgery.hospitalCenter,
-  //       internistName: pastSurgery.anesthesiologistName,
-  //       selectedCountryName: pastSurgery.country,
-  //       surgeonName: pastSurgery.surgeonName,
-  //       isEditMode: true,
-  //       updatedSurgeryId: pastSurgery.id,
-  //     ),
-  //   );
-  //   personalNotesController.text = pastSurgery.additionalNotes;
-  //   suergeryDescriptionController.text = pastSurgery.surgeryDescription;
-  //   postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
+  Future<void> loadPastToothDataForEditing(
+    ToothOperationDetails pastToothData, {
+    required String teethId,
+  }) async {
+    emit(
+      state.copyWith(
+        pastEditedToothData: pastToothData,
+        startIssueDateSelection:
+            pastToothData.medicalComplaints.symptomStartDate,
+        syptomTypeSelection: pastToothData.medicalComplaints.symptomType,
+        selectedSyptomsPeriod: pastToothData.medicalComplaints.symptomDuration,
+        natureOfComplaintSelection:
+            pastToothData.medicalComplaints.complaintNature,
+        complaintDegree: pastToothData.medicalComplaints.painNature,
+        medicalProcedureDateSelection: pastToothData.procedure.procedureDate,
+        primaryMedicalProcedureSelection:
+            pastToothData.procedure.primaryProcedure,
+        secondaryMedicalProcedureSelection:
+            pastToothData.procedure.subProcedure,
+        reportImageUploadedUrl: pastToothData.medicalReportImage,
+        xrayImageUploadedUrl: pastToothData.xRayImage,
+        lymphAnalysisImageUploadedUrl: pastToothData.lymphAnalysisImage,
+        oralPathologySelection: pastToothData.lymphAnalysis,
+        selectedSurroundingGumStatus: pastToothData.gumCondition,
+        treatingDoctor: pastToothData.treatingDoctor,
+        selectedHospitalCenter: pastToothData.hospital,
+        selectedCountryName: pastToothData.country,
+        isEditMode: true,
+        updatedTeethId: teethId,
+      ),
+    );
+    additionalNotesController.text = pastToothData.additionalNotes;
 
-  //   validateRequiredFields();
-  //   await intialRequestsForDataEntry();
-  // }
+    validateRequiredFields();
+    await intialRequestsForDataEntry();
+  }
 
   /// Update Field Values
   void updateStartIssueDate(String? date) {
@@ -421,6 +432,61 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         treatingDoctor: state.treatingDoctor ?? locale.no_data_entered,
         hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
         country: state.selectedCountryName ?? locale.no_data_entered,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            dentalDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            dentalDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitEditedOneTeethReportDetails(
+    S locale,
+    String decumentId,
+    String teethNumber,
+  ) async {
+    emit(
+      state.copyWith(
+        dentalDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _dentalDataEntryRepo.updateOneTeethReportDetails(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      documentId: decumentId,
+      requestBody: SingleTeethReportRequestBody(
+        teethNumber: teethNumber,
+        symptomStartDate: state.startIssueDateSelection!,
+        symptomType: state.syptomTypeSelection!,
+        symptomDuration: state.selectedSyptomsPeriod!,
+        complaintNature: state.natureOfComplaintSelection!,
+        complaintDegree: state.complaintDegree!,
+        procedureDate: state.medicalProcedureDateSelection!,
+        primaryProcedure: state.primaryMedicalProcedureSelection!,
+        subProcedure: state.secondaryMedicalProcedureSelection!,
+        additionalNotes: additionalNotesController.text,
+        medicalReportImage: state.reportImageUploadedUrl!,
+        xRayImage: state.xrayImageUploadedUrl!,
+        lymphAnalysis: state.oralPathologySelection!,
+        lymphAnalysisImage: state.lymphAnalysisImageUploadedUrl!,
+        gumCondition: state.selectedSurroundingGumStatus!,
+        treatingDoctor: state.treatingDoctor!,
+        hospital: state.selectedHospitalCenter!,
+        country: state.selectedCountryName!,
       ),
       language: AppStrings.arabicLang,
     );

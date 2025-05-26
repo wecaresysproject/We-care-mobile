@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
@@ -13,6 +14,7 @@ import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 
@@ -32,19 +34,19 @@ class DentalOperationDetailsView extends StatelessWidget {
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
           child: BlocConsumer<DentalViewCubit, DentalViewState>(
-              listener: (context, state) {
-                  if (state.requestStatus == RequestStatus.failure &&
-                      state.message != null &&
-                      state.isDeleteRequest) {
-                    showError(state.message!);
-                  }
-                  if (state.requestStatus == RequestStatus.success &&
-                      state.isDeleteRequest &&
-                      state.message != null) {
-                    showSuccess(state.message ?? "تم الحذف بنجاح");
-                    Navigator.pop(context, true);
-                  }
-                },
+            listener: (context, state) {
+              if (state.requestStatus == RequestStatus.failure &&
+                  state.message != null &&
+                  state.isDeleteRequest) {
+                showError(state.message!);
+              }
+              if (state.requestStatus == RequestStatus.success &&
+                  state.isDeleteRequest &&
+                  state.message != null) {
+                showSuccess(state.message ?? "تم الحذف بنجاح");
+                Navigator.pop(context, true);
+              }
+            },
             buildWhen: (previous, current) =>
                 previous.selectedToothOperationDetails !=
                 current.selectedToothOperationDetails,
@@ -76,6 +78,14 @@ class DentalOperationDetailsView extends StatelessWidget {
                       deleteFunction: () => context
                           .read<DentalViewCubit>()
                           .deleteToothOperationDetailsById(documentId),
+                      editFunction: () {
+                        context.pushNamed(
+                          Routes.dentalDataEntryView,
+                          arguments: {
+                            'teethDocumentId': documentId,
+                          },
+                        );
+                      },
                       shareFunction: () => shareDentalDetails(context, state),
                       title: state.selectedToothOperationDetails!.procedure
                           .primaryProcedure),

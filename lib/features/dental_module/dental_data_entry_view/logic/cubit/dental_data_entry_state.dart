@@ -3,6 +3,7 @@ part of 'dental_data_entry_cubit.dart';
 @immutable
 class DentalDataEntryState extends Equatable {
   final RequestStatus dentalDataEntryStatus;
+  final ToothOperationDetails? pastEditedToothData;
   final bool isFormValidated;
   final String? startIssueDateSelection;
   final String? syptomTypeSelection;
@@ -43,6 +44,7 @@ class DentalDataEntryState extends Equatable {
   const DentalDataEntryState({
     this.dentalDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.pastEditedToothData,
     this.startIssueDateSelection,
     this.syptomTypeSelection,
     this.natureOfComplaintSelection,
@@ -86,6 +88,7 @@ class DentalDataEntryState extends Equatable {
           natureOfComplaintSelection: null,
           complaintDegree: null,
           medicalProcedureDateSelection: null,
+          pastEditedToothData: null,
           mainProcedures: const [],
           secondaryProcedures: const [],
           doctorNames: const [],
@@ -117,6 +120,7 @@ class DentalDataEntryState extends Equatable {
 
   DentalDataEntryState copyWith({
     RequestStatus? dentalDataEntryStatus,
+    ToothOperationDetails? pastEditedToothData,
     bool? isFormValidated,
     String? startIssueDateSelection,
     List<String>? mainProcedures,
@@ -154,6 +158,7 @@ class DentalDataEntryState extends Equatable {
     return DentalDataEntryState(
       dentalDataEntryStatus:
           dentalDataEntryStatus ?? this.dentalDataEntryStatus,
+      pastEditedToothData: pastEditedToothData ?? this.pastEditedToothData,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       startIssueDateSelection:
           startIssueDateSelection ?? this.startIssueDateSelection,
@@ -207,6 +212,7 @@ class DentalDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         dentalDataEntryStatus,
+        pastEditedToothData,
         isFormValidated,
         startIssueDateSelection,
         syptomTypeSelection,

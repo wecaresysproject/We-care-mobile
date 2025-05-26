@@ -9,9 +9,8 @@ class DentalApiConstants {
       "/FileUpload/upload-image"; // الاشعه السينيه
   static const uploadLymphAnalysisImage =
       "/FileUpload/upload-image"; // التحاليل الطبيه الفمويه
-  static const postOneTeethReportDetails =
-      "/TeethDataEntry/AddTeethPerUser"; // Post Single Teeth Report
-
+  static const postOneTeethReportDetails = "/TeethDataEntry/AddTeethPerUser";
+  static const editOneTeethReportDetails = "/TeethDataEntry/EditTeethDocument";
   static const getAllCountries = "/countries";
   static const getAllMainMedicalProcedures =
       "/TeethDataEntry/GetAllMainProcedures";
@@ -31,10 +30,10 @@ class DentalApiConstants {
       "/TeethDataEntry/GetTeethDocumentsByNumber";
 
   static const getToothOperationDetailsById =
-      "/TeethDataEntry/GetTeethDocumentById";  
+      "/TeethDataEntry/GetTeethDocumentById";
 
   static const deleteToothOperationDetailsById =
-      "/TeethDataEntry/DeleteTeethDocument";      
+      "/TeethDataEntry/DeleteTeethDocument";
 
   //filters
   static const getToothFilters = "/TeethDataEntry/GetUserTeethFilters";
