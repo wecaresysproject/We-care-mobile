@@ -1,6 +1,5 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 part 'get_tooth_operation_details_by_id.g.dart';
 
 @JsonSerializable()
@@ -57,6 +56,7 @@ class ToothOperationDetails {
 class MedicalComplaints {
   String symptomStartDate;
   String symptomType;
+  String reasonExcpected;
   String symptomDuration;
   String complaintNature;
   String painNature;
@@ -66,6 +66,7 @@ class MedicalComplaints {
       required this.symptomType,
       required this.symptomDuration,
       required this.complaintNature,
+      required this.reasonExcpected,
       required this.painNature,});
 factory  MedicalComplaints.fromJson(Map<String, dynamic> json) =>
       _$MedicalComplaintsFromJson(json);
