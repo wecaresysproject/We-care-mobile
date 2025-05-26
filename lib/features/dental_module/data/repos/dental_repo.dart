@@ -99,7 +99,7 @@ class DentalRepo {
         userType,
         language,
         toothNumber,
-        year.toString(),
+        year,
         procedureType,
       );
       return ApiResult.success(

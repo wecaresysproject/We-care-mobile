@@ -131,7 +131,7 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
     @Query("teethNumber") String? teethNumber,
-    @Query("year") String? year,
+    @Query("year") int? year,
     @Query("subProcedure") String? procedureType,
   );
 
