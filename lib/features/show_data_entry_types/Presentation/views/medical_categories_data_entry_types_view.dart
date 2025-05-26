@@ -30,7 +30,6 @@ class MedicalDataEntryCategoryTypesView extends StatelessWidget {
               BasicDataAndBiometricMeasurementsCategories(),
             ],
           ),
-          verticalSpacing(32),
           DataEntryCategoriesGridView(),
         ],
       ).paddingSymmetricHorizontal(16),

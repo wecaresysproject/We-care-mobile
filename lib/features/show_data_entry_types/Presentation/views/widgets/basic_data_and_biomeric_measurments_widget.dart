@@ -16,12 +16,14 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
           imagePath: "assets/images/medical_tools_img.png",
           routeName: "basicDataEntry",
           isActive: true,
+          cornerImagePath: "assets/images/qyasat_hayawya.png",
         ),
         CategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
           routeName: "basicDataEntry",
           isActive: true,
+          cornerImagePath: "assets/images/basic_data.png",
         ),
       ],
     );
