@@ -219,7 +219,9 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) => DentalDataEntryView(
-            toothNumber: result?['toothNumber']!,
+            existingToothModel: result?['existingToothModel'],
+            toothNumber: result?['toothNumber'],
+            toothId: result?['teethDocumentId'] ?? "",
           ),
         );
       case Routes.alarmHomeView:

@@ -450,20 +450,23 @@ class _DentalDataFormFieldsWidgetState
       builder: (context, state) {
         return AppCustomButton(
           isLoading: state.dentalDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          title: state.isEditMode ? "حفظ التعديلات" : context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode
-              //     ? await context
-              //         .read<DentalDataEntryCubit>()
-              //         .submitUpdatedSurgery()
-              //     :
-              await context
-                  .read<DentalDataEntryCubit>()
-                  .postOneTeethReportDetails(
-                    context.translate,
-                    toothNumber,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<DentalDataEntryCubit>()
+                      .submitEditedOneTeethReportDetails(
+                        context.translate,
+                        state.updatedTeethId,
+                        toothNumber,
+                      )
+                  : await context
+                      .read<DentalDataEntryCubit>()
+                      .postOneTeethReportDetails(
+                        context.translate,
+                        toothNumber,
+                      );
               log("xxx:Save Data Entry");
             }
           },

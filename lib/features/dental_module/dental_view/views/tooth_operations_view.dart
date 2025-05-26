@@ -69,6 +69,7 @@ class ToothOperationsView extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => DentalOperationDetailsView(
                               documentId: id,
+                              toothNumber: selectedTooth.toString(),
                             ),
                           )).then(
                         (value) async {

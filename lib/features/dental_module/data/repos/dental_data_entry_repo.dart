@@ -243,6 +243,25 @@ class DentalDataEntryRepo {
     }
   }
 
+  Future<ApiResult<String>> updateOneTeethReportDetails({
+    required String language,
+    required String userType,
+    required SingleTeethReportRequestBody requestBody,
+    required String documentId,
+  }) async {
+    try {
+      final response = await _dentalService.updateOneTeethReportDetails(
+        requestBody,
+        language,
+        documentId,
+        userType,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<String>> updateSurgeryDocumentById({
   //   required String id,
   //   required String langauge,

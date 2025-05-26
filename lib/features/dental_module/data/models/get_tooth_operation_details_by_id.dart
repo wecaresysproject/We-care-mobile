@@ -1,5 +1,5 @@
-
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 part 'get_tooth_operation_details_by_id.g.dart';
 
 @JsonSerializable()
@@ -7,7 +7,7 @@ class GetToothOpertionDetailsByIdResponseModel {
   bool success;
   String message;
   @JsonKey(name: 'data')
-ToothOperationDetails toothOperationDetails;
+  ToothOperationDetails toothOperationDetails;
 
   GetToothOpertionDetailsByIdResponseModel(
       {required this.success,
@@ -17,8 +17,9 @@ ToothOperationDetails toothOperationDetails;
   factory GetToothOpertionDetailsByIdResponseModel.fromJson(
           Map<String, dynamic> json) =>
       _$GetToothOpertionDetailsByIdResponseModelFromJson(json);
+  Map<String, dynamic> toJson() =>
+      _$GetToothOpertionDetailsByIdResponseModelToJson(this);
 }
-
 
 @JsonSerializable()
 class ToothOperationDetails {
@@ -49,40 +50,41 @@ class ToothOperationDetails {
 
   factory ToothOperationDetails.fromJson(Map<String, dynamic> json) =>
       _$ToothOperationDetailsFromJson(json);
+  Map<String, dynamic> toJson() => _$ToothOperationDetailsToJson(this);
 }
-
 
 @JsonSerializable()
 class MedicalComplaints {
-  String symptomStartDate;
-  String symptomType;
-  String reasonExcpected;
-  String symptomDuration;
-  String complaintNature;
-  String painNature;
+  String? symptomStartDate;
+  String? symptomType;
+  String? reasonExcpected;
+  String? symptomDuration;
+  String? complaintNature;
+  String? painNature;
 
-  MedicalComplaints(
-      {required this.symptomStartDate,
-      required this.symptomType,
-      required this.symptomDuration,
-      required this.complaintNature,
-      required this.reasonExcpected,
-      required this.painNature,});
-factory  MedicalComplaints.fromJson(Map<String, dynamic> json) =>
+  MedicalComplaints({
+    required this.symptomStartDate,
+    required this.symptomType,
+    required this.symptomDuration,
+    required this.complaintNature,
+    required this.reasonExcpected,
+    required this.painNature,
+  });
+  factory MedicalComplaints.fromJson(Map<String, dynamic> json) =>
       _$MedicalComplaintsFromJson(json);
-
+  Map<String, dynamic> toJson() => _$MedicalComplaintsToJson(this);
 }
 
 @JsonSerializable()
 class Procedure {
-  String procedureDate;
-  String primaryProcedure;
-  String subProcedure;
-  String patientDescription;
-  String procedureType;
-  String painLevel;
-  String anesthesia;
-  String recoveryTime;
+  String? procedureDate;
+  String? primaryProcedure;
+  String? subProcedure;
+  String? patientDescription;
+  String? procedureType;
+  String? painLevel;
+  String? anesthesia;
+  String? recoveryTime;
 
   Procedure(
       {required this.procedureDate,
@@ -93,7 +95,7 @@ class Procedure {
       required this.painLevel,
       required this.anesthesia,
       required this.recoveryTime});
-factory Procedure.fromJson(Map<String, dynamic> json) =>
+  factory Procedure.fromJson(Map<String, dynamic> json) =>
       _$ProcedureFromJson(json);
-
+  Map<String, dynamic> toJson() => _$ProcedureToJson(this);
 }

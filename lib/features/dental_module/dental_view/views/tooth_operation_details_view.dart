@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
@@ -13,6 +14,7 @@ import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 
@@ -20,8 +22,10 @@ class DentalOperationDetailsView extends StatelessWidget {
   const DentalOperationDetailsView({
     super.key,
     required this.documentId,
+    this.toothNumber,
   });
   final String documentId;
+  final String? toothNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -32,28 +36,26 @@ class DentalOperationDetailsView extends StatelessWidget {
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
           child: BlocConsumer<DentalViewCubit, DentalViewState>(
-              listener: (context, state) {
-                  if (state.requestStatus == RequestStatus.failure &&
-                      state.message != null &&
-                      state.isDeleteRequest) {
-                    showError(state.message!);
-                  }
-                  if (state.requestStatus == RequestStatus.success &&
-                      state.isDeleteRequest &&
-                      state.message != null) {
-                    showSuccess(state.message ?? "تم الحذف بنجاح");
-                    Navigator.pop(context, true);
-                  }
-                },
+            listener: (context, state) {
+              if (state.requestStatus == RequestStatus.failure &&
+                  state.message != null &&
+                  state.isDeleteRequest) {
+                showError(state.message!);
+              }
+              if (state.requestStatus == RequestStatus.success &&
+                  state.isDeleteRequest &&
+                  state.message != null) {
+                showSuccess(state.message ?? "تم الحذف بنجاح");
+                Navigator.pop(context, true);
+              }
+            },
             buildWhen: (previous, current) =>
                 previous.selectedToothOperationDetails !=
                 current.selectedToothOperationDetails,
             builder: (context, state) {
               if (state.requestStatus == RequestStatus.loading) {
-                return Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                return Center(
+                  child: CircularProgressIndicator(),
                 );
               } else if (state.requestStatus == RequestStatus.failure) {
                 return Center(
@@ -73,45 +75,81 @@ class DentalOperationDetailsView extends StatelessWidget {
               return Column(
                 children: [
                   DetailsViewAppBar(
-                      deleteFunction: () => context
-                          .read<DentalViewCubit>()
-                          .deleteToothOperationDetailsById(documentId),
-                      shareFunction: () => shareDentalDetails(context, state),
-                      title: state.selectedToothOperationDetails!.procedure
-                          .primaryProcedure),
+                    deleteFunction: () => context
+                        .read<DentalViewCubit>()
+                        .deleteToothOperationDetailsById(documentId),
+                    editFunction: () async {
+                      await context.pushNamed(
+                        Routes.dentalDataEntryView,
+                        arguments: {
+                          'teethDocumentId': documentId,
+                          "existingToothModel":
+                              state.selectedToothOperationDetails,
+                          "toothNumber": toothNumber,
+                        },
+                      ).then((value) async {
+                        if (value == true) {
+                          if (!context.mounted) return;
+                          await context
+                              .read<DentalViewCubit>()
+                              .getToothOperationDetailsById(documentId);
+                        }
+                      });
+                    },
+                    shareFunction: () => shareDentalDetails(context, state),
+                    title: state.selectedToothOperationDetails!.procedure
+                            .primaryProcedure ??
+                        "",
+                  ),
                   verticalSpacing(16),
                   SymptomContainer(
                     complaintDate: state.selectedToothOperationDetails!
-                        .medicalComplaints.symptomStartDate,
+                        .medicalComplaints.symptomStartDate!,
                     complaintReason: state.selectedToothOperationDetails!
-                        .medicalComplaints.reasonExcpected,
+                            .medicalComplaints.reasonExcpected ??
+                        "",
                     symptomComplaint: state.selectedToothOperationDetails!
-                        .medicalComplaints.symptomType,
+                            .medicalComplaints.symptomType ??
+                        "",
                     natureOfComplaint: state.selectedToothOperationDetails!
-                        .medicalComplaints.complaintNature,
+                            .medicalComplaints.complaintNature ??
+                        "",
                     severityOfComplaint: state.selectedToothOperationDetails!
-                        .medicalComplaints.painNature,
+                            .medicalComplaints.painNature ??
+                        "",
                   ),
                   verticalSpacing(16),
                   MedicalOperationsComponent(
-                    operationStartDate: state
-                        .selectedToothOperationDetails!.procedure.procedureDate,
+                    operationStartDate: state.selectedToothOperationDetails!
+                            .procedure.procedureDate ??
+                        "",
                     mainMedicalOperation: state.selectedToothOperationDetails!
-                        .procedure.primaryProcedure,
+                            .procedure.primaryProcedure ??
+                        "",
                     secendoryMedicalOperation: state
-                        .selectedToothOperationDetails!.procedure.subProcedure,
+                            .selectedToothOperationDetails!
+                            .procedure
+                            .subProcedure ??
+                        "",
                     operationDetailedDescription: state
-                        .selectedToothOperationDetails!
-                        .procedure
-                        .patientDescription,
-                    operationType: state
-                        .selectedToothOperationDetails!.procedure.procedureType,
-                    operationLevelOfPain: state
-                        .selectedToothOperationDetails!.procedure.painLevel,
+                            .selectedToothOperationDetails!
+                            .procedure
+                            .patientDescription ??
+                        "",
+                    operationType: state.selectedToothOperationDetails!
+                            .procedure.procedureType ??
+                        "",
+                    operationLevelOfPain: state.selectedToothOperationDetails!
+                            .procedure.painLevel ??
+                        "",
                     operationRecoveryDuration: state
-                        .selectedToothOperationDetails!.procedure.painLevel,
-                    useOfAnesthesia: state
-                        .selectedToothOperationDetails!.procedure.painLevel,
+                            .selectedToothOperationDetails!
+                            .procedure
+                            .painLevel ??
+                        "",
+                    useOfAnesthesia: state.selectedToothOperationDetails!
+                            .procedure.painLevel ??
+                        "",
                   ),
                   verticalSpacing(16),
                   DetailsViewImageWithTitleTile(
