@@ -1,31 +1,32 @@
-
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/dental_module/data/models/dental_filters_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 import 'package:we_care/features/dental_module/dental_services.dart';
 
-
 class DentalRepo {
-  final  DentalService dentalService;
+  final DentalService dentalService;
   DentalRepo({required this.dentalService});
 
-   Future<ApiResult<List<int>>>  getDefectedTooth({required String userType, required String language}) async {
+  Future<ApiResult<List<int>>> getDefectedTooth(
+      {required String userType, required String language}) async {
     try {
-    final response = await dentalService.getDefectedTooth(userType, language);
-    
-    return ApiResult.success(
-          (response['data'] as List).map((e) => int.parse(e)).toList(),);
+      final response = await dentalService.getDefectedTooth(userType, language);
+
+      return ApiResult.success(
+        (response['data'] as List).map((e) => int.parse(e)).toList(),
+      );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<GetToothDocumentsResponseModel>>  getDocumentsByToothNumber({
+  Future<ApiResult<GetToothDocumentsResponseModel>> getDocumentsByToothNumber({
     required String toothNumber,
     required String userType,
     required String language,
-    required  int page,
+    required int page,
     required int pageSize,
   }) async {
     try {
@@ -42,15 +43,16 @@ class DentalRepo {
     }
   }
 
- Future<ApiResult<ToothOperationDetails>>     getToothOperationDetailsById({
+  Future<ApiResult<ToothOperationDetails>> getToothOperationDetailsById({
     required String id,
     required String language,
     required String userType,
   }) async {
     try {
-      final response = await dentalService.getToothOperationDetailsById(id, userType, language);
-      return ApiResult.success(
-          ToothOperationDetails.fromJson(response['data'] as Map<String, dynamic>));
+      final response = await dentalService.getToothOperationDetailsById(
+          id, userType, language);
+      return ApiResult.success(ToothOperationDetails.fromJson(
+          response['data'] as Map<String, dynamic>));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -63,12 +65,53 @@ class DentalRepo {
     required String language,
   }) async {
     try {
-      final response = await dentalService.deleteToothOperationDetailsById(id, userType, language);
+      final response = await dentalService.deleteToothOperationDetailsById(
+          id, userType, language);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<DentalFilterResponseModel>> getToothFilters({
+    required String userType,
+    required String language,
+  }) async {
+    try {
+      final response = await dentalService.getToothFilters(userType, language);
+      return ApiResult.success(
+          DentalFilterResponseModel.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<int>>> getFilteredToothDocuments({
+    required String userType,
+    required String language,
+    int? year,
+    String? toothNumber,
+    String? procedureType,
+  }) async {
+    try {
+      final response =
+          await dentalService.getFilteredToothDocuments(
+        userType,
+        language,
+        toothNumber,
+        year.toString(),
+        procedureType,
+      );
+      return ApiResult.success(
+      response['data'] != null
+          ? (response['data'] as List).map((e) => int.parse(e)).toList()
+          : <int>[],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
 
   // Future<ApiResult<GetSurgeriesFiltersResponseModel>> gettFilters(
   //     {required String language}) async {
