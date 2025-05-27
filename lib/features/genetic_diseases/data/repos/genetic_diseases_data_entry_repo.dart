@@ -1,21 +1,21 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
-import 'package:we_care/features/medicine/medicines_services.dart';
 
-class MedicinesDataEntryRepo {
-  final MedicinesServices _medicinesServices;
+class GeneticDiseasesDataEntryRepo {
+  final GeneticDiseasesServices _geneticDiseasesServices;
 
-  MedicinesDataEntryRepo(this._medicinesServices);
+  GeneticDiseasesDataEntryRepo(this._geneticDiseasesServices);
 
   Future<ApiResult<List<String>>> getAllPlacesOfComplaints(
       {required String language}) async {
     try {
       final response =
-          await _medicinesServices.getAllPlacesOfComplaints(language);
+          await _geneticDiseasesServices.getAllPlacesOfComplaints(language);
       final complaints =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(complaints);
@@ -30,7 +30,7 @@ class MedicinesDataEntryRepo {
     required String medicineId,
   }) async {
     try {
-      final response = await _medicinesServices.getMedcineForms(
+      final response = await _geneticDiseasesServices.getMedcineForms(
         language,
         userType,
         medicineId,
@@ -50,7 +50,7 @@ class MedicinesDataEntryRepo {
     required String medicineForm,
   }) async {
     try {
-      final response = await _medicinesServices.getMedcineDosesByForms(
+      final response = await _geneticDiseasesServices.getMedcineDosesByForms(
         medicineForm,
         language,
         userType,
@@ -68,7 +68,7 @@ class MedicinesDataEntryRepo {
     required String bodyPartName,
   }) async {
     try {
-      final response = await _medicinesServices
+      final response = await _geneticDiseasesServices
           .getAllComplaintsRelevantToBodyPartName(bodyPartName);
       final complaints =
           (response['data'] as List).map((e) => e as String).toList();
@@ -84,7 +84,7 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.getAllDosageFrequencies(
+      final response = await _geneticDiseasesServices.getAllDosageFrequencies(
         langauge,
         userType,
       );
@@ -101,7 +101,7 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.getAllUsageCategories(
+      final response = await _geneticDiseasesServices.getAllUsageCategories(
         langauge,
         userType,
       );
@@ -119,7 +119,8 @@ class MedicinesDataEntryRepo {
     required String category,
   }) async {
     try {
-      final response = await _medicinesServices.getAllDurationsForCategory(
+      final response =
+          await _geneticDiseasesServices.getAllDurationsForCategory(
         langauge,
         userType,
         category,
@@ -137,7 +138,7 @@ class MedicinesDataEntryRepo {
     required String medicineName,
   }) async {
     try {
-      final response = await _medicinesServices.getMatchedMedicines(
+      final response = await _geneticDiseasesServices.getMatchedMedicines(
         medicineName,
         language,
         userType,
@@ -158,7 +159,7 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.getAllMedicinesNames(
+      final response = await _geneticDiseasesServices.getAllMedicinesNames(
         language,
         userType,
       );
@@ -177,7 +178,7 @@ class MedicinesDataEntryRepo {
     required String medicineId,
   }) async {
     try {
-      final response = await _medicinesServices.getMedicineDetailsById(
+      final response = await _geneticDiseasesServices.getMedicineDetailsById(
         language,
         userType,
         medicineId,
@@ -196,7 +197,7 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.postMedicineDataEntry(
+      final response = await _geneticDiseasesServices.postMedicineDataEntry(
         requestBody,
         language,
         userType,
@@ -214,7 +215,8 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.editSpecifcMedicineDataDetails(
+      final response =
+          await _geneticDiseasesServices.editSpecifcMedicineDataDetails(
         requestBody,
         language,
         medicineId,
@@ -226,6 +228,3 @@ class MedicinesDataEntryRepo {
     }
   }
 }
-// "67e2823af55d89100f614baa"
-// 67e2823af55d89100f614baa
-//"67e2823af55d89100f614baa"

@@ -7,7 +7,7 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
 @immutable
-class MedicinesDataEntryState extends Equatable {
+class GeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
   final String? medicineStartDate;
   final String? selectedMedicineName;
@@ -42,7 +42,7 @@ class MedicinesDataEntryState extends Equatable {
   final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
   final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
-  const MedicinesDataEntryState({
+  const GeneticDiseasesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
@@ -78,7 +78,7 @@ class MedicinesDataEntryState extends Equatable {
         OptionsLoadingState.loading,
   }) : super();
 
-  const MedicinesDataEntryState.initialState()
+  const GeneticDiseasesDataEntryState.initialState()
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
@@ -115,7 +115,7 @@ class MedicinesDataEntryState extends Equatable {
               OptionsLoadingState.loading,
         );
 
-  MedicinesDataEntryState copyWith({
+  GeneticDiseasesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
     String? message,
@@ -150,7 +150,7 @@ class MedicinesDataEntryState extends Equatable {
     OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
     OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
   }) {
-    return MedicinesDataEntryState(
+    return GeneticDiseasesDataEntryState(
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,

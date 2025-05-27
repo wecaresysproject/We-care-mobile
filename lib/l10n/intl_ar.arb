@@ -29,7 +29,7 @@
     "medicalServiceProviders": "مقدمي الخدمات الطبية",
     "insuranceCompanies": "شركات التأمين",
     "supportingEntities": "الهيئات الداعمة",
-    "medicalRecordManagement": "اختر ما تريد القيام به لإدارة سجلك الطبي.",
+    "medicalRecordManagement": "اختر ما تريد القيام به لإدارة\nسجلك الطبي.",
     "enter_medical_data":  "ادخال بيانات\nسجلك الطبي",
     "view_medical_record": "عرض سجلك\nالطبي",
     "dummyUserName":"أحمد محمد",

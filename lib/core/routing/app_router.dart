@@ -6,6 +6,10 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/family_tree_view_from_data_entry.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/genetic_disease_data_entry_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/family_tree_data_entry_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -227,6 +231,22 @@ class AppRouter {
       case Routes.alarmHomeView:
         return MaterialPageRoute(
           builder: (context) => AlarmHomeScreen(),
+        );
+      case Routes.geneticDiseasesDataEnrtyView:
+        return MaterialPageRoute(
+          builder: (context) => const GeneticDiseasesDataEntryView(),
+        );
+      case Routes.familyTreeDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyTreeDataEntryView(),
+        );
+      case Routes.familyTreeViewFromDataEntry:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyTreeViewFromDataEntry(),
+        );
+      case Routes.geneticDiseaeseMainView:
+        return MaterialPageRoute(
+          builder: (context) => const GeneticDiseaeseMainView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

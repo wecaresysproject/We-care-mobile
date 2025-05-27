@@ -222,8 +222,9 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأمراض\n الوراثيه",
     "image": "assets/images/icon_family.png",
-    "route": "/allergy",
     "cornerImagePath": "assets/images/genetic_dissease_module.png",
+    "route": Routes.geneticDiseaeseMainView,
+    "isActive": true,
   },
   {
     "title": "الغسيل\nالكلوى",

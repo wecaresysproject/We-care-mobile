@@ -1,5 +1,3 @@
-import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
-
 class Routes {
   static const bottomNavBar = '/bottomNavBar'; //'/bottomNavBar'
   static const userTypesView = '/userTypesView';
@@ -41,7 +39,10 @@ class Routes {
       '/emergenciesComplaintDataEntryView';
   static const dentalDataEntryView = '/dentalDataEntryView';
   static const dentalAnatomyDiagramEntryView = '/dentalAnatomyDiagramEntryView';
-  static const toothAnatomyView =
-      '/toothAnatomyView';
+  static const toothAnatomyView = '/toothAnatomyView';
+  static const geneticDiseaeseMainView = "/geneticDiseaeseMainView";
+  static const familyTreeDataEntryView = "/FamilyTreeDataEntryView";
+  static const familyTreeViewFromDataEntry = "/familyTreeView";
+  static const geneticDiseasesDataEnrtyView = "/genetic_diseasesDataEnrtyView";
   static const alarmHomeView = '/alarmHomeView';
 }
