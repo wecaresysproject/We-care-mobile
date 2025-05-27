@@ -50,7 +50,8 @@ class FamilyTreeDataEntryView extends StatelessWidget {
                 isLoading: false,
                 title: "ارسال",
                 onPressed: () async {
-                  await context.pushNamed(Routes.familyTreeViewFromDataEntry);
+                  await context.pushNamed(
+                      Routes.familyMemeberGeneticDiseaseDataEntryView);
                 },
                 isEnabled: true,
               ),

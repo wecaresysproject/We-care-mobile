@@ -27,7 +27,7 @@ class GeneticDiseaeseMainView extends StatelessWidget {
               verticalSpacing(130),
               GenticDiseaseButtonCard(
                 iconPath: 'assets/images/add_button.png',
-                title: "انشاء شجرة العائلة",
+                title: "انشاء أو تعديل شجرة العائلة",
                 onTap: () async {
                   await context.pushNamed(
                     Routes.familyTreeDataEntryView,
@@ -44,7 +44,11 @@ class GeneticDiseaeseMainView extends StatelessWidget {
               GenticDiseaseButtonCard(
                 iconPath: 'assets/images/add_button.png',
                 title: "أمراضى الوراثية",
-                onTap: () {},
+                onTap: () async {
+                  await context.pushNamed(
+                    Routes.geneticDiseasesDataEnrtyView,
+                  );
+                },
               ),
             ],
           ),
