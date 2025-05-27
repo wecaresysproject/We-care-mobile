@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/familly_question_field_widget.dart';
 
 class FamilyTreeDataEntryView extends StatelessWidget {
@@ -47,7 +49,9 @@ class FamilyTreeDataEntryView extends StatelessWidget {
               AppCustomButton(
                 isLoading: false,
                 title: "ارسال",
-                onPressed: () async {},
+                onPressed: () async {
+                  await context.pushNamed(Routes.familyTreeViewFromDataEntry);
+                },
                 isEnabled: true,
               ),
             ],

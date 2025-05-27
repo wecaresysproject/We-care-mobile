@@ -42,6 +42,7 @@ class Routes {
   static const toothAnatomyView = '/toothAnatomyView';
   static const geneticDiseaeseMainView = "/geneticDiseaeseMainView";
   static const familyTreeDataEntryView = "/FamilyTreeDataEntryView";
+  static const familyTreeViewFromDataEntry = "/familyTreeView";
   static const geneticDiseasesDataEnrtyView = "/genetic_diseasesDataEnrtyView";
   static const alarmHomeView = '/alarmHomeView';
 }
