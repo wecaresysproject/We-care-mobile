@@ -27,7 +27,9 @@ class CustomActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
         ),
         padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
-        child: Row(children: [
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
           Image.asset(
             icon,
             width: 13.w,

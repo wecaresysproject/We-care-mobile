@@ -13,6 +13,11 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Pr
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/personal_genetic_disease_data_entry_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/family_tree_data_entry_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genatic_disease_details_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -194,6 +199,28 @@ class AppRouter {
           builder: (context) => CreateNewComplaintDetailsView(
             editingComplaintDetails: complaintDetails?['complaint'],
             complaintId: complaintDetails?['id'],
+          ),
+        );
+
+              case Routes.familyMemberGeneticDiseaseDetailsView:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyMemberGeneticDiseaseDetailsView(),
+        );  
+      case Routes.familyMemberGeneticDiseases:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyMemberGeneticDiseases(),
+        );
+      case Routes.geneticDiseasesHomeScreen:
+        return MaterialPageRoute(
+          builder: (context) => const GeneticDiseasesHomeScreen(),
+        );
+      case Routes.personalGeneticDiseasesScreen:
+        return MaterialPageRoute(
+          builder: (context) => const PersonalGenaticDiseasesScreen(),
+        ); 
+      case Routes.personalGeneticDiseasesDetailsView:
+        return MaterialPageRoute(
+          builder: (context) => PersonalGenaticDiseasesDetailsView(
           ),
         );
 
