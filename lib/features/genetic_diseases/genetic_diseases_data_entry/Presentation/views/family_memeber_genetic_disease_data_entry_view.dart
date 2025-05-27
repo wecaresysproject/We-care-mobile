@@ -71,7 +71,7 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
                 verticalSpacing(20),
                 buildAddNewGeneticDiseaseButtonBlocBuilder(context),
                 verticalSpacing(40),
-                submitGeneticDiseaseButtonBlocConsumer(context),
+                submitGeneticDiseasesButtonBlocConsumer(context),
               ],
             ),
           ),
@@ -132,7 +132,7 @@ class GeneticDiseaseTemplateListBlocBuilder extends StatelessWidget {
   }
 }
 
-Widget submitGeneticDiseaseButtonBlocConsumer(BuildContext context) {
+Widget submitGeneticDiseasesButtonBlocConsumer(BuildContext context) {
   return AppCustomButton(
     isLoading: false,
     title: context.translate.send,
