@@ -1,84 +1,107 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class FamilyTreeViewFromDataEntry extends StatelessWidget {
   const FamilyTreeViewFromDataEntry({super.key});
 
-  Widget buildStaticItem(String title, String emoji) {
-    return Container(
-      width: 80,
-      height: 50,
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
-      decoration: BoxDecoration(
-        color: Color(0xff547792),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            emoji,
-          ),
-          horizontalSpacing(
-            8.w,
-          ),
-          Flexible(
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font18blackWight500.copyWith(
-                color: Color(0xffFEFEFE),
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w700,
+  Widget buildStaticItem(BuildContext context, String title, String emoji) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: 80,
+        height: 50,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
+        decoration: BoxDecoration(
+          color: Color(0xff547792),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              emoji,
+            ),
+            horizontalSpacing(
+              8.w,
+            ),
+            Flexible(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: Color(0xffFEFEFE),
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildMainItem(String title, String emoji, Color color) {
-    return Container(
-      width: double.infinity,
-      height: 56,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Text(
-        "$emoji\n$title",
-        textAlign: TextAlign.center,
-        style: AppTextStyles.font18blackWight500.copyWith(
-          color: Colors.white,
-          fontSize: 16.sp,
+          ],
         ),
       ),
     );
   }
 
-  Widget buildRelativeItem(String title, String emoji, Color color) {
-    return Container(
-      width: 73.5.w,
-      height: 47.h,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
+  Widget buildMainItem(
+      BuildContext context, String title, String emoji, Color color) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: double.infinity,
+        height: 56,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Text(
+          "$emoji\n$title",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500.copyWith(
+            color: Colors.white,
+            fontSize: 16.sp,
+          ),
+        ),
       ),
-      child: Text(
-        "$emoji\n$title",
-        textAlign: TextAlign.center,
-        style: AppTextStyles.font18blackWight500.copyWith(
-          color: Color(0xffFEFEFE),
-          fontSize: 13.sp,
-          fontWeight: FontWeight.w600,
+    );
+  }
+
+  Future<void> navigateToNextScreen(BuildContext context) async {
+    await context.pushNamed(Routes.familyMemeberGeneticDiseaseDataEntryView);
+  }
+
+  Widget buildRelativeItem(
+      BuildContext context, String title, String emoji, Color color) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: 73.5.w,
+        height: 47.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          "$emoji\n$title",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500.copyWith(
+            color: Color(0xffFEFEFE),
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -93,6 +116,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(bottom: 2.h, top: 16.h),
             child: buildRelativeItem(
+              context,
               relatives[index]['title']!,
               relatives[index]['emoji']!,
               color,
@@ -148,21 +172,22 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildStaticItem("الجد", "👴🏻"),
+              buildStaticItem(context, "الجد", "👴🏻"),
               horizontalSpacing(16),
-              buildStaticItem("الجدة", "👵🏻"),
+              buildStaticItem(context, "الجدة", "👵🏻"),
             ],
           ),
           verticalSpacing(16),
-          buildMainItem("الأب", "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
+          buildMainItem(
+              context, "الأب", "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
             runAlignment: WrapAlignment.spaceEvenly,
             runSpacing: 8,
             children: [
-              buildRelativeItem("الأخ", "👦🏻", Color(0xff99CBE9)),
-              buildRelativeItem("الأخ", "👦🏻", Color(0xff99CBE9)),
+              buildRelativeItem(context, "الأخ", "👦🏻", Color(0xff99CBE9)),
+              buildRelativeItem(context, "الأخ", "👦🏻", Color(0xff99CBE9)),
             ],
           ),
           SizedBox(
@@ -201,20 +226,23 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildStaticItem("الجد", "👴🏻"),
+              buildStaticItem(context, "الجد", "👴🏻"),
               horizontalSpacing(16),
-              buildStaticItem("الجدة", "👵🏻"),
+              buildStaticItem(context, "الجدة", "👵🏻"),
             ],
           ),
           verticalSpacing(16),
-          buildMainItem("الأم", "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
+          buildMainItem(
+              context, "الأم", "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
             runSpacing: 8,
             children: [
-              buildRelativeItem("الأخت", "👩🏻", Colors.lightBlue[100]!),
-              buildRelativeItem("الأخت", "👩🏻", Colors.lightBlue[100]!),
+              buildRelativeItem(
+                  context, "الأخت", "👩🏻", Colors.lightBlue[100]!),
+              buildRelativeItem(
+                  context, "الأخت", "👩🏻", Colors.lightBlue[100]!),
             ],
           ),
           SizedBox(

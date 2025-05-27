@@ -38,7 +38,11 @@ class GeneticDiseaeseMainView extends StatelessWidget {
               GenticDiseaseButtonCard(
                 iconPath: 'assets/images/add_button.png',
                 title: "الأمراض الوراثية العائلية",
-                onTap: () {},
+                onTap: () async {
+                  await context.pushNamed(
+                    Routes.familyTreeViewFromDataEntry,
+                  );
+                },
               ),
               verticalSpacing(68),
               GenticDiseaseButtonCard(
