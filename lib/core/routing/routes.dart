@@ -44,5 +44,8 @@ class Routes {
   static const familyTreeDataEntryView = "/FamilyTreeDataEntryView";
   static const familyTreeViewFromDataEntry = "/familyTreeView";
   static const geneticDiseasesDataEnrtyView = "/genetic_diseasesDataEnrtyView";
+  static const familyMemeberGeneticDiseaseDataEntryView =
+      "/familyMemeberGeneticDiseaseDataEntryView";
+  static const createNewGeneticDiseaseView = '/createNewGeneticDiseaseView';
   static const alarmHomeView = '/alarmHomeView';
 }

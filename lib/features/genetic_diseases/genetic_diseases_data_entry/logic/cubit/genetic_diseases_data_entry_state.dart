@@ -2,7 +2,7 @@ import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
@@ -19,7 +19,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String? selectedChronicDisease;
   final String? selectedDoctorName;
   final bool isFormValidated;
-  final List<MedicalComplaint> medicalComplaints;
+  final List<NewGeneticDiseaseModel> geneticDiseases;
   final List<String> medicinesNames;
   final List<String> medicineForms;
   final List<String> medicalDoses;
@@ -56,7 +56,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.timePeriods,
     this.selectedChronicDisease,
     this.selectedDoctorName,
-    this.medicalComplaints = const [],
+    this.geneticDiseases = const [],
     this.medicinesNames = const [],
     this.medicineForms = const [],
     this.medicalDoses = const [],
@@ -93,7 +93,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           timePeriods: null,
           selectedChronicDisease: null,
           selectedDoctorName: null,
-          medicalComplaints: const [],
+          geneticDiseases: const [],
           medicinesNames: const [],
           medicineForms: const [],
           medicalDoses: const [],
@@ -129,7 +129,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? timePeriods,
     String? selectedChronicDisease,
     String? selectedDoctorName,
-    List<MedicalComplaint>? medicalComplaints,
+    List<NewGeneticDiseaseModel>? geneticDiseases,
     List<String>? medicinesNames,
     List<String>? medicineForms,
     List<String>? medicalDoses,
@@ -166,7 +166,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
       selectedChronicDisease:
           selectedChronicDisease ?? this.selectedChronicDisease,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
-      medicalComplaints: medicalComplaints ?? this.medicalComplaints,
+      geneticDiseases: geneticDiseases ?? this.geneticDiseases,
       medicinesNames: medicinesNames ?? this.medicinesNames,
       medicineForms: medicineForms ?? this.medicineForms,
       medicalDoses: medicalDoses ?? this.medicalDoses,
@@ -213,7 +213,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
         timePeriods,
         selectedChronicDisease,
         selectedDoctorName,
-        medicalComplaints,
+        geneticDiseases,
         medicinesNames,
         medicineForms,
         medicalDoses,

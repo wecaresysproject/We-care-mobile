@@ -1,113 +1,307 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class FamilyTreeViewFromDataEntry extends StatelessWidget {
   const FamilyTreeViewFromDataEntry({super.key});
 
+  Widget buildStaticItem(BuildContext context, String title, String emoji) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: 80,
+        height: 50,
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
+        decoration: BoxDecoration(
+          color: Color(0xff547792),
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              emoji,
+            ),
+            horizontalSpacing(
+              8.w,
+            ),
+            Flexible(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: Color(0xffFEFEFE),
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildMainItem(
+      BuildContext context, String title, String emoji, Color color) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: double.infinity,
+        height: 56,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(16.r),
+        ),
+        child: Text(
+          "$emoji\n$title",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500.copyWith(
+            color: Colors.white,
+            fontSize: 16.sp,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> navigateToNextScreen(BuildContext context) async {
+    await context.pushNamed(Routes.familyMemeberGeneticDiseaseDataEntryView);
+  }
+
+  Widget buildRelativeItem(
+      BuildContext context, String title, String emoji, Color color) {
+    return GestureDetector(
+      onDoubleTap: () async {
+        await navigateToNextScreen(context);
+      },
+      child: Container(
+        width: 73.5.w,
+        height: 47.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          "$emoji\n$title",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500.copyWith(
+            color: Color(0xffFEFEFE),
+            fontSize: 13.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildScrollableList(List<Map<String, String>> relatives, Color color) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: relatives.length,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 2.h, top: 16.h),
+            child: buildRelativeItem(
+              context,
+              relatives[index]['title']!,
+              relatives[index]['emoji']!,
+              color,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ),
+        child: Column(
           children: [
-            RelativeCategoryRow(
-              names: List.filled(2, "الجد") + List.filled(2, "الجده"),
-              icon: Icons.person,
-              color: Color(0xff547792),
-              onTap: (index) => print("Tapped on sibling #$index"),
+            FamilyTreeViewCustomAppBar(),
+            verticalSpacing(48),
+            Text(
+              "\"برجاء الضغط على القريب لكى يتم\nادخال البيانات الوراثية.\"",
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font20blackWeight600.copyWith(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            RelativeCategoryRow(
-              names: List.filled(1, "الاب") + List.filled(1, "الام"),
-              icon: Icons.person,
-              color: AppColorsManager.mainDarkBlue,
-              onTap: (index) => print("Tapped on sibling #$index"),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        RelativeCategoryRow(
-          names: List.filled(9, "العم"),
-          icon: Icons.person_outline,
-          color: Color(0xff5A4B8D),
-          onTap: (index) => print("Tapped on uncle #$index"),
-        ),
-        const SizedBox(height: 16),
-
-        RelativeCategoryRow(
-          names: List.filled(9, "العمه"),
-          icon: Icons.person_outline,
-          color: Color.fromARGB(255, 63, 5, 255),
-          onTap: (index) => print("Tapped on uncle #$index"),
-        ),
-        const SizedBox(height: 16),
-        // const SizedBox(height: 16),
-        // RelativeCategoryRow(
-        //   names: List.filled(2, "العمة"),
-        //   icon: Icons.person_outline,
-        //   color: Colors.deepPurple,
-        //   onTap: (index) => print("Tapped on aunt #$index"),
-        // ),
-      ],
-    ));
-  }
-}
-
-class RelativeCategoryRow extends StatelessWidget {
-  final List<String> names; // e.g., ["الأخ", "الأخ", "الأخت"]
-  final IconData icon; // Choose appropriate emoji/icon
-  final Color color;
-  final void Function(int index)? onTap;
-
-  const RelativeCategoryRow({
-    required this.names,
-    required this.icon,
-    required this.color,
-    this.onTap,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 8,
-      runSpacing: 8,
-      children: List.generate(names.length, (index) {
-        return GestureDetector(
-          onTap: () => onTap?.call(index),
-          child: Container(
-            width: 79.w,
-            height: 44.2.h,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
+            verticalSpacing(40),
+            Row(
               children: [
-                Text(names[index],
-                    style: const TextStyle(color: Colors.white, fontSize: 14)),
-                const SizedBox(width: 6),
-                Icon(icon, color: Colors.white, size: 16),
+                /// الجهة اليمنى (الأب)
+                buildFatherRelativesPart(context),
+
+                horizontalSpacing(16),
+
+                /// الجهة اليسرى (الأم)
+                buildMotherRelativesPart(context),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded buildFatherRelativesPart(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildStaticItem(context, "الجد", "👴🏻"),
+              horizontalSpacing(16),
+              buildStaticItem(context, "الجدة", "👵🏻"),
+            ],
+          ),
+          verticalSpacing(16),
+          buildMainItem(
+              context, "الأب", "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
+          verticalSpacing(16),
+          Wrap(
+            spacing: 16,
+            runAlignment: WrapAlignment.spaceEvenly,
+            runSpacing: 8,
+            children: [
+              buildRelativeItem(context, "الأخ", "👦🏻", Color(0xff99CBE9)),
+              buildRelativeItem(context, "الأخ", "👦🏻", Color(0xff99CBE9)),
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Row(
+              children: [
+                // العم
+                buildScrollableList(
+                  [
+                    {"title": "العم", "emoji": "👨🏻"},
+                    {"title": "العم", "emoji": "👨🏻"},
+                    {"title": "العم", "emoji": "👨🏻"},
+                  ],
+                  Color(0xff5A4B8D),
+                ),
+                horizontalSpacing(16),
+                // العمة
+                buildScrollableList(
+                  [
+                    {"title": "العمة", "emoji": "👧🏻"},
+                  ],
+                  Color(0xff5A4B8D),
+                ),
               ],
             ),
           ),
-        );
-      }),
+        ],
+      ),
+    );
+  }
+
+  Expanded buildMotherRelativesPart(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              buildStaticItem(context, "الجد", "👴🏻"),
+              horizontalSpacing(16),
+              buildStaticItem(context, "الجدة", "👵🏻"),
+            ],
+          ),
+          verticalSpacing(16),
+          buildMainItem(
+              context, "الأم", "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
+          verticalSpacing(16),
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            children: [
+              buildRelativeItem(
+                  context, "الأخت", "👩🏻", Colors.lightBlue[100]!),
+              buildRelativeItem(
+                  context, "الأخت", "👩🏻", Colors.lightBlue[100]!),
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Row(
+              children: [
+                // الخال
+                buildScrollableList(
+                  [
+                    {"title": "الخال", "emoji": "👳🏻‍♂️"},
+                  ],
+                  Color(0xff5A4B8D),
+                ),
+                horizontalSpacing(16),
+
+                // الخالة
+                buildScrollableList(
+                  [
+                    {"title": "الخالة", "emoji": "👩🏻‍🦱"},
+                    {"title": "الخالة", "emoji": "👩🏻‍🦱"},
+                    {"title": "الخالة", "emoji": "👩🏻‍🦱"},
+                  ],
+                  Color(0xff5A4B8D),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FamilyTreeViewCustomAppBar extends StatelessWidget {
+  const FamilyTreeViewCustomAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // Back arrow on the left
+        CustomBackArrow(),
+
+        // Manually spaced center text
+        SizedBox(
+          width: MediaQuery.of(context).size.width *
+              0.25, // Adjust this width as needed
+        ), // Adjust this width as needed
+        Text(
+          "شجرة العائلة",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500.copyWith(
+            color: AppColorsManager.textColor,
+          ),
+        ),
+
+        // Spacer to push the row to the right end
+        Spacer(),
+      ],
     );
   }
 }
