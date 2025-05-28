@@ -307,8 +307,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الأمراض\n الوراثيه",
     "image": "assets/images/icon_family.png",
-    "route": "/allergy",
-    "isActive": false,
+    "route": Routes.geneticDiseasesHomeScreen,
+    "isActive": true,
   },
   {
     "title": "الغسيل\nالكلوى",
