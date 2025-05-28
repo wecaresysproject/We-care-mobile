@@ -15,6 +15,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/fa
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genatic_disease_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
@@ -273,6 +274,10 @@ class AppRouter {
       case Routes.familyTreeViewFromDataEntry:
         return MaterialPageRoute(
           builder: (context) => const FamilyTreeViewFromDataEntry(),
+        );
+      case Routes.familyTreeScreen:
+        return MaterialPageRoute(
+          builder: (context) => const FamilyTreeView(),
         );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:
         return MaterialPageRoute(
