@@ -298,10 +298,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               searchHintText: "ابحث عن الدولة",
             ),
 
-            verticalSpacing(16),
-
-            /// final section
-            verticalSpacing(32),
+            verticalSpacing(40),
 
             submitDataEnteredBlocConsumer(),
 
