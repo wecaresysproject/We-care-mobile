@@ -130,24 +130,19 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(10),
             BlocListener<PersonalGeneticDiseasesDataEntryCubit,
                 PersonalGeneticDiseasesDataEntryState>(
-              // listenWhen: (prev, curr) =>
-              //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
+              listenWhen: (prev, curr) =>
+                  prev.firstImageRequestStatus != curr.firstImageRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.firstImageRequestStatus ==
+                    UploadImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.firstImageRequestStatus ==
+                    UploadImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
-                // containerBorderColor: ((state.isXRayPictureSelected == null) ||
-                //             (state.isXRayPictureSelected == false)) &&
-                //         state.xRayPictureUploadedUrl.isEmpty
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
                 label: "ارفق صورة",
                 onTap: () async {
@@ -156,15 +151,11 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .updateXRayPicture(isImagePicked);
-
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadFirstImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -180,24 +171,20 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(10),
             BlocListener<PersonalGeneticDiseasesDataEntryCubit,
                 PersonalGeneticDiseasesDataEntryState>(
-              // listenWhen: (prev, curr) =>
-              //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
+              listenWhen: (prev, curr) =>
+                  prev.secondImageRequestStatus !=
+                  curr.secondImageRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.secondImageRequestStatus ==
+                    UploadImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.secondImageRequestStatus ==
+                    UploadImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
-                // containerBorderColor: ((state.isXRayPictureSelected == null) ||
-                //             (state.isXRayPictureSelected == false)) &&
-                //         state.xRayPictureUploadedUrl.isEmpty
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
                 label: "ارفق صورة",
                 onTap: () async {
@@ -206,15 +193,11 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .updateXRayPicture(isImagePicked);
-
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadSecondImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -237,18 +220,17 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(8),
             BlocListener<PersonalGeneticDiseasesDataEntryCubit,
                 PersonalGeneticDiseasesDataEntryState>(
-              // listenWhen: (previous, current) =>
-              //     previous.xRayReportRequestStatus !=
-              //     current.xRayReportRequestStatus,
+              listenWhen: (previous, current) =>
+                  previous.reportRequestStatus != current.reportRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayReportRequestStatus ==
-                //     UploadReportRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayReportRequestStatus ==
-                //     UploadReportRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.reportRequestStatus ==
+                    UploadReportRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.reportRequestStatus ==
+                    UploadReportRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
                 imagePath: "assets/images/photo_icon.png",
@@ -259,11 +241,11 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayReportPicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadReportImage(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );

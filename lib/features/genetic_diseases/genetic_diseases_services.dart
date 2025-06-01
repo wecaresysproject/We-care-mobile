@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_constants.dart';
 
 part 'genetic_diseases_services.g.dart';
@@ -30,5 +34,27 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> getGeneticDiseasesBasedOnClassification(
     @Query("language") String language,
     @Query("medicalClassification") String medicalClassification,
+  );
+
+  @MultiPart()
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
+  Future<UploadImageResponseModel> uploadFirstImage(
+    @Part(name: "image") File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+  @MultiPart()
+  @POST("http://147.93.57.70/api/FileUpload/upload-image")
+  Future<UploadImageResponseModel> uploadSecondImage(
+    @Part(name: "image") File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+  @MultiPart()
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
+  Future<UploadReportResponseModel> uploadReportImage(
+    @Part(name: 'report') File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
   );
 }

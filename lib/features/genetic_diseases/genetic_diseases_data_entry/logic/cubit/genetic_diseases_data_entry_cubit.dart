@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -246,14 +247,6 @@ class PersonalGeneticDiseasesDataEntryCubit
   //   );
   // }
 
-  void updateSelectedAlarmTime(String? alarmTime) {
-    emit(
-      state.copyWith(
-        selectedAlarmTime: alarmTime,
-      ),
-    );
-  }
-
   /// Update Field Values
   void updateDiagnosisDate(String? date) {
     emit(state.copyWith(diagnosisDate: date));
@@ -274,35 +267,6 @@ class PersonalGeneticDiseasesDataEntryCubit
   Future<void> updateSelectedGeneticDiseaseName(String? val) async {
     emit(state.copyWith(selectedDiseaseName: val));
     validateRequiredFields();
-  }
-
-  Future<void> updateSelectedMedicalForm(String? form) async {
-    emit(state.copyWith(selectedMedicalForm: form));
-    validateRequiredFields();
-  }
-
-  void updateSelectedDose(String? dose) {
-    emit(state.copyWith(selectedDose: dose));
-    validateRequiredFields();
-  }
-
-  void updateSelectedDoseFrequency(String? noOfDose) {
-    emit(state.copyWith(selectedNoOfDose: noOfDose));
-    validateRequiredFields();
-  }
-
-  Future<void> updateSelectedDoseDuration(String? doseDuration) async {
-    emit(state.copyWith(doseDuration: doseDuration));
-    validateRequiredFields();
-  }
-
-  void updateSelectedTimePeriod(String? timePeriods) {
-    emit(state.copyWith(timePeriods: timePeriods));
-    validateRequiredFields();
-  }
-
-  void updateSelectedChronicDisease(String? value) {
-    emit(state.copyWith(selectedChronicDisease: value));
   }
 
   void updateSelectedDoctorName(String? value) {
@@ -326,6 +290,102 @@ class PersonalGeneticDiseasesDataEntryCubit
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadFirstImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        firstImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.uploadFirstImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            firstImageUploadedUrl: response.imageUrl,
+            firstImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            firstImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadSecondImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        secondImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.uploadSecondImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            secondImageUploadedUrl: response.imageUrl,
+            secondImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            secondImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadReportImage({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        reportRequestStatus: UploadReportRequestStatus.initial,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.uploadReportImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            reportRequestStatus: UploadReportRequestStatus.success,
+            reportUploadedUrl: response.reportUrl,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            reportRequestStatus: UploadReportRequestStatus.failure,
           ),
         );
       },

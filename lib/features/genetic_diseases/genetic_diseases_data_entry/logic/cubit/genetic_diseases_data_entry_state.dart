@@ -1,10 +1,8 @@
-import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
-import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
 @immutable
 class PersonalGeneticDiseasesDataEntryState extends Equatable {
@@ -33,18 +31,14 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final List<String> dosageFrequencies; // عدد مرات الجرعات
   final List<String> allUsageCategories; // مدة الاستخدام
   final List<String> allDurationsBasedOnCategory; // المدد الزمنيه
-  final String? selectedAlarmTime;
   final bool isEditMode;
   final String message; // error or success message
-
-  final AlarmSettings? ringingAlarm;
-  final List<MatchedMedicineModel> matchedMedicines;
-  final OptionsLoadingState medicinesNamesOptionsLoadingState;
-  final OptionsLoadingState medicalFormsOptionsLoadingState;
-  final OptionsLoadingState medicalDosesOptionsLoadingState;
-  final OptionsLoadingState dosageFrequenciesOptionsLoadingState;
-  final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
-  final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
+  final UploadImageRequestStatus firstImageRequestStatus;
+  final UploadImageRequestStatus secondImageRequestStatus;
+  final UploadReportRequestStatus reportRequestStatus;
+  final String? firstImageUploadedUrl;
+  final String? secondImageUploadedUrl;
+  final String? reportUploadedUrl;
 
   const PersonalGeneticDiseasesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -72,18 +66,14 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.dosageFrequencies = const [],
     this.allUsageCategories = const [],
     this.allDurationsBasedOnCategory = const [],
+    this.firstImageRequestStatus = UploadImageRequestStatus.initial,
+    this.secondImageRequestStatus = UploadImageRequestStatus.initial,
+    this.reportRequestStatus = UploadReportRequestStatus.initial,
+    this.firstImageUploadedUrl,
+    this.secondImageUploadedUrl,
+    this.reportUploadedUrl,
     this.medicineId = '',
     this.updatedDocumentId = '',
-    this.selectedAlarmTime,
-    this.ringingAlarm,
-    this.matchedMedicines = const [],
-    this.medicinesNamesOptionsLoadingState = OptionsLoadingState.loading,
-    this.medicalFormsOptionsLoadingState = OptionsLoadingState.loading,
-    this.medicalDosesOptionsLoadingState = OptionsLoadingState.loading,
-    this.dosageFrequenciesOptionsLoadingState = OptionsLoadingState.loading,
-    this.allUsageCategoriesOptionsLoadingState = OptionsLoadingState.loading,
-    this.allDurationsBasedOnCategoryOptionsLoadingState =
-        OptionsLoadingState.loading,
   }) : super();
 
   const PersonalGeneticDiseasesDataEntryState.initialState()
@@ -99,6 +89,12 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           diseasesClassfications: const [],
           diseasesStatuses: const [],
           diseasesNames: const [],
+          firstImageRequestStatus: UploadImageRequestStatus.initial,
+          secondImageRequestStatus: UploadImageRequestStatus.initial,
+          reportRequestStatus: UploadReportRequestStatus.initial,
+          firstImageUploadedUrl: null,
+          secondImageUploadedUrl: null,
+          reportUploadedUrl: null,
           selectedMedicalForm: null,
           selectedDose: null,
           selectedNoOfDose: null,
@@ -115,16 +111,6 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           allDurationsBasedOnCategory: const [],
           medicineId: '',
           updatedDocumentId: '',
-          selectedAlarmTime: null,
-          ringingAlarm: null,
-          matchedMedicines: const [],
-          medicinesNamesOptionsLoadingState: OptionsLoadingState.loading,
-          medicalFormsOptionsLoadingState: OptionsLoadingState.loading,
-          medicalDosesOptionsLoadingState: OptionsLoadingState.loading,
-          dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loading,
-          allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
-          allDurationsBasedOnCategoryOptionsLoadingState:
-              OptionsLoadingState.loading,
         );
 
   PersonalGeneticDiseasesDataEntryState copyWith({
@@ -136,6 +122,12 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     String? geneticDiseaseCategory,
     String? selectedDiseaseStatus,
     String? selectedDiseaseName, // Added for consistency
+    String? firstImageUploadedUrl,
+    String? secondImageUploadedUrl,
+    String? reportUploadedUrl,
+    UploadImageRequestStatus? firstImageRequestStatus,
+    UploadImageRequestStatus? secondImageRequestStatus,
+    UploadReportRequestStatus? reportRequestStatus,
     String? selectedMedicalForm,
     String? selectedDose,
     String? selectedNoOfDose,
@@ -154,17 +146,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     List<String>? dosageFrequencies,
     List<String>? allUsageCategories,
     List<String>? allDurationsBasedOnCategory,
-    String? selectedAlarmTime,
     String? updatedDocumentId,
-    AlarmSettings? ringingAlarm,
-    List<MatchedMedicineModel>? matchedMedicines,
     bool? isLoading,
-    OptionsLoadingState? medicinesNamesOptionsLoadingState,
-    OptionsLoadingState? medicalFormsOptionsLoadingState,
-    OptionsLoadingState? medicalDosesOptionsLoadingState,
-    OptionsLoadingState? dosageFrequenciesOptionsLoadingState,
-    OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
-    OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
   }) {
     return PersonalGeneticDiseasesDataEntryState(
       medicinesDataEntryStatus:
@@ -181,6 +164,16 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       diseasesClassfications:
           diseasesClassfications ?? this.diseasesClassfications,
       diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
+      firstImageUploadedUrl:
+          firstImageUploadedUrl ?? this.firstImageUploadedUrl,
+      secondImageUploadedUrl:
+          secondImageUploadedUrl ?? this.secondImageUploadedUrl,
+      reportUploadedUrl: reportUploadedUrl ?? this.reportUploadedUrl,
+      firstImageRequestStatus:
+          firstImageRequestStatus ?? this.firstImageRequestStatus,
+      secondImageRequestStatus:
+          secondImageRequestStatus ?? this.secondImageRequestStatus,
+      reportRequestStatus: reportRequestStatus ?? this.reportRequestStatus,
       diseasesNames: diseasesNames ?? this.diseasesNames,
       selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
       selectedDose: selectedDose ?? this.selectedDose,
@@ -199,25 +192,7 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       allUsageCategories: allUsageCategories ?? this.allUsageCategories,
       allDurationsBasedOnCategory:
           allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
-      selectedAlarmTime: selectedAlarmTime ?? this.selectedAlarmTime,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
-      ringingAlarm: ringingAlarm ?? this.ringingAlarm,
-      matchedMedicines: matchedMedicines ?? this.matchedMedicines,
-      medicinesNamesOptionsLoadingState: medicinesNamesOptionsLoadingState ??
-          this.medicinesNamesOptionsLoadingState,
-      medicalFormsOptionsLoadingState: medicalFormsOptionsLoadingState ??
-          this.medicalFormsOptionsLoadingState,
-      medicalDosesOptionsLoadingState: medicalDosesOptionsLoadingState ??
-          this.medicalDosesOptionsLoadingState,
-      dosageFrequenciesOptionsLoadingState:
-          dosageFrequenciesOptionsLoadingState ??
-              this.dosageFrequenciesOptionsLoadingState,
-      allUsageCategoriesOptionsLoadingState:
-          allUsageCategoriesOptionsLoadingState ??
-              this.allUsageCategoriesOptionsLoadingState,
-      allDurationsBasedOnCategoryOptionsLoadingState:
-          allDurationsBasedOnCategoryOptionsLoadingState ??
-              this.allDurationsBasedOnCategoryOptionsLoadingState,
     );
   }
 
@@ -234,6 +209,12 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         diseasesNames,
         selectedDiseaseStatus,
         selectedDiseaseName,
+        firstImageUploadedUrl,
+        secondImageUploadedUrl,
+        reportUploadedUrl,
+        firstImageRequestStatus,
+        secondImageRequestStatus,
+        reportRequestStatus,
         selectedMedicalForm,
         selectedDose,
         selectedNoOfDose,
@@ -249,15 +230,6 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         dosageFrequencies,
         allUsageCategories,
         allDurationsBasedOnCategory,
-        selectedAlarmTime,
         updatedDocumentId,
-        ringingAlarm,
-        matchedMedicines,
-        medicinesNamesOptionsLoadingState,
-        medicalFormsOptionsLoadingState,
-        medicalDosesOptionsLoadingState,
-        dosageFrequenciesOptionsLoadingState,
-        allUsageCategoriesOptionsLoadingState,
-        allDurationsBasedOnCategoryOptionsLoadingState,
       ];
 }

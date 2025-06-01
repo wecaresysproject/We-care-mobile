@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -89,6 +93,57 @@ class GeneticDiseasesDataEntryRepo {
           (response['data'] as List).map<String>((e) => e.toString()).toList();
 
       return ApiResult.success(diseaseStatuses);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadImageResponseModel>> uploadFirstImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices.uploadFirstImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadImageResponseModel>> uploadSecondImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices.uploadSecondImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices.uploadReportImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
