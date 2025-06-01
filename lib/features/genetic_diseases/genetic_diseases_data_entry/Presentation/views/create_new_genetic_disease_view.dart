@@ -62,18 +62,7 @@ class CreateNewGeneticDiseaseView extends StatelessWidget {
                             state.selectedDiseaseCategory == null
                                 ? AppColorsManager.warningColor
                                 : AppColorsManager.textfieldOutsideBorderColor,
-                        options: [
-                          "أمراض القلب",
-                          "أمراض الجهاز التنفسي",
-                          "أمراض الجهاز الهضمي",
-                          "أمراض الجهاز العصبي",
-                          "أمراض الغدد الصماء",
-                          "أمراض المناعة الذاتية",
-                          "أمراض الدم",
-                          "أمراض الكلى والمسالك البولية",
-                          "أمراض العيون",
-                          "أمراض الجلد",
-                        ],
+                        options: state.diseasesClassfications,
                         categoryLabel: "فئة المرض",
                         bottomSheetTitle: "اختر الفئة",
                         onOptionSelected: (val) {
@@ -145,16 +134,13 @@ class CreateNewGeneticDiseaseView extends StatelessWidget {
                             state.selectedPatientStatus == null
                                 ? AppColorsManager.warningColor
                                 : AppColorsManager.textfieldOutsideBorderColor,
-                        options: [
-                          "مصاب",
-                          "غير مصاب",
-                        ],
+                        options: state.diseasesStatuses,
                         categoryLabel: "حالة المرض",
                         bottomSheetTitle: "اختر حالة المرض",
                         onOptionSelected: (val) {
                           context
                               .read<CreateNewGenticDiseaseCubit>()
-                              .updateSelectionOfPatientStatus(val);
+                              .updateSelectionOfDiseaseStatus(val);
                         },
                         containerHintText:
                             state.selectedPatientStatus ?? "اختر حالة المرض",

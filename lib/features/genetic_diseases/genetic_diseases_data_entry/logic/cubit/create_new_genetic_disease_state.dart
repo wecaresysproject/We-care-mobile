@@ -3,6 +3,10 @@ part of 'create_new_gentic_disease_cubit.dart';
 @immutable
 class CreateNewGeneticDiseaseState extends Equatable {
   final String? selectedDiseaseCategory;
+  final List<String> diseasesClassfications;
+  final List<String> diseasesStatuses; // حالة المرض
+  final String message; // error or success message
+
   final String? selectedGeneticDisease;
   final String? selectedAppearanceAgeStage;
   final String? selectedPatientStatus;
@@ -13,6 +17,9 @@ class CreateNewGeneticDiseaseState extends Equatable {
 
   const CreateNewGeneticDiseaseState({
     this.selectedDiseaseCategory,
+    this.diseasesClassfications = const [],
+    this.diseasesStatuses = const [],
+    this.message = '',
     this.selectedGeneticDisease,
     this.selectedAppearanceAgeStage,
     this.selectedPatientStatus,
@@ -25,6 +32,9 @@ class CreateNewGeneticDiseaseState extends Equatable {
   const CreateNewGeneticDiseaseState.initial()
       : this(
           selectedDiseaseCategory: null,
+          diseasesClassfications: const [],
+          diseasesStatuses: const [],
+          message: '',
           selectedGeneticDisease: null,
           selectedAppearanceAgeStage: null,
           selectedPatientStatus: null,
@@ -35,6 +45,9 @@ class CreateNewGeneticDiseaseState extends Equatable {
         );
   CreateNewGeneticDiseaseState copyWith({
     String? selectedDiseaseCategory,
+    List<String>? diseasesClassfications,
+    List<String>? diseasesStatuses,
+    String? message,
     String? selectedGeneticDisease,
     String? selectedAppearanceAgeStage,
     String? selectedPatientStatus,
@@ -46,6 +59,10 @@ class CreateNewGeneticDiseaseState extends Equatable {
     return CreateNewGeneticDiseaseState(
       selectedDiseaseCategory:
           selectedDiseaseCategory ?? this.selectedDiseaseCategory,
+      diseasesClassfications:
+          diseasesClassfications ?? this.diseasesClassfications,
+      diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
+      message: message ?? this.message,
       selectedGeneticDisease:
           selectedGeneticDisease ?? this.selectedGeneticDisease,
       selectedAppearanceAgeStage:
@@ -65,6 +82,9 @@ class CreateNewGeneticDiseaseState extends Equatable {
   @override
   List<Object?> get props => [
         selectedDiseaseCategory,
+        diseasesClassfications,
+        diseasesStatuses,
+        message,
         selectedGeneticDisease,
         selectedAppearanceAgeStage,
         selectedPatientStatus,

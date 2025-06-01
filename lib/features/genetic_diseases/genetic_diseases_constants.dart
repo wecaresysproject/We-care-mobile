@@ -8,6 +8,10 @@ class GeneticDiseasesConstants {
 
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllCountries = "/countries";
+  static const getAllGeneticDiseasesClassfications =
+      "/GeneticDiseasesAPIs/medical-classifications";
+  static const getAllGeneticDiseasesStatus =
+      "/GeneticDiseasesAPIs/DiseaseStatus";
   //View Entry
 
   //filters

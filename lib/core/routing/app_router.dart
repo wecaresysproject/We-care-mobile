@@ -264,8 +264,7 @@ class AppRouter {
         );
       case Routes.geneticDiseasesDataEnrtyView:
         return MaterialPageRoute(
-          builder: (context) => const GeneticDiseasesDataEntryView
-              .PersonalGeneticDiseasesDataEntryView(),
+          builder: (context) => const PersonalGeneticDiseaseDataEntryView(),
         );
       case Routes.familyTreeDataEntryView:
         return MaterialPageRoute(

@@ -40,4 +40,38 @@ class GeneticDiseasesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAllGeneticDiseasesClassfications({
+    required String language,
+  }) async {
+    try {
+      final response =
+          await _geneticDiseasesServices.getAllGeneticDiseasesClassfications(
+        language,
+      );
+      final classifications =
+          (response['data'] as List).map<String>((e) => e.toString()).toList();
+
+      return ApiResult.success(classifications);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllGeneticDiseasesStatus({
+    required String language,
+  }) async {
+    try {
+      final response =
+          await _geneticDiseasesServices.getAllGeneticDiseasesStatus(
+        language,
+      );
+      final diseaseStatuses =
+          (response['data'] as List).map<String>((e) => e.toString()).toList();
+
+      return ApiResult.success(diseaseStatuses);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
