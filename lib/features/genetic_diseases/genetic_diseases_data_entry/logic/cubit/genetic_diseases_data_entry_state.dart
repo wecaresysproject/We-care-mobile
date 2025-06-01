@@ -11,6 +11,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
+  final String? selectedDiseaseStatus; // حالة المرض
+  final String? selectedDiseaseName; // الوراثي المرض
   final String? selectedMedicalForm;
   final String? selectedDose;
   final String? selectedNoOfDose;
@@ -48,6 +50,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.isEditMode = false,
     this.diagnosisDate,
     this.geneticDiseaseCategory,
+    this.selectedDiseaseStatus,
+    this.selectedDiseaseName,
     this.selectedMedicalForm,
     this.selectedDose,
     this.selectedNoOfDose,
@@ -84,6 +88,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           isEditMode: false,
           diagnosisDate: null,
           geneticDiseaseCategory: null,
+          selectedDiseaseStatus: null,
+          selectedDiseaseName: null,
           selectedMedicalForm: null,
           selectedDose: null,
           selectedNoOfDose: null,
@@ -119,6 +125,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     bool? isEditMode,
     String? diagnosisDate,
     String? geneticDiseaseCategory,
+    String? selectedDiseaseStatus,
+    String? selectedDiseaseName, // Added for consistency
     String? selectedMedicalForm,
     String? selectedDose,
     String? selectedNoOfDose,
@@ -155,6 +163,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       diagnosisDate: diagnosisDate ?? this.diagnosisDate,
       geneticDiseaseCategory:
           geneticDiseaseCategory ?? this.geneticDiseaseCategory,
+      selectedDiseaseStatus:
+          selectedDiseaseStatus ?? this.selectedDiseaseStatus,
+      selectedDiseaseName: selectedDiseaseName ?? this.selectedDiseaseName,
       selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
       selectedDose: selectedDose ?? this.selectedDose,
       selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
@@ -202,6 +213,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         isEditMode,
         diagnosisDate,
         geneticDiseaseCategory,
+        selectedDiseaseStatus,
+        selectedDiseaseName,
         selectedMedicalForm,
         selectedDose,
         selectedNoOfDose,

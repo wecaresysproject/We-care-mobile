@@ -190,6 +190,16 @@ class PersonalGeneticDiseasesDataEntryCubit
     validateRequiredFields();
   }
 
+  Future<void> updateSelectedDiseaseStatus(String? val) async {
+    emit(state.copyWith(selectedDiseaseStatus: val));
+    validateRequiredFields();
+  }
+
+  Future<void> updateSelectedGeneticDiseaseName(String? val) async {
+    emit(state.copyWith(selectedDiseaseName: val));
+    validateRequiredFields();
+  }
+
   Future<void> updateSelectedMedicalForm(String? form) async {
     emit(state.copyWith(selectedMedicalForm: form));
     validateRequiredFields();
@@ -273,11 +283,8 @@ class PersonalGeneticDiseasesDataEntryCubit
   void validateRequiredFields() {
     if (state.diagnosisDate == null ||
         state.geneticDiseaseCategory == null ||
-        state.selectedMedicalForm == null ||
-        state.selectedDose == null ||
-        state.selectedNoOfDose == null ||
-        state.doseDuration == null ||
-        state.timePeriods == null) {
+        state.selectedDiseaseStatus == null ||
+        state.selectedDiseaseName == null) {
       emit(
         state.copyWith(
           isFormValidated: false,

@@ -70,27 +70,22 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               bottomSheetTitle: "اختر فئة المرض الوراثى",
               searchHintText: "ابحث عن فئة المرض الوراثى",
               allowManualEntry: true,
-              // loadingState: state.medicinesNamesOptionsLoadingState,
-              onRetryPressed: () async {
-                // await context
-                //     .read<GeneticDiseasesDataEntryCubit>()
-                //     .emitAllMedicinesNames();
-              },
+              onRetryPressed: () async {},
             ),
 
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.geneticDiseaseCategory == null
+              containerBorderColor: state.selectedDiseaseName == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "المرض الوراثى",
               containerHintText:
-                  state.geneticDiseaseCategory ?? "اختر المرض الوراثى",
+                  state.selectedDiseaseName ?? "اختر المرض الوراثى",
               options: [],
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateSelectedGeneticDiseaseCategory(value);
+                    .updateSelectedGeneticDiseaseName(value);
               },
               bottomSheetTitle: "اختر المرض الوراثى",
               searchHintText: "ابحث المرض الوراثى",
@@ -104,17 +99,17 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.geneticDiseaseCategory == null
+              containerBorderColor: state.selectedDiseaseStatus == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "حالة المرض",
               containerHintText:
-                  state.geneticDiseaseCategory ?? "اختر حالة المرض",
+                  state.selectedDiseaseStatus ?? "اختر حالة المرض",
               options: [],
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateSelectedGeneticDiseaseCategory(value);
+                    .updateSelectedDiseaseStatus(value);
               },
               bottomSheetTitle: "اختر حالة المرض",
               searchHintText: "ابحث عن حالة المرض",
