@@ -203,10 +203,10 @@ class AppRouter {
           ),
         );
 
-              case Routes.familyMemberGeneticDiseaseDetailsView:
+      case Routes.familyMemberGeneticDiseaseDetailsView:
         return MaterialPageRoute(
           builder: (context) => const FamilyMemberGeneticDiseaseDetailsView(),
-        );  
+        );
       case Routes.familyMemberGeneticDiseases:
         return MaterialPageRoute(
           builder: (context) => const FamilyMemberGeneticDiseases(),
@@ -218,11 +218,10 @@ class AppRouter {
       case Routes.personalGeneticDiseasesScreen:
         return MaterialPageRoute(
           builder: (context) => const PersonalGenaticDiseasesScreen(),
-        ); 
+        );
       case Routes.personalGeneticDiseasesDetailsView:
         return MaterialPageRoute(
-          builder: (context) => PersonalGenaticDiseasesDetailsView(
-          ),
+          builder: (context) => PersonalGenaticDiseasesDetailsView(),
         );
 
       case Routes.emergenciesComplaintDataView:
@@ -265,7 +264,8 @@ class AppRouter {
         );
       case Routes.geneticDiseasesDataEnrtyView:
         return MaterialPageRoute(
-          builder: (context) => const GeneticDiseasesDataEntryView(),
+          builder: (context) => const GeneticDiseasesDataEntryView
+              .PersonalGeneticDiseasesDataEntryView(),
         );
       case Routes.familyTreeDataEntryView:
         return MaterialPageRoute(

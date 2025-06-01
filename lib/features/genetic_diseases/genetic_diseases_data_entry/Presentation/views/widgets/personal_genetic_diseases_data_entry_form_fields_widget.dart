@@ -17,20 +17,20 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
 
-class GeneticDiseasesDataEntryFormFieldsWidget extends StatefulWidget {
-  const GeneticDiseasesDataEntryFormFieldsWidget({super.key});
+class PersonalGeneticDiseasesDataEntryFormFieldsWidget extends StatefulWidget {
+  const PersonalGeneticDiseasesDataEntryFormFieldsWidget({super.key});
 
   @override
-  State<GeneticDiseasesDataEntryFormFieldsWidget> createState() =>
-      _GeneticDiseasesDataEntryFormFieldsWidgetState();
+  State<PersonalGeneticDiseasesDataEntryFormFieldsWidget> createState() =>
+      _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState();
 }
 
-class _GeneticDiseasesDataEntryFormFieldsWidgetState
-    extends State<GeneticDiseasesDataEntryFormFieldsWidget> {
+class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
+    extends State<PersonalGeneticDiseasesDataEntryFormFieldsWidget> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GeneticDiseasesDataEntryCubit,
-        GeneticDiseasesDataEntryState>(
+    return BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
+        PersonalGeneticDiseasesDataEntryState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +48,7 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               placeholderText: state.medicineStartDate ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context
-                    .read<GeneticDiseasesDataEntryCubit>()
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
                     .updateStartMedicineDate(pickedDate);
               },
             ),
@@ -58,17 +58,42 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               containerBorderColor: state.selectedMedicineName == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "نوع المرض الوراثى",
+              categoryLabel: "فئة المرض الوراثى",
               containerHintText:
-                  state.selectedMedicineName ?? "اختر نوع المرض الوراثى",
-              options: state.medicinesNames,
+                  state.selectedMedicineName ?? "اختر فئة المرض الوراثى",
+              options: [],
               onOptionSelected: (value) async {
                 await context
-                    .read<GeneticDiseasesDataEntryCubit>()
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
                     .updateSelectedMedicineName(value);
               },
-              bottomSheetTitle: "اختر نوع المرض الوراثى",
-              searchHintText: "ابحث عن نوع المرض الوراثى",
+              bottomSheetTitle: "اختر فئة المرض الوراثى",
+              searchHintText: "ابحث عن فئة المرض الوراثى",
+              allowManualEntry: true,
+              // loadingState: state.medicinesNamesOptionsLoadingState,
+              onRetryPressed: () async {
+                // await context
+                //     .read<GeneticDiseasesDataEntryCubit>()
+                //     .emitAllMedicinesNames();
+              },
+            ),
+
+            verticalSpacing(16),
+            UserSelectionContainer(
+              containerBorderColor: state.selectedMedicineName == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "المرض الوراثى",
+              containerHintText:
+                  state.selectedMedicineName ?? "اختر المرض الوراثى",
+              options: [],
+              onOptionSelected: (value) async {
+                await context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedMedicineName(value);
+              },
+              bottomSheetTitle: "اختر المرض الوراثى",
+              searchHintText: "ابحث المرض الوراثى",
               allowManualEntry: true,
               // loadingState: state.medicinesNamesOptionsLoadingState,
               onRetryPressed: () async {
@@ -78,13 +103,38 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               },
             ),
             verticalSpacing(16),
+            UserSelectionContainer(
+              containerBorderColor: state.selectedMedicineName == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "حالة المرض",
+              containerHintText:
+                  state.selectedMedicineName ?? "اختر حالة المرض",
+              options: [],
+              onOptionSelected: (value) async {
+                await context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedMedicineName(value);
+              },
+              bottomSheetTitle: "اختر حالة المرض",
+              searchHintText: "ابحث عن حالة المرض",
+              allowManualEntry: true,
+              // loadingState: state.medicinesNamesOptionsLoadingState,
+              onRetryPressed: () async {
+                // await context
+                //     .read<GeneticDiseasesDataEntryCubit>()
+                //     .emitAllMedicinesNames();
+              },
+            ),
+
+            verticalSpacing(16),
             Text(
               "فحوصات جينية",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
               // listenWhen: (prev, curr) =>
               //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
               listener: (context, state) async {
@@ -133,8 +183,8 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
               // listenWhen: (prev, curr) =>
               //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
               listener: (context, state) async {
@@ -190,8 +240,8 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
             ),
 
             verticalSpacing(8),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
               // listenWhen: (previous, current) =>
               //     previous.xRayReportRequestStatus !=
               //     current.xRayReportRequestStatus,
@@ -228,12 +278,12 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "الطبيب المعالج",
               bottomSheetTitle: "اختر اسم الطبيب",
               onOptionSelected: (value) {
                 context
-                    .read<GeneticDiseasesDataEntryCubit>()
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
                     .updateSelectedDoctorName(value);
               },
               containerHintText:
@@ -244,7 +294,7 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: hosptitalsNames,
               categoryLabel: "المستشفى / المركز",
               bottomSheetTitle: "اختر اسم المستشفى/المركز",
               onOptionSelected: (value) {},
@@ -255,7 +305,7 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 
             ///الدولة
             UserSelectionContainer(
-              options: [],
+              options: state.countriesNames,
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (value) async {},
@@ -279,8 +329,8 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 }
 
 Widget submitDataEnteredBlocConsumer() {
-  return BlocConsumer<GeneticDiseasesDataEntryCubit,
-      GeneticDiseasesDataEntryState>(
+  return BlocConsumer<PersonalGeneticDiseasesDataEntryCubit,
+      PersonalGeneticDiseasesDataEntryState>(
     listenWhen: (prev, curr) =>
         curr.medicinesDataEntryStatus == RequestStatus.failure ||
         curr.medicinesDataEntryStatus == RequestStatus.success,

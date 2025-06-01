@@ -10,4 +10,14 @@ part 'genetic_diseases_services.g.dart';
 abstract class GeneticDiseasesServices {
   factory GeneticDiseasesServices(Dio dio, {String? baseUrl}) =
       _GeneticDiseasesServices;
+
+  @GET(GeneticDiseasesConstants.getAllCountries)
+  Future<dynamic> getCountries(
+    @Query('language') String language,
+  );
+  @GET(GeneticDiseasesConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 }

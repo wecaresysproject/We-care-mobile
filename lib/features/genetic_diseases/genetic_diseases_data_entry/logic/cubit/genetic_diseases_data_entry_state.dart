@@ -7,7 +7,7 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
 @immutable
-class GeneticDiseasesDataEntryState extends Equatable {
+class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
   final String? medicineStartDate;
   final String? selectedMedicineName;
@@ -20,9 +20,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final bool isFormValidated;
   final List<NewGeneticDiseaseModel> geneticDiseases;
-  final List<String> medicinesNames;
-  final List<String> medicineForms;
-  final List<String> medicalDoses;
+  final List<String> doctorNames;
+  final List<String> countriesNames;
   final String medicineId;
   final String updatedDocumentId;
   final List<MedicineBasicInfoModel>? medicinesBasicInfo;
@@ -42,7 +41,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
   final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
-  const GeneticDiseasesDataEntryState({
+  const PersonalGeneticDiseasesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
@@ -57,9 +56,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.selectedChronicDisease,
     this.selectedDoctorName,
     this.geneticDiseases = const [],
-    this.medicinesNames = const [],
-    this.medicineForms = const [],
-    this.medicalDoses = const [],
+    this.countriesNames = const [],
+    this.doctorNames = const [],
     this.medicinesBasicInfo = const [],
     this.dosageFrequencies = const [],
     this.allUsageCategories = const [],
@@ -78,7 +76,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
         OptionsLoadingState.loading,
   }) : super();
 
-  const GeneticDiseasesDataEntryState.initialState()
+  const PersonalGeneticDiseasesDataEntryState.initialState()
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
@@ -94,9 +92,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
           selectedChronicDisease: null,
           selectedDoctorName: null,
           geneticDiseases: const [],
-          medicinesNames: const [],
-          medicineForms: const [],
-          medicalDoses: const [],
+          doctorNames: const [],
+          countriesNames: const [],
           medicinesBasicInfo: const [],
           dosageFrequencies: const [],
           allUsageCategories: const [],
@@ -115,7 +112,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
               OptionsLoadingState.loading,
         );
 
-  GeneticDiseasesDataEntryState copyWith({
+  PersonalGeneticDiseasesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
     String? message,
@@ -130,9 +127,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? selectedChronicDisease,
     String? selectedDoctorName,
     List<NewGeneticDiseaseModel>? geneticDiseases,
-    List<String>? medicinesNames,
-    List<String>? medicineForms,
-    List<String>? medicalDoses,
+    List<String>? doctorNames,
+    List<String>? countriesNames,
     String? medicineId,
     List<MedicineBasicInfoModel>? medicinesBasicInfo,
     List<String>? dosageFrequencies,
@@ -150,7 +146,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
     OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
   }) {
-    return GeneticDiseasesDataEntryState(
+    return PersonalGeneticDiseasesDataEntryState(
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
@@ -167,9 +163,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
           selectedChronicDisease ?? this.selectedChronicDisease,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
       geneticDiseases: geneticDiseases ?? this.geneticDiseases,
-      medicinesNames: medicinesNames ?? this.medicinesNames,
-      medicineForms: medicineForms ?? this.medicineForms,
-      medicalDoses: medicalDoses ?? this.medicalDoses,
+      doctorNames: doctorNames ?? this.doctorNames,
+      countriesNames: countriesNames ?? this.countriesNames,
       medicineId: medicineId ?? this.medicineId,
       medicinesBasicInfo: medicinesBasicInfo ?? this.medicinesBasicInfo,
       dosageFrequencies: dosageFrequencies ?? this.dosageFrequencies,
@@ -214,9 +209,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
         selectedChronicDisease,
         selectedDoctorName,
         geneticDiseases,
-        medicinesNames,
-        medicineForms,
-        medicalDoses,
+        doctorNames,
+        countriesNames,
         medicineId,
         medicinesBasicInfo,
         dosageFrequencies,

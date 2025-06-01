@@ -2,15 +2,18 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
 
-class GeneticDiseasesDataEntryCubit
-    extends Cubit<GeneticDiseasesDataEntryState> {
-  GeneticDiseasesDataEntryCubit(this._geneticDiseasesDataEntryRepo)
+class PersonalGeneticDiseasesDataEntryCubit
+    extends Cubit<PersonalGeneticDiseasesDataEntryState> {
+  PersonalGeneticDiseasesDataEntryCubit(this._geneticDiseasesDataEntryRepo)
       : super(
-          GeneticDiseasesDataEntryState.initialState(),
+          PersonalGeneticDiseasesDataEntryState.initialState(),
         );
 
   final GeneticDiseasesDataEntryRepo _geneticDiseasesDataEntryRepo;
@@ -118,7 +121,10 @@ class GeneticDiseasesDataEntryCubit
   //   );
   // }
 
-  Future<void> initialDataEntryRequests() async {}
+  Future<void> initialDataEntryRequests() async {
+    await emitCountriesData();
+    await emitDoctorNames();
+  }
 
   // Future<void> postMedicinesDataEntry(S locale) async {
   //   emit(
@@ -215,6 +221,53 @@ class GeneticDiseasesDataEntryCubit
 
   void updateSelectedDoctorName(String? value) {
     emit(state.copyWith(selectedDoctorName: value));
+  }
+
+  Future<void> emitCountriesData() async {
+    final response = await _geneticDiseasesDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await _geneticDiseasesDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   void validateRequiredFields() {
