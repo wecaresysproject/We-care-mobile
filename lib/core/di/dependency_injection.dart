@@ -13,9 +13,11 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
+import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_view_repo.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/create_new_gentic_disease_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -215,6 +217,12 @@ void setupAppCubits() {
       getIt<GeneticDiseasesDataEntryRepo>(),
     ),
   );
+
+  getIt.registerFactory<GeneticsDiseasesViewCubit>(
+    () => GeneticsDiseasesViewCubit(
+      geneticDiseasesViewRepo: getIt<GeneticDiseasesViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -340,6 +348,11 @@ void setupAppRepos() {
   );
   getIt.registerLazySingleton<GeneticDiseasesDataEntryRepo>(
     () => GeneticDiseasesDataEntryRepo(
+      getIt<GeneticDiseasesServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<GeneticDiseasesViewRepo>(
+    () => GeneticDiseasesViewRepo(
       getIt<GeneticDiseasesServices>(),
     ),
   );
