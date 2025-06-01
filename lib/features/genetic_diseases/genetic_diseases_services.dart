@@ -26,4 +26,9 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> getAllGeneticDiseasesStatus(
     @Query("language") String language,
   );
+  @GET(GeneticDiseasesConstants.getGeneticDiseasesBasedOnClassification)
+  Future<dynamic> getGeneticDiseasesBasedOnClassification(
+    @Query("language") String language,
+    @Query("medicalClassification") String medicalClassification,
+  );
 }

@@ -12,6 +12,8 @@ class GeneticDiseasesConstants {
       "/GeneticDiseasesAPIs/medical-classifications";
   static const getAllGeneticDiseasesStatus =
       "/GeneticDiseasesAPIs/DiseaseStatus";
+  static const getGeneticDiseasesBasedOnClassification =
+      "/GeneticDiseasesAPIs/arabic-names";
   //View Entry
 
   //filters

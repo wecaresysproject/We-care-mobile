@@ -127,6 +127,31 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     );
   }
 
+  Future<void> getGeneticDiseasesBasedOnClassification() async {
+    final response = await _geneticDiseasesDataEntryRepo
+        .getGeneticDiseasesBasedOnClassification(
+      language: AppStrings.arabicLang,
+      diseaseClassification: state.selectedDiseaseCategory ?? "",
+    );
+
+    response.when(
+      success: (statues) {
+        emit(
+          state.copyWith(
+            diseasesNames: statues,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getAllRequestsForAddingNewGeneticDiseaseView() async {
     await getAllGeneticDiseasesClassfications();
     await getAllGeneticDiseasesStatus();
@@ -250,8 +275,9 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     validateRequiredFields();
   }
 
-  void updateSelectionOfGeneticDiseaseCategory(String? val) {
+  Future<void> updateSelectionOfGeneticDiseaseCategory(String? val) async {
     emit(state.copyWith(selectedDiseaseCategory: val));
+    await getGeneticDiseasesBasedOnClassification();
     validateRequiredFields();
   }
 

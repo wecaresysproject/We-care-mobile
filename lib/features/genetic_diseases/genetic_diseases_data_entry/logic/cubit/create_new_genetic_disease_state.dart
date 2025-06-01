@@ -5,6 +5,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
   final String? selectedDiseaseCategory;
   final List<String> diseasesClassfications;
   final List<String> diseasesStatuses; // حالة المرض
+  final List<String> diseasesNames; // المرض الوراثي
   final String message; // error or success message
 
   final String? selectedGeneticDisease;
@@ -19,6 +20,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
     this.selectedDiseaseCategory,
     this.diseasesClassfications = const [],
     this.diseasesStatuses = const [],
+    this.diseasesNames = const [],
     this.message = '',
     this.selectedGeneticDisease,
     this.selectedAppearanceAgeStage,
@@ -34,6 +36,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
           selectedDiseaseCategory: null,
           diseasesClassfications: const [],
           diseasesStatuses: const [],
+          diseasesNames: const [],
           message: '',
           selectedGeneticDisease: null,
           selectedAppearanceAgeStage: null,
@@ -47,6 +50,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
     String? selectedDiseaseCategory,
     List<String>? diseasesClassfications,
     List<String>? diseasesStatuses,
+    List<String>? diseasesNames,
     String? message,
     String? selectedGeneticDisease,
     String? selectedAppearanceAgeStage,
@@ -62,6 +66,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
       diseasesClassfications:
           diseasesClassfications ?? this.diseasesClassfications,
       diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
+      diseasesNames: diseasesNames ?? this.diseasesNames,
       message: message ?? this.message,
       selectedGeneticDisease:
           selectedGeneticDisease ?? this.selectedGeneticDisease,
@@ -84,6 +89,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
         selectedDiseaseCategory,
         diseasesClassfications,
         diseasesStatuses,
+        diseasesNames,
         message,
         selectedGeneticDisease,
         selectedAppearanceAgeStage,

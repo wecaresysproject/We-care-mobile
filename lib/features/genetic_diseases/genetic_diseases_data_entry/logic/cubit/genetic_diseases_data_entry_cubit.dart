@@ -38,6 +38,79 @@ class PersonalGeneticDiseasesDataEntryCubit
     }
   }
 
+  Future<void> getAllGeneticDiseasesClassfications() async {
+    final response =
+        await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesClassfications(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (classifications) {
+        emit(
+          state.copyWith(
+            diseasesClassfications: classifications,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getAllGeneticDiseasesStatus() async {
+    final response =
+        await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesStatus(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (statues) {
+        emit(
+          state.copyWith(
+            diseasesStatuses: statues,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getGeneticDiseasesBasedOnClassification() async {
+    final response = await _geneticDiseasesDataEntryRepo
+        .getGeneticDiseasesBasedOnClassification(
+      language: AppStrings.arabicLang,
+      diseaseClassification: state.geneticDiseaseCategory ?? "",
+    );
+
+    response.when(
+      success: (statues) {
+        emit(
+          state.copyWith(
+            diseasesNames: statues,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> removeAddedGeneticDisease(int index) async {
     final Box<NewGeneticDiseaseModel> geneticDiseasesBox =
         Hive.box<NewGeneticDiseaseModel>("medical_genetic_diseases");
@@ -122,6 +195,8 @@ class PersonalGeneticDiseasesDataEntryCubit
   // }
 
   Future<void> initialDataEntryRequests() async {
+    await getAllGeneticDiseasesClassfications();
+    await getAllGeneticDiseasesStatus();
     await emitCountriesData();
     await emitDoctorNames();
   }
@@ -187,6 +262,7 @@ class PersonalGeneticDiseasesDataEntryCubit
 
   Future<void> updateSelectedGeneticDiseaseCategory(String? val) async {
     emit(state.copyWith(geneticDiseaseCategory: val));
+    await getGeneticDiseasesBasedOnClassification();
     validateRequiredFields();
   }
 

@@ -13,6 +13,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
   final String? selectedDiseaseStatus; // حالة المرض
   final String? selectedDiseaseName; // الوراثي المرض
+  final List<String> diseasesClassfications;
+  final List<String> diseasesStatuses; // حالة المرض
+  final List<String> diseasesNames;
   final String? selectedMedicalForm;
   final String? selectedDose;
   final String? selectedNoOfDose;
@@ -52,6 +55,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.geneticDiseaseCategory,
     this.selectedDiseaseStatus,
     this.selectedDiseaseName,
+    this.diseasesClassfications = const [],
+    this.diseasesStatuses = const [],
+    this.diseasesNames = const [],
     this.selectedMedicalForm,
     this.selectedDose,
     this.selectedNoOfDose,
@@ -90,6 +96,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           geneticDiseaseCategory: null,
           selectedDiseaseStatus: null,
           selectedDiseaseName: null,
+          diseasesClassfications: const [],
+          diseasesStatuses: const [],
+          diseasesNames: const [],
           selectedMedicalForm: null,
           selectedDose: null,
           selectedNoOfDose: null,
@@ -137,6 +146,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     List<NewGeneticDiseaseModel>? geneticDiseases,
     List<String>? doctorNames,
     List<String>? countriesNames,
+    List<String>? diseasesClassfications,
+    List<String>? diseasesStatuses,
+    List<String>? diseasesNames,
     String? medicineId,
     List<MedicineBasicInfoModel>? medicinesBasicInfo,
     List<String>? dosageFrequencies,
@@ -166,6 +178,10 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       selectedDiseaseStatus:
           selectedDiseaseStatus ?? this.selectedDiseaseStatus,
       selectedDiseaseName: selectedDiseaseName ?? this.selectedDiseaseName,
+      diseasesClassfications:
+          diseasesClassfications ?? this.diseasesClassfications,
+      diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
+      diseasesNames: diseasesNames ?? this.diseasesNames,
       selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
       selectedDose: selectedDose ?? this.selectedDose,
       selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
@@ -213,6 +229,9 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         isEditMode,
         diagnosisDate,
         geneticDiseaseCategory,
+        diseasesClassfications,
+        diseasesStatuses,
+        diseasesNames,
         selectedDiseaseStatus,
         selectedDiseaseName,
         selectedMedicalForm,

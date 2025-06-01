@@ -61,7 +61,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               categoryLabel: "فئة المرض الوراثى",
               containerHintText:
                   state.geneticDiseaseCategory ?? "اختر فئة المرض الوراثى",
-              options: [],
+              options: state.diseasesClassfications,
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
@@ -81,7 +81,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               categoryLabel: "المرض الوراثى",
               containerHintText:
                   state.selectedDiseaseName ?? "اختر المرض الوراثى",
-              options: [],
+              options: state.diseasesNames,
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
@@ -105,7 +105,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               categoryLabel: "حالة المرض",
               containerHintText:
                   state.selectedDiseaseStatus ?? "اختر حالة المرض",
-              options: [],
+              options: state.diseasesStatuses,
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
