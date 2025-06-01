@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
@@ -7,7 +10,9 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
+import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_state.dart';
 
 class FamilyTreeView extends StatelessWidget {
   const FamilyTreeView({super.key});
@@ -33,7 +38,7 @@ class FamilyTreeView extends StatelessWidget {
               emoji,
             ),
             horizontalSpacing(
-              8.w,
+              4.w,
             ),
             Flexible(
               child: Text(
@@ -131,156 +136,166 @@ class FamilyTreeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-        ),
-        child: Column(
-          children: [
-            FamilyTreeViewCustomAppBar(),
-             verticalSpacing(24),
+    return BlocProvider(
+      create: (context) =>
+          getIt<GeneticsDiseasesViewCubit>()..getFamilyMembersNames(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+          ),
+          child: Column(
+            children: [
+              FamilyTreeViewCustomAppBar(),
+              verticalSpacing(24),
               Align(
                 alignment: Alignment.topLeft,
                 child: SizedBox(
                   width: 100.w,
                   height: 35.h,
-                  child: CustomActionButton(onTap: (){}, title: 'تعديل', icon: 'assets/images/edit.png',),
+                  child: CustomActionButton(
+                    onTap: () {},
+                    title: 'تعديل',
+                    icon: 'assets/images/edit.png',
+                  ),
                 ),
               ),
               verticalSpacing(20),
-          
-            Text(
-             "“عند الضغط على أحد الأقارب تظهر جميع التفاصيل ”",
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font20blackWeight600.copyWith(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w400,
+              Text(
+                "“عند الضغط على أحد الأقارب تظهر جميع التفاصيل ”",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font20blackWeight600.copyWith(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-            verticalSpacing(40),
-            Row(
-              children: [
-                /// الجهة اليمنى (الأب)
-                buildFatherRelativesPart(context),
+              verticalSpacing(40),
+              BlocBuilder<GeneticsDiseasesViewCubit,GeneticsDiseasesViewState>(
+                builder: (context, state) {
+                  if (state.requestStatus == RequestStatus.loading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state.requestStatus == RequestStatus.failure) {
+                    return Center(
+                      child: Text(
+                        state.message ?? "حدث خطأ ما",
+                        style: AppTextStyles.font18blackWight500.copyWith(
+                          color: Colors.red,
+                        ),
+                      ),
+                    );
+                  }
+                  return Row(
+                    children: [
+                      /// الجهة اليمنى (الأب)
+                      buildFatherRelativesPart(context,state.familyMembersNames),
 
-                horizontalSpacing(16),
+                      horizontalSpacing(16),
 
-                /// الجهة اليسرى (الأم)
-                buildMotherRelativesPart(context),
-              ],
-            ),
-          ],
+                      /// الجهة اليسرى (الأم)
+                     buildMotherRelativesPart(context,state.familyMembersNames),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Expanded buildFatherRelativesPart(BuildContext context) {
+  Expanded buildFatherRelativesPart(BuildContext context,GetFamilyMembersNames? familyMembersNames) {
+    final paternalGrandfather = familyMembersNames!.grandpaFather!.first ;
+    final paternalGrandmother =  familyMembersNames.grandmaFather!.first ;
+    final father = familyMembersNames.father!.first;
+    final brothers = familyMembersNames.bro ?? ["أخ"];
+    final paternalUncles = familyMembersNames.fatherSideUncle ?? ["عم"];
+    final paternalAunts = familyMembersNames.fatherSideAunt ?? ["عمة"];
+
     return Expanded(
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildStaticItem(context, "احمد", "👴🏻"),
+              buildStaticItem(context, paternalGrandfather, "👴🏻"),
               horizontalSpacing(16),
-              buildStaticItem(context, "ريهام", "👵🏻"),
+              buildStaticItem(context, paternalGrandmother, "👵🏻"),
             ],
           ),
           verticalSpacing(16),
           buildMainItem(
-              context, "امجد", "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
+              context, father, "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
-            runAlignment: WrapAlignment.spaceEvenly,
+            runSpacing: 8,
+            children: brothers.map((brother) {
+              return buildRelativeItem(
+                  context, brother, "👦🏻", const Color(0xff99CBE9));
+            }).toList(),
+          ),
+          verticalSpacing(12),
+          Wrap(
+            spacing: 16,
             runSpacing: 8,
             children: [
-              buildRelativeItem(context, "علي", "👦🏻", Color(0xff99CBE9)),
-              buildRelativeItem(context, "عمر", "👦🏻", Color(0xff99CBE9)),
+              ...paternalUncles.map((uncle) => buildRelativeItem(
+                  context, uncle, "👨🏻‍🦱",Color(0xff5A4B8D))),
+              ...paternalAunts.map((aunt) => buildRelativeItem(
+                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D))),
             ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Row(
-              children: [
-                // العم
-                buildScrollableList(
-                  [
-                    {"title": "سليم", "emoji": "👨🏻"},
-                    {"title": "عمرو", "emoji": "👨🏻"},
-                    {"title": "وائل", "emoji": "👨🏻"},
-                  ],
-                  Color(0xff5A4B8D),
-                ),
-                horizontalSpacing(16),
-                // العمة
-                buildScrollableList(
-                  [
-                    {"title": "سلوي", "emoji": "👧🏻"},
-                  ],
-                  Color(0xff5A4B8D),
-                ),
-              ],
-            ),
           ),
         ],
       ),
     );
   }
 
-  Expanded buildMotherRelativesPart(BuildContext context) {
+  Expanded buildMotherRelativesPart(BuildContext context,GetFamilyMembersNames? familyMembersNames) {
+    final maternalGrandfather = familyMembersNames!.grandpaMother!.first;
+    final maternalGrandmother = familyMembersNames.grandmaMother!.first;
+    final mother = familyMembersNames.mother!.first;
+    final sisters = familyMembersNames.sis ?? ["أخت"];
+    final maternalUncles = familyMembersNames.motherSideUncle ?? ["خال"];
+    final maternalAunts = familyMembersNames.motherSideAunt ?? ["خالة"];
+
     return Expanded(
       child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildStaticItem(context, "عليم", "👴🏻"),
+              buildStaticItem(context, maternalGrandfather, "👴🏻"),
               horizontalSpacing(16),
-              buildStaticItem(context, "كريمه", "👵🏻"),
+              buildStaticItem(context, maternalGrandmother, "👵🏻"),
             ],
           ),
           verticalSpacing(16),
           buildMainItem(
-              context, "علا", "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
+              context, mother, "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
             runSpacing: 8,
-            children: [
-              buildRelativeItem(
-                  context, "لمياء", "👩🏻", Colors.lightBlue[100]!),
-              buildRelativeItem(
-                  context, "دعاء", "👩🏻", Colors.lightBlue[100]!),
-            ],
+            children: sisters.map((sister) {
+              return buildRelativeItem(
+                  context, sister, "👩🏻", Colors.lightBlue[100]!);
+            }).toList(),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Row(
-              children: [
-                // الخال
-                buildScrollableList(
-                  [
-                    {"title": "صلاح", "emoji": "👳🏻‍♂️"},
-                  ],
-                  Color(0xff5A4B8D),
-                ),
-                horizontalSpacing(16),
-
-                // الخالة
-                buildScrollableList(
-                  [
-                    {"title": "هدي", "emoji": "👩🏻‍🦱"},
-                    {"title": "سلمي", "emoji": "👩🏻‍🦱"},
-                    {"title": "يسرا", "emoji": "👩🏻‍🦱"},
-                  ],
-                  Color(0xff5A4B8D),
-                ),
-              ],
-            ),
+          verticalSpacing(12),
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            children: [
+              ...maternalUncles.map((uncle) => buildRelativeItem(
+                  context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D))),
+              ...maternalAunts.map((aunt) => buildRelativeItem(
+                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D))),
+            ],
           ),
         ],
       ),

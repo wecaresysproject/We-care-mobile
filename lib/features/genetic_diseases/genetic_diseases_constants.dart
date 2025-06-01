@@ -21,4 +21,7 @@ class GeneticDiseasesConstants {
   //View Entry
 
   //filters
+
+  static const familyMembersName = "GeneticDiseasesAPIs/all-names";
+
 }

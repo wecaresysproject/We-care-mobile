@@ -63,4 +63,10 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> postGeneticDiseasesDataEntry(
     @Body() PersonalGeneticDiseaseRequestBodyModel requestBodyModel,
   );
+
+  @GET(GeneticDiseasesConstants.familyMembersName)
+  Future<dynamic> getFamilyMembersNames(
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 }
