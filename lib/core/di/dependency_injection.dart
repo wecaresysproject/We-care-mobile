@@ -205,8 +205,8 @@ void setupAppCubits() {
       dentalRepository: getIt<DentalRepo>(),
     ),
   );
-  getIt.registerFactory<GeneticDiseasesDataEntryCubit>(
-    () => GeneticDiseasesDataEntryCubit(
+  getIt.registerFactory<PersonalGeneticDiseasesDataEntryCubit>(
+    () => PersonalGeneticDiseasesDataEntryCubit(
       getIt<GeneticDiseasesDataEntryRepo>(),
     ),
   );

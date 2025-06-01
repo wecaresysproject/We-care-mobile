@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 
@@ -78,8 +79,82 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     }
   }
 
+  Future<void> getAllGeneticDiseasesClassfications() async {
+    final response =
+        await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesClassfications(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (classifications) {
+        emit(
+          state.copyWith(
+            diseasesClassfications: classifications,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getAllGeneticDiseasesStatus() async {
+    final response =
+        await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesStatus(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (statues) {
+        emit(
+          state.copyWith(
+            diseasesStatuses: statues,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getGeneticDiseasesBasedOnClassification() async {
+    final response = await _geneticDiseasesDataEntryRepo
+        .getGeneticDiseasesBasedOnClassification(
+      language: AppStrings.arabicLang,
+      diseaseClassification: state.selectedDiseaseCategory ?? "",
+    );
+
+    response.when(
+      success: (statues) {
+        emit(
+          state.copyWith(
+            diseasesNames: statues,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getAllRequestsForAddingNewGeneticDiseaseView() async {
-    // await getAllComplaintsPlaces();
+    await getAllGeneticDiseasesClassfications();
+    await getAllGeneticDiseasesStatus();
   }
 
 //   Future<void> getAllComplaintsPlaces() async {
@@ -200,8 +275,9 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     validateRequiredFields();
   }
 
-  void updateSelectionOfGeneticDiseaseCategory(String? val) {
+  Future<void> updateSelectionOfGeneticDiseaseCategory(String? val) async {
     emit(state.copyWith(selectedDiseaseCategory: val));
+    await getGeneticDiseasesBasedOnClassification();
     validateRequiredFields();
   }
 
@@ -210,7 +286,7 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     validateRequiredFields();
   }
 
-  void updateSelectionOfPatientStatus(String? val) {
+  void updateSelectionOfDiseaseStatus(String? val) {
     emit(state.copyWith(selectedPatientStatus: val));
     validateRequiredFields();
   }

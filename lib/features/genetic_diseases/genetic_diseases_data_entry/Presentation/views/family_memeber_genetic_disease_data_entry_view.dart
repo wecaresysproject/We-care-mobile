@@ -26,9 +26,9 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<GeneticDiseasesDataEntryCubit>(
+        BlocProvider<PersonalGeneticDiseasesDataEntryCubit>(
           create: (context) {
-            final cubit = getIt<GeneticDiseasesDataEntryCubit>();
+            final cubit = getIt<PersonalGeneticDiseasesDataEntryCubit>();
             // if (medicineToEdit != null) {
             //   cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
             // } else {
@@ -100,8 +100,8 @@ class GeneticDiseaseTemplateListBlocBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GeneticDiseasesDataEntryCubit,
-        GeneticDiseasesDataEntryState>(
+    return BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
+        PersonalGeneticDiseasesDataEntryState>(
       buildWhen: (previous, current) =>
           previous.geneticDiseases != current.geneticDiseases,
       builder: (context, state) {
@@ -126,14 +126,15 @@ class GeneticDiseaseTemplateListBlocBuilder extends StatelessWidget {
                 );
                 if (result != null && context.mounted) {
                   await context
-                      .read<GeneticDiseasesDataEntryCubit>()
+                      .read<PersonalGeneticDiseasesDataEntryCubit>()
                       .fetchAllAddedGeneticDiseases();
                 }
               },
               child: GeneticDiseaseTemplateContainer(
                 geneticDisease: disease,
                 onDelete: () async {
-                  final cubit = context.read<GeneticDiseasesDataEntryCubit>();
+                  final cubit =
+                      context.read<PersonalGeneticDiseasesDataEntryCubit>();
                   await cubit.removeAddedGeneticDisease(index);
                   await cubit.fetchAllAddedGeneticDiseases();
                 },
@@ -156,8 +157,8 @@ Widget submitGeneticDiseasesButtonBlocConsumer(BuildContext context) {
 }
 
 Widget buildAddNewGeneticDiseaseButtonBlocBuilder(BuildContext context) {
-  return BlocBuilder<GeneticDiseasesDataEntryCubit,
-      GeneticDiseasesDataEntryState>(
+  return BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
+      PersonalGeneticDiseasesDataEntryState>(
     builder: (context, state) {
       return Center(
         child: Stack(
@@ -174,14 +175,14 @@ Widget buildAddNewGeneticDiseaseButtonBlocBuilder(BuildContext context) {
 
                 if (result != null && context.mounted) {
                   await context
-                      .read<GeneticDiseasesDataEntryCubit>()
+                      .read<PersonalGeneticDiseasesDataEntryCubit>()
                       .fetchAllAddedGeneticDiseases();
 
                   if (!context.mounted) return;
 
                   // ///to rebuild submitted button if user added new complain.
                   context
-                      .read<GeneticDiseasesDataEntryCubit>()
+                      .read<PersonalGeneticDiseasesDataEntryCubit>()
                       .validateRequiredFields();
                 }
               },

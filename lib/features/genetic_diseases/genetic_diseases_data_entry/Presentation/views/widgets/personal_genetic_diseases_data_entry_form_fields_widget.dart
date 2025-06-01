@@ -17,20 +17,20 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
 
-class GeneticDiseasesDataEntryFormFieldsWidget extends StatefulWidget {
-  const GeneticDiseasesDataEntryFormFieldsWidget({super.key});
+class PersonalGeneticDiseasesDataEntryFormFieldsWidget extends StatefulWidget {
+  const PersonalGeneticDiseasesDataEntryFormFieldsWidget({super.key});
 
   @override
-  State<GeneticDiseasesDataEntryFormFieldsWidget> createState() =>
-      _GeneticDiseasesDataEntryFormFieldsWidgetState();
+  State<PersonalGeneticDiseasesDataEntryFormFieldsWidget> createState() =>
+      _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState();
 }
 
-class _GeneticDiseasesDataEntryFormFieldsWidgetState
-    extends State<GeneticDiseasesDataEntryFormFieldsWidget> {
+class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
+    extends State<PersonalGeneticDiseasesDataEntryFormFieldsWidget> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GeneticDiseasesDataEntryCubit,
-        GeneticDiseasesDataEntryState>(
+    return BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
+        PersonalGeneticDiseasesDataEntryState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,33 +42,53 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(10),
 
             DateTimePickerContainer(
-              containerBorderColor: state.medicineStartDate == null
+              containerBorderColor: state.diagnosisDate == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText: state.medicineStartDate ?? "يوم / شهر / سنة",
+              placeholderText: state.diagnosisDate ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context
-                    .read<GeneticDiseasesDataEntryCubit>()
-                    .updateStartMedicineDate(pickedDate);
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateDiagnosisDate(pickedDate);
               },
             ),
 
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.selectedMedicineName == null
+              containerBorderColor: state.geneticDiseaseCategory == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "نوع المرض الوراثى",
+              categoryLabel: "فئة المرض الوراثى",
               containerHintText:
-                  state.selectedMedicineName ?? "اختر نوع المرض الوراثى",
-              options: state.medicinesNames,
+                  state.geneticDiseaseCategory ?? "اختر فئة المرض الوراثى",
+              options: state.diseasesClassfications,
               onOptionSelected: (value) async {
                 await context
-                    .read<GeneticDiseasesDataEntryCubit>()
-                    .updateSelectedMedicineName(value);
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedGeneticDiseaseCategory(value);
               },
-              bottomSheetTitle: "اختر نوع المرض الوراثى",
-              searchHintText: "ابحث عن نوع المرض الوراثى",
+              bottomSheetTitle: "اختر فئة المرض الوراثى",
+              searchHintText: "ابحث عن فئة المرض الوراثى",
+              allowManualEntry: true,
+              onRetryPressed: () async {},
+            ),
+
+            verticalSpacing(16),
+            UserSelectionContainer(
+              containerBorderColor: state.selectedDiseaseName == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "المرض الوراثى",
+              containerHintText:
+                  state.selectedDiseaseName ?? "اختر المرض الوراثى",
+              options: state.diseasesNames,
+              onOptionSelected: (value) async {
+                await context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedGeneticDiseaseName(value);
+              },
+              bottomSheetTitle: "اختر المرض الوراثى",
+              searchHintText: "ابحث المرض الوراثى",
               allowManualEntry: true,
               // loadingState: state.medicinesNamesOptionsLoadingState,
               onRetryPressed: () async {
@@ -78,31 +98,47 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               },
             ),
             verticalSpacing(16),
+            UserSelectionContainer(
+              containerBorderColor: state.selectedDiseaseStatus == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "حالة المرض",
+              containerHintText:
+                  state.selectedDiseaseStatus ?? "اختر حالة المرض",
+              options: state.diseasesStatuses,
+              onOptionSelected: (value) async {
+                await context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedDiseaseStatus(value);
+              },
+              bottomSheetTitle: "اختر حالة المرض",
+              searchHintText: "ابحث عن حالة المرض",
+              allowManualEntry: true,
+              // loadingState: state.medicinesNamesOptionsLoadingState,
+              onRetryPressed: () async {},
+            ),
+
+            verticalSpacing(16),
             Text(
               "فحوصات جينية",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
-              // listenWhen: (prev, curr) =>
-              //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.firstImageRequestStatus != curr.firstImageRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.firstImageRequestStatus ==
+                    UploadImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.firstImageRequestStatus ==
+                    UploadImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
-                // containerBorderColor: ((state.isXRayPictureSelected == null) ||
-                //             (state.isXRayPictureSelected == false)) &&
-                //         state.xRayPictureUploadedUrl.isEmpty
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
                 label: "ارفق صورة",
                 onTap: () async {
@@ -111,15 +147,11 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .updateXRayPicture(isImagePicked);
-
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadFirstImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -133,26 +165,22 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
-              // listenWhen: (prev, curr) =>
-              //     prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
+              listenWhen: (prev, curr) =>
+                  prev.secondImageRequestStatus !=
+                  curr.secondImageRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayImageRequestStatus ==
-                //     UploadImageRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.secondImageRequestStatus ==
+                    UploadImageRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.secondImageRequestStatus ==
+                    UploadImageRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
-                // containerBorderColor: ((state.isXRayPictureSelected == null) ||
-                //             (state.isXRayPictureSelected == false)) &&
-                //         state.xRayPictureUploadedUrl.isEmpty
-                //     ? AppColorsManager.warningColor
-                //     : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
                 label: "ارفق صورة",
                 onTap: () async {
@@ -161,15 +189,11 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .updateXRayPicture(isImagePicked);
-
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayImagePicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadSecondImagePicked(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -190,20 +214,19 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
             ),
 
             verticalSpacing(8),
-            BlocListener<GeneticDiseasesDataEntryCubit,
-                GeneticDiseasesDataEntryState>(
-              // listenWhen: (previous, current) =>
-              //     previous.xRayReportRequestStatus !=
-              //     current.xRayReportRequestStatus,
+            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
+                PersonalGeneticDiseasesDataEntryState>(
+              listenWhen: (previous, current) =>
+                  previous.reportRequestStatus != current.reportRequestStatus,
               listener: (context, state) async {
-                // if (state.xRayReportRequestStatus ==
-                //     UploadReportRequestStatus.success) {
-                //   await showSuccess(state.message);
-                // }
-                // if (state.xRayReportRequestStatus ==
-                //     UploadReportRequestStatus.failure) {
-                //   await showError(state.message);
-                // }
+                if (state.reportRequestStatus ==
+                    UploadReportRequestStatus.success) {
+                  await showSuccess(state.message);
+                }
+                if (state.reportRequestStatus ==
+                    UploadReportRequestStatus.failure) {
+                  await showError(state.message);
+                }
               },
               child: SelectImageContainer(
                 imagePath: "assets/images/photo_icon.png",
@@ -214,11 +237,11 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
                     onImagePicked: (isImagePicked) async {
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
-                        // await context
-                        //     .read<GeneticDiseasesDataEntryCubit>()
-                        //     .uploadXrayReportPicked(
-                        //       imagePath: picker.pickedImage!.path,
-                        //     );
+                        await context
+                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .uploadReportImage(
+                              imagePath: picker.pickedImage!.path,
+                            );
                       }
                     },
                   );
@@ -228,12 +251,12 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "الطبيب المعالج",
               bottomSheetTitle: "اختر اسم الطبيب",
               onOptionSelected: (value) {
                 context
-                    .read<GeneticDiseasesDataEntryCubit>()
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
                     .updateSelectedDoctorName(value);
               },
               containerHintText:
@@ -244,10 +267,14 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: hosptitalsNames,
               categoryLabel: "المستشفى / المركز",
               bottomSheetTitle: "اختر اسم المستشفى/المركز",
-              onOptionSelected: (value) {},
+              onOptionSelected: (value) {
+                context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedHospitalName(value);
+              },
               containerHintText: "اختر اسم المستشفى/المركز",
               searchHintText: "ابحث عن اسم المستشفى/المركز",
             ),
@@ -255,18 +282,19 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 
             ///الدولة
             UserSelectionContainer(
-              options: [],
+              options: state.countriesNames,
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
-              onOptionSelected: (value) async {},
+              onOptionSelected: (value) {
+                context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedCountry(value);
+              },
               containerHintText: "اختر اسم الدولة",
               searchHintText: "ابحث عن الدولة",
             ),
 
-            verticalSpacing(16),
-
-            /// final section
-            verticalSpacing(32),
+            verticalSpacing(40),
 
             submitDataEnteredBlocConsumer(),
 
@@ -279,16 +307,17 @@ class _GeneticDiseasesDataEntryFormFieldsWidgetState
 }
 
 Widget submitDataEnteredBlocConsumer() {
-  return BlocConsumer<GeneticDiseasesDataEntryCubit,
-      GeneticDiseasesDataEntryState>(
+  return BlocConsumer<PersonalGeneticDiseasesDataEntryCubit,
+      PersonalGeneticDiseasesDataEntryState>(
     listenWhen: (prev, curr) =>
-        curr.medicinesDataEntryStatus == RequestStatus.failure ||
-        curr.medicinesDataEntryStatus == RequestStatus.success,
+        curr.geneticDiseaseDataEntryStatus == RequestStatus.failure ||
+        curr.geneticDiseaseDataEntryStatus == RequestStatus.success,
     buildWhen: (prev, curr) =>
         prev.isFormValidated != curr.isFormValidated ||
-        prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
+        prev.geneticDiseaseDataEntryStatus !=
+            curr.geneticDiseaseDataEntryStatus,
     listener: (context, state) async {
-      if (state.medicinesDataEntryStatus == RequestStatus.success) {
+      if (state.geneticDiseaseDataEntryStatus == RequestStatus.success) {
         await showSuccess(state.message);
         if (!context.mounted) return;
         //* in order to catch it again to rebuild details view
@@ -301,7 +330,7 @@ Widget submitDataEnteredBlocConsumer() {
     },
     builder: (context, state) {
       return AppCustomButton(
-        isLoading: state.medicinesDataEntryStatus == RequestStatus.loading,
+        isLoading: state.geneticDiseaseDataEntryStatus == RequestStatus.loading,
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
@@ -309,11 +338,12 @@ Widget submitDataEnteredBlocConsumer() {
             //     ? await context
             //         .read<GeneticDiseasesDataEntryCubit>()
             //         .submitEditsForMedicine()
-            //     : await context
-            //         .read<GeneticDiseasesDataEntryCubit>()
-            //         .postMedicinesDataEntry(
-            //           context.translate,
-            //         );
+            //     :
+            await context
+                .read<PersonalGeneticDiseasesDataEntryCubit>()
+                .submitPersonalGeneticDiseaseDataEntry(
+                  context.translate,
+                );
           }
         },
         isEnabled: state.isFormValidated ? true : false,
