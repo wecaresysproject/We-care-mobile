@@ -115,11 +115,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               searchHintText: "ابحث عن حالة المرض",
               allowManualEntry: true,
               // loadingState: state.medicinesNamesOptionsLoadingState,
-              onRetryPressed: () async {
-                // await context
-                //     .read<GeneticDiseasesDataEntryCubit>()
-                //     .emitAllMedicinesNames();
-              },
+              onRetryPressed: () async {},
             ),
 
             verticalSpacing(16),
