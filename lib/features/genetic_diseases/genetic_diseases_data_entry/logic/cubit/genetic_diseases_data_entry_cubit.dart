@@ -180,13 +180,13 @@ class PersonalGeneticDiseasesDataEntryCubit
   }
 
   /// Update Field Values
-  void updateStartMedicineDate(String? date) {
-    emit(state.copyWith(medicineStartDate: date));
+  void updateDiagnosisDate(String? date) {
+    emit(state.copyWith(diagnosisDate: date));
     validateRequiredFields();
   }
 
-  Future<void> updateSelectedMedicineName(String? medicineName) async {
-    emit(state.copyWith(selectedMedicineName: medicineName));
+  Future<void> updateSelectedGeneticDiseaseCategory(String? val) async {
+    emit(state.copyWith(geneticDiseaseCategory: val));
     validateRequiredFields();
   }
 
@@ -271,8 +271,8 @@ class PersonalGeneticDiseasesDataEntryCubit
   }
 
   void validateRequiredFields() {
-    if (state.medicineStartDate == null ||
-        state.selectedMedicineName == null ||
+    if (state.diagnosisDate == null ||
+        state.geneticDiseaseCategory == null ||
         state.selectedMedicalForm == null ||
         state.selectedDose == null ||
         state.selectedNoOfDose == null ||

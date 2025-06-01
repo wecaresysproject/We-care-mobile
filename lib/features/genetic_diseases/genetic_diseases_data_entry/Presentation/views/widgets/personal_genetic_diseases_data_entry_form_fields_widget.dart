@@ -42,30 +42,30 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             verticalSpacing(10),
 
             DateTimePickerContainer(
-              containerBorderColor: state.medicineStartDate == null
+              containerBorderColor: state.diagnosisDate == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
-              placeholderText: state.medicineStartDate ?? "يوم / شهر / سنة",
+              placeholderText: state.diagnosisDate ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateStartMedicineDate(pickedDate);
+                    .updateDiagnosisDate(pickedDate);
               },
             ),
 
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.selectedMedicineName == null
+              containerBorderColor: state.geneticDiseaseCategory == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "فئة المرض الوراثى",
               containerHintText:
-                  state.selectedMedicineName ?? "اختر فئة المرض الوراثى",
+                  state.geneticDiseaseCategory ?? "اختر فئة المرض الوراثى",
               options: [],
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateSelectedMedicineName(value);
+                    .updateSelectedGeneticDiseaseCategory(value);
               },
               bottomSheetTitle: "اختر فئة المرض الوراثى",
               searchHintText: "ابحث عن فئة المرض الوراثى",
@@ -80,17 +80,17 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
 
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.selectedMedicineName == null
+              containerBorderColor: state.geneticDiseaseCategory == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "المرض الوراثى",
               containerHintText:
-                  state.selectedMedicineName ?? "اختر المرض الوراثى",
+                  state.geneticDiseaseCategory ?? "اختر المرض الوراثى",
               options: [],
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateSelectedMedicineName(value);
+                    .updateSelectedGeneticDiseaseCategory(value);
               },
               bottomSheetTitle: "اختر المرض الوراثى",
               searchHintText: "ابحث المرض الوراثى",
@@ -104,17 +104,17 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(16),
             UserSelectionContainer(
-              containerBorderColor: state.selectedMedicineName == null
+              containerBorderColor: state.geneticDiseaseCategory == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "حالة المرض",
               containerHintText:
-                  state.selectedMedicineName ?? "اختر حالة المرض",
+                  state.geneticDiseaseCategory ?? "اختر حالة المرض",
               options: [],
               onOptionSelected: (value) async {
                 await context
                     .read<PersonalGeneticDiseasesDataEntryCubit>()
-                    .updateSelectedMedicineName(value);
+                    .updateSelectedGeneticDiseaseCategory(value);
               },
               bottomSheetTitle: "اختر حالة المرض",
               searchHintText: "ابحث عن حالة المرض",
