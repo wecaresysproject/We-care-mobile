@@ -6,6 +6,7 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 
 class GeneticDiseasesDataEntryRepo {
@@ -144,6 +145,18 @@ class GeneticDiseasesDataEntryRepo {
         language,
       );
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> submitPersonalGeneticDiseaseRequest({
+    required PersonalGeneticDiseaseRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices
+          .postGeneticDiseasesDataEntry(requestBody);
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

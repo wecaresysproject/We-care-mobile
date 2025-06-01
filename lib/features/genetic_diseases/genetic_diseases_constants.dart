@@ -3,19 +3,21 @@ class GeneticDiseasesConstants {
   //http://147.93.57.70:5299/api/EnterEmergencyComplain/SymptomsComplaints
   //Data Entry
 
-  static const postDataEntryEndpoint = "";
   static const editDataEntryEndpoint = "";
 
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllCountries = "/countries";
 
   static const getAllGeneticDiseasesClassfications =
-      "/GeneticDiseasesAPIs/medical-classifications";
+      "GeneticDiseasesAPIs/medical-classifications";
 
   static const getAllGeneticDiseasesStatus =
-      "/GeneticDiseasesAPIs/DiseaseStatus";
+      "GeneticDiseasesAPIs/DiseaseStatus";
   static const getGeneticDiseasesBasedOnClassification =
-      "/GeneticDiseasesAPIs/arabic-names";
+      "GeneticDiseasesAPIs/arabic-names";
+
+  static const postGeneticDiseasesDataEntry =
+      "GeneticDiseasesAPIs/medical-history";
   //View Entry
 
   //filters

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_constants.dart';
 
 part 'genetic_diseases_services.g.dart';
@@ -56,5 +57,10 @@ abstract class GeneticDiseasesServices {
     @Part(name: 'report') File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
+  );
+
+  @POST(GeneticDiseasesConstants.postGeneticDiseasesDataEntry)
+  Future<dynamic> postGeneticDiseasesDataEntry(
+    @Body() PersonalGeneticDiseaseRequestBodyModel requestBodyModel,
   );
 }

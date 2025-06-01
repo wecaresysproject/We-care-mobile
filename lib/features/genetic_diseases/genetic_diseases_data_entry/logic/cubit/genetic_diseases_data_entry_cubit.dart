@@ -7,8 +7,10 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class PersonalGeneticDiseasesDataEntryCubit
     extends Cubit<PersonalGeneticDiseasesDataEntryState> {
@@ -37,6 +39,14 @@ class PersonalGeneticDiseasesDataEntryCubit
         ),
       );
     }
+  }
+
+  void updateSelectedHospitalName(String? value) {
+    emit(state.copyWith(selectedHospital: value));
+  }
+
+  void updateSelectedCountry(String? value) {
+    emit(state.copyWith(selectedCountryName: value));
   }
 
   Future<void> getAllGeneticDiseasesClassfications() async {
@@ -202,50 +212,48 @@ class PersonalGeneticDiseasesDataEntryCubit
     await emitDoctorNames();
   }
 
-  // Future<void> postMedicinesDataEntry(S locale) async {
-  //   emit(
-  //     state.copyWith(
-  //       medicinesDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await _geneticDiseasesDataEntryRepo.postMedicinesDataEntry(
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //     requestBody: MedicineDataEntryRequestBody(
-  //       startDate: state.medicineStartDate!,
-  //       medicineName: state.selectedMedicineName!,
-  //       usageMethod: state.selectedMedicalForm!,
-  //       dosage: state.selectedDose!,
-  //       dosageFrequency: state.selectedNoOfDose!,
-  //       usageDuration: state.doseDuration!,
-  //       timeDuration: state.timePeriods!,
-  //       chronicDiseaseMedicine: locale.no_data_entered,
-  //       doctorName: state.selectedDoctorName ?? locale.no_data_entered,
-  //       reminder: state.selectedAlarmTime ?? locale.no_data_entered,
-  //       reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,
-  //       personalNotes: "",
-  //       geneticDiseases: state.geneticDiseases,
-  //     ),
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           message: successMessage,
-  //           medicinesDataEntryStatus: RequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           medicinesDataEntryStatus: RequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> submitPersonalGeneticDiseaseDataEntry(S locale) async {
+    emit(
+      state.copyWith(
+        geneticDiseaseDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _geneticDiseasesDataEntryRepo.submitPersonalGeneticDiseaseRequest(
+      requestBody: PersonalGeneticDiseaseRequestBodyModel(
+        date: state.diagnosisDate!,
+        diseaseCategory: state.geneticDiseaseCategory!,
+        diseaseStatus: state.selectedDiseaseStatus!,
+        geneticDisease: state.selectedDiseaseName!,
+        doctor: state.selectedDoctorName ?? locale.no_data_entered,
+        firstUploadedImage:
+            state.firstImageUploadedUrl ?? locale.no_data_entered,
+        secondUploadedImage:
+            state.secondImageUploadedUrl ?? locale.no_data_entered,
+        medicalReport: state.reportUploadedUrl ?? locale.no_data_entered,
+        hospital: state.selectedHospital ?? locale.no_data_entered,
+        country: state.selectedCountryName ?? locale.no_data_entered,
+      ),
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            geneticDiseaseDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            geneticDiseaseDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   /// Update Field Values
   void updateDiagnosisDate(String? date) {

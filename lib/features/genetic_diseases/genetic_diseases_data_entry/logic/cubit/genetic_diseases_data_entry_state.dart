@@ -6,11 +6,14 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 
 @immutable
 class PersonalGeneticDiseasesDataEntryState extends Equatable {
-  final RequestStatus medicinesDataEntryStatus;
+  final RequestStatus geneticDiseaseDataEntryStatus;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
   final String? selectedDiseaseStatus; // حالة المرض
   final String? selectedDiseaseName; // الوراثي المرض
+  final String? selectedHospital;
+  final String? selectedCountryName; // اسم الدولة
+
   final List<String> diseasesClassfications;
   final List<String> diseasesStatuses; // حالة المرض
   final List<String> diseasesNames;
@@ -41,7 +44,7 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final String? reportUploadedUrl;
 
   const PersonalGeneticDiseasesDataEntryState({
-    this.medicinesDataEntryStatus = RequestStatus.initial,
+    this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
@@ -49,6 +52,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.geneticDiseaseCategory,
     this.selectedDiseaseStatus,
     this.selectedDiseaseName,
+    this.selectedHospital,
+    this.selectedCountryName,
     this.diseasesClassfications = const [],
     this.diseasesStatuses = const [],
     this.diseasesNames = const [],
@@ -78,7 +83,7 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
 
   const PersonalGeneticDiseasesDataEntryState.initialState()
       : this(
-          medicinesDataEntryStatus: RequestStatus.initial,
+          geneticDiseaseDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
@@ -86,6 +91,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           geneticDiseaseCategory: null,
           selectedDiseaseStatus: null,
           selectedDiseaseName: null,
+          selectedHospital: null,
+          selectedCountryName: null,
           diseasesClassfications: const [],
           diseasesStatuses: const [],
           diseasesNames: const [],
@@ -114,7 +121,7 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         );
 
   PersonalGeneticDiseasesDataEntryState copyWith({
-    RequestStatus? medicinesDataEntryStatus,
+    RequestStatus? geneticDiseaseDataEntryStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
@@ -122,6 +129,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     String? geneticDiseaseCategory,
     String? selectedDiseaseStatus,
     String? selectedDiseaseName, // Added for consistency
+    String? selectedHospital,
+    String? selectedCountryName,
     String? firstImageUploadedUrl,
     String? secondImageUploadedUrl,
     String? reportUploadedUrl,
@@ -150,8 +159,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     bool? isLoading,
   }) {
     return PersonalGeneticDiseasesDataEntryState(
-      medicinesDataEntryStatus:
-          medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
+      geneticDiseaseDataEntryStatus:
+          geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -161,6 +170,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       selectedDiseaseStatus:
           selectedDiseaseStatus ?? this.selectedDiseaseStatus,
       selectedDiseaseName: selectedDiseaseName ?? this.selectedDiseaseName,
+      selectedHospital: selectedHospital ?? this.selectedHospital,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       diseasesClassfications:
           diseasesClassfications ?? this.diseasesClassfications,
       diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
@@ -198,7 +209,7 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
 
   @override
   List<Object?> get props => [
-        medicinesDataEntryStatus,
+        geneticDiseaseDataEntryStatus,
         isFormValidated,
         message,
         isEditMode,
@@ -206,6 +217,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         geneticDiseaseCategory,
         diseasesClassfications,
         diseasesStatuses,
+        selectedHospital,
+        selectedCountryName,
         diseasesNames,
         selectedDiseaseStatus,
         selectedDiseaseName,

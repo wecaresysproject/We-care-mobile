@@ -274,7 +274,11 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               options: hosptitalsNames,
               categoryLabel: "المستشفى / المركز",
               bottomSheetTitle: "اختر اسم المستشفى/المركز",
-              onOptionSelected: (value) {},
+              onOptionSelected: (value) {
+                context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedHospitalName(value);
+              },
               containerHintText: "اختر اسم المستشفى/المركز",
               searchHintText: "ابحث عن اسم المستشفى/المركز",
             ),
@@ -285,7 +289,11 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               options: state.countriesNames,
               categoryLabel: "الدولة",
               bottomSheetTitle: "اختر اسم الدولة",
-              onOptionSelected: (value) async {},
+              onOptionSelected: (value) {
+                context
+                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .updateSelectedCountry(value);
+              },
               containerHintText: "اختر اسم الدولة",
               searchHintText: "ابحث عن الدولة",
             ),
@@ -309,13 +317,14 @@ Widget submitDataEnteredBlocConsumer() {
   return BlocConsumer<PersonalGeneticDiseasesDataEntryCubit,
       PersonalGeneticDiseasesDataEntryState>(
     listenWhen: (prev, curr) =>
-        curr.medicinesDataEntryStatus == RequestStatus.failure ||
-        curr.medicinesDataEntryStatus == RequestStatus.success,
+        curr.geneticDiseaseDataEntryStatus == RequestStatus.failure ||
+        curr.geneticDiseaseDataEntryStatus == RequestStatus.success,
     buildWhen: (prev, curr) =>
         prev.isFormValidated != curr.isFormValidated ||
-        prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
+        prev.geneticDiseaseDataEntryStatus !=
+            curr.geneticDiseaseDataEntryStatus,
     listener: (context, state) async {
-      if (state.medicinesDataEntryStatus == RequestStatus.success) {
+      if (state.geneticDiseaseDataEntryStatus == RequestStatus.success) {
         await showSuccess(state.message);
         if (!context.mounted) return;
         //* in order to catch it again to rebuild details view
@@ -328,7 +337,7 @@ Widget submitDataEnteredBlocConsumer() {
     },
     builder: (context, state) {
       return AppCustomButton(
-        isLoading: state.medicinesDataEntryStatus == RequestStatus.loading,
+        isLoading: state.geneticDiseaseDataEntryStatus == RequestStatus.loading,
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
@@ -336,11 +345,12 @@ Widget submitDataEnteredBlocConsumer() {
             //     ? await context
             //         .read<GeneticDiseasesDataEntryCubit>()
             //         .submitEditsForMedicine()
-            //     : await context
-            //         .read<GeneticDiseasesDataEntryCubit>()
-            //         .postMedicinesDataEntry(
-            //           context.translate,
-            //         );
+            //     :
+            await context
+                .read<PersonalGeneticDiseasesDataEntryCubit>()
+                .submitPersonalGeneticDiseaseDataEntry(
+                  context.translate,
+                );
           }
         },
         isEnabled: state.isFormValidated ? true : false,
