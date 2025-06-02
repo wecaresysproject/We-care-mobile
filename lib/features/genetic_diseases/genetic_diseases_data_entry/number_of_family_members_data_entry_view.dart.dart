@@ -39,7 +39,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(32),
                       FamilyQuestionField(
-                        hintText: state.noOfBrothers ?? '##',
+                        hintText: state.noOfBrothers,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfBrothers,
@@ -52,7 +52,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(24),
                       FamilyQuestionField(
-                        hintText: state.noOfSisters ?? '##',
+                        hintText: state.noOfSisters,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfSisters,
@@ -65,7 +65,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(24),
                       FamilyQuestionField(
-                        hintText: state.noOfUncles ?? '0',
+                        hintText: state.noOfUncles,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfUncles,
@@ -78,7 +78,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(24),
                       FamilyQuestionField(
-                        hintText: state.noOfAunts ?? '0',
+                        hintText: state.noOfAunts,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfAunts,
@@ -91,7 +91,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(32),
                       FamilyQuestionField(
-                        hintText: state.noOfMaternalUncles ?? '0',
+                        hintText: state.noOfMaternalUncles,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfMaternalUncles,
@@ -104,7 +104,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       ),
                       verticalSpacing(32),
                       FamilyQuestionField(
-                        hintText: state.noOfMaternalAunts ?? '0',
+                        hintText: state.noOfMaternalAunts,
                         controller: context
                             .read<PersonalGeneticDiseasesDataEntryCubit>()
                             .noOfMaternalAunts,
