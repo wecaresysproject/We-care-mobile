@@ -157,7 +157,7 @@ class FamilyTreeView extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              verticalSpacing(40),
+              verticalSpacing(19),
               BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
                 builder: (context, state) {
                   if (state.requestStatus == RequestStatus.loading) {
