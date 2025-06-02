@@ -2,13 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 
 class FamilyTreeViewFromDataEntry extends StatelessWidget {
   const FamilyTreeViewFromDataEntry({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.w,
+        ),
+        child: Column(
+          children: [
+            FamilyTreeViewCustomAppBar(),
+            verticalSpacing(48),
+            Text(
+              "\"برجاء الضغط على القريب لكى يتم\nادخال البيانات الوراثية.\"",
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font20blackWeight600.copyWith(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            verticalSpacing(40),
+            Row(
+              children: [
+                /// الجهة اليمنى (الأب)
+                buildFatherRelativesPart(context),
+
+                horizontalSpacing(16),
+
+                /// الجهة اليسرى (الأم)
+                buildMotherRelativesPart(context),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget buildStaticItem(BuildContext context, String title, String emoji) {
     return GestureDetector(
@@ -127,45 +165,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-        ),
-        child: Column(
-          children: [
-            FamilyTreeViewCustomAppBar(),
-            verticalSpacing(48),
-            Text(
-              "\"برجاء الضغط على القريب لكى يتم\nادخال البيانات الوراثية.\"",
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font20blackWeight600.copyWith(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            verticalSpacing(40),
-            Row(
-              children: [
-                /// الجهة اليمنى (الأب)
-                buildFatherRelativesPart(context),
-
-                horizontalSpacing(16),
-
-                /// الجهة اليسرى (الأم)
-                buildMotherRelativesPart(context),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Expanded buildFatherRelativesPart(BuildContext context) {
+  Widget buildFatherRelativesPart(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
@@ -219,7 +219,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     );
   }
 
-  Expanded buildMotherRelativesPart(BuildContext context) {
+  Widget buildMotherRelativesPart(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
@@ -272,36 +272,6 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class FamilyTreeViewCustomAppBar extends StatelessWidget {
-  const FamilyTreeViewCustomAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Back arrow on the left
-        CustomBackArrow(),
-
-        // Manually spaced center text
-        SizedBox(
-          width: MediaQuery.of(context).size.width *
-              0.25, // Adjust this width as needed
-        ), // Adjust this width as needed
-        Text(
-          "شجرة العائلة",
-          textAlign: TextAlign.center,
-          style: AppTextStyles.font18blackWight500.copyWith(
-            color: AppColorsManager.textColor,
-          ),
-        ),
-
-        // Spacer to push the row to the right end
-        Spacer(),
-      ],
     );
   }
 }

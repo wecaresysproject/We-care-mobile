@@ -44,51 +44,37 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
       ],
       child: Scaffold(
         appBar: AppBar(),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 50.h),
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomAppBarWidget(
-                      haveBackArrow: true,
-                    ),
-                    verticalSpacing(24),
-                    Text(
-                      "الاسم",
-                      style: AppTextStyles.font18blackWight500,
-                    ),
-                    verticalSpacing(12),
-                    CustomTextField(
-                      hintText: 'اكتب اسم الشخص المصاب',
-                      validator: (context) {
-                        return null;
-                      },
-                    ),
-                    verticalSpacing(20),
-                    GeneticDiseaseTemplateListBlocBuilder(),
-                    verticalSpacing(20),
-                    buildAddNewGeneticDiseaseButtonBlocBuilder(context),
-                    verticalSpacing(40),
-                    submitGeneticDiseasesButtonBlocConsumer(context),
-                  ],
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 50.h),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomAppBarWidget(
+                  haveBackArrow: true,
                 ),
-              ),
+                verticalSpacing(24),
+                Text(
+                  "الاسم",
+                  style: AppTextStyles.font18blackWight500,
+                ),
+                verticalSpacing(12),
+                CustomTextField(
+                  hintText: 'اكتب اسم الشخص المصاب',
+                  validator: (context) {
+                    return null;
+                  },
+                ),
+                verticalSpacing(20),
+                GeneticDiseaseTemplateListBlocBuilder(),
+                verticalSpacing(20),
+                buildAddNewGeneticDiseaseButtonBlocBuilder(context),
+                verticalSpacing(40),
+                submitGeneticDiseasesButtonBlocConsumer(context),
+              ],
             ),
-            // // Floating button at bottom-left
-            // Positioned(
-            //   bottom: MediaQuery.of(context).size.height * 0.1,
-            //   left: 16.w,
-            //   child: SmartAssistantButton(
-            //     title: 'مساعد ذكي',
-            //     subtitle: 'ابن سهل البلخي',
-            //     imagePath: "assets/images/genetic_dissease_module.png",
-            //   ),
-            // ),
-          ],
+          ),
         ),
       ),
     );
@@ -112,7 +98,7 @@ class GeneticDiseaseTemplateListBlocBuilder extends StatelessWidget {
         return ListView.builder(
           itemCount: state.geneticDiseases.length,
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) {
             final disease = state.geneticDiseases[index];
             return GestureDetector(
