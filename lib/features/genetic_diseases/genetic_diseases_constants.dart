@@ -18,10 +18,11 @@ class GeneticDiseasesConstants {
 
   static const postGeneticDiseasesDataEntry =
       "GeneticDiseasesAPIs/medical-history";
+  static const uploadFamilyMemebersNumber =
+      "GeneticDiseasesAPIs/family-relation";
   //View Entry
 
   //filters
 
   static const familyMembersName = "GeneticDiseasesAPIs/all-names";
-
 }

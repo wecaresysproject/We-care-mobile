@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
@@ -18,6 +20,18 @@ class PersonalGeneticDiseasesDataEntryCubit
       : super(
           PersonalGeneticDiseasesDataEntryState.initialState(),
         );
+  final TextEditingController noOfBrothers =
+      TextEditingController(); // عدد الإخوة
+  final TextEditingController noOfSisters =
+      TextEditingController(); // عدد الأخوات
+  final TextEditingController noOfUncles =
+      TextEditingController(); // عدد الأعمام
+  final TextEditingController noOfAunts =
+      TextEditingController(); // عدد العمّات
+  final TextEditingController noOfMaternalUncles =
+      TextEditingController(); // عدد الأخوال
+  final TextEditingController noOfMaternalAunts =
+      TextEditingController(); // عدد الخالات
 
   final GeneticDiseasesDataEntryRepo _geneticDiseasesDataEntryRepo;
   List<NewGeneticDiseaseModel> geneticDiseases = [];
@@ -39,6 +53,30 @@ class PersonalGeneticDiseasesDataEntryCubit
         ),
       );
     }
+  }
+
+  void onNumberOfBrothersChanged(String? value) {
+    emit(state.copyWith(noOfBrothers: value));
+  }
+
+  void onNumberOfSistersChanged(String? value) {
+    emit(state.copyWith(noOfSisters: value));
+  }
+
+  void onNumberOfUnclesChanged(String? value) {
+    emit(state.copyWith(noOfUncles: value));
+  }
+
+  void onNumberOfAuntsChanged(String? value) {
+    emit(state.copyWith(noOfAunts: value));
+  }
+
+  void onNumberOfMaternalUnclesChanged(String? value) {
+    emit(state.copyWith(noOfMaternalUncles: value));
+  }
+
+  void onNumberOfMaternalAuntsChanged(String? value) {
+    emit(state.copyWith(noOfMaternalAunts: value));
   }
 
   void updateSelectedHospitalName(String? value) {
@@ -66,6 +104,44 @@ class PersonalGeneticDiseasesDataEntryCubit
       failure: (error) {
         emit(
           state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadFamilyMemebersNumber() async {
+    emit(
+      state.copyWith(
+        submitFamilyMemebersStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _geneticDiseasesDataEntryRepo.uploadFamilyMemebersNumber(
+      requestBody: FamilyMembersModel(
+        numberOfBrothers: state.noOfBrothers.toInt,
+        numberOfSisters: state.noOfSisters.toInt,
+        numberOfFatherSideUncles: state.noOfUncles.toInt,
+        numberOfFatherSideAunts: state.noOfAunts.toInt,
+        numberOfMotherSideUncles: state.noOfMaternalUncles.toInt,
+        numberOfMotherSideAunts: state.noOfMaternalAunts.toInt,
+      ),
+    );
+
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            submitFamilyMemebersStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            submitFamilyMemebersStatus: RequestStatus.failure,
             message: error.errors.first,
           ),
         );
@@ -460,7 +536,12 @@ class PersonalGeneticDiseasesDataEntryCubit
   @override
   Future<void> close() async {
     await clearAllAddedComplaints();
-
+    noOfBrothers.dispose();
+    noOfSisters.dispose();
+    noOfUncles.dispose();
+    noOfAunts.dispose();
+    noOfMaternalUncles.dispose();
+    noOfMaternalAunts.dispose();
     return super.close();
   }
 }

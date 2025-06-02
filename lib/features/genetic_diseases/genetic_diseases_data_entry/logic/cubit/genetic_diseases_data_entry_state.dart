@@ -7,6 +7,7 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 @immutable
 class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus geneticDiseaseDataEntryStatus;
+  final RequestStatus submitFamilyMemebersStatus;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
   final String? selectedDiseaseStatus; // حالة المرض
@@ -42,9 +43,16 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final String? firstImageUploadedUrl;
   final String? secondImageUploadedUrl;
   final String? reportUploadedUrl;
+  final String noOfBrothers;
+  final String noOfSisters;
+  final String noOfUncles; // عدد الاعمام
+  final String noOfAunts; // عدد العمات
+  final String noOfMaternalAunts; // عدد الخالات
+  final String noOfMaternalUncles; // عدد الاخوال
 
   const PersonalGeneticDiseasesDataEntryState({
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
+    this.submitFamilyMemebersStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
@@ -79,11 +87,18 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.reportUploadedUrl,
     this.medicineId = '',
     this.updatedDocumentId = '',
+    this.noOfBrothers = '0',
+    this.noOfSisters = '0',
+    this.noOfUncles = '0',
+    this.noOfAunts = '0',
+    this.noOfMaternalUncles = '0',
+    this.noOfMaternalAunts = '0',
   }) : super();
 
   const PersonalGeneticDiseasesDataEntryState.initialState()
       : this(
           geneticDiseaseDataEntryStatus: RequestStatus.initial,
+          submitFamilyMemebersStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
@@ -118,10 +133,17 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           allDurationsBasedOnCategory: const [],
           medicineId: '',
           updatedDocumentId: '',
+          noOfBrothers: '0',
+          noOfSisters: '0',
+          noOfUncles: '0',
+          noOfAunts: '0',
+          noOfMaternalUncles: '0',
+          noOfMaternalAunts: '0',
         );
 
   PersonalGeneticDiseasesDataEntryState copyWith({
     RequestStatus? geneticDiseaseDataEntryStatus,
+    RequestStatus? submitFamilyMemebersStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
@@ -157,8 +179,16 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     List<String>? allDurationsBasedOnCategory,
     String? updatedDocumentId,
     bool? isLoading,
+    String? noOfBrothers,
+    String? noOfSisters,
+    String? noOfUncles,
+    String? noOfAunts,
+    String? noOfMaternalUncles,
+    String? noOfMaternalAunts,
   }) {
     return PersonalGeneticDiseasesDataEntryState(
+      submitFamilyMemebersStatus:
+          submitFamilyMemebersStatus ?? this.submitFamilyMemebersStatus,
       geneticDiseaseDataEntryStatus:
           geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
@@ -204,12 +234,19 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
       allDurationsBasedOnCategory:
           allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
+      noOfBrothers: noOfBrothers ?? this.noOfBrothers,
+      noOfSisters: noOfSisters ?? this.noOfSisters,
+      noOfUncles: noOfUncles ?? this.noOfUncles,
+      noOfAunts: noOfAunts ?? this.noOfAunts,
+      noOfMaternalUncles: noOfMaternalUncles ?? this.noOfMaternalUncles,
+      noOfMaternalAunts: noOfMaternalAunts ?? this.noOfMaternalAunts,
     );
   }
 
   @override
   List<Object?> get props => [
         geneticDiseaseDataEntryStatus,
+        submitFamilyMemebersStatus,
         isFormValidated,
         message,
         isEditMode,
@@ -244,5 +281,11 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
         allUsageCategories,
         allDurationsBasedOnCategory,
         updatedDocumentId,
+        noOfBrothers,
+        noOfSisters,
+        noOfUncles,
+        noOfAunts,
+        noOfMaternalUncles,
+        noOfMaternalAunts,
       ];
 }
