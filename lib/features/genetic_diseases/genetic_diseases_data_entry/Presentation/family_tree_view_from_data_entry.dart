@@ -39,7 +39,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              verticalSpacing(40),
+              verticalSpacing(20),
               BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
                 builder: (context, state) {
                   if (state.requestStatus == RequestStatus.loading) {
@@ -197,7 +197,12 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     final paternalAunts = familyMembersNames.fatherSideAunt ?? ["عمة"];
     return Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          BulletLabel(label: "الأجداد", color: Color(0xFF547792)),
+          verticalSpacing(8),
+          BulletLabel(label: "الآباء", color: Color(0xFF004B84)),
+          verticalSpacing(20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -250,7 +255,12 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     final maternalAunts = familyMembersNames.motherSideAunt ?? ["خالة"];
     return Expanded(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          BulletLabel(label: "الإخوة", color: Color(0xff99CBE9)),
+          verticalSpacing(8),
+          BulletLabel(label: "الأخوال و العمات", color: Color(0xff5A4B8D)),
+          verticalSpacing(20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -283,6 +293,48 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class BulletLabel extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const BulletLabel({
+    super.key,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20.w,
+          height: 20.h,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        horizontalSpacing(4),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.font18blackWight500.copyWith(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
