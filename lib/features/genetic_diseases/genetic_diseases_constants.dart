@@ -25,4 +25,8 @@ class GeneticDiseasesConstants {
   //filters
 
   static const familyMembersName = "GeneticDiseasesAPIs/all-names";
+  static const familyMembeberGenaticDisease =
+      "GeneticDiseasesAPIs/classifications";
+  static const getFamilyMembersGeneticDiseasesDetails =
+      "GeneticDiseasesAPIs/genetic-disease-details-by-disease-type";
 }

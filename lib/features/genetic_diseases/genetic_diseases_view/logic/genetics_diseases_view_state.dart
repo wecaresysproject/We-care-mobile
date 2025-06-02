@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
 
 @immutable
@@ -13,6 +15,9 @@ class GeneticsDiseasesViewState extends Equatable {
   final bool isDeleteRequest;
   final List<int>? yearsFilter;
   final GetFamilyMembersNames? familyMembersNames;
+  final FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases;
+  final FamilyNameGeneticDiseaseDetialsResponseModel?
+      familyMemberGeneticDiseaseDetails;
 
   const GeneticsDiseasesViewState({
     this.requestStatus = RequestStatus.initial,
@@ -23,6 +28,8 @@ class GeneticsDiseasesViewState extends Equatable {
     this.isDeleteRequest = false,
     this.yearsFilter,
     this.familyMembersNames,
+    this.familyMemberGeneticDiseases,
+    this.familyMemberGeneticDiseaseDetails,
   });
   const GeneticsDiseasesViewState.initial()
       : requestStatus = RequestStatus.initial,
@@ -31,6 +38,8 @@ class GeneticsDiseasesViewState extends Equatable {
         hasMore = true,
         currentPage = 1,
         yearsFilter = null,
+        familyMemberGeneticDiseases = null,
+        familyMemberGeneticDiseaseDetails = null,
         familyMembersNames = null,
         isDeleteRequest = false;
 
@@ -38,7 +47,7 @@ class GeneticsDiseasesViewState extends Equatable {
   
   @override
   List<Object?> get props => [message, requestStatus, isLoadingMore,  
-   hasMore, currentPage, isDeleteRequest, yearsFilter, familyMembersNames];
+   hasMore, currentPage, isDeleteRequest, yearsFilter, familyMembersNames,familyMemberGeneticDiseases, familyMemberGeneticDiseaseDetails];
 
   GeneticsDiseasesViewState copyWith({
     String? message,
@@ -49,6 +58,9 @@ class GeneticsDiseasesViewState extends Equatable {
     bool? isDeleteRequest,
     List<int>? yearsFilter,
     GetFamilyMembersNames? familyMembersNames,
+    FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
+    FamilyNameGeneticDiseaseDetialsResponseModel?
+        familyMemberGeneticDiseaseDetails,
   }) {
     return GeneticsDiseasesViewState(
       message: message ?? this.message,
@@ -58,7 +70,9 @@ class GeneticsDiseasesViewState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       yearsFilter: yearsFilter ?? this.yearsFilter,
+      familyMemberGeneticDiseases: familyMemberGeneticDiseases ?? this.familyMemberGeneticDiseases,
       familyMembersNames: familyMembersNames ?? this.familyMembersNames,
+      familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ?? this.familyMemberGeneticDiseaseDetails,
     );
   }
 

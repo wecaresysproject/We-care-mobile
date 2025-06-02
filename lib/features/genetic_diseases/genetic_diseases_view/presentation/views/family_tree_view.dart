@@ -17,10 +17,10 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/ge
 class FamilyTreeView extends StatelessWidget {
   const FamilyTreeView({super.key});
 
-  Widget buildStaticItem(BuildContext context, String title, String emoji) {
+  Widget buildStaticItem(BuildContext context, String title, String emoji,String code) {
     return GestureDetector(
       onDoubleTap: () async {
-        await navigateToNextScreen(context);
+        await navigateToNextScreen(context, code, title);
       },
       child: Container(
         constraints: BoxConstraints(
@@ -65,10 +65,10 @@ class FamilyTreeView extends StatelessWidget {
   }
 
   Widget buildMainItem(
-      BuildContext context, String title, String emoji, Color color) {
+      BuildContext context, String title, String emoji, Color color,String code) {
     return GestureDetector(
       onDoubleTap: () async {
-        await navigateToNextScreen(context);
+        await navigateToNextScreen(context, code, title);
       },
       child: Container(
         width: double.infinity,
@@ -90,21 +90,22 @@ class FamilyTreeView extends StatelessWidget {
     );
   }
 
-  Future<void> navigateToNextScreen(BuildContext context) async {
-    await context.pushNamed(Routes.familyMemberGeneticDiseases);
+  Future<void> navigateToNextScreen(BuildContext context,String code ,String name) async {
+    await context.pushNamed(Routes.familyMemberGeneticDiseases,
+        arguments: {'familyMemberCode': code, 'familyMemberName': name});
   }
 
   Widget buildRelativeItem(
-      BuildContext context, String title, String emoji, Color color) {
+      BuildContext context, String title, String emoji, Color color,String code) {
     return GestureDetector(
       onDoubleTap: () async {
-        await navigateToNextScreen(context);
+        await navigateToNextScreen(context, code, title);
       },
       child: Container(
         width: 73.5.w,
         height: 47.h,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
+        decoration: BoxDecoration( 
           color: color,
           borderRadius: BorderRadius.circular(12),
         ),
@@ -216,20 +217,21 @@ class FamilyTreeView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildStaticItem(context, paternalGrandfather, "👴🏻"),
-              buildStaticItem(context, paternalGrandmother, "👵🏻"),
+              buildStaticItem(context, paternalGrandfather, "👴🏻",'GrandpaFather'),
+              horizontalSpacing(16),
+              buildStaticItem(context, paternalGrandmother, "👵🏻",'GrandmaFather'),
             ],
           ),
           verticalSpacing(16),
           buildMainItem(
-              context, father, "🧔🏻‍♂️", AppColorsManager.mainDarkBlue),
+              context, father, "🧔🏻‍♂️", AppColorsManager.mainDarkBlue,'Dad'),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
             runSpacing: 8,
             children: brothers.map((brother) {
               return buildRelativeItem(
-                  context, brother, "👦🏻", Color.fromARGB(169, 38, 139, 202));
+                  context, brother, "👦🏻", const Color(0xff99CBE9),'Bro');
             }).toList(),
           ),
           verticalSpacing(12),
@@ -238,9 +240,9 @@ class FamilyTreeView extends StatelessWidget {
             runSpacing: 8,
             children: [
               ...paternalUncles.map((uncle) => buildRelativeItem(
-                  context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D))),
+                  context, uncle, "👨🏻‍🦱",Color(0xff5A4B8D),'FatherSideUncle')),
               ...paternalAunts.map((aunt) => buildRelativeItem(
-                  context, aunt, "👩🏻‍🦱", Color(0xff5A4B8D))),
+                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D),'FatherSideAunt')),
             ],
           ),
         ],
@@ -267,20 +269,21 @@ class FamilyTreeView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              buildStaticItem(context, maternalGrandfather, "👴🏻"),
-              buildStaticItem(context, maternalGrandmother, "👵🏻"),
+              buildStaticItem(context, maternalGrandfather, "👴🏻","GrandpaMother"),
+              horizontalSpacing(16),
+              buildStaticItem(context, maternalGrandmother, "👵🏻",'GrandmaMother'),
             ],
           ),
           verticalSpacing(16),
           buildMainItem(
-              context, mother, "👩🏻‍🦳", AppColorsManager.mainDarkBlue),
+              context, mother, "👩🏻‍🦳", AppColorsManager.mainDarkBlue,'Mom'),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
             runSpacing: 8,
             children: sisters.map((sister) {
               return buildRelativeItem(
-                  context, sister, "👩🏻", Color.fromARGB(169, 38, 139, 202));
+                  context, sister, "👩🏻", Colors.lightBlue[100]!,"Sis");
             }).toList(),
           ),
           verticalSpacing(12),
@@ -289,9 +292,9 @@ class FamilyTreeView extends StatelessWidget {
             runSpacing: 8,
             children: [
               ...maternalUncles.map((uncle) => buildRelativeItem(
-                  context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D))),
+                  context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D),"MotherSideUncle")),
               ...maternalAunts.map((aunt) => buildRelativeItem(
-                  context, aunt, "👩🏻‍🦱", Color(0xff5A4B8D))),
+                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D),"MotherSideAunt")),
             ],
           ),
         ],
