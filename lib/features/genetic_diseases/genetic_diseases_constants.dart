@@ -5,8 +5,8 @@ class GeneticDiseasesConstants {
 
   static const editDataEntryEndpoint = "";
 
-  static const getAllDoctors = "/Doctor/GetAllDcotors";
-  static const getAllCountries = "/countries";
+  static const getAllDoctors = "Doctor/GetAllDcotors";
+  static const getAllCountries = "countries";
 
   static const getAllGeneticDiseasesClassfications =
       "GeneticDiseasesAPIs/medical-classifications";
