@@ -36,6 +36,58 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     );
   }
 
+  Future<void> getFamilyMembersGeneticDiseases({
+    required String familyMemberCode,
+    required String familyMemberName,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await geneticDiseasesViewRepo.getFamilyMembersGeneticDiseases(
+      'ar',
+      'Patient',
+      familyMemberCode,
+      familyMemberName,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          familyMemberGeneticDiseases: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  Future<void> getFamilyMemberGeneticDiseaseDetails({
+    required String disease,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await geneticDiseasesViewRepo.getFamilyMemberGeneticDiseaseDetails(
+      'ar',
+      'Patient',
+      disease,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          familyMemberGeneticDiseaseDetails: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
   // Future<void> getDefectedTooth() async {
   //   emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));
   //   final result = await dentalRepository.getDefectedTooth(

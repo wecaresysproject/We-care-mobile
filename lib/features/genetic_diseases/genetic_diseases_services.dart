@@ -74,4 +74,20 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> uploadFamilyMemebersNumber(
     @Body() FamilyMembersModel requestBody,
   );
+
+  @GET(GeneticDiseasesConstants.familyMembeberGenaticDisease)
+  Future<dynamic> getFamilyMemberGeneticDisease(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("name") String familyMemberName,
+    @Query("code") String code,
+  );
+
+  @GET(GeneticDiseasesConstants.getFamilyMembersGeneticDiseasesDetails)
+  Future<dynamic> getFamilyMembersGeneticDiseasesDetails(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("diseaseType") String diseaseType,
+  );
+  
 }
