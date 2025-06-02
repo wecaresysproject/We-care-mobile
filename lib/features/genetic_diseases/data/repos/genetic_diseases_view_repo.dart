@@ -17,7 +17,8 @@ class GeneticDiseasesViewRepo {
         userType,
       );
       return ApiResult.success(
-        GetFamilyMembersNames.fromJson(response['data'] as Map<String, dynamic>),
+        GetFamilyMembersNames.fromJson(
+            response['data'] as Map<String, dynamic>),
       );
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));

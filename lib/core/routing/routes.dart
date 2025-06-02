@@ -41,7 +41,7 @@ class Routes {
   static const dentalAnatomyDiagramEntryView = '/dentalAnatomyDiagramEntryView';
   static const toothAnatomyView = '/toothAnatomyView';
   static const geneticDiseaeseMainView = "/geneticDiseaeseMainView";
-  static const familyTreeDataEntryView = "/FamilyTreeDataEntryView";
+  static const numberOfFamilyMembersView = "/numberOfFamilyMembersView";
   static const familyTreeViewFromDataEntry = "/familyTreeView";
   static const geneticDiseasesDataEnrtyView = "/genetic_diseasesDataEnrtyView";
   static const familyMemeberGeneticDiseaseDataEntryView =
@@ -49,17 +49,13 @@ class Routes {
   static const createNewGeneticDiseaseView = '/createNewGeneticDiseaseView';
   static const alarmHomeView = '/alarmHomeView';
 
-
   static const familyTreeScreen = '/familyTreeScreen';
   static const geneticInfoScreen = '/geneticInfoScreen';
   static const geneticDiseasesHomeScreen = '/geneticDiseasesHomeScreen';
-  static const familyMemberGeneticDiseases =
-      '/familyMemberGeneticDiseases';
+  static const familyMemberGeneticDiseases = '/familyMemberGeneticDiseases';
   static const familyMemberGeneticDiseaseDetailsView =
       '/familyMemberGeneticDiseaseDetailsView';
-  static const personalGeneticDiseasesScreen =
-      '/personalGeneticDiseasesScreen';
+  static const personalGeneticDiseasesScreen = '/personalGeneticDiseasesScreen';
   static const personalGeneticDiseasesDetailsView =
       '/personalGeneticDiseasesDetailsView';
-
 }

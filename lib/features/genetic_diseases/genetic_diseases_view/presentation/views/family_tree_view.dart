@@ -23,27 +23,34 @@ class FamilyTreeView extends StatelessWidget {
         await navigateToNextScreen(context);
       },
       child: Container(
-        width: 80,
-        height: 50,
+        constraints: BoxConstraints(
+          minHeight: 44.25,
+          maxWidth: 73.5,
+        ),
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
+        padding: EdgeInsets.symmetric(
+          vertical: 6.h,
+          horizontal: 8.w,
+        ),
         decoration: BoxDecoration(
           color: Color(0xff547792),
           borderRadius: BorderRadius.circular(16.r),
         ),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               emoji,
             ),
-            horizontalSpacing(
-              4.w,
+            verticalSpacing(
+              4,
             ),
-            Flexible(
+            FittedBox(
+              fit: BoxFit.scaleDown,
               child: Text(
-                title,
+                title.split(" ").first,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.font18blackWight500.copyWith(
                   color: Color(0xffFEFEFE),
                   fontSize: 14.sp,
@@ -65,14 +72,14 @@ class FamilyTreeView extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        height: 56,
+        height: 56.h,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(16.r),
         ),
         child: Text(
-          "$emoji\n$title",
+          "$emoji\n${title.split(' ').first}",
           textAlign: TextAlign.center,
           style: AppTextStyles.font18blackWight500.copyWith(
             color: Colors.white,
@@ -102,7 +109,7 @@ class FamilyTreeView extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
-          "$emoji\n$title",
+          "$emoji\n${title.split(' ').first}",
           textAlign: TextAlign.center,
           style: AppTextStyles.font18blackWight500.copyWith(
             color: Color(0xffFEFEFE),
@@ -110,26 +117,6 @@ class FamilyTreeView extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-      ),
-    );
-  }
-
-  Widget buildScrollableList(List<Map<String, String>> relatives, Color color) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: relatives.length,
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: 2.h, top: 16.h),
-            child: buildRelativeItem(
-              context,
-              relatives[index]['title']!,
-              relatives[index]['emoji']!,
-              color,
-            ),
-          );
-        },
       ),
     );
   }
@@ -171,7 +158,7 @@ class FamilyTreeView extends StatelessWidget {
                 ),
               ),
               verticalSpacing(40),
-              BlocBuilder<GeneticsDiseasesViewCubit,GeneticsDiseasesViewState>(
+              BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
                 builder: (context, state) {
                   if (state.requestStatus == RequestStatus.loading) {
                     return Center(
@@ -191,12 +178,14 @@ class FamilyTreeView extends StatelessWidget {
                   return Row(
                     children: [
                       /// الجهة اليمنى (الأب)
-                      buildFatherRelativesPart(context,state.familyMembersNames),
+                      buildFatherRelativesPart(
+                          context, state.familyMembersNames),
 
                       horizontalSpacing(16),
 
                       /// الجهة اليسرى (الأم)
-                     buildMotherRelativesPart(context,state.familyMembersNames),
+                      buildMotherRelativesPart(
+                          context, state.familyMembersNames),
                     ],
                   );
                 },
@@ -208,9 +197,10 @@ class FamilyTreeView extends StatelessWidget {
     );
   }
 
-  Expanded buildFatherRelativesPart(BuildContext context,GetFamilyMembersNames? familyMembersNames) {
-    final paternalGrandfather = familyMembersNames!.grandpaFather!.first ;
-    final paternalGrandmother =  familyMembersNames.grandmaFather!.first ;
+  Expanded buildFatherRelativesPart(
+      BuildContext context, GetFamilyMembersNames? familyMembersNames) {
+    final paternalGrandfather = familyMembersNames!.grandpaFather!.first;
+    final paternalGrandmother = familyMembersNames.grandmaFather!.first;
     final father = familyMembersNames.father!.first;
     final brothers = familyMembersNames.bro ?? ["أخ"];
     final paternalUncles = familyMembersNames.fatherSideUncle ?? ["عم"];
@@ -219,11 +209,14 @@ class FamilyTreeView extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
+          BulletLabel(label: "الأجداد", color: Color(0xFF547792)),
+          verticalSpacing(8),
+          BulletLabel(label: "الآباء", color: Color(0xFF004B84)),
+          verticalSpacing(20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               buildStaticItem(context, paternalGrandfather, "👴🏻"),
-              horizontalSpacing(16),
               buildStaticItem(context, paternalGrandmother, "👵🏻"),
             ],
           ),
@@ -236,7 +229,7 @@ class FamilyTreeView extends StatelessWidget {
             runSpacing: 8,
             children: brothers.map((brother) {
               return buildRelativeItem(
-                  context, brother, "👦🏻", const Color(0xff99CBE9));
+                  context, brother, "👦🏻", Color.fromARGB(169, 38, 139, 202));
             }).toList(),
           ),
           verticalSpacing(12),
@@ -245,9 +238,9 @@ class FamilyTreeView extends StatelessWidget {
             runSpacing: 8,
             children: [
               ...paternalUncles.map((uncle) => buildRelativeItem(
-                  context, uncle, "👨🏻‍🦱",Color(0xff5A4B8D))),
+                  context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D))),
               ...paternalAunts.map((aunt) => buildRelativeItem(
-                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D))),
+                  context, aunt, "👩🏻‍🦱", Color(0xff5A4B8D))),
             ],
           ),
         ],
@@ -255,7 +248,8 @@ class FamilyTreeView extends StatelessWidget {
     );
   }
 
-  Expanded buildMotherRelativesPart(BuildContext context,GetFamilyMembersNames? familyMembersNames) {
+  Expanded buildMotherRelativesPart(
+      BuildContext context, GetFamilyMembersNames? familyMembersNames) {
     final maternalGrandfather = familyMembersNames!.grandpaMother!.first;
     final maternalGrandmother = familyMembersNames.grandmaMother!.first;
     final mother = familyMembersNames.mother!.first;
@@ -266,11 +260,14 @@ class FamilyTreeView extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
+          BulletLabel(label: "الإخوة", color: Color(0xff99CBE9)),
+          verticalSpacing(8),
+          BulletLabel(label: "الأخوال و العمات", color: Color(0xff5A4B8D)),
+          verticalSpacing(20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               buildStaticItem(context, maternalGrandfather, "👴🏻"),
-              horizontalSpacing(16),
               buildStaticItem(context, maternalGrandmother, "👵🏻"),
             ],
           ),
@@ -283,7 +280,7 @@ class FamilyTreeView extends StatelessWidget {
             runSpacing: 8,
             children: sisters.map((sister) {
               return buildRelativeItem(
-                  context, sister, "👩🏻", Colors.lightBlue[100]!);
+                  context, sister, "👩🏻", Color.fromARGB(169, 38, 139, 202));
             }).toList(),
           ),
           verticalSpacing(12),
@@ -294,7 +291,7 @@ class FamilyTreeView extends StatelessWidget {
               ...maternalUncles.map((uncle) => buildRelativeItem(
                   context, uncle, "👨🏻‍🦱", Color(0xff5A4B8D))),
               ...maternalAunts.map((aunt) => buildRelativeItem(
-                  context, aunt, "👩🏻‍🦱",Color(0xff5A4B8D))),
+                  context, aunt, "👩🏻‍🦱", Color(0xff5A4B8D))),
             ],
           ),
         ],
@@ -328,6 +325,48 @@ class FamilyTreeViewCustomAppBar extends StatelessWidget {
 
         // Spacer to push the row to the right end
         Spacer(),
+      ],
+    );
+  }
+}
+
+class BulletLabel extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const BulletLabel({
+    super.key,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 20.w,
+          height: 20.h,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        horizontalSpacing(4),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.font18blackWight500.copyWith(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
       ],
     );
   }

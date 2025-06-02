@@ -5,8 +5,8 @@ class GeneticDiseasesConstants {
 
   static const editDataEntryEndpoint = "";
 
-  static const getAllDoctors = "/Doctor/GetAllDcotors";
-  static const getAllCountries = "/countries";
+  static const getAllDoctors = "Doctor/GetAllDcotors";
+  static const getAllCountries = "countries";
 
   static const getAllGeneticDiseasesClassfications =
       "GeneticDiseasesAPIs/medical-classifications";
@@ -18,10 +18,11 @@ class GeneticDiseasesConstants {
 
   static const postGeneticDiseasesDataEntry =
       "GeneticDiseasesAPIs/medical-history";
+  static const uploadFamilyMemebersNumber =
+      "GeneticDiseasesAPIs/family-relation";
   //View Entry
 
   //filters
 
   static const familyMembersName = "GeneticDiseasesAPIs/all-names";
-
 }

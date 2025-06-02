@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_constants.dart';
 
@@ -68,5 +69,9 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> getFamilyMembersNames(
     @Query("language") String language,
     @Query("userType") String userType,
+  );
+  @POST(GeneticDiseasesConstants.uploadFamilyMemebersNumber)
+  Future<dynamic> uploadFamilyMemebersNumber(
+    @Body() FamilyMembersModel requestBody,
   );
 }

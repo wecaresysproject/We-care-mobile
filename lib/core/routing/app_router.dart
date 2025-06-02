@@ -11,8 +11,8 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Pr
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/create_new_genetic_disease_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/family_memeber_genetic_disease_data_entry_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/personal_genetic_disease_data_entry_view.dart';
-import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/family_tree_data_entry_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/number_of_family_members_data_entry_view.dart.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genatic_disease_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
@@ -266,9 +266,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const PersonalGeneticDiseaseDataEntryView(),
         );
-      case Routes.familyTreeDataEntryView:
+      case Routes.numberOfFamilyMembersView:
         return MaterialPageRoute(
-          builder: (context) => const FamilyTreeDataEntryView(),
+          builder: (context) => const NumberOfFamilyMembersView(),
         );
       case Routes.familyTreeViewFromDataEntry:
         return MaterialPageRoute(

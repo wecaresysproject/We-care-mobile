@@ -408,7 +408,7 @@ class _ApiSearchBottomSheetState extends State<_ApiSearchBottomSheet> {
                     Icon(Icons.error_outline, color: Colors.red, size: 48),
                     verticalSpacing(16),
                     Text(
-                      state.message ?? "حدث خطأ في البحث",
+                      state.message,
                       style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                         color: Colors.red,
                       ),

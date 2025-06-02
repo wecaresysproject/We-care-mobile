@@ -7,12 +7,14 @@ class FamilyQuestionField extends StatelessWidget {
   const FamilyQuestionField({
     super.key,
     required this.question,
-    this.hint = "##",
+    this.hintText = "##",
     this.onChanged,
+    required this.controller,
   });
   final String question;
-  final String hint;
+  final String hintText;
   final void Function(String)? onChanged;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +29,10 @@ class FamilyQuestionField extends StatelessWidget {
         SizedBox(
           width: 135.w,
           child: CustomTextField(
-            hintText: "##",
-            onChanged: (value) {},
+            hintText: hintText,
+            keyboardType: TextInputType.number,
+            controller: controller,
+            onChanged: onChanged,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "هذا الحقل مطلوب";

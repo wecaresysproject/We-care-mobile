@@ -30,7 +30,7 @@ class GeneticDiseaeseMainView extends StatelessWidget {
                 title: "انشاء أو تعديل شجرة العائلة",
                 onTap: () async {
                   await context.pushNamed(
-                    Routes.familyTreeDataEntryView,
+                    Routes.numberOfFamilyMembersView,
                   );
                 },
               ),
