@@ -5,9 +5,10 @@ import 'package:we_care/features/genetic_diseases/data/models/new_genetic_diseas
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 
 @immutable
-class PersonalGeneticDiseasesDataEntryState extends Equatable {
+class GeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus geneticDiseaseDataEntryStatus;
-  final RequestStatus submitFamilyMemebersStatus;
+  final RequestStatus submitFamilyMemebersNumberStatus;
+  final RequestStatus submitMemberGeneticDiseaseDetailsStatus;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
   final String? selectedDiseaseStatus; // حالة المرض
@@ -50,9 +51,10 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   final String noOfMaternalAunts; // عدد الخالات
   final String noOfMaternalUncles; // عدد الاخوال
 
-  const PersonalGeneticDiseasesDataEntryState({
+  const GeneticDiseasesDataEntryState({
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
-    this.submitFamilyMemebersStatus = RequestStatus.initial,
+    this.submitFamilyMemebersNumberStatus = RequestStatus.initial,
+    this.submitMemberGeneticDiseaseDetailsStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
@@ -95,10 +97,11 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     this.noOfMaternalAunts = '0',
   }) : super();
 
-  const PersonalGeneticDiseasesDataEntryState.initialState()
+  const GeneticDiseasesDataEntryState.initialState()
       : this(
           geneticDiseaseDataEntryStatus: RequestStatus.initial,
-          submitFamilyMemebersStatus: RequestStatus.initial,
+          submitFamilyMemebersNumberStatus: RequestStatus.initial,
+          submitMemberGeneticDiseaseDetailsStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
@@ -141,9 +144,10 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
           noOfMaternalAunts: '0',
         );
 
-  PersonalGeneticDiseasesDataEntryState copyWith({
+  GeneticDiseasesDataEntryState copyWith({
     RequestStatus? geneticDiseaseDataEntryStatus,
-    RequestStatus? submitFamilyMemebersStatus,
+    RequestStatus? submitFamilyMemebersNumberStatus,
+    RequestStatus? submitMemberGeneticDiseaseDetailsStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
@@ -186,11 +190,14 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
     String? noOfMaternalUncles,
     String? noOfMaternalAunts,
   }) {
-    return PersonalGeneticDiseasesDataEntryState(
-      submitFamilyMemebersStatus:
-          submitFamilyMemebersStatus ?? this.submitFamilyMemebersStatus,
+    return GeneticDiseasesDataEntryState(
+      submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
+          this.submitFamilyMemebersNumberStatus,
       geneticDiseaseDataEntryStatus:
           geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
+      submitMemberGeneticDiseaseDetailsStatus:
+          submitMemberGeneticDiseaseDetailsStatus ??
+              this.submitMemberGeneticDiseaseDetailsStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -246,7 +253,8 @@ class PersonalGeneticDiseasesDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         geneticDiseaseDataEntryStatus,
-        submitFamilyMemebersStatus,
+        submitFamilyMemebersNumberStatus,
+        submitMemberGeneticDiseaseDetailsStatus,
         isFormValidated,
         message,
         isEditMode,

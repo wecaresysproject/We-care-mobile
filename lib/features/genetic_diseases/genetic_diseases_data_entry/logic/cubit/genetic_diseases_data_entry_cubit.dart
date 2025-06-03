@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
@@ -14,11 +15,11 @@ import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_da
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
 import 'package:we_care/generated/l10n.dart';
 
-class PersonalGeneticDiseasesDataEntryCubit
-    extends Cubit<PersonalGeneticDiseasesDataEntryState> {
-  PersonalGeneticDiseasesDataEntryCubit(this._geneticDiseasesDataEntryRepo)
+class GeneticDiseasesDataEntryCubit
+    extends Cubit<GeneticDiseasesDataEntryState> {
+  GeneticDiseasesDataEntryCubit(this._geneticDiseasesDataEntryRepo)
       : super(
-          PersonalGeneticDiseasesDataEntryState.initialState(),
+          GeneticDiseasesDataEntryState.initialState(),
         );
   final TextEditingController noOfBrothers =
       TextEditingController(); // عدد الإخوة
@@ -53,6 +54,44 @@ class PersonalGeneticDiseasesDataEntryCubit
         ),
       );
     }
+  }
+
+  Future<void> postGenticDiseaseForFamilyMember({
+    required String familyMemberName,
+    required String memberCode,
+  }) async {
+    emit(
+      state.copyWith(
+        submitMemberGeneticDiseaseDetailsStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _geneticDiseasesDataEntryRepo.postGenticDiseaseForFamilyMember(
+      requestBody: FamilyMemberGeneticDiseasesRequestBodyModel(
+        name: familyMemberName,
+        code: memberCode,
+        geneticDiseases: state.geneticDiseases,
+      ),
+    );
+
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            submitMemberGeneticDiseaseDetailsStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            submitMemberGeneticDiseaseDetailsStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
   }
 
   void onNumberOfBrothersChanged(String? value) {
@@ -114,7 +153,7 @@ class PersonalGeneticDiseasesDataEntryCubit
   Future<void> uploadFamilyMemebersNumber() async {
     emit(
       state.copyWith(
-        submitFamilyMemebersStatus: RequestStatus.loading,
+        submitFamilyMemebersNumberStatus: RequestStatus.loading,
       ),
     );
     final response =
@@ -133,7 +172,7 @@ class PersonalGeneticDiseasesDataEntryCubit
       success: (successMessage) {
         emit(
           state.copyWith(
-            submitFamilyMemebersStatus: RequestStatus.success,
+            submitFamilyMemebersNumberStatus: RequestStatus.success,
             message: successMessage,
           ),
         );
@@ -141,7 +180,7 @@ class PersonalGeneticDiseasesDataEntryCubit
       failure: (error) {
         emit(
           state.copyWith(
-            submitFamilyMemebersStatus: RequestStatus.failure,
+            submitFamilyMemebersNumberStatus: RequestStatus.failure,
             message: error.errors.first,
           ),
         );

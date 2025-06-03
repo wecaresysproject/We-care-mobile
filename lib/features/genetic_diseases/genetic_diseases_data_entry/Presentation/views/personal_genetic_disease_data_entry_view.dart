@@ -16,9 +16,9 @@ class PersonalGeneticDiseaseDataEntryView extends StatelessWidget {
   // final MedicineModel? medicineToEdit;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PersonalGeneticDiseasesDataEntryCubit>(
+    return BlocProvider<GeneticDiseasesDataEntryCubit>(
       create: (context) {
-        final cubit = getIt<PersonalGeneticDiseasesDataEntryCubit>();
+        final cubit = getIt<GeneticDiseasesDataEntryCubit>();
         // if (medicineToEdit != null) {
         //   cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
         // } else {

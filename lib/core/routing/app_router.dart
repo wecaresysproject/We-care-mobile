@@ -206,15 +206,14 @@ class AppRouter {
       case Routes.familyMemberGeneticDiseaseDetailsView:
         final diseaseDetails = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (context) =>  FamilyMemberGeneticDiseaseDetailsView(
+          builder: (context) => FamilyMemberGeneticDiseaseDetailsView(
             disease: diseaseDetails?['disease'] ?? "",
-       
           ),
         );
       case Routes.familyMemberGeneticDiseases:
         final memberDetails = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (context) =>  FamilyMemberGeneticDiseases(
+          builder: (context) => FamilyMemberGeneticDiseases(
             familyMemberCode: memberDetails?['familyMemberCode'] ?? "",
             familyMemberName: memberDetails?['familyMemberName'] ?? "",
           ),
@@ -287,9 +286,12 @@ class AppRouter {
           builder: (context) => const FamilyTreeView(),
         );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:
+        final result = arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-          builder: (context) =>
-              const FamilyMemeberGeneticDiseaseDataEntryView(),
+          builder: (context) => FamilyMemeberGeneticDiseaseDataEntryView(
+            familyCodes: result['memberCode'],
+            memberName: result['memberName'],
+          ),
         );
       case Routes.createNewGeneticDiseaseView:
         final argumentsMap = arguments as Map<String, dynamic>?;

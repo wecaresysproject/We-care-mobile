@@ -6,6 +6,7 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
@@ -169,6 +170,18 @@ class GeneticDiseasesDataEntryRepo {
     try {
       final response = await _geneticDiseasesServices
           .uploadFamilyMemebersNumber(requestBody);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postGenticDiseaseForFamilyMember({
+    required FamilyMemberGeneticDiseasesRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices
+          .postGenticDiseaseForFamilyMember(requestBody);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

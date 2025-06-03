@@ -29,8 +29,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
     extends State<PersonalGeneticDiseasesDataEntryFormFieldsWidget> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
-        PersonalGeneticDiseasesDataEntryState>(
+    return BlocBuilder<GeneticDiseasesDataEntryCubit,
+        GeneticDiseasesDataEntryState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +48,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               placeholderText: state.diagnosisDate ?? "يوم / شهر / سنة",
               onDateSelected: (pickedDate) {
                 context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateDiagnosisDate(pickedDate);
               },
             ),
@@ -64,7 +64,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               options: state.diseasesClassfications,
               onOptionSelected: (value) async {
                 await context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedGeneticDiseaseCategory(value);
               },
               bottomSheetTitle: "اختر فئة المرض الوراثى",
@@ -84,7 +84,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               options: state.diseasesNames,
               onOptionSelected: (value) async {
                 await context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedGeneticDiseaseName(value);
               },
               bottomSheetTitle: "اختر المرض الوراثى",
@@ -108,7 +108,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               options: state.diseasesStatuses,
               onOptionSelected: (value) async {
                 await context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedDiseaseStatus(value);
               },
               bottomSheetTitle: "اختر حالة المرض",
@@ -124,8 +124,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
-                PersonalGeneticDiseasesDataEntryState>(
+            BlocListener<GeneticDiseasesDataEntryCubit,
+                GeneticDiseasesDataEntryState>(
               listenWhen: (prev, curr) =>
                   prev.firstImageRequestStatus != curr.firstImageRequestStatus,
               listener: (context, state) async {
@@ -148,7 +148,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         await context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .uploadFirstImagePicked(
                               imagePath: picker.pickedImage!.path,
                             );
@@ -165,8 +165,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
-                PersonalGeneticDiseasesDataEntryState>(
+            BlocListener<GeneticDiseasesDataEntryCubit,
+                GeneticDiseasesDataEntryState>(
               listenWhen: (prev, curr) =>
                   prev.secondImageRequestStatus !=
                   curr.secondImageRequestStatus,
@@ -190,7 +190,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         await context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .uploadSecondImagePicked(
                               imagePath: picker.pickedImage!.path,
                             );
@@ -214,8 +214,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
             ),
 
             verticalSpacing(8),
-            BlocListener<PersonalGeneticDiseasesDataEntryCubit,
-                PersonalGeneticDiseasesDataEntryState>(
+            BlocListener<GeneticDiseasesDataEntryCubit,
+                GeneticDiseasesDataEntryState>(
               listenWhen: (previous, current) =>
                   previous.reportRequestStatus != current.reportRequestStatus,
               listener: (context, state) async {
@@ -238,7 +238,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                       final picker = getIt.get<ImagePickerService>();
                       if (isImagePicked && picker.isImagePickedAccepted) {
                         await context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .uploadReportImage(
                               imagePath: picker.pickedImage!.path,
                             );
@@ -256,7 +256,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               bottomSheetTitle: "اختر اسم الطبيب",
               onOptionSelected: (value) {
                 context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedDoctorName(value);
               },
               containerHintText:
@@ -272,7 +272,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               bottomSheetTitle: "اختر اسم المستشفى/المركز",
               onOptionSelected: (value) {
                 context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedHospitalName(value);
               },
               containerHintText: "اختر اسم المستشفى/المركز",
@@ -287,7 +287,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               bottomSheetTitle: "اختر اسم الدولة",
               onOptionSelected: (value) {
                 context
-                    .read<PersonalGeneticDiseasesDataEntryCubit>()
+                    .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedCountry(value);
               },
               containerHintText: "اختر اسم الدولة",
@@ -307,8 +307,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
 }
 
 Widget submitDataEnteredBlocConsumer() {
-  return BlocConsumer<PersonalGeneticDiseasesDataEntryCubit,
-      PersonalGeneticDiseasesDataEntryState>(
+  return BlocConsumer<GeneticDiseasesDataEntryCubit,
+      GeneticDiseasesDataEntryState>(
     listenWhen: (prev, curr) =>
         curr.geneticDiseaseDataEntryStatus == RequestStatus.failure ||
         curr.geneticDiseaseDataEntryStatus == RequestStatus.success,
@@ -340,7 +340,7 @@ Widget submitDataEnteredBlocConsumer() {
             //         .submitEditsForMedicine()
             //     :
             await context
-                .read<PersonalGeneticDiseasesDataEntryCubit>()
+                .read<GeneticDiseasesDataEntryCubit>()
                 .submitPersonalGeneticDiseaseDataEntry(
                   context.translate,
                 );

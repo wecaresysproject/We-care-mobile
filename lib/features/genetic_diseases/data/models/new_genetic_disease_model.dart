@@ -10,9 +10,12 @@ class NewGeneticDiseaseModel {
   final String? diseaseCategory; // فئة المرض
   @HiveField(1)
   final String? geneticDisease; // المرض الوراثي
+
   @HiveField(2)
+  @JsonKey(name: 'ageGroup')
   final String? appearanceAgeStage; //  مرحلة ظهور المرض
   @HiveField(3)
+  @JsonKey(name: 'diseaseStatus')
   final String? patientStatus; // حالة المريض
 
   NewGeneticDiseaseModel({
