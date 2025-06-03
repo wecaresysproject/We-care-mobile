@@ -20,14 +20,15 @@ class NumberOfFamilyMembersView extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PersonalGeneticDiseasesDataEntryCubit>(
-      create: (context) => getIt<PersonalGeneticDiseasesDataEntryCubit>(),
+    return BlocProvider<GeneticDiseasesDataEntryCubit>(
+      create: (context) =>
+          getIt<GeneticDiseasesDataEntryCubit>()..getFamilyMembersNumbers(),
       child: Scaffold(
         appBar: AppBar(),
         body: Stack(
           children: [
-            BlocBuilder<PersonalGeneticDiseasesDataEntryCubit,
-                PersonalGeneticDiseasesDataEntryState>(
+            BlocBuilder<GeneticDiseasesDataEntryCubit,
+                GeneticDiseasesDataEntryState>(
               builder: (context, state) {
                 return SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -41,12 +42,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfBrothers,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfBrothers,
                         question: "كم أخ لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfBrothersChanged(value);
                         },
                       ),
@@ -54,12 +55,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfSisters,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfSisters,
                         question: "كم أخت لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfSistersChanged(value);
                         },
                       ),
@@ -67,12 +68,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfUncles,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfUncles,
                         question: "كم عم لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfUnclesChanged(value);
                         },
                       ),
@@ -80,12 +81,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfAunts,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfAunts,
                         question: "كم عمة لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfAuntsChanged(value);
                         },
                       ),
@@ -93,12 +94,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfMaternalUncles,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfMaternalUncles,
                         question: "كم خال لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfMaternalUnclesChanged(value);
                         },
                       ),
@@ -106,25 +107,25 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                       FamilyQuestionField(
                         hintText: state.noOfMaternalAunts,
                         controller: context
-                            .read<PersonalGeneticDiseasesDataEntryCubit>()
+                            .read<GeneticDiseasesDataEntryCubit>()
                             .noOfMaternalAunts,
                         question: "كم خالة لديك ؟",
                         onChanged: (value) {
                           context
-                              .read<PersonalGeneticDiseasesDataEntryCubit>()
+                              .read<GeneticDiseasesDataEntryCubit>()
                               .onNumberOfMaternalAuntsChanged(value);
                         },
                       ),
                       verticalSpacing(112),
-                      BlocConsumer<PersonalGeneticDiseasesDataEntryCubit,
-                          PersonalGeneticDiseasesDataEntryState>(
+                      BlocConsumer<GeneticDiseasesDataEntryCubit,
+                          GeneticDiseasesDataEntryState>(
                         listenWhen: (previous, current) =>
-                            previous.submitFamilyMemebersStatus ==
+                            previous.submitFamilyMemebersNumberStatus ==
                                 RequestStatus.failure ||
-                            current.submitFamilyMemebersStatus ==
+                            current.submitFamilyMemebersNumberStatus ==
                                 RequestStatus.success,
                         listener: (context, state) async {
-                          if (state.submitFamilyMemebersStatus ==
+                          if (state.submitFamilyMemebersNumberStatus ==
                               RequestStatus.success) {
                             showSuccess(state.message);
                             await context.pushNamed(
@@ -136,12 +137,12 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                         },
                         builder: (context, state) {
                           return AppCustomButton(
-                            isLoading: state.submitFamilyMemebersStatus ==
+                            isLoading: state.submitFamilyMemebersNumberStatus ==
                                 RequestStatus.loading,
                             title: "ارسال",
                             onPressed: () async {
                               await context
-                                  .read<PersonalGeneticDiseasesDataEntryCubit>()
+                                  .read<GeneticDiseasesDataEntryCubit>()
                                   .uploadFamilyMemebersNumber();
                             },
                             isEnabled: true,
