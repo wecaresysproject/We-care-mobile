@@ -150,6 +150,33 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  Future<void> getFamilyMembersNumbers() async {
+    final response =
+        await _geneticDiseasesDataEntryRepo.getFamilyMembersNumbers(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            familyMembersCount: result,
+            noOfBrothers: result.bro.toString(),
+            noOfSisters: result.sis.toString(),
+            noOfUncles: result.fatherSideUncle.toString(),
+            noOfAunts: result.fatherSideAunt.toString(),
+            noOfMaternalUncles: result.motherSideUncle.toString(),
+            noOfMaternalAunts: result.motherSideAunt.toString(),
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(message: error.errors.first),
+        );
+      },
+    );
+  }
+
   Future<void> uploadFamilyMemebersNumber() async {
     emit(
       state.copyWith(

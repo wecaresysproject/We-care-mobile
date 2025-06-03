@@ -21,7 +21,8 @@ class NumberOfFamilyMembersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GeneticDiseasesDataEntryCubit>(
-      create: (context) => getIt<GeneticDiseasesDataEntryCubit>(),
+      create: (context) =>
+          getIt<GeneticDiseasesDataEntryCubit>()..getFamilyMembersNumbers(),
       child: Scaffold(
         appBar: AppBar(),
         body: Stack(

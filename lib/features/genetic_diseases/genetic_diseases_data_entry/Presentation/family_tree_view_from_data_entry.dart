@@ -163,7 +163,10 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
   }
 
   Future<void> navigateToNextScreen(
-      BuildContext context, FamilyCodes code, String familyMemberName) async {
+    BuildContext context,
+    FamilyCodes code,
+    String familyMemberName,
+  ) async {
     final result = await context.pushNamed(
       Routes.familyMemeberGeneticDiseaseDataEntryView,
       arguments: {

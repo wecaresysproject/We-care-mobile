@@ -8,7 +8,6 @@ import 'package:we_care/features/genetic_diseases/data/models/family_member_gene
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_constants.dart';
-import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
 
 part 'genetic_diseases_services.g.dart';
 
@@ -94,5 +93,9 @@ abstract class GeneticDiseasesServices {
   @POST(GeneticDiseasesConstants.postGenticDiseaseForFamilyMember)
   Future<dynamic> postGenticDiseaseForFamilyMember(
     @Body() FamilyMemberGeneticDiseasesRequestBodyModel requestBody,
+  );
+  @GET(GeneticDiseasesConstants.getFamilyMembersNumbers)
+  Future<dynamic> getFamilyMembersNumbers(
+    @Query("language") String language,
   );
 }

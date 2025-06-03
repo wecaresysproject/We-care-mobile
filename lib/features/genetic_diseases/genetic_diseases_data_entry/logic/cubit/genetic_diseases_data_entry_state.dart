@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_count_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 
@@ -9,6 +10,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus geneticDiseaseDataEntryStatus;
   final RequestStatus submitFamilyMemebersNumberStatus;
   final RequestStatus submitMemberGeneticDiseaseDetailsStatus;
+  final FamilyMemberCount? familyMembersCount;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
   final String? selectedDiseaseStatus; // حالة المرض
@@ -55,6 +57,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
     this.submitFamilyMemebersNumberStatus = RequestStatus.initial,
     this.submitMemberGeneticDiseaseDetailsStatus = RequestStatus.initial,
+    this.familyMembersCount,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
@@ -102,6 +105,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           geneticDiseaseDataEntryStatus: RequestStatus.initial,
           submitFamilyMemebersNumberStatus: RequestStatus.initial,
           submitMemberGeneticDiseaseDetailsStatus: RequestStatus.initial,
+          familyMembersCount: null,
           isFormValidated: false,
           message: '',
           isEditMode: false,
@@ -148,6 +152,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     RequestStatus? geneticDiseaseDataEntryStatus,
     RequestStatus? submitFamilyMemebersNumberStatus,
     RequestStatus? submitMemberGeneticDiseaseDetailsStatus,
+    FamilyMemberCount? familyMembersCount,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
@@ -195,6 +200,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           this.submitFamilyMemebersNumberStatus,
       geneticDiseaseDataEntryStatus:
           geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
+      familyMembersCount: familyMembersCount ?? this.familyMembersCount,
       submitMemberGeneticDiseaseDetailsStatus:
           submitMemberGeneticDiseaseDetailsStatus ??
               this.submitMemberGeneticDiseaseDetailsStatus,
@@ -255,6 +261,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
         geneticDiseaseDataEntryStatus,
         submitFamilyMemebersNumberStatus,
         submitMemberGeneticDiseaseDetailsStatus,
+        familyMembersCount,
         isFormValidated,
         message,
         isEditMode,

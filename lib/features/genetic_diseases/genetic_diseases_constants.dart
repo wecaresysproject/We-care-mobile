@@ -22,6 +22,7 @@ class GeneticDiseasesConstants {
       "GeneticDiseasesAPIs/family-relation";
   static const postGenticDiseaseForFamilyMember =
       "GeneticDiseasesAPIs/family-tree";
+  static const getFamilyMembersNumbers = "GeneticDiseasesAPIs/family-relation";
   //View Entry
 
   //filters
