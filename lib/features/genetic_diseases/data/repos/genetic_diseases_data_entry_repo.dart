@@ -7,6 +7,7 @@ import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_count_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
@@ -165,18 +166,6 @@ class GeneticDiseasesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<String>> uploadFamilyMemebersNumber({
-    required FamilyMembersModel requestBody,
-  }) async {
-    try {
-      final response = await _geneticDiseasesServices
-          .uploadFamilyMemebersNumber(requestBody);
-      return ApiResult.success(response['message']);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
   Future<ApiResult<String>> postGenticDiseaseForFamilyMember({
     required FamilyMemberGeneticDiseasesRequestBodyModel requestBody,
   }) async {
@@ -197,6 +186,53 @@ class GeneticDiseasesDataEntryRepo {
         language,
       );
       return ApiResult.success(FamilyMemberCount.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> editPersonalGeneticDiseases({
+    required String id,
+    required String language,
+    required PersonalGeneticDiseaseRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices
+          .editPersonalGeneticDiseases(id, language, requestBody);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> editGeneticDiseasesForFamilyMember({
+    required String memberName,
+    required String memberCode,
+    required String language,
+    required FamilyMemberGeneticsDiseasesResponseModel requestBody,
+  }) async {
+    try {
+      final response =
+          await _geneticDiseasesServices.editGeneticDiseasesForFamilyMember(
+        memberName,
+        memberCode,
+        language,
+        requestBody,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> editNoOfFamilyMembers({
+    required FamilyMembersModel requestBody,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices.editNoOfFamilyMembers(
+        requestBody,
+      );
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

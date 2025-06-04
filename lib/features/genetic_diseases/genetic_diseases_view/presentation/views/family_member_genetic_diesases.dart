@@ -39,7 +39,27 @@ class FamilyMemberGeneticDiseases extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  DetailsViewAppBar(title: familyMemberName),
+                  DetailsViewAppBar(
+                    title: familyMemberName,
+                    editFunction: () async {
+                      // final result = await Navigator.pushNamed(
+                      //   context,
+                      //   Routes.familyMemberGeneticDiseases,
+                      //   arguments: {
+                      //     "id": familyMemberCode,
+                      //     "familyMemberName": familyMemberName,
+                      //   },
+                      // );
+                      // if (result == true && context.mounted) {
+                      //   await context
+                      //       .read<GeneticsDiseasesViewCubit>()
+                      //       .getFamilyMembersGeneticDiseases(
+                      //         familyMemberCode: familyMemberCode,
+                      //         familyMemberName: familyMemberName,
+                      //       );
+                      // }
+                    },
+                  ),
                   verticalSpacing(24),
                   Text(
                     "“عند الضغط على المرض الوراثى تظهر جميع التفاصيل ”",
@@ -75,8 +95,7 @@ class FamilyMemberGeneticDiseases extends StatelessWidget {
 }
 
 class GeneticDiseaseTable extends StatelessWidget {
- 
- const GeneticDiseaseTable({super.key});
+  const GeneticDiseaseTable({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +135,7 @@ class GeneticDiseaseTable extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: DataTable(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            headingRowColor: MaterialStateProperty.all(
+            headingRowColor: WidgetStateProperty.all(
                 const Color(0xFF014C8A)), // Header Background Color
             headingTextStyle: TextStyle(
                 color: Colors.white,

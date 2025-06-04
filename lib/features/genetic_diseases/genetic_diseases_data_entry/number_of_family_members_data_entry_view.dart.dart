@@ -127,7 +127,8 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                         listener: (context, state) async {
                           if (state.submitFamilyMemebersNumberStatus ==
                               RequestStatus.success) {
-                            showSuccess(state.message);
+                            await showSuccess(state.message);
+                            if (!context.mounted) return;
                             await context.pushNamed(
                               Routes.familyTreeViewFromDataEntry,
                             );
@@ -143,7 +144,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                             onPressed: () async {
                               await context
                                   .read<GeneticDiseasesDataEntryCubit>()
-                                  .uploadFamilyMemebersNumber();
+                                  .editNoOfFamilyMembers();
                             },
                             isEnabled: true,
                           );

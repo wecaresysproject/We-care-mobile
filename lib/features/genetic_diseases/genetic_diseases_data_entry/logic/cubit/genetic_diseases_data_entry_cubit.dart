@@ -56,6 +56,34 @@ class GeneticDiseasesDataEntryCubit
     }
   }
 
+  // Future<void> loadGeneticDiseasesForEditing(
+  //   model.DetailedComplaintModel emergencyComplaint,
+  //   S locale,
+  // ) async {
+  //   await storeTemporaryGeneticDiseasesForFamilyMember(
+  //     emergencyComplaint.mainSymptoms,
+  //   );
+
+  //   emit(
+  //     state.copyWith(
+  //       isEditMode: true,
+  //       updatedDocumentId: emergencyComplaint.id,
+  //     ),
+  //   );
+  // }
+
+  Future<void> storeTemporaryGeneticDiseasesForFamilyMember(
+    List<NewGeneticDiseaseModel> geneticDiseases,
+  ) async {
+    final genticDiseasesBox =
+        Hive.box<NewGeneticDiseaseModel>("medical_genetic_diseases");
+
+    // Loop through the list and store each disease in the box
+    for (var oldDisease in geneticDiseases) {
+      await genticDiseasesBox.add(oldDisease);
+    }
+  }
+
   Future<void> postGenticDiseaseForFamilyMember({
     required String familyMemberName,
     required String memberCode,
@@ -150,6 +178,42 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  Future<void> editNoOfFamilyMembers() async {
+    emit(
+      state.copyWith(
+        submitFamilyMemebersNumberStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.editNoOfFamilyMembers(
+      requestBody: FamilyMembersModel(
+        numberOfBrothers: state.noOfBrothers.toInt,
+        numberOfSisters: state.noOfSisters.toInt,
+        numberOfFatherSideUncles: state.noOfUncles.toInt,
+        numberOfFatherSideAunts: state.noOfAunts.toInt,
+        numberOfMotherSideUncles: state.noOfMaternalUncles.toInt,
+        numberOfMotherSideAunts: state.noOfMaternalAunts.toInt,
+      ),
+    );
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            message: result,
+            submitFamilyMemebersNumberStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            submitFamilyMemebersNumberStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getFamilyMembersNumbers() async {
     final response =
         await _geneticDiseasesDataEntryRepo.getFamilyMembersNumbers(
@@ -172,44 +236,6 @@ class GeneticDiseasesDataEntryCubit
       failure: (error) {
         emit(
           state.copyWith(message: error.errors.first),
-        );
-      },
-    );
-  }
-
-  Future<void> uploadFamilyMemebersNumber() async {
-    emit(
-      state.copyWith(
-        submitFamilyMemebersNumberStatus: RequestStatus.loading,
-      ),
-    );
-    final response =
-        await _geneticDiseasesDataEntryRepo.uploadFamilyMemebersNumber(
-      requestBody: FamilyMembersModel(
-        numberOfBrothers: state.noOfBrothers.toInt,
-        numberOfSisters: state.noOfSisters.toInt,
-        numberOfFatherSideUncles: state.noOfUncles.toInt,
-        numberOfFatherSideAunts: state.noOfAunts.toInt,
-        numberOfMotherSideUncles: state.noOfMaternalUncles.toInt,
-        numberOfMotherSideAunts: state.noOfMaternalAunts.toInt,
-      ),
-    );
-
-    response.when(
-      success: (successMessage) {
-        emit(
-          state.copyWith(
-            submitFamilyMemebersNumberStatus: RequestStatus.success,
-            message: successMessage,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            submitFamilyMemebersNumberStatus: RequestStatus.failure,
-            message: error.errors.first,
-          ),
         );
       },
     );
