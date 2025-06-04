@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
@@ -71,10 +72,6 @@ abstract class GeneticDiseasesServices {
     @Query("language") String language,
     @Query("userType") String userType,
   );
-  @POST(GeneticDiseasesConstants.uploadFamilyMemebersNumber)
-  Future<dynamic> uploadFamilyMemebersNumber(
-    @Body() FamilyMembersModel requestBody,
-  );
 
   @GET(GeneticDiseasesConstants.familyMembeberGenaticDisease)
   Future<dynamic> getFamilyMemberGeneticDisease(
@@ -97,5 +94,22 @@ abstract class GeneticDiseasesServices {
   @GET(GeneticDiseasesConstants.getFamilyMembersNumbers)
   Future<dynamic> getFamilyMembersNumbers(
     @Query("language") String language,
+  );
+  @PUT(GeneticDiseasesConstants.editPersonalGeneticDiseases)
+  Future<dynamic> editPersonalGeneticDiseases(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Body() PersonalGeneticDiseaseRequestBodyModel requestBody,
+  );
+  @PUT(GeneticDiseasesConstants.editGeneticDiseasesForFamilyMember)
+  Future<dynamic> editGeneticDiseasesForFamilyMember(
+    @Query("name") String memberName,
+    @Query("code") String memberCode,
+    @Query("language") String language,
+    @Body() FamilyMemberGeneticsDiseasesResponseModel requestBody,
+  );
+  @PUT(GeneticDiseasesConstants.editNoOfFamilyMembers)
+  Future<dynamic> editNoOfFamilyMembers(
+    @Body() FamilyMembersModel requestBody,
   );
 }

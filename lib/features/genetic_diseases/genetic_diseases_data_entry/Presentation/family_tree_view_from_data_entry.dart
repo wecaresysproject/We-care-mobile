@@ -58,6 +58,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
                     );
                   }
                   return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// الجهة اليمنى (الأب)
                       buildFatherRelativesPart(

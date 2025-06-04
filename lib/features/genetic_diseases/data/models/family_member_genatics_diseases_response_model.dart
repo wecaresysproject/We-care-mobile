@@ -26,8 +26,7 @@ class FamilyMemberGeneticsDiseasesResponseModel {
 }
 
 @JsonSerializable()
-class GeneticDisease{
-
+class GeneticDisease {
   String geneticDisease;
   String inheritanceType;
   String diseaseStatus;
