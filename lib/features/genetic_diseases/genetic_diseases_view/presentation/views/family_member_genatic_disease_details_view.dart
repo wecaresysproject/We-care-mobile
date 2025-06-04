@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -21,7 +22,7 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
     return BlocProvider<GeneticsDiseasesViewCubit>(
       create: (context) => getIt<GeneticsDiseasesViewCubit>()
         ..getFamilyMemberGeneticDiseaseDetails(
-          disease: 'نقص إنزيم G6PD (الفوال)',
+          disease: disease,
         ),
       child: Scaffold(
         appBar: AppBar(
@@ -51,19 +52,13 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
                 children: [
                   DetailsViewAppBar(
                     title: disease,
+                    shareFunction: () => shareDetails(diseaseDetails),
                   ),
 
                   SizedBox(height: 16.h),
                   DetailsViewInfoTile(
                     title: "المرض الوراثى",
                     value: diseaseDetails.geneticDisease!,
-                    icon: 'assets/images/tumor_icon.png',
-                    isExpanded: true,
-                  ),
-                  SizedBox(height: 16.h),
-                  DetailsViewInfoTile(
-                    title: "حالة المرض",
-                    value: diseaseDetails.diseaseStatuses!,
                     icon: 'assets/images/tumor_icon.png',
                     isExpanded: true,
                   ),
@@ -225,4 +220,30 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
       ),
     );
   }
+}
+
+void shareDetails(GenaticDiseaseDetails diseaseDetails) {
+
+      final String shareText = '''
+📌 المرض الوراثي: ${diseaseDetails.geneticDisease}
+📂 التصنيف الطبي المرضي: ${diseaseDetails.medicalClassification}
+🧬 نوع الوراثة: ${diseaseDetails.inheritanceType}
+📝 الوصف التفصيلي: ${diseaseDetails.detailedDescription ?? 'لا يوجد'}
+🧬 الجين المسؤول: ${diseaseDetails.responsibleGene}
+📊 معدل الانتشار: ${diseaseDetails.prevalenceRate}
+⏳ العمر النموذجي للظهور: ${diseaseDetails.typicalOnsetAge}
+🚻 الجنس المعني: ${diseaseDetails.affectedGender}
+⚠️ مستوى المخاطرة: ${diseaseDetails.riskLevel?.join(', ') ?? 'غير متوفر'}
+
+🩺 الأعراض الرئيسية:
+${diseaseDetails.mainSymptoms?.map((s) => '• $s').join('\n') ?? 'لا يوجد'}
+
+🔬 الفحوصات التشخيصية:
+${diseaseDetails.diagnosticTests?.map((t) => '• $t').join('\n') ?? 'لا يوجد'}
+
+💊 العلاجات المتاحة:
+${diseaseDetails.availableTreatments?.map((t) => '• $t').join('\n') ?? 'لا يوجد'}
+''';
+      Share.share(shareText);
+    
 }

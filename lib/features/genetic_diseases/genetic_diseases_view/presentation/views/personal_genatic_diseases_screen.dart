@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -27,15 +26,6 @@ class PersonalGenaticDiseasesScreen extends StatelessWidget {
              DetailsViewAppBar(title: 'الامراض الوراثية',
               showActionButtons: false,),
               verticalSpacing(24),
-              Align(
-                alignment: Alignment.topLeft,
-                child: SizedBox(
-                  width: 100.w,
-                  height: 35.h,
-                  child: CustomActionButton(onTap: (){}, title: 'تعديل', icon: 'assets/images/edit.png',),
-                ),
-              ),
-              verticalSpacing(20),
               Text(
                 "“عند الضغط على المرض الوراثى تظهر جميع التفاصيل”",
                 textAlign: TextAlign.center,
@@ -59,6 +49,21 @@ class PersonalGenaticDiseasesScreen extends StatelessWidget {
 
 class GeneticDiseaseTable extends StatelessWidget {
   final List<Map<String, String>> mockData = [
+    {
+      'disease': 'فقر الدم المنجلي',
+      'propability': 'مرتفعه',
+      'recommendation': 'هذا النص مثال',
+    },
+    {
+      'disease': 'التليف الكيسي',
+      'propability': 'مرتفع',
+      'recommendation': 'هذا النص مثال',
+    },
+    {
+      'disease': 'هيموفيليا أ',
+      'propability': 'متوسط',
+      'recommendation': 'هذا النص مثال',
+    },
     {
       'disease': 'فقر الدم المنجلي',
       'propability': 'مرتفعه',

@@ -88,6 +88,62 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     );
   }
 
+  Future<void> getPersonalGeneticDiseaseDetails({
+    required String disease,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await geneticDiseasesViewRepo.getPersonalGeneticDiseaseDetails(
+      'ar',
+      'Patient',
+      disease,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          personalGeneticDiseaseDetails: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
+
+ 
+Future<void> deleteFamilyMemberbyNameAndCode({
+
+     required String name,
+     required String code,
+   }) async{
+  final result = await  geneticDiseasesViewRepo.deleteFamilyMemberbyNameAndCode(
+       'ar',
+       'Patient',
+       code,
+       name,
+     );
+     result.when(
+       success: (data) {
+         emit(state.copyWith(
+           message: data,
+           requestStatus: RequestStatus.success,
+           isDeleteRequest: true,
+         ));
+       },
+       failure: (error) {
+         emit(state.copyWith(
+           message: error.errors.first,
+           requestStatus: RequestStatus.failure,
+           isDeleteRequest: true,
+         ));
+       },
+     );
+   }
+
   // Future<void> getDefectedTooth() async {
   //   emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));
   //   final result = await dentalRepository.getDefectedTooth(

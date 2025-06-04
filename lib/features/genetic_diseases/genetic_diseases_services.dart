@@ -112,4 +112,19 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> editNoOfFamilyMembers(
     @Body() FamilyMembersModel requestBody,
   );
+
+  @GET(GeneticDiseasesConstants.getpersonalGeneticDiseaseDetails)
+  Future<dynamic> getpersonalGeneticDiseaseDetails(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("geneticDisease") String diseaseType,
+  );
+
+  @DELETE(GeneticDiseasesConstants.deleteFamilyMemberbyNameAndCode)
+  Future<dynamic> deleteFamilyMemberbyNameAndCode(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("name") String name,
+    @Query("code") String code,
+  );
 }

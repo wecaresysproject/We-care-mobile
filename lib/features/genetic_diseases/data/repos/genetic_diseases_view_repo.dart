@@ -3,7 +3,9 @@ import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
 
 class GeneticDiseasesViewRepo {
   final GeneticDiseasesServices _geneticDiseasesServices;
@@ -72,6 +74,47 @@ class GeneticDiseasesViewRepo {
       );
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));
+    }
+  }
+
+  Future<ApiResult<PersonalGeneticDiseasDetails>>
+      getPersonalGeneticDiseaseDetails(
+    String language,
+    String userType,
+    String disease,
+  ) async {
+    try {
+      final response =
+          await _geneticDiseasesServices.getpersonalGeneticDiseaseDetails(
+        language,
+        userType,
+        disease,
+      );
+      return ApiResult.success(
+        PersonalGeneticDiseasDetails.fromJson(
+            response['data'] as Map<String, dynamic>),
+      );
+    } catch (e) {
+      return ApiResult.failure(ApiErrorHandler.handle(e));
+    }
+  }
+
+ Future<ApiResult<String>> deleteFamilyMemberbyNameAndCode(
+    String language,
+    String userType,
+    String code,
+    String name,
+  ) async {
+    try {
+  final response = await _geneticDiseasesServices.deleteFamilyMemberbyNameAndCode(
+       language,
+        userType,
+        name,
+        code,
+      );
+      return ApiResult.success(response['message']);
+    } catch (e) {
+      throw ApiErrorHandler.handle(e);
     }
   }
 }

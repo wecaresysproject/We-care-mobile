@@ -24,7 +24,6 @@ class FamilyNameGeneticDiseaseDetialsResponseModel {
 @JsonSerializable()
 class GenaticDiseaseDetails {
   String? geneticDisease;
-  String? diseaseStatuses;
   String? medicalClassification;
   String? detailedDescription;
   String? inheritanceType;
@@ -40,7 +39,6 @@ class GenaticDiseaseDetails {
 
   GenaticDiseaseDetails(
       {this.geneticDisease,
-      this.diseaseStatuses,
       this.medicalClassification,
       this.detailedDescription,
       this.inheritanceType,
