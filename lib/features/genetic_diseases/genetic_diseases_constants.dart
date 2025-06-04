@@ -37,4 +37,8 @@ class GeneticDiseasesConstants {
       "GeneticDiseasesAPIs/classifications";
   static const getFamilyMembersGeneticDiseasesDetails =
       "GeneticDiseasesAPIs/genetic-disease-details-by-disease-type";
+  static const getpersonalGeneticDiseaseDetails =
+      "GeneticDiseasesAPIs/medical-history";
+  static const deleteFamilyMemberbyNameAndCode =
+      "GeneticDiseasesAPIs/family-tree";
 }

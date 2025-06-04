@@ -4,6 +4,8 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
 
 @immutable
 class GeneticsDiseasesViewState extends Equatable {
@@ -18,6 +20,7 @@ class GeneticsDiseasesViewState extends Equatable {
   final FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases;
   final FamilyNameGeneticDiseaseDetialsResponseModel?
       familyMemberGeneticDiseaseDetails;
+  final PersonalGeneticDiseasDetails?     personalGeneticDiseaseDetails;
 
   const GeneticsDiseasesViewState({
     this.requestStatus = RequestStatus.initial,
@@ -30,6 +33,7 @@ class GeneticsDiseasesViewState extends Equatable {
     this.familyMembersNames,
     this.familyMemberGeneticDiseases,
     this.familyMemberGeneticDiseaseDetails,
+    this.personalGeneticDiseaseDetails
   });
   const GeneticsDiseasesViewState.initial()
       : requestStatus = RequestStatus.initial,
@@ -40,6 +44,7 @@ class GeneticsDiseasesViewState extends Equatable {
         yearsFilter = null,
         familyMemberGeneticDiseases = null,
         familyMemberGeneticDiseaseDetails = null,
+        personalGeneticDiseaseDetails = null,
         familyMembersNames = null,
         isDeleteRequest = false;
 
@@ -47,7 +52,7 @@ class GeneticsDiseasesViewState extends Equatable {
   
   @override
   List<Object?> get props => [message, requestStatus, isLoadingMore,  
-   hasMore, currentPage, isDeleteRequest, yearsFilter, familyMembersNames,familyMemberGeneticDiseases, familyMemberGeneticDiseaseDetails];
+   hasMore, currentPage, isDeleteRequest, yearsFilter, familyMembersNames,familyMemberGeneticDiseases, familyMemberGeneticDiseaseDetails, personalGeneticDiseaseDetails];
 
   GeneticsDiseasesViewState copyWith({
     String? message,
@@ -61,6 +66,7 @@ class GeneticsDiseasesViewState extends Equatable {
     FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
     FamilyNameGeneticDiseaseDetialsResponseModel?
         familyMemberGeneticDiseaseDetails,
+        PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails
   }) {
     return GeneticsDiseasesViewState(
       message: message ?? this.message,
@@ -72,6 +78,7 @@ class GeneticsDiseasesViewState extends Equatable {
       yearsFilter: yearsFilter ?? this.yearsFilter,
       familyMemberGeneticDiseases: familyMemberGeneticDiseases ?? this.familyMemberGeneticDiseases,
       familyMembersNames: familyMembersNames ?? this.familyMembersNames,
+      personalGeneticDiseaseDetails: personalGeneticDiseaseDetails ?? this.personalGeneticDiseaseDetails,
       familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ?? this.familyMemberGeneticDiseaseDetails,
     );
   }

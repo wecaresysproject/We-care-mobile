@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
@@ -21,6 +23,31 @@ class FamilyMemberGeneticDiseases extends StatelessWidget {
   final String familyMemberCode;
   final String familyMemberName;
 
+  void shareDetails(BuildContext context, GeneticsDiseasesViewState state) {
+    if (state.familyMemberGeneticDiseases == null ||
+        state.familyMemberGeneticDiseases!.geneticDiseases == null ||
+        state.familyMemberGeneticDiseases!.geneticDiseases!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("لا توجد بيانات لمشاركتها")),
+      );
+      return;
+    }
+
+    final List<String> detailsList = state
+        .familyMemberGeneticDiseases!.geneticDiseases!
+        .map((disease) =>
+            'المرض الوراثي: ${disease.geneticDisease}\nنوع الوراثة: ${disease.inheritanceType}\nحالة المرض: ${disease.diseaseStatus}')
+        .toList();
+
+    final String shareContent = '''
+تفاصيل الأمراض الوراثية للعضو: $familyMemberName (${getFamilyMemberCode(familyMemberCode)})
+
+${detailsList.join("\n\n")}
+''';
+
+    Share.share(shareContent);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GeneticsDiseasesViewCubit>(
@@ -33,62 +60,64 @@ class FamilyMemberGeneticDiseases extends StatelessWidget {
           appBar: AppBar(
             toolbarHeight: 0,
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  DetailsViewAppBar(
-                    title: familyMemberName,
-                    editFunction: () async {
-                      // final result = await Navigator.pushNamed(
-                      //   context,
-                      //   Routes.familyMemberGeneticDiseases,
-                      //   arguments: {
-                      //     "id": familyMemberCode,
-                      //     "familyMemberName": familyMemberName,
-                      //   },
-                      // );
-                      // if (result == true && context.mounted) {
-                      //   await context
-                      //       .read<GeneticsDiseasesViewCubit>()
-                      //       .getFamilyMembersGeneticDiseases(
-                      //         familyMemberCode: familyMemberCode,
-                      //         familyMemberName: familyMemberName,
-                      //       );
-                      // }
-                    },
-                  ),
-                  verticalSpacing(24),
-                  Text(
-                    "“عند الضغط على المرض الوراثى تظهر جميع التفاصيل ”",
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                      color: AppColorsManager.textColor,
-                      fontFamily: "Rubik",
-                      fontSize: 20.sp,
-                      fontWeight: FontWeightHelper.medium,
-                    ),
-                  ),
-                  verticalSpacing(20),
-                  Center(
-                    child: Text(
-                      "$familyMemberName : ${getFamilyMemberCode(familyMemberCode)}",
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      style: AppTextStyles.font20blackWeight600.copyWith(
-                        color: AppColorsManager.mainDarkBlue,
-                        fontWeight: FontWeightHelper.medium,
+          body: BlocConsumer<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
+            listener: (context, state) {
+              if(state.requestStatus == RequestStatus.success&&state.isDeleteRequest){
+                Navigator.pop(context);
+                showSuccess(state.message!);
+              }
+              if (state.requestStatus == RequestStatus.failure&&state.isDeleteRequest) {
+                showError(state.message!);
+              }
+            },
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      DetailsViewAppBar(
+                        title: familyMemberName,
+                        shareFunction: () => shareDetails(
+                          context,state
+                        ),
+                        // deleteFunction: () => getIt<GeneticsDiseasesViewCubit>().deleteFamilyMemberbyNameAndCode(
+                        //   name: familyMemberName,
+                        //   code: familyMemberCode,
+                        // ),
                       ),
-                    ),
+                      verticalSpacing(24),
+                      Text(
+                        "“عند الضغط على المرض الوراثى تظهر جميع التفاصيل ”",
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                          color: AppColorsManager.textColor,
+                          fontFamily: "Rubik",
+                          fontSize: 20.sp,
+                          fontWeight: FontWeightHelper.medium,
+                        ),
+                      ),
+                      verticalSpacing(20),
+                      Center(
+                        child: Text(
+                          "$familyMemberName : ${getFamilyMemberCode(familyMemberCode)}",
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          style: AppTextStyles.font20blackWeight600.copyWith(
+                            color: AppColorsManager.mainDarkBlue,
+                            fontWeight: FontWeightHelper.medium,
+                          ),
+                        ),
+                      ),
+                      verticalSpacing(20),
+                      GeneticDiseaseTable()
+                    ],
                   ),
-                  verticalSpacing(20),
-                  GeneticDiseaseTable()
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           )),
     );
   }
@@ -152,7 +181,7 @@ class GeneticDiseaseTable extends StatelessWidget {
             columns: [
               _buildDataColumn("المرض الوراثي"),
               _buildDataColumn("نوع الوراثة"),
-              _buildDataColumn("مستوى المخاطرة"),
+              _buildDataColumn("حالة المرض"),
             ],
             rows:
                 state.familyMemberGeneticDiseases!.geneticDiseases!.map((data) {
