@@ -22,14 +22,7 @@ class MedicalDataEntryCategoryTypesView extends StatelessWidget {
             haveBackArrow: true,
           ),
           verticalSpacing(24),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              BasicDataAndBiometricMeasurementsCategories(),
-            ],
-          ),
+          BasicDataAndBiometricMeasurementsCategories(),
           DataEntryCategoriesGridView(),
         ],
       ).paddingSymmetricHorizontal(16),

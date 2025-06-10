@@ -63,13 +63,14 @@ class _MedicalCategoriesTypesGridViewState
       future: _ticketsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Expanded(child: const Center(child: CircularProgressIndicator()));
+          return Expanded(
+              child: const Center(child: CircularProgressIndicator()));
         }
         return Expanded(
           child: GridView.builder(
             itemCount: categoriesView.length,
             physics: const BouncingScrollPhysics(),
-            clipBehavior: Clip.none,
+            padding: EdgeInsets.symmetric(vertical: 32.h),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisExtent:
@@ -79,7 +80,7 @@ class _MedicalCategoriesTypesGridViewState
               mainAxisSpacing: 32.h,
             ),
             itemBuilder: (context, index) {
-              final counts = snapshot.data!; 
+              final counts = snapshot.data!;
               final categoryName = categoriesView[index]["title"]!;
               final count = getCategoryCountByArabicTitle(counts, categoryName);
 
@@ -91,7 +92,7 @@ class _MedicalCategoriesTypesGridViewState
                 isActive: categoriesView[index]["isActive"],
                 onTap: categoriesView[index]["isActive"]
                     ? () async {
-                         await context
+                        await context
                             .pushNamed(categoriesView[index]["route"]!);
                         // Refresh data when returning from navigated screen
                         _refreshData();
@@ -112,14 +113,14 @@ class MedicalCategoryItem extends StatelessWidget {
   final String routeName;
   final int? notificationCount;
   final bool isActive;
-  final VoidCallback? onTap; 
+  final VoidCallback? onTap;
 
   const MedicalCategoryItem({
     super.key,
     required this.title,
     required this.imagePath,
     required this.routeName,
-    this.notificationCount, 
+    this.notificationCount,
     this.isActive = false,
     this.onTap,
   });

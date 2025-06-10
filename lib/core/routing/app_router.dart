@@ -312,6 +312,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const BiometricsDataEntryView(),
         );
+      case Routes.biometricsView:
+        return MaterialPageRoute(
+          builder: (context) =>
+              const BiometricsDataEntryView(), //!To be changed later
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }
