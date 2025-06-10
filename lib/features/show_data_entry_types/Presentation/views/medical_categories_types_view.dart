@@ -45,6 +45,9 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
           imagePath: "assets/images/medical_tools_img.png",
           routeName: Routes.biometricsView,
           isActive: true,
+          onTap: () {
+            Navigator.pushNamed(context, Routes.biometricsView);
+          },
         ),
         MedicalCategoryItem(
           title: "البيانات الاساسية",
