@@ -4,7 +4,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 
 @immutable
 class BiometricsDataEntryState extends Equatable {
-  final RequestStatus medicinesDataEntryStatus;
+  final RequestStatus submitBiometricDataStatus;
 
   final bool isFormValidated;
 
@@ -12,7 +12,7 @@ class BiometricsDataEntryState extends Equatable {
   final String message; // error or success message
 
   const BiometricsDataEntryState({
-    this.medicinesDataEntryStatus = RequestStatus.initial,
+    this.submitBiometricDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
@@ -20,21 +20,21 @@ class BiometricsDataEntryState extends Equatable {
 
   const BiometricsDataEntryState.initialState()
       : this(
-          medicinesDataEntryStatus: RequestStatus.initial,
+          submitBiometricDataStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
         );
 
   BiometricsDataEntryState copyWith({
-    RequestStatus? medicinesDataEntryStatus,
+    RequestStatus? submitBiometricDataStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
   }) {
     return BiometricsDataEntryState(
-      medicinesDataEntryStatus:
-          medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
+      submitBiometricDataStatus:
+          submitBiometricDataStatus ?? this.submitBiometricDataStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -43,7 +43,7 @@ class BiometricsDataEntryState extends Equatable {
 
   @override
   List<Object?> get props => [
-        medicinesDataEntryStatus,
+        submitBiometricDataStatus,
         isFormValidated,
         isEditMode,
         message,
