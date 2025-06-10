@@ -5,6 +5,7 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
 
 class BiometricsDataEntryView extends StatelessWidget {
@@ -37,7 +38,6 @@ class BiometricsDataEntryView extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                verticalSpacing(24),
                 BiometricSkeletonSection(),
               ],
             ),
@@ -75,12 +75,10 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 60.h,
             left: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.favorite,
               label: 'نبضات\nالقلب',
-              color: const Color(0xFFE74C3C),
-              backgroundColor: const Color(0xFFFFE8E6),
               onTap: () =>
                   _showMeasurementDialog(context, 'نبضات القلب', 'bpm'),
+              image: 'assets/images/heart_beat.png',
             ),
           ),
 
@@ -89,11 +87,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 180.h,
             left: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.water_drop,
               label: 'الضغط',
-              color: const Color(0xFF3498DB),
-              backgroundColor: const Color(0xFFE3F2FD),
               onTap: () => _showMeasurementDialog(context, 'ضغط الدم', 'mmHg'),
+              image: 'assets/images/blood-pressure.png',
             ),
           ),
 
@@ -102,12 +98,10 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 300.h,
             left: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.thermostat,
               label: 'درجة الحرارة',
-              color: const Color(0xFFFF9800),
-              backgroundColor: const Color(0xFFFFF3E0),
               onTap: () =>
                   _showMeasurementDialog(context, 'درجة الحرارة', '°C'),
+              image: 'assets/images/temperature_level.png',
             ),
           ),
 
@@ -116,11 +110,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             bottom: 10.h,
             left: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.monitor_weight,
               label: 'الوزن',
-              color: const Color(0xFF9C27B0),
-              backgroundColor: const Color(0xFFF3E5F5),
               onTap: () => _showMeasurementDialog(context, 'الوزن', 'kg'),
+              image: 'assets/images/weight_level.png',
             ),
           ),
 
@@ -130,12 +122,10 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 60.h,
             right: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.air,
               label: 'مستوى\nالأكسجين',
-              color: const Color(0xFF00BCD4),
-              backgroundColor: const Color(0xFFE0F2F1),
               onTap: () =>
                   _showMeasurementDialog(context, 'مستوى الأكسجين', '%'),
+              image: 'assets/images/oxygen_level.png',
             ),
           ),
 
@@ -144,12 +134,10 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 180.h,
             right: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.bloodtype,
               label: 'سكر\nعشوائي',
-              color: const Color(0xFFFF5722),
-              backgroundColor: const Color(0xFFFBE9E7),
               onTap: () =>
                   _showMeasurementDialog(context, 'سكر الدم العشوائي', 'mg/dL'),
+              image: 'assets/images/glucose_level.png',
             ),
           ),
 
@@ -158,12 +146,10 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 300.h,
             right: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.science,
               label: 'سكر صائم',
-              color: const Color(0xFF795548),
-              backgroundColor: const Color(0xFFEFEBE9),
               onTap: () =>
                   _showMeasurementDialog(context, 'سكر الدم الصائم', 'mg/dL'),
+              image: 'assets/images/glucose_level.png',
             ),
           ),
 
@@ -172,11 +158,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             bottom: 10.h,
             right: 0,
             child: BiometricMeasurementButton(
-              icon: Icons.height,
               label: 'الطول',
-              color: const Color(0xFF4CAF50),
-              backgroundColor: const Color(0xFFE8F5E8),
               onTap: () => _showMeasurementDialog(context, 'الطول', 'cm'),
+              image: 'assets/images/ruler.png',
             ),
           ),
         ],
@@ -191,6 +175,13 @@ class BiometricSkeletonSection extends StatelessWidget {
       builder: (context) => BiometricInputDialog(
         measurement: measurement,
         unit: unit,
+        onSave: (categoryName, userInput) {
+          // context.read<BiometricsDataEntryCubit>().saveBiometricData(
+          //   categoryName: categoryName,
+          //   value: userInput,
+          //   unit: unit,
+          // );
+        },
       ),
     );
   }
@@ -199,79 +190,57 @@ class BiometricSkeletonSection extends StatelessWidget {
 class BiometricMeasurementButton extends StatelessWidget {
   const BiometricMeasurementButton({
     super.key,
-    required this.icon,
     required this.label,
-    required this.color,
-    required this.backgroundColor,
+    required this.image,
     required this.onTap,
-    this.value,
   });
 
-  final IconData icon;
   final String label;
-  final Color color;
-  final Color backgroundColor;
+  final String image;
   final VoidCallback onTap;
-  final String? value;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 70.w,
-        padding: EdgeInsets.symmetric(vertical: 12.h),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(color: color.withOpacity(0.2)),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
+      child: Column(
+        children: [
+          Container(
+            width: 54.w,
+            height: 44.h,
+            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18.r),
+              gradient: const LinearGradient(
+                colors: [Color(0xFFCDE1F8), Color(0xFFE7E9EB)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20.sp,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w600,
-                color: color,
-                height: 1.2,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (value != null) ...[
-              SizedBox(height: 4.h),
-              Text(
-                value!,
-                style: TextStyle(
-                  fontSize: 8.sp,
-                  color: Colors.grey[600],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.25),
+                  offset: const Offset(0, 2),
+                  blurRadius: 3,
+                  spreadRadius: 0,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ],
-        ),
+              ],
+            ),
+            child: Image.asset(
+              image,
+              width: 34.w,
+              height: 28.h,
+            ),
+          ),
+          verticalSpacing(6),
+          Text(
+            label,
+            style: AppTextStyles.font12blackWeight400.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColorsManager.mainDarkBlue,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -283,11 +252,14 @@ class BiometricInputDialog extends StatefulWidget {
     required this.measurement,
     required this.unit,
     this.isRating = false,
+    this.onSave, // Added callback parameter
   });
 
   final String measurement;
   final String unit;
   final bool isRating;
+  final Function(String categoryName, String userInput)?
+      onSave; // Callback function
 
   @override
   State<BiometricInputDialog> createState() => _BiometricInputDialogState();
@@ -441,7 +413,29 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                 onPressed: () {
                   final value =
                       widget.isRating ? _rating.toString() : _controller.text;
+
+                  // // Validate input
+                  // if (!widget.isRating && value.trim().isEmpty) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     SnackBar(
+                  //       content: Text('يرجى إدخال قيمة'),
+                  //       backgroundColor: Colors.red,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(8.r),
+                  //       ),
+                  //       behavior: SnackBarBehavior.floating,
+                  //     ),
+                  //   );
+                  //   return;
+                  // }
+
                   Navigator.pop(context);
+
+                  // Call the callback function with category name and user input
+                  if (widget.onSave != null) {
+                    widget.onSave!(widget.measurement, value);
+                  }
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
