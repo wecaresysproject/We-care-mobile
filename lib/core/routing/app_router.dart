@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_anatomy_view.dart';
@@ -306,6 +307,10 @@ class AppRouter {
       case Routes.geneticDiseaeseMainView:
         return MaterialPageRoute(
           builder: (context) => const GeneticDiseaeseMainView(),
+        );
+      case Routes.biometricsDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) => const BiometricsDataEntryView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
