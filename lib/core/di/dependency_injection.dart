@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
+import 'package:we_care/features/Biometrics/biometrics_services.dart';
+import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_repo.dart';
+import 'package:we_care/features/Biometrics/data/repos/biometrics_view_repo.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_repo.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
@@ -223,6 +227,11 @@ void setupAppCubits() {
       geneticDiseasesViewRepo: getIt<GeneticDiseasesViewRepo>(),
     ),
   );
+  getIt.registerFactory<BiometricsDataEntryCubit>(
+    () => BiometricsDataEntryCubit(
+      getIt<BiometricsDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -356,6 +365,17 @@ void setupAppRepos() {
       getIt<GeneticDiseasesServices>(),
     ),
   );
+  getIt.registerLazySingleton<BiometricsDataEntryRepo>(
+    () => BiometricsDataEntryRepo(
+      getIt<BiometricsServices>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<BiometricsViewRepo>(
+    () => BiometricsViewRepo(
+      biometricsServices: getIt<BiometricsServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -399,5 +419,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<GeneticDiseasesServices>(
     () => GeneticDiseasesServices(dio),
+  );
+  getIt.registerLazySingleton<BiometricsServices>(
+    () => BiometricsServices(dio),
   );
 }
