@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/smart_assistant_button_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
@@ -18,30 +20,45 @@ class BiometricsDataEntryView extends StatelessWidget {
       create: (context) => getIt<BiometricsDataEntryCubit>(),
       child: Scaffold(
         appBar: AppBar(),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomAppBarWidget(
-                  haveBackArrow: true,
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CustomAppBarWidget(
+                      haveBackArrow: true,
+                    ),
+                    verticalSpacing(24),
+                    Text(
+                      "ادخل ما تريد لإدخال\n رقم قياسه",
+                      style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                        color: Colors.black,
+                        fontFamily: "Rubik",
+                        fontWeight: FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    BiometricSkeletonSection(),
+                  ],
                 ),
-                verticalSpacing(24),
-                Text(
-                  "ادخل ما تريد لإدخال\n رقم قياسه",
-                  style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                    color: Colors.black,
-                    fontFamily: "Rubik",
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                BiometricSkeletonSection(),
-              ],
+              ),
             ),
-          ),
+            // Floating button at bottom-left
+            Positioned(
+              // top: 700.h,
+              bottom: 0,
+              left: 16.w,
+              child: SmartAssistantButton(
+                title: 'مساعد ذكي',
+                subtitle: 'إيمحوتب',
+                imagePath: "assets/images/qyasat_hayawya.png",
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -57,7 +74,7 @@ class BiometricSkeletonSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 500.h,
+      height: 540.h,
       child: Stack(
         children: [
           // Human body skeleton image - centered
@@ -84,7 +101,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Blood Pressure (الضغط)
           Positioned(
-            top: 180.h,
+            top: 170.h,
             left: 0,
             child: BiometricMeasurementButton(
               label: 'الضغط',
@@ -95,7 +112,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Temperature (درجة الحرارة)
           Positioned(
-            top: 300.h,
+            top: 280.h,
             left: 0,
             child: BiometricMeasurementButton(
               label: 'درجة الحرارة',
@@ -107,7 +124,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Weight (الوزن)
           Positioned(
-            bottom: 10.h,
+            bottom: 90.h,
             left: 0,
             child: BiometricMeasurementButton(
               label: 'الوزن',
@@ -131,7 +148,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Random Blood Sugar (سكر عشوائي)
           Positioned(
-            top: 180.h,
+            top: 170.h,
             right: 0,
             child: BiometricMeasurementButton(
               label: 'سكر\nعشوائي',
@@ -143,7 +160,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Fasting Blood Sugar (سكر صائم)
           Positioned(
-            top: 300.h,
+            top: 280.h,
             right: 0,
             child: BiometricMeasurementButton(
               label: 'سكر صائم',
@@ -155,7 +172,7 @@ class BiometricSkeletonSection extends StatelessWidget {
 
           // Height (الطول)
           Positioned(
-            bottom: 10.h,
+            bottom: 90.h,
             right: 0,
             child: BiometricMeasurementButton(
               label: 'الطول',
@@ -175,12 +192,12 @@ class BiometricSkeletonSection extends StatelessWidget {
       builder: (context) => BiometricInputDialog(
         measurement: measurement,
         unit: unit,
-        onSave: (categoryName, userInput) {
-          // context.read<BiometricsDataEntryCubit>().saveBiometricData(
-          //   categoryName: categoryName,
-          //   value: userInput,
-          //   unit: unit,
-          // );
+        onSave: (categoryName, userInput) async {
+          // await   context.read<BiometricsDataEntryCubit>().postBiometricsDataEntry(
+          //     categoryName: categoryName,
+          //     value: userInput,
+          //     unit: unit,
+          //   );
         },
       ),
     );
@@ -281,12 +298,12 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
           Container(
             padding: EdgeInsets.all(12.r),
             decoration: BoxDecoration(
-              color: const Color(0xFF4A90E2).withOpacity(0.1),
+              color: const Color(0xff014C8A).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.edit,
-              color: const Color(0xFF4A90E2),
+              color: AppColorsManager.mainDarkBlue,
               size: 24.sp,
             ),
           ),
@@ -296,7 +313,7 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF2C3E50),
+              color: AppColorsManager.mainDarkBlue,
             ),
             textAlign: TextAlign.center,
           ),
@@ -328,7 +345,7 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                   ),
                   suffixText: widget.unit,
                   suffixStyle: TextStyle(
-                    color: const Color(0xFF4A90E2),
+                    color: const Color(0xff014C8A),
                     fontWeight: FontWeight.w600,
                   ),
                   border: InputBorder.none,
@@ -401,7 +418,7 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                 child: Text(
                   'إلغاء',
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: AppColorsManager.warningColor,
                     fontSize: 16.sp,
                   ),
                 ),
@@ -410,47 +427,29 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
             SizedBox(width: 12.w),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final value =
                       widget.isRating ? _rating.toString() : _controller.text;
 
-                  // // Validate input
-                  // if (!widget.isRating && value.trim().isEmpty) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     SnackBar(
-                  //       content: Text('يرجى إدخال قيمة'),
-                  //       backgroundColor: Colors.red,
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(8.r),
-                  //       ),
-                  //       behavior: SnackBarBehavior.floating,
-                  //     ),
-                  //   );
-                  //   return;
-                  // }
+                  // Validate input
+                  if (!widget.isRating && value.trim().isEmpty) {
+                    await showError('يرجى إدخال قيمة');
+                    return;
+                  }
 
                   Navigator.pop(context);
 
                   // Call the callback function with category name and user input
                   if (widget.onSave != null) {
                     widget.onSave!(widget.measurement, value);
+                    await showSuccess(
+                        'تم حفظ ${widget.measurement}: $value ${widget.unit}');
                   }
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                          'تم حفظ ${widget.measurement}: $value ${widget.unit}'),
-                      backgroundColor: const Color(0xFF4CAF50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A90E2),
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.r),
@@ -459,9 +458,8 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                 ),
                 child: Text(
                   'حفظ',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.font20blackWeight600.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
                   ),
                 ),
               ),

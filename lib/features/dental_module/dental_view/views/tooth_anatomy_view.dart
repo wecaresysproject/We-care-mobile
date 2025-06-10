@@ -11,6 +11,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operations_view.dart';
+import 'package:we_care/features/dental_module/dental_view/views/widgets/guidance_information_item_conatiner.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
 class ToothAnatomyView extends StatelessWidget {
@@ -19,7 +20,9 @@ class ToothAnatomyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DentalViewCubit>(
-      create: (context) => getIt<DentalViewCubit>()..getDefectedTooth()..getToothFilters(),
+      create: (context) => getIt<DentalViewCubit>()
+        ..getDefectedTooth()
+        ..getToothFilters(),
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -81,22 +84,30 @@ class ToothAnatomyView extends StatelessWidget {
                                 title: "السنة",
                                 options: state.yearsFilter ?? []),
                             FilterConfig(
-                                title:"نوع الاجراء الطبي",
+                                title: "نوع الاجراء الطبي",
                                 options: state.procedureTypeFilter ?? []),
-                            FilterConfig(title: "رقم السن", options: state.toothNumberFilter ?? []),
+                            FilterConfig(
+                                title: "رقم السن",
+                                options: state.toothNumberFilter ?? []),
                           ],
                           onApply: (selectedOption) {
-                            context.read<DentalViewCubit>().getFilteredToothDocuments(
-                              year: selectedOption['السنة'] as int?,
-                              procedureType: selectedOption["نوع الاجراء الطبي"] as String?,
-                              toothNumber: selectedOption['رقم السن'] as String?,
-                            );
+                            context
+                                .read<DentalViewCubit>()
+                                .getFilteredToothDocuments(
+                                  year: selectedOption['السنة'] as int?,
+                                  procedureType:
+                                      selectedOption["نوع الاجراء الطبي"]
+                                          as String?,
+                                  toothNumber:
+                                      selectedOption['رقم السن'] as String?,
+                                );
                           },
                         ),
                       ),
                       verticalSpacing(8),
                       ToothOverlay(
-                        toothWithDataList: state.filteredDefectedToothList ?? [],
+                        toothWithDataList:
+                            state.filteredDefectedToothList ?? [],
                         overlayTitle: "",
                         selectedActionsList: [],
                         onTap: (toothNumber) {
@@ -191,109 +202,118 @@ class ToothOverlay extends StatelessWidget {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     final double imageHeight = height * 0.6; // Adjust as needed
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          if (overlayTitle.isNotEmpty)
-            Text(
-              overlayTitle,
-              style: AppTextStyles.font20blackWeight600,
-              textAlign: TextAlign.center,
-            ).paddingSymmetricHorizontal(16),
-          Stack(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Column(
             children: [
-              Image.asset(
-                'assets/images/teeth_diagram.png',
-                width: double.infinity,
-                height: imageHeight,
-              ),
-              AspectRatio(
-                aspectRatio: 900 / 1707,
-                child: Stack(
-                  children: List.generate(fdiNumbers.length, (index) {
-                    final pos = toothRelativePositions[index];
-                    final number = fdiNumbers[index];
-                    return Positioned(
-                      left: (pos.dx * width - 8),
-                      top: (pos.dy * height - 8),
-                      child: ToothCircle(
-                        number: number,
-                        isComingFromDataEntry: isComingFromDataEntry,
-                        hasData: toothWithDataList.contains(number),
-                        onTap: () => onTap(number),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              CustomToothActionButton(
-                title: "اللثة العلوية\n يسار",
-                horizontalPosition: 0.33 * width,
-                verticalPosition: 0.15 * height,
-                hasDataPreviously: selectedActionsList.contains(55),
-                onTap: () => onTap(55),
-                isComingFromDataEntry: isComingFromDataEntry,
-              ),
-              CustomToothActionButton(
-                title: "للثة العلوية \n يمين",
-                horizontalPosition: 0.516 * width,
-                verticalPosition: 0.15 * height,
-                hasDataPreviously: selectedActionsList.contains(66),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(66),
-              ),
-              CustomToothActionButton(
-                title: "اللثة السفلية \n يسار",
-                horizontalPosition: 0.33 * width,
-                verticalPosition: 0.355 * height,
-                hasDataPreviously: selectedActionsList.contains(77),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(77),
-              ),
-              CustomToothActionButton(
-                title: "اللثة السفلية \n يمين",
-                horizontalPosition: 0.516 * width,
-                verticalPosition: 0.355 * height,
-                hasDataPreviously: selectedActionsList.contains(88),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(88),
-              ),
-              CustomToothActionButton(
-                title: "الفك العلوي",
-                horizontalPosition: 0.06 * width,
-                verticalPosition: 0.02 * height,
-                hasDataPreviously: selectedActionsList.contains(99),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(99),
-              ),
-              CustomToothActionButton(
-                title: "الفك السفلي",
-                horizontalPosition: 0.06 * width,
-                verticalPosition: 0.55 * height,
-                hasDataPreviously: selectedActionsList.contains(100),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(100),
-              ),
-              CustomToothActionButton(
-                title: "اللثة العلوية",
-                horizontalPosition: 0.80 * width,
-                verticalPosition: 0.02 * height,
-                hasDataPreviously: selectedActionsList.contains(111),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(111),
-              ),
-              CustomToothActionButton(
-                title: "اللثة السفلية",
-                horizontalPosition: 0.80 * width,
-                verticalPosition: 0.55 * height,
-                hasDataPreviously: selectedActionsList.contains(122),
-                isComingFromDataEntry: isComingFromDataEntry,
-                onTap: () => onTap(122),
+              if (overlayTitle.isNotEmpty)
+                Text(
+                  overlayTitle,
+                  style: AppTextStyles.font20blackWeight600,
+                  textAlign: TextAlign.center,
+                ).paddingSymmetricHorizontal(16),
+              Stack(
+                children: [
+                  Image.asset(
+                    'assets/images/teeth_diagram.png',
+                    width: double.infinity,
+                    height: imageHeight,
+                  ),
+                  Positioned(
+                    top: 100.h + imageHeight - 60.h,
+                    left: 20.h,
+                    child: GuidanceInformationItemWidget(),
+                  ),
+                  AspectRatio(
+                    aspectRatio: 900 / 1707,
+                    child: Stack(
+                      children: List.generate(fdiNumbers.length, (index) {
+                        final pos = toothRelativePositions[index];
+                        final number = fdiNumbers[index];
+                        return Positioned(
+                          left: (pos.dx * width - 8),
+                          top: (pos.dy * height - 8),
+                          child: ToothCircle(
+                            number: number,
+                            isComingFromDataEntry: isComingFromDataEntry,
+                            hasData: toothWithDataList.contains(number),
+                            onTap: () => onTap(number),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  CustomToothActionButton(
+                    title: "اللثة العلوية\n يسار",
+                    horizontalPosition: 0.33 * width,
+                    verticalPosition: 0.15 * height,
+                    hasDataPreviously: selectedActionsList.contains(55),
+                    onTap: () => onTap(55),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                  ),
+                  CustomToothActionButton(
+                    title: "للثة العلوية \n يمين",
+                    horizontalPosition: 0.516 * width,
+                    verticalPosition: 0.15 * height,
+                    hasDataPreviously: selectedActionsList.contains(66),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(66),
+                  ),
+                  CustomToothActionButton(
+                    title: "اللثة السفلية \n يسار",
+                    horizontalPosition: 0.33 * width,
+                    verticalPosition: 0.355 * height,
+                    hasDataPreviously: selectedActionsList.contains(77),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(77),
+                  ),
+                  CustomToothActionButton(
+                    title: "اللثة السفلية \n يمين",
+                    horizontalPosition: 0.516 * width,
+                    verticalPosition: 0.355 * height,
+                    hasDataPreviously: selectedActionsList.contains(88),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(88),
+                  ),
+                  CustomToothActionButton(
+                    title: "الفك العلوي",
+                    horizontalPosition: 0.06 * width,
+                    verticalPosition: 0.02 * height,
+                    hasDataPreviously: selectedActionsList.contains(99),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(99),
+                  ),
+                  CustomToothActionButton(
+                    title: "الفك السفلي",
+                    horizontalPosition: 0.06 * width,
+                    verticalPosition: 0.55 * height,
+                    hasDataPreviously: selectedActionsList.contains(100),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(100),
+                  ),
+                  CustomToothActionButton(
+                    title: "اللثة العلوية",
+                    horizontalPosition: 0.80 * width,
+                    verticalPosition: 0.02 * height,
+                    hasDataPreviously: selectedActionsList.contains(111),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(111),
+                  ),
+                  CustomToothActionButton(
+                    title: "اللثة السفلية",
+                    horizontalPosition: 0.80 * width,
+                    verticalPosition: 0.55 * height,
+                    hasDataPreviously: selectedActionsList.contains(122),
+                    isComingFromDataEntry: isComingFromDataEntry,
+                    onTap: () => onTap(122),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
