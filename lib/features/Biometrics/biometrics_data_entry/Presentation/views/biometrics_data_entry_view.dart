@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -9,6 +10,7 @@ import 'package:we_care/core/global/SharedWidgets/smart_assistant_button_shared_
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
+import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_state.dart';
 
 class BiometricsDataEntryView extends StatelessWidget {
   const BiometricsDataEntryView({
@@ -186,20 +188,41 @@ class BiometricSkeletonSection extends StatelessWidget {
   }
 
   void _showMeasurementDialog(
-      BuildContext context, String measurement, String unit) {
+      BuildContext parentContext, String measurement, String unit) {
     showDialog(
-      context: context,
-      builder: (context) => BiometricInputDialog(
-        measurement: measurement,
-        unit: unit,
-        onSave: (categoryName, userInput) async {
-          // await   context.read<BiometricsDataEntryCubit>().postBiometricsDataEntry(
-          //     categoryName: categoryName,
-          //     value: userInput,
-          //     unit: unit,
-          //   );
-        },
-      ),
+      context: parentContext,
+      builder: (dialogContext) {
+        return BlocProvider.value(
+          value: parentContext.read<BiometricsDataEntryCubit>(),
+          child:
+              BlocConsumer<BiometricsDataEntryCubit, BiometricsDataEntryState>(
+            listener: (context, state) async {
+              if (state.submitBiometricDataStatus == RequestStatus.success) {
+                await showSuccess(state.message);
+                if (context.mounted) Navigator.pop(context);
+              }
+              if (state.submitBiometricDataStatus == RequestStatus.failure) {
+                await showError(state.message);
+              }
+            },
+            builder: (context, state) {
+              return BiometricInputDialog(
+                measurement: measurement,
+                unit: unit,
+                onSave: (categoryName, userInput) async {
+                  await context
+                      .read<BiometricsDataEntryCubit>()
+                      .postBiometricsDataEntry(
+                        categoryName: categoryName,
+                        value: userInput,
+                        unit: unit,
+                      );
+                },
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -384,8 +407,8 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
 
                   if (widget.onSave != null) {
                     widget.onSave!(widget.measurement, value);
-                    await showSuccess(
-                        'تم حفظ ${widget.measurement}: $value ${widget.unit}');
+                    // await showSuccess(
+                    //     'تم حفظ ${widget.measurement}: $value ${widget.unit}');
                   }
                 },
                 style: ElevatedButton.styleFrom(
