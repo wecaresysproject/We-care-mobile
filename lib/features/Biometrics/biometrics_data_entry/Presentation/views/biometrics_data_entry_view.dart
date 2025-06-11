@@ -266,15 +266,12 @@ class BiometricInputDialog extends StatefulWidget {
     super.key,
     required this.measurement,
     required this.unit,
-    this.isRating = false,
-    this.onSave, // Added callback parameter
+    this.onSave,
   });
 
   final String measurement;
   final String unit;
-  final bool isRating;
-  final Function(String categoryName, String userInput)?
-      onSave; // Callback function
+  final Function(String categoryName, String userInput)? onSave;
 
   @override
   State<BiometricInputDialog> createState() => _BiometricInputDialogState();
@@ -282,7 +279,6 @@ class BiometricInputDialog extends StatefulWidget {
 
 class _BiometricInputDialogState extends State<BiometricInputDialog> {
   final TextEditingController _controller = TextEditingController();
-  int _rating = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -320,85 +316,36 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!widget.isRating) ...[
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFF8F9FE),
-                borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: const Color(0xFFE0E6ED)),
+          Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8F9FE),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: const Color(0xFFE0E6ED)),
+            ),
+            child: TextField(
+              controller: _controller,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
               ),
-              child: TextField(
-                controller: _controller,
-                keyboardType: TextInputType.number,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16.sp,
+              decoration: InputDecoration(
+                hintText: 'أدخل القيمة',
+                hintStyle: TextStyle(
+                  color: Colors.grey[400],
+                  fontWeight: FontWeight.normal,
+                ),
+                suffixText: widget.unit,
+                suffixStyle: TextStyle(
+                  color: const Color(0xff014C8A),
                   fontWeight: FontWeight.w600,
                 ),
-                decoration: InputDecoration(
-                  hintText: 'أدخل القيمة',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[400],
-                    fontWeight: FontWeight.normal,
-                  ),
-                  suffixText: widget.unit,
-                  suffixStyle: TextStyle(
-                    color: const Color(0xff014C8A),
-                    fontWeight: FontWeight.w600,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.r),
-                ),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.all(16.r),
               ),
             ),
-          ] else ...[
-            Text(
-              'قيم من 1 إلى 5',
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[600],
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(5, (index) {
-                return GestureDetector(
-                  onTap: () => setState(() => _rating = index + 1),
-                  child: Container(
-                    width: 40.w,
-                    height: 40.h,
-                    decoration: BoxDecoration(
-                      color: _rating > index
-                          ? const Color(0xFF4A90E2)
-                          : Colors.grey[300],
-                      shape: BoxShape.circle,
-                      boxShadow: _rating > index
-                          ? [
-                              BoxShadow(
-                                color: const Color(0xFF4A90E2).withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          color:
-                              _rating > index ? Colors.white : Colors.grey[600],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ],
+          ),
         ],
       ),
       actions: [
@@ -426,18 +373,15 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
-                  final value =
-                      widget.isRating ? _rating.toString() : _controller.text;
+                  final value = _controller.text;
 
-                  // Validate input
-                  if (!widget.isRating && value.trim().isEmpty) {
+                  if (value.trim().isEmpty) {
                     await showError('يرجى إدخال قيمة');
                     return;
                   }
 
                   Navigator.pop(context);
 
-                  // Call the callback function with category name and user input
                   if (widget.onSave != null) {
                     widget.onSave!(widget.measurement, value);
                     await showSuccess(

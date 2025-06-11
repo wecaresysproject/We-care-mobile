@@ -36,7 +36,7 @@ class GuidanceInformationItemWidget extends StatelessWidget {
               Icon(
                 Icons.warning_amber_rounded,
                 color: Colors.orange.shade700,
-                size: 24,
+                size: 24.sp,
               ),
               SizedBox(width: 4.w),
               Text(
