@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_state.dart';
+import 'package:we_care/features/Biometrics/data/models/post_biometric_data_of_specifc_category_model.dart';
 import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_repo.dart';
 
 class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
@@ -13,28 +16,35 @@ class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
 
   Future<void> postBiometricsDataEntry({
     required String categoryName,
-    required String value,
-    required String unit,
+    required String minValue,
+    String? maxValue,
   }) async {
     emit(state.copyWith(submitBiometricDataStatus: RequestStatus.loading));
+
     final result = await biometricsDataEntryRepo.postBiometricsDataEntry(
-      categoryName: categoryName,
-      value: value,
-      unit: unit,
-    );
-    result.when(
-      failure: (failure) => emit(
-        state.copyWith(
-          submitBiometricDataStatus: RequestStatus.failure,
-          message: failure.errors.first,
-        ),
+      requestBody: PostBiometricCategoryModel(
+        categoryName: categoryName,
+        minValue: minValue,
+        maxValue:
+            maxValue, //should handle in case there was an max an min value
       ),
-      success: (successMessage) => emit(
+      lanugage: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    result.when(success: (successMessage) {
+      emit(
         state.copyWith(
           submitBiometricDataStatus: RequestStatus.success,
           message: successMessage,
         ),
-      ),
-    );
+      );
+    }, failure: (failure) {
+      emit(
+        state.copyWith(
+          submitBiometricDataStatus: RequestStatus.failure,
+          message: failure.errors.first,
+        ),
+      );
+    });
   }
 }

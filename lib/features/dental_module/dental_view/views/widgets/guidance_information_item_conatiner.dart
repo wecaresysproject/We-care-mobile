@@ -54,7 +54,7 @@ class GuidanceInformationItemWidget extends StatelessWidget {
           // Description text
           Text(
             'الصورة التوضيحية للأسنان من منظور الطبيب المعالج، '
-            'لذا فإن مواضع الأسنان تظهر بشكل معكوس أفقيًا. '
+            'لذا فإن مواضع الأسنان تظهر بشكل معكوس أفقيًا.\n' // ← سطر جديد هنا
             'يرجى الانتباه: السن الذي يظهر على يسار الصورة في الواقع '
             'في الجهة اليمنى من فمك والعكس صحيح.',
             style: AppTextStyles.font14blackWeight400.copyWith(

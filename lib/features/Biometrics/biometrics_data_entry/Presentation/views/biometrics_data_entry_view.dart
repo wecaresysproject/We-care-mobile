@@ -28,24 +28,39 @@ class BiometricsDataEntryView extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomAppBarWidget(
-                      haveBackArrow: true,
-                    ),
-                    verticalSpacing(24),
-                    Text(
-                      "ادخل ما تريد لإدخال\n رقم قياسه",
-                      style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                        color: Colors.black,
-                        fontFamily: "Rubik",
-                        fontWeight: FontWeight.w400,
+                child: BlocListener<BiometricsDataEntryCubit,
+                    BiometricsDataEntryState>(
+                  listener: (context, state) async {
+                    // if (state.submitBiometricDataStatus ==
+                    //     RequestStatus.success) {
+                    //   await showSuccess(state.message);
+                    //   if (context.mounted) Navigator.pop(context);
+                    // }
+                    // if (state.submitBiometricDataStatus ==
+                    //     RequestStatus.failure) {
+                    //   await showError(state.message);
+                    // }
+                    // TODO: implement listener
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CustomAppBarWidget(
+                        haveBackArrow: true,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    BiometricSkeletonSection(),
-                  ],
+                      verticalSpacing(24),
+                      Text(
+                        "ادخل ما تريد لإدخال\n رقم قياسه",
+                        style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                          color: Colors.black,
+                          fontFamily: "Rubik",
+                          fontWeight: FontWeight.w400,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      BiometricSkeletonSection(),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -95,8 +110,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             left: 0,
             child: BiometricMeasurementButton(
               label: 'نبضات\nالقلب',
-              onTap: () =>
-                  _showMeasurementDialog(context, 'نبضات القلب', 'bpm'),
+              onTap: () => _showMeasurementDialog(
+                  context, 'نبضات القلب', 'bpm', 'نبضات\nالقلب'),
               image: 'assets/images/heart_beat.png',
             ),
           ),
@@ -107,7 +122,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             left: 0,
             child: BiometricMeasurementButton(
               label: 'الضغط',
-              onTap: () => _showMeasurementDialog(context, 'ضغط الدم', 'mmHg'),
+              onTap: () =>
+                  _showMeasurementDialog(context, 'ضغط الدم', 'mmHg', 'الضغط'),
               image: 'assets/images/blood-pressure.png',
             ),
           ),
@@ -118,8 +134,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             left: 0,
             child: BiometricMeasurementButton(
               label: 'درجة الحرارة',
-              onTap: () =>
-                  _showMeasurementDialog(context, 'درجة الحرارة', '°C'),
+              onTap: () => _showMeasurementDialog(
+                  context, 'درجة الحرارة', '°C', 'درجة الحرارة'),
               image: 'assets/images/temperature_level.png',
             ),
           ),
@@ -130,7 +146,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             left: 0,
             child: BiometricMeasurementButton(
               label: 'الوزن',
-              onTap: () => _showMeasurementDialog(context, 'الوزن', 'kg'),
+              onTap: () =>
+                  _showMeasurementDialog(context, 'الوزن', 'kg', 'الوزن'),
               image: 'assets/images/weight_level.png',
             ),
           ),
@@ -142,8 +159,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             right: 0,
             child: BiometricMeasurementButton(
               label: 'مستوى\nالأكسجين',
-              onTap: () =>
-                  _showMeasurementDialog(context, 'مستوى الأكسجين', '%'),
+              onTap: () => _showMeasurementDialog(
+                  context, 'مستوى الأكسجين', '%', 'مستوى\nالأكسجين'),
               image: 'assets/images/oxygen_level.png',
             ),
           ),
@@ -154,8 +171,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             right: 0,
             child: BiometricMeasurementButton(
               label: 'سكر\nعشوائي',
-              onTap: () =>
-                  _showMeasurementDialog(context, 'سكر الدم العشوائي', 'mg/dL'),
+              onTap: () => _showMeasurementDialog(
+                  context, 'سكر الدم العشوائي', 'mg/dL', 'سكر\nعشوائي'),
               image: 'assets/images/glucose_level.png',
             ),
           ),
@@ -166,8 +183,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             right: 0,
             child: BiometricMeasurementButton(
               label: 'سكر صائم',
-              onTap: () =>
-                  _showMeasurementDialog(context, 'سكر الدم الصائم', 'mg/dL'),
+              onTap: () => _showMeasurementDialog(
+                  context, 'سكر الدم الصائم', 'mg/dL', 'سكر صائم'),
               image: 'assets/images/glucose_level.png',
             ),
           ),
@@ -178,7 +195,8 @@ class BiometricSkeletonSection extends StatelessWidget {
             right: 0,
             child: BiometricMeasurementButton(
               label: 'الطول',
-              onTap: () => _showMeasurementDialog(context, 'الطول', 'cm'),
+              onTap: () =>
+                  _showMeasurementDialog(context, 'الطول', 'cm', 'الطول'),
               image: 'assets/images/ruler.png',
             ),
           ),
@@ -188,7 +206,11 @@ class BiometricSkeletonSection extends StatelessWidget {
   }
 
   void _showMeasurementDialog(
-      BuildContext parentContext, String measurement, String unit) {
+    BuildContext parentContext,
+    String measurement,
+    String unit,
+    String label,
+  ) {
     showDialog(
       context: parentContext,
       builder: (dialogContext) {
@@ -199,7 +221,6 @@ class BiometricSkeletonSection extends StatelessWidget {
             listener: (context, state) async {
               if (state.submitBiometricDataStatus == RequestStatus.success) {
                 await showSuccess(state.message);
-                if (context.mounted) Navigator.pop(context);
               }
               if (state.submitBiometricDataStatus == RequestStatus.failure) {
                 await showError(state.message);
@@ -208,14 +229,15 @@ class BiometricSkeletonSection extends StatelessWidget {
             builder: (context, state) {
               return BiometricInputDialog(
                 measurement: measurement,
+                categoryName: label,
                 unit: unit,
-                onSave: (categoryName, userInput) async {
+                onSave: (categoryName, minValue, maxValue) async {
                   await context
                       .read<BiometricsDataEntryCubit>()
                       .postBiometricsDataEntry(
                         categoryName: categoryName,
-                        value: userInput,
-                        unit: unit,
+                        minValue: minValue,
+                        maxValue: maxValue,
                       );
                 },
               );
@@ -288,27 +310,34 @@ class BiometricInputDialog extends StatefulWidget {
   const BiometricInputDialog({
     super.key,
     required this.measurement,
+    required this.categoryName,
     required this.unit,
     this.onSave,
   });
 
   final String measurement;
+  final String categoryName;
   final String unit;
-  final Function(String categoryName, String userInput)? onSave;
+  final Function(String categoryName, String minValue, String? maxValue)?
+      onSave;
 
   @override
   State<BiometricInputDialog> createState() => _BiometricInputDialogState();
 }
 
 class _BiometricInputDialogState extends State<BiometricInputDialog> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _singleController = TextEditingController();
+  final TextEditingController _systolicController =
+      TextEditingController(); // الانقباضي
+  final TextEditingController _diastolicController =
+      TextEditingController(); // الانبساطي
+
+  bool get isBloodPressure => widget.categoryName.trim() == 'الضغط';
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
       backgroundColor: Colors.white,
       title: Column(
         children: [
@@ -318,97 +347,90 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
               color: const Color(0xff014C8A).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              Icons.edit,
-              color: AppColorsManager.mainDarkBlue,
-              size: 24.sp,
-            ),
+            child: Icon(Icons.edit,
+                color: AppColorsManager.mainDarkBlue, size: 24.sp),
           ),
           SizedBox(height: 12.h),
           Text(
             'إدخال ${widget.measurement}',
             style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColorsManager.mainDarkBlue,
-            ),
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColorsManager.mainDarkBlue),
             textAlign: TextAlign.center,
           ),
         ],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8F9FE),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: const Color(0xFFE0E6ED)),
-            ),
-            child: TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-              decoration: InputDecoration(
-                hintText: 'أدخل القيمة',
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontWeight: FontWeight.normal,
+      content: isBloodPressure
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'الانقباضي',
+                        style: AppTextStyles.font18blackWight500
+                            .copyWith(fontSize: 16.sp),
+                      ),
+                      SizedBox(height: 10.h),
+                      _buildInputField(_systolicController, 'النموذجى 120'),
+                    ],
+                  ),
                 ),
-                suffixText: widget.unit,
-                suffixStyle: TextStyle(
-                  color: const Color(0xff014C8A),
-                  fontWeight: FontWeight.w600,
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'الانبساطي',
+                        style: AppTextStyles.font18blackWight500
+                            .copyWith(fontSize: 16.sp),
+                      ),
+                      SizedBox(height: 10.h),
+                      _buildInputField(_diastolicController, 'النموذجى 80'),
+                    ],
+                  ),
                 ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(16.r),
-              ),
-            ),
-          ),
-        ],
-      ),
+              ],
+            )
+          : _buildInputField(_singleController, 'أدخل القيمة'),
       actions: [
         Row(
           children: [
             Expanded(
               child: TextButton(
                 onPressed: () => Navigator.pop(context),
-                style: TextButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                ),
-                child: Text(
-                  'إلغاء',
-                  style: TextStyle(
-                    color: AppColorsManager.warningColor,
-                    fontSize: 16.sp,
-                  ),
-                ),
+                child: Text('إلغاء',
+                    style: TextStyle(
+                        color: AppColorsManager.warningColor, fontSize: 16.sp)),
               ),
             ),
             SizedBox(width: 12.w),
             Expanded(
               child: ElevatedButton(
                 onPressed: () async {
-                  final value = _controller.text;
+                  if (isBloodPressure) {
+                    if (_systolicController.text.trim().isEmpty ||
+                        _diastolicController.text.trim().isEmpty) {
+                      await showError('يرجى إدخال القيمتين');
+                      return;
+                    }
 
-                  if (value.trim().isEmpty) {
-                    await showError('يرجى إدخال قيمة');
-                    return;
-                  }
+                    widget.onSave?.call(widget.measurement,
+                        _systolicController.text, _diastolicController.text);
+                  } else {
+                    if (_singleController.text.trim().isEmpty) {
+                      await showError('يرجى إدخال قيمة');
+                      return;
+                    }
 
-                  Navigator.pop(context);
-
-                  if (widget.onSave != null) {
-                    widget.onSave!(widget.measurement, value);
-                    // await showSuccess(
-                    //     'تم حفظ ${widget.measurement}: $value ${widget.unit}');
+                    widget.onSave?.call(
+                        widget.measurement, _singleController.text, null);
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -417,21 +439,47 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                   shadowColor: Colors.transparent,
                   padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  elevation: 2,
+                      borderRadius: BorderRadius.circular(8.r)),
                 ),
                 child: Text(
                   'حفظ',
-                  style: AppTextStyles.font20blackWeight600.copyWith(
-                    color: AppColorsManager.mainDarkBlue,
-                  ),
+                  style: AppTextStyles.font20blackWeight600
+                      .copyWith(color: AppColorsManager.mainDarkBlue),
                 ),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildInputField(TextEditingController controller, String hint) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FE),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: const Color(0xFFE0E6ED)),
+      ),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w600),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(
+              color: Color(0xff777777), fontWeight: FontWeight.normal),
+          suffixText: widget.unit,
+          suffixStyle: TextStyle(
+              color: const Color(0xff014C8A), fontWeight: FontWeight.w600),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.only(
+            right: 5.w,
+            left: hint == 'النموذجى 120' || hint == 'النموذجى 80' ? 0.w : 12.w,
+          ),
+        ),
+      ),
     );
   }
 }

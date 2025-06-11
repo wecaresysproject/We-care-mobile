@@ -33,6 +33,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
             isActive: dataEntryCategories[index]["isActive"] ?? false,
             cornerImagePath: dataEntryCategories[index]["cornerImagePath"] ??
                 "assets/images/basic_data.png", // Default corner image
+            audio: dataEntryCategories[index]["audio"] ?? "",
           );
         },
       ),
@@ -46,6 +47,7 @@ class CategoryItem extends StatelessWidget {
   final String routeName;
   final bool isActive;
   final String cornerImagePath;
+  final String? audio;
 
   const CategoryItem({
     super.key,
@@ -54,6 +56,7 @@ class CategoryItem extends StatelessWidget {
     required this.routeName,
     this.isActive = false,
     required this.cornerImagePath,
+    this.audio,
   });
 
   @override
@@ -64,6 +67,7 @@ class CategoryItem extends StatelessWidget {
         GestureDetector(
           onTap: isActive
               ? () async {
+                  // await playAudio(audio ?? "assets/audios/press.mp3");
                   await context.pushNamed(routeName);
                 }
               : null,
@@ -165,6 +169,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.medcinesDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/medicine_module.png",
+    "audio": "",
   },
   {
     "title": "الشكاوى\nالطارئة",
@@ -172,6 +177,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.emergenciesComplaintDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/emergency_module.png",
+    "audio": "",
   },
   {
     "title": "روشتة الأطباء",
@@ -179,6 +185,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.prescriptionCategoryDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/ebn_senaa.png",
+    "audio": "",
   },
   {
     "title": "التحاليل الطبية",
@@ -186,6 +193,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.testAnalsisDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/laboratory_test.png",
+    "audio": "",
   },
   {
     "title": "الأشعة",
@@ -193,6 +201,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.xrayCategoryDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/xray_module.png",
+    "audio": "",
   },
   {
     "title": "العمليات\nالجراحية",
@@ -200,24 +209,28 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.surgeriesDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/surgery_module.png",
+    "audio": "",
   },
   {
     "title": "المناظير\nالطبيه",
     "image": "assets/images/machine_icon.png",
     "route": "/tumors",
     "cornerImagePath": "assets/images/manazeer_tebeya_module.png",
+    "audio": "",
   },
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
     "route": "/organic_disorders",
     "cornerImagePath": "assets/images/chronic_disease_module.png",
+    "audio": "",
   },
   {
     "title": "الأورام",
     "image": "assets/images/tumor_icon.png",
     "route": "/biological_regulation",
     "cornerImagePath": "assets/images/tumors_module.png",
+    "audio": "",
   },
   {
     "title": "الأمراض\n الوراثيه",
@@ -225,24 +238,28 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "cornerImagePath": "assets/images/genetic_dissease_module.png",
     "route": Routes.geneticDiseaeseMainView,
     "isActive": true,
+    "audio": "",
   },
   {
     "title": "الغسيل\nالكلوى",
     "image": "assets/images/kidney_wash.png",
     "route": "/other_sections",
     "cornerImagePath": "assets/images/gaseel_kelawey_module.png",
+    "audio": "",
   },
   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
     "route": "/genetic_disorders",
     "cornerImagePath": "assets/images/hasseya_module.png",
+    "audio": "",
   },
   {
     "title": "العيون",
     "image": "assets/images/hand_icon.png", //TODO: Change Icon مشفثق
     "route": "kklsmq",
     "cornerImagePath": "assets/images/eyes_module.png",
+    "audio": "",
   },
   {
     "title": "الأسنان",
@@ -250,12 +267,14 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.dentalAnatomyDiagramEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/tooth_module.png",
+    "audio": "",
   },
   {
     "title": "العلاج\nالطبيعى",
     "image": "assets/images/physical_therapy.png",
     "route": "/other_sections",
     "cornerImagePath": "assets/images/physical_therapy_module.png",
+    "audio": "",
   },
   {
     "title": "التطعيمات",
@@ -263,54 +282,63 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.vaccineDataEntryView,
     "isActive": true,
     "cornerImagePath": "assets/images/tatemaat_module.png",
+    "audio": "",
   },
   {
     "title": "متابعة\n الحمل",
     "image": "assets/images/pergenant_woman.png",
     "route": "/specializations",
     "cornerImagePath": "assets/images/prenatal_care_module.png",
+    "audio": "",
   },
   {
     "title": "علاج مشاكل\nالانجاب",
     "image": "assets/images/baby_icon.png",
     "route": "/psychological_disorders",
     "cornerImagePath": "assets/images/fertility_treatment_module.png",
+    "audio": "",
   },
   {
     "title": "الحروق",
     "image": "assets/images/fire_icon.png",
     "route": "/cosmetic_procedures",
     "cornerImagePath": "assets/images/burns_degrees_module.png",
+    "audio": "",
   },
   {
     "title": "الجراحات\nالتجميلية",
     "image": "assets/images/woman.png",
     "route": "/dietary_habits",
     "cornerImagePath": "assets/images/cosmetic_surgeries_module.png",
+    "audio": "",
   },
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
     "route": "/general_health",
     "cornerImagePath": "assets/images/mental_disorder_module.png",
+    "audio": "",
   },
   {
     "title": "السلوكيات\nالخطرة",
     "image": "assets/images/red_icon.png",
     "route": "/risky_behaviors",
     "cornerImagePath": "assets/images/risky_behavior_module.png",
+    "audio": "",
   },
   {
     "title": "الصحه\nالعامه",
     "image": "assets/images/heart_icon.png",
     "route": "/mental_issues",
     "cornerImagePath": "assets/images/public_health_module.png",
+    "audio": "",
   },
   {
     "title": "العادات\nالغذائية",
     "image": "assets/images/spoon_icon.png",
     "route": "/mental_issues",
     "cornerImagePath": "assets/images/eating_habits_module.png",
+    "audio": "",
   },
   // {
   //   "title": "المكملات\nالغذائية",
