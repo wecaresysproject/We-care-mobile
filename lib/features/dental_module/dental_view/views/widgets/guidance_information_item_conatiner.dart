@@ -36,7 +36,7 @@ class GuidanceInformationItemWidget extends StatelessWidget {
               Icon(
                 Icons.warning_amber_rounded,
                 color: Colors.orange.shade700,
-                size: 24,
+                size: 24.sp,
               ),
               SizedBox(width: 4.w),
               Text(
@@ -54,14 +54,15 @@ class GuidanceInformationItemWidget extends StatelessWidget {
           // Description text
           Text(
             'الصورة التوضيحية للأسنان من منظور الطبيب المعالج، '
-            'لذا فإن مواضع الأسنان تظهر بشكل معكوس أفقيًا. '
+            'لذا فإن مواضع الأسنان تظهر بشكل معكوس أفقيًا.\n' // ← سطر جديد هنا
             'يرجى الانتباه: السن الذي يظهر على يسار الصورة في الواقع '
             'في الجهة اليمنى من فمك والعكس صحيح.',
             style: AppTextStyles.font14blackWeight400.copyWith(
               fontWeight: FontWeight.w700,
+              height: 1.6,
             ),
-            maxLines: 5,
-            textAlign: TextAlign.start,
+            maxLines: 7,
+            textAlign: TextAlign.justify,
           ),
         ],
       ),
