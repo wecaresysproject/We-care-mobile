@@ -223,8 +223,6 @@ class BiometricMeasurementButton extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 54.w,
-            height: 44.h,
             padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18.r),
@@ -244,8 +242,8 @@ class BiometricMeasurementButton extends StatelessWidget {
             ),
             child: Image.asset(
               image,
-              width: 34.w,
-              height: 28.h,
+              width: 40.w,
+              height: 40.h,
             ),
           ),
           verticalSpacing(6),

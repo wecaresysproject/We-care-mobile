@@ -59,9 +59,10 @@ class GuidanceInformationItemWidget extends StatelessWidget {
             'في الجهة اليمنى من فمك والعكس صحيح.',
             style: AppTextStyles.font14blackWeight400.copyWith(
               fontWeight: FontWeight.w700,
+              height: 1.6,
             ),
-            maxLines: 5,
-            textAlign: TextAlign.start,
+            maxLines: 7,
+            textAlign: TextAlign.justify,
           ),
         ],
       ),
