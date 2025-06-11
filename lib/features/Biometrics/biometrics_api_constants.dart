@@ -4,6 +4,9 @@ class BiometricsApiConstants {
   static const postBiometricDataOfSpecifcCategory =
       "VitalActivity/AddVitalActivity";
   //View Entry
+  static const getAllAvailableBiometrics = "VitalActivity/GetAllAvailableCategories";
+  static const getAllFilters = "VitalActivity/GetFilterOptions";
+  static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
 
   //filters
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
 
 class BiometricsViewState extends Equatable {
   final RequestStatus requestStatus;
@@ -8,6 +9,7 @@ class BiometricsViewState extends Equatable {
   final List<int> yearsFilter;
   final List<int> daysFilter;
   final List<int> monthFilter;
+  final List<BiometricsDatasetModel> biometricsData;
 
   const BiometricsViewState({
     this.responseMessage = '',
@@ -16,6 +18,7 @@ class BiometricsViewState extends Equatable {
     this.availableBiometricNames = const [],
     this.daysFilter = const [],
     this.monthFilter = const [],
+    this.biometricsData = const [],
   });
 
   factory BiometricsViewState.initial() {
@@ -23,71 +26,14 @@ class BiometricsViewState extends Equatable {
       responseMessage: '',
       requestStatus: RequestStatus.initial,
       yearsFilter: const [
-        2023,
-        2022,
-        2021,
-        2020,
-        2019,
-        2018,
-        2017,
-        2016,
-        2015,
       ],
       availableBiometricNames: const [
-    'الطول',
-    'الوزن',
-    'معدل ضربات القلب',
-    'ضغط الدم',
-    'مستوى السكر في الدم',
-    'مستوى الكوليسترول',
-    'مستوى الأكسجين في الدم',
   ],
       daysFilter: const [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-        21,
-        22,
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
       ],
       monthFilter: const [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
       ],
+      biometricsData: const [],
     );
   }
 
@@ -98,6 +44,7 @@ class BiometricsViewState extends Equatable {
     List<String>? availableBiometricNames,
     List<int>? daysFilter,
     List<int>? monthFilter,
+    List<BiometricsDatasetModel>? biometricsData,
   }) {
     return BiometricsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -106,6 +53,7 @@ class BiometricsViewState extends Equatable {
       availableBiometricNames: availableBiometricNames ?? this.availableBiometricNames,
       daysFilter: daysFilter ?? this.daysFilter,
       monthFilter: monthFilter ?? this.monthFilter,
+      biometricsData: biometricsData ?? this.biometricsData,
     );
   }
 
@@ -118,5 +66,6 @@ class BiometricsViewState extends Equatable {
     yearsFilter,
     daysFilter,
     monthFilter,  
+    biometricsData,
       ];
 }
