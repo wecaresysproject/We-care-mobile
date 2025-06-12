@@ -166,12 +166,17 @@ class GeneticDiseasesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<String>> postGenticDiseaseForFamilyMember({
+  Future<ApiResult<String>> editGenticDiseaseForFamilyMember({
     required FamilyMemberGeneticDiseasesRequestBodyModel requestBody,
+    required String oldMembername,
   }) async {
     try {
-      final response = await _geneticDiseasesServices
-          .postGenticDiseaseForFamilyMember(requestBody);
+      final response =
+          await _geneticDiseasesServices.editGenticDiseaseForFamilyMember(
+        requestBody,
+        oldMembername,
+        requestBody.code,
+      );
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -235,6 +240,26 @@ class GeneticDiseasesDataEntryRepo {
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> deleteFamilyMemberbyNameAndCode(
+    String language,
+    String userType,
+    String code,
+    String name,
+  ) async {
+    try {
+      final response =
+          await _geneticDiseasesServices.deleteFamilyMemberbyNameAndCode(
+        language,
+        userType,
+        name,
+        code,
+      );
+      return ApiResult.success(response['message']);
+    } catch (e) {
+      throw ApiErrorHandler.handle(e);
     }
   }
 }

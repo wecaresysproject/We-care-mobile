@@ -87,9 +87,11 @@ abstract class GeneticDiseasesServices {
     @Query("userType") String userType,
     @Query("diseaseType") String diseaseType,
   );
-  @POST(GeneticDiseasesConstants.postGenticDiseaseForFamilyMember)
-  Future<dynamic> postGenticDiseaseForFamilyMember(
+  @PUT(GeneticDiseasesConstants.editGenticDiseaseForFamilyMember)
+  Future<dynamic> editGenticDiseaseForFamilyMember(
     @Body() FamilyMemberGeneticDiseasesRequestBodyModel requestBody,
+    @Query("name") String familyMemberName,
+    @Query("code") String code,
   );
   @GET(GeneticDiseasesConstants.getFamilyMembersNumbers)
   Future<dynamic> getFamilyMembersNumbers(

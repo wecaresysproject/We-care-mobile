@@ -293,6 +293,7 @@ class AppRouter {
           builder: (context) => FamilyMemeberGeneticDiseaseDataEntryView(
             familyCodes: result['memberCode'],
             memberName: result['memberName'],
+            editModel: result['editModel'],
           ),
         );
       case Routes.createNewGeneticDiseaseView:
@@ -315,8 +316,7 @@ class AppRouter {
         );
       case Routes.biometricsView:
         return MaterialPageRoute(
-          builder: (context) =>
-              const BiometricsView(), //!To be changed later
+          builder: (context) => const BiometricsView(), //!To be changed later
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -10,6 +10,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final RequestStatus geneticDiseaseDataEntryStatus;
   final RequestStatus submitFamilyMemebersNumberStatus;
   final RequestStatus submitMemberGeneticDiseaseDetailsStatus;
+  final RequestStatus deleteRequestStatus;
   final FamilyMemberCount? familyMembersCount;
   final String? diagnosisDate; // تاريخ التشخيص
   final String? geneticDiseaseCategory; //فئة المرض الوراثي
@@ -17,6 +18,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String? selectedDiseaseName; // الوراثي المرض
   final String? selectedHospital;
   final String? selectedCountryName; // اسم الدولة
+  final String? familyMemberName; // اسم الدولة
 
   final List<String> diseasesClassfications;
   final List<String> diseasesStatuses; // حالة المرض
@@ -57,6 +59,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
     this.submitFamilyMemebersNumberStatus = RequestStatus.initial,
     this.submitMemberGeneticDiseaseDetailsStatus = RequestStatus.initial,
+    this.deleteRequestStatus = RequestStatus.initial,
     this.familyMembersCount,
     this.isFormValidated = false,
     this.message = '',
@@ -98,6 +101,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.noOfAunts = '0',
     this.noOfMaternalUncles = '0',
     this.noOfMaternalAunts = '0',
+    this.familyMemberName = '',
   }) : super();
 
   const GeneticDiseasesDataEntryState.initialState()
@@ -105,6 +109,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           geneticDiseaseDataEntryStatus: RequestStatus.initial,
           submitFamilyMemebersNumberStatus: RequestStatus.initial,
           submitMemberGeneticDiseaseDetailsStatus: RequestStatus.initial,
+          deleteRequestStatus: RequestStatus.initial,
           familyMembersCount: null,
           isFormValidated: false,
           message: '',
@@ -146,12 +151,14 @@ class GeneticDiseasesDataEntryState extends Equatable {
           noOfAunts: '0',
           noOfMaternalUncles: '0',
           noOfMaternalAunts: '0',
+          familyMemberName: '',
         );
 
   GeneticDiseasesDataEntryState copyWith({
     RequestStatus? geneticDiseaseDataEntryStatus,
     RequestStatus? submitFamilyMemebersNumberStatus,
     RequestStatus? submitMemberGeneticDiseaseDetailsStatus,
+    RequestStatus? deleteRequestStatus,
     FamilyMemberCount? familyMembersCount,
     bool? isFormValidated,
     String? message,
@@ -194,6 +201,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? noOfAunts,
     String? noOfMaternalUncles,
     String? noOfMaternalAunts,
+    String? familyMemberName,
   }) {
     return GeneticDiseasesDataEntryState(
       submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
@@ -204,6 +212,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
       submitMemberGeneticDiseaseDetailsStatus:
           submitMemberGeneticDiseaseDetailsStatus ??
               this.submitMemberGeneticDiseaseDetailsStatus,
+      deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -253,6 +262,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
       noOfAunts: noOfAunts ?? this.noOfAunts,
       noOfMaternalUncles: noOfMaternalUncles ?? this.noOfMaternalUncles,
       noOfMaternalAunts: noOfMaternalAunts ?? this.noOfMaternalAunts,
+      familyMemberName: familyMemberName ?? this.familyMemberName,
     );
   }
 
@@ -261,6 +271,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
         geneticDiseaseDataEntryStatus,
         submitFamilyMemebersNumberStatus,
         submitMemberGeneticDiseaseDetailsStatus,
+        deleteRequestStatus,
         familyMembersCount,
         isFormValidated,
         message,
@@ -302,5 +313,6 @@ class GeneticDiseasesDataEntryState extends Equatable {
         noOfAunts,
         noOfMaternalUncles,
         noOfMaternalAunts,
+        familyMemberName,
       ];
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -57,21 +58,50 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
                       ),
                     );
                   }
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  return Column(
                     children: [
-                      /// الجهة اليمنى (الأب)
-                      buildFatherRelativesPart(
-                        context,
-                        state.familyMembersNames,
+                      /// زر الإضافة
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AddFamilyMemberDialog(),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 24.w, vertical: 12.h),
+                            backgroundColor: AppColorsManager.mainDarkBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                          ),
+                          child: Text(
+                            "أضف فرد جديد في شجرة عائلتك",
+                            style: AppTextStyles.font18blackWight500.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
 
-                      horizontalSpacing(16),
+                      verticalSpacing(24), // مسافة بين الزر والشجرة
 
-                      /// الجهة اليسرى (الأم)
-                      buildMotherRelativesPart(
-                        context,
-                        state.familyMembersNames,
+                      /// شجرة العائلة (الجهة اليمنى واليسرى)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          buildFatherRelativesPart(
+                            context,
+                            state.familyMembersNames,
+                          ),
+                          horizontalSpacing(16),
+                          buildMotherRelativesPart(
+                            context,
+                            state.familyMembersNames,
+                          ),
+                        ],
                       ),
                     ],
                   );
@@ -171,8 +201,9 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     final result = await context.pushNamed(
       Routes.familyMemeberGeneticDiseaseDataEntryView,
       arguments: {
-        'memberCode': code,
+        'memberCode': code.name,
         'memberName': familyMemberName,
+        "editModel": null,
       },
     );
 
@@ -188,28 +219,66 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     Color color,
     FamilyCodes code,
   ) {
-    return GestureDetector(
-      onDoubleTap: () async {
-        await navigateToNextScreen(context, code, title);
-      },
-      child: Container(
-        width: 73.5.w,
-        height: 47.h,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          "$emoji\n${title.split(' ').first}",
-          textAlign: TextAlign.center,
-          style: AppTextStyles.font18blackWight500.copyWith(
-            color: Color(0xffFEFEFE),
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w600,
+    return Stack(
+      children: [
+        GestureDetector(
+          onDoubleTap: () async {
+            await navigateToNextScreen(context, code, title);
+          },
+          child: Container(
+            width: 73.5.w,
+            height: 47.h,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              "$emoji\n${title.split(' ').first}",
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font18blackWight500.copyWith(
+                color: const Color(0xffFEFEFE),
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ),
-      ),
+
+        /// أيقونة الحذف أعلى اليسار
+        Positioned(
+          top: 0,
+          left: 0,
+          child: GestureDetector(
+            onTap: () async {
+              final cubit = context.read<GeneticsDiseasesViewCubit>();
+
+              final result = await cubit.deleteFamilyMemberbyNameAndCode(
+                code: code.name,
+                name: title,
+              );
+
+              // if (result == true) {
+              await cubit.getFamilyMembersNames();
+              // }
+            },
+            child: Container(
+              width: 20.w,
+              height: 20.w,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                color: Colors.white60,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.remove_circle_outline_rounded,
+                size: 14.sp,
+                color: Colors.redAccent,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -416,6 +485,99 @@ class BulletLabel extends StatelessWidget {
             style: AppTextStyles.font18blackWight500.copyWith(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AddFamilyMemberDialog extends StatefulWidget {
+  const AddFamilyMemberDialog({super.key});
+
+  @override
+  State<AddFamilyMemberDialog> createState() => _AddFamilyMemberDialogState();
+}
+
+class _AddFamilyMemberDialogState extends State<AddFamilyMemberDialog> {
+  final TextEditingController _nameController = TextEditingController();
+  String? _selectedRelation;
+
+  final List<String> _familyRelations = [
+    'الأخ',
+    'الأخت',
+    'العم',
+    'العمة',
+    'الخال',
+    'الخالة',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      title: Text(
+        'إضافة فرد جديد',
+        textAlign: TextAlign.center,
+        style: AppTextStyles.font18blackWight500,
+      ),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButtonFormField<String>(
+              decoration: InputDecoration(
+                labelText: 'اختر صلة القرابة',
+                border: OutlineInputBorder(),
+              ),
+              value: _selectedRelation,
+              items: _familyRelations
+                  .map((relation) => DropdownMenuItem<String>(
+                        value: relation,
+                        child: Text(relation),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _selectedRelation = value;
+                });
+              },
+            ),
+            SizedBox(height: 16.h),
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'ادخل اسم فرد عائلتك',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => context.pop(),
+          child: Text('إلغاء'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final name = _nameController.text.trim();
+            final relation = _selectedRelation;
+
+            if (name.isNotEmpty && relation != null) {
+              // TODO: Use Cubit to add the member
+              print('Adding $relation: $name');
+              context.pop(); // Close dialog
+            } else {
+              showError("يرجى تعبئة جميع الحقول");
+            }
+          },
+          child: Text(
+            'إضافة',
+            style: TextStyle(
+              color: Colors.white,
             ),
           ),
         ),

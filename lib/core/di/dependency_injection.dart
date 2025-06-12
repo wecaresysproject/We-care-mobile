@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
@@ -236,7 +237,7 @@ void setupAppCubits() {
 
   getIt.registerFactory<BiometricsViewCubit>(
     () => BiometricsViewCubit(
-     getIt<BiometricsViewRepo>(),
+      getIt<BiometricsViewRepo>(),
     ),
   );
 }
@@ -391,6 +392,7 @@ void setupAppServices() {
   getIt.registerLazySingleton<ImagePicker>(
     () => ImagePicker(),
   );
+  getIt.registerLazySingleton<AudioPlayer>(() => AudioPlayer());
 
   getIt.registerLazySingleton<ImagePickerService>(
     () => ImagePickerService(),
