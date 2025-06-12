@@ -5,7 +5,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
@@ -43,8 +42,8 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
                 child: Text("لا توجد تفاصيل لهذا المرض"),
               );
             }
-            final GenaticDiseaseDetails diseaseDetails =
-                state.familyMemberGeneticDiseaseDetails!.genaticDiseaseDetails.first;
+            final GenaticDiseaseDetails diseaseDetails = state
+                .familyMemberGeneticDiseaseDetails!.genaticDiseaseDetails.first;
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
               child: Column(
@@ -223,8 +222,7 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
 }
 
 void shareDetails(GenaticDiseaseDetails diseaseDetails) {
-
-      final String shareText = '''
+  final String shareText = '''
 📌 المرض الوراثي: ${diseaseDetails.geneticDisease}
 📂 التصنيف الطبي المرضي: ${diseaseDetails.medicalClassification}
 🧬 نوع الوراثة: ${diseaseDetails.inheritanceType}
@@ -244,6 +242,5 @@ ${diseaseDetails.diagnosticTests?.map((t) => '• $t').join('\n') ?? 'لا يو�
 💊 العلاجات المتاحة:
 ${diseaseDetails.availableTreatments?.map((t) => '• $t').join('\n') ?? 'لا يوجد'}
 ''';
-      Share.share(shareText);
-    
+  Share.share(shareText);
 }

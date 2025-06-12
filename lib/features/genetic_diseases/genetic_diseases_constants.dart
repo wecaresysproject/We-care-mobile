@@ -20,8 +20,8 @@ class GeneticDiseasesConstants {
       "GeneticDiseasesAPIs/medical-history";
   static const uploadFamilyMemebersNumber =
       "GeneticDiseasesAPIs/family-relation";
-  static const postGenticDiseaseForFamilyMember =
-      "GeneticDiseasesAPIs/family-tree";
+  static const editGenticDiseaseForFamilyMember =
+      "GeneticDiseasesAPIs/family-tree-name-code";
   static const getFamilyMembersNumbers = "GeneticDiseasesAPIs/family-relation";
   static const editPersonalGeneticDiseases =
       "GeneticDiseasesAPIs/medical-history";

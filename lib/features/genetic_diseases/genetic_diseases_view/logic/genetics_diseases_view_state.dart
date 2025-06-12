@@ -5,7 +5,6 @@ import 'package:we_care/features/genetic_diseases/data/models/family_member_gena
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
-import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
 
 @immutable
 class GeneticsDiseasesViewState extends Equatable {
@@ -20,21 +19,20 @@ class GeneticsDiseasesViewState extends Equatable {
   final FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases;
   final FamilyNameGeneticDiseaseDetialsResponseModel?
       familyMemberGeneticDiseaseDetails;
-  final PersonalGeneticDiseasDetails?     personalGeneticDiseaseDetails;
+  final PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails;
 
-  const GeneticsDiseasesViewState({
-    this.requestStatus = RequestStatus.initial,
-    this.message,
-    this.isLoadingMore,
-    this.hasMore,
-    this.currentPage,
-    this.isDeleteRequest = false,
-    this.yearsFilter,
-    this.familyMembersNames,
-    this.familyMemberGeneticDiseases,
-    this.familyMemberGeneticDiseaseDetails,
-    this.personalGeneticDiseaseDetails
-  });
+  const GeneticsDiseasesViewState(
+      {this.requestStatus = RequestStatus.initial,
+      this.message,
+      this.isLoadingMore,
+      this.hasMore,
+      this.currentPage,
+      this.isDeleteRequest = false,
+      this.yearsFilter,
+      this.familyMembersNames,
+      this.familyMemberGeneticDiseases,
+      this.familyMemberGeneticDiseaseDetails,
+      this.personalGeneticDiseaseDetails});
   const GeneticsDiseasesViewState.initial()
       : requestStatus = RequestStatus.initial,
         message = null,
@@ -48,26 +46,34 @@ class GeneticsDiseasesViewState extends Equatable {
         familyMembersNames = null,
         isDeleteRequest = false;
 
-        
-  
   @override
-  List<Object?> get props => [message, requestStatus, isLoadingMore,  
-   hasMore, currentPage, isDeleteRequest, yearsFilter, familyMembersNames,familyMemberGeneticDiseases, familyMemberGeneticDiseaseDetails, personalGeneticDiseaseDetails];
-
-  GeneticsDiseasesViewState copyWith({
-    String? message,
-    RequestStatus? requestStatus,
-    bool? isLoadingMore,
-    bool? hasMore,
-    int? currentPage,
-    bool? isDeleteRequest,
-    List<int>? yearsFilter,
-    GetFamilyMembersNames? familyMembersNames,
-    FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
-    FamilyNameGeneticDiseaseDetialsResponseModel?
+  List<Object?> get props => [
+        message,
+        requestStatus,
+        isLoadingMore,
+        hasMore,
+        currentPage,
+        isDeleteRequest,
+        yearsFilter,
+        familyMembersNames,
+        familyMemberGeneticDiseases,
         familyMemberGeneticDiseaseDetails,
-        PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails
-  }) {
+        personalGeneticDiseaseDetails
+      ];
+
+  GeneticsDiseasesViewState copyWith(
+      {String? message,
+      RequestStatus? requestStatus,
+      bool? isLoadingMore,
+      bool? hasMore,
+      int? currentPage,
+      bool? isDeleteRequest,
+      List<int>? yearsFilter,
+      GetFamilyMembersNames? familyMembersNames,
+      FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
+      FamilyNameGeneticDiseaseDetialsResponseModel?
+          familyMemberGeneticDiseaseDetails,
+      PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails}) {
     return GeneticsDiseasesViewState(
       message: message ?? this.message,
       requestStatus: requestStatus ?? this.requestStatus,
@@ -76,11 +82,13 @@ class GeneticsDiseasesViewState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       yearsFilter: yearsFilter ?? this.yearsFilter,
-      familyMemberGeneticDiseases: familyMemberGeneticDiseases ?? this.familyMemberGeneticDiseases,
+      familyMemberGeneticDiseases:
+          familyMemberGeneticDiseases ?? this.familyMemberGeneticDiseases,
       familyMembersNames: familyMembersNames ?? this.familyMembersNames,
-      personalGeneticDiseaseDetails: personalGeneticDiseaseDetails ?? this.personalGeneticDiseaseDetails,
-      familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ?? this.familyMemberGeneticDiseaseDetails,
+      personalGeneticDiseaseDetails:
+          personalGeneticDiseaseDetails ?? this.personalGeneticDiseaseDetails,
+      familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ??
+          this.familyMemberGeneticDiseaseDetails,
     );
   }
-
-} 
+}

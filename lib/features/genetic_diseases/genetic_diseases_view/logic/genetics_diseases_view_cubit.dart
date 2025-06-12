@@ -41,7 +41,8 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     required String familyMemberName,
   }) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await geneticDiseasesViewRepo.getFamilyMembersGeneticDiseases(
+    final result =
+        await geneticDiseasesViewRepo.getFamilyMembersGeneticDiseases(
       'ar',
       'Patient',
       familyMemberCode,
@@ -67,7 +68,8 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     required String disease,
   }) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await geneticDiseasesViewRepo.getFamilyMemberGeneticDiseaseDetails(
+    final result =
+        await geneticDiseasesViewRepo.getFamilyMemberGeneticDiseaseDetails(
       'ar',
       'Patient',
       disease,
@@ -92,7 +94,8 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     required String disease,
   }) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await geneticDiseasesViewRepo.getPersonalGeneticDiseaseDetails(
+    final result =
+        await geneticDiseasesViewRepo.getPersonalGeneticDiseaseDetails(
       'ar',
       'Patient',
       disease,
@@ -113,36 +116,37 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     );
   }
 
-
- 
-Future<void> deleteFamilyMemberbyNameAndCode({
-
-     required String name,
-     required String code,
-   }) async{
-  final result = await  geneticDiseasesViewRepo.deleteFamilyMemberbyNameAndCode(
-       'ar',
-       'Patient',
-       code,
-       name,
-     );
-     result.when(
-       success: (data) {
-         emit(state.copyWith(
-           message: data,
-           requestStatus: RequestStatus.success,
-           isDeleteRequest: true,
-         ));
-       },
-       failure: (error) {
-         emit(state.copyWith(
-           message: error.errors.first,
-           requestStatus: RequestStatus.failure,
-           isDeleteRequest: true,
-         ));
-       },
-     );
-   }
+  Future<bool> deleteFamilyMemberbyNameAndCode({
+    required String name,
+    required String code,
+  }) async {
+    final result =
+        await geneticDiseasesViewRepo.deleteFamilyMemberbyNameAndCode(
+      'ar',
+      'Patient',
+      code,
+      name,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          message: data,
+          requestStatus: RequestStatus.success,
+          isDeleteRequest: true,
+        ));
+        return true;
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          message: error.errors.first,
+          requestStatus: RequestStatus.failure,
+          isDeleteRequest: true,
+        ));
+        return false;
+      },
+    );
+    return false;
+  }
 
   // Future<void> getDefectedTooth() async {
   //   emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));

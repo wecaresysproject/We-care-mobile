@@ -60,13 +60,16 @@ ${detailsList.join("\n\n")}
           appBar: AppBar(
             toolbarHeight: 0,
           ),
-          body: BlocConsumer<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
+          body: BlocConsumer<GeneticsDiseasesViewCubit,
+              GeneticsDiseasesViewState>(
             listener: (context, state) {
-              if(state.requestStatus == RequestStatus.success&&state.isDeleteRequest){
+              if (state.requestStatus == RequestStatus.success &&
+                  state.isDeleteRequest) {
                 Navigator.pop(context);
                 showSuccess(state.message!);
               }
-              if (state.requestStatus == RequestStatus.failure&&state.isDeleteRequest) {
+              if (state.requestStatus == RequestStatus.failure &&
+                  state.isDeleteRequest) {
                 showError(state.message!);
               }
             },
@@ -79,9 +82,18 @@ ${detailsList.join("\n\n")}
                     children: [
                       DetailsViewAppBar(
                         title: familyMemberName,
-                        shareFunction: () => shareDetails(
-                          context,state
-                        ),
+                        shareFunction: () => shareDetails(context, state),
+                        editFunction: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.familyMemeberGeneticDiseaseDataEntryView,
+                            arguments: {
+                              "editModel": state.familyMemberGeneticDiseases,
+                              'memberCode': familyMemberCode,
+                              'memberName': familyMemberName
+                            },
+                          );
+                        },
                         // deleteFunction: () => getIt<GeneticsDiseasesViewCubit>().deleteFamilyMemberbyNameAndCode(
                         //   name: familyMemberName,
                         //   code: familyMemberCode,

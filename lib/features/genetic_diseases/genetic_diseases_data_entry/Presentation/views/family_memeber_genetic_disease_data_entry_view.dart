@@ -13,6 +13,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/genetic_disease_template_widget.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/create_new_gentic_disease_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
@@ -23,10 +24,10 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
     super.key,
     required this.familyCodes,
     required this.memberName,
-    // this.medicineToEdit,
+    this.editModel,
   });
-  // final MedicineModel? medicineToEdit;
-  final FamilyCodes familyCodes;
+  final FamilyMemberGeneticsDiseasesResponseModel? editModel;
+  final String familyCodes;
   final String memberName;
 
   @override
@@ -36,12 +37,13 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
         BlocProvider<GeneticDiseasesDataEntryCubit>(
           create: (context) {
             final cubit = getIt<GeneticDiseasesDataEntryCubit>();
-            // if (medicineToEdit != null) {
-            //   cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
-            // } else {
-            //   cubit.initialDataEntryRequests();
-            // }
-            cubit.fetchAllAddedGeneticDiseases();
+            if (editModel != null) {
+              cubit
+                ..loadGeneticDiseasesDataEnteredForEditing(editModel!)
+                ..fetchAllAddedGeneticDiseases();
+            } else {
+              cubit.initialDataEntryRequests();
+            }
             return cubit;
           },
         ),
@@ -67,12 +69,18 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(12),
-                CustomTextField(
-                  hintText: 'اكتب اسم الشخص المصاب',
-                  validator: (context) {
-                    return null;
-                  },
-                ),
+                Builder(builder: (context) {
+                  return CustomTextField(
+                    hintText: memberName,
+                    onChanged: (p0) {
+                      BlocProvider.of<GeneticDiseasesDataEntryCubit>(context)
+                          .onFamilyMemberChanges(p0);
+                    },
+                    validator: (context) {
+                      return null;
+                    },
+                  );
+                }),
                 verticalSpacing(20),
                 GeneticDiseaseTemplateListBlocBuilder(),
                 verticalSpacing(20),
@@ -80,7 +88,7 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
                 verticalSpacing(40),
                 submitMemberGeneticDiseasesButtonBlocConsumer(
                   context,
-                  familyCodes.name,
+                  familyCodes,
                   memberName,
                 ),
               ],
@@ -181,9 +189,9 @@ Widget submitMemberGeneticDiseasesButtonBlocConsumer(
           //     :
           await context
               .read<GeneticDiseasesDataEntryCubit>()
-              .postGenticDiseaseForFamilyMember(
-                familyMemberName: memberName,
+              .editGenticDiseaseForFamilyMember(
                 memberCode: code,
+                oldMembername: memberName,
               );
         },
         isEnabled: true,

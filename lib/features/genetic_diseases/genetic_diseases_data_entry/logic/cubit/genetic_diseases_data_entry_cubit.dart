@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
@@ -56,21 +57,33 @@ class GeneticDiseasesDataEntryCubit
     }
   }
 
-  // Future<void> loadGeneticDiseasesForEditing(
-  //   model.DetailedComplaintModel emergencyComplaint,
-  //   S locale,
-  // ) async {
-  //   await storeTemporaryGeneticDiseasesForFamilyMember(
-  //     emergencyComplaint.mainSymptoms,
-  //   );
+  Future<void> loadGeneticDiseasesDataEnteredForEditing(
+    FamilyMemberGeneticsDiseasesResponseModel editModel,
+  ) async {
+    final List<NewGeneticDiseaseModel> oldGeneticDiseases = [];
+    for (var oldDisease in editModel.geneticDiseases ?? []) {
+      oldGeneticDiseases.add(
+        NewGeneticDiseaseModel(
+          diseaseCategory: oldDisease.diseaseCategory,
+          geneticDisease: oldDisease.geneticDisease,
+          appearanceAgeStage: oldDisease.appearanceAgeStage,
+          patientStatus: oldDisease.patientStatus,
+        ),
+      );
+    }
 
-  //   emit(
-  //     state.copyWith(
-  //       isEditMode: true,
-  //       updatedDocumentId: emergencyComplaint.id,
-  //     ),
-  //   );
-  // }
+    await storeTemporaryGeneticDiseasesForFamilyMember(
+      oldGeneticDiseases,
+    );
+
+    emit(
+      state.copyWith(
+        isEditMode: true,
+        geneticDiseases: oldGeneticDiseases,
+        familyMemberName: editModel.familyMemberName,
+      ),
+    );
+  }
 
   Future<void> storeTemporaryGeneticDiseasesForFamilyMember(
     List<NewGeneticDiseaseModel> geneticDiseases,
@@ -84,9 +97,9 @@ class GeneticDiseasesDataEntryCubit
     }
   }
 
-  Future<void> postGenticDiseaseForFamilyMember({
-    required String familyMemberName,
+  Future<void> editGenticDiseaseForFamilyMember({
     required String memberCode,
+    required String oldMembername,
   }) async {
     emit(
       state.copyWith(
@@ -94,9 +107,10 @@ class GeneticDiseasesDataEntryCubit
       ),
     );
     final response =
-        await _geneticDiseasesDataEntryRepo.postGenticDiseaseForFamilyMember(
+        await _geneticDiseasesDataEntryRepo.editGenticDiseaseForFamilyMember(
+      oldMembername: oldMembername,
       requestBody: FamilyMemberGeneticDiseasesRequestBodyModel(
-        name: familyMemberName,
+        name: state.familyMemberName!,
         code: memberCode,
         geneticDiseases: state.geneticDiseases,
       ),
@@ -122,6 +136,42 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  Future<bool> deleteFamilyMemberbyNameAndCode({
+    required String name,
+    required String code,
+  }) async {
+    emit(state.copyWith(deleteRequestStatus: RequestStatus.initial));
+    final result =
+        await _geneticDiseasesDataEntryRepo.deleteFamilyMemberbyNameAndCode(
+      AppStrings.arabicLang,
+      UserTypes.patient.name.firstLetterToUpperCase,
+      code,
+      name,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            message: data,
+            deleteRequestStatus: RequestStatus.success,
+          ),
+        );
+        return true;
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            deleteRequestStatus: RequestStatus.failure,
+            //  isDeleteRequest: true,
+          ),
+        );
+        return false;
+      },
+    );
+    return false;
+  }
+
   void onNumberOfBrothersChanged(String? value) {
     emit(state.copyWith(noOfBrothers: value));
   }
@@ -136,6 +186,10 @@ class GeneticDiseasesDataEntryCubit
 
   void onNumberOfAuntsChanged(String? value) {
     emit(state.copyWith(noOfAunts: value));
+  }
+
+  void onFamilyMemberChanges(String? value) {
+    emit(state.copyWith(familyMemberName: value));
   }
 
   void onNumberOfMaternalUnclesChanged(String? value) {
