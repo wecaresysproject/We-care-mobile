@@ -539,9 +539,9 @@ class _BiometricsViewState extends State<BiometricsView> {
           ),
           minX: 0,
           maxX: (data.length - 1).toDouble(),
-          minY:data.map((e) => e.value.toInt).reduce((a, b) => a < b ? a : b) - 10,
+          minY:currentMetric.hasSecondaryValue ? 50 : data.map((e) => e.value.toInt).reduce((a, b) => a < b ? a : b) - 10,
           maxY: currentMetric.hasSecondaryValue
-              ? 180
+              ? 200
               : data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) + 10,
           lineBarsData: [
             // Primary line
@@ -685,7 +685,8 @@ class _BiometricsViewState extends State<BiometricsView> {
   }
 }
 
-// Dummy data
+
+
 final List<BiometricType> biometricTypes = [
   BiometricType(
     id: 'heart_rate',
