@@ -67,9 +67,12 @@ class CategoryItem extends StatelessWidget {
         GestureDetector(
           onTap: isActive
               ? () async {
-                  playSound(
-                    assetPath: audio ?? "assets/audios/press.mp3",
-                  );
+                  if (audio.isNotEmptyOrNull) {
+                    playSound(
+                      assetPath: audio!,
+                    );
+                  }
+
                   if (!context.mounted) return;
                   await context.pushNamed(routeName);
                 }
