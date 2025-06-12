@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 
@@ -54,4 +56,14 @@ String normalizeArabic(String input) {
 
 String extractFirstMedicineName(String input) {
   return input.split(' ').first;
+}
+
+//TODO: change it in seperate services class later
+
+final player =
+    getIt<AudioPlayer>(); // You can also make this global or as a singleton
+
+Future<void> playSound({required String assetPath}) async {
+  await player.stop(); // Optional: stop previous if overlapping
+  await player.play(AssetSource(assetPath));
 }

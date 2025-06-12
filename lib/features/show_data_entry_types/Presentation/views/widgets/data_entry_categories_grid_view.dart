@@ -67,7 +67,10 @@ class CategoryItem extends StatelessWidget {
         GestureDetector(
           onTap: isActive
               ? () async {
-                  // await playAudio(audio ?? "assets/audios/press.mp3");
+                  playSound(
+                    assetPath: audio ?? "assets/audios/press.mp3",
+                  );
+                  if (!context.mounted) return;
                   await context.pushNamed(routeName);
                 }
               : null,
@@ -238,7 +241,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "cornerImagePath": "assets/images/genetic_dissease_module.png",
     "route": Routes.geneticDiseaeseMainView,
     "isActive": true,
-    "audio": "",
+    "audio": "sounds/ebn_sena.mp3",
   },
   {
     "title": "الغسيل\nالكلوى",
