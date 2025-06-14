@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -67,12 +69,6 @@ class CategoryItem extends StatelessWidget {
         GestureDetector(
           onTap: isActive
               ? () async {
-                  if (audio.isNotEmptyOrNull) {
-                    playSound(
-                      assetPath: audio!,
-                    );
-                  }
-
                   if (!context.mounted) return;
                   await context.pushNamed(routeName);
                 }
@@ -139,10 +135,21 @@ class CategoryItem extends StatelessWidget {
               Positioned(
                 top: -23,
                 left: -1,
-                child: Image.asset(
-                  cornerImagePath,
-                  width: 35.w,
-                  height: 35.h,
+                child: GestureDetector(
+                  onTap: () async {
+                    log("Tapped corner image for: $title");
+
+                    if (audio.isNotEmptyOrNull) {
+                      await playSound(
+                        assetPath: audio!,
+                      );
+                    }
+                  },
+                  child: Image.asset(
+                    cornerImagePath,
+                    width: 35.w,
+                    height: 35.h,
+                  ),
                 ),
               ),
             ],
@@ -229,7 +236,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "image": "assets/images/time_icon.png",
     "route": "/organic_disorders",
     "cornerImagePath": "assets/images/chronic_disease_module.png",
-    "audio": "",
+    "audio": "sounds/ebn_sena.mp3",
   },
   {
     "title": "الأورام",
@@ -244,7 +251,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "cornerImagePath": "assets/images/genetic_dissease_module.png",
     "route": Routes.geneticDiseaeseMainView,
     "isActive": true,
-    "audio": "sounds/ebn_sena.mp3",
+    "audio": "",
   },
   {
     "title": "الغسيل\nالكلوى",
