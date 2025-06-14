@@ -34,7 +34,7 @@ class GeneticDiseaseTemplateContainer extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  " 1 المرض الوراثي",
+                  "المرض الوراثي",
                   style: AppTextStyles.font18blackWight500.copyWith(
                     color: AppColorsManager.mainDarkBlue,
                     fontWeight: FontWeight.w600,
