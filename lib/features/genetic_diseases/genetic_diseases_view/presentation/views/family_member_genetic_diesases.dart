@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
@@ -83,17 +84,28 @@ ${detailsList.join("\n\n")}
                       DetailsViewAppBar(
                         title: familyMemberName,
                         shareFunction: () => shareDetails(context, state),
-                        editFunction: () {
-                          Navigator.pushNamed(
-                            context,
+                        editFunction: () async {
+                          final result = await context.pushNamed(
                             Routes.familyMemeberGeneticDiseaseDataEntryView,
                             arguments: {
-                              "editModel": state.familyMemberGeneticDiseases,
+                              "familyMemberGeneticDiseases":
+                                  state.familyMemberGeneticDiseases,
                               'memberCode': familyMemberCode,
                               'memberName': familyMemberName
                             },
                           );
+
+                          if (result == true) {
+                            if (!context.mounted) return;
+                            await context
+                                .read<GeneticsDiseasesViewCubit>()
+                                .getFamilyMembersGeneticDiseases(
+                                  familyMemberCode: familyMemberCode,
+                                  familyMemberName: familyMemberName,
+                                );
+                          }
                         },
+
                         // deleteFunction: () => getIt<GeneticsDiseasesViewCubit>().deleteFamilyMemberbyNameAndCode(
                         //   name: familyMemberName,
                         //   code: familyMemberCode,

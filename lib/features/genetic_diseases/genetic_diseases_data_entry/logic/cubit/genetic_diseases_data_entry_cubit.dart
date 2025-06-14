@@ -58,16 +58,16 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> loadGeneticDiseasesDataEnteredForEditing(
-    FamilyMemberGeneticsDiseasesResponseModel editModel,
+    FamilyMemberGeneticsDiseasesResponseModel memberGeneticDiseases,
   ) async {
     final List<NewGeneticDiseaseModel> oldGeneticDiseases = [];
-    for (var oldDisease in editModel.geneticDiseases ?? []) {
+    for (var oldDisease in memberGeneticDiseases.geneticDiseases!) {
       oldGeneticDiseases.add(
         NewGeneticDiseaseModel(
-          diseaseCategory: oldDisease.diseaseCategory,
+          diseaseCategory: oldDisease.inheritanceType,
           geneticDisease: oldDisease.geneticDisease,
-          appearanceAgeStage: oldDisease.appearanceAgeStage,
-          patientStatus: oldDisease.patientStatus,
+          appearanceAgeStage: "نسال فيها ا/اشرف ،م/ آيه",
+          patientStatus: oldDisease.diseaseStatus,
         ),
       );
     }
@@ -80,7 +80,7 @@ class GeneticDiseasesDataEntryCubit
       state.copyWith(
         isEditMode: true,
         geneticDiseases: oldGeneticDiseases,
-        familyMemberName: editModel.familyMemberName,
+        familyMemberName: memberGeneticDiseases.familyMemberName,
       ),
     );
   }

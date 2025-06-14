@@ -203,7 +203,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
       arguments: {
         'memberCode': code.name,
         'memberName': familyMemberName,
-        "editModel": null,
+        "familyMemberGeneticDiseases": null,
       },
     );
 
