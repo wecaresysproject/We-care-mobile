@@ -8,15 +8,20 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class CustomAppBarWidget extends StatelessWidget {
-  const CustomAppBarWidget({super.key, this.haveBackArrow = false});
+  const CustomAppBarWidget(
+      {super.key, this.haveBackArrow = false, this.onNavigateToBack});
 
   final bool haveBackArrow;
-
+  final void Function()? onNavigateToBack;
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        haveBackArrow ? CustomBackArrow() : SizedBox.shrink(),
+        haveBackArrow
+            ? CustomBackArrow(
+                onTap: onNavigateToBack,
+              )
+            : SizedBox.shrink(),
         Spacer(),
         Text(
           context.translate.dummyUserName,

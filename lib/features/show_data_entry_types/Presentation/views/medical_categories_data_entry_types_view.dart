@@ -20,6 +20,9 @@ class MedicalDataEntryCategoryTypesView extends StatelessWidget {
         children: [
           CustomAppBarWidget(
             haveBackArrow: true,
+            onNavigateToBack: () {
+              stopSound();
+            },
           ),
           verticalSpacing(24),
           BasicDataAndBiometricMeasurementsCategories(),

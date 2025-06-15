@@ -1,7 +1,7 @@
-import 'dart:developer';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -43,14 +43,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
   }
 }
 
-class CategoryItem extends StatelessWidget {
-  final String title;
-  final String imagePath;
-  final String routeName;
-  final bool isActive;
-  final String cornerImagePath;
-  final String? audio;
-
+class CategoryItem extends StatefulWidget {
   const CategoryItem({
     super.key,
     required this.title,
@@ -61,16 +54,62 @@ class CategoryItem extends StatelessWidget {
     this.audio,
   });
 
+  final String title;
+  final String imagePath;
+  final String routeName;
+  final bool isActive;
+  final String cornerImagePath;
+  final String? audio;
+
+  @override
+  State<CategoryItem> createState() => _CategoryItemState();
+}
+
+class _CategoryItemState extends State<CategoryItem> {
+  bool isPlaying = false;
+
+  @override
+  void didUpdateWidget(covariant CategoryItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // عند الرجوع، نتاكد ان الصوت موقف والصورة غامقة
+    if (!mounted) return;
+    setState(() {
+      isPlaying = false;
+    });
+  }
+
+  Future<void> _toggleAudio() async {
+    try {
+      final AudioPlayer audioPlayer = getIt.get<AudioPlayer>();
+      await playSound(assetPath: widget.audio!);
+      setState(() => isPlaying = true);
+
+      audioPlayer.onPlayerComplete.listen((event) {
+        if (mounted) {
+          setState(() => isPlaying = false);
+        }
+      });
+    } catch (e) {
+      debugPrint('Audio play error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
-          onTap: isActive
+          onTap: widget.isActive
               ? () async {
+                  await stopSound();
+                  if (mounted) {
+                    setState(() => isPlaying = false); // قبل الانتقال
+                  }
+
                   if (!context.mounted) return;
-                  await context.pushNamed(routeName);
+
+                  await context.pushNamed(widget.routeName);
                 }
               : null,
           child: Stack(
@@ -105,14 +144,14 @@ class CategoryItem extends StatelessWidget {
                     ),
                     child: Center(
                       child: Image.asset(
-                        imagePath,
+                        widget.imagePath,
                         fit: BoxFit.contain,
                         height: 51.h,
                         width: 52.w,
                       ),
                     ),
                   ),
-                  if (!isActive)
+                  if (!widget.isActive)
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
@@ -130,25 +169,26 @@ class CategoryItem extends StatelessWidget {
                     ),
                 ],
               ),
-
-              // Conditionally show corner image if provided
               Positioned(
                 top: -23,
                 left: -1,
                 child: GestureDetector(
-                  onTap: () async {
-                    log("Tapped corner image for: $title");
-
-                    if (audio.isNotEmptyOrNull) {
-                      await playSound(
-                        assetPath: audio!,
-                      );
-                    }
-                  },
-                  child: Image.asset(
-                    cornerImagePath,
-                    width: 35.w,
-                    height: 35.h,
+                  onTap: _toggleAudio,
+                  child: ColorFiltered(
+                    colorFilter: isPlaying
+                        ? ColorFilter.matrix(<double>[
+                            1, 0, 0, 0, 60, // Red
+                            0, 1, 0, 0, 60, // Green
+                            0, 0, 1, 0, 60, // Blue
+                            0, 0, 0, 1, 0, // Alpha
+                          ])
+                        : const ColorFilter.mode(
+                            Colors.transparent, BlendMode.dst),
+                    child: Image.asset(
+                      widget.cornerImagePath,
+                      width: 35.w,
+                      height: 35.h,
+                    ),
                   ),
                 ),
               ),
@@ -159,7 +199,7 @@ class CategoryItem extends StatelessWidget {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            title,
+            widget.title,
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
