@@ -129,4 +129,19 @@ abstract class GeneticDiseasesServices {
     @Query("name") String name,
     @Query("code") String code,
   );
+
+  @GET(GeneticDiseasesConstants.getpersonalGeneticDiseases)
+  Future<dynamic> getpersonalGeneticDiseases(
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+
+  @DELETE(GeneticDiseasesConstants.deleteFamilyMemberGeneticDiseasebyNameAndCode)
+  Future<dynamic> deleteFamilyMemberGeneticDiseasebyNameAndCode(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("name") String name,
+    @Query("code") String code,
+    @Query("geneticDisease") String geneticDisease,
+  );
 }

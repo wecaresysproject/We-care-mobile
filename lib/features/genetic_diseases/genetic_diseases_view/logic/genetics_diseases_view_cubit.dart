@@ -116,10 +116,11 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
     );
   }
 
-  Future<bool> deleteFamilyMemberbyNameAndCode({
+  Future<void> deleteFamilyMemberbyNameAndCode({
     required String name,
     required String code,
   }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result =
         await geneticDiseasesViewRepo.deleteFamilyMemberbyNameAndCode(
       'ar',
@@ -142,10 +143,63 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
           requestStatus: RequestStatus.failure,
           isDeleteRequest: true,
         ));
-        return false;
       },
     );
-    return false;
+  }
+
+  Future<void> getPersonalGeneticDiseases() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await geneticDiseasesViewRepo.getPersonalGeneticDiseases(
+      'ar',
+      'Patient',
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          personalGeneticDiseases: data.personalGenaticDisease,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  Future<void> deleteFamilyMemberSpecificDiseasebyNameAndCodeAndDiseaseName({
+    required String name,
+    required String code,
+    required String diseaseName,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result =
+        await geneticDiseasesViewRepo.deleteFamilyMemberSpecificDiseasebyNameAndCodeAndDiseaseName(
+      'ar',
+      'Patient',
+      code,
+      name,
+      diseaseName,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          message: data,
+          requestStatus: RequestStatus.success,
+          isDeleteRequest: true,
+        ));
+        return true;
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          message: error.errors.first,
+          requestStatus: RequestStatus.failure,
+          isDeleteRequest: true,
+        ));
+      },
+    );
   }
 
   // Future<void> getDefectedTooth() async {

@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -13,8 +15,13 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/ge
 
 class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
   const FamilyMemberGeneticDiseaseDetailsView(
-      {super.key, required this.disease});
+      {super.key,
+      required this.disease,
+      required this.familyMemberCode,
+      required this.familyMemberName});
   final String disease;
+  final String familyMemberCode;
+  final String familyMemberName;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +34,18 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
-        body: BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
+        body:
+            BlocConsumer<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
+          listener: (context, state) {
+            if (state.requestStatus == RequestStatus.success &&
+                state.isDeleteRequest) {
+              Navigator.pop(context);
+
+              showSuccess(state.message!);
+            } else if (state.requestStatus == RequestStatus.failure) {
+              showError(state.message ?? "حدث خطأ ما");
+            }
+          },
           builder: (context, state) {
             if (state.requestStatus == RequestStatus.loading) {
               return Center(
@@ -52,6 +70,12 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
                   DetailsViewAppBar(
                     title: disease,
                     shareFunction: () => shareDetails(diseaseDetails),
+                    deleteFunction: () => context
+                        .read<GeneticsDiseasesViewCubit>()
+                        .deleteFamilyMemberSpecificDiseasebyNameAndCodeAndDiseaseName(
+                            code: familyMemberCode,
+                            name: familyMemberName,
+                            diseaseName: diseaseDetails.geneticDisease!),
                   ),
 
                   SizedBox(height: 16.h),

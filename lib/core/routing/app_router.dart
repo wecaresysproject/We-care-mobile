@@ -210,6 +210,8 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => FamilyMemberGeneticDiseaseDetailsView(
             disease: diseaseDetails?['disease'] ?? "",
+            familyMemberCode: diseaseDetails?['familyMemberCode'] ?? "",
+            familyMemberName: diseaseDetails?['familyMemberName'] ?? "",
           ),
         );
       case Routes.familyMemberGeneticDiseases:

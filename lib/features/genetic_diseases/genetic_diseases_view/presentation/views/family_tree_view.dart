@@ -121,6 +121,11 @@ class FamilyTreeView extends StatelessWidget {
       BuildContext context, String code, String name) async {
     await context.pushNamed(Routes.familyMemberGeneticDiseases,
         arguments: {'familyMemberCode': code, 'familyMemberName': name});
+    context.mounted
+        ? await context
+            .read<GeneticsDiseasesViewCubit>()
+            .getFamilyMembersNames()
+        : null;
   }
 
   Widget buildRelativeItem(BuildContext context, String title, String emoji,
