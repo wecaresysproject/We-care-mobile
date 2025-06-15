@@ -60,10 +60,19 @@ String extractFirstMedicineName(String input) {
 
 //TODO: change it in seperate services class later
 
-final player =
+final _audioPlayer =
     getIt<AudioPlayer>(); // You can also make this global or as a singleton
 
 Future<void> playSound({required String assetPath}) async {
-  await player.stop(); // Optional: stop previous if overlapping
-  await player.play(AssetSource(assetPath));
+  await _audioPlayer.stop(); // Optional: stop previous if overlapping
+  await _audioPlayer.play(AssetSource(assetPath));
+}
+
+// Future<void> stopSound() async {
+//   await _audioPlayer.stop();
+// }
+Future<void> stopSound() async {
+  if (_audioPlayer.state == PlayerState.playing) {
+    await _audioPlayer.stop();
+  }
 }
