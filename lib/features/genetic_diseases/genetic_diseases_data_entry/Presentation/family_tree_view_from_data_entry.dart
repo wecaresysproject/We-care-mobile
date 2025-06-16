@@ -72,8 +72,8 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
                       /// زر الإضافة
                       Center(
                         child: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
+                          onPressed: () async {
+                            await showDialog(
                               context: context,
                               builder: (_) => BlocProvider.value(
                                 value: context
