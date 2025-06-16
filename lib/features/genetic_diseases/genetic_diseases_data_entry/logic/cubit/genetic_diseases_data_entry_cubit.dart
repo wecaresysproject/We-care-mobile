@@ -240,6 +240,7 @@ class GeneticDiseasesDataEntryCubit
     );
     final response = await _geneticDiseasesDataEntryRepo.editNoOfFamilyMembers(
       requestBody: FamilyMembersModel(
+        isFirstTimeAnsweredFamilyMembersQuestions: true,
         numberOfBrothers: state.noOfBrothers.toInt,
         numberOfSisters: state.noOfSisters.toInt,
         numberOfFatherSideUncles: state.noOfUncles.toInt,
@@ -262,6 +263,28 @@ class GeneticDiseasesDataEntryCubit
           state.copyWith(
             message: error.errors.first,
             submitFamilyMemebersNumberStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getIsFirstTimeAnsweredFamilyMembersQuestions() async {
+    final response = await _geneticDiseasesDataEntryRepo
+        .getIsFirstTimeAnsweredFamilyMembersQuestions();
+    response.when(
+      success: (isFirstTime) {
+        emit(
+          state.copyWith(
+            isFirstTimeAnsweringFamilyMemberQuestions: isFirstTime,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            isFirstTimeAnsweringFamilyMemberQuestions: false,
           ),
         );
       },

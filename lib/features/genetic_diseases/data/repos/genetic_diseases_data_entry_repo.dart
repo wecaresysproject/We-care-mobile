@@ -262,4 +262,14 @@ class GeneticDiseasesDataEntryRepo {
       throw ApiErrorHandler.handle(e);
     }
   }
+
+  Future<ApiResult<bool>> getIsFirstTimeAnsweredFamilyMembersQuestions() async {
+    try {
+      final response = await _geneticDiseasesServices
+          .getIsFirstTimeAnsweredFamilyMembersQuestions();
+      return ApiResult.success(response['isFirstTime']);
+    } catch (e) {
+      throw ApiErrorHandler.handle(e);
+    }
+  }
 }

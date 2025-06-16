@@ -136,7 +136,8 @@ abstract class GeneticDiseasesServices {
     @Query("userType") String userType,
   );
 
-  @DELETE(GeneticDiseasesConstants.deleteFamilyMemberGeneticDiseasebyNameAndCode)
+  @DELETE(
+      GeneticDiseasesConstants.deleteFamilyMemberGeneticDiseasebyNameAndCode)
   Future<dynamic> deleteFamilyMemberGeneticDiseasebyNameAndCode(
     @Query("language") String language,
     @Query("userType") String userType,
@@ -144,4 +145,6 @@ abstract class GeneticDiseasesServices {
     @Query("code") String code,
     @Query("geneticDisease") String geneticDisease,
   );
+  @GET(GeneticDiseasesConstants.getIsFirstTimeAnsweredFamilyMembersQuestions)
+  Future<dynamic> getIsFirstTimeAnsweredFamilyMembersQuestions();
 }

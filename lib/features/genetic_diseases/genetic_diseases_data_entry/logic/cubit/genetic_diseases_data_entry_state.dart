@@ -55,6 +55,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String noOfMaternalAunts; // عدد الخالات
   final String noOfMaternalUncles; // عدد الاخوال
 
+  final bool isFirstTimeAnsweringFamilyMemberQuestions;
+
   const GeneticDiseasesDataEntryState({
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
     this.submitFamilyMemebersNumberStatus = RequestStatus.initial,
@@ -102,6 +104,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.noOfMaternalUncles = '0',
     this.noOfMaternalAunts = '0',
     this.familyMemberName = '',
+    this.isFirstTimeAnsweringFamilyMemberQuestions =
+        false, // اول مره يشوف الاسئله ؟ لو اه ، هنظهرلله البوتون ، لو لا
   }) : super();
 
   const GeneticDiseasesDataEntryState.initialState()
@@ -152,6 +156,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           noOfMaternalUncles: '0',
           noOfMaternalAunts: '0',
           familyMemberName: '',
+          isFirstTimeAnsweringFamilyMemberQuestions: false,
         );
 
   GeneticDiseasesDataEntryState copyWith({
@@ -202,6 +207,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? noOfMaternalUncles,
     String? noOfMaternalAunts,
     String? familyMemberName,
+    bool? isFirstTimeAnsweringFamilyMemberQuestions,
   }) {
     return GeneticDiseasesDataEntryState(
       submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
@@ -263,6 +269,9 @@ class GeneticDiseasesDataEntryState extends Equatable {
       noOfMaternalUncles: noOfMaternalUncles ?? this.noOfMaternalUncles,
       noOfMaternalAunts: noOfMaternalAunts ?? this.noOfMaternalAunts,
       familyMemberName: familyMemberName ?? this.familyMemberName,
+      isFirstTimeAnsweringFamilyMemberQuestions:
+          isFirstTimeAnsweringFamilyMemberQuestions ??
+              this.isFirstTimeAnsweringFamilyMemberQuestions,
     );
   }
 
@@ -314,5 +323,6 @@ class GeneticDiseasesDataEntryState extends Equatable {
         noOfMaternalUncles,
         noOfMaternalAunts,
         familyMemberName,
+        isFirstTimeAnsweringFamilyMemberQuestions,
       ];
 }

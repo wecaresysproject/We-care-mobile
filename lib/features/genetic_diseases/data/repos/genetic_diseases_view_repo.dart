@@ -29,7 +29,6 @@ class GeneticDiseasesViewRepo {
     }
   }
 
-
   Future<ApiResult<FamilyMemberGeneticsDiseasesResponseModel>>
       getFamilyMembersGeneticDiseases(
     String language,
@@ -99,15 +98,16 @@ class GeneticDiseasesViewRepo {
     }
   }
 
- Future<ApiResult<String>> deleteFamilyMemberbyNameAndCode(
+  Future<ApiResult<String>> deleteFamilyMemberbyNameAndCode(
     String language,
     String userType,
     String code,
     String name,
   ) async {
     try {
-  final response = await _geneticDiseasesServices.deleteFamilyMemberbyNameAndCode(
-       language,
+      final response =
+          await _geneticDiseasesServices.deleteFamilyMemberbyNameAndCode(
+        language,
         userType,
         name,
         code,
