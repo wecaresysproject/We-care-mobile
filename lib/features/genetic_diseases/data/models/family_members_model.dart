@@ -4,6 +4,8 @@ part 'family_members_model.g.dart';
 
 @JsonSerializable()
 class FamilyMembersModel {
+  @JsonKey(name: 'isFirstTime')
+  final bool isFirstTimeAnsweredFamilyMembersQuestions;
   @JsonKey(name: 'Bro')
   final int numberOfBrothers;
 
@@ -23,6 +25,7 @@ class FamilyMembersModel {
   final int numberOfMotherSideAunts;
 
   const FamilyMembersModel({
+    required this.isFirstTimeAnsweredFamilyMembersQuestions,
     required this.numberOfBrothers,
     required this.numberOfSisters,
     required this.numberOfFatherSideUncles,

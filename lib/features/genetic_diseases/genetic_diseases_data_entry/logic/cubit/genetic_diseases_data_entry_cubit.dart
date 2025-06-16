@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/genetic_diseases/data/models/add_new_user_to_family_tree_request_body.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
@@ -58,16 +59,16 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> loadGeneticDiseasesDataEnteredForEditing(
-    FamilyMemberGeneticsDiseasesResponseModel editModel,
+    FamilyMemberGeneticsDiseasesResponseModel memberGeneticDiseases,
   ) async {
     final List<NewGeneticDiseaseModel> oldGeneticDiseases = [];
-    for (var oldDisease in editModel.geneticDiseases ?? []) {
+    for (var oldDisease in memberGeneticDiseases.geneticDiseases!) {
       oldGeneticDiseases.add(
         NewGeneticDiseaseModel(
-          diseaseCategory: oldDisease.diseaseCategory,
+          diseaseCategory: oldDisease.inheritanceType,
           geneticDisease: oldDisease.geneticDisease,
-          appearanceAgeStage: oldDisease.appearanceAgeStage,
-          patientStatus: oldDisease.patientStatus,
+          appearanceAgeStage: "نسال فيها ا/اشرف ،م/ آيه",
+          patientStatus: oldDisease.diseaseStatus,
         ),
       );
     }
@@ -80,7 +81,7 @@ class GeneticDiseasesDataEntryCubit
       state.copyWith(
         isEditMode: true,
         geneticDiseases: oldGeneticDiseases,
-        familyMemberName: editModel.familyMemberName,
+        familyMemberName: memberGeneticDiseases.familyMemberName,
       ),
     );
   }
@@ -240,6 +241,7 @@ class GeneticDiseasesDataEntryCubit
     );
     final response = await _geneticDiseasesDataEntryRepo.editNoOfFamilyMembers(
       requestBody: FamilyMembersModel(
+        isFirstTimeAnsweredFamilyMembersQuestions: true,
         numberOfBrothers: state.noOfBrothers.toInt,
         numberOfSisters: state.noOfSisters.toInt,
         numberOfFatherSideUncles: state.noOfUncles.toInt,
@@ -262,6 +264,64 @@ class GeneticDiseasesDataEntryCubit
           state.copyWith(
             message: error.errors.first,
             submitFamilyMemebersNumberStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getIsFirstTimeAnsweredFamilyMembersQuestions() async {
+    final response = await _geneticDiseasesDataEntryRepo
+        .getIsFirstTimeAnsweredFamilyMembersQuestions();
+    response.when(
+      success: (isFirstTime) {
+        emit(
+          state.copyWith(
+            isFirstTimeAnsweringFamilyMemberQuestions: isFirstTime,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            isFirstTimeAnsweringFamilyMemberQuestions: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> addNewUsertoFamilyTree({
+    required String memberName,
+    required String memberCode,
+  }) async {
+    emit(
+      state.copyWith(
+        addNewUserToFamilyTreeStatus: RequestStatus.initial,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.addNewUsertoFamilyTree(
+      language: AppStrings.arabicLang,
+      requestBody: AddNewUserToFamilyTreeRequestBodyModel(
+        name: memberName,
+        code: memberCode,
+      ),
+    );
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            addNewUserToFamilyTreeStatus: RequestStatus.success,
+            message: result,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            addNewUserToFamilyTreeStatus: RequestStatus.failure,
+            message: error.errors.first,
           ),
         );
       },

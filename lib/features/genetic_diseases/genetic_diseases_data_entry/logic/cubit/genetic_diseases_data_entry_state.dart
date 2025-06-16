@@ -55,10 +55,14 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String noOfMaternalAunts; // عدد الخالات
   final String noOfMaternalUncles; // عدد الاخوال
 
+  final bool isFirstTimeAnsweringFamilyMemberQuestions;
+  final RequestStatus addNewUserToFamilyTreeStatus;
+
   const GeneticDiseasesDataEntryState({
     this.geneticDiseaseDataEntryStatus = RequestStatus.initial,
     this.submitFamilyMemebersNumberStatus = RequestStatus.initial,
     this.submitMemberGeneticDiseaseDetailsStatus = RequestStatus.initial,
+    this.addNewUserToFamilyTreeStatus = RequestStatus.initial,
     this.deleteRequestStatus = RequestStatus.initial,
     this.familyMembersCount,
     this.isFormValidated = false,
@@ -102,6 +106,8 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.noOfMaternalUncles = '0',
     this.noOfMaternalAunts = '0',
     this.familyMemberName = '',
+    this.isFirstTimeAnsweringFamilyMemberQuestions =
+        false, // اول مره يشوف الاسئله ؟ لو اه ، هنظهرلله البوتون ، لو لا
   }) : super();
 
   const GeneticDiseasesDataEntryState.initialState()
@@ -110,6 +116,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           submitFamilyMemebersNumberStatus: RequestStatus.initial,
           submitMemberGeneticDiseaseDetailsStatus: RequestStatus.initial,
           deleteRequestStatus: RequestStatus.initial,
+          addNewUserToFamilyTreeStatus: RequestStatus.initial,
           familyMembersCount: null,
           isFormValidated: false,
           message: '',
@@ -152,6 +159,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           noOfMaternalUncles: '0',
           noOfMaternalAunts: '0',
           familyMemberName: '',
+          isFirstTimeAnsweringFamilyMemberQuestions: false,
         );
 
   GeneticDiseasesDataEntryState copyWith({
@@ -159,6 +167,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     RequestStatus? submitFamilyMemebersNumberStatus,
     RequestStatus? submitMemberGeneticDiseaseDetailsStatus,
     RequestStatus? deleteRequestStatus,
+    RequestStatus? addNewUserToFamilyTreeStatus,
     FamilyMemberCount? familyMembersCount,
     bool? isFormValidated,
     String? message,
@@ -202,68 +211,73 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? noOfMaternalUncles,
     String? noOfMaternalAunts,
     String? familyMemberName,
+    bool? isFirstTimeAnsweringFamilyMemberQuestions,
   }) {
     return GeneticDiseasesDataEntryState(
-      submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
-          this.submitFamilyMemebersNumberStatus,
-      geneticDiseaseDataEntryStatus:
-          geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
-      familyMembersCount: familyMembersCount ?? this.familyMembersCount,
-      submitMemberGeneticDiseaseDetailsStatus:
-          submitMemberGeneticDiseaseDetailsStatus ??
-              this.submitMemberGeneticDiseaseDetailsStatus,
-      deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
-      isFormValidated: isFormValidated ?? this.isFormValidated,
-      message: message ?? this.message,
-      isEditMode: isEditMode ?? this.isEditMode,
-      diagnosisDate: diagnosisDate ?? this.diagnosisDate,
-      geneticDiseaseCategory:
-          geneticDiseaseCategory ?? this.geneticDiseaseCategory,
-      selectedDiseaseStatus:
-          selectedDiseaseStatus ?? this.selectedDiseaseStatus,
-      selectedDiseaseName: selectedDiseaseName ?? this.selectedDiseaseName,
-      selectedHospital: selectedHospital ?? this.selectedHospital,
-      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-      diseasesClassfications:
-          diseasesClassfications ?? this.diseasesClassfications,
-      diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
-      firstImageUploadedUrl:
-          firstImageUploadedUrl ?? this.firstImageUploadedUrl,
-      secondImageUploadedUrl:
-          secondImageUploadedUrl ?? this.secondImageUploadedUrl,
-      reportUploadedUrl: reportUploadedUrl ?? this.reportUploadedUrl,
-      firstImageRequestStatus:
-          firstImageRequestStatus ?? this.firstImageRequestStatus,
-      secondImageRequestStatus:
-          secondImageRequestStatus ?? this.secondImageRequestStatus,
-      reportRequestStatus: reportRequestStatus ?? this.reportRequestStatus,
-      diseasesNames: diseasesNames ?? this.diseasesNames,
-      selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
-      selectedDose: selectedDose ?? this.selectedDose,
-      selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
-      doseDuration: doseDuration ?? this.doseDuration,
-      timePeriods: timePeriods ?? this.timePeriods,
-      selectedChronicDisease:
-          selectedChronicDisease ?? this.selectedChronicDisease,
-      selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
-      geneticDiseases: geneticDiseases ?? this.geneticDiseases,
-      doctorNames: doctorNames ?? this.doctorNames,
-      countriesNames: countriesNames ?? this.countriesNames,
-      medicineId: medicineId ?? this.medicineId,
-      medicinesBasicInfo: medicinesBasicInfo ?? this.medicinesBasicInfo,
-      dosageFrequencies: dosageFrequencies ?? this.dosageFrequencies,
-      allUsageCategories: allUsageCategories ?? this.allUsageCategories,
-      allDurationsBasedOnCategory:
-          allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
-      updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
-      noOfBrothers: noOfBrothers ?? this.noOfBrothers,
-      noOfSisters: noOfSisters ?? this.noOfSisters,
-      noOfUncles: noOfUncles ?? this.noOfUncles,
-      noOfAunts: noOfAunts ?? this.noOfAunts,
-      noOfMaternalUncles: noOfMaternalUncles ?? this.noOfMaternalUncles,
-      noOfMaternalAunts: noOfMaternalAunts ?? this.noOfMaternalAunts,
-      familyMemberName: familyMemberName ?? this.familyMemberName,
-    );
+        submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
+            this.submitFamilyMemebersNumberStatus,
+        geneticDiseaseDataEntryStatus:
+            geneticDiseaseDataEntryStatus ?? this.geneticDiseaseDataEntryStatus,
+        familyMembersCount: familyMembersCount ?? this.familyMembersCount,
+        submitMemberGeneticDiseaseDetailsStatus:
+            submitMemberGeneticDiseaseDetailsStatus ??
+                this.submitMemberGeneticDiseaseDetailsStatus,
+        deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
+        isFormValidated: isFormValidated ?? this.isFormValidated,
+        message: message ?? this.message,
+        isEditMode: isEditMode ?? this.isEditMode,
+        diagnosisDate: diagnosisDate ?? this.diagnosisDate,
+        geneticDiseaseCategory:
+            geneticDiseaseCategory ?? this.geneticDiseaseCategory,
+        selectedDiseaseStatus:
+            selectedDiseaseStatus ?? this.selectedDiseaseStatus,
+        selectedDiseaseName: selectedDiseaseName ?? this.selectedDiseaseName,
+        selectedHospital: selectedHospital ?? this.selectedHospital,
+        selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+        diseasesClassfications:
+            diseasesClassfications ?? this.diseasesClassfications,
+        diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
+        firstImageUploadedUrl:
+            firstImageUploadedUrl ?? this.firstImageUploadedUrl,
+        secondImageUploadedUrl:
+            secondImageUploadedUrl ?? this.secondImageUploadedUrl,
+        reportUploadedUrl: reportUploadedUrl ?? this.reportUploadedUrl,
+        firstImageRequestStatus:
+            firstImageRequestStatus ?? this.firstImageRequestStatus,
+        secondImageRequestStatus:
+            secondImageRequestStatus ?? this.secondImageRequestStatus,
+        reportRequestStatus: reportRequestStatus ?? this.reportRequestStatus,
+        diseasesNames: diseasesNames ?? this.diseasesNames,
+        selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
+        selectedDose: selectedDose ?? this.selectedDose,
+        selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
+        doseDuration: doseDuration ?? this.doseDuration,
+        timePeriods: timePeriods ?? this.timePeriods,
+        selectedChronicDisease:
+            selectedChronicDisease ?? this.selectedChronicDisease,
+        selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
+        geneticDiseases: geneticDiseases ?? this.geneticDiseases,
+        doctorNames: doctorNames ?? this.doctorNames,
+        countriesNames: countriesNames ?? this.countriesNames,
+        medicineId: medicineId ?? this.medicineId,
+        medicinesBasicInfo: medicinesBasicInfo ?? this.medicinesBasicInfo,
+        dosageFrequencies: dosageFrequencies ?? this.dosageFrequencies,
+        allUsageCategories: allUsageCategories ?? this.allUsageCategories,
+        allDurationsBasedOnCategory:
+            allDurationsBasedOnCategory ?? this.allDurationsBasedOnCategory,
+        updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
+        noOfBrothers: noOfBrothers ?? this.noOfBrothers,
+        noOfSisters: noOfSisters ?? this.noOfSisters,
+        noOfUncles: noOfUncles ?? this.noOfUncles,
+        noOfAunts: noOfAunts ?? this.noOfAunts,
+        noOfMaternalUncles: noOfMaternalUncles ?? this.noOfMaternalUncles,
+        noOfMaternalAunts: noOfMaternalAunts ?? this.noOfMaternalAunts,
+        familyMemberName: familyMemberName ?? this.familyMemberName,
+        isFirstTimeAnsweringFamilyMemberQuestions:
+            isFirstTimeAnsweringFamilyMemberQuestions ??
+                this.isFirstTimeAnsweringFamilyMemberQuestions,
+        addNewUserToFamilyTreeStatus:
+            addNewUserToFamilyTreeStatus ?? this.addNewUserToFamilyTreeStatus);
   }
 
   @override
@@ -314,5 +328,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
         noOfMaternalUncles,
         noOfMaternalAunts,
         familyMemberName,
+        isFirstTimeAnsweringFamilyMemberQuestions,
+        addNewUserToFamilyTreeStatus
       ];
 }

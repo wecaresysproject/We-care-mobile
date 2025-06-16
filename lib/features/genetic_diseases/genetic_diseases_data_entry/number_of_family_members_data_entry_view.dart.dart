@@ -129,7 +129,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                               RequestStatus.success) {
                             await showSuccess(state.message);
                             if (!context.mounted) return;
-                            await context.pushNamed(
+                            await context.pushReplacementNamed(
                               Routes.familyTreeViewFromDataEntry,
                             );
                           } else {

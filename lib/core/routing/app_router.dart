@@ -8,6 +8,7 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/family_tree_view_from_data_entry.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/create_new_genetic_disease_view.dart';
@@ -290,12 +291,13 @@ class AppRouter {
           builder: (context) => const FamilyTreeView(),
         );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:
-        final result = arguments as Map<String, dynamic>;
+        final result = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
           builder: (context) => FamilyMemeberGeneticDiseaseDataEntryView(
-            familyCodes: result['memberCode'],
-            memberName: result['memberName'],
-            editModel: result['editModel'],
+            editModel: result?['familyMemberGeneticDiseases']
+                as FamilyMemberGeneticsDiseasesResponseModel?,
+            familyCodes: result!['memberCode'] as String,
+            memberName: result['memberName'] as String,
           ),
         );
       case Routes.createNewGeneticDiseaseView:

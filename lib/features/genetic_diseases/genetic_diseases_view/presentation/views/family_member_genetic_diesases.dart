@@ -95,16 +95,25 @@ ${detailsList.join("\n\n")}
                         DetailsViewAppBar(
                           title: familyMemberName,
                           shareFunction: () => shareDetails(context, state),
-                          editFunction: () {
-                            Navigator.pushNamed(
+                          editFunction: () async {
+                            final result = await Navigator.pushNamed(
                               context,
                               Routes.familyMemeberGeneticDiseaseDataEntryView,
                               arguments: {
-                                "editModel": state.familyMemberGeneticDiseases,
+                                "familyMemberGeneticDiseases":
+                                    state.familyMemberGeneticDiseases,
                                 'memberCode': familyMemberCode,
                                 'memberName': familyMemberName
                               },
                             );
+                            if (result == true && context.mounted) {
+                              await context
+                                  .read<GeneticsDiseasesViewCubit>()
+                                  .getFamilyMembersGeneticDiseases(
+                                    familyMemberCode: familyMemberCode,
+                                    familyMemberName: familyMemberName,
+                                  );
+                            }
                           },
                           deleteFunction: () async =>
                               await BlocProvider.of<GeneticsDiseasesViewCubit>(

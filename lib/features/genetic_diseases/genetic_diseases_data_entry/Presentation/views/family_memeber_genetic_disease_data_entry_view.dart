@@ -38,9 +38,9 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
           create: (context) {
             final cubit = getIt<GeneticDiseasesDataEntryCubit>();
             if (editModel != null) {
-              cubit
-                ..loadGeneticDiseasesDataEnteredForEditing(editModel!)
-                ..fetchAllAddedGeneticDiseases();
+              cubit.loadGeneticDiseasesDataEnteredForEditing(
+                editModel!,
+              );
             } else {
               cubit.initialDataEntryRequests();
             }
@@ -181,12 +181,6 @@ Widget submitMemberGeneticDiseasesButtonBlocConsumer(
             RequestStatus.loading,
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
-          // state.isEditMode
-          //     ? await context
-          //         .read<EmergencyComplaintsDataEntryCubit>()
-          //         .updateSpecifcEmergencyDocumentDataDetails(
-          //             context.translate)
-          //     :
           await context
               .read<GeneticDiseasesDataEntryCubit>()
               .editGenticDiseaseForFamilyMember(
