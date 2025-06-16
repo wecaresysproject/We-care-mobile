@@ -30,6 +30,7 @@ class GeneticDiseasesConstants {
   static const editNoOfFamilyMembers = "GeneticDiseasesAPIs/family-relation";
   static const getIsFirstTimeAnsweredFamilyMembersQuestions =
       "GeneticDiseasesAPIs/family-relation/first-time-check";
+  static const addNewUsertoFamilyTree = "GeneticDiseasesAPIs/family-add";
   //View Entry
 
   //filters

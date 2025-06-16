@@ -10,6 +10,8 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_state.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
@@ -19,9 +21,16 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<GeneticsDiseasesViewCubit>()..getFamilyMembersNames(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<GeneticsDiseasesViewCubit>()..getFamilyMembersNames(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<GeneticDiseasesDataEntryCubit>(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(
@@ -66,7 +75,18 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
                           onPressed: () {
                             showDialog(
                               context: context,
-                              builder: (context) => AddFamilyMemberDialog(),
+                              builder: (_) => BlocProvider.value(
+                                value: context
+                                    .read<GeneticDiseasesDataEntryCubit>(),
+                                child: AddFamilyMemberDialog(
+                                  onAddingMemberToFamilyTreeSuccefuly:
+                                      () async {
+                                    await context
+                                        .read<GeneticsDiseasesViewCubit>()
+                                        .getFamilyMembersNames();
+                                  },
+                                ),
+                              ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -494,7 +514,9 @@ class BulletLabel extends StatelessWidget {
 }
 
 class AddFamilyMemberDialog extends StatefulWidget {
-  const AddFamilyMemberDialog({super.key});
+  const AddFamilyMemberDialog(
+      {super.key, required this.onAddingMemberToFamilyTreeSuccefuly});
+  final VoidCallback onAddingMemberToFamilyTreeSuccefuly;
 
   @override
   State<AddFamilyMemberDialog> createState() => _AddFamilyMemberDialogState();
@@ -504,84 +526,106 @@ class _AddFamilyMemberDialogState extends State<AddFamilyMemberDialog> {
   final TextEditingController _nameController = TextEditingController();
   String? _selectedRelation;
 
-  final List<String> _familyRelations = [
-    'الأخ',
-    'الأخت',
-    'العم',
-    'العمة',
-    'الخال',
-    'الخالة',
-  ];
+  final Map<String, FamilyCodes> _familyRelationsMap = {
+    'الأخ': FamilyCodes.Bro,
+    'الأخت': FamilyCodes.Sis,
+    'العم': FamilyCodes.FatherSideUncle,
+    'العمة': FamilyCodes.FatherSideAunt,
+    'الخال': FamilyCodes.MotherSideUncle,
+    'الخالة': FamilyCodes.MotherSideAunt,
+  };
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      title: Text(
-        'إضافة فرد جديد',
-        textAlign: TextAlign.center,
-        style: AppTextStyles.font18blackWight500,
-      ),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                labelText: 'اختر صلة القرابة',
-                border: OutlineInputBorder(),
-              ),
-              value: _selectedRelation,
-              items: _familyRelations
-                  .map((relation) => DropdownMenuItem<String>(
-                        value: relation,
-                        child: Text(relation),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedRelation = value;
-                });
-              },
-            ),
-            SizedBox(height: 16.h),
-            TextFormField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'ادخل اسم فرد عائلتك',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => context.pop(),
-          child: Text('إلغاء'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            final name = _nameController.text.trim();
-            final relation = _selectedRelation;
+    return BlocListener<GeneticDiseasesDataEntryCubit,
+        GeneticDiseasesDataEntryState>(
+      listener: (context, state) async {
+        if (state.addNewUserToFamilyTreeStatus == RequestStatus.success) {
+          await showSuccess(state.message);
 
-            if (name.isNotEmpty && relation != null) {
-              // TODO: Use Cubit to add the member
-              print('Adding $relation: $name');
-              context.pop(); // Close dialog
-            } else {
-              showError("يرجى تعبئة جميع الحقول");
-            }
-          },
-          child: Text(
-            'إضافة',
-            style: TextStyle(
-              color: Colors.white,
-            ),
+          widget.onAddingMemberToFamilyTreeSuccefuly();
+
+          if (!context.mounted) return;
+          context.pop();
+        }
+        if (state.addNewUserToFamilyTreeStatus == RequestStatus.failure) {
+          await showError(state.message);
+          if (!context.mounted) return;
+          context.pop();
+        }
+      },
+      child: AlertDialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        title: Text(
+          'إضافة فرد جديد',
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font18blackWight500,
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  labelText: 'اختر صلة القرابة',
+                  border: OutlineInputBorder(),
+                ),
+                value: _selectedRelation,
+                items: _familyRelationsMap.keys
+                    .map((relation) => DropdownMenuItem<String>(
+                          value: relation,
+                          child: Text(relation),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedRelation = value;
+                  });
+                },
+              ),
+              SizedBox(height: 16.h),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'ادخل اسم فرد عائلتك',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = _nameController.text.trim();
+              final relation = _selectedRelation;
+
+              if (name.isNotEmpty && relation != null) {
+                await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .addNewUsertoFamilyTree(
+                      memberName: name,
+                      memberCode: _familyRelationsMap[relation]!.name,
+                    );
+              } else {
+                showError("يرجى تعبئة جميع الحقول");
+              }
+            },
+            child: Text(
+              'إضافة',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

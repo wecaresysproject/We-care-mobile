@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/genetic_diseases/data/models/add_new_user_to_family_tree_request_body.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
@@ -285,6 +286,42 @@ class GeneticDiseasesDataEntryCubit
           state.copyWith(
             message: error.errors.first,
             isFirstTimeAnsweringFamilyMemberQuestions: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> addNewUsertoFamilyTree({
+    required String memberName,
+    required String memberCode,
+  }) async {
+    emit(
+      state.copyWith(
+        addNewUserToFamilyTreeStatus: RequestStatus.initial,
+      ),
+    );
+    final response = await _geneticDiseasesDataEntryRepo.addNewUsertoFamilyTree(
+      language: AppStrings.arabicLang,
+      requestBody: AddNewUserToFamilyTreeRequestBodyModel(
+        name: memberName,
+        code: memberCode,
+      ),
+    );
+    response.when(
+      success: (result) {
+        emit(
+          state.copyWith(
+            addNewUserToFamilyTreeStatus: RequestStatus.success,
+            message: result,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            addNewUserToFamilyTreeStatus: RequestStatus.failure,
+            message: error.errors.first,
           ),
         );
       },
