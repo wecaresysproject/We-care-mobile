@@ -14,16 +14,16 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/ge
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 
-// SOLUTION 1: Convert to StatefulWidget with TickerProviderStateMixin
 class PersonalGenaticDiseasesScreen extends StatefulWidget {
   const PersonalGenaticDiseasesScreen({super.key});
 
   @override
-  State<PersonalGenaticDiseasesScreen> createState() => _PersonalGenaticDiseasesScreenState();
+  State<PersonalGenaticDiseasesScreen> createState() =>
+      _PersonalGenaticDiseasesScreenState();
 }
 
-class _PersonalGenaticDiseasesScreenState extends State<PersonalGenaticDiseasesScreen> 
-    with TickerProviderStateMixin {
+class _PersonalGenaticDiseasesScreenState
+    extends State<PersonalGenaticDiseasesScreen> with TickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -41,8 +41,9 @@ class _PersonalGenaticDiseasesScreenState extends State<PersonalGenaticDiseasesS
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          getIt<GeneticsDiseasesViewCubit>()..getPersonalGeneticDiseases(),
+      create: (context) => getIt<GeneticsDiseasesViewCubit>()
+        ..getPersonalGeneticDiseases()
+        ..getCurrentPersonalGeneticDiseases(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
@@ -83,17 +84,14 @@ class _PersonalGenaticDiseasesScreenState extends State<PersonalGenaticDiseasesS
                       children: [
                         // Expected Personal Genetic Diseases Tab
                         Padding(
-                          padding: EdgeInsets.only(top: 20.h),
-                          child: SingleChildScrollView(
-                            child: const ExpectedPersonalGenaticDiseases(),
-                          ),
+                          padding: EdgeInsets.only(
+                              top: 20.h, left: 16.w, right: 16.w),
+                          child: const ExpectedPersonalGenaticDiseases(),
                         ),
                         // Current Personal Genetic Diseases Tab
                         Padding(
                           padding: EdgeInsets.only(top: 20.h),
-                          child: SingleChildScrollView(
-                            child: const CurrentPersonalGeneticDiseases(),
-                          ),
+                          child: const CurrentPersonalGeneticDiseases(),
                         ),
                       ],
                     ),
@@ -113,38 +111,59 @@ class CurrentPersonalGeneticDiseases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async {
-       
-      },
-      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
-                builder: (context, state) {
-                  return MedicalItemGridView(
-                    items: state.personalGeneticDiseases ?? [],
-                    onTap: (id) async {
-                      
-                    },
-                     titleBuilder: (item) => '${item.geneticDisease}',
-                  infoRowBuilder: (item) => [
-                    {"title": "تاريخ التشخيص", "value": "25/1/2025"},
-                    {"title": "حالة المرض", "value": "اللحص مثال"},
-                    {"title": "الدولة", "value": "مصر"},
-                  ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
+            builder: (context, state) {
+              if (state.requestStatus == RequestStatus.loading) {
+                return const Center(
+                    child: CircularProgressIndicator(
+                  color: AppColorsManager.mainDarkBlue,
+                ));
+              } else if (state.requestStatus == RequestStatus.failure) {
+                return Center(
+                  child: Text(
+                    state.message ?? "حدث خطأ ما",
+                    style: AppTextStyles.font18blackWight500.copyWith(
+                      color: AppColorsManager.textColor,
+                    ),
+                  ),
+                );
+              }
+              if (state.currentPersonalGeneticDiseases == null ||
+                  state.currentPersonalGeneticDiseases!.isEmpty) {
+                return Center(
+                  child: Text("لا توجد بيانات متاحة",
+                      style: AppTextStyles.font22MainBlueWeight700),
+                );
+              }
+              return MedicalItemGridView(
+                items: state.currentPersonalGeneticDiseases ?? [],
+                onTap: (id) async {
+                  await Navigator.pushNamed(
+                    context,
+                    Routes.currentPersonalGeneticDiseasesDetailsView,
+                    arguments: id,
                   );
+                  // Refresh the data after returning from details view
+                  context.mounted
+                      ? await context
+                          .read<GeneticsDiseasesViewCubit>()
+                          .getCurrentPersonalGeneticDiseases()
+                      : null;
                 },
-              ),
-            ],
+                titleBuilder: (item) => '${item.geneticDisease}',
+                infoRowBuilder: (item) => [
+                  {"title": "تاريخ التشخيص :", "value": item.date},
+                  {"title": "حالة المرض :", "value": item.diseaseStatus},
+                  {"title": "الدولة :", "value": item.country},
+                ],
+              );
+            },
           ),
-        ),
+        ],
       ),
     );
   }
@@ -157,8 +176,7 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GeneticsDiseasesViewCubit,
-        GeneticsDiseasesViewState>(
+    return BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
       builder: (context, state) {
         if (state.requestStatus == RequestStatus.loading) {
           return const Center(child: CircularProgressIndicator());
@@ -172,8 +190,7 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
             ),
           );
         }
-        if (state.personalGeneticDiseases == null ||
-            state.personalGeneticDiseases!.isEmpty) {
+        if (state.expextedPersonalGeneticDiseases == null &&state.requestStatus == RequestStatus.success) {
           return Center(
             child: Text("لا توجد بيانات متاحة",
                 style: AppTextStyles.font22MainBlueWeight700),
@@ -183,11 +200,10 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
           children: [
             verticalSpacing(24),
             Text(
-              "عند الضغط على المرض الوراثى تظهر جميع التفاصيل",
+              "عند الضغط على المرض الوراثى تظهر \nجميع التفاصيل",
               textAlign: TextAlign.center,
               maxLines: 2,
-              style:
-                  AppTextStyles.font22MainBlueWeight700.copyWith(
+              style: AppTextStyles.font22MainBlueWeight700.copyWith(
                 color: AppColorsManager.textColor,
                 fontFamily: "Rubik",
                 fontSize: 20.sp,
@@ -195,9 +211,8 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
               ),
             ),
             verticalSpacing(16),
-            GeneticDiseaseTable(
-              personalGeneticDiseases:
-                  state.personalGeneticDiseases!,
+            ExpectedPersonalGeneticDiseaseTable(
+              personalGeneticDiseases: state.expextedPersonalGeneticDiseases!,
             ),
           ],
         );
@@ -206,8 +221,8 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
   }
 }
 
-class GeneticDiseaseTable extends StatelessWidget {
-  const GeneticDiseaseTable({
+class ExpectedPersonalGeneticDiseaseTable extends StatelessWidget {
+  const ExpectedPersonalGeneticDiseaseTable({
     super.key,
     required this.personalGeneticDiseases,
   });
@@ -309,6 +324,7 @@ class GeneticDiseaseTable extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 Routes.personalGeneticDiseasesDetailsView,
+                arguments: text,
               );
             }
           : null,

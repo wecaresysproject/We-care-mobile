@@ -120,7 +120,7 @@ abstract class GeneticDiseasesServices {
   Future<dynamic> getpersonalGeneticDiseaseDetails(
     @Query("language") String language,
     @Query("userType") String userType,
-    @Query("geneticDisease") String diseaseType,
+    @Query("id") String id,
   );
 
   @DELETE(GeneticDiseasesConstants.deleteFamilyMemberbyNameAndCode)
@@ -152,6 +152,18 @@ abstract class GeneticDiseasesServices {
   @POST(GeneticDiseasesConstants.addNewUsertoFamilyTree)
   Future<dynamic> addNewUsertoFamilyTree(
     @Body() AddNewUserToFamilyTreeRequestBodyModel requestBody,
+    @Query("language") String language,);
+
+  @GET(GeneticDiseasesConstants.getCurrentPersonalGeneticDiseases)
+  Future<dynamic> getCurrentPersonalGeneticDiseases(
     @Query("language") String language,
+    @Query("userType") String userType,
+  );
+
+  @DELETE(GeneticDiseasesConstants.deleteSpecificCurrentPersonalGeneticDiseaseById)
+  Future<dynamic> deleteSpecificCurrentPersonalGeneticDiseaseById(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("id") String id,
   );
 }

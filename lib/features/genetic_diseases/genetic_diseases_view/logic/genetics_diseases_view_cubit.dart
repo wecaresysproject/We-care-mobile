@@ -91,14 +91,14 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
   }
 
   Future<void> getPersonalGeneticDiseaseDetails({
-    required String disease,
+    required String id,
   }) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result =
         await geneticDiseasesViewRepo.getPersonalGeneticDiseaseDetails(
       'ar',
       'Patient',
-      disease,
+      id,
     );
     result.when(
       success: (data) {
@@ -182,6 +182,58 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
       code,
       name,
       diseaseName,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          message: data,
+          requestStatus: RequestStatus.success,
+          isDeleteRequest: true,
+        ));
+        return true;
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          message: error.errors.first,
+          requestStatus: RequestStatus.failure,
+          isDeleteRequest: true,
+        ));
+      },
+    );
+  }
+
+Future<void> getCurrentPersonalGeneticDiseases() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await geneticDiseasesViewRepo.getCurrentPersonalGeneticDiseases(
+     language: 'ar',
+      userType: 'Patient',
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          currentPersonalGeneticDiseases: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
+    
+  }
+
+  Future<void> deleteSpecificCurrentPersonalGeneticDiseaseById({
+    required String id,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result =
+        await geneticDiseasesViewRepo.deleteSpecificCurrentPersonalGeneticDiseaseById(
+      language: 'ar',
+      userType: 'Patient',
+      id: id,
     );
     result.when(
       success: (data) {

@@ -60,4 +60,6 @@ class Routes {
   static const personalGeneticDiseasesScreen = '/personalGeneticDiseasesScreen';
   static const personalGeneticDiseasesDetailsView =
       '/personalGeneticDiseasesDetailsView';
+  static const currentPersonalGeneticDiseasesDetailsView = 
+      '/currentPersonalGeneticDiseasesDetailsView';
 }

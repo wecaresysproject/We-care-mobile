@@ -1,5 +1,6 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/genetic_diseases/data/models/current_personal_genetic_diseases.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/get_family_members_names.dart';
@@ -80,14 +81,14 @@ class GeneticDiseasesViewRepo {
       getPersonalGeneticDiseaseDetails(
     String language,
     String userType,
-    String disease,
+    String id,
   ) async {
     try {
       final response =
           await _geneticDiseasesServices.getpersonalGeneticDiseaseDetails(
         language,
         userType,
-        disease,
+        id,
       );
       return ApiResult.success(
         PersonalGeneticDiseasDetails.fromJson(
@@ -159,4 +160,40 @@ class GeneticDiseasesViewRepo {
   }
 
 
+
+  Future<ApiResult<List<CurrentPersonalGeneticDiseasesResponseModel>>> getCurrentPersonalGeneticDiseases({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response =await _geneticDiseasesServices.getCurrentPersonalGeneticDiseases(
+        language,
+        userType,
+      );
+      return ApiResult.success(
+        (response['data'] as List)
+            .map((e) => CurrentPersonalGeneticDiseasesResponseModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> deleteSpecificCurrentPersonalGeneticDiseaseById({
+    required String language,
+    required String userType,
+    required String id,
+  }) async {
+    try {
+      final response = await _geneticDiseasesServices.deleteSpecificCurrentPersonalGeneticDiseaseById(
+        language,
+        userType,
+        id,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

@@ -46,4 +46,9 @@ class GeneticDiseasesConstants {
       "GeneticDiseasesAPIs/family-tree";
   static const getpersonalGeneticDiseases='GeneticDiseasesAPIs/family-member-recommendations' ; 
   static const deleteFamilyMemberGeneticDiseasebyNameAndCode ="GeneticDiseasesAPIs/family-tree/with-disease";
+  static const getCurrentPersonalGeneticDiseases =
+      "GeneticDiseasesAPIs/medical-history-all";
+
+  static const deleteSpecificCurrentPersonalGeneticDiseaseById =
+      "GeneticDiseasesAPIs/medical-history";    
 }

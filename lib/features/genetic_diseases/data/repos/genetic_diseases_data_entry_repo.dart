@@ -6,13 +6,18 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
+<<<<<<< Updated upstream
 import 'package:we_care/features/genetic_diseases/data/models/add_new_user_to_family_tree_request_body.dart';
+=======
+import 'package:we_care/features/genetic_diseases/data/models/current_personal_genetic_diseases.dart';
+>>>>>>> Stashed changes
 import 'package:we_care/features/genetic_diseases/data/models/family_member_count_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/current_personal_genetic_disease_details_view.dart';
 
 class GeneticDiseasesDataEntryRepo {
   final GeneticDiseasesServices _geneticDiseasesServices;

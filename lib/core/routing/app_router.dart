@@ -16,11 +16,12 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Pr
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/personal_genetic_disease_data_entry_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/genetic_diseaese_main_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/number_of_family_members_data_entry_view.dart.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/current_personal_genetic_disease_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genatic_disease_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
-import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_details_view.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/expected_personal_genatic_diseases_details_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
@@ -233,7 +234,16 @@ class AppRouter {
         );
       case Routes.personalGeneticDiseasesDetailsView:
         return MaterialPageRoute(
-          builder: (context) => PersonalGenaticDiseasesDetailsView(),
+          builder: (context) => PersonalGenaticDiseasesDetailsView(
+            disease: arguments,
+          ),
+        );
+
+      case Routes.currentPersonalGeneticDiseasesDetailsView:
+        return MaterialPageRoute(
+          builder: (context) => CurrentPersonalGeneticDiseaseDetailsView(
+            documentId: arguments,
+          ),
         );
 
       case Routes.emergenciesComplaintDataView:
