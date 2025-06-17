@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+
+class CurrentBiometricsResultsTab extends StatelessWidget {
+  const CurrentBiometricsResultsTab({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 550.h,
+      child: Stack(
+        children: [
+          // Human body skeleton image - centered
+          Center(
+            child: Image.asset(
+              "assets/images/skeleton_image.png",
+              fit: BoxFit.cover,
+              height: 420.h,
+            ),
+          ),
+
+          // Left side buttons
+          // Heart Rate (نبضات القلب)
+          Positioned(
+            top: 0.h,
+            left: 0,
+            child: BiometricMeasurementCard(
+              label: 'نبضات القلب',
+              image: 'assets/images/heart_beat.png',
+              value: '75 bpm',
+              date: '2023 / 10 / 1 ',
+            ),
+          ),
+
+          // Blood Pressure (الضغط)
+          Positioned(
+            top: 125.h,
+            left: 0,
+            child: BiometricMeasurementCard(
+              label: 'الضغط',
+              value: '120/80 mmHg',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/blood-pressure.png',
+            ),
+          ),
+
+          // Temperature (درجة الحرارة)
+          Positioned(
+            top: 250.h,
+            left: 0,
+            child: BiometricMeasurementCard(
+              label: 'درجة الحرارة',
+              value: '37°C',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/temperature_level.png',
+            ),
+          ),
+
+          // Weight (الوزن)
+          Positioned(
+            top: 375.h,
+            left: 0,
+            child: BiometricMeasurementCard(
+              label: 'الوزن',
+              value: '70 kg',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/weight.png',
+            ),
+          ),
+
+          // Right side buttons
+          // Oxygen Level (مستوى الأكسجين)
+          Positioned(
+            top: 0.h,
+            right: 0,
+            child: BiometricMeasurementCard(
+              label: 'مستوى الأكسجين',
+              value: '98%',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/oxygen_level.png',
+            ),
+          ),
+
+          // Random Blood Sugar (سكر عشوائي)
+          Positioned(
+            top: 125.h,
+            right: 0,
+            child: BiometricMeasurementCard(
+              label: 'سكر عشوائي',
+              value: '120 mg/dL',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/glucose_level.png',
+            ),
+          ),
+
+          // Fasting Blood Sugar (سكر صائم)
+          Positioned(
+            top: 250.h,
+            right: 0,
+            child: BiometricMeasurementCard(
+              label: 'سكر صائم',
+              value: '100 mg/dL',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/glucose_level.png',
+            ),
+          ),
+
+          // Height (الطول)
+          Positioned(
+            top: 375.h,
+            right: 0,
+            child: BiometricMeasurementCard(
+              label: 'الطول',
+              value: '175 cm',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/ruler.png',
+            ),
+          ),
+
+          // BMI
+          Positioned(
+            top: 450.h,
+            left: MediaQuery.of(context).size.width / 2 - 70.w,
+            child: BiometricMeasurementCard(
+              label: 'مؤشر الكتلة ',
+              value: '22.9 kg/m²',
+              date: '2023 / 10 / 1 ',
+              image: 'assets/images/BMI.png',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BiometricMeasurementCard extends StatelessWidget {
+  const BiometricMeasurementCard(
+      {super.key,
+      required this.label,
+      required this.image,
+      required this.value,
+      required this.date});
+
+  final String label;
+  final String image;
+  final String value;
+  final String date;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
+      height: 120.h,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18.r), color: Color(0xffF1F3F6)),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 30.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22.r),
+              border: Border.all(
+                color: AppColorsManager.mainDarkBlue,
+                width: 1.3.w,
+              ),
+              gradient: const LinearGradient(
+                colors: [Color(0xFFCDE1F8), Color(0xFFE7E9EB)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: Image.asset(
+              image,
+              width: 30.w,
+              height: 30.h,
+            ),
+          ),
+          verticalSpacing(6),
+          Text(
+            label,
+            style: AppTextStyles.font12blackWeight400.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColorsManager.mainDarkBlue,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            value,
+            style: AppTextStyles.font14blackWeight400.copyWith(
+              color: AppColorsManager.mainDarkBlue,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          verticalSpacing(3),
+          Text(
+            date,
+            style: AppTextStyles.font12blackWeight400.copyWith(
+              fontWeight: FontWeight.w300,
+              color: AppColorsManager.mainDarkBlue,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}

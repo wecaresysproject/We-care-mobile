@@ -1,16 +1,18 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/Biometrics/biometrics_view/Presention/current_biometrics_results_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_cubit.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_state.dart';
 import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class BiometricsView extends StatefulWidget {
@@ -20,10 +22,12 @@ class BiometricsView extends StatefulWidget {
   State<BiometricsView> createState() => _BiometricsViewState();
 }
 
-class _BiometricsViewState extends State<BiometricsView> {
+class _BiometricsViewState extends State<BiometricsView>
+    with SingleTickerProviderStateMixin {
   final Set<String> selectedMetrics = {};
   int currentGraphIndex = 0;
-  bool showBottomSheet = false; // Control bottom sheet visibility
+  bool showBottomSheet = false;
+  late TabController _tabController;
 
   // Theme colors for modern styling
   final Color primaryColor = AppColorsManager.mainDarkBlue;
@@ -33,7 +37,19 @@ class _BiometricsViewState extends State<BiometricsView> {
   final Color cardColor = Colors.white;
   final Color textColor = const Color(0xFF2D3748);
   final Color subtitleColor = const Color(0xFF718096);
-  
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   void _showBottomSheetModal(dynamic selectedFilters) {
     if (selectedMetrics.isEmpty) return;
 
@@ -43,176 +59,180 @@ class _BiometricsViewState extends State<BiometricsView> {
       backgroundColor: Colors.transparent,
       builder: (context) => StatefulBuilder(
         builder: (context, setModalState) => BlocProvider(
-          create: (context) => getIt<BiometricsViewCubit>()..getFilteredBiometrics(
-            year: selectedFilters['السنة'],
-            month: selectedFilters['الشهر'],  
-            day: selectedFilters['اليوم'],
-            biometricCategories: 
-              biometricTypes.where((b) => selectedMetrics.contains(b.id)).map((b) => b.name).toList()),
+          create: (context) => getIt<BiometricsViewCubit>()
+            ..getFilteredBiometrics(
+                year: selectedFilters['السنة'],
+                month: selectedFilters['الشهر'],
+                day: selectedFilters['اليوم'],
+                biometricCategories: biometricTypes
+                    .where((b) => selectedMetrics.contains(b.id))
+                    .map((b) => b.name)
+                    .toList()),
           child: DraggableScrollableSheet(
-                  snap: true,
-                  initialChildSize: 0.6,
-                  minChildSize: 0.3,
-                  maxChildSize: 0.9,
-                  builder: (context, scrollController) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.vertical(top: Radius.circular(20)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 20,
-                            offset: const Offset(0, -5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Handle bar
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12),
-                            height: 4,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              color: subtitleColor.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
-                          // Header with navigation
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    color: AppColorsManager.mainDarkBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Center(
-                                    child: IconButton(
-                                      iconSize: 20,
-                                      onPressed: currentGraphIndex > 0
-                                          ? () {
-                                              setModalState(() {
-                                                currentGraphIndex--;
-                                              });
-                                            }
-                                          : null,
-                                      icon: Icon(
-                                        Icons.arrow_back_ios,
-                                        color: currentGraphIndex > 0
-                                            ? Colors.white
-                                            : subtitleColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      biometricTypes
-                                          .firstWhere((b) =>
-                                              b.id ==
-                                              selectedMetrics
-                                                  .elementAt(currentGraphIndex))
-                                          .name,
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: textColor,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'ديسمبر 2024 حتى الآن',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: subtitleColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                    color: AppColorsManager.mainDarkBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Center(
-                                    child: IconButton(
-                                      iconSize: 20,
-                                      onPressed:
-                                          currentGraphIndex < selectedMetrics.length - 1
-                                              ? () {
-                                                  setModalState(() {
-                                                    currentGraphIndex++;
-                                                  });
-                                                }
-                                              : null,
-                                      icon: Icon(
-                                        Icons.arrow_forward_ios,
-                                        color: currentGraphIndex <
-                                                selectedMetrics.length - 1
-                                            ? Colors.white
-                                            : subtitleColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-        
-                          // Chart
-                          BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
-                            builder: (context, state) {
-                              if (state.requestStatus == RequestStatus.loading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColorsManager.mainDarkBlue,
-                                  ),
-                                );
-                              }
-                              if (state.biometricsData.isEmpty&& state.requestStatus== RequestStatus.success) {
-                                return Center(
-                                  child: Text(
-                                    'لا توجد بيانات متاحة',
-                                    style: AppTextStyles.font22MainBlueWeight700,
-                                  ),
-                                );
-                              }
-                              if (state.requestStatus == RequestStatus.failure) {
-                                return Center(
-                                  child: Text(
-                                    state.responseMessage.isNotEmpty
-                                        ? state.responseMessage
-                                        : 'حدث خطأ ما',
-                                    style: AppTextStyles.font22MainBlueWeight700,
-                                  ),
-                                );
-                              }
-                              return Expanded(
-                                child: SingleChildScrollView(
-                                  controller: scrollController,
-                                  child: _buildChart(
-                                    state.biometricsData,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+            snap: true,
+            initialChildSize: 0.6,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            builder: (context, scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
                 ),
+                child: Column(
+                  children: [
+                    // Handle bar
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 12),
+                      height: 4,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: subtitleColor.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    // Header with navigation
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              color: AppColorsManager.mainDarkBlue,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                iconSize: 20,
+                                onPressed: currentGraphIndex > 0
+                                    ? () {
+                                        setModalState(() {
+                                          currentGraphIndex--;
+                                        });
+                                      }
+                                    : null,
+                                icon: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: currentGraphIndex > 0
+                                      ? Colors.white
+                                      : subtitleColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                biometricTypes
+                                    .firstWhere((b) =>
+                                        b.id ==
+                                        selectedMetrics
+                                            .elementAt(currentGraphIndex))
+                                    .name,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: textColor,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'ديسمبر 2024 حتى الآن',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: subtitleColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            width: 35,
+                            height: 35,
+                            decoration: BoxDecoration(
+                              color: AppColorsManager.mainDarkBlue,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                iconSize: 20,
+                                onPressed: currentGraphIndex <
+                                        selectedMetrics.length - 1
+                                    ? () {
+                                        setModalState(() {
+                                          currentGraphIndex++;
+                                        });
+                                      }
+                                    : null,
+                                icon: Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: currentGraphIndex <
+                                          selectedMetrics.length - 1
+                                      ? Colors.white
+                                      : subtitleColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Chart
+                    BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
+                      builder: (context, state) {
+                        if (state.requestStatus == RequestStatus.loading) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                          );
+                        }
+                        if (state.biometricsData.isEmpty &&
+                            state.requestStatus == RequestStatus.success) {
+                          return Center(
+                            child: Text(
+                              'لا توجد بيانات متاحة',
+                              style: AppTextStyles.font22MainBlueWeight700,
+                            ),
+                          );
+                        }
+                        if (state.requestStatus == RequestStatus.failure) {
+                          return Center(
+                            child: Text(
+                              state.responseMessage.isNotEmpty
+                                  ? state.responseMessage
+                                  : 'حدث خطأ ما',
+                              style: AppTextStyles.font22MainBlueWeight700,
+                            ),
+                          );
+                        }
+                        return Expanded(
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            child: _buildChart(
+                              state.biometricsData,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -240,15 +260,53 @@ class _BiometricsViewState extends State<BiometricsView> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
-                ViewAppBar(),
-                buildFiltersRow(),
-                verticalSpacing(24),
-                buildMetricsGridView(),
+                CustomAppBarWidget(
+                  haveBackArrow: true,
+                ),
+                verticalSpacing(12),
+                _buildTabBar(),
+                verticalSpacing(6),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      buildBiometricsHistoryTab(),
+                      CurrentBiometricsResultsTab(),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return TabBar(
+      tabs: const [
+        Tab(
+          text: 'المقاييس الحيوية',
+        ),
+        Tab(
+          text: 'المقاييس الحيوية الحالية',
+        ),
+      ],
+      controller: _tabController,
+      indicatorColor: AppColorsManager.mainDarkBlue,
+    );
+  }
+
+  Widget buildBiometricsHistoryTab() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        verticalSpacing(16),
+        buildFiltersRow(),
+        verticalSpacing(24),
+        buildMetricsGridView(),
+      ],
     );
   }
 
@@ -434,6 +492,20 @@ class _BiometricsViewState extends State<BiometricsView> {
                 BiometricsDatasetModel(type: currentMetricId, data: []))
         .data;
 
+    final double minY = 0; // Force starting from 0
+    final double maxDataY = data.map((d) => d.value.toInt.toDouble()).reduce((a, b) => a > b ? a : b);
+    
+    // Consider all relevant values for determining the chart's max Y
+    //final double effectiveMaxY = [maxDataY, normalMax].reduce(max);
+
+    // Calculate y-axis padding (10% of range or fixed value for very small ranges)
+    final double yAxisPadding = max((maxDataY - minY) * 0.1, 0.5);
+    final double dynamicMaxY = maxDataY + yAxisPadding;
+
+    // Calculate optimal integer interval based on all relevant values
+    final double yRange = dynamicMaxY - minY;
+    final int niceInterval = _calculateNiceInterval(yRange);
+
     if (data.isEmpty) return const SizedBox();
 
     return Container(
@@ -493,16 +565,15 @@ class _BiometricsViewState extends State<BiometricsView> {
                     return SideTitleWidget(
                       meta: meta,
                       child: Container(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          data[value.toInt()].date,
-                          style: TextStyle(
-                            color: subtitleColor,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
+                          padding: const EdgeInsets.only(top: 12, bottom: 4),
+                          child: Transform.rotate(
+                            angle: -90 * (pi / 180),
+                            child: Text(
+                              data[value.toInt()].date,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          )),
                     );
                   }
                   return const Text('');
@@ -539,15 +610,16 @@ class _BiometricsViewState extends State<BiometricsView> {
           ),
           minX: 0,
           maxX: (data.length - 1).toDouble(),
-          minY:currentMetric.hasSecondaryValue ? 50 : data.map((e) => e.value.toInt).reduce((a, b) => a < b ? a : b) - 10,
-          maxY: currentMetric.hasSecondaryValue
-              ? 200
-              : data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) + 10,
+          minY: minY,
+          maxY:
+ data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) +
+                  10,
           lineBarsData: [
             // Primary line
             LineChartBarData(
               spots: data.asMap().entries.map((entry) {
-                return FlSpot(entry.key.toDouble(), entry.value.value.toInt.toDouble());
+                return FlSpot(
+                    entry.key.toDouble(), entry.value.value.toInt.toDouble());
               }).toList(),
               isCurved: true,
               curveSmoothness: 0.3,
@@ -590,8 +662,8 @@ class _BiometricsViewState extends State<BiometricsView> {
               LineChartBarData(
                 color: primaryColor,
                 spots: data.asMap().entries.map((entry) {
-                  return FlSpot(
-                      entry.key.toDouble(), entry.value.secondaryValue.toInt.toDouble() ?? 0);
+                  return FlSpot(entry.key.toDouble(),
+                      entry.value.secondaryValue.toInt.toDouble() ?? 0);
                 }).toList(),
                 isCurved: true,
                 curveSmoothness: 0.3,
@@ -633,7 +705,6 @@ class _BiometricsViewState extends State<BiometricsView> {
               }).toList();
             },
             touchTooltipData: LineTouchTooltipData(
-              // tooltipPadding: EdgeInsets.zero,
               getTooltipColor: (touchedSpot) => AppColorsManager.secondaryColor,
               tooltipMargin: 12,
               tooltipPadding: EdgeInsets.all(5),
@@ -670,12 +741,14 @@ class _BiometricsViewState extends State<BiometricsView> {
                           spots: data
                               .asMap()
                               .entries
-                              .map((e) =>
-                                  FlSpot(e.key.toDouble(), e.value.value.toInt.toDouble()))
+                              .map((e) => FlSpot(e.key.toDouble(),
+                                  e.value.value.toInt.toDouble()))
                               .toList()),
                       0,
-                      FlSpot(spot.key.toDouble(), spot.value.value.toInt.toDouble(),
-                    ),
+                      FlSpot(
+                        spot.key.toDouble(),
+                        spot.value.value.toInt.toDouble(),
+                      ),
                     ),
                   ]))
               .toList(),
@@ -684,8 +757,40 @@ class _BiometricsViewState extends State<BiometricsView> {
     );
   }
 }
+int _calculateNiceInterval(double yRange) {
+  if (yRange <= 0) return 1;
 
+  // Aim for 4-7 divisions on the y-axis for readability
+  final int targetDivisions = 5;
+  double rawInterval = yRange / targetDivisions;
+  
+  // Calculate magnitude (power of 10)
+  final double magnitude = pow(10, (log(rawInterval) / ln10).floor()).toDouble();
+  final double normalized = rawInterval / magnitude;
 
+  // Find the nearest "nice" number (1, 2, 2.5, 5, 10)
+  if (normalized < 1.5) return (1 * magnitude).toInt();
+  if (normalized < 2.3) return (2 * magnitude).toInt();
+  if (normalized < 3.5) return (2.5 * magnitude).toInt();
+  if (normalized < 7.5) return (5 * magnitude).toInt();
+  return (10 * magnitude).toInt();
+}
+
+class BiometricType {
+  final String id;
+  final String name;
+  final String icon;
+  final Color color;
+  final bool hasSecondaryValue;
+
+  BiometricType({
+    required this.id,
+    required this.name,
+    required this.icon,
+    required this.color,
+    this.hasSecondaryValue = false,
+  });
+}
 
 final List<BiometricType> biometricTypes = [
   BiometricType(

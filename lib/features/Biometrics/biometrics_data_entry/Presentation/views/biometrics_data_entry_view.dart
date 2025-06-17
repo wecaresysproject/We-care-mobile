@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/smart_assistant_button_shared_widget.dart';
@@ -31,16 +32,16 @@ class BiometricsDataEntryView extends StatelessWidget {
                 child: BlocListener<BiometricsDataEntryCubit,
                     BiometricsDataEntryState>(
                   listener: (context, state) async {
-                    // if (state.submitBiometricDataStatus ==
-                    //     RequestStatus.success) {
-                    //   await showSuccess(state.message);
-                    //   if (context.mounted) Navigator.pop(context);
-                    // }
-                    // if (state.submitBiometricDataStatus ==
-                    //     RequestStatus.failure) {
-                    //   await showError(state.message);
-                    // }
-                    // TODO: implement listener
+                  // if (state.submitBiometricDataStatus ==
+                  //     RequestStatus.success) {
+                  //   await showSuccess(state.message);
+                  //   if (context.mounted) Navigator.pop(context);
+                  // }
+                  // if (state.submitBiometricDataStatus ==
+                  //     RequestStatus.failure) {
+                  //   await showError(state.message);
+                  // }
+                  // TODO: implement listener
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -428,9 +429,9 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                       await showError('يرجى إدخال قيمة');
                       return;
                     }
-
-                    widget.onSave?.call(
+                   await widget.onSave?.call(
                         widget.measurement, _singleController.text, null);
+                     context.mounted?   context.pop():null;
                   }
                 },
                 style: ElevatedButton.styleFrom(
