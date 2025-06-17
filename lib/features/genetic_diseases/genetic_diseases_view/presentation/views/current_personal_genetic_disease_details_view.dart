@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,19 +6,22 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_state.dart';
 
 class CurrentPersonalGeneticDiseaseDetailsView extends StatelessWidget {
-  const CurrentPersonalGeneticDiseaseDetailsView({super.key,required this.documentId});
+  const CurrentPersonalGeneticDiseaseDetailsView(
+      {super.key, required this.documentId});
 
- final String documentId;
-  
+  final String documentId;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GeneticsDiseasesViewCubit>(
@@ -42,6 +44,24 @@ class CurrentPersonalGeneticDiseaseDetailsView extends StatelessWidget {
                       context,
                       state.currentPersonalGeneticDiseaseDetails,
                     ),
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.personalGeneticDiseasesDataEnrtyView,
+                        arguments: {
+                          "editModel":
+                              state.currentPersonalGeneticDiseaseDetails,
+                          "editModelID": documentId,
+                        },
+                      );
+
+                      if (result == true && context.mounted) {
+                        await context
+                            .read<GeneticsDiseasesViewCubit>()
+                            .getPersonalGeneticDiseaseDetails(
+                              id: documentId,
+                            );
+                      }
+                    },
                     deleteFunction: () => context
                         .read<GeneticsDiseasesViewCubit>()
                         .deleteSpecificCurrentPersonalGeneticDiseaseById(
@@ -59,6 +79,7 @@ class CurrentPersonalGeneticDiseaseDetailsView extends StatelessWidget {
     );
   }
 }
+
 class PersonalGenaticDiseaseTab extends StatelessWidget {
   const PersonalGenaticDiseaseTab({super.key});
 
@@ -66,11 +87,11 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
       listener: (context, state) {
-        if (state.requestStatus == RequestStatus.success&&
+        if (state.requestStatus == RequestStatus.success &&
             state.isDeleteRequest) {
           Navigator.pop(context);
           showSuccess(state.message!);
-        } else if (state.requestStatus == RequestStatus.failure&&
+        } else if (state.requestStatus == RequestStatus.failure &&
             state.isDeleteRequest) {
           showError(state.message!);
         }
@@ -96,14 +117,16 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
               SizedBox(height: 16.h),
               DetailsViewInfoTile(
                 title: "المرض الوراثى",
-                value: state.currentPersonalGeneticDiseaseDetails!.geneticDisease!,
+                value:
+                    state.currentPersonalGeneticDiseaseDetails!.geneticDisease!,
                 icon: 'assets/images/tumor_icon.png',
                 isExpanded: true,
               ),
               SizedBox(height: 16.h),
               DetailsViewInfoTile(
                 title: "حالة المرض",
-                value: state.currentPersonalGeneticDiseaseDetails!.diseaseStatus!,
+                value:
+                    state.currentPersonalGeneticDiseaseDetails!.diseaseStatus!,
                 icon: 'assets/images/tumor_icon.png',
                 isExpanded: true,
               ),
@@ -118,7 +141,8 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
                   Spacer(),
                   DetailsViewInfoTile(
                     title: 'المستشفي',
-                    value: state.currentPersonalGeneticDiseaseDetails!.hospital!,
+                    value:
+                        state.currentPersonalGeneticDiseaseDetails!.hospital!,
                     icon: 'assets/images/hospital_icon.png',
                   ),
                 ],
@@ -132,19 +156,22 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
               ),
               verticalSpacing(16),
               DetailsViewImageWithTitleTile(
-                image: state.currentPersonalGeneticDiseaseDetails!.geneticTestsImage!,
+                image: state
+                    .currentPersonalGeneticDiseaseDetails!.geneticTestsImage!,
                 title: "فحصات جينية",
                 isShareEnabled: true,
               ),
               verticalSpacing(16),
               DetailsViewImageWithTitleTile(
-                image: state.currentPersonalGeneticDiseaseDetails!.otherTestsImage!,
+                image: state
+                    .currentPersonalGeneticDiseaseDetails!.otherTestsImage!,
                 title: "فحوصات اخري",
                 isShareEnabled: true,
               ),
               verticalSpacing(16),
               DetailsViewImageWithTitleTile(
-                image: state.currentPersonalGeneticDiseaseDetails!.medicalReport!,
+                image:
+                    state.currentPersonalGeneticDiseaseDetails!.medicalReport!,
                 title: "التقرير الطبي",
                 isShareEnabled: true,
               ),

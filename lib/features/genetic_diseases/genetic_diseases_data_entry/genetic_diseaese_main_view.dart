@@ -66,7 +66,7 @@ class GeneticDiseaeseMainView extends StatelessWidget {
                   title: "أمراضى الوراثية",
                   onTap: () async {
                     await context.pushNamed(
-                      Routes.geneticDiseasesDataEnrtyView,
+                      Routes.personalGeneticDiseasesDataEnrtyView,
                     );
                   },
                 ),

@@ -178,9 +178,9 @@ class FamilyTreeView extends StatelessWidget {
                   width: 100.w,
                   height: 35.h,
                   child: CustomActionButton(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, Routes.numberOfFamilyMembersView);
+                    onTap: () async {
+                      await Navigator.pushNamed(
+                          context, Routes.familyTreeViewFromDataEntry);
                     },
                     title: 'تعديل',
                     icon: 'assets/images/edit.png',

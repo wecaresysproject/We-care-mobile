@@ -12,6 +12,7 @@ import 'package:we_care/features/genetic_diseases/data/models/family_member_gena
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_members_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_request_body_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_state.dart';
@@ -56,6 +57,32 @@ class GeneticDiseasesDataEntryCubit
         ),
       );
     }
+  }
+
+  Future<void> loadIntialyPersonalGeneticDiseasesForEditing(
+    PersonalGeneticDiseasDetails pastGeneticDisease, {
+    required String documentId,
+  }) async {
+    emit(
+      state.copyWith(
+        diagnosisDate: pastGeneticDisease.date!,
+        geneticDiseaseCategory:
+            pastGeneticDisease.geneticDisease, //! check it with aya
+        selectedDiseaseName:
+            pastGeneticDisease.geneticDisease, //! check it with aya
+        selectedDiseaseStatus: pastGeneticDisease.diseaseStatus,
+        firstImageUploadedUrl: pastGeneticDisease.geneticTestsImage,
+        secondImageUploadedUrl: pastGeneticDisease.otherTestsImage,
+        reportUploadedUrl: pastGeneticDisease.medicalReport,
+        selectedDoctorName: pastGeneticDisease.doctor,
+        selectedHospital: pastGeneticDisease.hospital,
+        selectedCountryName: pastGeneticDisease.country,
+        isEditMode: true,
+        updatedDocumentId: documentId,
+      ),
+    );
+
+    validateRequiredFields();
   }
 
   Future<void> loadGeneticDiseasesDataEnteredForEditing(
@@ -412,80 +439,50 @@ class GeneticDiseasesDataEntryCubit
       await geneticDiseasesBox.deleteAt(index);
     }
   }
-  // Future<void> loadMedicinesDataEnteredForEditing(
-  //   MedicineModel pastDataEntered,
-  // ) async {
-  //   await storeTempUserPastComplaints(pastDataEntered.mainSymptoms);
 
-  //   emit(
-  //     state.copyWith(
-  //       medicineStartDate: pastDataEntered.startDate,
-  //       selectedMedicineName: pastDataEntered.medicineName,
-  //       selectedMedicalForm: pastDataEntered.usageMethod,
-  //       selectedDose: pastDataEntered.dosage,
-  //       selectedNoOfDose: pastDataEntered.dosageFrequency,
-  //       doseDuration: pastDataEntered.usageDuration,
-  //       timePeriods: pastDataEntered.timeDuration,
-  //       selectedChronicDisease: pastDataEntered.chronicDiseaseMedicine,
-  //       medicalComplaints: pastDataEntered.mainSymptoms,
-  //       selectedDoctorName: pastDataEntered.doctorName,
-  //       selectedAlarmTime: pastDataEntered.reminder,
-  //       isEditMode: true,
-  //       updatedDocumentId: pastDataEntered.id,
-  //     ),
-  //   );
-  //   personalInfoController.text = pastDataEntered.personalNotes;
-  //   validateRequiredFields();
-  //   await initialDataEntryRequests();
-  // }
+  Future<void> submitEditsForPersonalGeneticDiseases() async {
+    emit(
+      state.copyWith(
+        geneticDiseaseDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _geneticDiseasesDataEntryRepo.editPersonalGeneticDiseases(
+      id: state.updatedDocumentId,
+      requestBody: PersonalGeneticDiseaseRequestBodyModel(
+        country: state.selectedCountryName!,
+        date: state.diagnosisDate!,
+        diseaseCategory: state.selectedDiseaseName!, //!TODO: change it later
+        geneticDisease: state.selectedDiseaseName!,
+        diseaseStatus: state.selectedDiseaseStatus!,
+        firstUploadedImage: state.firstImageUploadedUrl!,
+        secondUploadedImage: state.secondImageUploadedUrl!,
+        medicalReport: state.reportUploadedUrl!,
+        doctor: state.selectedDoctorName!,
+        hospital: state.selectedHospital!,
+      ),
+      language: AppStrings.arabicLang,
+    );
 
-  // Future<void> submitEditsForMedicine() async {
-  //   emit(
-  //     state.copyWith(
-  //       medicinesDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response =
-  //       await _medicinesDataEntryRepo.editSpecifcMedicineDataDetails(
-  //     medicineId: state.updatedDocumentId,
-  //     requestBody: MedicineDataEntryRequestBody(
-  //       startDate: state.medicineStartDate!,
-  //       medicineName: state.selectedMedicineName!,
-  //       usageMethod: state.selectedMedicalForm!,
-  //       dosage: state.selectedDose!,
-  //       dosageFrequency: state.selectedNoOfDose!,
-  //       usageDuration: state.doseDuration!,
-  //       timeDuration: state.timePeriods!,
-  //       chronicDiseaseMedicine: state.selectedChronicDisease!,
-  //       doctorName: state.selectedDoctorName!,
-  //       reminder: state.selectedAlarmTime!,
-  //       reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,
-  //       personalNotes: personalInfoController.text,
-  //       userMedicalComplaint: state.medicalComplaints,
-  //     ),
-  //     language: AppStrings.arabicLang,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //   );
-
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           medicinesDataEntryStatus: RequestStatus.success,
-  //           message: successMessage,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           medicinesDataEntryStatus: RequestStatus.failure,
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            geneticDiseaseDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            geneticDiseaseDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> initialDataEntryRequests() async {
     await getAllGeneticDiseasesClassfications();

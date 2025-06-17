@@ -45,7 +45,8 @@ class Routes {
   static const geneticDiseaeseMainView = "/geneticDiseaeseMainView";
   static const numberOfFamilyMembersView = "/numberOfFamilyMembersView";
   static const familyTreeViewFromDataEntry = "/familyTreeView";
-  static const geneticDiseasesDataEnrtyView = "/genetic_diseasesDataEnrtyView";
+  static const personalGeneticDiseasesDataEnrtyView =
+      "/personalGeneticDiseasesDataEnrtyView";
   static const familyMemeberGeneticDiseaseDataEntryView =
       "/familyMemeberGeneticDiseaseDataEntryView";
   static const createNewGeneticDiseaseView = '/createNewGeneticDiseaseView';
@@ -60,6 +61,6 @@ class Routes {
   static const personalGeneticDiseasesScreen = '/personalGeneticDiseasesScreen';
   static const personalGeneticDiseasesDetailsView =
       '/personalGeneticDiseasesDetailsView';
-  static const currentPersonalGeneticDiseasesDetailsView = 
+  static const currentPersonalGeneticDiseasesDetailsView =
       '/currentPersonalGeneticDiseasesDetailsView';
 }

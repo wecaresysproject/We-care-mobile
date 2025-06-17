@@ -5,25 +5,29 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/smart_assistant_button_shared_widget.dart';
+import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/personal_genetic_diseases_data_entry_form_fields_widget.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 
 class PersonalGeneticDiseaseDataEntryView extends StatelessWidget {
   const PersonalGeneticDiseaseDataEntryView({
     super.key,
-    // this.medicineToEdit,
+    this.personalGeneticDiseasesEditModel,
+    this.editModelId,
   });
-  // final MedicineModel? medicineToEdit;
+  final PersonalGeneticDiseasDetails? personalGeneticDiseasesEditModel;
+  final String? editModelId;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GeneticDiseasesDataEntryCubit>(
       create: (context) {
         final cubit = getIt<GeneticDiseasesDataEntryCubit>();
-        // if (medicineToEdit != null) {
-        //   cubit.loadMedicinesDataEnteredForEditing(medicineToEdit!);
-        // } else {
-        //   cubit.initialDataEntryRequests();
-        // }
+        if (personalGeneticDiseasesEditModel != null && editModelId != null) {
+          cubit.loadIntialyPersonalGeneticDiseasesForEditing(
+            personalGeneticDiseasesEditModel!,
+            documentId: editModelId!,
+          );
+        }
         cubit.initialDataEntryRequests();
         return cubit;
       },

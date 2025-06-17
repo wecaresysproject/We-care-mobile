@@ -275,7 +275,8 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                     .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedHospitalName(value);
               },
-              containerHintText: "اختر اسم المستشفى/المركز",
+              containerHintText:
+                  state.selectedHospital ?? "اختر اسم المستشفى/المركز",
               searchHintText: "ابحث عن اسم المستشفى/المركز",
             ),
             verticalSpacing(16),
@@ -290,7 +291,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                     .read<GeneticDiseasesDataEntryCubit>()
                     .updateSelectedCountry(value);
               },
-              containerHintText: "اختر اسم الدولة",
+              containerHintText: state.selectedCountryName ?? "اختر اسم الدولة",
               searchHintText: "ابحث عن الدولة",
             ),
 
@@ -334,16 +335,15 @@ Widget submitDataEnteredBlocConsumer() {
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
-            // state.isEditMode
-            //     ? await context
-            //         .read<GeneticDiseasesDataEntryCubit>()
-            //         .submitEditsForMedicine()
-            //     :
-            await context
-                .read<GeneticDiseasesDataEntryCubit>()
-                .submitPersonalGeneticDiseaseDataEntry(
-                  context.translate,
-                );
+            state.isEditMode
+                ? await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .submitEditsForPersonalGeneticDiseases()
+                : await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .submitPersonalGeneticDiseaseDataEntry(
+                      context.translate,
+                    );
           }
         },
         isEnabled: state.isFormValidated ? true : false,
