@@ -20,6 +20,7 @@ class PersonalGeneticDiseasesResponseModel {
 class PersonalGenaticDisease {
   String id;
   String geneticDisease;
+  @JsonKey(name: "probabilityLevel")
   String riskLevel;
   String recommendation;
 

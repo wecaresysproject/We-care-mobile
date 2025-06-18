@@ -422,7 +422,7 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                       return;
                     }
 
-                    widget.onSave?.call(widget.measurement,
+                    widget.onSave?.call(widget.categoryName,
                         _systolicController.text, _diastolicController.text);
                   } else {
                     if (_singleController.text.trim().isEmpty) {
@@ -430,7 +430,7 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                       return;
                     }
                    await widget.onSave?.call(
-                        widget.measurement, _singleController.text, null);
+                        widget.categoryName, _singleController.text, null);
                      context.mounted?   context.pop():null;
                   }
                 },

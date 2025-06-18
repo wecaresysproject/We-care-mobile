@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
+import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
 
 class BiometricsViewState extends Equatable {
   final RequestStatus requestStatus;
@@ -10,6 +11,7 @@ class BiometricsViewState extends Equatable {
   final List<int> daysFilter;
   final List<int> monthFilter;
   final List<BiometricsDatasetModel> biometricsData;
+ final CurrentBioMetricsData? currentBiometricsData;
 
   const BiometricsViewState({
     this.responseMessage = '',
@@ -19,6 +21,7 @@ class BiometricsViewState extends Equatable {
     this.daysFilter = const [],
     this.monthFilter = const [],
     this.biometricsData = const [],
+    this.currentBiometricsData,
   });
 
   factory BiometricsViewState.initial() {
@@ -34,6 +37,7 @@ class BiometricsViewState extends Equatable {
       monthFilter: const [
       ],
       biometricsData: const [],
+      currentBiometricsData: null,
     );
   }
 
@@ -45,6 +49,7 @@ class BiometricsViewState extends Equatable {
     List<int>? daysFilter,
     List<int>? monthFilter,
     List<BiometricsDatasetModel>? biometricsData,
+    CurrentBioMetricsData? currentBiometricsData,
   }) {
     return BiometricsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -54,6 +59,7 @@ class BiometricsViewState extends Equatable {
       daysFilter: daysFilter ?? this.daysFilter,
       monthFilter: monthFilter ?? this.monthFilter,
       biometricsData: biometricsData ?? this.biometricsData,
+      currentBiometricsData: currentBiometricsData ?? this.currentBiometricsData,
     );
   }
 
@@ -67,5 +73,6 @@ class BiometricsViewState extends Equatable {
     daysFilter,
     monthFilter,  
     biometricsData,
+    currentBiometricsData,
       ];
 }

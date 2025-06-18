@@ -79,4 +79,24 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
       },
     );
   }
+
+  Future<void> getCurrentBiometricData() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await biometricsViewRepo.getCurrentBiometricData(
+        language: 'ar', userType: 'Patient');    
+    response.when(
+      success: (data) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          currentBiometricsData: data,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+        ));
+      },  
+    );
+  }
 }

@@ -813,7 +813,7 @@ final List<BiometricType> biometricTypes = [
   ),
   BiometricType(
     id: 'blood_pressure',
-    name: 'ضغط الدم',
+    name: 'الضغط',
     icon: '🩺',
     color: AppColorsManager.mainDarkBlue,
     hasSecondaryValue: true,

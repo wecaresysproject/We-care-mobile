@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_cubit.dart';
+import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_state.dart';
 
 class CurrentBiometricsResultsTab extends StatelessWidget {
   const CurrentBiometricsResultsTab({
@@ -11,130 +16,160 @@ class CurrentBiometricsResultsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 550.h,
-      child: Stack(
-        children: [
-          // Human body skeleton image - centered
-          Center(
-            child: Image.asset(
-              "assets/images/skeleton_image.png",
-              fit: BoxFit.cover,
-              height: 420.h,
-            ),
-          ),
+    return BlocProvider(
+      create: (context) =>
+          getIt.get<BiometricsViewCubit>()..getCurrentBiometricData(),
+      child: BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
+        builder: (context, state) {
+          if (state.requestStatus == RequestStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            );
+          }
+          return SizedBox(
+            width: double.infinity,
+            height: 550.h,
+            child: Stack(
+              children: [
+                // Human body skeleton image - centered
+                Center(
+                  child: Image.asset(
+                    "assets/images/skeleton_image.png",
+                    fit: BoxFit.cover,
+                    height: 420.h,
+                  ),
+                ),
 
-          // Left side buttons
-          // Heart Rate (نبضات القلب)
-          Positioned(
-            top: 0.h,
-            left: 0,
-            child: BiometricMeasurementCard(
-              label: 'نبضات القلب',
-              image: 'assets/images/heart_beat.png',
-              value: '75 bpm',
-              date: '2023 / 10 / 1 ',
-            ),
-          ),
+                // Left side buttons
+                // Heart Rate (نبضات القلب)
+                Positioned(
+                  top: 0.h,
+                  left: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'نبضات القلب',
+                    image: 'assets/images/heart_beat.png',
+                    value:
+                        state.currentBiometricsData?.heartRate?.value ?? 'N/A',
+                    date: state.currentBiometricsData?.heartRate?.date ?? 'N/A',
+                  ),
+                ),
 
-          // Blood Pressure (الضغط)
-          Positioned(
-            top: 125.h,
-            left: 0,
-            child: BiometricMeasurementCard(
-              label: 'الضغط',
-              value: '120/80 mmHg',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/blood-pressure.png',
-            ),
-          ),
+                // Blood Pressure (الضغط)
+                Positioned(
+                  top: 125.h,
+                  left: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'الضغط',
+                    value: state.currentBiometricsData?.bloodPressure?.value ??
+                        'N/A',
+                    date: state.currentBiometricsData?.bloodPressure?.date ??
+                        'N/A',
+                    image: 'assets/images/blood-pressure.png',
+                  ),
+                ),
 
-          // Temperature (درجة الحرارة)
-          Positioned(
-            top: 250.h,
-            left: 0,
-            child: BiometricMeasurementCard(
-              label: 'درجة الحرارة',
-              value: '37°C',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/temperature_level.png',
-            ),
-          ),
+                // Temperature (درجة الحرارة)
+                Positioned(
+                  top: 250.h,
+                  left: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'درجة الحرارة',
+                    value:
+                        state.currentBiometricsData?.bodyTemperature?.value ??
+                            'N/A',
+                    date: state.currentBiometricsData?.bodyTemperature?.date ??
+                        'N/A',
+                    image: 'assets/images/temperature_level.png',
+                  ),
+                ),
 
-          // Weight (الوزن)
-          Positioned(
-            top: 375.h,
-            left: 0,
-            child: BiometricMeasurementCard(
-              label: 'الوزن',
-              value: '70 kg',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/weight.png',
-            ),
-          ),
+                // Weight (الوزن)
+                Positioned(
+                  top: 375.h,
+                  left: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'الوزن',
+                    value: state.currentBiometricsData?.weight?.value ?? 'N/A',
+                    date: state.currentBiometricsData?.weight?.date ?? 'N/A',
+                    image: 'assets/images/weight.png',
+                  ),
+                ),
 
-          // Right side buttons
-          // Oxygen Level (مستوى الأكسجين)
-          Positioned(
-            top: 0.h,
-            right: 0,
-            child: BiometricMeasurementCard(
-              label: 'مستوى الأكسجين',
-              value: '98%',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/oxygen_level.png',
-            ),
-          ),
+                // Right side buttons
+                // Oxygen Level (مستوى الأكسجين)
+                Positioned(
+                  top: 0.h,
+                  right: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'مستوى الأكسجين',
+                    value: state.currentBiometricsData?.oxygenLevel?.value ??
+                        'N/A',
+                    date:
+                        state.currentBiometricsData?.oxygenLevel?.date ?? 'N/A',
+                    image: 'assets/images/oxygen_level.png',
+                  ),
+                ),
 
-          // Random Blood Sugar (سكر عشوائي)
-          Positioned(
-            top: 125.h,
-            right: 0,
-            child: BiometricMeasurementCard(
-              label: 'سكر عشوائي',
-              value: '120 mg/dL',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/glucose_level.png',
-            ),
-          ),
+                // Random Blood Sugar (سكر عشوائي)
+                Positioned(
+                  top: 125.h,
+                  right: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'سكر عشوائي',
+                    value:
+                        state.currentBiometricsData?.randomBloodSugar?.value ??
+                            'N/A',
+                    date: state.currentBiometricsData?.randomBloodSugar?.date ??
+                        'N/A',
+                    image: 'assets/images/glucose_level.png',
+                  ),
+                ),
 
-          // Fasting Blood Sugar (سكر صائم)
-          Positioned(
-            top: 250.h,
-            right: 0,
-            child: BiometricMeasurementCard(
-              label: 'سكر صائم',
-              value: '100 mg/dL',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/glucose_level.png',
-            ),
-          ),
+                // Fasting Blood Sugar (سكر صائم)
+                Positioned(
+                  top: 250.h,
+                  right: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'سكر صائم',
+                    value:
+                        state.currentBiometricsData?.fastingBloodSugar?.value ??
+                            'N/A',
+                    date:
+                        state.currentBiometricsData?.fastingBloodSugar?.date ??
+                            'N/A',
+                    image: 'assets/images/glucose_level.png',
+                  ),
+                ),
 
-          // Height (الطول)
-          Positioned(
-            top: 375.h,
-            right: 0,
-            child: BiometricMeasurementCard(
-              label: 'الطول',
-              value: '175 cm',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/ruler.png',
-            ),
-          ),
+                // Height (الطول)
+                Positioned(
+                  top: 375.h,
+                  right: 0,
+                  child: BiometricMeasurementCard(
+                    label: 'الطول',
+                    value: state.currentBiometricsData?.height?.value ?? 'N/A',
+                    date: state.currentBiometricsData?.height?.date ?? 'N/A',
+                    image: 'assets/images/ruler.png',
+                  ),
+                ),
 
-          // BMI
-          Positioned(
-            top: 450.h,
-            left: MediaQuery.of(context).size.width / 2 - 70.w,
-            child: BiometricMeasurementCard(
-              label: 'مؤشر الكتلة ',
-              value: '22.9 kg/m²',
-              date: '2023 / 10 / 1 ',
-              image: 'assets/images/BMI.png',
+                // BMI
+                Positioned(
+                  top: 450.h,
+                  left: MediaQuery.of(context).size.width / 2 - 70.w,
+                  child: BiometricMeasurementCard(
+                    label: 'مؤشر الكتلة ',
+                    value: state.currentBiometricsData?.bmi?.value ?? 'N/A',
+                    date: state.currentBiometricsData?.bmi?.date ?? 'N/A',
+                    image: 'assets/images/BMI.png',
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

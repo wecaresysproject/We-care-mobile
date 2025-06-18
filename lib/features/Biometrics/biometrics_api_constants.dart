@@ -7,6 +7,8 @@ class BiometricsApiConstants {
   static const getAllAvailableBiometrics = "VitalActivity/GetAllAvailableCategories";
   static const getAllFilters = "VitalActivity/GetFilterOptions";
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
+  static const getCurrentBiometricData =
+      "VitalActivity/currentbiometrics";
 
   //filters
 }

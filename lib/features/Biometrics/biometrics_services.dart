@@ -36,4 +36,8 @@ abstract class BiometricsServices {
       @Query('day') String? day, 
       @Query('category') List<String> biometricCategories,
   );
+  @GET(BiometricsApiConstants.getCurrentBiometricData)
+  Future<dynamic> getCurrentBiometricData(
+      @Query('Language') String language, 
+      @Query('userType') String userType,);
 }
