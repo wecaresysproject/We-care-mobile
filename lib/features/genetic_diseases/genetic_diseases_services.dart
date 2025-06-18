@@ -34,6 +34,7 @@ abstract class GeneticDiseasesServices {
   @GET(GeneticDiseasesConstants.getAllGeneticDiseasesStatus)
   Future<dynamic> getAllGeneticDiseasesStatus(
     @Query("language") String language,
+    @Query("geneticDisease") String selectedGeneticDiseaseName,
   );
   @GET(GeneticDiseasesConstants.getGeneticDiseasesBasedOnClassification)
   Future<dynamic> getGeneticDiseasesBasedOnClassification(
@@ -152,7 +153,8 @@ abstract class GeneticDiseasesServices {
   @POST(GeneticDiseasesConstants.addNewUsertoFamilyTree)
   Future<dynamic> addNewUsertoFamilyTree(
     @Body() AddNewUserToFamilyTreeRequestBodyModel requestBody,
-    @Query("language") String language,);
+    @Query("language") String language,
+  );
 
   @GET(GeneticDiseasesConstants.getCurrentPersonalGeneticDiseases)
   Future<dynamic> getCurrentPersonalGeneticDiseases(
@@ -160,7 +162,8 @@ abstract class GeneticDiseasesServices {
     @Query("userType") String userType,
   );
 
-  @DELETE(GeneticDiseasesConstants.deleteSpecificCurrentPersonalGeneticDiseaseById)
+  @DELETE(
+      GeneticDiseasesConstants.deleteSpecificCurrentPersonalGeneticDiseaseById)
   Future<dynamic> deleteSpecificCurrentPersonalGeneticDiseaseById(
     @Query("language") String language,
     @Query("userType") String userType,

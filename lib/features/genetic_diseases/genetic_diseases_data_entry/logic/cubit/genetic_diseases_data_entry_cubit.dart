@@ -66,10 +66,8 @@ class GeneticDiseasesDataEntryCubit
     emit(
       state.copyWith(
         diagnosisDate: pastGeneticDisease.date!,
-        geneticDiseaseCategory:
-            pastGeneticDisease.geneticDisease, //! check it with aya
-        selectedDiseaseName:
-            pastGeneticDisease.geneticDisease, //! check it with aya
+        geneticDiseaseCategory: pastGeneticDisease.geneticDiseaseCategory,
+        selectedDiseaseName: pastGeneticDisease.geneticDisease,
         selectedDiseaseStatus: pastGeneticDisease.diseaseStatus,
         firstImageUploadedUrl: pastGeneticDisease.geneticTestsImage,
         secondImageUploadedUrl: pastGeneticDisease.otherTestsImage,
@@ -386,6 +384,7 @@ class GeneticDiseasesDataEntryCubit
     final response =
         await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesStatus(
       language: AppStrings.arabicLang,
+      geneticDiseaseName: state.selectedDiseaseName!,
     );
 
     response.when(
@@ -452,7 +451,7 @@ class GeneticDiseasesDataEntryCubit
       requestBody: PersonalGeneticDiseaseRequestBodyModel(
         country: state.selectedCountryName!,
         date: state.diagnosisDate!,
-        diseaseCategory: state.selectedDiseaseName!, //!TODO: change it later
+        diseaseCategory: state.geneticDiseaseCategory!, //!TODO: change it later
         geneticDisease: state.selectedDiseaseName!,
         diseaseStatus: state.selectedDiseaseStatus!,
         firstUploadedImage: state.firstImageUploadedUrl!,
@@ -486,7 +485,6 @@ class GeneticDiseasesDataEntryCubit
 
   Future<void> initialDataEntryRequests() async {
     await getAllGeneticDiseasesClassfications();
-    await getAllGeneticDiseasesStatus();
     await emitCountriesData();
     await emitDoctorNames();
   }
@@ -554,6 +552,7 @@ class GeneticDiseasesDataEntryCubit
   Future<void> updateSelectedGeneticDiseaseName(String? val) async {
     emit(state.copyWith(selectedDiseaseName: val));
     validateRequiredFields();
+    await getAllGeneticDiseasesStatus();
   }
 
   void updateSelectedDoctorName(String? value) {

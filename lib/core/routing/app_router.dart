@@ -290,8 +290,8 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => PersonalGeneticDiseaseDataEntryView(
             personalGeneticDiseasesEditModel:
-                result!['editModel'] as PersonalGeneticDiseasDetails,
-            editModelId: result['editModelID'],
+                result?['editModel'] as PersonalGeneticDiseasDetails?,
+            editModelId: result?['editModelID'],
           ),
         );
       case Routes.numberOfFamilyMembersView:

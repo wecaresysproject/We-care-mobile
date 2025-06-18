@@ -107,6 +107,7 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     final response =
         await _geneticDiseasesDataEntryRepo.getAllGeneticDiseasesStatus(
       language: AppStrings.arabicLang,
+      geneticDiseaseName: state.selectedGeneticDisease!,
     );
 
     response.when(
@@ -154,7 +155,7 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
 
   Future<void> getAllRequestsForAddingNewGeneticDiseaseView() async {
     await getAllGeneticDiseasesClassfications();
-    await getAllGeneticDiseasesStatus();
+    // await getAllGeneticDiseasesStatus();
   }
 
 //   Future<void> getAllComplaintsPlaces() async {
@@ -270,9 +271,10 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
     }
   }
 
-  void updateSelectionOfGeneticDisease(String? val) {
+  Future<void> updateSelectionOfGeneticDisease(String? val) async {
     emit(state.copyWith(selectedGeneticDisease: val));
     validateRequiredFields();
+    await getAllGeneticDiseasesStatus();
   }
 
   Future<void> updateSelectionOfGeneticDiseaseCategory(String? val) async {

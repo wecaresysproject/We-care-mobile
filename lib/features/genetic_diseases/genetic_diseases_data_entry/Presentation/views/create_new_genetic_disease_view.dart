@@ -7,7 +7,9 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/create_new_gentic_disease_cubit.dart';
@@ -83,8 +85,8 @@ class CreateNewGeneticDiseaseView extends StatelessWidget {
                         options: state.diseasesNames,
                         categoryLabel: "المرض الوراثى",
                         bottomSheetTitle: "اختر المرض الوراثى",
-                        onOptionSelected: (val) {
-                          context
+                        onOptionSelected: (val) async {
+                          await context
                               .read<CreateNewGenticDiseaseCubit>()
                               .updateSelectionOfGeneticDisease(val);
                         },
@@ -118,23 +120,43 @@ class CreateNewGeneticDiseaseView extends StatelessWidget {
                         searchHintText: "ابحث عن المرحلة العمرية للظهور",
                       ),
                       verticalSpacing(16),
-                      UserSelectionContainer(
-                        containerBorderColor:
-                            state.selectedPatientStatus == null
-                                ? AppColorsManager.warningColor
-                                : AppColorsManager.textfieldOutsideBorderColor,
-                        options: state.diseasesStatuses,
-                        categoryLabel: "حالة المرض",
-                        bottomSheetTitle: "اختر حالة المرض",
-                        onOptionSelected: (val) {
-                          context
-                              .read<CreateNewGenticDiseaseCubit>()
-                              .updateSelectionOfDiseaseStatus(val);
-                        },
-                        containerHintText:
-                            state.selectedPatientStatus ?? "اختر حالة المرض",
-                        searchHintText: "ابحث عن حالة المرض",
-                      ),
+                      // in case "متنحي"=> show "مصاب وحامل للاختيار من المستخدم"
+                      (state.diseasesStatuses.length == 1)
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "حالة المرض",
+                                  style: AppTextStyles.font18blackWight500,
+                                ),
+                                verticalSpacing(10),
+                                CustomContainer(
+                                  value: "مصاب",
+                                  isExpanded: true,
+                                ),
+                              ],
+                            )
+                          : UserSelectionContainer(
+                              containerBorderColor:
+                                  state.selectedPatientStatus == null
+                                      ? AppColorsManager.warningColor
+                                      : AppColorsManager
+                                          .textfieldOutsideBorderColor,
+                              categoryLabel: "حالة المرض",
+                              containerHintText: state.selectedPatientStatus ??
+                                  "اختر حالة المرض",
+                              options: state.diseasesStatuses,
+                              onOptionSelected: (value) {
+                                context
+                                    .read<CreateNewGenticDiseaseCubit>()
+                                    .updateSelectionOfDiseaseStatus(value);
+                              },
+                              bottomSheetTitle: "اختر حالة المرض",
+                              searchHintText: "ابحث عن حالة المرض",
+                              allowManualEntry: true,
+                              // loadingState: state.medicinesNamesOptionsLoadingState,
+                              onRetryPressed: () async {},
+                            ),
                       verticalSpacing(48),
                       buildAddNewGeneticDiseaseBlocListener(state, context),
                     ],

@@ -1,13 +1,14 @@
-
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'personal_genetic_disease_detaills.g.dart';
+
 @JsonSerializable()
 class PersonalGeneticDiseasDetails {
   String? id;
   @JsonKey(name: "Date")
   String? date;
+  @JsonKey(name: "DiseaseCategory")
+  String? geneticDiseaseCategory;
   @JsonKey(name: "GeneticDisease")
   String? geneticDisease;
   @JsonKey(name: "DiseaseStatus")
@@ -18,11 +19,11 @@ class PersonalGeneticDiseasDetails {
   String? otherTestsImage;
   @JsonKey(name: "MedicalReport")
   String? medicalReport;
-@JsonKey(name: "Doctor")
+  @JsonKey(name: "Doctor")
   String? doctor;
-@JsonKey(name: "Hospital")
+  @JsonKey(name: "Hospital")
   String? hospital;
-@JsonKey(name: "Country")
+  @JsonKey(name: "Country")
   String? country;
 
   PersonalGeneticDiseasDetails(
@@ -41,5 +42,4 @@ class PersonalGeneticDiseasDetails {
       _$PersonalGeneticDiseasDetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$PersonalGeneticDiseasDetailsToJson(this);
-
 }

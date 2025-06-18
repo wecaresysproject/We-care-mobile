@@ -70,11 +70,13 @@ class GeneticDiseasesDataEntryRepo {
 
   Future<ApiResult<List<String>>> getAllGeneticDiseasesStatus({
     required String language,
+    required String geneticDiseaseName,
   }) async {
     try {
       final response =
           await _geneticDiseasesServices.getAllGeneticDiseasesStatus(
         language,
+        geneticDiseaseName,
       );
       final diseaseStatuses =
           (response['data'] as List).map<String>((e) => e.toString()).toList();

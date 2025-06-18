@@ -9,6 +9,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -98,25 +99,41 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
               },
             ),
             verticalSpacing(16),
-            UserSelectionContainer(
-              containerBorderColor: state.selectedDiseaseStatus == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "حالة المرض",
-              containerHintText:
-                  state.selectedDiseaseStatus ?? "اختر حالة المرض",
-              options: state.diseasesStatuses,
-              onOptionSelected: (value) async {
-                await context
-                    .read<GeneticDiseasesDataEntryCubit>()
-                    .updateSelectedDiseaseStatus(value);
-              },
-              bottomSheetTitle: "اختر حالة المرض",
-              searchHintText: "ابحث عن حالة المرض",
-              allowManualEntry: true,
-              // loadingState: state.medicinesNamesOptionsLoadingState,
-              onRetryPressed: () async {},
-            ),
+            // in case "متنحي"=> show "مصاب وحامل للاختيار من المستخدم"
+            (state.diseasesStatuses.length == 1)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "حالة المرض",
+                        style: AppTextStyles.font18blackWight500,
+                      ),
+                      verticalSpacing(10),
+                      CustomContainer(
+                        value: "مصاب",
+                        isExpanded: true,
+                      ),
+                    ],
+                  )
+                : UserSelectionContainer(
+                    containerBorderColor: state.selectedDiseaseStatus == null
+                        ? AppColorsManager.warningColor
+                        : AppColorsManager.textfieldOutsideBorderColor,
+                    categoryLabel: "حالة المرض",
+                    containerHintText:
+                        state.selectedDiseaseStatus ?? "اختر حالة المرض",
+                    options: state.diseasesStatuses,
+                    onOptionSelected: (value) async {
+                      await context
+                          .read<GeneticDiseasesDataEntryCubit>()
+                          .updateSelectedDiseaseStatus(value);
+                    },
+                    bottomSheetTitle: "اختر حالة المرض",
+                    searchHintText: "ابحث عن حالة المرض",
+                    allowManualEntry: true,
+                    // loadingState: state.medicinesNamesOptionsLoadingState,
+                    onRetryPressed: () async {},
+                  ),
 
             verticalSpacing(16),
             Text(
