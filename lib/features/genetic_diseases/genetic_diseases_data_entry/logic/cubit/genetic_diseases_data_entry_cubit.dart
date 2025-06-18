@@ -389,6 +389,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (statues) {
+        if (statues.length == 1) {
+          emit(
+            state.copyWith(
+              selectedDiseaseStatus: statues.first,
+            ),
+          );
+          validateRequiredFields();
+        }
         emit(
           state.copyWith(
             diseasesStatuses: statues,

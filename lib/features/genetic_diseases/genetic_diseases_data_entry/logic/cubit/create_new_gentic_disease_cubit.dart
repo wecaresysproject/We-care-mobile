@@ -112,6 +112,14 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
 
     response.when(
       success: (statues) {
+        if (statues.length == 1) {
+          emit(
+            state.copyWith(
+              selectedPatientStatus: statues.first,
+            ),
+          );
+          validateRequiredFields();
+        }
         emit(
           state.copyWith(
             diseasesStatuses: statues,
