@@ -12,8 +12,8 @@ class AppTextStyles {
   static final font18blackWight500 = TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeightHelper.medium,
-    // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,
     color: AppColorsManager.textColor,
+    fontFamily: "Cairo",
   );
   static final font16DarkGreyWeight400 = TextStyle(
     fontSize: 16.sp,

@@ -23,7 +23,7 @@ class FirstQuestionDetails extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TrueOrFalseQuestionWidget(
+            TrueOrFalseWithQuestionWidget(
               initialOption: getInitialOption(
                 firstQuestionAnswer: state.firstQuestionAnswer,
                 isEditMode: state.isEditMode,

@@ -5,14 +5,14 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class TrueOrFalseQuestionWidget extends StatefulWidget {
+class TrueOrFalseWithQuestionWidget extends StatefulWidget {
   final String question;
   final String imagePath;
   final Color containerValidationColor;
   final String? initialOption; // Add this parameter
   final Function(String) onOptionSelected;
 
-  const TrueOrFalseQuestionWidget({
+  const TrueOrFalseWithQuestionWidget({
     super.key,
     required this.question,
     required this.imagePath,
@@ -22,11 +22,12 @@ class TrueOrFalseQuestionWidget extends StatefulWidget {
   });
 
   @override
-  TrueOrFalseQuestionWidgetState createState() =>
-      TrueOrFalseQuestionWidgetState();
+  TrueOrFalseWithQuestionWidgetState createState() =>
+      TrueOrFalseWithQuestionWidgetState();
 }
 
-class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
+class TrueOrFalseWithQuestionWidgetState
+    extends State<TrueOrFalseWithQuestionWidget> {
   String? _selectedOption;
 
   @override
@@ -36,7 +37,7 @@ class TrueOrFalseQuestionWidgetState extends State<TrueOrFalseQuestionWidget> {
   }
 
   @override
-  void didUpdateWidget(TrueOrFalseQuestionWidget oldWidget) {
+  void didUpdateWidget(TrueOrFalseWithQuestionWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.initialOption != oldWidget.initialOption) {
       _initializeSelectedOption();

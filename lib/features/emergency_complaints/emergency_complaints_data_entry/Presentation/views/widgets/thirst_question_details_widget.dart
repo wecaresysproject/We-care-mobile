@@ -23,7 +23,7 @@ class ThirdQuestionDetails extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TrueOrFalseQuestionWidget(
+            TrueOrFalseWithQuestionWidget(
               initialOption: getInitialOption(
                 thirdQuestionAnswer: state.thirdQuestionAnswer,
                 isEditMode: state.isEditMode,

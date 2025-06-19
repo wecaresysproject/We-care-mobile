@@ -63,4 +63,8 @@ class Routes {
       '/personalGeneticDiseasesDetailsView';
   static const currentPersonalGeneticDiseasesDetailsView =
       '/currentPersonalGeneticDiseasesDetailsView';
+  static const glassesInformationDataEntryView =
+      '/glassesInformationCategoryDataEntryView';
+  static const eyesViewModule = '/eyesViewModule';
+  static const eyeOrGlassesView = '/eyeOrGlassesView';
 }

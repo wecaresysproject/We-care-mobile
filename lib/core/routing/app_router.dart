@@ -8,6 +8,8 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/glasses_information_category_data_entry_view.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/eye_or_galsses_view.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
@@ -337,6 +339,15 @@ class AppRouter {
       case Routes.biometricsView:
         return MaterialPageRoute(
           builder: (context) => const BiometricsView(), //!To be changed later
+        );
+      case Routes.eyeOrGlassesView:
+        return MaterialPageRoute(
+          builder: (context) => const EyeOrGlassesView(),
+        );
+      case Routes.glassesInformationDataEntryView:
+        return MaterialPageRoute(
+          builder: (context) =>
+              const GlassesInformationCategoryDataEntryView(), //!To be changed later
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
