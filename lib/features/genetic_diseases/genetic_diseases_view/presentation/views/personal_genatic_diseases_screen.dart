@@ -134,9 +134,11 @@ class CurrentPersonalGeneticDiseases extends StatelessWidget {
               }
               if (state.currentPersonalGeneticDiseases == null ||
                   state.currentPersonalGeneticDiseases!.isEmpty) {
-                return Center(
-                  child: Text("لا توجد بيانات متاحة",
-                      style: AppTextStyles.font22MainBlueWeight700),
+                return Expanded(
+                  child: Center(
+                    child: Text("لا توجد بيانات متاحة",
+                        style: AppTextStyles.font22MainBlueWeight700),
+                  ),
                 );
               }
               return MedicalItemGridView(
@@ -191,6 +193,12 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
           );
         }
         if (state.expextedPersonalGeneticDiseases == null &&state.requestStatus == RequestStatus.success) {
+          return Center(
+            child: Text("لا توجد بيانات متاحة",
+                style: AppTextStyles.font22MainBlueWeight700),
+          );
+        }
+        if (state.expextedPersonalGeneticDiseases!.isEmpty) {
           return Center(
             child: Text("لا توجد بيانات متاحة",
                 style: AppTextStyles.font22MainBlueWeight700),
@@ -349,153 +357,6 @@ class ExpectedPersonalGeneticDiseaseTable extends StatelessWidget {
             fontSize: 12.sp,
             fontWeight: FontWeight.w500,
             height: 1.3,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Alternative solution using a custom table widget
-class AlternativeGeneticDiseaseTable extends StatelessWidget {
-  const AlternativeGeneticDiseaseTable({
-    super.key,
-    required this.personalGeneticDiseases,
-  });
-
-  final List<PersonalGenaticDisease> personalGeneticDiseases;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xff909090), width: 0.3),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            decoration: BoxDecoration(
-              color: const Color(0xFF014C8A),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16.r),
-                topRight: Radius.circular(16.r),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: _buildHeaderCell("نوع المرض"),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: _buildHeaderCell("نطاق احتمالية\nالاصابة"),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: _buildHeaderCell("التوصية"),
-                ),
-              ],
-            ),
-          ),
-          // Data rows
-          ...personalGeneticDiseases.asMap().entries.map((entry) {
-            final index = entry.key;
-            final data = entry.value;
-            final isLast = index == personalGeneticDiseases.length - 1;
-
-            return Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: isLast
-                      ? BorderSide.none
-                      : const BorderSide(color: Color(0xff909090), width: 0.3),
-                ),
-              ),
-              child: IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: _buildDataCell(
-                        data.geneticDisease,
-                        context,
-                        isActive: true,
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          Routes.personalGeneticDiseasesDetailsView,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: _buildDataCell(data.riskLevel, context),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: _buildDataCell(data.recommendation, context,
-                          maxLines: 4),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeaderCell(String title) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
-      child: Text(
-        title,
-        textAlign: TextAlign.center,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontWeight: FontWeight.w500,
-          color: Colors.white,
-          fontSize: 13.sp,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDataCell(
-    String text,
-    BuildContext context, {
-    bool isActive = false,
-    int maxLines = 3,
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
-        decoration: const BoxDecoration(
-          border: Border(
-            right: BorderSide(color: Color(0xff909090), width: 0.3),
-          ),
-        ),
-        child: Center(
-          child: Text(
-            text,
-            maxLines: maxLines,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: isActive ? AppColorsManager.mainDarkBlue : Colors.black87,
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w500,
-              decoration:
-                  isActive ? TextDecoration.underline : TextDecoration.none,
-              height: 1.3,
-            ),
           ),
         ),
       ),

@@ -326,8 +326,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "العيون",
     "image": "assets/images/hand_icon.png", //TODO: Change Icon مشفثق
-    "route": "/eye_care",
-    "isActive": false,
+    "route": Routes.eyesOrGlassesDataView,
+    "isActive": true,
   },
   {
     "title": "الأسنان",

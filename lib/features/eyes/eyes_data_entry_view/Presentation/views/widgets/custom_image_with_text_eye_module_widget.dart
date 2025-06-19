@@ -26,7 +26,7 @@ class CustomImageWithTextEyeModuleWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(12),
+        padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
           borderRadius: BorderRadius.circular(40.r),

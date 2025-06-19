@@ -7,8 +7,9 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 class DetailsViewInfoTile extends StatelessWidget {
   final String title;
   final String value;
-  final String icon;
+  final String? icon;
   final bool isExpanded;
+  final bool isSmallContainers;
   final bool isMultiContainer;
   final bool isPartiallyExpanded;
 
@@ -16,8 +17,9 @@ class DetailsViewInfoTile extends StatelessWidget {
       {super.key,
       required this.title,
       required this.value,
-      required this.icon,
+       this.icon,
       this.isMultiContainer = false,
+      this.isSmallContainers = false,
       this.isExpanded = false,
       this.isPartiallyExpanded = false});
 
@@ -28,12 +30,12 @@ class DetailsViewInfoTile extends StatelessWidget {
       children: [
         Row(
           children: [
-            Image.asset(icon, height: 14.h, width: 14.w),
+          icon != null?  Image.asset(icon!, height: 14.h, width: 14.w):SizedBox.shrink(),
             horizontalSpacing(2),
             Text(
               title,
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.mainDarkBlue, fontSize: 16.5.sp),
+                  color: AppColorsManager.mainDarkBlue, fontSize: isSmallContainers? 14.sp: 16.5.sp),
             ),
           ],
         ),
@@ -41,10 +43,11 @@ class DetailsViewInfoTile extends StatelessWidget {
         SizedBox(
           width: isExpanded
               ? MediaQuery.of(context).size.width - 32.w
-              : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
+              : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
           child: CustomContainer(
             value: value,
             isExpanded: isExpanded,
+            isSmallContainers: isSmallContainers,
           ),
         ),
       ],
@@ -57,16 +60,18 @@ class CustomContainer extends StatelessWidget {
     super.key,
     required this.value,
     this.isExpanded = false,
+    this.isSmallContainers = false,
   });
 
   final String value;
   final bool isExpanded;
+  final bool isSmallContainers;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: isExpanded
-          ? MediaQuery.of(context).size.width - 32.w
+          ?isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: MediaQuery.of(context).size.width - 32.w
           : (MediaQuery.of(context).size.width * 0.46) - 24.w,
       child: Container(
         padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),

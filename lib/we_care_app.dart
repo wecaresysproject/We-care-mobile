@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 
 import 'core/global/Helpers/functions.dart';
 import 'core/global/app_strings.dart';

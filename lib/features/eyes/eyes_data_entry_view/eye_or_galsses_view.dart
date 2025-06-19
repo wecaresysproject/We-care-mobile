@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -8,7 +7,8 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/custom_image_with_text_eye_module_widget.dart';
 
 class EyeOrGlassesView extends StatelessWidget {
-  const EyeOrGlassesView({super.key});
+  const EyeOrGlassesView({super.key, this.onTap}); 
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class EyeOrGlassesView extends StatelessWidget {
                 ),
                 verticalSpacing(113),
                 CustomImageWithTextEyeModuleWidget(
-                  onTap: () async {},
+                  onTap: onTap,
                   imagePath:
                       "assets/images/eye_information_data_entry_image.png",
                   text: "بيانات العيون",
@@ -39,9 +39,11 @@ class EyeOrGlassesView extends StatelessWidget {
                 ),
                 verticalSpacing(88),
                 CustomImageWithTextEyeModuleWidget(
-                  onTap: () async {
-                    await context
-                        .pushNamed(Routes.glassesInformationDataEntryView);
+                  onTap: onTap?? () {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.glassesInformationDataEntryView,
+                    );
                   },
                   imagePath:
                       "assets/images/glasses_informations_data_entry_image.png",

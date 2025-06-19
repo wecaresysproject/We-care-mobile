@@ -67,4 +67,8 @@ class Routes {
       '/glassesInformationCategoryDataEntryView';
   static const eyesViewModule = '/eyesViewModule';
   static const eyeOrGlassesView = '/eyeOrGlassesView';
-}
+  static const glassesInformationView =
+      '/glassesInformationView';
+  static const glassesInformationDetailsView = '/glassesInformationDetailsView';
+  static const eyesOrGlassesDataView = '/eyesOrGlassesDataView';
+} 
