@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/custom_image_with_text_eye_module_widget.dart';
+
+class EyeOrGlassesView extends StatelessWidget {
+  const EyeOrGlassesView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: DecoratedBox(
+          decoration: ShapeDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            shape: RoundedRectangleBorder(),
+          ),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: [
+                CustomAppBarWidget(
+                  haveBackArrow: true,
+                ),
+                verticalSpacing(113),
+                CustomImageWithTextEyeModuleWidget(
+                  onTap: () async {},
+                  imagePath:
+                      "assets/images/eye_information_data_entry_image.png",
+                  text: "بيانات العيون",
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
+                    fontSize: 24.sp,
+                  ),
+                  isTextFirst: true,
+                ),
+                verticalSpacing(88),
+                CustomImageWithTextEyeModuleWidget(
+                  onTap: () async {
+                    await context
+                        .pushNamed(Routes.glassesInformationDataEntryView);
+                  },
+                  imagePath:
+                      "assets/images/glasses_informations_data_entry_image.png",
+                  text: "بيانات النظارة",
+                  textStyle: AppTextStyles.font22WhiteWeight600.copyWith(
+                    fontSize: 24.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
