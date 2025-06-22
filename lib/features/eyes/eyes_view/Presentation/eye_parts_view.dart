@@ -6,10 +6,14 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class EyePartsView extends StatefulWidget {
-  const EyePartsView({super.key, required this.handleArrowTap, required this.eyePartsImages,required this.pageTitle});
-final void Function(String partName) handleArrowTap;
-final Map<String, String> eyePartsImages ;
-final String pageTitle;
+  const EyePartsView(
+      {super.key,
+      required this.handleArrowTap,
+      required this.eyePartsImages,
+      required this.pageTitle});
+  final void Function(String partName) handleArrowTap;
+  final Map<String, String> eyePartsImages;
+  final String pageTitle;
 
   @override
   State<EyePartsView> createState() => _EyePartsViewState();
@@ -20,7 +24,8 @@ class _EyePartsViewState extends State<EyePartsView> {
 
   void handlePartTap(String partName) {
     setState(() {
-      selectedImage = widget.eyePartsImages[partName] ?? 'assets/images/eye_parts.png';
+      selectedImage =
+          widget.eyePartsImages[partName] ?? 'assets/images/eye_parts.png';
     });
   }
 
@@ -36,7 +41,7 @@ class _EyePartsViewState extends State<EyePartsView> {
             CustomAppBarWidget(haveBackArrow: true)
                 .paddingSymmetricHorizontal(16),
             Text(
-             widget.pageTitle,
+              widget.pageTitle,
               textAlign: TextAlign.center,
               style: AppTextStyles.font20blackWeight600.copyWith(
                 fontWeight: FontWeight.w500,
@@ -82,7 +87,7 @@ class _EyePartsViewState extends State<EyePartsView> {
                 'الاجراءات التعويضية والتجميد',
               ],
               onArrowTapped: widget.handleArrowTap,
-              onButtonTapped:widget.handleArrowTap,
+              onButtonTapped: widget.handleArrowTap,
             ),
           ],
         ),
