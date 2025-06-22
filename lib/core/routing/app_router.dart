@@ -8,6 +8,8 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_data_entry.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/glasses_information_category_data_entry_view.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/eye_or_galsses_view.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/eye_parts_view.dart';
@@ -311,6 +313,19 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const FamilyTreeView(),
         );
+      case Routes.eyeDataEntry:
+        final result = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (context) => EyeDataEntry(
+            selectedSyptoms:
+                result?['selectedSymptoms'] ?? [] as List<SymptomItem>,
+          ),
+        );
+      case Routes.eyeProceduresAndSyptomsDataEntry:
+        return MaterialPageRoute(
+          builder: (context) => const EyeProceduresAndSyptomsDataEntry(),
+        );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:
         final result = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
@@ -345,18 +360,14 @@ class AppRouter {
         );
       case Routes.eyeOrGlassesView:
         return MaterialPageRoute(
-          builder: (context) => const EyeOrGlassesView( 
-          ),
+          builder: (context) => const EyeOrGlassesView(),
         );
       case Routes.eyesOrGlassesDataView:
         return MaterialPageRoute(
           builder: (context) => const EyesOrGlassesDataView(),
         );
       case Routes.glassesInformationView:
-        return MaterialPageRoute(
-          builder: (context) =>
-              const EyeGlassesView()
-      );
+        return MaterialPageRoute(builder: (context) => const EyeGlassesView());
       case Routes.glassesInformationDataEntryView:
         return MaterialPageRoute(
           builder: (context) =>
