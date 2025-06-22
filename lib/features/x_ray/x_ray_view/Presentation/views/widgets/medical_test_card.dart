@@ -156,18 +156,3 @@ class MedicalItemCard extends StatelessWidget {
   }
 }
 
-class PrescriptionData {
-  final String id;
-  final String title;
-  final String specialty;
-  final String date;
-  final String condition;
-
-  PrescriptionData({
-    required this.id,
-    required this.title,
-    required this.specialty,
-    required this.date,
-    required this.condition,
-  });
-}

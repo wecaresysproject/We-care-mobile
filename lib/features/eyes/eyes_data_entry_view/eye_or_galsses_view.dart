@@ -7,8 +7,9 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/custom_image_with_text_eye_module_widget.dart';
 
 class EyeOrGlassesView extends StatelessWidget {
-  const EyeOrGlassesView({super.key, this.onTap}); 
-  final void Function()? onTap;
+  const EyeOrGlassesView({super.key, this.onGlassesTapped, this.onEyesTapped}); 
+  final void Function()? onGlassesTapped;
+  final void Function()? onEyesTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,9 @@ class EyeOrGlassesView extends StatelessWidget {
                 ),
                 verticalSpacing(113),
                 CustomImageWithTextEyeModuleWidget(
-                  onTap: onTap,
+                  onTap: onEyesTapped?? () {
+             
+                  },
                   imagePath:
                       "assets/images/eye_information_data_entry_image.png",
                   text: "بيانات العيون",
@@ -39,7 +42,7 @@ class EyeOrGlassesView extends StatelessWidget {
                 ),
                 verticalSpacing(88),
                 CustomImageWithTextEyeModuleWidget(
-                  onTap: onTap?? () {
+                  onTap: onGlassesTapped?? () {
                     Navigator.pushNamed(
                       context,
                       Routes.glassesInformationDataEntryView,

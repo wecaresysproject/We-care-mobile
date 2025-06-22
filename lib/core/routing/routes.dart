@@ -71,4 +71,5 @@ class Routes {
       '/glassesInformationView';
   static const glassesInformationDetailsView = '/glassesInformationDetailsView';
   static const eyesOrGlassesDataView = '/eyesOrGlassesDataView';
+  static const eyePartsView = '/eyePartsView';
 } 
