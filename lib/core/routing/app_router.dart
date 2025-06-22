@@ -12,8 +12,7 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/ey
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/glasses_information_category_data_entry_view.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/eye_or_galsses_view.dart';
-import 'package:we_care/features/eyes/eyes_view/Presentation/eye_parts_view.dart';
-import 'package:we_care/features/eyes/eyes_view/Presentation/eyes_or_glasses_view.dart';
+import 'package:we_care/features/eyes/eyes_view/Presentation/eyes_or_glasses_data_view.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/glasses_information_view.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
@@ -323,8 +322,12 @@ class AppRouter {
           ),
         );
       case Routes.eyeProceduresAndSyptomsDataEntry:
+        final result = arguments as Map<String, dynamic>?;
+
         return MaterialPageRoute(
-          builder: (context) => const EyeProceduresAndSyptomsDataEntry(),
+          builder: (context) => EyeProceduresAndSyptomsDataEntry(
+            selectedEyePart: result?['eyePart'] as String,
+          ),
         );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:
         final result = arguments as Map<String, dynamic>?;

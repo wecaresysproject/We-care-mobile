@@ -13,8 +13,9 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/wi
 
 // Main page widget
 class EyeProceduresAndSyptomsDataEntry extends StatefulWidget {
-  const EyeProceduresAndSyptomsDataEntry({super.key});
-
+  const EyeProceduresAndSyptomsDataEntry(
+      {super.key, required this.selectedEyePart});
+  final String selectedEyePart;
   @override
   State<EyeProceduresAndSyptomsDataEntry> createState() =>
       _EyeProceduresAndSyptomsDataEntryState();
@@ -115,7 +116,7 @@ class _EyeProceduresAndSyptomsDataEntryState
       body: Column(
         children: [
           EyeSyptomAppBarWidget(
-            title: 'الأعراض',
+            title: 'امراض ${widget.selectedEyePart}',
           ),
           // Tab Bar
           TabBar(
