@@ -58,6 +58,11 @@ class _GlassesInformationCategoryDataEntryViewState
             child: Column(
               children: [
                 TabBar(
+                  dividerColor: Color(0xff555555),
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  automaticIndicatorColorAdjustment: false,
+                  indicatorWeight: 2.5,
                   tabs: const [
                     Tab(
                       text: 'البيانات الأساسية للنظارة',
@@ -71,6 +76,12 @@ class _GlassesInformationCategoryDataEntryViewState
                     fontSize: 16.sp,
                     fontFamily: "Cairo",
                     color: AppColorsManager.mainDarkBlue,
+                  ),
+                  unselectedLabelStyle:
+                      AppTextStyles.font18blackWight500.copyWith(
+                    fontSize: 16.sp,
+                    fontFamily: "Cairo",
+                    color: Color(0xff555555),
                   ),
                   indicatorColor: AppColorsManager.mainDarkBlue,
                 ),
