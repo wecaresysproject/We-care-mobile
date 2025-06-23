@@ -4,6 +4,8 @@ import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class RightAndLeftLensTabBarView extends StatelessWidget {
   const RightAndLeftLensTabBarView({super.key});
@@ -22,6 +24,26 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
             // width: 100.w,
             height: 100.h,
           ),
+          verticalSpacing(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "العدسة اليمنية",
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+              ),
+              horizontalSpacing(16),
+              Text(
+                "العدسة اليسارية",
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(16),
           Row(
             children: [
               // الجزء الايمن
@@ -30,7 +52,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   // containerBorderColor: state.syptomTypeSelection == null
                   //     ? AppColorsManager.warningColor
                   //     : AppColorsManager.textfieldOutsideBorderColor,
-                  categoryLabel: "قصر/ طول النظر",
+                  categoryLabel: "قصر النظر",
                   // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                   containerHintText: "اخترالدرجة",
                   options: doctorsList,
@@ -51,7 +73,52 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   // containerBorderColor: state.syptomTypeSelection == null
                   //     ? AppColorsManager.warningColor
                   //     : AppColorsManager.textfieldOutsideBorderColor,
-                  categoryLabel: "قصر/ طول النظر",
+                  categoryLabel: "قصر النظر",
+                  // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  containerHintText: "اخترالدرجة",
+                  options: doctorsList,
+                  onOptionSelected: (value) {
+                    // log("xxx:Selected: $value");
+                    // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
+                  },
+                  // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  bottomSheetTitle: "اخترالدرجة ",
+                  searchHintText: "اخترالدرجة ",
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          Row(
+            children: [
+              // الجزء الايمن
+              Expanded(
+                child: UserSelectionContainer(
+                  // containerBorderColor: state.syptomTypeSelection == null
+                  //     ? AppColorsManager.warningColor
+                  //     : AppColorsManager.textfieldOutsideBorderColor,
+                  categoryLabel: "طول النظر",
+                  // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  containerHintText: "اخترالدرجة",
+                  options: doctorsList,
+                  onOptionSelected: (value) {
+                    // log("xxx:Selected: $value");
+                    // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
+                  },
+                  // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  bottomSheetTitle: "اخترالدرجة ",
+                  searchHintText: "اخترالدرجة ",
+                ),
+              ),
+              horizontalSpacing(16),
+              // الجزء الايسر
+
+              Expanded(
+                child: UserSelectionContainer(
+                  // containerBorderColor: state.syptomTypeSelection == null
+                  //     ? AppColorsManager.warningColor
+                  //     : AppColorsManager.textfieldOutsideBorderColor,
+                  categoryLabel: "طول النظر",
                   // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                   containerHintText: "اخترالدرجة",
                   options: doctorsList,
@@ -345,7 +412,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   // containerBorderColor: state.syptomTypeSelection == null
                   //     ? AppColorsManager.warningColor
                   //     : AppColorsManager.textfieldOutsideBorderColor,
-                  categoryLabel: "المركز والحواف",
+                  categoryLabel: "المركز",
                   // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                   containerHintText: "اخترالدرجة",
                   options: doctorsList,
@@ -366,7 +433,52 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   // containerBorderColor: state.syptomTypeSelection == null
                   //     ? AppColorsManager.warningColor
                   //     : AppColorsManager.textfieldOutsideBorderColor,
-                  categoryLabel: "المركز والحواف",
+                  categoryLabel: "المركز",
+                  // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  containerHintText: "اخترالدرجة",
+                  options: doctorsList,
+                  onOptionSelected: (value) {
+                    // log("xxx:Selected: $value");
+                    // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
+                  },
+                  // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  bottomSheetTitle: "اخترالدرجة ",
+                  searchHintText: "اخترالدرجة ",
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          Row(
+            children: [
+              // الجزء الايمن
+              Expanded(
+                child: UserSelectionContainer(
+                  // containerBorderColor: state.syptomTypeSelection == null
+                  //     ? AppColorsManager.warningColor
+                  //     : AppColorsManager.textfieldOutsideBorderColor,
+                  categoryLabel: "الحواف",
+                  // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  containerHintText: "اخترالدرجة",
+                  options: doctorsList,
+                  onOptionSelected: (value) {
+                    // log("xxx:Selected: $value");
+                    // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
+                  },
+                  // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
+                  bottomSheetTitle: "اخترالدرجة ",
+                  searchHintText: "اخترالدرجة ",
+                ),
+              ),
+              horizontalSpacing(16),
+              // الجزء الايسر
+
+              Expanded(
+                child: UserSelectionContainer(
+                  // containerBorderColor: state.syptomTypeSelection == null
+                  //     ? AppColorsManager.warningColor
+                  //     : AppColorsManager.textfieldOutsideBorderColor,
+                  categoryLabel: "الحواف",
                   // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                   containerHintText: "اخترالدرجة",
                   options: doctorsList,

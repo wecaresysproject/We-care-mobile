@@ -64,17 +64,20 @@ class EyeDataEntryFormFields extends StatelessWidget {
             // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
             containerHintText: "اختر مدة الأعراض",
             options: [
-              "3 شهر",
-              "6 شهر",
-              "9 شهر",
-              "12 شهر",
-              "15 شهر",
-              "18 شهر",
-              "21 شهر",
-              "24 شهر",
-              "27 شهر",
-              "30 شهر",
+              "يوم",
+              "يومين",
+              "ثلاث ايام",
+              "اربع ايام",
+              "خمسة ايام",
+              "ستة ايام",
+              "اسبوع",
+              "عشر ايام",
+              "اسبوعين",
+              "ثلاث اسابيع",
+              "شهر",
+              "اكثر من شهر",
             ],
+
             onOptionSelected: (value) {
               // log("xxx:Selected: $value");
               // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
