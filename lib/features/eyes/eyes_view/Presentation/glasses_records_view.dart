@@ -60,8 +60,12 @@ class EyeGlassesRecordsView extends StatelessWidget {
                             "value": item.doctorOrHospitalName ?? "-",
                           },
                           {
-                            "title": "قصر/طول النظر:",
-                            "value": item.prescriptionValue ?? "-",
+                            "title": "العين اليمني قصر/طول النظر:",
+                            "value": item.rightEyeSphericalPower ?? "-",
+                          },
+                          {
+                            "title": "العين اليسري قصر/طول النظر:",
+                            "value": item.leftEyeSphericalPower ?? "-",
                           },
                           {
                             "title": "محل النظارات:",

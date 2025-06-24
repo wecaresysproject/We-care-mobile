@@ -10,14 +10,17 @@ class EyeGlassesRecordModel {
   @JsonKey(name: 'doctorName/hospitalName')
   final String doctorOrHospitalName;
 
-  final String prescriptionValue;
+  final String rightEyeSphericalPower;
+
+  final String leftEyeSphericalPower;
   final String storeName;
 
   EyeGlassesRecordModel({
     required this.id,
     required this.date,
     required this.doctorOrHospitalName,
-    required this.prescriptionValue,
+    required this.rightEyeSphericalPower,
+    required this.leftEyeSphericalPower,
     required this.storeName,
   });
 
