@@ -53,9 +53,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   void updateAntiReflection(bool? val) {
     emit(state.copyWith(antiReflection: val));
   }
-  // void updateSelectedHospitalCenter(String? selectedHospital) {
-  //   emit(state.copyWith(selectedHospitalCenter: selectedHospital));
-  // }
 
   void updateSelectedDoctor(String? val) {
     emit(state.copyWith(doctorName: val));

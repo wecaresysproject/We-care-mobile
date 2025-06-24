@@ -203,12 +203,10 @@ Widget submitDataEnteredButtonBlocConsumer() {
         title: context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
-            if (state.isEditMode) {
-              await context
-                  .read<GlassesDataEntryCubit>()
-                  .submitGlassesEssentialDataEntryEndPoint(
-                      locale: context.translate);
-            }
+            await context
+                .read<GlassesDataEntryCubit>()
+                .submitGlassesEssentialDataEntryEndPoint(
+                    locale: context.translate);
           }
         },
         isEnabled: state.isFormValidated ? true : false,
