@@ -1,10 +1,10 @@
 import 'package:we_care/features/eyes/eyes_services.dart';
 
 class GlassesDataEntryRepo {
-  final EyesModuleServices _eyesService;
+  final EyesModuleServices _eyesModuleServices;
 
-  GlassesDataEntryRepo({required EyesModuleServices eyesService})
-      : _eyesService = eyesService;
+  GlassesDataEntryRepo({required EyesModuleServices eyesModuleServices})
+      : _eyesModuleServices = eyesModuleServices;
 
   // Future<ApiResult<List<CountryModel>>> getCountriesData(
   //     {required String language}) async {
