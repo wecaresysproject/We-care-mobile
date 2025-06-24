@@ -108,14 +108,6 @@ class _RightAndLeftLensTabBarViewState
     super.dispose();
   }
 
-  // --- Validation Functions ---
-  String? _requiredValidator(String? value, String fieldName) {
-    if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال $fieldName';
-    }
-    return null;
-  }
-
   String? _numericValidator(String? value, String fieldName) {
     if (value == null || value.isEmpty) {
       return 'الرجاء إدخال $fieldName';
@@ -126,18 +118,29 @@ class _RightAndLeftLensTabBarViewState
     return null;
   }
 
-  String? _axisValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال المحور';
+  // New validator for Short Sight (قصر النظر): 0 to -20
+  String? _shortSightRangeValidator(String? value) {
+    final numericError = _numericValidator(value, "درجة قصر النظر");
+    if (numericError != null) {
+      return numericError;
     }
-    if (double.tryParse(value) == null) {
-      return 'الرجاء إدخال قيمة رقمية صحيحة للمحور';
+    final number = double.parse(value!);
+    if (number > 0 || number < -20) {
+      return 'الرقم خارج النطاق (0 إلى -20)';
     }
-    // Add specific axis range validation here if needed, e.g., between 0 and 180.
-    // double? axis = double.tryParse(value);
-    // if (axis != null && (axis < 0 || axis > 180)) {
-    //   return 'المحور يجب أن يكون بين 0 و 180';
-    // }
+    return null;
+  }
+
+  // New validator for Long Sight (طول النظر): 0 to 20
+  String? _longSightRangeValidator(String? value) {
+    final numericError = _numericValidator(value, "درجة طول النظر");
+    if (numericError != null) {
+      return numericError;
+    }
+    final number = double.parse(value!);
+    if (number < 0 || number > 20) {
+      return 'الرقم خارج النطاق (0 إلى 20)';
+    }
     return null;
   }
 
@@ -256,7 +259,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightShortSightController,
               leftController: _leftShortSightController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "درجة قصر النظر"),
+              validator: (value) => _shortSightRangeValidator(
+                value,
+              ),
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -264,7 +269,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightLongSightController,
               leftController: _leftLongSightController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "درجة طول النظر"),
+              validator: (value) => _longSightRangeValidator(
+                value,
+              ),
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -272,8 +279,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightAstigmatismController,
               leftController: _leftAstigmatismController,
               hintText: "اختر الدرجة",
-              validator: (value) =>
-                  _numericValidator(value, "درجة الاستجماتزم"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -281,7 +289,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightAstigmatismAxisController,
               leftController: _leftAstigmatismAxisController,
               hintText: "اختر الدرجة",
-              validator: _axisValidator,
+              validator: (val) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -289,7 +299,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightFocalAdditionController,
               leftController: _leftFocalAdditionController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "الإضافة البؤرية"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -297,7 +309,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightPupilDistanceController,
               leftController: _leftPupilDistanceController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "تباعد الحدقتين"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -305,7 +319,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightRefractiveIndexController,
               leftController: _leftRefractiveIndexController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "معامل الانكسار"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -313,7 +329,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightLensDiameterController,
               leftController: _leftLensDiameterController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "قطر العدسة"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             _buildLensInputSection(
@@ -321,14 +339,18 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightCenterController,
               leftController: _leftCenterController,
               hintText: "اختر الدرجة",
-              validator: (value) => _requiredValidator(value, "المركز"),
+              validator: (value) {
+                return null;
+              },
             ),
             _buildLensInputSection(
               title: "الحواف",
               rightController: _rightEdgesController,
               leftController: _leftEdgesController,
               hintText: "اختر الدرجة",
-              validator: (value) => _requiredValidator(value, "الحواف"),
+              validator: (value) {
+                return null;
+              },
             ),
 
             Row(
@@ -381,7 +403,9 @@ class _RightAndLeftLensTabBarViewState
               rightController: _rightLensThicknessController,
               leftController: _leftLensThicknessController,
               hintText: "اختر الدرجة",
-              validator: (value) => _numericValidator(value, "سُمك العدسة"),
+              validator: (value) {
+                return null;
+              },
               keyboardType: TextInputType.number,
             ),
             Row(
