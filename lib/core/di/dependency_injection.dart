@@ -18,6 +18,9 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
+import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
+import 'package:we_care/features/eyes/eyes_services.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_view_repo.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/create_new_gentic_disease_cubit.dart';
@@ -240,6 +243,11 @@ void setupAppCubits() {
       getIt<BiometricsViewRepo>(),
     ),
   );
+  getIt.registerFactory<EyesDataEntryCubit>(
+    () => EyesDataEntryCubit(
+      getIt<EyesDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -384,6 +392,11 @@ void setupAppRepos() {
       biometricsServices: getIt<BiometricsServices>(),
     ),
   );
+  getIt.registerLazySingleton<EyesDataEntryRepo>(
+    () => EyesDataEntryRepo(
+      eyesService: getIt<EyesModuleServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -431,5 +444,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<BiometricsServices>(
     () => BiometricsServices(dio),
+  );
+  getIt.registerLazySingleton<EyesModuleServices>(
+    () => EyesModuleServices(dio),
   );
 }

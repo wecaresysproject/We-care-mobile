@@ -12,7 +12,7 @@ part 'eyes_services.g.dart';
 
 @RestApi(baseUrl: EyesApiConstants.baseUrl)
 abstract class EyesModuleServices {
-  factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesService;
+  factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesModuleServices;
 
   @GET("http://147.93.57.70/api/countries")
   Future<dynamic> getCountries(@Query('language') String language);
