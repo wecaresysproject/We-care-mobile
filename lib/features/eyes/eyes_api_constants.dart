@@ -1,6 +1,4 @@
-bool isLoggedInUser = false;
-
-class SurgeriesApiConstants {
+class EyesApiConstants {
   static const baseUrl = "http://147.93.57.70:5299";
   //Data Entry
   // static const getCountries = "/api/EnterSectionSurgery/countries";
