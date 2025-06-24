@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'glasses_data_entry_state.dart';
 
@@ -15,9 +16,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
           GlassesDataEntryState.initialState(),
         );
   final GlassesDataEntryRepo _glassesDataEntryRepo;
-  final personalNotesController = TextEditingController();
-  final suergeryDescriptionController = TextEditingController(); // وصف اضافي
-  final postSurgeryInstructions = TextEditingController();
 
   // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
   //   emit(
@@ -52,6 +50,9 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     validateRequiredFields();
   }
 
+  void updateAntiReflection(bool? val) {
+    emit(state.copyWith(antiReflection: val));
+  }
   // void updateSelectedHospitalCenter(String? selectedHospital) {
   //   emit(state.copyWith(selectedHospitalCenter: selectedHospital));
   // }
@@ -64,109 +65,32 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     emit(state.copyWith(selectedHospitalCenter: val));
   }
 
-  // void updateSelectedSurgeonName(String? surgeonName) {
-  //   emit(state.copyWith(surgeonName: surgeonName));
-  // }
+  void updateSelectedGlassesStore(String? val) {
+    emit(state.copyWith(glassesStore: val));
+  }
 
-  // void updateSelectedCountry(String? selectedCountry) {
-  //   emit(state.copyWith(selectedCountryName: selectedCountry));
-  // }
+  void updateAntiBlueLight(bool? val) {
+    emit(state.copyWith(isBlueLightProtection: val));
+  }
 
-  // void updateSurgeryBodyPart(String? bodyPart) {
-  //   emit(state.copyWith(surgeryBodyPartSelection: bodyPart));
-  //   validateRequiredFields();
-  //   emitGetAllSubSurgeriesRegions(selectedRegion: bodyPart!);
-  // }
+  void updateScratchResistance(bool? val) {
+    emit(state.copyWith(isScratchResistance: val));
+  }
 
-  // Future<void> updateSurgeryName(String? name) async {
-  //   emit(state.copyWith(surgeryNameSelection: name));
-  //   validateRequiredFields();
-  //   await emitGetAllTechUsed();
-  // }
+  void updateAntiFingerprint(bool? val) {
+    emit(state.copyWith(isAntiFingerprint: val));
+  }
 
-  // void updateSurgeryStatus(String? bodyPart) {
-  //   emit(state.copyWith(selectedSurgeryStatus: bodyPart));
-  // }
+  void updateAntiFogCoating(bool? val) {
+    emit(state.copyWith(isAntiFogCoating: val));
+  }
 
-  // Future<void> updateSelectedTechUsed(String? val) async {
-  //   emit(state.copyWith(selectedTechUsed: val));
-  //   await emitSurgeryPurpose();
-  //   validateRequiredFields();
-  // }
+  void updateUVProtection(bool? val) {
+    emit(state.copyWith(isUVProtection: val));
+  }
 
-  // Future<void> updateSelectedSubSurgery(String? value) async {
-  //   emit(state.copyWith(selectedSubSurgery: value));
-  //   await emitSurgeryNamesBasedOnRegion(
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: value!,
-  //   );
-  //   validateRequiredFields();
-  // }
-
-  // Future<void> intialRequestsForDataEntry() async {
-  //   await emitGetAllSurgeriesRegions();
-  //   await emitCountriesData();
-  //   await emitGetSurgeryStatus();
-  // }
-
-  // Future<void> uploadReportImagePicked({required String imagePath}) async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeryUploadReportStatus: UploadReportRequestStatus.initial,
-  //     ),
-  //   );
-  //   final response = await _surgeriesDataEntryRepo.uploadReportImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           reportImageUploadedUrl: response.reportUrl,
-  //           surgeryUploadReportStatus: UploadReportRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           surgeryUploadReportStatus: UploadReportRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> emitGetAllTechUsed() async {
-  //   final response = await _surgeriesDataEntryRepo.getAllTechUsed(
-  //     language: AppStrings.arabicLang,
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: state.selectedSubSurgery!,
-  //     surgeryName: state.surgeryNameSelection!,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allTechUsed: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  Future<void> submitGlassesEssentialDataEntryEndPoint() async {
+  Future<void> submitGlassesEssentialDataEntryEndPoint(
+      {required S locale}) async {
     emit(
       state.copyWith(
         glassesEssentialDataEntryStatus: RequestStatus.loading,
@@ -176,16 +100,17 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         await _glassesDataEntryRepo.postGlassesEssentialDataEntryEndPoint(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: EyeGlassesEssentialDataRequestBodyModel(
-        examinationDate: "",
-        doctorName: "",
-        centerHospitalName: "",
-        glassesShop: "",
-        antiReflection: true,
-        blueLightProtection: true,
-        scratchResistance: true,
-        antiFingerprintCoating: true,
-        antiFogCoating: true,
-        uvProtection: true,
+        examinationDate: state.examinationDateSelection!,
+        doctorName: state.doctorName ?? locale.no_data_entered,
+        centerHospitalName:
+            state.selectedHospitalCenter ?? locale.no_data_entered,
+        glassesShop: state.glassesStore ?? locale.no_data_entered,
+        antiReflection: state.antiReflection,
+        blueLightProtection: state.isBlueLightProtection,
+        scratchResistance: state.isScratchResistance,
+        antiFingerprintCoating: state.isAntiFingerprint,
+        antiFogCoating: state.isAntiFogCoating,
+        uvProtection: state.isUVProtection,
       ),
       language: AppStrings.arabicLang,
     );
@@ -256,103 +181,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   //   );
   // }
 
-  // Future<void> emitSurgeryNamesBasedOnRegion(
-  //     {required String region, required String subRegion}) async {
-  //   final response = await _surgeriesDataEntryRepo.getSurgeryNamesBasedOnRegion(
-  //     language: AppStrings.arabicLang,
-  //     region: region,
-  //     subRegion: subRegion,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeryNames: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> emitGetAllSurgeriesRegions() async {
-  //   final response = await _surgeriesDataEntryRepo.getAllSurgeriesRegions(
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           bodyParts: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> emitCountriesData() async {
-  //   final response = await _surgeriesDataEntryRepo.getCountriesData(
-  //     language: AppStrings.arabicLang,
-  //   );
-
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           countriesNames: response.map((e) => e.name).toList(),
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Future<void> emitSurgeryPurpose() async {
-  //   final response = await _surgeriesDataEntryRepo.getSurgeryPurpose(
-  //     language: AppStrings.arabicLang,
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: state.selectedSubSurgery!,
-  //     surgeryName: state.surgeryNameSelection!,
-  //     techUsed: state.selectedTechUsed!,
-  //   );
-
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeryPurpose: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.examinationDateSelection == null) {
@@ -368,60 +196,5 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         ),
       );
     }
-  }
-
-  // Future<void> postModuleData(S locale) async {
-  //   final response = await _surgeriesDataEntryRepo.postModuleData(
-  //     language: AppStrings.arabicLang,
-  //     requestBody: SurgeryRequestBodyModel(
-  //       surgeryDate: state.surgeryDateSelection!,
-  //       surgeryName: state.surgeryNameSelection!,
-  //       surgeryRegion: state.surgeryBodyPartSelection!,
-  //       subSurgeryRegion: state.selectedSubSurgery!,
-  //       usedTechnique: state.selectedTechUsed!,
-  //       surgeryDescription: suergeryDescriptionController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : suergeryDescriptionController.text,
-  //       medicalReportImage:
-  //           state.reportImageUploadedUrl ?? locale.no_data_entered,
-  //       surgeryStatus: state.selectedSurgeryStatus ?? locale.no_data_entered,
-  //       hospitalCenter: state.selectedHospitalCenter ?? locale.no_data_entered,
-  //       surgeonName: state.surgeryNameSelection ?? locale.no_data_entered,
-  //       anesthesiologistName: state.internistName ?? locale.no_data_entered,
-  //       postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : suergeryDescriptionController.text,
-  //       country: state.selectedCountryName ?? locale.no_data_entered,
-  //       additionalNotes: personalNotesController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : personalNotesController.text,
-  //     ),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response,
-  //           surgeriesDataEntryStatus: RequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           surgeriesDataEntryStatus: RequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  @override
-  Future<void> close() {
-    personalNotesController.dispose();
-    suergeryDescriptionController.dispose();
-    postSurgeryInstructions.dispose();
-    return super.close();
   }
 }

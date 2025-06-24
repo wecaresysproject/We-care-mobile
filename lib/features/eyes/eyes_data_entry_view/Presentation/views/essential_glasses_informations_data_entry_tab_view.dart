@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -85,71 +89,130 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               ),
 
               verticalSpacing(16),
-              UserSelectionContainer(
-                allowManualEntry: true,
-                categoryLabel: "محل النظارات",
-                // containerHintText:
-                //     state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
-
-                options: [],
-                onOptionSelected: (value) {
-                  // context
-                  //     .read<TestAnalysisDataEntryCubit>()
-                  //     .updateSelectedHospital(value);
-                  // log("xxx:Selected: $value");
-                },
-                bottomSheetTitle: "اختر اسم محل النظارات",
-
-                searchHintText: "ابحث عن اسم محل النظارات",
-                containerHintText: 'اختر اسم محل النظارات',
+              Text(
+                " محل النظارات",
+                style: AppTextStyles.font18blackWight500,
               ),
+              verticalSpacing(10),
+              CustomTextField(
+                hintText: state.glassesStore ?? "اكتب اسم المحل",
+                validator: (value) {},
+                onChanged: (value) {
+                  context
+                      .read<GlassesDataEntryCubit>()
+                      .updateSelectedGlassesStore(value);
+                },
+              ),
+
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "مضاد للانعكاس",
-                onAnswerChanged: (p0) {},
+                initialValue: state.antiReflection,
+                onAnswerChanged: (p0) {
+                  context
+                      .read<GlassesDataEntryCubit>()
+                      .updateAntiReflection(p0);
+                },
               ),
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "حماية من الضوء الأزرق",
-                onAnswerChanged: (p0) {},
+                initialValue: state.isBlueLightProtection,
+                onAnswerChanged: (p0) {
+                  context.read<GlassesDataEntryCubit>().updateAntiBlueLight(p0);
+                },
               ),
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "مقاومة للخدش",
-                onAnswerChanged: (p0) {},
+                initialValue: state.isScratchResistance,
+                onAnswerChanged: (p0) {
+                  context
+                      .read<GlassesDataEntryCubit>()
+                      .updateScratchResistance(p0);
+                },
               ),
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "طبقة مضادة للبصمات",
-                onAnswerChanged: (p0) {},
+                initialValue: state.isAntiFingerprint,
+                onAnswerChanged: (p0) {
+                  context
+                      .read<GlassesDataEntryCubit>()
+                      .updateAntiFingerprint(p0);
+                },
               ),
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "طبقة مضادة للضباب",
-                onAnswerChanged: (p0) {},
+                initialValue: state.isAntiFogCoating,
+                onAnswerChanged: (p0) {
+                  context
+                      .read<GlassesDataEntryCubit>()
+                      .updateAntiFogCoating(p0);
+                },
               ),
               verticalSpacing(16),
 
               GenericQuestionWidget(
                 questionTitle: "طبقة حماية من الأشعة فوق البنفسجية",
-                onAnswerChanged: (p0) {},
+                initialValue: state.isUVProtection,
+                onAnswerChanged: (p0) {
+                  context.read<GlassesDataEntryCubit>().updateUVProtection(p0);
+                },
               ),
               verticalSpacing(40),
-              AppCustomButton(
-                isLoading: false,
-                title: "ارسال",
-                onPressed: () async {},
-                isEnabled: true,
-              ),
+              submitDataEnteredButtonBlocConsumer(),
+              verticalSpacing(40),
             ],
           ),
         );
       },
     );
   }
+}
+
+Widget submitDataEnteredButtonBlocConsumer() {
+  return BlocConsumer<GlassesDataEntryCubit, GlassesDataEntryState>(
+    listenWhen: (prev, curr) =>
+        curr.glassesEssentialDataEntryStatus == RequestStatus.failure ||
+        curr.glassesEssentialDataEntryStatus == RequestStatus.success,
+    buildWhen: (prev, curr) =>
+        prev.isFormValidated != curr.isFormValidated ||
+        prev.glassesEssentialDataEntryStatus !=
+            curr.glassesEssentialDataEntryStatus,
+    listener: (context, state) async {
+      if (state.glassesEssentialDataEntryStatus == RequestStatus.success) {
+        await showSuccess(state.message);
+        if (!context.mounted) return;
+        //* in order to catch it again to rebuild details view
+        context.pop(result: true);
+      } else {
+        await showError(state.message);
+      }
+    },
+    builder: (context, state) {
+      return AppCustomButton(
+        isLoading:
+            state.glassesEssentialDataEntryStatus == RequestStatus.loading,
+        title: context.translate.send,
+        onPressed: () async {
+          if (state.isFormValidated) {
+            if (state.isEditMode) {
+              await context
+                  .read<GlassesDataEntryCubit>()
+                  .submitGlassesEssentialDataEntryEndPoint(
+                      locale: context.translate);
+            }
+          }
+        },
+        isEnabled: state.isFormValidated ? true : false,
+      );
+    },
+  );
 }
