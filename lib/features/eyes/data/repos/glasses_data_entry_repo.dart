@@ -1,11 +1,49 @@
+import 'package:we_care/core/networking/api_error_handler.dart';
+import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
 
 class GlassesDataEntryRepo {
-  final EyesModuleServices _eyesService;
+  final EyesModuleServices _eyesModuleServices;
 
-  GlassesDataEntryRepo({required EyesModuleServices eyesService})
-      : _eyesService = eyesService;
+  GlassesDataEntryRepo({required EyesModuleServices eyesModuleServices})
+      : _eyesModuleServices = eyesModuleServices;
 
+  Future<ApiResult<String>> postGlassesEssentialDataEntryEndPoint({
+    required String language,
+    required String userType,
+    required EyeGlassesEssentialDataRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response =
+          await _eyesModuleServices.postGlassesEssentialDataEntryEndPoint(
+        language,
+        userType,
+        requestBody,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postGlassesLensDataEntry({
+    required String language,
+    required String userType,
+    required EyeGlassesLensDataRequestBodyModel requestBody,
+  }) async {
+    try {
+      final response = await _eyesModuleServices.postGlassesLensDataEntry(
+        language,
+        userType,
+        requestBody,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
   // Future<ApiResult<List<CountryModel>>> getCountriesData(
   //     {required String language}) async {
   //   try {
@@ -140,21 +178,6 @@ class GlassesDataEntryRepo {
   //     final data = (response['data'][0] as String);
 
   //     return ApiResult.success(data);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<String>> postModuleData({
-  //   required String language,
-  //   required SurgeryRequestBodyModel requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.postSurgeryData(
-  //       language,
-  //       requestBody,
-  //     );
-  //     return ApiResult.success(response["message"]);
   //   } catch (error) {
   //     return ApiResult.failure(ApiErrorHandler.handle(error));
   //   }

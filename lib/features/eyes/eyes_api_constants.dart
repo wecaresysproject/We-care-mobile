@@ -3,6 +3,8 @@ class EyesApiConstants {
   //Data Entry
   // static const getCountries = "/api/EnterSectionSurgery/countries";
   static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
+  static const postGlassesEssentialDataEntryEndPoint = "";
+  static const postGlassesLensDataEntryEndPoint = "";
   static const getAllSurgeriesRegions = // العضو
       "/api/EnterSectionSurgery/surgery-regions";
   static const getSubSurgeriesRegions =

@@ -316,7 +316,7 @@ class _RightAndLeftLensTabBarViewState
                 children: [
                   Expanded(
                     child: Text(
-                      "العدسة اليمنية",
+                      "العدسة اليمنى",
                       style: AppTextStyles.font18blackWight500.copyWith(
                         color: AppColorsManager.mainDarkBlue,
                       ),
