@@ -485,7 +485,7 @@ class _RightAndLeftLensTabBarViewState
                     categoryLabel: "نوع العدسة",
                     // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                     containerHintText: "اخترالدرجة",
-                    options: doctorsList,
+                    options: [],
                     onOptionSelected: (value) {
                       // log("xxx:Selected: $value");
                       // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
@@ -506,7 +506,7 @@ class _RightAndLeftLensTabBarViewState
                     categoryLabel: "نوع العدسة",
                     // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                     containerHintText: "اخترالدرجة",
-                    options: doctorsList,
+                    options: [],
                     onOptionSelected: (value) {
                       // log("xxx:Selected: $value");
                       // context.read<DentalDataEntryCubit>().updateTypeOfSyptom(value);
@@ -526,11 +526,8 @@ class _RightAndLeftLensTabBarViewState
               title: "ارسال",
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  print("Form is valid!");
                   // Access your data like: _rightShortSightController.text
-                } else {
-                  print("Form is invalid!");
-                }
+                } else {}
               },
               isEnabled: true,
             ),
