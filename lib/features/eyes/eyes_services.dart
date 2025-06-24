@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
@@ -23,6 +25,18 @@ abstract class EyesModuleServices {
     @Part() File report,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
+  );
+  @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
+  Future<dynamic> postGlassesEssentialDataEntryEndPoint(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Body() EyeGlassesEssentialDataRequestBodyModel requestBody,
+  );
+  @POST(EyesApiConstants.postGlassesLensDataEntryEndPoint)
+  Future<dynamic> postGlassesLensDataEntry(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Body() EyeGlassesLensDataRequestBodyModel requestBody,
   );
 
   @GET(SurgeriesApiConstants.getAllSurgeries)

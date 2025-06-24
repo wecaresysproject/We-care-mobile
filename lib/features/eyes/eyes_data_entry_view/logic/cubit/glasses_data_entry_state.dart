@@ -2,10 +2,10 @@ part of 'glasses_data_entry_cubit.dart';
 
 @immutable
 class GlassesDataEntryState extends Equatable {
-  final RequestStatus surgeriesDataEntryStatus;
+  final RequestStatus glassesEssentialDataEntryStatus;
   final String? errorMessage;
   final bool isFormValidated;
-  final String? surgeryDateSelection;
+  final String? examinationDateSelection;
   final String? surgeryBodyPartSelection;
   final String? surgeryNameSelection;
   final String message; // error or success message
@@ -15,7 +15,7 @@ class GlassesDataEntryState extends Equatable {
   final String? selectedCountryName;
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
-  final List<String> surgeryNames;
+  final List<String> doctorNames;
   final String? selectedSubSurgery; //المنطقة المختاره للعمليات الفرعية
   final List<String> allTechUsed;
   final List<String> allSurgeryStatuses;
@@ -24,15 +24,14 @@ class GlassesDataEntryState extends Equatable {
   final String? selectedSurgeryStatus;
   final bool isEditMode;
   final String updatedSurgeryId;
-  final String? surgeonName;
   final String? selectedHospitalCenter;
-  final String? internistName; // طبيب باطنه
+  final String? doctorName;
 
   const GlassesDataEntryState({
-    this.surgeriesDataEntryStatus = RequestStatus.initial,
+    this.glassesEssentialDataEntryStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
-    this.surgeryDateSelection,
+    this.examinationDateSelection,
     this.surgeryBodyPartSelection,
     this.surgeryNameSelection,
     this.message = '',
@@ -42,7 +41,7 @@ class GlassesDataEntryState extends Equatable {
     this.selectedCountryName,
     this.bodyParts = const [],
     this.subSurgeryRegions = const [],
-    this.surgeryNames = const [],
+    this.doctorNames = const [],
     this.selectedSubSurgery,
     this.allTechUsed = const [],
     this.allSurgeryStatuses = const [],
@@ -51,16 +50,15 @@ class GlassesDataEntryState extends Equatable {
     this.selectedSurgeryStatus,
     this.isEditMode = false,
     this.updatedSurgeryId = '',
-    this.surgeonName,
     this.selectedHospitalCenter,
-    this.internistName,
+    this.doctorName,
   }) : super();
 
   const GlassesDataEntryState.initialState()
       : this(
-          surgeriesDataEntryStatus: RequestStatus.initial,
+          glassesEssentialDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
-          surgeryDateSelection: null,
+          examinationDateSelection: null,
           surgeryBodyPartSelection: null,
           surgeryNameSelection: null,
           message: '',
@@ -70,7 +68,7 @@ class GlassesDataEntryState extends Equatable {
           selectedCountryName: null,
           bodyParts: const [],
           subSurgeryRegions: const [],
-          surgeryNames: const [],
+          doctorNames: const [],
           selectedSubSurgery: null,
           allTechUsed: const [],
           allSurgeryStatuses: const [],
@@ -79,16 +77,15 @@ class GlassesDataEntryState extends Equatable {
           selectedSurgeryStatus: null,
           isEditMode: false,
           updatedSurgeryId: '',
-          surgeonName: null,
           selectedHospitalCenter: null,
-          internistName: null,
+          doctorName: null,
         );
 
   GlassesDataEntryState copyWith({
-    RequestStatus? surgeriesDataEntryStatus,
+    RequestStatus? glassesEssentialDataEntryStatus,
     String? errorMessage,
     bool? isFormValidated,
-    String? surgeryDateSelection,
+    String? examinationDateSelection,
     String? surgeryBodyPartSelection,
     String? surgeryNameSelection,
     String? message,
@@ -98,7 +95,7 @@ class GlassesDataEntryState extends Equatable {
     String? selectedCountryName,
     List<String>? bodyParts,
     List<String>? subSurgeryRegions,
-    List<String>? surgeryNames,
+    List<String>? doctorNames,
     String? selectedSubSurgery,
     List<String>? allTechUsed,
     List<String>? allSurgeryStatuses,
@@ -107,16 +104,16 @@ class GlassesDataEntryState extends Equatable {
     String? selectedSurgeryStatus,
     bool? isEditMode,
     String? updatedSurgeryId,
-    String? surgeonName,
     String? selectedHospitalCenter,
-    String? internistName,
+    String? doctorName,
   }) {
     return GlassesDataEntryState(
-      surgeriesDataEntryStatus:
-          surgeriesDataEntryStatus ?? this.surgeriesDataEntryStatus,
+      glassesEssentialDataEntryStatus: glassesEssentialDataEntryStatus ??
+          this.glassesEssentialDataEntryStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
-      surgeryDateSelection: surgeryDateSelection ?? this.surgeryDateSelection,
+      examinationDateSelection:
+          examinationDateSelection ?? this.examinationDateSelection,
       surgeryBodyPartSelection:
           surgeryBodyPartSelection ?? this.surgeryBodyPartSelection,
       surgeryNameSelection: surgeryNameSelection ?? this.surgeryNameSelection,
@@ -129,7 +126,7 @@ class GlassesDataEntryState extends Equatable {
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       bodyParts: bodyParts ?? this.bodyParts,
       subSurgeryRegions: subSurgeryRegions ?? this.subSurgeryRegions,
-      surgeryNames: surgeryNames ?? this.surgeryNames,
+      doctorNames: doctorNames ?? this.doctorNames,
       selectedSubSurgery: selectedSubSurgery ?? this.selectedSubSurgery,
       allTechUsed: allTechUsed ?? this.allTechUsed,
       allSurgeryStatuses: allSurgeryStatuses ?? this.allSurgeryStatuses,
@@ -139,19 +136,18 @@ class GlassesDataEntryState extends Equatable {
           selectedSurgeryStatus ?? this.selectedSurgeryStatus,
       isEditMode: isEditMode ?? this.isEditMode,
       updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
-      surgeonName: surgeonName ?? this.surgeonName,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
-      internistName: internistName ?? this.internistName,
+      doctorName: doctorName ?? this.doctorName,
     );
   }
 
   @override
   List<Object?> get props => [
-        surgeriesDataEntryStatus,
+        glassesEssentialDataEntryStatus,
         errorMessage,
         isFormValidated,
-        surgeryDateSelection,
+        examinationDateSelection,
         surgeryBodyPartSelection,
         surgeryNameSelection,
         message,
@@ -161,7 +157,7 @@ class GlassesDataEntryState extends Equatable {
         selectedCountryName,
         bodyParts,
         subSurgeryRegions,
-        surgeryNames,
+        doctorNames,
         selectedSubSurgery,
         allTechUsed,
         allSurgeryStatuses,
@@ -170,8 +166,7 @@ class GlassesDataEntryState extends Equatable {
         selectedSurgeryStatus,
         isEditMode,
         updatedSurgeryId,
-        surgeonName,
         selectedHospitalCenter,
-        internistName,
+        doctorName,
       ];
 }

@@ -2,6 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
 
 part 'glasses_data_entry_state.dart';
@@ -43,19 +46,23 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   //   await intialRequestsForDataEntry();
   // }
 
-  // /// Update Field Values
-  // void updateSurgeryDate(String? date) {
-  //   emit(state.copyWith(surgeryDateSelection: date));
-  //   validateRequiredFields();
-  // }
+  /// Update Field Values
+  void updateExaminationDate(String? date) {
+    emit(state.copyWith(examinationDateSelection: date));
+    validateRequiredFields();
+  }
 
   // void updateSelectedHospitalCenter(String? selectedHospital) {
   //   emit(state.copyWith(selectedHospitalCenter: selectedHospital));
   // }
 
-  // void updateSelectedInternist(String? selectedInternist) {
-  //   emit(state.copyWith(internistName: selectedInternist));
-  // }
+  void updateSelectedDoctor(String? val) {
+    emit(state.copyWith(doctorName: val));
+  }
+
+  void updateSelectedHospital(String? val) {
+    emit(state.copyWith(selectedHospitalCenter: val));
+  }
 
   // void updateSelectedSurgeonName(String? surgeonName) {
   //   emit(state.copyWith(surgeonName: surgeonName));
@@ -159,51 +166,48 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   //   );
   // }
 
-  // Future<void> submitUpdatedSurgery() async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeriesDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await _surgeriesDataEntryRepo.updateSurgeryDocumentById(
-  //     langauge: AppStrings.arabicLang,
-  //     requestBody: SurgeryRequestBodyModel(
-  //       surgeryDate: state.surgeryDateSelection!,
-  //       surgeryRegion: state.surgeryBodyPartSelection!,
-  //       subSurgeryRegion: state.selectedSubSurgery!,
-  //       surgeryName: state.surgeryNameSelection!,
-  //       usedTechnique: state.selectedTechUsed!,
-  //       additionalNotes: personalNotesController.text,
-  //       surgeryDescription: suergeryDescriptionController.text,
-  //       postSurgeryInstructions: postSurgeryInstructions.text,
-  //       surgeryStatus: state.selectedSurgeryStatus!,
-  //       hospitalCenter: state.selectedHospitalCenter!,
-  //       anesthesiologistName: state.internistName!,
-  //       country: state.selectedCountryName!,
-  //       surgeonName: state.surgeonName!,
-  //       medicalReportImage: state.reportImageUploadedUrl!,
-  //     ),
-  //     id: state.updatedSurgeryId,
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeriesDataEntryStatus: RequestStatus.success,
-  //           message: successMessage,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeriesDataEntryStatus: RequestStatus.failure,
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> submitGlassesEssentialDataEntryEndPoint() async {
+    emit(
+      state.copyWith(
+        glassesEssentialDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _glassesDataEntryRepo.postGlassesEssentialDataEntryEndPoint(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      requestBody: EyeGlassesEssentialDataRequestBodyModel(
+        examinationDate: "",
+        doctorName: "",
+        centerHospitalName: "",
+        glassesShop: "",
+        antiReflection: true,
+        blueLightProtection: true,
+        scratchResistance: true,
+        antiFingerprintCoating: true,
+        antiFogCoating: true,
+        uvProtection: true,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            glassesEssentialDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            glassesEssentialDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   // Future<void> emitGetSurgeryStatus() async {
   //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
@@ -349,26 +353,22 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   //   );
   // }
 
-  // /// state.isXRayPictureSelected == false => image rejected
-  // void validateRequiredFields() {
-  //   if (state.surgeryDateSelection == null ||
-  //       state.surgeryNameSelection == null ||
-  //       state.surgeryBodyPartSelection == null ||
-  //       state.selectedTechUsed == null ||
-  //       state.selectedSubSurgery == null) {
-  //     emit(
-  //       state.copyWith(
-  //         isFormValidated: false,
-  //       ),
-  //     );
-  //   } else {
-  //     emit(
-  //       state.copyWith(
-  //         isFormValidated: true,
-  //       ),
-  //     );
-  //   }
-  // }
+  /// state.isXRayPictureSelected == false => image rejected
+  void validateRequiredFields() {
+    if (state.examinationDateSelection == null) {
+      emit(
+        state.copyWith(
+          isFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isFormValidated: true,
+        ),
+      );
+    }
+  }
 
   // Future<void> postModuleData(S locale) async {
   //   final response = await _surgeriesDataEntryRepo.postModuleData(
