@@ -21,217 +21,240 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
     return BlocBuilder<GlassesDataEntryCubit, GlassesDataEntryState>(
       builder: (context, state) {
         final cubit = context.read<GlassesDataEntryCubit>();
-        return SingleChildScrollView(
-          padding: EdgeInsets.only(bottom: 52.h),
-          physics: const BouncingScrollPhysics(),
-          child: Form(
-            key: cubit.formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset("assets/images/glasses.png", height: 100.h),
-                verticalSpacing(16.h),
-
-                // Header
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text("العدسة اليمنى",
-                            style: AppTextStyles.font18blackWight500.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            )),
-                      ),
-                      horizontalSpacing(16.w),
-                      Expanded(
-                        child: Text("العدسة اليسارية",
-                            textAlign: TextAlign.end,
-                            style: AppTextStyles.font18blackWight500.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            )),
-                      ),
-                    ],
+        return CustomScrollView(
+          physics: BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    "assets/images/glasses.png",
+                    height: 100.h,
                   ),
-                ),
+                  verticalSpacing(16.h),
 
-                verticalSpacing(16.h),
-
-                // Input Sections
-                LeftAndRightLensRowDataSection(
-                  title: "قصر النظر",
-                  rightController: cubit.rightShortSightController,
-                  leftController: cubit.leftShortSightController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.shortSightRangeValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "طول النظر",
-                  rightController: cubit.rightLongSightController,
-                  leftController: cubit.leftLongSightController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.longSightRangeValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "الاستجماتزم",
-                  rightController: cubit.rightAstigmatismController,
-                  leftController: cubit.leftAstigmatismController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.astigmatismValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "محور الاستجماتزم",
-                  rightController: cubit.rightAstigmatismAxisController,
-                  leftController: cubit.leftAstigmatismAxisController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.astigmatismAxisValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "الاضافة البؤرية",
-                  rightController: cubit.rightFocalAdditionController,
-                  leftController: cubit.leftFocalAdditionController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.focalAdditionValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "تباعد الحدقتين",
-                  rightController: cubit.rightPupilDistanceController,
-                  leftController: cubit.leftPupilDistanceController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.pupilDistanceValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "معامل الانكسار",
-                  rightController: cubit.rightRefractiveIndexController,
-                  leftController: cubit.leftRefractiveIndexController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.refractiveIndexValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "قطر العدسة",
-                  rightController: cubit.rightLensDiameterController,
-                  leftController: cubit.leftLensDiameterController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.lensDiameterValidator,
-                  keyboardType: TextInputType.number,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "المركز",
-                  rightController: cubit.rightCenterController,
-                  leftController: cubit.leftCenterController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.lensCenterValidator,
-                ),
-                LeftAndRightLensRowDataSection(
-                  title: "الحواف",
-                  rightController: cubit.rightEdgesController,
-                  leftController: cubit.leftEdgesController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.pupilDiameterValidator,
-                ),
-
-                // Surface Type Selectors
-                Row(
-                  children: [
-                    // الجزء الايمن
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "سطح العدسة",
-                        containerHintText:
-                            state.rightlensSurfaceType ?? "اخترالدرجة",
-                        options: [],
-                        onOptionSelected: (value) {
-                          context
-                              .read<GlassesDataEntryCubit>()
-                              .updateRightlensSurfaceType(value);
-                        },
-                        bottomSheetTitle: "اخترالدرجة ",
-                        searchHintText: "اخترالدرجة ",
-                      ),
+                  // Header
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "العدسة اليمنى",
+                            style: AppTextStyles.font18blackWight500.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                          ),
+                        ),
+                        horizontalSpacing(16.w),
+                        Expanded(
+                          child: Text(
+                            "العدسة اليسارية",
+                            style: AppTextStyles.font18blackWight500.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ],
                     ),
-                    horizontalSpacing(16),
-                    // الجزء الايسر
+                  ),
 
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "سطح العدسة",
-                        containerHintText:
-                            state.leftLensSurfaceType ?? "اخترالدرجة",
-                        options: [],
-                        onOptionSelected: (value) {
-                          context
-                              .read<GlassesDataEntryCubit>()
-                              .updateLeftlensSurfaceType(value);
-                        },
-                        // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
-                        bottomSheetTitle: "اخترالدرجة ",
-                        searchHintText: "اخترالدرجة ",
-                      ),
+                  verticalSpacing(16.h),
+                  Form(
+                    key: cubit.formKey,
+                    child: Column(
+                      children: [
+                        // Input Sections
+                        LeftAndRightLensRowDataSection(
+                          title: "قصر النظر",
+                          rightController: cubit.rightShortSightController,
+                          leftController: cubit.leftShortSightController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.shortSightRangeValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "طول النظر",
+                          rightController: cubit.rightLongSightController,
+                          leftController: cubit.leftLongSightController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.longSightRangeValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "الاستجماتزم",
+                          rightController: cubit.rightAstigmatismController,
+                          leftController: cubit.leftAstigmatismController,
+                          hintText: "اختر الدرجة",
+                          validator: EyeModuleValidations.astigmatismValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "محور الاستجماتزم",
+                          rightController: cubit.rightAstigmatismAxisController,
+                          leftController: cubit.leftAstigmatismAxisController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.astigmatismAxisValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "الاضافة البؤرية",
+                          rightController: cubit.rightFocalAdditionController,
+                          leftController: cubit.leftFocalAdditionController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.focalAdditionValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "تباعد الحدقتين",
+                          rightController: cubit.rightPupilDistanceController,
+                          leftController: cubit.leftPupilDistanceController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.pupilDistanceValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "معامل الانكسار",
+                          rightController: cubit.rightRefractiveIndexController,
+                          leftController: cubit.leftRefractiveIndexController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.refractiveIndexValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "قطر العدسة",
+                          rightController: cubit.rightLensDiameterController,
+                          leftController: cubit.leftLensDiameterController,
+                          hintText: "اختر الدرجة",
+                          validator: EyeModuleValidations.lensDiameterValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "المركز",
+                          rightController: cubit.rightCenterController,
+                          leftController: cubit.leftCenterController,
+                          hintText: "اختر الدرجة",
+                          validator: EyeModuleValidations.lensCenterValidator,
+                        ),
+                        LeftAndRightLensRowDataSection(
+                          title: "الحواف",
+                          rightController: cubit.rightEdgesController,
+                          leftController: cubit.leftEdgesController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.pupilDiameterValidator,
+                        ),
+
+                        // Surface Type Selectors
+                        Row(
+                          children: [
+                            // الجزء الايمن
+                            Expanded(
+                              child: UserSelectionContainer(
+                                categoryLabel: "سطح العدسة",
+                                containerHintText:
+                                    state.rightlensSurfaceType ?? "اخترالدرجة",
+                                options: [],
+                                onOptionSelected: (value) {
+                                  context
+                                      .read<GlassesDataEntryCubit>()
+                                      .updateRightlensSurfaceType(value);
+                                },
+                                bottomSheetTitle: "اخترالدرجة ",
+                                searchHintText: "اخترالدرجة ",
+                              ),
+                            ),
+                            horizontalSpacing(16),
+                            // الجزء الايسر
+
+                            Expanded(
+                              child: UserSelectionContainer(
+                                categoryLabel: "سطح العدسة",
+                                containerHintText:
+                                    state.leftLensSurfaceType ?? "اخترالدرجة",
+                                options: [],
+                                onOptionSelected: (value) {
+                                  context
+                                      .read<GlassesDataEntryCubit>()
+                                      .updateLeftlensSurfaceType(value);
+                                },
+                                // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
+                                bottomSheetTitle: "اخترالدرجة ",
+                                searchHintText: "اخترالدرجة ",
+                              ),
+                            ),
+                          ],
+                        ),
+                        verticalSpacing(16.h),
+
+                        LeftAndRightLensRowDataSection(
+                          title: "سُمك العدسة",
+                          rightController: cubit.rightLensThicknessController,
+                          leftController: cubit.leftLensThicknessController,
+                          hintText: "اختر الدرجة",
+                          validator:
+                              EyeModuleValidations.lensThicknessValidator,
+                          keyboardType: TextInputType.number,
+                        ),
+
+                        Row(
+                          children: [
+                            // الجزء الايمن
+                            Expanded(
+                              child: UserSelectionContainer(
+                                categoryLabel: "نوع العدسة",
+                                containerHintText:
+                                    state.rightLensType ?? "اخترالدرجة",
+                                options: [],
+                                onOptionSelected: (value) {
+                                  context
+                                      .read<GlassesDataEntryCubit>()
+                                      .updateRightLensType(value);
+                                },
+                                bottomSheetTitle: "اخترالدرجة ",
+                                searchHintText: "اخترالدرجة ",
+                              ),
+                            ),
+                            horizontalSpacing(16),
+                            // الجزء الايسر
+
+                            Expanded(
+                              child: UserSelectionContainer(
+                                categoryLabel: "نوع العدسة",
+                                containerHintText:
+                                    state.leftLensType ?? "اخترالدرجة",
+                                options: [],
+                                onOptionSelected: (value) {
+                                  context
+                                      .read<GlassesDataEntryCubit>()
+                                      .updateLeftLensType(value);
+                                },
+                                bottomSheetTitle: "اخترالدرجة ",
+                                searchHintText: "اخترالدرجة ",
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                verticalSpacing(16.h),
+                  ),
 
-                LeftAndRightLensRowDataSection(
-                  title: "سُمك العدسة",
-                  rightController: cubit.rightLensThicknessController,
-                  leftController: cubit.leftLensThicknessController,
-                  hintText: "اختر الدرجة",
-                  validator: EyeModuleValidations.lensThicknessValidator,
-                  keyboardType: TextInputType.number,
-                ),
+                  verticalSpacing(32.h),
 
-                Row(
-                  children: [
-                    // الجزء الايمن
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "نوع العدسة",
-                        containerHintText: state.rightLensType ?? "اخترالدرجة",
-                        options: [],
-                        onOptionSelected: (value) {
-                          context
-                              .read<GlassesDataEntryCubit>()
-                              .updateRightLensType(value);
-                        },
-                        bottomSheetTitle: "اخترالدرجة ",
-                        searchHintText: "اخترالدرجة ",
-                      ),
-                    ),
-                    horizontalSpacing(16),
-                    // الجزء الايسر
-
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "نوع العدسة",
-                        containerHintText: state.leftLensType ?? "اخترالدرجة",
-                        options: [],
-                        onOptionSelected: (value) {
-                          context
-                              .read<GlassesDataEntryCubit>()
-                              .updateLeftLensType(value);
-                        },
-                        bottomSheetTitle: "اخترالدرجة ",
-                        searchHintText: "اخترالدرجة ",
-                      ),
-                    ),
-                  ],
-                ),
-
-                verticalSpacing(32.h),
-
-                submitDataEnteredButtonBlocConsumer(),
-              ],
+                  submitDataEnteredButtonBlocConsumer(),
+                ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );
