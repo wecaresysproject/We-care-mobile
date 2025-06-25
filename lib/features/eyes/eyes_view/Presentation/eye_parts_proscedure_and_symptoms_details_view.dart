@@ -73,25 +73,25 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: 'تاريخ الاجراء الطبي',
-                    value: details.procedureDate ,
+                    value: details.medicalReportDate ,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'الاجراء الطبي',
-                    value: details.procedures.join(', ') ,
+                    value: details.medicalProcedures.join(', ') ,
                     icon: 'assets/images/doctor_icon.png',
                     isExpanded: true,
                   ),
 
                     DetailsViewImageWithTitleTile(
-                      image: details.medicalReportImage,
+                      image: details.medicalReportUrl,
                       title: 'التقرير الطبي',
                       isShareEnabled: true,
                     ),
              
                     DetailsViewImageWithTitleTile(
-                      image: details.medicalExaminationImage,
+                      image: details.medicalExaminationImages,
                       title: 'صورة الفحص الطبي',
                       isShareEnabled: true,
                     ),
@@ -99,7 +99,7 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: 'المستشفى',
-                        value: details.hospitalName,
+                        value: details.centerHospitalName,
                         icon: 'assets/images/hospital_icon.png',
                       ),
                       const Spacer(),
@@ -117,7 +117,7 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: 'الملاحظات',
-                    value: details.notes,
+                    value: details.additionalNotes,
                     icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),

@@ -7,30 +7,30 @@ class EyeProceduresAndSymptomsDetailsModel {
   final String symptomStartDate;
   final List<String> symptoms;
   final String symptomDuration;
-  final String procedureDate;
-  final List<String> procedures;
+  final String medicalReportDate;
+  final List<String> medicalProcedures;
   final String medicalReportText;
-  final String medicalReportImage;
-  final String medicalExaminationImage;
+  final String medicalReportUrl;
+  final String medicalExaminationImages;
   final String doctorName;
-  final String hospitalName;
+  final String centerHospitalName;
   final String country;
-  final String notes;
+  final String additionalNotes;
 
   EyeProceduresAndSymptomsDetailsModel({
     required this.id,
     required this.symptomStartDate,
     required this.symptoms,
     required this.symptomDuration,
-    required this.procedureDate,
-    required this.procedures,
+    required this.medicalReportDate,
+    required this.medicalProcedures,
     required this.medicalReportText,
-    required this.medicalReportImage,
-    required this.medicalExaminationImage,
+    required this.medicalReportUrl,
+    required this.medicalExaminationImages,
     required this.doctorName,
-    required this.hospitalName,
+    required this.centerHospitalName,
     required this.country,
-    required this.notes,
+    required this.additionalNotes,
   });
 
   factory EyeProceduresAndSymptomsDetailsModel.fromJson(Map<String, dynamic> json) =>

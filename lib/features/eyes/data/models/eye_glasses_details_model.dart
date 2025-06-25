@@ -42,32 +42,32 @@ class EyeGlassesDetailsModel {
 
 @JsonSerializable()
 class EyePrescriptionModel {
-  final String nearsightedness;
-  final String farsightedness;
-  final String cylinder;
-  final String cylinderAxis;
+  final String myopiaDegree;
+  final String hyperopiaDegree;
+  final String astigmatismDegree;
+  final String astigmatismAxis;
   final String addition;
-  final String bifocalSegment;
-  final String refractionCoefficient;
+  final String nearAddition;
+  final String refractiveIndex;
   final String lensDiameter;
-  final String center;
-  final String edges;
-  final String lensSurface;
+  final String lensCentering;
+  final String lensEdgeType;
+  final String lensSurfaceType;
   final String lensThickness;
   final String lensType;
 
   EyePrescriptionModel({
-    required this.center,
-    required this.edges,
-    required this.nearsightedness,
-    required this.farsightedness,
-    required this.cylinder,
-    required this.cylinderAxis,
+    required this.lensCentering,
+    required this.lensEdgeType,
+    required this.myopiaDegree,
+    required this.hyperopiaDegree,
+    required this.astigmatismDegree,
+    required this.astigmatismAxis,
     required this.addition,
-    required this.bifocalSegment,
-    required this.refractionCoefficient,
+    required this.nearAddition,
+    required this.refractiveIndex,
     required this.lensDiameter,
-    required this.lensSurface,
+    required this.lensSurfaceType,
     required this.lensThickness,
     required this.lensType,
   });
