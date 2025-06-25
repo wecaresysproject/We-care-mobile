@@ -3,6 +3,7 @@ part of 'glasses_data_entry_cubit.dart';
 @immutable
 class GlassesDataEntryState extends Equatable {
   final RequestStatus glassesEssentialDataEntryStatus;
+  final RequestStatus submitGlassesLensDataEntryStatus;
   final String? errorMessage;
   final bool isFormValidated;
   final String? examinationDateSelection;
@@ -20,8 +21,14 @@ class GlassesDataEntryState extends Equatable {
   final bool? isAntiFingerprint; // مضاد لبصمات الأصابع
   final bool? isUVProtection;
 
+  final String? rightLensType;
+  final String? rightlensSurfaceType;
+  final String? leftLensType;
+  final String? leftLensSurfaceType;
+
   const GlassesDataEntryState({
     this.glassesEssentialDataEntryStatus = RequestStatus.initial,
+    this.submitGlassesLensDataEntryStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
     this.examinationDateSelection,
@@ -38,11 +45,16 @@ class GlassesDataEntryState extends Equatable {
     this.isAntiFogCoating,
     this.isAntiFingerprint,
     this.isUVProtection,
+    this.rightLensType,
+    this.rightlensSurfaceType,
+    this.leftLensType,
+    this.leftLensSurfaceType,
   }) : super();
 
   const GlassesDataEntryState.initialState()
       : this(
           glassesEssentialDataEntryStatus: RequestStatus.initial,
+          submitGlassesLensDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           examinationDateSelection: null,
           message: '',
@@ -58,10 +70,15 @@ class GlassesDataEntryState extends Equatable {
           isAntiFogCoating: null,
           isAntiFingerprint: null,
           isUVProtection: null,
+          rightLensType: null,
+          rightlensSurfaceType: null,
+          leftLensType: null,
+          leftLensSurfaceType: null,
         );
 
   GlassesDataEntryState copyWith({
     RequestStatus? glassesEssentialDataEntryStatus,
+    RequestStatus? submitGlassesLensDataEntryStatus,
     String? errorMessage,
     bool? isFormValidated,
     String? examinationDateSelection,
@@ -78,10 +95,16 @@ class GlassesDataEntryState extends Equatable {
     bool? isAntiFogCoating,
     bool? isAntiFingerprint,
     bool? isUVProtection,
+    String? rightLensType,
+    String? rightlensSurfaceType,
+    String? leftLensType,
+    String? leftLensSurfaceType,
   }) {
     return GlassesDataEntryState(
       glassesEssentialDataEntryStatus: glassesEssentialDataEntryStatus ??
           this.glassesEssentialDataEntryStatus,
+      submitGlassesLensDataEntryStatus: submitGlassesLensDataEntryStatus ??
+          this.submitGlassesLensDataEntryStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       examinationDateSelection:
@@ -101,12 +124,17 @@ class GlassesDataEntryState extends Equatable {
       isAntiFogCoating: isAntiFogCoating ?? this.isAntiFogCoating,
       isAntiFingerprint: isAntiFingerprint ?? this.isAntiFingerprint,
       isUVProtection: isUVProtection ?? this.isUVProtection,
+      rightLensType: rightLensType ?? this.rightLensType,
+      rightlensSurfaceType: rightlensSurfaceType ?? this.rightlensSurfaceType,
+      leftLensType: leftLensType ?? this.leftLensType,
+      leftLensSurfaceType: leftLensSurfaceType ?? this.leftLensSurfaceType,
     );
   }
 
   @override
   List<Object?> get props => [
         glassesEssentialDataEntryStatus,
+        submitGlassesLensDataEntryStatus,
         errorMessage,
         isFormValidated,
         examinationDateSelection,
@@ -123,5 +151,9 @@ class GlassesDataEntryState extends Equatable {
         isAntiFogCoating,
         isAntiFingerprint,
         isUVProtection,
+        rightLensType,
+        rightlensSurfaceType,
+        leftLensType,
+        leftLensSurfaceType,
       ];
 }

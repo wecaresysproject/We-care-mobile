@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -16,6 +17,56 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
           GlassesDataEntryState.initialState(),
         );
   final GlassesDataEntryRepo _glassesDataEntryRepo;
+
+  final formKey = GlobalKey<FormState>();
+
+  // Controllers for Right Lens
+  final TextEditingController rightShortSightController =
+      TextEditingController(); // قصر النظر للعدسة اليمنى
+  final TextEditingController rightLongSightController =
+      TextEditingController(); // طول النظر للعدسة اليمنى
+  final TextEditingController rightAstigmatismController =
+      TextEditingController(); // الاستجماتزم للعدسة اليمنى
+  final TextEditingController rightAstigmatismAxisController =
+      TextEditingController(); // محور الاستجماتزم للعدسة اليمنى
+  final TextEditingController rightFocalAdditionController =
+      TextEditingController(); // الاضافة البؤرية للعدسة اليمنى
+  final TextEditingController rightPupilDistanceController =
+      TextEditingController(); // تباعد الحدقتين للعدسة اليمنى
+  final TextEditingController rightRefractiveIndexController =
+      TextEditingController(); // معامل الانكسار للعدسة اليمنى
+  final TextEditingController rightLensDiameterController =
+      TextEditingController(); // قطر العدسة للعدسة اليمنى
+  final TextEditingController rightCenterController =
+      TextEditingController(); // المركز للعدسة اليمنى
+  final TextEditingController rightEdgesController =
+      TextEditingController(); // الحواف للعدسة اليمنى
+  final TextEditingController rightLensThicknessController =
+      TextEditingController(); // سُمك العدسة للعدسة اليمنى
+
+// Controllers for Left Lens
+  final TextEditingController leftShortSightController =
+      TextEditingController(); // قصر النظر للعدسة اليسرى
+  final TextEditingController leftLongSightController =
+      TextEditingController(); // طول النظر للعدسة اليسرى
+  final TextEditingController leftAstigmatismController =
+      TextEditingController(); // الاستجماتزم للعدسة اليسرى
+  final TextEditingController leftAstigmatismAxisController =
+      TextEditingController(); // محور الاستجماتزم للعدسة اليسرى
+  final TextEditingController leftFocalAdditionController =
+      TextEditingController(); // الاضافة البؤرية للعدسة اليسرى
+  final TextEditingController leftPupilDistanceController =
+      TextEditingController(); // تباعد الحدقتين للعدسة اليسرى
+  final TextEditingController leftRefractiveIndexController =
+      TextEditingController(); // معامل الانكسار للعدسة اليسرى
+  final TextEditingController leftLensDiameterController =
+      TextEditingController(); // قطر العدسة للعدسة اليسرى
+  final TextEditingController leftCenterController =
+      TextEditingController(); // المركز للعدسة اليسرى
+  final TextEditingController leftEdgesController =
+      TextEditingController(); // الحواف للعدسة اليسرى
+  final TextEditingController leftLensThicknessController =
+      TextEditingController(); // سُمك العدسة للعدسة اليسرى
 
   // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
   //   emit(
@@ -48,6 +99,26 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   void updateExaminationDate(String? date) {
     emit(state.copyWith(examinationDateSelection: date));
     validateRequiredFields();
+  }
+
+  void updateLeftLensType(String? val) {
+    emit(state.copyWith(leftLensType: val));
+  }
+
+  void updateRightLensType(String? val) {
+    emit(state.copyWith(rightLensType: val));
+  }
+
+  void updateRightlensSurfaceType(String? val) {
+    emit(
+      state.copyWith(rightlensSurfaceType: val),
+    );
+  }
+
+  void updateLeftlensSurfaceType(String? val) {
+    emit(
+      state.copyWith(leftLensSurfaceType: val),
+    );
   }
 
   void updateAntiReflection(bool? val) {
@@ -131,6 +202,104 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     );
   }
 
+  Future<void> submitGlassesLensDataEntered() async {
+    emit(
+      state.copyWith(
+        submitGlassesLensDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _glassesDataEntryRepo.postGlassesLensDataEntry(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      requestBody: EyeGlassesLensDataRequestBodyModel(
+        leftLens: LensData(
+          myopiaDegree: leftShortSightController.text,
+          hyperopiaDegree: leftLongSightController.text,
+          astigmatismDegree: leftAstigmatismController.text.isEmpty
+              ? "--"
+              : leftAstigmatismController.text,
+          astigmatismAxis: leftAstigmatismAxisController.text.isEmpty
+              ? "--"
+              : leftAstigmatismAxisController.text,
+          nearAddition: leftFocalAdditionController.text.isEmpty
+              ? "--"
+              : leftFocalAdditionController.text,
+          pupillaryDistance: leftPupilDistanceController.text.isEmpty
+              ? "--"
+              : leftPupilDistanceController.text,
+          refractiveIndex: leftRefractiveIndexController.text.isEmpty
+              ? "--"
+              : leftRefractiveIndexController.text,
+          lensDiameter: leftLensDiameterController.text.isEmpty
+              ? "--"
+              : leftLensDiameterController.text,
+          lensCentering: leftCenterController.text.isEmpty
+              ? "--"
+              : leftCenterController.text,
+          lensEdgeType: leftEdgesController.text.isEmpty
+              ? "--"
+              : leftEdgesController.text,
+          lensSurfaceType: state.leftLensSurfaceType ?? "--",
+          lensThickness: leftLensThicknessController.text.isEmpty
+              ? "--"
+              : leftLensThicknessController.text,
+          lensType: state.leftLensType ?? "--",
+        ),
+        rightLens: LensData(
+          myopiaDegree: rightShortSightController.text,
+          hyperopiaDegree: rightLongSightController.text,
+          astigmatismDegree: rightAstigmatismController.text.isEmpty
+              ? "--"
+              : rightAstigmatismController.text,
+          astigmatismAxis: rightAstigmatismAxisController.text.isEmpty
+              ? "--"
+              : rightAstigmatismAxisController.text,
+          nearAddition: rightFocalAdditionController.text.isEmpty
+              ? "--"
+              : rightFocalAdditionController.text,
+          pupillaryDistance: rightPupilDistanceController.text.isEmpty
+              ? "--"
+              : rightPupilDistanceController.text,
+          refractiveIndex: rightRefractiveIndexController.text.isEmpty
+              ? "--"
+              : rightRefractiveIndexController.text,
+          lensDiameter: rightLensDiameterController.text.isEmpty
+              ? "--"
+              : rightLensDiameterController.text,
+          lensCentering: rightCenterController.text.isEmpty
+              ? "--"
+              : rightCenterController.text,
+          lensEdgeType: rightEdgesController.text.isEmpty
+              ? "--"
+              : rightEdgesController.text,
+          lensSurfaceType: state.rightlensSurfaceType ?? "--",
+          lensThickness: rightLensThicknessController.text.isEmpty
+              ? "--"
+              : rightLensThicknessController.text,
+          lensType: state.rightLensType ?? "--",
+        ),
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            submitGlassesLensDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            submitGlassesLensDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   // Future<void> emitGetSurgeryStatus() async {
   //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
   //     language: AppStrings.arabicLang,
@@ -193,5 +362,35 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    rightShortSightController.dispose();
+    rightLongSightController.dispose();
+    rightAstigmatismController.dispose();
+    rightAstigmatismAxisController.dispose();
+    rightFocalAdditionController.dispose();
+    rightPupilDistanceController.dispose();
+    rightRefractiveIndexController.dispose();
+    rightLensDiameterController.dispose();
+    rightCenterController.dispose();
+    rightEdgesController.dispose();
+    rightLensThicknessController.dispose();
+
+    leftShortSightController.dispose();
+    leftLongSightController.dispose();
+    leftAstigmatismController.dispose();
+    leftAstigmatismAxisController.dispose();
+    leftFocalAdditionController.dispose();
+    leftPupilDistanceController.dispose();
+    leftRefractiveIndexController.dispose();
+    leftLensDiameterController.dispose();
+    leftCenterController.dispose();
+    leftEdgesController.dispose();
+    leftLensThicknessController.dispose();
+    // Dispose of any other controllers or resources if needed
+    formKey.currentState?.reset();
+    return super.close();
   }
 }
