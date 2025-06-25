@@ -309,7 +309,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   },
   {
     "title": "العيون",
-    "image": "assets/images/hand_icon.png", //TODO: Change Icon مشفثق
+    "image": "assets/images/eye_module_pic.png",
     "cornerImagePath": "assets/images/eyes_module.png",
     "audio": "",
     "isActive": true,

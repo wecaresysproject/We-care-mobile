@@ -10,6 +10,7 @@ Future<void> showError(String error) async {
     toastLength: Toast.LENGTH_LONG,
     timeInSecForIosWeb: 1,
     gravity: ToastGravity.BOTTOM,
+    textColor: Colors.white,
   );
 }
 

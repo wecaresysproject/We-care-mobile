@@ -22,32 +22,59 @@ class EyeGlassesLensDataRequestBodyModel {
 
 @JsonSerializable()
 class LensData {
-  final String? sphere;
-  final String? cylinder;
-  final String? axis;
-  final String? add;
-  final String? pd;
+  /// Degree of myopia (قصر النظر), e.g., -2.50
+  final String myopiaDegree;
+
+  /// Degree of hyperopia (طول النظر), e.g., +2.00
+  final String hyperopiaDegree;
+
+  /// Astigmatism value (الاستجماتيزم), cylinder
+  final String? astigmatismDegree;
+
+  /// Axis of astigmatism (محور الاستجماتيزم)
+  final String? astigmatismAxis;
+
+  /// Near addition (الاضافة البؤرية)
+  final String? nearAddition;
+
+  /// Pupillary distance (تباعد الحدقتين)
+  final String? pupillaryDistance;
+
+  /// Refractive index (معامل الانكسار)
   final String? refractiveIndex;
-  final String? diameter;
-  final String? center;
-  final String? edges;
-  final String? surface;
-  final String? thickness;
-  final String? type;
+
+  /// Diameter of the lens (قطر العدسة)
+  final String? lensDiameter;
+
+  /// Lens centering (المركز)
+  final String? lensCentering;
+
+  /// Type of the lens edge (الحواف), e.g., Thin or Thick
+  final String? lensEdgeType;
+
+  /// Type of the lens surface (سطح العدسة), e.g., Aspheric
+  final String? lensSurfaceType;
+
+  /// Thickness of the lens (سمك العدسة)
+  final String? lensThickness;
+
+  /// Type of the lens (نوع العدسة), e.g., Progressive
+  final String? lensType;
 
   LensData({
-    this.sphere,
-    this.cylinder,
-    this.axis,
-    this.add,
-    this.pd,
+    required this.myopiaDegree,
+    required this.hyperopiaDegree,
+    this.astigmatismDegree,
+    this.astigmatismAxis,
+    this.nearAddition,
+    this.pupillaryDistance,
     this.refractiveIndex,
-    this.diameter,
-    this.center,
-    this.edges,
-    this.surface,
-    this.thickness,
-    this.type,
+    this.lensDiameter,
+    this.lensCentering,
+    this.lensEdgeType,
+    this.lensSurfaceType,
+    this.lensThickness,
+    this.lensType,
   });
 
   factory LensData.fromJson(Map<String, dynamic> json) =>
