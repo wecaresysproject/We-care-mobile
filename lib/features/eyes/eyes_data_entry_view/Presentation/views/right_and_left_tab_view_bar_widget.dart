@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/eyes_module_validator_class.dart';
 import 'package:we_care/core/global/Helpers/functions.dart'; // Ensure this path is correct
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -63,7 +64,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightShortSightController,
                   leftController: cubit.leftShortSightController,
                   hintText: "اختر الدرجة",
-                  validator: _shortSightRangeValidator,
+                  validator: EyeModuleValidations.shortSightRangeValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -71,7 +72,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightLongSightController,
                   leftController: cubit.leftLongSightController,
                   hintText: "اختر الدرجة",
-                  validator: _longSightRangeValidator,
+                  validator: EyeModuleValidations.longSightRangeValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -79,7 +80,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightAstigmatismController,
                   leftController: cubit.leftAstigmatismController,
                   hintText: "اختر الدرجة",
-                  validator: _astigmatismValidator,
+                  validator: EyeModuleValidations.astigmatismValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -87,7 +88,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightAstigmatismAxisController,
                   leftController: cubit.leftAstigmatismAxisController,
                   hintText: "اختر الدرجة",
-                  validator: _astigmatismAxisValidator,
+                  validator: EyeModuleValidations.astigmatismAxisValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -95,7 +96,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightFocalAdditionController,
                   leftController: cubit.leftFocalAdditionController,
                   hintText: "اختر الدرجة",
-                  validator: _focalAdditionValidator,
+                  validator: EyeModuleValidations.focalAdditionValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -103,7 +104,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightPupilDistanceController,
                   leftController: cubit.leftPupilDistanceController,
                   hintText: "اختر الدرجة",
-                  validator: _pupilDistanceValidator,
+                  validator: EyeModuleValidations.pupilDistanceValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -111,7 +112,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightRefractiveIndexController,
                   leftController: cubit.leftRefractiveIndexController,
                   hintText: "اختر الدرجة",
-                  validator: _refractiveIndexValidator,
+                  validator: EyeModuleValidations.refractiveIndexValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -119,7 +120,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightLensDiameterController,
                   leftController: cubit.leftLensDiameterController,
                   hintText: "اختر الدرجة",
-                  validator: _lensDiameterValidator,
+                  validator: EyeModuleValidations.lensDiameterValidator,
                   keyboardType: TextInputType.number,
                 ),
                 LeftAndRightLensRowDataSection(
@@ -127,14 +128,14 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                   rightController: cubit.rightCenterController,
                   leftController: cubit.leftCenterController,
                   hintText: "اختر الدرجة",
-                  validator: _lensCenterValidator,
+                  validator: EyeModuleValidations.lensCenterValidator,
                 ),
                 LeftAndRightLensRowDataSection(
                   title: "الحواف",
                   rightController: cubit.rightEdgesController,
                   leftController: cubit.leftEdgesController,
                   hintText: "اختر الدرجة",
-                  validator: _pupilDiameterValidator,
+                  validator: EyeModuleValidations.pupilDiameterValidator,
                 ),
 
                 // Surface Type Selectors
@@ -143,11 +144,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                     // الجزء الايمن
                     Expanded(
                       child: UserSelectionContainer(
-                        // containerBorderColor: state.syptomTypeSelection == null
-                        //     ? AppColorsManager.warningColor
-                        //     : AppColorsManager.textfieldOutsideBorderColor,
                         categoryLabel: "سطح العدسة",
-                        // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                         containerHintText:
                             state.rightlensSurfaceType ?? "اخترالدرجة",
                         options: [],
@@ -156,7 +153,6 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                               .read<GlassesDataEntryCubit>()
                               .updateRightlensSurfaceType(value);
                         },
-                        // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
                         bottomSheetTitle: "اخترالدرجة ",
                         searchHintText: "اخترالدرجة ",
                       ),
@@ -166,11 +162,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
 
                     Expanded(
                       child: UserSelectionContainer(
-                        // containerBorderColor: state.syptomTypeSelection == null
-                        //     ? AppColorsManager.warningColor
-                        //     : AppColorsManager.textfieldOutsideBorderColor,
                         categoryLabel: "سطح العدسة",
-                        // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                         containerHintText:
                             state.leftLensSurfaceType ?? "اخترالدرجة",
                         options: [],
@@ -186,13 +178,14 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                     ),
                   ],
                 ),
+                verticalSpacing(16.h),
 
                 LeftAndRightLensRowDataSection(
                   title: "سُمك العدسة",
                   rightController: cubit.rightLensThicknessController,
                   leftController: cubit.leftLensThicknessController,
                   hintText: "اختر الدرجة",
-                  validator: _lensThicknessValidator,
+                  validator: EyeModuleValidations.lensThicknessValidator,
                   keyboardType: TextInputType.number,
                 ),
 
@@ -201,11 +194,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                     // الجزء الايمن
                     Expanded(
                       child: UserSelectionContainer(
-                        // containerBorderColor: state.syptomTypeSelection == null
-                        //     ? AppColorsManager.warningColor
-                        //     : AppColorsManager.textfieldOutsideBorderColor,
                         categoryLabel: "نوع العدسة",
-                        // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                         containerHintText: state.rightLensType ?? "اخترالدرجة",
                         options: [],
                         onOptionSelected: (value) {
@@ -213,7 +202,6 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                               .read<GlassesDataEntryCubit>()
                               .updateRightLensType(value);
                         },
-                        // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
                         bottomSheetTitle: "اخترالدرجة ",
                         searchHintText: "اخترالدرجة ",
                       ),
@@ -223,11 +211,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
 
                     Expanded(
                       child: UserSelectionContainer(
-                        // containerBorderColor: state.syptomTypeSelection == null
-                        //     ? AppColorsManager.warningColor
-                        //     : AppColorsManager.textfieldOutsideBorderColor,
                         categoryLabel: "نوع العدسة",
-                        // containerHintText: state.syptomTypeSelection ?? "اختر نوع العرض",
                         containerHintText: state.leftLensType ?? "اخترالدرجة",
                         options: [],
                         onOptionSelected: (value) {
@@ -235,7 +219,6 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                               .read<GlassesDataEntryCubit>()
                               .updateLeftLensType(value);
                         },
-                        // bottomSheetTitle: state.syptomTypeSelection ?? "اختر نوع العرض",
                         bottomSheetTitle: "اخترالدرجة ",
                         searchHintText: "اخترالدرجة ",
                       ),
@@ -296,123 +279,5 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
         );
       },
     );
-  }
-
-  String? _numericValidator(String? value, String fieldName) {
-    if (value == null || value.isEmpty) {
-      return 'الرجاء إدخال هذه القيمه';
-    }
-    if (double.tryParse(value) == null) {
-      return 'الرجاء إدخال قيمة رقمية صحيحة لـ $fieldName';
-    }
-    return null;
-  }
-
-  // New validator for Short Sight (قصر النظر): 0 to -20
-  String? _shortSightRangeValidator(String? value) {
-    final numericError = _numericValidator(value, "درجة قصر النظر");
-    if (numericError != null) {
-      return numericError;
-    }
-    final number = double.parse(value!);
-    if (number > 0 || number < -20) {
-      return 'من 0 إلى 20- فقط';
-    }
-    return null;
-  }
-
-  // New validator for Long Sight (طول النظر): 0 to 20
-  String? _longSightRangeValidator(String? value) {
-    final numericError = _numericValidator(value, "درجة طول النظر");
-    if (numericError != null) {
-      return numericError;
-    }
-    final number = double.parse(value!);
-    if (number < 0 || number > 20) {
-      return 'من 0 إلى 20 فقط';
-    }
-    return null;
-  }
-
-  // --- General Validation Functions for OPTIONAL fields ---
-  String? _optionalNumericValidator(String? value, String fieldName) {
-    if (value == null || value.isEmpty) {
-      return null; // Field is optional, so empty is allowed
-    }
-    if (double.tryParse(value) == null) {
-      return 'الرجاء إدخال قيمة رقمية صحيحة لـ $fieldName';
-    }
-    return null;
-  }
-
-  // NEW VALIDATOR FOR LENS THICKNESS (سُمك العدسة)
-  String? _lensThicknessValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "سُمك العدسة", 0.5, 8.0); // New range: 0.5 to 8.0
-  }
-
-  // Validator for Astigmatism (الاستجماتزم)
-  String? _astigmatismValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "درجة الاستجماتزم", -6.0, 6.0); // Range: -6.00 D to +6.00 D
-  }
-
-  // Validator for Astigmatism Axis (محور الاستجماتزم)
-  String? _astigmatismAxisValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "محور الاستجماتزم", 0.0, 180.0); // Range: 0° to 180°
-  }
-
-  // Validator for Focal Addition (الاضافة البؤرية)
-  String? _focalAdditionValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "الإضافة البؤرية", 0.75, 4.0); // Range: +0.75 D to +4.00 D
-  }
-
-  // Validator for Pupil Distance (تباعد الحدقتين)
-  String? _pupilDistanceValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "تباعد الحدقتين", 48.0, 80.0); // Range: 48 mm to 80 mm
-  }
-
-  // Validator for Refractive Index (معامل الانكسار)
-  String? _refractiveIndexValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "معامل الانكسار", 1.5, 1.74); // Range: 1.5 to 1.74
-  }
-
-  // Validator for Lens Diameter (قطر العدسة)
-  String? _lensDiameterValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "قطر العدسة", 55.0, 75.0); // Range: 55 mm to 75 mm
-  }
-
-  // General helper for optional numeric fields with a range
-  String? _validateOptionalNumericRange(
-      String? value, String fieldName, double min, double max) {
-    if (value == null || value.isEmpty) {
-      return null; // Optional, so empty is fine
-    }
-    final numError =
-        _optionalNumericValidator(value, fieldName); // Checks if it's a number
-    if (numError != null) return numError;
-
-    final number = double.parse(value);
-    if (number < min || number > max) {
-      return 'القيمة بين $min و $max ';
-    }
-    return null;
-  }
-
-  // Validator for Lens Center (المركز )
-  String? _lensCenterValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "المركز", 0.5, 8); // Range: 0 mm to 20 mm
-  }
-
-  // Validator for Pupil Diameter  (سمك الحافة )
-  String? _pupilDiameterValidator(String? value) {
-    return _validateOptionalNumericRange(
-        value, "سمك الحافة", 0.5, 8); // Range: 0 mm to 20 mm
   }
 }
