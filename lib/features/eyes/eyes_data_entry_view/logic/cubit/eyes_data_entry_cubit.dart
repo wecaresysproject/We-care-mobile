@@ -16,8 +16,6 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
         );
   final EyesDataEntryRepo _eyesDataEntryRepo;
   final personalNotesController = TextEditingController();
-  final suergeryDescriptionController = TextEditingController(); // وصف اضافي
-  final postSurgeryInstructions = TextEditingController();
 
   // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
   //   emit(
@@ -46,23 +44,21 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   //   await intialRequestsForDataEntry();
   // }
 
-  // /// Update Field Values
-  // void updateSurgeryDate(String? date) {
-  //   emit(state.copyWith(surgeryDateSelection: date));
-  //   validateRequiredFields();
-  // }
+  void updateSymptomDuration(String? val) {
+    emit(state.copyWith(symptomDuration: val));
+  }
 
-  // void updateSelectedHospitalCenter(String? selectedHospital) {
-  //   emit(state.copyWith(selectedHospitalCenter: selectedHospital));
-  // }
+  void updateSyptomStartDate(String? val) {
+    emit(state.copyWith(syptomStartDate: val));
+  }
 
   void updateSelectedDoctorName(String? val) {
     emit(state.copyWith(doctorName: val));
   }
 
-  // void updateSelectedSurgeonName(String? surgeonName) {
-  //   emit(state.copyWith(surgeonName: surgeonName));
-  // }
+  void updateSelectedHospitalName(String? val) {
+    emit(state.copyWith(selectedHospitalCenter: val));
+  }
 
   getInitialRequests() {
     emitCountriesData();
@@ -72,11 +68,9 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     emit(state.copyWith(selectedCountryName: selectedCountry));
   }
 
-  // void updateSurgeryBodyPart(String? bodyPart) {
-  //   emit(state.copyWith(surgeryBodyPartSelection: bodyPart));
-  //   validateRequiredFields();
-  //   emitGetAllSubSurgeriesRegions(selectedRegion: bodyPart!);
-  // }
+  void updateProcedureDate(String? val) {
+    emit(state.copyWith(procedureDateSelection: val));
+  }
 
   // Future<void> updateSurgeryName(String? name) async {
   //   emit(state.copyWith(surgeryNameSelection: name));
@@ -135,6 +129,39 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
           state.copyWith(
             message: error.errors.first,
             uploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> uploadMedicalExaminationImage(
+      {required String imagePath}) async {
+    emit(
+      state.copyWith(
+        uploadMedicalExaminationStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _eyesDataEntryRepo.uploadMedicalExaminationImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            medicalExaminationImageUploadedUrl: response.imageUrl,
+            uploadMedicalExaminationStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadMedicalExaminationStatus: UploadImageRequestStatus.failure,
           ),
         );
       },
@@ -427,8 +454,6 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   @override
   Future<void> close() {
     personalNotesController.dispose();
-    suergeryDescriptionController.dispose();
-    postSurgeryInstructions.dispose();
     return super.close();
   }
 }

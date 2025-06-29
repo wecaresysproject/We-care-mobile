@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
@@ -22,6 +23,14 @@ abstract class EyesModuleServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+  @MultiPart()
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
+  Future<UploadImageResponseModel> uploadMedicalExaminationImage(
+    @Part() File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
+
   @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
   Future<dynamic> postGlassesEssentialDataEntryEndPoint(
     @Query("language") String language,

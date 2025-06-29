@@ -40,8 +40,11 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(10),
               DateTimePickerContainer(
-                placeholderText: "يوم / شهر / سنة",
+                placeholderText: state.syptomStartDate ?? "يوم / شهر / سنة",
                 onDateSelected: (pickedDate) {
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSyptomStartDate(pickedDate);
                   log("xxx: pickedDate: $pickedDate");
                 },
               ),
@@ -69,7 +72,7 @@ class EyeDataEntryFormFields extends StatelessWidget {
               verticalSpacing(10),
               UserSelectionContainer(
                 categoryLabel: "مدة الأعراض",
-                containerHintText: "اختر مدة الأعراض",
+                containerHintText: state.symptomDuration ?? "اختر مدة الأعراض",
                 options: [
                   "يوم",
                   "يومين",
@@ -84,7 +87,11 @@ class EyeDataEntryFormFields extends StatelessWidget {
                   "شهر",
                   "اكثر من شهر",
                 ],
-                onOptionSelected: (value) {},
+                onOptionSelected: (value) {
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSymptomDuration(value);
+                },
                 bottomSheetTitle: "اختر مدة الأعراض",
                 searchHintText: "اختر مدة الأعراض",
               ),
@@ -116,9 +123,12 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(10),
               DateTimePickerContainer(
-                placeholderText: "يوم / شهر / سنة",
+                placeholderText:
+                    state.procedureDateSelection ?? "يوم / شهر / سنة",
                 onDateSelected: (pickedDate) {
-                  log("xxx: pickedDate: $pickedDate");
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateProcedureDate(pickedDate);
                 },
               ),
               verticalSpacing(16),
@@ -172,15 +182,39 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {},
-                  );
+              BlocListener<EyesDataEntryCubit, EyesDataEntryState>(
+                listenWhen: (previous, current) =>
+                    previous.uploadMedicalExaminationStatus !=
+                    current.uploadMedicalExaminationStatus,
+                listener: (context, state) async {
+                  if (state.uploadMedicalExaminationStatus ==
+                      UploadImageRequestStatus.success) {
+                    await showSuccess(state.message);
+                  }
+                  if (state.uploadMedicalExaminationStatus ==
+                      UploadImageRequestStatus.failure) {
+                    await showError(state.message);
+                  }
                 },
+                child: SelectImageContainer(
+                  imagePath: "assets/images/photo_icon.png",
+                  label: "ارفق صورة",
+                  onTap: () async {
+                    await showImagePicker(
+                      context,
+                      onImagePicked: (isImagePicked) async {
+                        final picker = getIt.get<ImagePickerService>();
+                        if (isImagePicked && picker.isImagePickedAccepted) {
+                          await context
+                              .read<EyesDataEntryCubit>()
+                              .uploadMedicalExaminationImage(
+                                imagePath: picker.pickedImage!.path,
+                              );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
               verticalSpacing(16),
               Text(
@@ -201,10 +235,14 @@ class EyeDataEntryFormFields extends StatelessWidget {
               UserSelectionContainer(
                 allowManualEntry: true,
                 categoryLabel: "المركز / المستشفى",
-                containerHintText: "اختر اسم المستشفى/المركز",
+                containerHintText:
+                    state.selectedHospitalCenter ?? "اختر اسم المستشفى/المركز",
                 options: hosptitalsNames,
                 onOptionSelected: (value) {
                   log("xxx:Selected: $value");
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSelectedHospitalName(value);
                 },
                 bottomSheetTitle: 'اختر اسم المستشفى/المركز',
                 searchHintText: "ابحث عن اسم المستشفى/المركز",
@@ -219,7 +257,8 @@ class EyeDataEntryFormFields extends StatelessWidget {
                       .read<EyesDataEntryCubit>()
                       .updateSelectedCountry(selectedCountry);
                 },
-                containerHintText: "اختر اسم الدولة",
+                containerHintText:
+                    state.selectedCountryName ?? "اختر اسم الدولة",
                 searchHintText: "ابحث عن اسم الدولة",
               ),
               verticalSpacing(16),
@@ -229,7 +268,8 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(10),
               WordLimitTextField(
-                controller: TextEditingController(),
+                controller:
+                    context.read<EyesDataEntryCubit>().personalNotesController,
               ),
               verticalSpacing(32),
               submitXrayDataEntryButtonBlocConsumer(context),

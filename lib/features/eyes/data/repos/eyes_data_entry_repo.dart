@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
@@ -42,6 +43,22 @@ class EyesDataEntryRepo {
     }
   }
 
+  Future<ApiResult<UploadImageResponseModel>> uploadMedicalExaminationImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _eyesService.uploadMedicalExaminationImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
   // Future<ApiResult<List<String>>> getAllSurgeriesRegions({
   //   required String language,
   // }) async {
