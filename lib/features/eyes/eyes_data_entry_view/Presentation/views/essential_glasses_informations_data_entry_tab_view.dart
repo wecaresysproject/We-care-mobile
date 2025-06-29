@@ -55,7 +55,7 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               UserSelectionContainer(
                 categoryLabel: "اسم الطبيب",
                 containerHintText: state.doctorName ?? "اختر اسم الطبيب",
-                options: [],
+                options: state.doctorNames,
                 onOptionSelected: (value) {
                   context
                       .read<GlassesDataEntryCubit>()

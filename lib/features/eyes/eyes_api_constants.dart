@@ -9,6 +9,7 @@ class EyesApiConstants {
       "/EyesDataEntry/submit-glasses-lens";
   static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
   static const getAllLensTypes = "/EyesDataEntry/lens-types";
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getSubSurgeriesRegions =
       "/api/EnterSectionSurgery/sub-surgery-regions-connected";
 

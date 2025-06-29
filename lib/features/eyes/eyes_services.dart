@@ -6,7 +6,6 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
 
@@ -48,6 +47,11 @@ abstract class EyesModuleServices {
   Future<dynamic> getAllLensTypes(
     @Query("language") String language,
     @Query("UserType") String userType,
+  );
+  @GET(EyesApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
   );
   @GET(SurgeriesApiConstants.surgeryPurpose)
   Future<dynamic> getSurgeryPurpose(
