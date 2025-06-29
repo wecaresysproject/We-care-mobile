@@ -16,7 +16,7 @@ abstract class EyesModuleServices {
   factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesModuleServices;
 
   @MultiPart()
-  @POST(SurgeriesApiConstants.uploadReportEndpoint)
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
   Future<UploadReportResponseModel> uploadReportImage(
     @Part() File report,
     @Header("Content-Type") String contentType,

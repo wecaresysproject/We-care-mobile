@@ -10,7 +10,7 @@ class EyesDataEntryState extends Equatable {
   final String? surgeryNameSelection;
   final String message; // error or success message
   final String? reportImageUploadedUrl;
-  final UploadReportRequestStatus surgeryUploadReportStatus;
+  final UploadReportRequestStatus uploadReportStatus;
   final List<String> countriesNames;
   final String? selectedCountryName;
   final List<String> bodyParts;
@@ -37,7 +37,7 @@ class EyesDataEntryState extends Equatable {
     this.surgeryNameSelection,
     this.message = '',
     this.reportImageUploadedUrl,
-    this.surgeryUploadReportStatus = UploadReportRequestStatus.initial,
+    this.uploadReportStatus = UploadReportRequestStatus.initial,
     this.countriesNames = const [],
     this.selectedCountryName,
     this.bodyParts = const [],
@@ -65,7 +65,7 @@ class EyesDataEntryState extends Equatable {
           surgeryNameSelection: null,
           message: '',
           reportImageUploadedUrl: null,
-          surgeryUploadReportStatus: UploadReportRequestStatus.initial,
+          uploadReportStatus: UploadReportRequestStatus.initial,
           countriesNames: const [],
           selectedCountryName: null,
           bodyParts: const [],
@@ -93,7 +93,7 @@ class EyesDataEntryState extends Equatable {
     String? surgeryNameSelection,
     String? message,
     String? reportImageUploadedUrl,
-    UploadReportRequestStatus? surgeryUploadReportStatus,
+    UploadReportRequestStatus? uploadReportStatus,
     List<String>? countriesNames,
     String? selectedCountryName,
     List<String>? bodyParts,
@@ -123,8 +123,7 @@ class EyesDataEntryState extends Equatable {
       message: message ?? this.message,
       reportImageUploadedUrl:
           reportImageUploadedUrl ?? this.reportImageUploadedUrl,
-      surgeryUploadReportStatus:
-          surgeryUploadReportStatus ?? this.surgeryUploadReportStatus,
+      uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       bodyParts: bodyParts ?? this.bodyParts,
@@ -156,7 +155,7 @@ class EyesDataEntryState extends Equatable {
         surgeryNameSelection,
         message,
         reportImageUploadedUrl,
-        surgeryUploadReportStatus,
+        uploadReportStatus,
         countriesNames,
         selectedCountryName,
         bodyParts,

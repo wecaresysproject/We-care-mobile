@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
@@ -47,11 +51,21 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              ...selectedSyptoms.map(
-                (symptom) => buildCustomContainer(
-                  symptom: symptom,
-                ),
-              ),
+              ...selectedSyptoms.isNotEmpty
+                  ? selectedSyptoms.map(
+                      (symptom) => buildCustomContainer(
+                        symptom: symptom,
+                      ),
+                    )
+                  : [
+                      buildCustomContainer(
+                        symptom: SymptomItem(
+                          id: 'default',
+                          title: 'لا يوجد عرض طبي مرفق',
+                          isSelected: false,
+                        ),
+                      ),
+                    ],
               verticalSpacing(10),
               UserSelectionContainer(
                 categoryLabel: "مدة الأعراض",
@@ -80,11 +94,21 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              ...selectedSyptoms.map(
-                (symptom) => buildCustomContainer(
-                  symptom: symptom,
-                ),
-              ),
+              ...selectedSyptoms.isNotEmpty
+                  ? selectedSyptoms.map(
+                      (symptom) => buildCustomContainer(
+                        symptom: symptom,
+                      ),
+                    )
+                  : [
+                      buildCustomContainer(
+                        symptom: SymptomItem(
+                          id: 'default',
+                          title: 'لا يوجد احراء طبي',
+                          isSelected: false,
+                        ),
+                      ),
+                    ],
               verticalSpacing(10),
               Text(
                 "تاريخ الإجراء الطبي",
@@ -109,15 +133,38 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 onTap: () {},
               ),
               verticalSpacing(8),
-              SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة للتقرير",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {},
-                  );
+              BlocListener<EyesDataEntryCubit, EyesDataEntryState>(
+                listenWhen: (previous, current) =>
+                    previous.uploadReportStatus != current.uploadReportStatus,
+                listener: (context, state) async {
+                  if (state.uploadReportStatus ==
+                      UploadReportRequestStatus.success) {
+                    await showSuccess(state.message);
+                  }
+                  if (state.uploadReportStatus ==
+                      UploadReportRequestStatus.failure) {
+                    await showError(state.message);
+                  }
                 },
+                child: SelectImageContainer(
+                  imagePath: "assets/images/photo_icon.png",
+                  label: "ارفق صورة",
+                  onTap: () async {
+                    await showImagePicker(
+                      context,
+                      onImagePicked: (isImagePicked) async {
+                        final picker = getIt.get<ImagePickerService>();
+                        if (isImagePicked && picker.isImagePickedAccepted) {
+                          await context
+                              .read<EyesDataEntryCubit>()
+                              .uploadReportImagePicked(
+                                imagePath: picker.pickedImage!.path,
+                              );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
               verticalSpacing(16),
               Text(
@@ -225,7 +272,6 @@ Widget buildCustomContainer({required SymptomItem symptom}) {
     padding: EdgeInsets.only(right: 16.w, top: 4.h, bottom: 4.h),
     margin: EdgeInsets.only(bottom: 10.h),
     decoration: BoxDecoration(
-      // color: AppColorsManager.mainDarkBlue,
       borderRadius: BorderRadius.circular(
         8.r,
       ),

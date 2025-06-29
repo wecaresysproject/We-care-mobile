@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
@@ -22,22 +25,22 @@ class EyesDataEntryRepo {
     }
   }
 
-  // Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
-  //   required String language,
-  //   required String contentType,
-  //   required File image,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.uploadReportImage(
-  //       image,
-  //       contentType,
-  //       language,
-  //     );
-  //     return ApiResult.success(response);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _eyesService.uploadReportImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<List<String>>> getAllSurgeriesRegions({
   //   required String language,

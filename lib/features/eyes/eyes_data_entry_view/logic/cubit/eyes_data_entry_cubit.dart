@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,37 +109,37 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   //   await emitGetSurgeryStatus();
   // }
 
-  // Future<void> uploadReportImagePicked({required String imagePath}) async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeryUploadReportStatus: UploadReportRequestStatus.initial,
-  //     ),
-  //   );
-  //   final response = await _surgeriesDataEntryRepo.uploadReportImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           reportImageUploadedUrl: response.reportUrl,
-  //           surgeryUploadReportStatus: UploadReportRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           surgeryUploadReportStatus: UploadReportRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> uploadReportImagePicked({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        uploadReportStatus: UploadReportRequestStatus.initial,
+      ),
+    );
+    final response = await _eyesDataEntryRepo.uploadReportImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            reportImageUploadedUrl: response.reportUrl,
+            uploadReportStatus: UploadReportRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   // Future<void> emitGetAllTechUsed() async {
   //   final response = await _surgeriesDataEntryRepo.getAllTechUsed(
