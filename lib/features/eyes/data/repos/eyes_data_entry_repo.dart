@@ -1,3 +1,6 @@
+import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/networking/api_error_handler.dart';
+import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
 
 class EyesDataEntryRepo {
@@ -6,18 +9,18 @@ class EyesDataEntryRepo {
   EyesDataEntryRepo({required EyesModuleServices eyesService})
       : _eyesService = eyesService;
 
-  // Future<ApiResult<List<CountryModel>>> getCountriesData(
-  //     {required String language}) async {
-  //   try {
-  //     final response = await eyesService.getCountries(language);
-  //     final countries = (response['data'] as List)
-  //         .map<CountryModel>((e) => CountryModel.fromJson(e))
-  //         .toList();
-  //     return ApiResult.success(countries);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getCountriesData(
+      {required String language}) async {
+    try {
+      final response = await _eyesService.getCountries(language);
+      final countriesNames = (response['data'] as List)
+          .map((e) => CountryModel.fromJson(e).name)
+          .toList();
+      return ApiResult.success(countriesNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
   //   required String language,

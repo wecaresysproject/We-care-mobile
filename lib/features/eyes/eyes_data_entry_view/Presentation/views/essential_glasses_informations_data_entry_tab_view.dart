@@ -72,15 +72,11 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               UserSelectionContainer(
                 allowManualEntry: true,
                 categoryLabel: "المعمل / المستشفى",
-                // containerHintText:
-                //     state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
-
                 options: hosptitalsNames,
                 onOptionSelected: (value) {
                   context
                       .read<GlassesDataEntryCubit>()
                       .updateSelectedHospital(value);
-                  // log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: 'اختر اسم المستشفى/المركز',
                 searchHintText: "ابحث عن اسم المستشفى/المركز",

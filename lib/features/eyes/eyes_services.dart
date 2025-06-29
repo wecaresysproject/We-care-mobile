@@ -15,9 +15,6 @@ part 'eyes_services.g.dart';
 abstract class EyesModuleServices {
   factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesModuleServices;
 
-  @GET("http://147.93.57.70/api/countries")
-  Future<dynamic> getCountries(@Query('language') String language);
-
   @MultiPart()
   @POST(SurgeriesApiConstants.uploadReportEndpoint)
   Future<UploadReportResponseModel> uploadReportImage(
@@ -52,6 +49,10 @@ abstract class EyesModuleServices {
   Future<dynamic> getAllDoctors(
     @Query("usertype") String userType,
     @Query("Language") String language,
+  );
+  @GET(EyesApiConstants.getAllCountries)
+  Future<dynamic> getCountries(
+    @Query('language') String language,
   );
   @GET(SurgeriesApiConstants.surgeryPurpose)
   Future<dynamic> getSurgeryPurpose(

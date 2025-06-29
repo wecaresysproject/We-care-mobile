@@ -26,7 +26,7 @@ class EyesDataEntryState extends Equatable {
   final String updatedSurgeryId;
   final String? surgeonName;
   final String? selectedHospitalCenter;
-  final String? internistName; // طبيب باطنه
+  final String? doctorName;
 
   const EyesDataEntryState({
     this.surgeriesDataEntryStatus = RequestStatus.initial,
@@ -53,7 +53,7 @@ class EyesDataEntryState extends Equatable {
     this.updatedSurgeryId = '',
     this.surgeonName,
     this.selectedHospitalCenter,
-    this.internistName,
+    this.doctorName,
   }) : super();
 
   const EyesDataEntryState.initialState()
@@ -81,7 +81,7 @@ class EyesDataEntryState extends Equatable {
           updatedSurgeryId: '',
           surgeonName: null,
           selectedHospitalCenter: null,
-          internistName: null,
+          doctorName: null,
         );
 
   EyesDataEntryState copyWith({
@@ -109,7 +109,7 @@ class EyesDataEntryState extends Equatable {
     String? updatedSurgeryId,
     String? surgeonName,
     String? selectedHospitalCenter,
-    String? internistName,
+    String? doctorName,
   }) {
     return EyesDataEntryState(
       surgeriesDataEntryStatus:
@@ -142,7 +142,7 @@ class EyesDataEntryState extends Equatable {
       surgeonName: surgeonName ?? this.surgeonName,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
-      internistName: internistName ?? this.internistName,
+      doctorName: doctorName ?? this.doctorName,
     );
   }
 
@@ -172,6 +172,6 @@ class EyesDataEntryState extends Equatable {
         updatedSurgeryId,
         surgeonName,
         selectedHospitalCenter,
-        internistName,
+        doctorName,
       ];
 }

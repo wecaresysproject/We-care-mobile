@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
 
 part 'eyes_data_entry_state.dart';
@@ -53,17 +54,21 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   //   emit(state.copyWith(selectedHospitalCenter: selectedHospital));
   // }
 
-  // void updateSelectedInternist(String? selectedInternist) {
-  //   emit(state.copyWith(internistName: selectedInternist));
-  // }
+  void updateSelectedDoctorName(String? val) {
+    emit(state.copyWith(doctorName: val));
+  }
 
   // void updateSelectedSurgeonName(String? surgeonName) {
   //   emit(state.copyWith(surgeonName: surgeonName));
   // }
 
-  // void updateSelectedCountry(String? selectedCountry) {
-  //   emit(state.copyWith(selectedCountryName: selectedCountry));
-  // }
+  getInitialRequests() {
+    emitCountriesData();
+  }
+
+  void updateSelectedCountry(String? selectedCountry) {
+    emit(state.copyWith(selectedCountryName: selectedCountry));
+  }
 
   // void updateSurgeryBodyPart(String? bodyPart) {
   //   emit(state.copyWith(surgeryBodyPartSelection: bodyPart));
@@ -299,28 +304,28 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   //   );
   // }
 
-  // Future<void> emitCountriesData() async {
-  //   final response = await _surgeriesDataEntryRepo.getCountriesData(
-  //     language: AppStrings.arabicLang,
-  //   );
+  Future<void> emitCountriesData() async {
+    final response = await _eyesDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
 
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           countriesNames: response.map((e) => e.name).toList(),
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+    response.when(
+      success: (countries) {
+        emit(
+          state.copyWith(
+            countriesNames: countries,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   // Future<void> emitSurgeryPurpose() async {
   //   final response = await _surgeriesDataEntryRepo.getSurgeryPurpose(

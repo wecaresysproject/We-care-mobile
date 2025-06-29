@@ -10,17 +10,8 @@ class EyesApiConstants {
   static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
   static const getAllLensTypes = "/EyesDataEntry/lens-types";
   static const getAllDoctors = "/Doctor/GetAllDcotors";
-  static const getSubSurgeriesRegions =
-      "/api/EnterSectionSurgery/sub-surgery-regions-connected";
+  static const getAllCountries = "/countries";
 
-  static const getSurgeryName =
-      "/api/EnterSectionSurgery/surgery-names-connected";
-  static const getAllTechUsed =
-      "/api/EnterSectionSurgery/used-techniques-connected"; // التقنيه المستخدمه
-  static const getSurgeryStatus =
-      "/api/EnterSectionSurgery/status-surgery"; // التقنيه المستخدمه
-  static const surgeryPurpose = "/api/EnterSectionSurgery/purpose";
-  static const postSurgeryEndpoint = "/api/EnterSectionSurgery";
   //View Entry
   static const deleteSurgeryById = "/api/EnterSectionSurgery";
   static const getAllSurgeries = "/api/EnterSectionSurgery";
