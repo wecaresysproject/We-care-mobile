@@ -157,6 +157,11 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     emit(state.copyWith(isUVProtection: val));
   }
 
+  Future<void> getInitialRequests() async {
+    emitGetAllLensTypes();
+    emitGetAllLensSurfacesTypes();
+  }
+
   Future<void> submitGlassesEssentialDataEntryEndPoint(
       {required S locale}) async {
     emit(
@@ -300,27 +305,51 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     );
   }
 
-  // Future<void> emitGetSurgeryStatus() async {
-  //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allSurgeryStatuses: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> emitGetAllLensTypes() async {
+    final response = await _glassesDataEntryRepo.getAllLensTypes(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            lensTypes: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitGetAllLensSurfacesTypes() async {
+    final response = await _glassesDataEntryRepo.getAllLensSurfaces(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            lensSurfcacesTypes: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
   // // المناطق العمليه الفرعيه
 
   // Future<void> emitGetAllSubSurgeriesRegions(

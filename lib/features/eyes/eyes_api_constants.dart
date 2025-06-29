@@ -1,12 +1,14 @@
 class EyesApiConstants {
-  static const baseUrl = "http://147.93.57.70:5299";
+  static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
   // static const getCountries = "/api/EnterSectionSurgery/countries";
   static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
-  static const postGlassesEssentialDataEntryEndPoint = "";
-  static const postGlassesLensDataEntryEndPoint = "";
-  static const getAllSurgeriesRegions = // العضو
-      "/api/EnterSectionSurgery/surgery-regions";
+  static const postGlassesEssentialDataEntryEndPoint =
+      "/EyesDataEntry/submit-glasses-essential";
+  static const postGlassesLensDataEntryEndPoint =
+      "/EyesDataEntry/submit-glasses-lens";
+  static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
+  static const getAllLensTypes = "/EyesDataEntry/lens-types";
   static const getSubSurgeriesRegions =
       "/api/EnterSectionSurgery/sub-surgery-regions-connected";
 

@@ -29,22 +29,25 @@ abstract class EyesModuleServices {
   @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
   Future<dynamic> postGlassesEssentialDataEntryEndPoint(
     @Query("language") String language,
-    @Query("userType") String userType,
+    @Query("UserType") String userType,
     @Body() EyeGlassesEssentialDataRequestBodyModel requestBody,
   );
   @POST(EyesApiConstants.postGlassesLensDataEntryEndPoint)
   Future<dynamic> postGlassesLensDataEntry(
     @Query("language") String language,
-    @Query("userType") String userType,
+    @Query("UserType") String userType,
     @Body() EyeGlassesLensDataRequestBodyModel requestBody,
   );
 
-  @GET(SurgeriesApiConstants.getAllSurgeries)
-  Future<GetUserSurgeriesResponseModal> getSurgeries(
+  @GET(EyesApiConstants.getAllLensSurfaces)
+  Future<dynamic> getAllLensSurfaces(
     @Query("language") String language,
-    @Query("userType") String userType,
-    @Query("page") int page,
-    @Query("pageSize") int pageSize,
+    @Query("UserType") String userType,
+  );
+  @GET(EyesApiConstants.getAllLensTypes)
+  Future<dynamic> getAllLensTypes(
+    @Query("language") String language,
+    @Query("UserType") String userType,
   );
   @GET(SurgeriesApiConstants.surgeryPurpose)
   Future<dynamic> getSurgeryPurpose(

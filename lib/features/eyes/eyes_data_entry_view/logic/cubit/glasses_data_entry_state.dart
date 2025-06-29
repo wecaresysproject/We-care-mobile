@@ -9,6 +9,8 @@ class GlassesDataEntryState extends Equatable {
   final String? examinationDateSelection;
   final String message; // error or success message
   final List<String> doctorNames;
+  final List<String> lensTypes;
+  final List<String> lensSurfcacesTypes;
   final bool isEditMode;
   final String decoumentId;
   final String? selectedHospitalCenter;
@@ -34,6 +36,8 @@ class GlassesDataEntryState extends Equatable {
     this.examinationDateSelection,
     this.message = '',
     this.doctorNames = const [],
+    this.lensTypes = const [],
+    this.lensSurfcacesTypes = const [],
     this.isEditMode = false,
     this.decoumentId = '',
     this.selectedHospitalCenter,
@@ -59,6 +63,8 @@ class GlassesDataEntryState extends Equatable {
           examinationDateSelection: null,
           message: '',
           doctorNames: const [],
+          lensTypes: const [],
+          lensSurfcacesTypes: const [],
           isEditMode: false,
           decoumentId: '',
           selectedHospitalCenter: null,
@@ -84,6 +90,8 @@ class GlassesDataEntryState extends Equatable {
     String? examinationDateSelection,
     String? message,
     List<String>? doctorNames,
+    List<String>? lensTypes,
+    List<String>? lensSurfcacesTypes,
     bool? isEditMode,
     String? decoumentId,
     String? selectedHospitalCenter,
@@ -111,6 +119,8 @@ class GlassesDataEntryState extends Equatable {
           examinationDateSelection ?? this.examinationDateSelection,
       message: message ?? this.message,
       doctorNames: doctorNames ?? this.doctorNames,
+      lensTypes: lensTypes ?? this.lensTypes,
+      lensSurfcacesTypes: lensSurfcacesTypes ?? this.lensSurfcacesTypes,
       isEditMode: isEditMode ?? this.isEditMode,
       decoumentId: decoumentId ?? this.decoumentId,
       selectedHospitalCenter:
@@ -140,6 +150,8 @@ class GlassesDataEntryState extends Equatable {
         examinationDateSelection,
         message,
         doctorNames,
+        lensTypes,
+        lensSurfcacesTypes,
         isEditMode,
         decoumentId,
         selectedHospitalCenter,

@@ -40,7 +40,7 @@ class _GlassesInformationCategoryDataEntryViewState
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GlassesDataEntryCubit>(
-      create: (context) => getIt<GlassesDataEntryCubit>(),
+      create: (context) => getIt<GlassesDataEntryCubit>()..getInitialRequests(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,

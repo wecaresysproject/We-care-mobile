@@ -89,22 +89,39 @@ class GlassesDataEntryRepo {
   //   }
   // }
 
-  // Future<ApiResult<List<String>>> getAllSubSurgeriesRegions({
-  //   required String language,
-  //   required String region,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getAllSubSurgeriesRegions(
-  //       region,
-  //       language,
-  //     );
-  //     final partSubRegions =
-  //         (response['data'] as List).map((e) => e as String).toList();
-  //     return ApiResult.success(partSubRegions);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getAllLensSurfaces({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _eyesModuleServices.getAllLensSurfaces(
+        language,
+        userType,
+      );
+      final lensSurfaces =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(lensSurfaces);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllLensTypes({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _eyesModuleServices.getAllLensTypes(
+        language,
+        userType,
+      );
+      final lensTypes =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(lensTypes);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<List<String>>> getSurgeryNamesBasedOnRegion({
   //   required String language,
