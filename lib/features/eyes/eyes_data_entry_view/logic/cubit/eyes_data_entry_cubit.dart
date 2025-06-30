@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
 
@@ -102,6 +103,25 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   //   await emitCountriesData();
   //   await emitGetSurgeryStatus();
   // }
+
+  Future<String> getEyePartDescribtion({
+    required String selectedEyePart,
+  }) async {
+    final response = await _eyesDataEntryRepo.getEyePartDescribtion(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      selectedEyePart: selectedEyePart,
+    );
+
+    return response.when(
+      success: (response) {
+        return response;
+      },
+      failure: (error) {
+        return error.errors.first;
+      },
+    );
+  }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
     emit(

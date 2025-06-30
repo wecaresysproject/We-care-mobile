@@ -74,114 +74,23 @@ class EyesDataEntryRepo {
   //   }
   // }
 
-  // Future<ApiResult<List<String>>> getAllSubSurgeriesRegions({
-  //   required String language,
-  //   required String region,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getAllSubSurgeriesRegions(
-  //       region,
-  //       language,
-  //     );
-  //     final partSubRegions =
-  //         (response['data'] as List).map((e) => e as String).toList();
-  //     return ApiResult.success(partSubRegions);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> getEyePartDescribtion({
+    required String language,
+    required String userType,
+    required String selectedEyePart,
+  }) async {
+    try {
+      final response = await _eyesService.getEyePartDescribtion(
+        language,
+        userType,
+        selectedEyePart,
+      );
 
-  // Future<ApiResult<List<String>>> getSurgeryNamesBasedOnRegion({
-  //   required String language,
-  //   required String region,
-  //   required String subRegion,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getSurgeryNameBasedOnRegion(
-  //       region,
-  //       subRegion,
-  //       language,
-  //     );
-  //     final data = (response['data'] as List).map((e) => e as String).toList();
-  //     return ApiResult.success(data);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<List<String>>> getAllTechUsed({
-  //   required String language,
-  //   required String region,
-  //   required String subRegion,
-  //   required String surgeryName,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getAllTechUsed(
-  //       region,
-  //       subRegion,
-  //       surgeryName,
-  //       language,
-  //     );
-  //     final data = (response['data'] as List).map((e) => e as String).toList();
-
-  //     return ApiResult.success(data);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<List<String>>> getSurgeryStatus({
-  //   required String language,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getSurgeryStatus(
-  //       language,
-  //     );
-  //     final data = (response['data'] as List).map((e) => e as String).toList();
-
-  //     return ApiResult.success(data);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<String>> getSurgeryPurpose({
-  //   required String language,
-  //   required String region,
-  //   required String subRegion,
-  //   required String surgeryName,
-  //   required String techUsed,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getSurgeryPurpose(
-  //       region,
-  //       subRegion,
-  //       surgeryName,
-  //       techUsed,
-  //       language,
-  //     );
-  //     final data = (response['data'][0] as String);
-
-  //     return ApiResult.success(data);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
-
-  // Future<ApiResult<String>> postModuleData({
-  //   required String language,
-  //   required SurgeryRequestBodyModel requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.postSurgeryData(
-  //       language,
-  //       requestBody,
-  //     );
-  //     return ApiResult.success(response["message"]);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+      return ApiResult.success(response['data']['description']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   // Future<ApiResult<String>> updateSurgeryDocumentById({
   //   required String id,

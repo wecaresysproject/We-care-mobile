@@ -29,6 +29,12 @@ abstract class EyesModuleServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+  @GET(EyesApiConstants.getEyePartDescribtion)
+  Future<dynamic> getEyePartDescribtion(
+    @Query("language") String language,
+    @Query("UserType") String userType,
+    @Query("eyeSectionName") String eyePartName,
+  );
 
   @POST(EyesApiConstants.postGlassesLensDataEntryEndPoint)
   Future<dynamic> postGlassesLensDataEntry(
