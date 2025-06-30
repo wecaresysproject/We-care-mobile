@@ -23,7 +23,7 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data
 
 class EyeDataEntryFormFields extends StatelessWidget {
   const EyeDataEntryFormFields({super.key, required this.selectedSyptoms});
-  final List<SymptomItem> selectedSyptoms;
+  final List<SymptomAndProcedureItem> selectedSyptoms;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class EyeDataEntryFormFields extends StatelessWidget {
                     )
                   : [
                       buildCustomContainer(
-                        symptom: SymptomItem(
+                        symptom: SymptomAndProcedureItem(
                           id: 'default',
                           title: 'لا يوجد عرض طبي مرفق',
                           isSelected: false,
@@ -109,7 +109,7 @@ class EyeDataEntryFormFields extends StatelessWidget {
                     )
                   : [
                       buildCustomContainer(
-                        symptom: SymptomItem(
+                        symptom: SymptomAndProcedureItem(
                           id: 'default',
                           title: 'لا يوجد احراء طبي',
                           isSelected: false,
@@ -305,7 +305,7 @@ Widget submitXrayDataEntryButtonBlocConsumer(BuildContext context) {
   );
 }
 
-Widget buildCustomContainer({required SymptomItem symptom}) {
+Widget buildCustomContainer({required SymptomAndProcedureItem symptom}) {
   return Container(
     width: double.infinity,
     // height: 30,

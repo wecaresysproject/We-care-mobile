@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/eyes/data/models/eye_part_syptoms_and_procedures_response_model.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
 
 part 'eyes_data_entry_state.dart';
@@ -188,30 +189,30 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     );
   }
 
-  // Future<void> emitGetAllTechUsed() async {
-  //   final response = await _surgeriesDataEntryRepo.getAllTechUsed(
-  //     language: AppStrings.arabicLang,
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: state.selectedSubSurgery!,
-  //     surgeryName: state.surgeryNameSelection!,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allTechUsed: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> getEyePartSyptomsAndProcedures(
+      {required String selectedEyePart}) async {
+    final response = await _eyesDataEntryRepo.getEyePartSyptomsAndProcedures(
+      language: AppStrings.arabicLang,
+      selectedEyePart: selectedEyePart,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (eyePartSyptomsAndProcedures) {
+        emit(
+          state.copyWith(
+            eyePartSyptomsAndProcedures: eyePartSyptomsAndProcedures,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   // Future<void> submitUpdatedSurgery() async {
   //   emit(

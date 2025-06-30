@@ -15,6 +15,7 @@ class EyesDataEntryState extends Equatable {
   final UploadReportRequestStatus uploadReportStatus;
   final String? medicalExaminationImageUploadedUrl;
   final UploadImageRequestStatus uploadMedicalExaminationStatus;
+  final EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures;
 
   final List<String> countriesNames;
   final String? selectedCountryName;
@@ -63,6 +64,7 @@ class EyesDataEntryState extends Equatable {
     this.surgeonName,
     this.selectedHospitalCenter,
     this.doctorName,
+    this.eyePartSyptomsAndProcedures,
   }) : super();
 
   const EyesDataEntryState.initialState()
@@ -95,6 +97,7 @@ class EyesDataEntryState extends Equatable {
           surgeonName: null,
           selectedHospitalCenter: null,
           doctorName: null,
+          eyePartSyptomsAndProcedures: null,
         );
 
   EyesDataEntryState copyWith({
@@ -127,6 +130,7 @@ class EyesDataEntryState extends Equatable {
     String? surgeonName,
     String? selectedHospitalCenter,
     String? doctorName,
+    EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
   }) {
     return EyesDataEntryState(
       surgeriesDataEntryStatus:
@@ -166,6 +170,8 @@ class EyesDataEntryState extends Equatable {
           selectedHospitalCenter ?? this.selectedHospitalCenter,
       doctorName: doctorName ?? this.doctorName,
       symptomDuration: symptomDuration ?? this.symptomDuration,
+      eyePartSyptomsAndProcedures:
+          eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
     );
   }
 
@@ -200,5 +206,6 @@ class EyesDataEntryState extends Equatable {
         surgeonName,
         selectedHospitalCenter,
         doctorName,
+        eyePartSyptomsAndProcedures,
       ];
 }

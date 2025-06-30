@@ -22,6 +22,7 @@ abstract class EyesModuleServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+
   @MultiPart()
   @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
   Future<UploadImageResponseModel> uploadMedicalExaminationImage(
@@ -29,6 +30,13 @@ abstract class EyesModuleServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+  @GET(EyesApiConstants.getEyePartSyptomsAndProcedures)
+  Future<dynamic> getEyePartSyptomsAndProcedures(
+    @Query("language") String language,
+    @Query("UserType") String userType,
+    @Query("sectionId") String eyePartName,
+  );
+
   @GET(EyesApiConstants.getEyePartDescribtion)
   Future<dynamic> getEyePartDescribtion(
     @Query("language") String language,

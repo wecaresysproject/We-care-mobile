@@ -10,7 +10,7 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data
 
 class EyeDataEntry extends StatelessWidget {
   const EyeDataEntry({super.key, required this.selectedSyptoms});
-  final List<SymptomItem> selectedSyptoms;
+  final List<SymptomAndProcedureItem> selectedSyptoms;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<EyesDataEntryCubit>(

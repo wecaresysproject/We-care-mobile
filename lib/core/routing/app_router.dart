@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
@@ -12,6 +14,7 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/ey
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/glasses_information_category_data_entry_view.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/eye_or_galsses_view.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/eyes_or_glasses_data_view.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/glasses_information_view.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
@@ -317,16 +320,19 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) => EyeDataEntry(
-            selectedSyptoms:
-                result?['selectedSymptoms'] ?? [] as List<SymptomItem>,
+            selectedSyptoms: result?['selectedSymptoms'] ??
+                [] as List<SymptomAndProcedureItem>,
           ),
         );
       case Routes.eyeProceduresAndSyptomsDataEntry:
         final result = arguments as Map<String, dynamic>?;
 
         return MaterialPageRoute(
-          builder: (context) => EyeProceduresAndSyptomsDataEntry(
-            selectedEyePart: result?['eyePart'] as String,
+          builder: (context) => BlocProvider<EyesDataEntryCubit>(
+            create: (context) => getIt.get<EyesDataEntryCubit>(),
+            child: EyeProceduresAndSyptomsDataEntry(
+              selectedEyePart: result?['eyePart'] as String,
+            ),
           ),
         );
       case Routes.familyMemeberGeneticDiseaseDataEntryView:

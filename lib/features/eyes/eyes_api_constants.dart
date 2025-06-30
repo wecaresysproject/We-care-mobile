@@ -8,6 +8,8 @@ class EyesApiConstants {
   static const postGlassesLensDataEntryEndPoint =
       "/EyesDataEntry/submit-glasses-lens";
   static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
+  static const getEyePartSyptomsAndProcedures =
+      "/EyesDataEntry/eye-part-details";
   static const getEyePartDescribtion = "/EyesDataEntry/eye-section-description";
   static const getAllLensTypes = "/EyesDataEntry/lens-types";
   static const getAllDoctors = "/Doctor/GetAllDcotors";

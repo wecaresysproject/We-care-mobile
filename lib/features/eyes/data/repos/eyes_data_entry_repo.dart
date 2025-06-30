@@ -5,6 +5,7 @@ import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/eyes/data/models/eye_part_syptoms_and_procedures_response_model.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
 
 class EyesDataEntryRepo {
@@ -87,6 +88,27 @@ class EyesDataEntryRepo {
       );
 
       return ApiResult.success(response['data']['description']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<EyePartSyptomsAndProceduresResponseModel>>
+      getEyePartSyptomsAndProcedures({
+    required String language,
+    required String userType,
+    required String selectedEyePart,
+  }) async {
+    try {
+      final response = await _eyesService.getEyePartSyptomsAndProcedures(
+        language,
+        userType,
+        selectedEyePart,
+      );
+
+      return ApiResult.success(
+        EyePartSyptomsAndProceduresResponseModel.fromJson(response['data']),
+      );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

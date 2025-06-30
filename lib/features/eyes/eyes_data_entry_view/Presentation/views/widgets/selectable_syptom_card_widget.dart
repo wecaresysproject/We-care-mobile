@@ -6,11 +6,11 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 
-class SelectableSymptomCard extends StatelessWidget {
-  final SymptomItem symptom;
+class SelectableCard extends StatelessWidget {
+  final SymptomAndProcedureItem symptom;
   final VoidCallback onTap;
 
-  const SelectableSymptomCard({
+  const SelectableCard({
     super.key,
     required this.symptom,
     required this.onTap,
