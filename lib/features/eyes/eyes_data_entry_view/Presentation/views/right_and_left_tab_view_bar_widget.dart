@@ -292,7 +292,9 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                 .validate()) {
               await context
                   .read<GlassesDataEntryCubit>()
-                  .submitGlassesLensDataEntered();
+                  .submitGlassesLensDataEntered(
+                    locale: context.translate,
+                  );
             } else {
               await showError(
                   "يرجى ملء الحقول الأساسية المطلوبة لإتمام العملية.");

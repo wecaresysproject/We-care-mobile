@@ -28,7 +28,7 @@ class _GlassesInformationCategoryDataEntryViewState
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(initialIndex: 1, length: 2, vsync: this);
   }
 
   @override
@@ -39,84 +39,90 @@ class _GlassesInformationCategoryDataEntryViewState
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<GlassesDataEntryCubit>(
-      create: (context) => getIt<GlassesDataEntryCubit>()..getInitialRequests(),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  CustomAppBarWidget(
-                    haveBackArrow: true,
-                  ),
-                  verticalSpacing(20),
-                ],
+    return DefaultTabController(
+      length: 2,
+      child: BlocProvider<GlassesDataEntryCubit>(
+        create: (context) =>
+            getIt<GlassesDataEntryCubit>()..getInitialRequests(),
+        child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+          ),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    CustomAppBarWidget(
+                      haveBackArrow: true,
+                    ),
+                    verticalSpacing(20),
+                  ],
+                ),
               ),
-            ),
-            // Tab Bar using single TabController instance
-            Expanded(
-              child: Column(
-                children: [
-                  TabBar(
-                    dividerColor: Color(0xff555555),
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    indicatorPadding:
-                        const EdgeInsets.symmetric(horizontal: 16),
-                    automaticIndicatorColorAdjustment: false,
-                    indicatorWeight: 2.5,
-                    tabs: const [
-                      Tab(
-                        text: 'البيانات الأساسية للنظارة',
-                      ),
-                      Tab(
-                        text: 'بيانات لكل عدسة',
-                      ),
-                    ],
-                    controller: _tabController,
-                    labelStyle: AppTextStyles.font18blackWight500.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: "Cairo",
-                      color: AppColorsManager.mainDarkBlue,
-                    ),
-                    unselectedLabelStyle:
-                        AppTextStyles.font18blackWight500.copyWith(
-                      fontSize: 16.sp,
-                      fontFamily: "Cairo",
-                      color: Color(0xff555555),
-                    ),
-                    indicatorColor: AppColorsManager.mainDarkBlue,
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 16.h,
-                          ),
-                          child:
-                              const EssenstialGlassesInformationsDataDataEntryTabBar(),
+              // Tab Bar using single TabController instance
+              Expanded(
+                child: Column(
+                  children: [
+                    TabBar(
+                      dividerColor: Color(0xff555555),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      indicatorPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
+                      automaticIndicatorColorAdjustment: false,
+                      indicatorWeight: 2.5,
+                      tabs: const [
+                        Tab(
+                          text: 'بيانات لكل عدسة',
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 16.h,
-                          ),
-                          child: const RightAndLeftLensTabBarView(),
+                        Tab(
+                          text: 'البيانات الأساسية للنظارة',
                         ),
                       ],
+                      controller: _tabController,
+                      labelStyle: AppTextStyles.font18blackWight500.copyWith(
+                        fontSize: 16.sp,
+                        fontFamily: "Cairo",
+                        color: AppColorsManager.mainDarkBlue,
+                      ),
+                      unselectedLabelStyle:
+                          AppTextStyles.font18blackWight500.copyWith(
+                        fontSize: 16.sp,
+                        fontFamily: "Cairo",
+                        color: Color(0xff555555),
+                      ),
+                      indicatorColor: AppColorsManager.mainDarkBlue,
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 16.h,
+                            ),
+                            child: const RightAndLeftLensTabBarView(),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16.w,
+                              vertical: 16.h,
+                            ),
+                            child:
+                                EssenstialGlassesInformationsDataDataEntryTabBar(
+                              tabController: _tabController,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
