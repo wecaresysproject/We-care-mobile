@@ -18,12 +18,20 @@ import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_wi
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 
 class EyeDataEntryFormFields extends StatelessWidget {
-  const EyeDataEntryFormFields({super.key, required this.selectedSyptoms});
+  const EyeDataEntryFormFields({
+    super.key,
+    required this.selectedSyptoms,
+    required this.selectedProcedures,
+    required this.affectedEyePart,
+  });
   final List<SymptomAndProcedureItem> selectedSyptoms;
+  final List<SymptomAndProcedureItem> selectedProcedures;
+  final String affectedEyePart;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +48,9 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(10),
               DateTimePickerContainer(
+                containerBorderColor: state.syptomStartDate == null
+                    ? AppColorsManager.warningColor
+                    : AppColorsManager.textfieldOutsideBorderColor,
                 placeholderText: state.syptomStartDate ?? "يوم / شهر / سنة",
                 onDateSelected: (pickedDate) {
                   context
@@ -57,12 +68,12 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ...selectedSyptoms.isNotEmpty
                   ? selectedSyptoms.map(
                       (symptom) => buildCustomContainer(
-                        symptom: symptom,
+                        model: symptom,
                       ),
                     )
                   : [
                       buildCustomContainer(
-                        symptom: SymptomAndProcedureItem(
+                        model: SymptomAndProcedureItem(
                           id: 'default',
                           title: 'لا يوجد عرض طبي مرفق',
                           isSelected: false,
@@ -101,15 +112,15 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              ...selectedSyptoms.isNotEmpty
-                  ? selectedSyptoms.map(
-                      (symptom) => buildCustomContainer(
-                        symptom: symptom,
+              ...selectedProcedures.isNotEmpty
+                  ? selectedProcedures.map(
+                      (procedure) => buildCustomContainer(
+                        model: procedure,
                       ),
                     )
                   : [
                       buildCustomContainer(
-                        symptom: SymptomAndProcedureItem(
+                        model: SymptomAndProcedureItem(
                           id: 'default',
                           title: 'لا يوجد احراء طبي',
                           isSelected: false,
@@ -272,7 +283,12 @@ class EyeDataEntryFormFields extends StatelessWidget {
                     context.read<EyesDataEntryCubit>().personalNotesController,
               ),
               verticalSpacing(32),
-              submitXrayDataEntryButtonBlocConsumer(context),
+              submitXrayDataEntryButtonBlocConsumer(
+                context,
+                selectedSymptoms: selectedSyptoms,
+                selectedProcedures: selectedProcedures,
+                affectedEyePart: affectedEyePart,
+              ),
             ],
           ),
         );
@@ -281,34 +297,55 @@ class EyeDataEntryFormFields extends StatelessWidget {
   }
 }
 
-Widget submitXrayDataEntryButtonBlocConsumer(BuildContext context) {
-  return AppCustomButton(
-    isLoading: false,
-    title: context.translate.send,
-    onPressed: () async {
-      // if (state.isFormValidated) {
-      //   if (state.isEditMode) {
-      //     await context
-      //         .read<XRayDataEntryCubit>()
-      //         .submitEditsOnXRayDocument(S.of(context));
-      //   } else {
-      //     await context.read<XRayDataEntryCubit>().postRadiologyDataEntry(
-      //           context.translate,
-      //         );
-      //   }
-      //   log("xxx:Save Data Entry");
-      // } else {
-      //   log("form not validated");
-      // }
+Widget submitXrayDataEntryButtonBlocConsumer(
+  BuildContext context, {
+  required List<SymptomAndProcedureItem> selectedSymptoms,
+  required List<SymptomAndProcedureItem> selectedProcedures,
+  required String affectedEyePart,
+}) {
+  return BlocConsumer<EyesDataEntryCubit, EyesDataEntryState>(
+    listenWhen: (prev, curr) =>
+        curr.eyeDataEntryStatus == RequestStatus.failure ||
+        curr.eyeDataEntryStatus == RequestStatus.success,
+    buildWhen: (prev, curr) =>
+        prev.isFormValidated != curr.isFormValidated ||
+        prev.eyeDataEntryStatus != curr.eyeDataEntryStatus,
+    listener: (context, state) async {
+      if (state.eyeDataEntryStatus == RequestStatus.success) {
+        await showSuccess(state.message);
+        if (!context.mounted) return;
+        //* in order to catch it again to rebuild details view
+        context.pop(result: true);
+      } else {
+        await showError(state.message);
+      }
     },
-    isEnabled: false,
+    builder: (context, state) {
+      return AppCustomButton(
+        isLoading: state.eyeDataEntryStatus == RequestStatus.loading,
+        title: context.translate.send,
+        onPressed: () async {
+          if (state.isFormValidated) {
+            await context.read<EyesDataEntryCubit>().postEyeDataEntry(
+                  context.translate,
+                  symptoms: selectedSymptoms,
+                  procedures: selectedProcedures,
+                  affectedEyePart: affectedEyePart,
+                );
+            log("xxx:Save Data Entry");
+          } else {
+            log("form not validated");
+          }
+        },
+        isEnabled: state.isFormValidated ? true : false,
+      );
+    },
   );
 }
 
-Widget buildCustomContainer({required SymptomAndProcedureItem symptom}) {
+Widget buildCustomContainer({required SymptomAndProcedureItem model}) {
   return Container(
     width: double.infinity,
-    // height: 30,
     padding: EdgeInsets.only(right: 16.w, top: 4.h, bottom: 4.h),
     margin: EdgeInsets.only(bottom: 10.h),
     decoration: BoxDecoration(
@@ -322,7 +359,7 @@ Widget buildCustomContainer({required SymptomAndProcedureItem symptom}) {
     ),
     child: Expanded(
       child: Text(
-        symptom.title,
+        model.title,
         style: AppTextStyles.font14blackWeight400,
         textAlign: TextAlign.right,
         maxLines: 2,

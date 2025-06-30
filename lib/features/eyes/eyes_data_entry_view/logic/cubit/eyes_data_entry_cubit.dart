@@ -6,8 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_part_syptoms_and_procedures_response_model.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'eyes_data_entry_state.dart';
 
@@ -52,6 +55,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
 
   void updateSyptomStartDate(String? val) {
     emit(state.copyWith(syptomStartDate: val));
+    validateRequiredFields();
   }
 
   void updateSelectedDoctorName(String? val) {
@@ -208,6 +212,65 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postEyeDataEntry(
+    S locale, {
+    required List<SymptomAndProcedureItem> symptoms,
+    required List<SymptomAndProcedureItem> procedures,
+    required String affectedEyePart,
+  }) async {
+    emit(
+      state.copyWith(
+        eyeDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _eyesDataEntryRepo.postEyeDataEntry(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      requestBody: EyeDataEntryRequestBody(
+        affectedEyePart: affectedEyePart,
+        symptomStartDate: state.syptomStartDate!,
+        centerHospitalName:
+            state.selectedHospitalCenter ?? locale.no_data_entered,
+        country: state.selectedCountryName ?? locale.no_data_entered,
+        symptoms: symptoms.map((e) => e.title).toList().isEmpty
+            ? [locale.no_data_entered]
+            : symptoms.map((e) => e.title).toList(),
+        symptomDuration: state.symptomDuration ?? locale.no_data_entered,
+        medicalProcedures: procedures.map((e) => e.title).toList().isEmpty
+            ? [locale.no_data_entered]
+            : procedures.map((e) => e.title).toList(),
+        medicalReportDate:
+            state.procedureDateSelection ?? locale.no_data_entered,
+        medicalReportUrl:
+            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        medicalExaminationImages:
+            state.medicalExaminationImageUploadedUrl ?? locale.no_data_entered,
+        doctorName: state.doctorName ?? locale.no_data_entered,
+        additionalNotes: personalNotesController.text.isEmpty
+            ? '--'
+            : personalNotesController.text,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            eyeDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            eyeDataEntryStatus: RequestStatus.failure,
           ),
         );
       },
@@ -405,25 +468,21 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   // }
 
   // /// state.isXRayPictureSelected == false => image rejected
-  // void validateRequiredFields() {
-  //   if (state.surgeryDateSelection == null ||
-  //       state.surgeryNameSelection == null ||
-  //       state.surgeryBodyPartSelection == null ||
-  //       state.selectedTechUsed == null ||
-  //       state.selectedSubSurgery == null) {
-  //     emit(
-  //       state.copyWith(
-  //         isFormValidated: false,
-  //       ),
-  //     );
-  //   } else {
-  //     emit(
-  //       state.copyWith(
-  //         isFormValidated: true,
-  //       ),
-  //     );
-  //   }
-  // }
+  void validateRequiredFields() {
+    if (state.syptomStartDate == null) {
+      emit(
+        state.copyWith(
+          isFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isFormValidated: true,
+        ),
+      );
+    }
+  }
 
   // Future<void> postModuleData(S locale) async {
   //   final response = await _surgeriesDataEntryRepo.postModuleData(

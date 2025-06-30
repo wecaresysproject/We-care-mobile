@@ -1,6 +1,4 @@
 // Model for symptom items
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -102,6 +100,10 @@ class _EyeProceduresAndSyptomsDataEntryState
     return symptoms.where((symptom) => symptom.isSelected).toList();
   }
 
+  List<SymptomAndProcedureItem> getSelectedProcedures() {
+    return procedures.where((procedure) => procedure.isSelected).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,13 +188,15 @@ class _EyeProceduresAndSyptomsDataEntryState
             isEnabled: true,
             onPressed: () async {
               final selectedSymptoms = getSelectedSymptoms();
-              await context.pushNamed(
+              final selectedProcedures = getSelectedProcedures();
+              await context.pushReplacementNamed(
                 Routes.eyeDataEntry,
                 arguments: {
                   'selectedSymptoms': selectedSymptoms,
+                  'selectedProcedures': selectedProcedures,
+                  'affectedEyePart': widget.selectedEyePart,
                 },
               );
-              log("selectedSymptoms: ${selectedSymptoms.length}");
             },
           ).paddingFrom(
             left: 16,

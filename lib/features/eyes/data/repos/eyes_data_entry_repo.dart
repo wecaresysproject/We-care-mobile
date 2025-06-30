@@ -5,6 +5,7 @@ import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_part_syptoms_and_procedures_response_model.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
 
@@ -60,20 +61,6 @@ class EyesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
-  // Future<ApiResult<List<String>>> getAllSurgeriesRegions({
-  //   required String language,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.getAllSurgeriesRegions(
-  //       language,
-  //     );
-  //     final partRegions =
-  //         (response['data'] as List).map((e) => e as String).toList();
-  //     return ApiResult.success(partRegions);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
 
   Future<ApiResult<String>> getEyePartDescribtion({
     required String language,
@@ -88,6 +75,24 @@ class EyesDataEntryRepo {
       );
 
       return ApiResult.success(response['data']['description']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> postEyeDataEntry({
+    required String language,
+    required String userType,
+    required EyeDataEntryRequestBody requestBody,
+  }) async {
+    try {
+      final response = await _eyesService.postEyeDataEntry(
+        language,
+        userType,
+        requestBody,
+      );
+
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

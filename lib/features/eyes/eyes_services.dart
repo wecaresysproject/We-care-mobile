@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
-import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
 
 part 'eyes_services.g.dart';
@@ -70,18 +70,12 @@ abstract class EyesModuleServices {
   Future<dynamic> getCountries(
     @Query('language') String language,
   );
-  @GET(SurgeriesApiConstants.surgeryPurpose)
-  Future<dynamic> getSurgeryPurpose(
-    @Query("surgeryRegionName") String region,
-    @Query("subSurgeryRegionName") String subSurgeryRegion,
-    @Query("surgeryNameName") String surgeryName,
-    @Query("usedTechniqueName") String techUsed,
+
+  @POST(EyesApiConstants.postEyeDataEntry)
+  Future<dynamic> postEyeDataEntry(
     @Query("language") String language,
-  );
-  @POST(SurgeriesApiConstants.postSurgeryEndpoint)
-  Future<dynamic> postSurgeryData(
-    @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Query("UserType") String userType,
+    @Body() EyeDataEntryRequestBody requestBody,
   );
 
   @GET(SurgeriesApiConstants.getSingleSurgery)

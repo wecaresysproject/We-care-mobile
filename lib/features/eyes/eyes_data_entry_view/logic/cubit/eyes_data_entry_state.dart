@@ -2,7 +2,7 @@ part of 'eyes_data_entry_cubit.dart';
 
 @immutable
 class EyesDataEntryState extends Equatable {
-  final RequestStatus surgeriesDataEntryStatus;
+  final RequestStatus eyeDataEntryStatus;
   final String? errorMessage;
   final bool isFormValidated;
   final String? syptomStartDate;
@@ -35,7 +35,7 @@ class EyesDataEntryState extends Equatable {
   final String? doctorName;
 
   const EyesDataEntryState({
-    this.surgeriesDataEntryStatus = RequestStatus.initial,
+    this.eyeDataEntryStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
     this.syptomStartDate,
@@ -69,7 +69,7 @@ class EyesDataEntryState extends Equatable {
 
   const EyesDataEntryState.initialState()
       : this(
-          surgeriesDataEntryStatus: RequestStatus.initial,
+          eyeDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           syptomStartDate: null,
           symptomDuration: null,
@@ -101,7 +101,7 @@ class EyesDataEntryState extends Equatable {
         );
 
   EyesDataEntryState copyWith({
-    RequestStatus? surgeriesDataEntryStatus,
+    RequestStatus? eyeDataEntryStatus,
     String? errorMessage,
     bool? isFormValidated,
     String? syptomStartDate,
@@ -133,8 +133,7 @@ class EyesDataEntryState extends Equatable {
     EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
   }) {
     return EyesDataEntryState(
-      surgeriesDataEntryStatus:
-          surgeriesDataEntryStatus ?? this.surgeriesDataEntryStatus,
+      eyeDataEntryStatus: eyeDataEntryStatus ?? this.eyeDataEntryStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       syptomStartDate: syptomStartDate ?? this.syptomStartDate,
@@ -177,7 +176,7 @@ class EyesDataEntryState extends Equatable {
 
   @override
   List<Object?> get props => [
-        surgeriesDataEntryStatus,
+        eyeDataEntryStatus,
         errorMessage,
         isFormValidated,
         syptomStartDate,

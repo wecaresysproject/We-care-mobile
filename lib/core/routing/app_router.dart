@@ -322,6 +322,9 @@ class AppRouter {
           builder: (context) => EyeDataEntry(
             selectedSyptoms: result?['selectedSymptoms'] ??
                 [] as List<SymptomAndProcedureItem>,
+            selectedProcedures: result?['selectedProcedures'] ??
+                [] as List<SymptomAndProcedureItem>,
+            affectedEyePart: result?['affectedEyePart'] as String,
           ),
         );
       case Routes.eyeProceduresAndSyptomsDataEntry:
