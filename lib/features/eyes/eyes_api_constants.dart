@@ -5,8 +5,7 @@ class EyesApiConstants {
   static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
   static const postGlassesEssentialDataEntryEndPoint =
       "/EyesDataEntry/submit-glasses-essential";
-  static const postGlassesLensDataEntryEndPoint =
-      "/EyesDataEntry/submit-glasses-lens";
+
   static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
   static const getEyePartSyptomsAndProcedures =
       "/EyesDataEntry/eye-part-details";

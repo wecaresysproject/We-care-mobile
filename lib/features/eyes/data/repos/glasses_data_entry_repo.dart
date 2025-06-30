@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -39,6 +41,7 @@ class GlassesDataEntryRepo {
         userType,
         requestBody,
       );
+      log("xxx: response: $response[message]");
       return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

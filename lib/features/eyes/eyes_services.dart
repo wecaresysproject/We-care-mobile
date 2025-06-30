@@ -44,7 +44,7 @@ abstract class EyesModuleServices {
     @Query("eyeSectionName") String eyePartName,
   );
 
-  @POST(EyesApiConstants.postGlassesLensDataEntryEndPoint)
+  @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
   Future<dynamic> postGlassesLensDataEntry(
     @Query("language") String language,
     @Query("UserType") String userType,
