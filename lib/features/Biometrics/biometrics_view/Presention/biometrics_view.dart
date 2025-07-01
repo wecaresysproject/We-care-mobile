@@ -1,4 +1,6 @@
 import 'dart:math';
+
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
@@ -13,7 +15,6 @@ import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_vie
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_state.dart';
 import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class BiometricsView extends StatefulWidget {
   const BiometricsView({super.key});
@@ -493,8 +494,10 @@ class _BiometricsViewState extends State<BiometricsView>
         .data;
 
     final double minY = 0; // Force starting from 0
-    final double maxDataY = data.map((d) => d.value.toInt.toDouble()).reduce((a, b) => a > b ? a : b);
-    
+    final double maxDataY = data
+        .map((d) => d.value.toInt.toDouble())
+        .reduce((a, b) => a > b ? a : b);
+
     // Consider all relevant values for determining the chart's max Y
     //final double effectiveMaxY = [maxDataY, normalMax].reduce(max);
 
@@ -611,9 +614,8 @@ class _BiometricsViewState extends State<BiometricsView>
           minX: 0,
           maxX: (data.length - 1).toDouble(),
           minY: minY,
-          maxY:
- data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) +
-                  10,
+          maxY: data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) +
+              10,
           lineBarsData: [
             // Primary line
             LineChartBarData(
@@ -717,7 +719,7 @@ class _BiometricsViewState extends State<BiometricsView>
                         : null;
 
                 final tooltipText = secondary != null
-                    ? '${primary.toInt()}/${secondary}'
+                    ? '${primary.toInt()}/$secondary'
                     : (primary == primary.truncate()
                         ? primary.toInt().toString()
                         : primary.toString());
@@ -757,15 +759,17 @@ class _BiometricsViewState extends State<BiometricsView>
     );
   }
 }
+
 int _calculateNiceInterval(double yRange) {
   if (yRange <= 0) return 1;
 
   // Aim for 4-7 divisions on the y-axis for readability
   final int targetDivisions = 5;
   double rawInterval = yRange / targetDivisions;
-  
+
   // Calculate magnitude (power of 10)
-  final double magnitude = pow(10, (log(rawInterval) / ln10).floor()).toDouble();
+  final double magnitude =
+      pow(10, (log(rawInterval) / ln10).floor()).toDouble();
   final double normalized = rawInterval / magnitude;
 
   // Find the nearest "nice" number (1, 2, 2.5, 5, 10)

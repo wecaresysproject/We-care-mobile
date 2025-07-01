@@ -2,15 +2,21 @@ part of 'eyes_data_entry_cubit.dart';
 
 @immutable
 class EyesDataEntryState extends Equatable {
-  final RequestStatus surgeriesDataEntryStatus;
+  final RequestStatus eyeDataEntryStatus;
   final String? errorMessage;
   final bool isFormValidated;
-  final String? surgeryDateSelection;
+  final String? syptomStartDate;
+  final String? symptomDuration;
+  final String? procedureDateSelection;
   final String? surgeryBodyPartSelection;
   final String? surgeryNameSelection;
   final String message; // error or success message
   final String? reportImageUploadedUrl;
-  final UploadReportRequestStatus surgeryUploadReportStatus;
+  final UploadReportRequestStatus uploadReportStatus;
+  final String? medicalExaminationImageUploadedUrl;
+  final UploadImageRequestStatus uploadMedicalExaminationStatus;
+  final EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures;
+
   final List<String> countriesNames;
   final String? selectedCountryName;
   final List<String> bodyParts;
@@ -26,18 +32,22 @@ class EyesDataEntryState extends Equatable {
   final String updatedSurgeryId;
   final String? surgeonName;
   final String? selectedHospitalCenter;
-  final String? internistName; // طبيب باطنه
+  final String? doctorName;
 
   const EyesDataEntryState({
-    this.surgeriesDataEntryStatus = RequestStatus.initial,
+    this.eyeDataEntryStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
-    this.surgeryDateSelection,
+    this.syptomStartDate,
+    this.symptomDuration,
+    this.procedureDateSelection,
     this.surgeryBodyPartSelection,
     this.surgeryNameSelection,
     this.message = '',
     this.reportImageUploadedUrl,
-    this.surgeryUploadReportStatus = UploadReportRequestStatus.initial,
+    this.uploadReportStatus = UploadReportRequestStatus.initial,
+    this.medicalExaminationImageUploadedUrl,
+    this.uploadMedicalExaminationStatus = UploadImageRequestStatus.initial,
     this.countriesNames = const [],
     this.selectedCountryName,
     this.bodyParts = const [],
@@ -53,19 +63,24 @@ class EyesDataEntryState extends Equatable {
     this.updatedSurgeryId = '',
     this.surgeonName,
     this.selectedHospitalCenter,
-    this.internistName,
+    this.doctorName,
+    this.eyePartSyptomsAndProcedures,
   }) : super();
 
   const EyesDataEntryState.initialState()
       : this(
-          surgeriesDataEntryStatus: RequestStatus.initial,
+          eyeDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
-          surgeryDateSelection: null,
+          syptomStartDate: null,
+          symptomDuration: null,
+          procedureDateSelection: null,
           surgeryBodyPartSelection: null,
           surgeryNameSelection: null,
           message: '',
           reportImageUploadedUrl: null,
-          surgeryUploadReportStatus: UploadReportRequestStatus.initial,
+          uploadReportStatus: UploadReportRequestStatus.initial,
+          medicalExaminationImageUploadedUrl: null,
+          uploadMedicalExaminationStatus: UploadImageRequestStatus.initial,
           countriesNames: const [],
           selectedCountryName: null,
           bodyParts: const [],
@@ -81,19 +96,24 @@ class EyesDataEntryState extends Equatable {
           updatedSurgeryId: '',
           surgeonName: null,
           selectedHospitalCenter: null,
-          internistName: null,
+          doctorName: null,
+          eyePartSyptomsAndProcedures: null,
         );
 
   EyesDataEntryState copyWith({
-    RequestStatus? surgeriesDataEntryStatus,
+    RequestStatus? eyeDataEntryStatus,
     String? errorMessage,
     bool? isFormValidated,
-    String? surgeryDateSelection,
+    String? syptomStartDate,
+    String? symptomDuration,
+    String? procedureDateSelection,
     String? surgeryBodyPartSelection,
     String? surgeryNameSelection,
     String? message,
     String? reportImageUploadedUrl,
-    UploadReportRequestStatus? surgeryUploadReportStatus,
+    UploadReportRequestStatus? uploadReportStatus,
+    String? medicalExaminationImageUploadedUrl,
+    UploadImageRequestStatus? uploadMedicalExaminationStatus,
     List<String>? countriesNames,
     String? selectedCountryName,
     List<String>? bodyParts,
@@ -109,22 +129,27 @@ class EyesDataEntryState extends Equatable {
     String? updatedSurgeryId,
     String? surgeonName,
     String? selectedHospitalCenter,
-    String? internistName,
+    String? doctorName,
+    EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
   }) {
     return EyesDataEntryState(
-      surgeriesDataEntryStatus:
-          surgeriesDataEntryStatus ?? this.surgeriesDataEntryStatus,
+      eyeDataEntryStatus: eyeDataEntryStatus ?? this.eyeDataEntryStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
-      surgeryDateSelection: surgeryDateSelection ?? this.surgeryDateSelection,
+      syptomStartDate: syptomStartDate ?? this.syptomStartDate,
+      procedureDateSelection:
+          procedureDateSelection ?? this.procedureDateSelection,
       surgeryBodyPartSelection:
           surgeryBodyPartSelection ?? this.surgeryBodyPartSelection,
       surgeryNameSelection: surgeryNameSelection ?? this.surgeryNameSelection,
       message: message ?? this.message,
       reportImageUploadedUrl:
           reportImageUploadedUrl ?? this.reportImageUploadedUrl,
-      surgeryUploadReportStatus:
-          surgeryUploadReportStatus ?? this.surgeryUploadReportStatus,
+      medicalExaminationImageUploadedUrl: medicalExaminationImageUploadedUrl ??
+          this.medicalExaminationImageUploadedUrl,
+      uploadMedicalExaminationStatus:
+          uploadMedicalExaminationStatus ?? this.uploadMedicalExaminationStatus,
+      uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       bodyParts: bodyParts ?? this.bodyParts,
@@ -142,21 +167,28 @@ class EyesDataEntryState extends Equatable {
       surgeonName: surgeonName ?? this.surgeonName,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
-      internistName: internistName ?? this.internistName,
+      doctorName: doctorName ?? this.doctorName,
+      symptomDuration: symptomDuration ?? this.symptomDuration,
+      eyePartSyptomsAndProcedures:
+          eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
     );
   }
 
   @override
   List<Object?> get props => [
-        surgeriesDataEntryStatus,
+        eyeDataEntryStatus,
         errorMessage,
         isFormValidated,
-        surgeryDateSelection,
+        syptomStartDate,
         surgeryBodyPartSelection,
         surgeryNameSelection,
         message,
         reportImageUploadedUrl,
-        surgeryUploadReportStatus,
+        medicalExaminationImageUploadedUrl,
+        uploadMedicalExaminationStatus,
+        symptomDuration,
+        procedureDateSelection,
+        uploadReportStatus,
         countriesNames,
         selectedCountryName,
         bodyParts,
@@ -172,6 +204,7 @@ class EyesDataEntryState extends Equatable {
         updatedSurgeryId,
         surgeonName,
         selectedHospitalCenter,
-        internistName,
+        doctorName,
+        eyePartSyptomsAndProcedures,
       ];
 }

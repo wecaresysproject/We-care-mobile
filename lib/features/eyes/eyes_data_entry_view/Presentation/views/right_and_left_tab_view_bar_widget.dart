@@ -163,7 +163,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                                 categoryLabel: "سطح العدسة",
                                 containerHintText:
                                     state.rightlensSurfaceType ?? "اخترالدرجة",
-                                options: [],
+                                options: state.lensSurfcacesTypes,
                                 onOptionSelected: (value) {
                                   context
                                       .read<GlassesDataEntryCubit>()
@@ -181,7 +181,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                                 categoryLabel: "سطح العدسة",
                                 containerHintText:
                                     state.leftLensSurfaceType ?? "اخترالدرجة",
-                                options: [],
+                                options: state.lensSurfcacesTypes,
                                 onOptionSelected: (value) {
                                   context
                                       .read<GlassesDataEntryCubit>()
@@ -214,7 +214,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                                 categoryLabel: "نوع العدسة",
                                 containerHintText:
                                     state.rightLensType ?? "اخترالدرجة",
-                                options: [],
+                                options: state.lensTypes,
                                 onOptionSelected: (value) {
                                   context
                                       .read<GlassesDataEntryCubit>()
@@ -232,7 +232,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                                 categoryLabel: "نوع العدسة",
                                 containerHintText:
                                     state.leftLensType ?? "اخترالدرجة",
-                                options: [],
+                                options: state.lensTypes,
                                 onOptionSelected: (value) {
                                   context
                                       .read<GlassesDataEntryCubit>()
@@ -292,7 +292,9 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                 .validate()) {
               await context
                   .read<GlassesDataEntryCubit>()
-                  .submitGlassesLensDataEntered();
+                  .submitGlassesLensDataEntered(
+                    locale: context.translate,
+                  );
             } else {
               await showError(
                   "يرجى ملء الحقول الأساسية المطلوبة لإتمام العملية.");

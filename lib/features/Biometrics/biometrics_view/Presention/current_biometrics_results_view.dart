@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -33,15 +34,6 @@ class CurrentBiometricsResultsTab extends StatelessWidget {
             height: 550.h,
             child: Stack(
               children: [
-                // Human body skeleton image - centered
-                Center(
-                  child: Image.asset(
-                    "assets/images/skeleton_image.png",
-                    fit: BoxFit.cover,
-                    height: 420.h,
-                  ),
-                ),
-
                 // Left side buttons
                 // Heart Rate (نبضات القلب)
                 Positioned(
@@ -157,13 +149,25 @@ class CurrentBiometricsResultsTab extends StatelessWidget {
 
                 // BMI
                 Positioned(
-                  top: 450.h,
+                  top: 530.h,
                   left: MediaQuery.of(context).size.width / 2 - 70.w,
                   child: BiometricMeasurementCard(
                     label: 'مؤشر الكتلة ',
                     value: state.currentBiometricsData?.bmi?.value ?? 'N/A',
                     date: state.currentBiometricsData?.bmi?.date ?? 'N/A',
                     image: 'assets/images/BMI.png',
+                  ),
+                ),
+                // Human body skeleton image - centered
+                Center(
+                  child: Image.asset(
+                    "assets/images/skeleton_image.png",
+                    fit: BoxFit.fill,
+                    height: 480.h,
+                  ).paddingFrom(
+                    bottom: 90,
+                    left: 100,
+                    right: 100,
                   ),
                 ),
               ],

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -157,52 +156,58 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     emit(state.copyWith(isUVProtection: val));
   }
 
-  Future<void> submitGlassesEssentialDataEntryEndPoint(
-      {required S locale}) async {
-    emit(
-      state.copyWith(
-        glassesEssentialDataEntryStatus: RequestStatus.loading,
-      ),
-    );
-    final response =
-        await _glassesDataEntryRepo.postGlassesEssentialDataEntryEndPoint(
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-      requestBody: EyeGlassesEssentialDataRequestBodyModel(
-        examinationDate: state.examinationDateSelection!,
-        doctorName: state.doctorName ?? locale.no_data_entered,
-        centerHospitalName:
-            state.selectedHospitalCenter ?? locale.no_data_entered,
-        glassesShop: state.glassesStore ?? locale.no_data_entered,
-        antiReflection: state.antiReflection,
-        blueLightProtection: state.isBlueLightProtection,
-        scratchResistance: state.isScratchResistance,
-        antiFingerprintCoating: state.isAntiFingerprint,
-        antiFogCoating: state.isAntiFogCoating,
-        uvProtection: state.isUVProtection,
-      ),
-      language: AppStrings.arabicLang,
-    );
-    response.when(
-      success: (successMessage) {
-        emit(
-          state.copyWith(
-            glassesEssentialDataEntryStatus: RequestStatus.success,
-            message: successMessage,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            glassesEssentialDataEntryStatus: RequestStatus.failure,
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
+  Future<void> getInitialRequests() async {
+    emitDoctorNames();
+    emitGetAllLensTypes();
+    emitGetAllLensSurfacesTypes();
   }
 
-  Future<void> submitGlassesLensDataEntered() async {
+  // Future<void> submitGlassesEssentialDataEntryEndPoint(
+  //     {required S locale}) async {
+  //   emit(
+  //     state.copyWith(
+  //       glassesEssentialDataEntryStatus: RequestStatus.loading,
+  //     ),
+  //   );
+  //   final response =
+  //       await _glassesDataEntryRepo.postGlassesEssentialDataEntryEndPoint(
+  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
+  //     requestBody: EyeGlassesEssentialDataRequestBodyModel(
+  //       examinationDate: state.examinationDateSelection!,
+  //       doctorName: state.doctorName ?? locale.no_data_entered,
+  //       centerHospitalName:
+  //           state.selectedHospitalCenter ?? locale.no_data_entered,
+  //       glassesShop: state.glassesStore ?? locale.no_data_entered,
+  //       antiReflection: state.antiReflection,
+  //       blueLightProtection: state.isBlueLightProtection,
+  //       scratchResistance: state.isScratchResistance,
+  //       antiFingerprintCoating: state.isAntiFingerprint,
+  //       antiFogCoating: state.isAntiFogCoating,
+  //       uvProtection: state.isUVProtection,
+  //     ),
+  //     language: AppStrings.arabicLang,
+  //   );
+  //   response.when(
+  //     success: (successMessage) {
+  //       emit(
+  //         state.copyWith(
+  //           glassesEssentialDataEntryStatus: RequestStatus.success,
+  //           message: successMessage,
+  //         ),
+  //       );
+  //     },
+  //     failure: (error) {
+  //       emit(
+  //         state.copyWith(
+  //           glassesEssentialDataEntryStatus: RequestStatus.failure,
+  //           message: error.errors.first,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  Future<void> submitGlassesLensDataEntered({required S locale}) async {
     emit(
       state.copyWith(
         submitGlassesLensDataEntryStatus: RequestStatus.loading,
@@ -277,6 +282,19 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
               : rightLensThicknessController.text,
           lensType: state.rightLensType ?? "--",
         ),
+        essentialGlassData: EssentialGlassesData(
+          examinationDate: state.examinationDateSelection!,
+          doctorName: state.doctorName ?? locale.no_data_entered,
+          centerHospitalName:
+              state.selectedHospitalCenter ?? locale.no_data_entered,
+          glassesShop: state.glassesStore ?? locale.no_data_entered,
+          antiReflection: state.antiReflection,
+          blueLightProtection: state.isBlueLightProtection,
+          scratchResistance: state.isScratchResistance,
+          antiFingerprintCoating: state.isAntiFingerprint,
+          antiFogCoating: state.isAntiFogCoating,
+          uvProtection: state.isUVProtection,
+        ),
       ),
       language: AppStrings.arabicLang,
     );
@@ -300,27 +318,75 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     );
   }
 
-  // Future<void> emitGetSurgeryStatus() async {
-  //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allSurgeryStatuses: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> emitGetAllLensTypes() async {
+    final response = await _glassesDataEntryRepo.getAllLensTypes(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            lensTypes: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitGetAllLensSurfacesTypes() async {
+    final response = await _glassesDataEntryRepo.getAllLensSurfaces(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            lensSurfcacesTypes: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await _glassesDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
   // // المناطق العمليه الفرعيه
 
   // Future<void> emitGetAllSubSurgeriesRegions(

@@ -1,23 +1,20 @@
 class EyesApiConstants {
-  static const baseUrl = "http://147.93.57.70:5299";
+  static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
   // static const getCountries = "/api/EnterSectionSurgery/countries";
   static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
-  static const postGlassesEssentialDataEntryEndPoint = "";
-  static const postGlassesLensDataEntryEndPoint = "";
-  static const getAllSurgeriesRegions = // العضو
-      "/api/EnterSectionSurgery/surgery-regions";
-  static const getSubSurgeriesRegions =
-      "/api/EnterSectionSurgery/sub-surgery-regions-connected";
+  static const postGlassesEssentialDataEntryEndPoint =
+      "/EyesDataEntry/submit-glasses-essential";
 
-  static const getSurgeryName =
-      "/api/EnterSectionSurgery/surgery-names-connected";
-  static const getAllTechUsed =
-      "/api/EnterSectionSurgery/used-techniques-connected"; // التقنيه المستخدمه
-  static const getSurgeryStatus =
-      "/api/EnterSectionSurgery/status-surgery"; // التقنيه المستخدمه
-  static const surgeryPurpose = "/api/EnterSectionSurgery/purpose";
-  static const postSurgeryEndpoint = "/api/EnterSectionSurgery";
+  static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
+  static const getEyePartSyptomsAndProcedures =
+      "/EyesDataEntry/eye-part-details";
+  static const getEyePartDescribtion = "/EyesDataEntry/eye-section-description";
+  static const getAllLensTypes = "/EyesDataEntry/lens-types";
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
+  static const getAllCountries = "/countries";
+  static const postEyeDataEntry = "/EyesDataEntry/submit-eye-entry";
+
   //View Entry
   static const deleteSurgeryById = "/api/EnterSectionSurgery";
   static const getAllSurgeries = "/api/EnterSectionSurgery";

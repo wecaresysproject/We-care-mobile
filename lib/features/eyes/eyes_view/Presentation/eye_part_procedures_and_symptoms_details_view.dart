@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/eye_parts_proscedure_and_symptoms_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
@@ -13,67 +16,73 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
+    return BlocProvider<EyesDataEntryCubit>(
+      create: (context) => getIt<EyesDataEntryCubit>()
+        ..getEyePartSyptomsAndProcedures(
+          selectedEyePart: eyePart,
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: 16.h,
-              children: [
-                DetailsViewAppBar(
-                  title: eyePart,
-                  showActionButtons: false,
-                ),
-                DataViewFiltersRow(filters: [
-                  FilterConfig(
-                      title: '  السنة     ', options: ['2023', '2022']),
-                  FilterConfig(
-                    title: '  الفئة      ',
-                    options: [
-                      'الاعراض',
-                      'الاجراءات',
-                    ],
-                  )
-                ], onApply: (selectedFilters) {}),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return MedicalItemCardHorizontal(
-                        onArrowTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  EyePartsProcedureAndSymptomsDetailsView(
-                                title: eyePart,
-                              ),
-                            ),
-                          );
-                        },
-                        date: '1 / 3 / 2023',
-                        procedures: [
-                          'الاجراءات',
-                          'الاجراءات',
-                          'الاجراءات',
-                        ],
-                        symptoms: [
-                          'الاعراض',
-                          'الاعراض',
-                          'الاعراض',
-                        ],
-                      );
-                    }),
-                FooterRow(),
-                verticalSpacing(16),
-              ],
-            ),
+      child: Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
           ),
-        ));
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 16.h,
+                children: [
+                  DetailsViewAppBar(
+                    title: eyePart,
+                    showActionButtons: false,
+                  ),
+                  DataViewFiltersRow(filters: [
+                    FilterConfig(
+                        title: '  السنة     ', options: ['2023', '2022']),
+                    FilterConfig(
+                      title: '  الفئة      ',
+                      options: [
+                        'الاعراض',
+                        'الاجراءات',
+                      ],
+                    )
+                  ], onApply: (selectedFilters) {}),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        return MedicalItemCardHorizontal(
+                          onArrowTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EyePartsProcedureAndSymptomsDetailsView(
+                                  title: eyePart,
+                                ),
+                              ),
+                            );
+                          },
+                          date: '1 / 3 / 2023',
+                          procedures: [
+                            'الاجراءات',
+                            'الاجراءات',
+                            'الاجراءات',
+                          ],
+                          symptoms: [
+                            'الاعراض',
+                            'الاعراض',
+                            'الاعراض',
+                          ],
+                        );
+                      }),
+                  FooterRow(),
+                  verticalSpacing(16),
+                ],
+              ),
+            ),
+          )),
+    );
   }
 }
 

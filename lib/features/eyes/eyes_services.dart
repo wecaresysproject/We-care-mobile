@@ -2,12 +2,11 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
-import 'package:we_care/features/eyes/data/models/eye_glasses_essential_data_request_body_model.dart';
+import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
 
 part 'eyes_services.g.dart';
@@ -16,48 +15,67 @@ part 'eyes_services.g.dart';
 abstract class EyesModuleServices {
   factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesModuleServices;
 
-  @GET("http://147.93.57.70/api/countries")
-  Future<dynamic> getCountries(@Query('language') String language);
-
   @MultiPart()
-  @POST(SurgeriesApiConstants.uploadReportEndpoint)
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
   Future<UploadReportResponseModel> uploadReportImage(
     @Part() File report,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
-  @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
-  Future<dynamic> postGlassesEssentialDataEntryEndPoint(
+
+  @MultiPart()
+  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
+  Future<UploadImageResponseModel> uploadMedicalExaminationImage(
+    @Part() File image,
+    @Header("Content-Type") String contentType,
     @Query("language") String language,
-    @Query("userType") String userType,
-    @Body() EyeGlassesEssentialDataRequestBodyModel requestBody,
   );
-  @POST(EyesApiConstants.postGlassesLensDataEntryEndPoint)
+  @GET(EyesApiConstants.getEyePartSyptomsAndProcedures)
+  Future<dynamic> getEyePartSyptomsAndProcedures(
+    @Query("language") String language,
+    @Query("UserType") String userType,
+    @Query("sectionId") String eyePartName,
+  );
+
+  @GET(EyesApiConstants.getEyePartDescribtion)
+  Future<dynamic> getEyePartDescribtion(
+    @Query("language") String language,
+    @Query("UserType") String userType,
+    @Query("eyeSectionName") String eyePartName,
+  );
+
+  @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
   Future<dynamic> postGlassesLensDataEntry(
     @Query("language") String language,
-    @Query("userType") String userType,
+    @Query("UserType") String userType,
     @Body() EyeGlassesLensDataRequestBodyModel requestBody,
   );
 
-  @GET(SurgeriesApiConstants.getAllSurgeries)
-  Future<GetUserSurgeriesResponseModal> getSurgeries(
+  @GET(EyesApiConstants.getAllLensSurfaces)
+  Future<dynamic> getAllLensSurfaces(
     @Query("language") String language,
-    @Query("userType") String userType,
-    @Query("page") int page,
-    @Query("pageSize") int pageSize,
+    @Query("UserType") String userType,
   );
-  @GET(SurgeriesApiConstants.surgeryPurpose)
-  Future<dynamic> getSurgeryPurpose(
-    @Query("surgeryRegionName") String region,
-    @Query("subSurgeryRegionName") String subSurgeryRegion,
-    @Query("surgeryNameName") String surgeryName,
-    @Query("usedTechniqueName") String techUsed,
+  @GET(EyesApiConstants.getAllLensTypes)
+  Future<dynamic> getAllLensTypes(
     @Query("language") String language,
+    @Query("UserType") String userType,
   );
-  @POST(SurgeriesApiConstants.postSurgeryEndpoint)
-  Future<dynamic> postSurgeryData(
+  @GET(EyesApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
+  @GET(EyesApiConstants.getAllCountries)
+  Future<dynamic> getCountries(
+    @Query('language') String language,
+  );
+
+  @POST(EyesApiConstants.postEyeDataEntry)
+  Future<dynamic> postEyeDataEntry(
     @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Query("UserType") String userType,
+    @Body() EyeDataEntryRequestBody requestBody,
   );
 
   @GET(SurgeriesApiConstants.getSingleSurgery)

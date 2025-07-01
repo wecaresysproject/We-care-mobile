@@ -1,7 +1,6 @@
 // Model for symptom items
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -10,6 +9,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/eye_syptom_custom_app_bar_widget.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/selectable_syptom_card_widget.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 
 // Main page widget
 class EyeProceduresAndSyptomsDataEntry extends StatefulWidget {
@@ -25,70 +25,52 @@ class _EyeProceduresAndSyptomsDataEntryState
     extends State<EyeProceduresAndSyptomsDataEntry>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<SymptomItem> symptoms = [];
+  List<SymptomAndProcedureItem> symptoms = [];
+  List<SymptomAndProcedureItem> procedures = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _initializeSymptoms();
+    initializeSyptomsAndProcedures();
+  }
+
+  initializeSyptomsAndProcedures() async {
+    await context.read<EyesDataEntryCubit>().getEyePartSyptomsAndProcedures(
+        selectedEyePart: widget.selectedEyePart);
+    if (!mounted) return;
+    symptoms = context
+        .read<EyesDataEntryCubit>()
+        .state
+        .eyePartSyptomsAndProcedures!
+        .symptoms
+        .map(
+          (symptom) => SymptomAndProcedureItem(
+            id: symptom,
+            title: symptom,
+            isSelected: false,
+          ),
+        )
+        .toList();
+    procedures = context
+        .read<EyesDataEntryCubit>()
+        .state
+        .eyePartSyptomsAndProcedures!
+        .procedures
+        .map(
+          (procedure) => SymptomAndProcedureItem(
+            id: procedure,
+            title: procedure,
+            isSelected: false,
+          ),
+        )
+        .toList();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  void _initializeSymptoms() {
-    symptoms = [
-      SymptomItem(
-        id: '1',
-        title:
-            'ادت إلى تغير مفاجئ وتشوش في رؤية الصورة أو ظهور بقع داكنة في مجال الرؤية',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '2',
-        title: 'تغير في رؤية الألوان',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '3',
-        title: 'ألم عند تحريك العين',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '4',
-        title: 'تقديم توصيات بالعادات البصرية الصحية',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '5',
-        title: 'غثيان',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '6',
-        title: 'شحوب في رأس العصب',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '7',
-        title: 'فقدان مفاجئ وغير مؤلم للبصر في عين واحدة',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '8',
-        title: 'ضعف تدريجي في الرؤية',
-        isSelected: false,
-      ),
-      SymptomItem(
-        id: '9',
-        title: 'صداع مستمر ونوبات صرع',
-        isSelected: false,
-      ),
-    ];
   }
 
   void _toggleSymptomSelection(String id) {
@@ -102,9 +84,24 @@ class _EyeProceduresAndSyptomsDataEntryState
     );
   }
 
+  void _toggleProceduresSelection(String id) {
+    setState(
+      () {
+        final index = procedures.indexWhere((procedure) => procedure.id == id);
+        if (index != -1) {
+          procedures[index].isSelected = !procedures[index].isSelected;
+        }
+      },
+    );
+  }
+
   // Get all selected symptoms
-  List<SymptomItem> getSelectedSymptoms() {
+  List<SymptomAndProcedureItem> getSelectedSymptoms() {
     return symptoms.where((symptom) => symptom.isSelected).toList();
+  }
+
+  List<SymptomAndProcedureItem> getSelectedProcedures() {
+    return procedures.where((procedure) => procedure.isSelected).toList();
   }
 
   @override
@@ -152,16 +149,34 @@ class _EyeProceduresAndSyptomsDataEntryState
               controller: _tabController,
               children: [
                 // Symptoms Tab
-                SymptomsTabContent(
-                  symptoms: symptoms,
-                  onSymptomToggle: _toggleSymptomSelection,
+                BlocBuilder<EyesDataEntryCubit, EyesDataEntryState>(
+                  builder: (context, state) {
+                    if (state.eyePartSyptomsAndProcedures == null) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return SymptomsAndProceduresListTabContent(
+                      itemsList: symptoms,
+                      onItemToggled: _toggleSymptomSelection,
+                    );
+                  },
                 ),
                 // Procedures Tab
-                const Center(
-                  child: Text(
-                    'الإجراءات',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                BlocBuilder<EyesDataEntryCubit, EyesDataEntryState>(
+                  builder: (context, state) {
+                    if (state.eyePartSyptomsAndProcedures == null) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    return SymptomsAndProceduresListTabContent(
+                      itemsList: procedures,
+                      onItemToggled: _toggleProceduresSelection,
+                    );
+                  },
                 ),
               ],
             ),
@@ -173,13 +188,15 @@ class _EyeProceduresAndSyptomsDataEntryState
             isEnabled: true,
             onPressed: () async {
               final selectedSymptoms = getSelectedSymptoms();
-              await context.pushNamed(
+              final selectedProcedures = getSelectedProcedures();
+              await context.pushReplacementNamed(
                 Routes.eyeDataEntry,
                 arguments: {
                   'selectedSymptoms': selectedSymptoms,
+                  'selectedProcedures': selectedProcedures,
+                  'affectedEyePart': widget.selectedEyePart,
                 },
               );
-              log("selectedSymptoms: ${selectedSymptoms.length}");
             },
           ).paddingFrom(
             left: 16,
@@ -193,37 +210,37 @@ class _EyeProceduresAndSyptomsDataEntryState
 }
 
 // Symptoms tab content widget
-class SymptomsTabContent extends StatelessWidget {
-  final List<SymptomItem> symptoms;
-  final Function(String) onSymptomToggle;
+class SymptomsAndProceduresListTabContent extends StatelessWidget {
+  final List<SymptomAndProcedureItem> itemsList;
+  final Function(String) onItemToggled;
 
-  const SymptomsTabContent({
+  const SymptomsAndProceduresListTabContent({
     super.key,
-    required this.symptoms,
-    required this.onSymptomToggle,
+    required this.itemsList,
+    required this.onItemToggled,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: symptoms.length,
+      itemCount: itemsList.length,
       itemBuilder: (context, index) {
-        return SelectableSymptomCard(
-          symptom: symptoms[index],
-          onTap: () => onSymptomToggle(symptoms[index].id),
+        return SelectableCard(
+          symptom: itemsList[index],
+          onTap: () => onItemToggled(itemsList[index].id),
         );
       },
     );
   }
 }
 
-class SymptomItem {
+class SymptomAndProcedureItem {
   final String id;
   final String title;
   bool isSelected;
 
-  SymptomItem({
+  SymptomAndProcedureItem({
     required this.id,
     required this.title,
     this.isSelected = false,

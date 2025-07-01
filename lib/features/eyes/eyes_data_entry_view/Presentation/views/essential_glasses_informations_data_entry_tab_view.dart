@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
@@ -15,8 +12,10 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/glasses_data_entry_cubit.dart';
 
 class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
-  const EssenstialGlassesInformationsDataDataEntryTabBar({super.key});
+  const EssenstialGlassesInformationsDataDataEntryTabBar(
+      {super.key, required this.tabController});
 
+  final TabController tabController;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GlassesDataEntryCubit, GlassesDataEntryState>(
@@ -55,7 +54,7 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               UserSelectionContainer(
                 categoryLabel: "اسم الطبيب",
                 containerHintText: state.doctorName ?? "اختر اسم الطبيب",
-                options: [],
+                options: state.doctorNames,
                 onOptionSelected: (value) {
                   context
                       .read<GlassesDataEntryCubit>()
@@ -72,15 +71,11 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               UserSelectionContainer(
                 allowManualEntry: true,
                 categoryLabel: "المعمل / المستشفى",
-                // containerHintText:
-                //     state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
-
                 options: hosptitalsNames,
                 onOptionSelected: (value) {
                   context
                       .read<GlassesDataEntryCubit>()
                       .updateSelectedHospital(value);
-                  // log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: 'اختر اسم المستشفى/المركز',
                 searchHintText: "ابحث عن اسم المستشفى/المركز",
@@ -167,7 +162,9 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
                 },
               ),
               verticalSpacing(40),
-              submitDataEnteredButtonBlocConsumer(),
+              submitDataEnteredButtonBlocBuilder(
+                tabController,
+              ),
               verticalSpacing(40),
             ],
           ),
@@ -177,37 +174,21 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
   }
 }
 
-Widget submitDataEnteredButtonBlocConsumer() {
-  return BlocConsumer<GlassesDataEntryCubit, GlassesDataEntryState>(
-    listenWhen: (prev, curr) =>
-        curr.glassesEssentialDataEntryStatus == RequestStatus.failure ||
-        curr.glassesEssentialDataEntryStatus == RequestStatus.success,
+Widget submitDataEnteredButtonBlocBuilder(TabController tabController) {
+  return BlocBuilder<GlassesDataEntryCubit, GlassesDataEntryState>(
     buildWhen: (prev, curr) =>
         prev.isFormValidated != curr.isFormValidated ||
         prev.glassesEssentialDataEntryStatus !=
             curr.glassesEssentialDataEntryStatus,
-    listener: (context, state) async {
-      if (state.glassesEssentialDataEntryStatus == RequestStatus.success) {
-        await showSuccess(state.message);
-        if (!context.mounted) return;
-        //* in order to catch it again to rebuild details view
-        context.pop(result: true);
-      } else {
-        await showError(state.message);
-      }
-    },
     builder: (context, state) {
       return AppCustomButton(
-        isLoading:
-            state.glassesEssentialDataEntryStatus == RequestStatus.loading,
-        title: context.translate.send,
+        isLoading: false,
+        title: "التالي",
         onPressed: () async {
-          if (state.isFormValidated) {
-            await context
-                .read<GlassesDataEntryCubit>()
-                .submitGlassesEssentialDataEntryEndPoint(
-                    locale: context.translate);
-          }
+          tabController.animateTo(
+            0,
+            curve: Curves.easeInOut,
+          );
         },
         isEnabled: state.isFormValidated ? true : false,
       );

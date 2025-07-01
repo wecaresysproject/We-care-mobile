@@ -131,10 +131,10 @@ class DentalDataEntryRepo {
         userType,
         language,
       );
-      final countries = (response['data'] as List)
+      final doctors = (response['data'] as List)
           .map<Doctor>((e) => Doctor.fromJson(e))
           .toList();
-      final doctorNames = countries.map((e) => e.fullName).toList();
+      final doctorNames = doctors.map((e) => e.fullName).toList();
       return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
