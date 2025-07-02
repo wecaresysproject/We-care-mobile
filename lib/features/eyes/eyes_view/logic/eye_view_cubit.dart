@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_view_repo.dart';
 
 import 'eye_view_state.dart';
+
 class EyeViewCubit extends Cubit<EyeViewState> {
   EyeViewCubit(this._repo) : super(const EyeViewState());
   final EyesViewRepo _repo;
@@ -14,7 +17,10 @@ class EyeViewCubit extends Cubit<EyeViewState> {
 
   Future<void> getAvailableYears() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _repo.getAvailableEyePartDocumentYears();
+    final result = await _repo.getAvailableEyePartDocumentYears(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
     result.when(
       success: (data) => emit(state.copyWith(
         requestStatus: RequestStatus.success,
@@ -42,34 +48,30 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     );
 
     result.when(success: (response) {
-  final newDocs = response.data;
+      final newDocs = response.data;
 
-  emit(state.copyWith(
-    requestStatus: RequestStatus.success,
-    eyePartDocuments: page == null || page == 1
-        ? newDocs
-        : [...state.eyePartDocuments, ...newDocs],
-    isLoadingMore: false,
-  ));
-}, failure: (error) {
-  emit(state.copyWith(
-    requestStatus: RequestStatus.failure,
-    isLoadingMore: false,
-  ));
-});
-
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        eyePartDocuments: page == null || page == 1
+            ? newDocs
+            : [...state.eyePartDocuments, ...newDocs],
+        isLoadingMore: false,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        isLoadingMore: false,
+      ));
+    });
   }
-
 
   Future<void> getFilteredEyePartProceduresAndSymptomsDocuments({
     String? year,
     String? category,
-
-  })async{
-    final result =await  _repo.getFilteredEyePartProceduresAndSymptomsDocuments(
+  }) async {
+    final result = await _repo.getFilteredEyePartProceduresAndSymptomsDocuments(
       year: year,
       category: category,
-  
     );
 
     result.when(success: (response) {
@@ -88,7 +90,11 @@ class EyeViewCubit extends Cubit<EyeViewState> {
 
   Future<void> getEyePartDocumentDetails(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _repo.getEyePartDocumentDetailsById(id: id);
+    final result = await _repo.getEyePartDocumentDetailsById(
+      id: id,
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
     result.when(
       success: (data) => emit(state.copyWith(
         requestStatus: RequestStatus.success,
@@ -103,7 +109,11 @@ class EyeViewCubit extends Cubit<EyeViewState> {
 
   Future<void> deleteEyePartDocument(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _repo.deleteEyePartDocumentById(id: id);
+    final result = await _repo.deleteEyePartDocumentById(
+      id: id,
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
     result.when(
       success: (msg) => emit(state.copyWith(
         requestStatus: RequestStatus.success,

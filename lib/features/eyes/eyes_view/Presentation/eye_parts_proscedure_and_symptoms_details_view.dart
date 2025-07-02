@@ -28,18 +28,23 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
         appBar: AppBar(toolbarHeight: 0),
         body: BlocConsumer<EyeViewCubit, EyeViewState>(
           listener: (context, state) async {
-            if (state.isDeleteRequest && state.requestStatus == RequestStatus.success) {
+            if (state.isDeleteRequest &&
+                state.requestStatus == RequestStatus.success) {
               Navigator.pop(context);
               await showSuccess(state.responseMessage);
-            } else if (state.isDeleteRequest && state.requestStatus == RequestStatus.failure) {
+            } else if (state.isDeleteRequest &&
+                state.requestStatus == RequestStatus.failure) {
               await showError(state.responseMessage);
             }
           },
-          buildWhen: (prev, curr) => prev.selectedEyePartDocumentDetails != curr.selectedEyePartDocumentDetails,
+          buildWhen: (prev, curr) =>
+              prev.selectedEyePartDocumentDetails !=
+              curr.selectedEyePartDocumentDetails,
           builder: (context, state) {
             final details = state.selectedEyePartDocumentDetails;
 
-            if (state.requestStatus == RequestStatus.loading || details == null) {
+            if (state.requestStatus == RequestStatus.loading ||
+                details == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -50,51 +55,51 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                 children: [
                   DetailsViewAppBar(
                     title: title,
-                    deleteFunction: () => context.read<EyeViewCubit>().deleteEyePartDocument(documentId),
+                    deleteFunction: () => context
+                        .read<EyeViewCubit>()
+                        .deleteEyePartDocument(documentId),
                     showActionButtons: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'تاريخ الاعراض',
-                    value: details.symptomStartDate ,
+                    value: details.symptomStartDate,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'الاعراض',
-                    value: details.symptoms.join(', ') ,
+                    value: details.symptoms.join(', '),
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'مدة الاعراض',
-                    value: details.symptomDuration ,
+                    value: details.symptomDuration,
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'تاريخ الاجراء الطبي',
-                    value: details.medicalReportDate ,
+                    value: details.medicalReportDate,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'الاجراء الطبي',
-                    value: details.medicalProcedures.join(', ') ,
+                    value: details.medicalProcedures.join(', '),
                     icon: 'assets/images/doctor_icon.png',
                     isExpanded: true,
                   ),
-
-                    DetailsViewImageWithTitleTile(
-                      image: details.medicalReportUrl,
-                      title: 'التقرير الطبي',
-                      isShareEnabled: true,
-                    ),
-             
-                    DetailsViewImageWithTitleTile(
-                      image: details.medicalExaminationImages,
-                      title: 'صورة الفحص الطبي',
-                      isShareEnabled: true,
-                    ),
+                  DetailsViewImageWithTitleTile(
+                    image: details.medicalReportUrl,
+                    title: 'التقرير الطبي',
+                    isShareEnabled: true,
+                  ),
+                  DetailsViewImageWithTitleTile(
+                    image: details.medicalExaminationImages,
+                    title: 'صورة الفحص الطبي',
+                    isShareEnabled: true,
+                  ),
                   Row(
                     children: [
                       DetailsViewInfoTile(

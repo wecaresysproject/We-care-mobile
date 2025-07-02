@@ -73,11 +73,12 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final doc = state.eyePartDocuments[index];
                           return MedicalItemCardHorizontal(
-                            onArrowTap: () async{
-                            await Navigator.push(
+                            onArrowTap: () async {
+                              await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EyePartsProcedureAndSymptomsDetailsView(
+                                  builder: (context) =>
+                                      EyePartsProcedureAndSymptomsDetailsView(
                                     title: eyePart,
                                     documentId: doc.id,
                                   ),
@@ -103,5 +104,3 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
     );
   }
 }
-
-

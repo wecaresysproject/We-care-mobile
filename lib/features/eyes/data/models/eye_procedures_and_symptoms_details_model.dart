@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 part 'eye_procedures_and_symptoms_details_model.g.dart';
+
 @JsonSerializable()
 class EyeProceduresAndSymptomsDetailsModel {
   final String id;
@@ -9,7 +10,7 @@ class EyeProceduresAndSymptomsDetailsModel {
   final String symptomDuration;
   final String medicalReportDate;
   final List<String> medicalProcedures;
-  final String medicalReportText;
+  final String affectedEyePart;
   final String medicalReportUrl;
   final String medicalExaminationImages;
   final String doctorName;
@@ -24,7 +25,7 @@ class EyeProceduresAndSymptomsDetailsModel {
     required this.symptomDuration,
     required this.medicalReportDate,
     required this.medicalProcedures,
-    required this.medicalReportText,
+    required this.affectedEyePart,
     required this.medicalReportUrl,
     required this.medicalExaminationImages,
     required this.doctorName,
@@ -33,8 +34,10 @@ class EyeProceduresAndSymptomsDetailsModel {
     required this.additionalNotes,
   });
 
-  factory EyeProceduresAndSymptomsDetailsModel.fromJson(Map<String, dynamic> json) =>
+  factory EyeProceduresAndSymptomsDetailsModel.fromJson(
+          Map<String, dynamic> json) =>
       _$EyeProceduresAndSymptomsDetailsModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$EyeProceduresAndSymptomsDetailsModelToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$EyeProceduresAndSymptomsDetailsModelToJson(this);
 }
