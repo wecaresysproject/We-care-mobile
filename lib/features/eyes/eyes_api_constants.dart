@@ -23,4 +23,24 @@ class EyesApiConstants {
   //filters
   static const getSurgeriesFilters = "/api/ViewSectionSurgery/surgery-info";
   static const getFilteredSurgeries = "/api/ViewSectionSurgery/filter";
+
+  
+
+  // -------------------------------
+  // 🔹 Procedures and Symptoms
+  // Figma Screen: 12.choose Procedures and symptoms (all)
+  // -------------------------------
+  static const getAvailableYears = "/api/lens/available-years";
+  static const getAllDocuments = "/api/lens/documents";
+  static const getFilteredDocuments = "/api/lens/documents/filter";
+  static const getDocumentDetailsById = "/api/lens/document";
+  static const deleteDocumentById = "/api/lens/document";
+
+  // -------------------------------
+  // 🔹 Glasses
+  // Figma Screen: 14.choose eye glasses to view, 15.view eye glasses ...
+  // -------------------------------
+  static const getGlassesRecords = "/api/glasses";
+  static const getGlassesDetailsById = "/api/glasses/details";
+  static const deleteGlassesById = "/api/glasses";
 }

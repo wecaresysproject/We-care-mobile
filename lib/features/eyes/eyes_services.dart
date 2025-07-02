@@ -8,6 +8,8 @@ import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_mo
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
 import 'package:we_care/features/surgeries/surgeries_api_constants.dart';
+import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
 part 'eyes_services.g.dart';
 
@@ -75,29 +77,54 @@ abstract class EyesModuleServices {
   Future<dynamic> postEyeDataEntry(
     @Query("language") String language,
     @Query("UserType") String userType,
-    @Body() EyeDataEntryRequestBody requestBody,
+    @Body() EyeDataEntryRequestBody requestBody,);
+
+   /// 1. Get Available Years
+  @GET(EyesApiConstants.getAvailableYears)
+  Future<dynamic> getAvailableYears();
+
+  /// 2. Get All Documents (With Pagination)
+  @GET(EyesApiConstants.getAllDocuments)
+  Future<dynamic> getAllDocuments({
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
+
+  /// 3. Get Filtered Documents
+  @GET(EyesApiConstants.getFilteredDocuments)
+  Future<dynamic> getFilteredDocuments({
+    @Query("year") String? year,
+    @Query("category") String? category,
+  });
+
+  /// 4. Get Document Details by ID
+  @GET(EyesApiConstants.getDocumentDetailsById)
+  Future<dynamic> getDocumentDetailsById(
+    @Query("id") String id,
   );
 
-  @GET(SurgeriesApiConstants.getSingleSurgery)
-  Future<dynamic> getSurgeryById(
-      @Query("id") String id, @Query("language") String language);
+  /// 5. Delete Document by ID
+  @DELETE(EyesApiConstants.deleteDocumentById)
+  Future<dynamic> deleteDocumentById(
+    @Query("id") String id,
+  );
 
-  // @GET(SurgeriesApiConstants.getSurgeriesFilters)
-  // Future<dynamic> getFilters(@Query("language") String language);
+  /// 6. Get Glasses Records (With Pagination)
+  @GET(EyesApiConstants.getGlassesRecords)
+  Future<dynamic> getAllGlasses({
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
 
-  // @GET(SurgeriesApiConstants.getFilteredSurgeries)
-  // Future<GetUserSurgeriesResponseModal> getFilteredSurgeries(
-  //     @Query("language") String language,
-  //     @Query("surgeryName") String? surgeryName,
-  //     @Query("year") int? year);
+  /// 7. Get Glasses Details by ID
+  @GET(EyesApiConstants.getGlassesDetailsById)
+  Future<dynamic> getGlassesDetailsById(
+    @Query("id") String id,
+  );
 
-  // @DELETE(SurgeriesApiConstants.deleteSurgeryById)
-  // Future<dynamic> deleteSurgeryById(@Query("id") String id);
-
-  // @PUT(SurgeriesApiConstants.editSurgeryEndpoint)
-  // Future<dynamic> updateSurgeryDocumentById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Body() SurgeryRequestBodyModel requestBody,
-  // );
+  /// 8. Delete Glasses Record by ID
+  @DELETE(EyesApiConstants.deleteGlassesById)
+  Future<dynamic> deleteGlassesById(
+    @Query("id") String id,
+  );
 }

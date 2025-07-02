@@ -16,7 +16,7 @@ import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/gl
 import 'package:we_care/features/eyes/eyes_data_entry_view/eye_or_galsses_view.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/eyes_or_glasses_data_view.dart';
-import 'package:we_care/features/eyes/eyes_view/Presentation/glasses_information_view.dart';
+import 'package:we_care/features/eyes/eyes_view/Presentation/glasses_records_view.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
@@ -379,7 +379,7 @@ class AppRouter {
           builder: (context) => const EyesOrGlassesDataView(),
         );
       case Routes.glassesInformationView:
-        return MaterialPageRoute(builder: (context) => const EyeGlassesView());
+        return MaterialPageRoute(builder: (context) => const EyeGlassesRecordsView());
       case Routes.glassesInformationDataEntryView:
         return MaterialPageRoute(
           builder: (context) =>
