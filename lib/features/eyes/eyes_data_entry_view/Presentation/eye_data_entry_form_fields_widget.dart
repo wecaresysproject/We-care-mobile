@@ -323,18 +323,21 @@ Widget submitXrayDataEntryButtonBlocConsumer(
     builder: (context, state) {
       return AppCustomButton(
         isLoading: state.eyeDataEntryStatus == RequestStatus.loading,
-        title: context.translate.send,
+        title: state.isEditMode ? 'ارسل التعديلات' : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
+            if (state.isEditMode) {
+              await context
+                  .read<EyesDataEntryCubit>()
+                  .submitEyeDataEnteredEdits();
+              return;
+            }
             await context.read<EyesDataEntryCubit>().postEyeDataEntry(
                   context.translate,
                   symptoms: selectedSymptoms,
                   procedures: selectedProcedures,
                   affectedEyePart: affectedEyePart,
                 );
-            log("xxx:Save Data Entry");
-          } else {
-            log("form not validated");
           }
         },
         isEnabled: state.isFormValidated ? true : false,

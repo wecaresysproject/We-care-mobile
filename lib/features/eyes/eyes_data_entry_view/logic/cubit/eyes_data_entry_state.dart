@@ -29,10 +29,11 @@ class EyesDataEntryState extends Equatable {
   final String? surgeryPurpose;
   final String? selectedSurgeryStatus;
   final bool isEditMode;
-  final String updatedSurgeryId;
+  final String editDecumentId;
   final String? surgeonName;
   final String? selectedHospitalCenter;
   final String? doctorName;
+  final String? affectedEyePart;
 
   const EyesDataEntryState({
     this.eyeDataEntryStatus = RequestStatus.initial,
@@ -60,11 +61,12 @@ class EyesDataEntryState extends Equatable {
     this.surgeryPurpose,
     this.selectedSurgeryStatus,
     this.isEditMode = false,
-    this.updatedSurgeryId = '',
+    this.editDecumentId = '',
     this.surgeonName,
     this.selectedHospitalCenter,
     this.doctorName,
     this.eyePartSyptomsAndProcedures,
+    this.affectedEyePart = '',
   }) : super();
 
   const EyesDataEntryState.initialState()
@@ -93,11 +95,12 @@ class EyesDataEntryState extends Equatable {
           surgeryPurpose: null,
           selectedSurgeryStatus: null,
           isEditMode: false,
-          updatedSurgeryId: '',
+          editDecumentId: '',
           surgeonName: null,
           selectedHospitalCenter: null,
           doctorName: null,
           eyePartSyptomsAndProcedures: null,
+          affectedEyePart: null,
         );
 
   EyesDataEntryState copyWith({
@@ -126,11 +129,12 @@ class EyesDataEntryState extends Equatable {
     String? surgeryPurpose,
     String? selectedSurgeryStatus,
     bool? isEditMode,
-    String? updatedSurgeryId,
+    String? editDecumentId,
     String? surgeonName,
     String? selectedHospitalCenter,
     String? doctorName,
     EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
+    String? affectedEyePart,
   }) {
     return EyesDataEntryState(
       eyeDataEntryStatus: eyeDataEntryStatus ?? this.eyeDataEntryStatus,
@@ -163,7 +167,7 @@ class EyesDataEntryState extends Equatable {
       selectedSurgeryStatus:
           selectedSurgeryStatus ?? this.selectedSurgeryStatus,
       isEditMode: isEditMode ?? this.isEditMode,
-      updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
+      editDecumentId: editDecumentId ?? this.editDecumentId,
       surgeonName: surgeonName ?? this.surgeonName,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
@@ -171,6 +175,7 @@ class EyesDataEntryState extends Equatable {
       symptomDuration: symptomDuration ?? this.symptomDuration,
       eyePartSyptomsAndProcedures:
           eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
+      affectedEyePart: affectedEyePart ?? this.affectedEyePart,
     );
   }
 
@@ -201,10 +206,11 @@ class EyesDataEntryState extends Equatable {
         surgeryPurpose,
         selectedSurgeryStatus,
         isEditMode,
-        updatedSurgeryId,
+        editDecumentId,
         surgeonName,
         selectedHospitalCenter,
         doctorName,
         eyePartSyptomsAndProcedures,
+        affectedEyePart,
       ];
 }

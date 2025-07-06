@@ -14,6 +14,7 @@ class EyesApiConstants {
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllCountries = "/countries";
   static const postEyeDataEntry = "/EyesDataEntry/submit-eye-entry";
+  static const editEyeDataEntered = "/EyesDataEntry/update-eye-entry";
 
   //View Entry
   static const deleteSurgeryById = "/api/EnterSectionSurgery";

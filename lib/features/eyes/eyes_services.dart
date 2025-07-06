@@ -77,6 +77,14 @@ abstract class EyesModuleServices {
     @Body() EyeDataEntryRequestBody requestBody,
   );
 
+  @PUT(EyesApiConstants.editEyeDataEntered)
+  Future<dynamic> editEyeDataEntered(
+    @Body() EyeDataEntryRequestBody requestBody,
+    @Query('language') String language,
+    @Query('id') String documentId,
+    @Query('UserType') String userType,
+  );
+
   /// 1. Get Available Years
   @GET(EyesApiConstants.getAvailableYears)
   Future<dynamic> getAvailableYears(

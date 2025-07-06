@@ -4,9 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
 
@@ -58,6 +61,41 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     deleteFunction: () => context
                         .read<EyeViewCubit>()
                         .deleteEyePartDocument(documentId),
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.eyeDataEntry,
+                        arguments: {
+                          'editModelId': documentId,
+                          'pastEyeData': details,
+                          'affectedEyePart': details.affectedEyePart,
+                          'selectedProcedures': details.medicalProcedures
+                              .map(
+                                (e) => SymptomAndProcedureItem(
+                                  id: e,
+                                  title: e,
+                                  isSelected: true,
+                                ),
+                              )
+                              .toList(),
+                          'selectedSymptoms': details.symptoms
+                              .map(
+                                (e) => SymptomAndProcedureItem(
+                                  id: e,
+                                  title: e,
+                                  isSelected: true,
+                                ),
+                              )
+                              .toList(),
+                        },
+                      );
+                      if (result == true && context.mounted) {
+                        await context
+                            .read<EyeViewCubit>()
+                            .getEyePartDocumentDetails(
+                              documentId,
+                            );
+                      }
+                    },
                     showActionButtons: true,
                   ),
                   DetailsViewInfoTile(

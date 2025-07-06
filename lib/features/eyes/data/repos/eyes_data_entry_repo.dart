@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
@@ -119,20 +121,21 @@ class EyesDataEntryRepo {
     }
   }
 
-  // Future<ApiResult<String>> updateSurgeryDocumentById({
-  //   required String id,
-  //   required String langauge,
-  //   required SurgeryRequestBodyModel requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _surgeriesService.updateSurgeryDocumentById(
-  //       id,
-  //       langauge,
-  //       requestBody,
-  //     );
-  //     return ApiResult.success(response["message"]);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> editEyeDataEntered({
+    required String id,
+    required String language,
+    required EyeDataEntryRequestBody requestBody,
+  }) async {
+    try {
+      final response = await _eyesService.editEyeDataEntered(
+        requestBody,
+        id,
+        language,
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
