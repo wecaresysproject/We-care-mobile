@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
@@ -119,15 +121,16 @@ class EyesViewRepo {
   }) async {
     try {
       final response = await eyesService.getAllGlasses(
+        language: 'ar',
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
         page: page,
         limit: limit,
       );
+      log('Eye Glasses Records Response: $response[data]');
+      final List<dynamic>? rawList = response['data'];
+
       return ApiResult.success(
-        List<EyeGlassesRecordModel>.from(
-          response['data'].map(
-            (e) => EyeGlassesRecordModel.fromJson(e),
-          ),
-        ),
+        rawList?.map((e) => EyeGlassesRecordModel.fromJson(e)).toList() ?? [],
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -139,7 +142,11 @@ class EyesViewRepo {
     required String id,
   }) async {
     try {
-      final response = await eyesService.getGlassesDetailsById(id);
+      final response = await eyesService.getGlassesDetailsById(
+        id,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(
           EyeGlassesDetailsModel.fromJson(response['data']));
     } catch (error) {
@@ -152,7 +159,11 @@ class EyesViewRepo {
     required String id,
   }) async {
     try {
-      final response = await eyesService.deleteGlassesById(id);
+      final response = await eyesService.deleteGlassesById(
+        id,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

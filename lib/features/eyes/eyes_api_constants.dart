@@ -38,7 +38,7 @@ class EyesApiConstants {
   // 🔹 Glasses
   // Figma Screen: 14.choose eye glasses to view, 15.view eye glasses ...
   // -------------------------------
-  static const getGlassesRecords = "/api/glasses";
-  static const getGlassesDetailsById = "/api/glasses/details";
-  static const deleteGlassesById = "/api/glasses";
+  static const getGlassesRecords = "/EyesDataEntry/glasses";
+  static const getGlassesDetailsById = "/EyesDataEntry/glasses/details";
+  static const deleteGlassesById = "/EyesDataEntry/glasses";
 }

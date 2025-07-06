@@ -124,6 +124,8 @@ abstract class EyesModuleServices {
   /// 6. Get Glasses Records (With Pagination)
   @GET(EyesApiConstants.getGlassesRecords)
   Future<dynamic> getAllGlasses({
+    @Query("language") required String language,
+    @Query("UserType") required String userType,
     @Query("page") required int page,
     @Query("limit") required int limit,
   });
@@ -132,11 +134,15 @@ abstract class EyesModuleServices {
   @GET(EyesApiConstants.getGlassesDetailsById)
   Future<dynamic> getGlassesDetailsById(
     @Query("id") String id,
+    @Query("language") String language,
+    @Query("UserType") String userType,
   );
 
   /// 8. Delete Glasses Record by ID
   @DELETE(EyesApiConstants.deleteGlassesById)
   Future<dynamic> deleteGlassesById(
     @Query("id") String id,
+    @Query("language") String language,
+    @Query("UserType") String userType,
   );
 }
