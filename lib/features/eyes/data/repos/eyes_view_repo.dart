@@ -17,11 +17,13 @@ class EyesViewRepo {
   Future<ApiResult<List<String>>> getAvailableEyePartDocumentYears({
     required String language,
     required String userType,
+    required String affectedEyePart,
   }) async {
     try {
       final response = await eyesService.getAvailableYears(
         language,
         userType,
+        affectedEyePart,
       );
       final List<String> years = List<String>.from(response['data']);
       return ApiResult.success(years);
@@ -35,6 +37,7 @@ class EyesViewRepo {
       getEyePartProceduresAndSymptomsDocuments({
     required int page,
     required int limit,
+    required String affectedEyePart,
   }) async {
     try {
       final response = await eyesService.getAllDocuments(
@@ -42,6 +45,7 @@ class EyesViewRepo {
         limit: limit,
         language: 'en',
         userType: UserTypes.patient.name.firstLetterToUpperCase,
+        affectedEyePart: affectedEyePart,
       );
       return ApiResult.success(UserProceduresAndSymptoms.fromJson(response));
     } catch (error) {
@@ -51,16 +55,17 @@ class EyesViewRepo {
 
   /// Get filtered Eye Part Procedures & Symptoms Documents
   Future<ApiResult<UserProceduresAndSymptoms>>
-      getFilteredEyePartProceduresAndSymptomsDocuments({
-    String? year,
-    String? category,
-  }) async {
+      getFilteredEyePartProceduresAndSymptomsDocuments(
+          {String? year,
+          String? category,
+          required String affectedEyePart}) async {
     try {
       final response = await eyesService.getFilteredDocuments(
         year,
         category,
         'ar',
         UserTypes.patient.name.firstLetterToUpperCase,
+        affectedEyePart,
       );
       return ApiResult.success(UserProceduresAndSymptoms.fromJson(response));
     } catch (error) {

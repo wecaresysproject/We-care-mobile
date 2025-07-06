@@ -19,9 +19,8 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<EyeViewCubit>(
-      create: (_) => getIt<EyeViewCubit>()
-        ..getEyePartDocuments()
-        ..getAvailableYears(),
+      create: (_) =>
+          getIt<EyeViewCubit>()..getInitialRequests(eyePart: eyePart),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: Padding(
@@ -53,6 +52,7 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                         cubit.getFilteredEyePartProceduresAndSymptomsDocuments(
                           year: selectedFilters[' السنة '],
                           category: selectedFilters['  الفئة      '],
+                          eyePart: eyePart,
                         );
                       },
                     ),
@@ -84,7 +84,9 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                                   ),
                                 ),
                               );
-                              await cubit.getEyePartDocuments();
+                              await cubit.getEyePartDocuments(
+                                eyePart: eyePart,
+                              );
                             },
                             date: doc.date,
                             procedures: doc.procedures,
@@ -92,7 +94,9 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                           );
                         },
                       ),
-                    const EyeDocumentsFooterRow(),
+                    EyeDocumentsFooterRow(
+                      eyePart: eyePart,
+                    ),
                     verticalSpacing(16),
                   ],
                 ),

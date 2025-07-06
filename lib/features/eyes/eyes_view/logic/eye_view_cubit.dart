@@ -15,11 +15,12 @@ class EyeViewCubit extends Cubit<EyeViewState> {
   bool hasMore = true;
   bool isLoadingMore = false;
 
-  Future<void> getAvailableYears() async {
+  Future<void> getAvailableYears({required String eyePart}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _repo.getAvailableEyePartDocumentYears(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
+      affectedEyePart: eyePart,
     );
     result.when(
       success: (data) => emit(state.copyWith(
@@ -33,7 +34,12 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     );
   }
 
-  Future<void> getEyePartDocuments({int? page}) async {
+  Future<void> getInitialRequests({required String eyePart}) async {
+    await getEyePartDocuments(eyePart: eyePart);
+    getAvailableYears(eyePart: eyePart);
+  }
+
+  Future<void> getEyePartDocuments({int? page, required String eyePart}) async {
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
     } else {
@@ -45,6 +51,7 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     final result = await _repo.getEyePartProceduresAndSymptomsDocuments(
       page: page ?? currentPage,
       limit: pageSize,
+      affectedEyePart: eyePart,
     );
 
     result.when(success: (response) {
@@ -68,10 +75,12 @@ class EyeViewCubit extends Cubit<EyeViewState> {
   Future<void> getFilteredEyePartProceduresAndSymptomsDocuments({
     String? year,
     String? category,
+    required String eyePart,
   }) async {
     final result = await _repo.getFilteredEyePartProceduresAndSymptomsDocuments(
       year: year,
       category: category,
+      affectedEyePart: eyePart,
     );
 
     result.when(success: (response) {
@@ -190,9 +199,12 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     );
   }
 
-  Future<void> loadMoreEyePartDocuments() async {
+  Future<void> loadMoreEyePartDocuments({required String eyePart}) async {
     if (!hasMore || isLoadingMore) return;
-    await getEyePartDocuments(page: currentPage + 1);
+    await getEyePartDocuments(
+      page: currentPage + 1,
+      eyePart: eyePart,
+    );
   }
 
   Future<void> loadMoreEyeGlassesRecords() async {

@@ -37,33 +37,30 @@ class _EyeProceduresAndSyptomsDataEntryState
 
   initializeSyptomsAndProcedures() async {
     await context.read<EyesDataEntryCubit>().getEyePartSyptomsAndProcedures(
-        selectedEyePart: widget.selectedEyePart);
+          selectedEyePart: widget.selectedEyePart,
+        );
+
     if (!mounted) return;
-    symptoms = context
-        .read<EyesDataEntryCubit>()
-        .state
-        .eyePartSyptomsAndProcedures!
-        .symptoms
-        .map(
-          (symptom) => SymptomAndProcedureItem(
-            id: symptom,
-            title: symptom,
-            isSelected: false,
-          ),
-        )
+
+    final data =
+        context.read<EyesDataEntryCubit>().state.eyePartSyptomsAndProcedures;
+
+    if (data == null) return; // ✅ Prevent null error
+
+    symptoms = data.symptoms
+        .map((symptom) => SymptomAndProcedureItem(
+              id: symptom,
+              title: symptom,
+              isSelected: false,
+            ))
         .toList();
-    procedures = context
-        .read<EyesDataEntryCubit>()
-        .state
-        .eyePartSyptomsAndProcedures!
-        .procedures
-        .map(
-          (procedure) => SymptomAndProcedureItem(
-            id: procedure,
-            title: procedure,
-            isSelected: false,
-          ),
-        )
+
+    procedures = data.procedures
+        .map((procedure) => SymptomAndProcedureItem(
+              id: procedure,
+              title: procedure,
+              isSelected: false,
+            ))
         .toList();
   }
 
@@ -151,9 +148,13 @@ class _EyeProceduresAndSyptomsDataEntryState
                 // Symptoms Tab
                 BlocBuilder<EyesDataEntryCubit, EyesDataEntryState>(
                   builder: (context, state) {
-                    if (state.eyePartSyptomsAndProcedures == null) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                    if (state.eyePartSyptomsAndProcedures == null ||
+                        symptoms.isEmpty) {
+                      return Center(
+                        child: Text(
+                          "لا يوجد اعراض مضافه لهذا الجزء",
+                          style: AppTextStyles.font22MainBlueWeight700,
+                        ),
                       );
                     }
 
@@ -166,9 +167,13 @@ class _EyeProceduresAndSyptomsDataEntryState
                 // Procedures Tab
                 BlocBuilder<EyesDataEntryCubit, EyesDataEntryState>(
                   builder: (context, state) {
-                    if (state.eyePartSyptomsAndProcedures == null) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
+                    if (state.eyePartSyptomsAndProcedures == null ||
+                        procedures.isEmpty) {
+                      return Center(
+                        child: Text(
+                          "لا يوجد اجرائات مضافه لهذا الجزء",
+                          style: AppTextStyles.font22MainBlueWeight700,
+                        ),
                       );
                     }
 

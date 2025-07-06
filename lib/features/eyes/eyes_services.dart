@@ -82,6 +82,7 @@ abstract class EyesModuleServices {
   Future<dynamic> getAvailableYears(
     @Query("language") String language,
     @Query("UserType") String userType,
+    @Query("affectedEyePart") String affectedEyePart,
   );
 
   /// 2. Get All Documents (With Pagination)
@@ -91,6 +92,7 @@ abstract class EyesModuleServices {
     @Query("limit") required int limit,
     @Query("language") required String language,
     @Query("UserType") required String userType,
+    @Query("affectedEyePart") required String affectedEyePart,
   });
 
   /// 3. Get Filtered Documents
@@ -100,6 +102,7 @@ abstract class EyesModuleServices {
     @Query("category") String? category,
     @Query("language") String language,
     @Query("UserType") String userType,
+    @Query("affectedEyePart") String affectedEyePart,
   );
 
   /// 4. Get Document Details by ID

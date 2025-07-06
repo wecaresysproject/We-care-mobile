@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,8 +8,8 @@ import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
 
 class EyeDocumentsFooterRow extends StatelessWidget {
-  const EyeDocumentsFooterRow({super.key});
-
+  const EyeDocumentsFooterRow({super.key, required this.eyePart});
+  final String eyePart;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EyeViewCubit, EyeViewState>(
@@ -34,7 +33,9 @@ class EyeDocumentsFooterRow extends StatelessWidget {
                 ElevatedButton(
                   onPressed: state.isLoadingMore || !cubit.hasMore
                       ? null
-                      : () => cubit.loadMoreEyePartDocuments(),
+                      : () => cubit.loadMoreEyePartDocuments(
+                            eyePart: eyePart,
+                          ),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(158.w, 32.h),
                     backgroundColor: state.isLoadingMore || !cubit.hasMore
