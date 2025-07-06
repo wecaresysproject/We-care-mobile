@@ -29,77 +29,84 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
             builder: (context, state) {
               final cubit = context.read<EyeViewCubit>();
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    DetailsViewAppBar(
-                      title: eyePart,
-                      showActionButtons: false,
-                    ),
-                    DataViewFiltersRow(
-                      filters: [
-                        FilterConfig(
-                          title: ' السنة ',
-                          options: state.yearsFilter,
-                          isYearFilter: true,
-                        ),
-                        FilterConfig(
-                          title: '  الفئة      ',
-                          options: const ['الاعراض', 'الاجراءات', 'الكل'],
-                        ),
-                      ],
-                      onApply: (selectedFilters) {
-                        cubit.getFilteredEyePartProceduresAndSymptomsDocuments(
-                          year: selectedFilters[' السنة '],
-                          category: selectedFilters['  الفئة      '],
-                          eyePart: eyePart,
-                        );
-                      },
-                    ),
-                    if (state.requestStatus == RequestStatus.loading)
-                      const Center(child: CircularProgressIndicator())
-                    else if (state.eyePartDocuments.isEmpty)
-                      Center(
-                        child: Text(
-                          "لا يوجد بيانات",
-                          style: AppTextStyles.font22MainBlueWeight700,
-                        ),
-                      )
-                    else
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state.eyePartDocuments.length,
-                        itemBuilder: (context, index) {
-                          final doc = state.eyePartDocuments[index];
-                          return MedicalItemCardHorizontal(
-                            onArrowTap: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      EyePartsProcedureAndSymptomsDetailsView(
-                                    title: eyePart,
-                                    documentId: doc.id,
-                                  ),
-                                ),
-                              );
-                              await cubit.getEyePartDocuments(
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          DetailsViewAppBar(
+                            title: eyePart,
+                            showActionButtons: false,
+                          ),
+                          DataViewFiltersRow(
+                            filters: [
+                              FilterConfig(
+                                title: ' السنة ',
+                                options: state.yearsFilter,
+                                isYearFilter: true,
+                              ),
+                              FilterConfig(
+                                title: '  الفئة      ',
+                                options: const ['الاعراض', 'الاجراءات', 'الكل'],
+                              ),
+                            ],
+                            onApply: (selectedFilters) {
+                              cubit
+                                  .getFilteredEyePartProceduresAndSymptomsDocuments(
+                                year: selectedFilters[' السنة '],
+                                category: selectedFilters['  الفئة      '],
                                 eyePart: eyePart,
                               );
                             },
-                            date: doc.date,
-                            procedures: doc.procedures,
-                            symptoms: doc.symptoms,
-                          );
-                        },
+                          ),
+                          if (state.requestStatus == RequestStatus.loading)
+                            const Center(child: CircularProgressIndicator())
+                          else if (state.eyePartDocuments.isEmpty)
+                            Center(
+                              child: Text(
+                                "لا يوجد بيانات",
+                                style: AppTextStyles.font22MainBlueWeight700,
+                              ),
+                            )
+                          else
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.eyePartDocuments.length,
+                              itemBuilder: (context, index) {
+                                final doc = state.eyePartDocuments[index];
+                                return MedicalItemCardHorizontal(
+                                  onArrowTap: () async {
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            EyePartsProcedureAndSymptomsDetailsView(
+                                          title: eyePart,
+                                          documentId: doc.id,
+                                        ),
+                                      ),
+                                    );
+                                    await cubit.getEyePartDocuments(
+                                      eyePart: eyePart,
+                                    );
+                                  },
+                                  date: doc.date,
+                                  procedures: doc.procedures,
+                                  symptoms: doc.symptoms,
+                                );
+                              },
+                            ),
+                        ],
                       ),
-                    EyeDocumentsFooterRow(
-                      eyePart: eyePart,
                     ),
-                    verticalSpacing(16),
-                  ],
-                ),
+                  ),
+                  EyeDocumentsFooterRow(
+                    eyePart: eyePart,
+                  ),
+                  verticalSpacing(16),
+                ],
               );
             },
           ),
