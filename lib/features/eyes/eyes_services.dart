@@ -12,7 +12,7 @@ part 'eyes_services.g.dart';
 
 @RestApi(baseUrl: EyesApiConstants.baseUrl)
 abstract class EyesModuleServices {
-  factory EyesModuleServices(Dio dio, {String baseUrl}) = _EyesModuleServices;
+  factory EyesModuleServices(Dio dio, {String? baseUrl}) = _EyesModuleServices;
 
   @MultiPart()
   @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
