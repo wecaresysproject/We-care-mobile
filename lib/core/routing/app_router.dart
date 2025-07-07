@@ -382,6 +382,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const EyesOrGlassesDataView(),
         );
+
       case Routes.glassesInformationView:
         return MaterialPageRoute(
             builder: (context) => const EyeGlassesRecordsView());

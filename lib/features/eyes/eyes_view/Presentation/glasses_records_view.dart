@@ -44,8 +44,8 @@ class EyeGlassesRecordsView extends StatelessWidget {
                     Expanded(
                       child: MedicalItemGridView(
                         items: items,
-                        onTap: (id) {
-                          Navigator.push(
+                        onTap: (id) async {
+                          final bool? result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => EyesGlassesDetailsView(
@@ -53,6 +53,9 @@ class EyeGlassesRecordsView extends StatelessWidget {
                               ),
                             ),
                           );
+                          if (result == true && context.mounted) {
+                            context.read<EyeViewCubit>().getEyeGlassesRecords();
+                          }
                         },
                         titleBuilder: (item) => item.date ?? "-",
                         infoRowBuilder: (item) => [

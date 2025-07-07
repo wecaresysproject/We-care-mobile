@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
@@ -17,7 +18,18 @@ class EyesGlassesDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: getIt<EyeViewCubit>()..getEyeGlassesDetails(documentId),
-      child: BlocBuilder<EyeViewCubit, EyeViewState>(
+      child: BlocConsumer<EyeViewCubit, EyeViewState>(
+        listenWhen: (previous, current) =>
+            previous.isDeleteRequest != current.isDeleteRequest,
+        listener: (context, state) async {
+          if (state.requestStatus == RequestStatus.success) {
+            await showSuccess(state.responseMessage);
+            if (!context.mounted) return;
+            Navigator.pop(context, true);
+          } else if (state.requestStatus == RequestStatus.failure) {
+            await showError(state.responseMessage);
+          }
+        },
         builder: (context, state) {
           if (state.requestStatus == RequestStatus.loading ||
               state.selectedEyeGlassesDetails == null) {
@@ -35,12 +47,12 @@ class EyesGlassesDetailsView extends StatelessWidget {
               child: Column(
                 spacing: 16.h,
                 children: [
-                  const DetailsViewAppBar(
+                  DetailsViewAppBar(
                     title: 'بيانات النظارات',
                     showActionButtons: true,
-                    // deleteFunction: () async => await context
-                    //     .read<SurgeriesViewCubit>()
-                    //     .deleteSurgeryById(documentId),
+                    deleteFunction: () => context
+                        .read<EyeViewCubit>()
+                        .deleteEyeGlassesRecord(documentId),
                   ),
                   Image.asset('assets/images/glass.png'),
                   Row(children: [
