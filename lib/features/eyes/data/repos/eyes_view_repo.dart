@@ -147,8 +147,10 @@ class EyesViewRepo {
         'ar',
         UserTypes.patient.name.firstLetterToUpperCase,
       );
+      log('Eye Glasses Details Response: $response[data]');
       return ApiResult.success(
-          EyeGlassesDetailsModel.fromJson(response['data']));
+        EyeGlassesDetailsModel.fromJson(response['data']),
+      );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

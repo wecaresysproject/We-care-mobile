@@ -36,7 +36,8 @@ class EyeGlassesRecordsView extends StatelessWidget {
                   verticalSpacing(12),
                   if (state.requestStatus == RequestStatus.loading &&
                       items.isEmpty)
-                    const Expanded(child: Center(child: CircularProgressIndicator()))
+                    const Expanded(
+                        child: Center(child: CircularProgressIndicator()))
                   else if (items.isEmpty)
                     const Expanded(child: Center(child: Text("لا توجد بيانات")))
                   else
@@ -57,7 +58,7 @@ class EyeGlassesRecordsView extends StatelessWidget {
                         infoRowBuilder: (item) => [
                           {
                             "title": "الطبيب / المستشفى:",
-                            "value": item.doctorOrHospitalName ?? "-",
+                            "value": item.doctorName ?? "-",
                           },
                           {
                             "title": "العين اليمني قصر/طول النظر:",

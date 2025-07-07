@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
@@ -38,6 +38,9 @@ class EyesGlassesDetailsView extends StatelessWidget {
                   const DetailsViewAppBar(
                     title: 'بيانات النظارات',
                     showActionButtons: true,
+                    // deleteFunction: () async => await context
+                    //     .read<SurgeriesViewCubit>()
+                    //     .deleteSurgeryById(documentId),
                   ),
                   Image.asset('assets/images/glass.png'),
                   Row(children: [
@@ -149,8 +152,8 @@ class EyesGlassesDetailsView extends StatelessWidget {
                           "طول القصر": data.rightEye.hyperopiaDegree,
                           "الاستجماتزم": data.rightEye.astigmatismDegree,
                           "محور الاستجماتزم": data.rightEye.astigmatismAxis,
-                          "الإضافة البؤرية": data.rightEye.addition,
-                          "تباعُد الحدقتين": data.rightEye.nearAddition,
+                          "الإضافة البؤرية": data.rightEye.nearAddition,
+                          "تباعُد الحدقتين": data.rightEye.pupillaryDistance,
                           "معامل الانكسار": data.rightEye.refractiveIndex,
                           "قطر العدسة": data.rightEye.lensDiameter,
                           "المركز": data.rightEye.lensCentering,
@@ -169,8 +172,8 @@ class EyesGlassesDetailsView extends StatelessWidget {
                           "طول القصر": data.leftEye.hyperopiaDegree,
                           "الاستجماتزم": data.leftEye.astigmatismDegree,
                           "محور الاستجماتزم": data.leftEye.astigmatismAxis,
-                          "الإضافة البؤرية": data.leftEye.addition,
-                          "تباعُد الحدقتين": data.leftEye.nearAddition,
+                          "الإضافة البؤرية": data.leftEye.nearAddition,
+                          "تباعُد الحدقتين": data.leftEye.pupillaryDistance,
                           "معامل الانكسار": data.leftEye.refractiveIndex,
                           "قطر العدسة": data.leftEye.lensDiameter,
                           "المركز": data.leftEye.lensCentering,
