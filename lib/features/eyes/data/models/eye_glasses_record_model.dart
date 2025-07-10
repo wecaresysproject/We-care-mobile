@@ -7,18 +7,18 @@ class EyeGlassesRecordModel {
   final String id;
   final String date;
 
-  @JsonKey(name: 'doctorName/hospitalName')
-  final String doctorOrHospitalName;
-
   final String rightEyeSphericalPower;
 
   final String leftEyeSphericalPower;
   final String storeName;
+  final String doctorName;
+  final String hospitalName;
 
   EyeGlassesRecordModel({
     required this.id,
     required this.date,
-    required this.doctorOrHospitalName,
+    required this.doctorName,
+    required this.hospitalName,
     required this.rightEyeSphericalPower,
     required this.leftEyeSphericalPower,
     required this.storeName,

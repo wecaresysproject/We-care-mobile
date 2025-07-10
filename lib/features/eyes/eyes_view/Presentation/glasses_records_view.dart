@@ -36,15 +36,16 @@ class EyeGlassesRecordsView extends StatelessWidget {
                   verticalSpacing(12),
                   if (state.requestStatus == RequestStatus.loading &&
                       items.isEmpty)
-                    const Expanded(child: Center(child: CircularProgressIndicator()))
+                    const Expanded(
+                        child: Center(child: CircularProgressIndicator()))
                   else if (items.isEmpty)
                     const Expanded(child: Center(child: Text("لا توجد بيانات")))
                   else
                     Expanded(
                       child: MedicalItemGridView(
                         items: items,
-                        onTap: (id) {
-                          Navigator.push(
+                        onTap: (id) async {
+                          final bool? result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => EyesGlassesDetailsView(
@@ -52,12 +53,15 @@ class EyeGlassesRecordsView extends StatelessWidget {
                               ),
                             ),
                           );
+                          if (result == true && context.mounted) {
+                            context.read<EyeViewCubit>().getEyeGlassesRecords();
+                          }
                         },
                         titleBuilder: (item) => item.date ?? "-",
                         infoRowBuilder: (item) => [
                           {
                             "title": "الطبيب / المستشفى:",
-                            "value": item.doctorOrHospitalName ?? "-",
+                            "value": item.doctorName ?? "-",
                           },
                           {
                             "title": "العين اليمني قصر/طول النظر:",

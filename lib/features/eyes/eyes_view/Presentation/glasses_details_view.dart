@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
@@ -17,7 +20,18 @@ class EyesGlassesDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: getIt<EyeViewCubit>()..getEyeGlassesDetails(documentId),
-      child: BlocBuilder<EyeViewCubit, EyeViewState>(
+      child: BlocConsumer<EyeViewCubit, EyeViewState>(
+        listenWhen: (previous, current) =>
+            previous.isDeleteRequest != current.isDeleteRequest,
+        listener: (context, state) async {
+          if (state.requestStatus == RequestStatus.success) {
+            await showSuccess(state.responseMessage);
+            if (!context.mounted) return;
+            Navigator.pop(context, true);
+          } else if (state.requestStatus == RequestStatus.failure) {
+            await showError(state.responseMessage);
+          }
+        },
         builder: (context, state) {
           if (state.requestStatus == RequestStatus.loading ||
               state.selectedEyeGlassesDetails == null) {
@@ -35,9 +49,27 @@ class EyesGlassesDetailsView extends StatelessWidget {
               child: Column(
                 spacing: 16.h,
                 children: [
-                  const DetailsViewAppBar(
+                  DetailsViewAppBar(
                     title: 'بيانات النظارات',
                     showActionButtons: true,
+                    deleteFunction: () => context
+                        .read<EyeViewCubit>()
+                        .deleteEyeGlassesRecord(documentId),
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.glassesInformationDataEntryView,
+                        arguments: {
+                          'documentId': documentId,
+                          'glassesEditModel': data,
+                        },
+                      );
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context.read<EyeViewCubit>().getEyeGlassesDetails(
+                              documentId,
+                            );
+                      }
+                    },
                   ),
                   Image.asset('assets/images/glass.png'),
                   Row(children: [
@@ -149,8 +181,8 @@ class EyesGlassesDetailsView extends StatelessWidget {
                           "طول القصر": data.rightEye.hyperopiaDegree,
                           "الاستجماتزم": data.rightEye.astigmatismDegree,
                           "محور الاستجماتزم": data.rightEye.astigmatismAxis,
-                          "الإضافة البؤرية": data.rightEye.addition,
-                          "تباعُد الحدقتين": data.rightEye.nearAddition,
+                          "الإضافة البؤرية": data.rightEye.nearAddition,
+                          "تباعُد الحدقتين": data.rightEye.pupillaryDistance,
                           "معامل الانكسار": data.rightEye.refractiveIndex,
                           "قطر العدسة": data.rightEye.lensDiameter,
                           "المركز": data.rightEye.lensCentering,
@@ -169,8 +201,8 @@ class EyesGlassesDetailsView extends StatelessWidget {
                           "طول القصر": data.leftEye.hyperopiaDegree,
                           "الاستجماتزم": data.leftEye.astigmatismDegree,
                           "محور الاستجماتزم": data.leftEye.astigmatismAxis,
-                          "الإضافة البؤرية": data.leftEye.addition,
-                          "تباعُد الحدقتين": data.leftEye.nearAddition,
+                          "الإضافة البؤرية": data.leftEye.nearAddition,
+                          "تباعُد الحدقتين": data.leftEye.pupillaryDistance,
                           "معامل الانكسار": data.leftEye.refractiveIndex,
                           "قطر العدسة": data.leftEye.lensDiameter,
                           "المركز": data.leftEye.lensCentering,

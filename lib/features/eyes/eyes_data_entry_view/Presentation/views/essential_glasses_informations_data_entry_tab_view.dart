@@ -21,6 +21,7 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
     return BlocBuilder<GlassesDataEntryCubit, GlassesDataEntryState>(
       builder: (context, state) {
         return SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           scrollDirection: Axis.vertical,
           physics: const BouncingScrollPhysics(),
           child: Column(
@@ -90,6 +91,8 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               ),
               verticalSpacing(10),
               CustomTextField(
+                controller:
+                    context.read<GlassesDataEntryCubit>().storNameController,
                 hintText: state.glassesStore ?? "اكتب اسم المحل",
                 validator: (value) {},
                 onChanged: (value) {

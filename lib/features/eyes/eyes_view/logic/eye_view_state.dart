@@ -1,11 +1,9 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_record_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
 import 'package:we_care/features/eyes/data/models/get_user_procedures_and_symptoms_response_model.dart';
-
 
 class EyeViewState extends Equatable {
   final RequestStatus requestStatus;

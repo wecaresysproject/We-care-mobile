@@ -23,7 +23,7 @@ class MedicalCategoriesTypesView extends StatelessWidget {
           ),
           verticalSpacing(24),
           BasicDataAndBiometricMeasurementsCategoriesView(),
-          MedicalCategoriesTypesGridView(),
+          // MedicalCategoriesTypesGridView(),
         ],
       ).paddingSymmetricHorizontal(16),
     );
@@ -43,10 +43,10 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
         MedicalCategoryItem(
           title: "القياسات الحيوية",
           imagePath: "assets/images/medical_tools_img.png",
-          routeName: Routes.biometricsView,
+          routeName: Routes.eyesOrGlassesDataView,
           isActive: true,
-          onTap: () {
-            Navigator.pushNamed(context, Routes.biometricsView);
+          onTap: () async {
+            await Navigator.pushNamed(context, Routes.eyesOrGlassesDataView);
           },
         ),
         MedicalCategoryItem(

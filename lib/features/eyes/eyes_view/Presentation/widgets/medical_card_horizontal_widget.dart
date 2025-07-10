@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -65,60 +64,63 @@ class MedicalItemCardHorizontal extends StatelessWidget {
             SizedBox(height: 10.h),
 
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// الإجراءات الطبية
-                    if (procedures != null && procedures!.isNotEmpty) ...[
-                      Text(
-                        'الإجراءات الطبية :',
-                        textAlign: TextAlign.start,
-                        style: AppTextStyles.font14BlueWeight700
-                            .copyWith(fontSize: 14.sp),
-                      ),
-                      ...procedures!.asMap().entries.map((entry) => Padding(
-                            padding: EdgeInsets.only(right: 12.w, top: 2.h),
-                            child: Text(
-                              '${entry.key + 1}/ ${entry.value}',
-                              style: AppTextStyles.font14blackWeight400,
-                            ),
-                          )),
-                      SizedBox(height: 8.h),
-                    ],
+                /// Column with procedures and symptoms (expanded to take space)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// الإجراءات الطبية
+                      if (procedures != null && procedures!.isNotEmpty) ...[
+                        Text(
+                          'الإجراءات الطبية :',
+                          textAlign: TextAlign.start,
+                          style: AppTextStyles.font14BlueWeight700
+                              .copyWith(fontSize: 14.sp),
+                        ),
+                        ...procedures!.asMap().entries.map((entry) => Padding(
+                              padding: EdgeInsets.only(right: 12.w, top: 2.h),
+                              child: Text(
+                                '${entry.key + 1}/ ${entry.value}',
+                                style: AppTextStyles.font14blackWeight400,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                            )),
+                        SizedBox(height: 8.h),
+                      ],
 
-                    /// الأعراض المرضية
-                    if (symptoms != null && symptoms!.isNotEmpty) ...[
-                      Text(
-                        'الأعراض المرضية :',
-                        style: AppTextStyles.font14BlueWeight700
-                            .copyWith(fontSize: 14.sp),
-                      ),
-                      ...symptoms!.asMap().entries.map((entry) => Padding(
-                            padding: EdgeInsets.only(right: 12.w, top: 2.h),
-                            child: Text(
-                              '${entry.key + 1}/ ${entry.value}',
-                              style: AppTextStyles.font14blackWeight400,
-                            ),
-                          )),
+                      /// الأعراض المرضية
+                      if (symptoms != null && symptoms!.isNotEmpty) ...[
+                        Text(
+                          'الأعراض المرضية :',
+                          style: AppTextStyles.font14BlueWeight700
+                              .copyWith(fontSize: 14.sp),
+                        ),
+                        ...symptoms!.asMap().entries.map((entry) => Padding(
+                              padding: EdgeInsets.only(right: 12.w, top: 2.h),
+                              child: Text(
+                                '${entry.key + 1}/ ${entry.value}',
+                                style: AppTextStyles.font14blackWeight400,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                            )),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
 
-                const Spacer(),
-
                 /// Arrow Icon
-                Align(
-                  alignment: Alignment.center,
-                  child: IconButton(
-                    onPressed: onArrowTap,
-                    icon: Image.asset(
-                      'assets/images/side_arrow_filled.png',
-                      width: 24.w,
-                      height: 24.h,
-                    ),
+                IconButton(
+                  onPressed: onArrowTap,
+                  icon: Image.asset(
+                    'assets/images/side_arrow_filled.png',
+                    width: 24.w,
+                    height: 24.h,
                   ),
-                )
+                ),
               ],
             )
           ],

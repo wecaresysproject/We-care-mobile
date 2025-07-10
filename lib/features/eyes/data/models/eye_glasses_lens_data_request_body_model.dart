@@ -6,13 +6,30 @@ part 'eye_glasses_lens_data_request_body_model.g.dart';
 class EyeGlassesLensDataRequestBodyModel {
   final LensData? leftLens;
   final LensData? rightLens;
-  @JsonKey(name: 'essentialGlassData')
-  final EssentialGlassesData essentialGlassData;
+  final String examinationDate;
+  final String? doctorName;
+  final String? centerHospitalName;
+  final String? glassesShop;
+  final bool? antiReflection;
+  final bool? blueLightProtection;
+  final bool? scratchResistance;
+  final bool? antiFingerprintCoating;
+  final bool? antiFogCoating;
+  final bool? uvProtection;
 
   EyeGlassesLensDataRequestBodyModel({
     this.leftLens,
     this.rightLens,
-    required this.essentialGlassData,
+    required this.examinationDate,
+    this.doctorName,
+    this.centerHospitalName,
+    this.glassesShop,
+    this.antiReflection,
+    this.blueLightProtection,
+    this.scratchResistance,
+    this.antiFingerprintCoating,
+    this.antiFogCoating,
+    this.uvProtection,
   });
 
   factory EyeGlassesLensDataRequestBodyModel.fromJson(
@@ -84,36 +101,4 @@ class LensData {
       _$LensDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$LensDataToJson(this);
-}
-
-@JsonSerializable()
-class EssentialGlassesData {
-  final String examinationDate;
-  final String? doctorName;
-  final String? centerHospitalName;
-  final String? glassesShop;
-  final bool? antiReflection;
-  final bool? blueLightProtection;
-  final bool? scratchResistance;
-  final bool? antiFingerprintCoating;
-  final bool? antiFogCoating;
-  final bool? uvProtection;
-
-  EssentialGlassesData({
-    required this.examinationDate,
-    this.doctorName,
-    this.centerHospitalName,
-    this.glassesShop,
-    this.antiReflection,
-    this.blueLightProtection,
-    this.scratchResistance,
-    this.antiFingerprintCoating,
-    this.antiFogCoating,
-    this.uvProtection,
-  });
-
-  factory EssentialGlassesData.fromJson(Map<String, dynamic> json) =>
-      _$EssentialGlassesDataFromJson(json);
-
-  Map<String, dynamic> toJson() => _$EssentialGlassesDataToJson(this);
 }
