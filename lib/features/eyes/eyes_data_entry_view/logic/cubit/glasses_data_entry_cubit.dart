@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -18,7 +19,7 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   final GlassesDataEntryRepo _glassesDataEntryRepo;
 
   final formKey = GlobalKey<FormState>();
-
+  final TextEditingController storNameController = TextEditingController();
   // Controllers for Right Lens
   final TextEditingController rightShortSightController =
       TextEditingController(); // قصر النظر للعدسة اليمنى
@@ -67,32 +68,142 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   final TextEditingController leftLensThicknessController =
       TextEditingController(); // سُمك العدسة للعدسة اليسرى
 
-  // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeryDateSelection: pastSurgery.surgeryDate,
-  //       surgeryBodyPartSelection: pastSurgery.surgeryRegion,
-  //       selectedSubSurgery: pastSurgery.subSurgeryRegion,
-  //       surgeryNameSelection: pastSurgery.surgeryName,
-  //       selectedTechUsed: pastSurgery.usedTechnique,
-  //       surgeryPurpose: pastSurgery.purpose,
-  //       reportImageUploadedUrl: pastSurgery.medicalReportImage,
-  //       selectedSurgeryStatus: pastSurgery.surgeryStatus,
-  //       selectedHospitalCenter: pastSurgery.hospitalCenter,
-  //       internistName: pastSurgery.anesthesiologistName,
-  //       selectedCountryName: pastSurgery.country,
-  //       surgeonName: pastSurgery.surgeonName,
-  //       isEditMode: true,
-  //       updatedSurgeryId: pastSurgery.id,
-  //     ),
-  //   );
-  //   personalNotesController.text = pastSurgery.additionalNotes;
-  //   suergeryDescriptionController.text = pastSurgery.surgeryDescription;
-  //   postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
+  Future<void> loadPastGlassesDataForEditing({
+    required String decoumentId,
+    required EyeGlassesDetailsModel oldGlassesData,
+    required S locale,
+  }) async {
+    emit(
+      state.copyWith(
+        examinationDateSelection: oldGlassesData.date,
+        doctorName: oldGlassesData.doctorName,
+        selectedHospitalCenter: oldGlassesData.hospitalName,
+        glassesStore: oldGlassesData.storeName,
+        antiReflection: oldGlassesData.antiReflection,
+        isBlueLightProtection: oldGlassesData.blueLightProtection,
+        isScratchResistance: oldGlassesData.scratchResistance,
+        isAntiFingerprint: oldGlassesData.fingerprintResistance,
+        isAntiFogCoating: oldGlassesData.antiFog,
+        isUVProtection: oldGlassesData.uvProtection,
+        isEditMode: true,
+        decoumentId: decoumentId,
+        rightlensSurfaceType: oldGlassesData.rightEye.lensSurfaceType,
+        rightLensType: oldGlassesData.rightEye.lensType,
+        leftLensSurfaceType: oldGlassesData.leftEye.lensSurfaceType,
+        leftLensType: oldGlassesData.leftEye.lensType,
+      ),
+    );
+    storNameController.text == locale.no_data_entered
+        ? ''
+        : oldGlassesData.storeName;
 
-  //   validateRequiredFields();
-  //   await intialRequestsForDataEntry();
-  // }
+    intiliazeRightLensControllersWithOldData(oldGlassesData);
+    intiliazeLeftLensControllersWithOldData(oldGlassesData);
+
+    validateRequiredFields();
+    await getInitialRequests();
+  }
+
+  void intiliazeRightLensControllersWithOldData(
+      EyeGlassesDetailsModel oldGlassesData) {
+    // قصر النظر للعدسة اليمنى
+    rightShortSightController.text = oldGlassesData.rightEye.myopiaDegree;
+    // طول النظر للعدسة اليمنى
+    rightLongSightController.text = oldGlassesData.rightEye.hyperopiaDegree;
+    // الاستجماتزم للعدسة اليمنى
+    rightAstigmatismController.text =
+        oldGlassesData.rightEye.astigmatismDegree == '--'
+            ? ''
+            : oldGlassesData.rightEye.astigmatismDegree;
+    // محور الاستجماتزم للعدسة اليمنى
+    rightAstigmatismAxisController.text =
+        oldGlassesData.rightEye.astigmatismAxis == '--'
+            ? ''
+            : oldGlassesData.rightEye.astigmatismAxis;
+    // الاضافة البؤرية للعدسة اليمنى
+    rightFocalAdditionController.text =
+        oldGlassesData.rightEye.nearAddition == '--'
+            ? ''
+            : oldGlassesData.rightEye.nearAddition;
+    // تباعد الحدقتين للعدسة اليمنى
+    rightPupilDistanceController.text =
+        oldGlassesData.rightEye.pupillaryDistance == '--'
+            ? ''
+            : oldGlassesData.rightEye.pupillaryDistance;
+    // معامل الانكسار للعدسة اليمنى
+    rightRefractiveIndexController.text =
+        oldGlassesData.rightEye.refractiveIndex == '--'
+            ? ''
+            : oldGlassesData.rightEye.refractiveIndex;
+    // قطر العدسة للعدسة اليمنى
+    rightLensDiameterController.text =
+        oldGlassesData.rightEye.lensDiameter == '--'
+            ? ''
+            : oldGlassesData.rightEye.lensDiameter;
+    // المركز للعدسة اليمنى
+    rightCenterController.text = oldGlassesData.rightEye.lensCentering == '--'
+        ? ''
+        : oldGlassesData.rightEye.lensCentering;
+    // الحواف للعدسة اليمنى
+    rightEdgesController.text = oldGlassesData.rightEye.lensEdgeType == '--'
+        ? ''
+        : oldGlassesData.rightEye.lensEdgeType;
+    // سُمك العدسة للعدسة اليمنى
+    rightLensThicknessController.text =
+        oldGlassesData.rightEye.lensThickness == '--'
+            ? ''
+            : oldGlassesData.rightEye.lensThickness;
+  }
+
+  void intiliazeLeftLensControllersWithOldData(
+      EyeGlassesDetailsModel oldGlassesData) {
+    leftShortSightController.text = oldGlassesData.leftEye.myopiaDegree;
+    // طول النظر للعدسة
+    leftLongSightController.text = oldGlassesData.leftEye.hyperopiaDegree;
+    // الاستجماتزم للعدسة
+    leftAstigmatismController.text =
+        oldGlassesData.leftEye.astigmatismDegree == '--'
+            ? ''
+            : oldGlassesData.leftEye.astigmatismDegree;
+    // محور الاستجماتزم للعدسة
+    leftAstigmatismAxisController.text =
+        oldGlassesData.leftEye.astigmatismAxis == '--'
+            ? ''
+            : oldGlassesData.leftEye.astigmatismAxis;
+    // الاضافة البؤرية للعدسة
+    leftFocalAdditionController.text =
+        oldGlassesData.leftEye.nearAddition == '--'
+            ? ''
+            : oldGlassesData.leftEye.nearAddition;
+    // تباعد الحدقتين للعدسة
+    leftPupilDistanceController.text =
+        oldGlassesData.leftEye.pupillaryDistance == '--'
+            ? ''
+            : oldGlassesData.leftEye.pupillaryDistance;
+    // معامل الانكسار للعدسة
+    leftRefractiveIndexController.text =
+        oldGlassesData.leftEye.refractiveIndex == '--'
+            ? ''
+            : oldGlassesData.leftEye.refractiveIndex;
+    // قطر العدسة للعدسة
+    leftLensDiameterController.text =
+        oldGlassesData.leftEye.lensDiameter == '--'
+            ? ''
+            : oldGlassesData.leftEye.lensDiameter;
+    // المركز للعدسة
+    leftCenterController.text = oldGlassesData.leftEye.lensCentering == '--'
+        ? ''
+        : oldGlassesData.leftEye.lensCentering;
+    // الحواف للعدسة
+    leftEdgesController.text = oldGlassesData.leftEye.lensEdgeType == '--'
+        ? ''
+        : oldGlassesData.leftEye.lensEdgeType;
+    // سُمك العدسة للعدسة
+    leftLensThicknessController.text =
+        oldGlassesData.leftEye.lensThickness == '--'
+            ? ''
+            : oldGlassesData.leftEye.lensThickness;
+  }
 
   /// Update Field Values
   void updateExaminationDate(String? date) {
@@ -161,51 +272,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     emitGetAllLensTypes();
     emitGetAllLensSurfacesTypes();
   }
-
-  // Future<void> submitGlassesEssentialDataEntryEndPoint(
-  //     {required S locale}) async {
-  //   emit(
-  //     state.copyWith(
-  //       glassesEssentialDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response =
-  //       await _glassesDataEntryRepo.postGlassesEssentialDataEntryEndPoint(
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //     requestBody: EyeGlassesEssentialDataRequestBodyModel(
-  //       examinationDate: state.examinationDateSelection!,
-  //       doctorName: state.doctorName ?? locale.no_data_entered,
-  //       centerHospitalName:
-  //           state.selectedHospitalCenter ?? locale.no_data_entered,
-  //       glassesShop: state.glassesStore ?? locale.no_data_entered,
-  //       antiReflection: state.antiReflection,
-  //       blueLightProtection: state.isBlueLightProtection,
-  //       scratchResistance: state.isScratchResistance,
-  //       antiFingerprintCoating: state.isAntiFingerprint,
-  //       antiFogCoating: state.isAntiFogCoating,
-  //       uvProtection: state.isUVProtection,
-  //     ),
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           glassesEssentialDataEntryStatus: RequestStatus.success,
-  //           message: successMessage,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           glassesEssentialDataEntryStatus: RequestStatus.failure,
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   Future<void> submitGlassesLensDataEntered({required S locale}) async {
     emit(
@@ -385,31 +451,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
       },
     );
   }
-  // // المناطق العمليه الفرعيه
-
-  // Future<void> emitGetAllSubSurgeriesRegions(
-  //     {required String selectedRegion}) async {
-  //   final response = await _surgeriesDataEntryRepo.getAllSubSurgeriesRegions(
-  //     language: AppStrings.arabicLang,
-  //     region: selectedRegion,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           subSurgeryRegions: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
@@ -426,6 +467,81 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         ),
       );
     }
+  }
+
+  // editGlassesDataEntered
+  Future<void> submitEditGlassesDataEntered(
+    S locale,
+  ) async {
+    emit(
+      state.copyWith(
+        submitGlassesLensDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _glassesDataEntryRepo.editGlassesDataEntered(
+      id: state.decoumentId,
+      requestBody: EyeGlassesLensDataRequestBodyModel(
+        examinationDate: state.examinationDateSelection!,
+        leftLens: LensData(
+          myopiaDegree: leftShortSightController.text,
+          hyperopiaDegree: leftLongSightController.text,
+          astigmatismDegree: leftAstigmatismController.text,
+          astigmatismAxis: leftAstigmatismAxisController.text,
+          nearAddition: leftFocalAdditionController.text,
+          pupillaryDistance: leftPupilDistanceController.text,
+          refractiveIndex: leftRefractiveIndexController.text,
+          lensDiameter: leftLensDiameterController.text,
+          lensCentering: leftCenterController.text,
+          lensEdgeType: leftEdgesController.text,
+          lensSurfaceType: state.leftLensSurfaceType,
+          lensThickness: leftLensThicknessController.text,
+          lensType: state.leftLensType,
+        ),
+        rightLens: LensData(
+          hyperopiaDegree: rightLongSightController.text,
+          myopiaDegree: rightShortSightController.text,
+          astigmatismDegree: rightAstigmatismController.text,
+          astigmatismAxis: rightAstigmatismAxisController.text,
+          nearAddition: rightFocalAdditionController.text,
+          pupillaryDistance: rightPupilDistanceController.text,
+          refractiveIndex: rightRefractiveIndexController.text,
+          lensDiameter: rightLensDiameterController.text,
+          lensCentering: rightCenterController.text,
+          lensEdgeType: rightEdgesController.text,
+          lensSurfaceType: state.rightlensSurfaceType,
+          lensThickness: rightLensThicknessController.text,
+          lensType: state.rightLensType,
+        ),
+        doctorName: state.doctorName!,
+        centerHospitalName: state.selectedHospitalCenter!,
+        glassesShop: state.glassesStore!,
+        antiReflection: state.antiReflection,
+        blueLightProtection: state.isBlueLightProtection,
+        scratchResistance: state.isScratchResistance,
+        antiFingerprintCoating: state.isAntiFingerprint,
+        antiFogCoating: state.isAntiFogCoating,
+        uvProtection: state.isUVProtection,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            submitGlassesLensDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            submitGlassesLensDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -453,7 +569,6 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     leftCenterController.dispose();
     leftEdgesController.dispose();
     leftLensThicknessController.dispose();
-    // Dispose of any other controllers or resources if needed
     formKey.currentState?.reset();
     return super.close();
   }

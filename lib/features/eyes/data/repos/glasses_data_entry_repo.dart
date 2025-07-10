@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -78,6 +80,24 @@ class GlassesDataEntryRepo {
           .toList();
       final doctorNames = doctors.map((e) => e.fullName).toList();
       return ApiResult.success(doctorNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> editGlassesDataEntered({
+    required EyeGlassesLensDataRequestBodyModel requestBody,
+    required String language,
+    required String id,
+  }) async {
+    try {
+      final response = await _eyesModuleServices.editGlassesDataEntered(
+        requestBody,
+        language,
+        id,
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

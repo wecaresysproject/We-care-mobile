@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
@@ -53,6 +55,21 @@ class EyesGlassesDetailsView extends StatelessWidget {
                     deleteFunction: () => context
                         .read<EyeViewCubit>()
                         .deleteEyeGlassesRecord(documentId),
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.glassesInformationDataEntryView,
+                        arguments: {
+                          'documentId': documentId,
+                          'glassesEditModel': data,
+                        },
+                      );
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context.read<EyeViewCubit>().getEyeGlassesDetails(
+                              documentId,
+                            );
+                      }
+                    },
                   ),
                   Image.asset('assets/images/glass.png'),
                   Row(children: [

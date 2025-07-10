@@ -79,7 +79,15 @@ abstract class EyesModuleServices {
 
   @PUT(EyesApiConstants.editEyeDataEntered)
   Future<dynamic> editEyeDataEntered(
+    @Query('language') String language,
+    @Query('id') String documentId,
+    @Query('UserType') String userType,
     @Body() EyeDataEntryRequestBody requestBody,
+  );
+
+  @PUT(EyesApiConstants.editGlassesDataEntered)
+  Future<dynamic> editGlassesDataEntered(
+    @Body() EyeGlassesLensDataRequestBodyModel requestBody,
     @Query('language') String language,
     @Query('id') String documentId,
     @Query('UserType') String userType,

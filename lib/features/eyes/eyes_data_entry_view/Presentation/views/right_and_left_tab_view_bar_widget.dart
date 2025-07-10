@@ -290,6 +290,14 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                 .formKey
                 .currentState!
                 .validate()) {
+              if (state.isEditMode) {
+                await context
+                    .read<GlassesDataEntryCubit>()
+                    .submitEditGlassesDataEntered(
+                      context.translate,
+                    );
+                return;
+              }
               await context
                   .read<GlassesDataEntryCubit>()
                   .submitGlassesLensDataEntered(

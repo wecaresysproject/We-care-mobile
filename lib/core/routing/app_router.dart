@@ -10,6 +10,7 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_data_entry.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
@@ -387,9 +388,14 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (context) => const EyeGlassesRecordsView());
       case Routes.glassesInformationDataEntryView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
         return MaterialPageRoute(
-          builder: (context) =>
-              const GlassesInformationCategoryDataEntryView(), //!To be changed later
+          builder: (context) => GlassesInformationCategoryDataEntryView(
+            glassesEditModel:
+                argumentsMap?['glassesEditModel'] as EyeGlassesDetailsModel?,
+            documentId: argumentsMap?['documentId'] as String?,
+          ), //!To be changed later
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

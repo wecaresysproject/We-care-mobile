@@ -128,10 +128,10 @@ class EyesDataEntryRepo {
   }) async {
     try {
       final response = await _eyesService.editEyeDataEntered(
-        requestBody,
-        id,
         language,
+        id,
         UserTypes.patient.name.firstLetterToUpperCase,
+        requestBody,
       );
       return ApiResult.success(response["message"]);
     } catch (error) {
