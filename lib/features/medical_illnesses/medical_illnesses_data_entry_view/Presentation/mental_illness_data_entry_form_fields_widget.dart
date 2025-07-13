@@ -135,12 +135,11 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(18),
 
-              //! handle its ui  حادث له اثر
               HasIncidentEffectQuestionWidget(),
               verticalSpacing(18),
 
               //! handle its ui هل يوجد حالات نفسية مشابهة فى العائلة؟
-
+              HasFamilySimilarMentalCasesQuestionWidget(),
               verticalSpacing(16),
 
               //! from backend
@@ -354,6 +353,8 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MedicalIllnessesDataEntryCubit,
         MedicalIllnessesDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.hasIncidentEffect != current.hasIncidentEffect,
       builder: (context, state) {
         return Container(
           padding: EdgeInsets.symmetric(
@@ -446,6 +447,67 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
                   },
                   bottomSheetTitle: "اختر تأثير الموقف",
                   searchHintText: "اختر تأثير الموقف",
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class HasFamilySimilarMentalCasesQuestionWidget extends StatelessWidget {
+  const HasFamilySimilarMentalCasesQuestionWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MedicalIllnessesDataEntryCubit,
+        MedicalIllnessesDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.hasFamilySimilarMentalCases !=
+          current.hasFamilySimilarMentalCases,
+      builder: (context, state) {
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 16.h,
+            horizontal: 8.w,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColorsManager.mainDarkBlue,
+              width: 1.1,
+            ),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Column(
+            children: [
+              // Yes/No Question using GenericQuestionWidget
+              GenericQuestionWidget(
+                questionTitle: "هل يوجد حالات نفسية مشابهة فى العائلة؟",
+                initialValue: state.hasFamilySimilarMentalCases,
+                onAnswerChanged: (value) {
+                  context
+                      .read<MedicalIllnessesDataEntryCubit>()
+                      .updateHasFamilySimilarMentalCases(value);
+                },
+              ),
+
+              // Additional fields if "Yes" selected
+              if (state.hasFamilySimilarMentalCases == true) ...[
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "الصلة العائلية",
+                  containerHintText:
+                      state.selectedFamilyRelationType ?? "اختر الصلة",
+                  options: const [],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateFamilyRelationType(value);
+                  },
+                  bottomSheetTitle: "اختر الصلة",
+                  searchHintText: "اختر الصلة",
                 ),
               ],
             ],

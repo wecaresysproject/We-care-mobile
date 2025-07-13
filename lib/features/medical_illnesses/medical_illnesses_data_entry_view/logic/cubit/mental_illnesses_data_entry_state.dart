@@ -21,6 +21,11 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final String? incidentDate; // تاريخ الموقف
   final String? incidentEffect; // تأثير الموقف على الحالة النفسية
   //حادث له آثر end
+
+  //هل يوجد حالات نفسية مشابهة فى العائلة؟
+  final bool? hasFamilySimilarMentalCases; // نعم/لا selection
+  final String? selectedFamilyRelationType;
+  //هل يوجد حالات نفسية مشابهة فى العائلة؟ end
   final bool isEditMode;
   final String editDecumentId;
 
@@ -38,10 +43,12 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.selectedsocialSupport,
     this.selectedMedicationSideEffects,
     this.selectedPreferredMentalWellnessActivities,
-    this.hasIncidentEffect = false,
+    this.hasIncidentEffect,
     this.incidentType,
     this.incidentDate,
     this.incidentEffect,
+    this.hasFamilySimilarMentalCases,
+    this.selectedFamilyRelationType,
     this.isEditMode = false,
     this.editDecumentId = '',
   }) : super();
@@ -60,10 +67,12 @@ class MedicalIllnessesDataEntryState extends Equatable {
           selectedsocialSupport: null,
           selectedMedicationSideEffects: null,
           selectedPreferredMentalWellnessActivities: null,
-          hasIncidentEffect: false,
+          hasIncidentEffect: null,
           incidentType: null,
           incidentDate: null,
           incidentEffect: null,
+          hasFamilySimilarMentalCases: null,
+          selectedFamilyRelationType: null,
           isEditMode: false,
           editDecumentId: '',
         );
@@ -86,6 +95,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
     String? incidentType,
     String? incidentDate,
     String? incidentEffect,
+    bool? hasFamilySimilarMentalCases,
+    String? selectedFamilyRelationType,
     bool? isEditMode,
     String? editDecumentId,
   }) {
@@ -114,6 +125,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
       incidentType: incidentType ?? this.incidentType,
       incidentDate: incidentDate ?? this.incidentDate,
       incidentEffect: incidentEffect ?? this.incidentEffect,
+      hasFamilySimilarMentalCases:
+          hasFamilySimilarMentalCases ?? this.hasFamilySimilarMentalCases,
+      selectedFamilyRelationType:
+          selectedFamilyRelationType ?? this.selectedFamilyRelationType,
       isEditMode: isEditMode ?? this.isEditMode,
       editDecumentId: editDecumentId ?? this.editDecumentId,
       mentalIllnessesType: mentalIllnessesType ?? this.mentalIllnessesType,
@@ -139,6 +154,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
         incidentType,
         incidentDate,
         incidentEffect,
+        hasFamilySimilarMentalCases,
+        selectedFamilyRelationType,
         isEditMode,
         editDecumentId,
       ];

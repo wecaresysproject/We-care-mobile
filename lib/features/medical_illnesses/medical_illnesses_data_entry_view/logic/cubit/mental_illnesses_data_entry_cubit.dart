@@ -80,6 +80,22 @@ class MedicalIllnessesDataEntryCubit
     }
   }
 
+  void updateFamilyRelationType(String? value) {
+    emit(state.copyWith(selectedFamilyRelationType: value));
+  }
+
+//!هل يوجد حالات نفسية مشابهة فى العائلة؟
+  void updateHasFamilySimilarMentalCases(bool? value) {
+    emit(state.copyWith(hasFamilySimilarMentalCases: value));
+    if (value == false) {
+      emit(
+        state.copyWith(
+          selectedFamilyRelationType: null,
+        ),
+      );
+    }
+  }
+
   void updateIncidentType(String? value) {
     emit(state.copyWith(incidentType: value));
   }
