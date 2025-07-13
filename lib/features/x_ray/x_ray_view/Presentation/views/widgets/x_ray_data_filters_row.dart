@@ -15,10 +15,10 @@ class DataViewFiltersRow extends StatefulWidget {
   });
 
   @override
-  _DataViewFiltersRowState createState() => _DataViewFiltersRowState();
+  DataViewFiltersRowState createState() => DataViewFiltersRowState();
 }
 
-class _DataViewFiltersRowState extends State<DataViewFiltersRow> {
+class DataViewFiltersRowState extends State<DataViewFiltersRow> {
   final Map<String, dynamic> selectedFilters = {};
 
   void onFilterSelected(String filterTitle, dynamic selectedValue) {
