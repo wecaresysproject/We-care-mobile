@@ -15,6 +15,12 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final String? selectedsocialSupport;
   final String? selectedMedicationSideEffects;
   final String? selectedPreferredMentalWellnessActivities;
+  //حادث له آثر
+  final bool? hasIncidentEffect; // نعم/لا selection
+  final String? incidentType; // نوع الموقف
+  final String? incidentDate; // تاريخ الموقف
+  final String? incidentEffect; // تأثير الموقف على الحالة النفسية
+  //حادث له آثر end
   final bool isEditMode;
   final String editDecumentId;
 
@@ -32,6 +38,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.selectedsocialSupport,
     this.selectedMedicationSideEffects,
     this.selectedPreferredMentalWellnessActivities,
+    this.hasIncidentEffect = false,
+    this.incidentType,
+    this.incidentDate,
+    this.incidentEffect,
     this.isEditMode = false,
     this.editDecumentId = '',
   }) : super();
@@ -50,7 +60,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
           selectedsocialSupport: null,
           selectedMedicationSideEffects: null,
           selectedPreferredMentalWellnessActivities: null,
-
+          hasIncidentEffect: false,
+          incidentType: null,
+          incidentDate: null,
+          incidentEffect: null,
           isEditMode: false,
           editDecumentId: '',
         );
@@ -69,6 +82,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
     String? selectedsocialSupport,
     String? selectedMedicationSideEffects,
     String? selectedPreferredMentalWellnessActivities,
+    bool? hasIncidentEffect,
+    String? incidentType,
+    String? incidentDate,
+    String? incidentEffect,
     bool? isEditMode,
     String? editDecumentId,
   }) {
@@ -93,6 +110,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
               this.selectedPreferredMentalWellnessActivities,
       selectedMedicationSideEffects:
           selectedMedicationSideEffects ?? this.selectedMedicationSideEffects,
+      hasIncidentEffect: hasIncidentEffect ?? this.hasIncidentEffect,
+      incidentType: incidentType ?? this.incidentType,
+      incidentDate: incidentDate ?? this.incidentDate,
+      incidentEffect: incidentEffect ?? this.incidentEffect,
       isEditMode: isEditMode ?? this.isEditMode,
       editDecumentId: editDecumentId ?? this.editDecumentId,
       mentalIllnessesType: mentalIllnessesType ?? this.mentalIllnessesType,
@@ -114,6 +135,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
         mentalIllnessesType,
         selectedDiseaseIntensity,
         selectedMedicationSideEffects,
+        hasIncidentEffect,
+        incidentType,
+        incidentDate,
+        incidentEffect,
         isEditMode,
         editDecumentId,
       ];

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -132,9 +133,11 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 bottomSheetTitle: "اختر مدة المرض",
                 searchHintText: "اختر مدة المرض",
               ),
-              //! handle its ui  حادث له اثر
+              verticalSpacing(18),
 
-              verticalSpacing(16),
+              //! handle its ui  حادث له اثر
+              HasIncidentEffectQuestionWidget(),
+              verticalSpacing(18),
 
               //! handle its ui هل يوجد حالات نفسية مشابهة فى العائلة؟
 
@@ -218,57 +221,57 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
     );
   }
 }
-  // Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
-  //   return BlocBuilder<EmergencyComplaintsDataEntryCubit,
-  //       EmergencyComplaintsDataEntryState>(
-  //     buildWhen: (previous, current) =>
-  //         current.medicalComplaints.length != previous.medicalComplaints.length,
-  //     builder: (context, state) {
-  //       return Center(
-  //         child: Stack(
-  //           clipBehavior: Clip.none,
-  //           children: [
-  //             AddNewItemButton(
-  //               text: state.medicalComplaints.isEmpty
-  //                   ? "اضف الاعراض المرضية"
-  //                   : 'أضف أعراض مرضية أخرى ان وجد',
-  //               onPressed: () async {
-  //                 final bool? result = await context.pushNamed(
-  //                   Routes.addNewComplaintDetails,
-  //                 );
+// Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+//   return BlocBuilder<EmergencyComplaintsDataEntryCubit,
+//       EmergencyComplaintsDataEntryState>(
+//     buildWhen: (previous, current) =>
+//         current.medicalComplaints.length != previous.medicalComplaints.length,
+//     builder: (context, state) {
+//       return Center(
+//         child: Stack(
+//           clipBehavior: Clip.none,
+//           children: [
+//             AddNewItemButton(
+//               text: state.medicalComplaints.isEmpty
+//                   ? "اضف الاعراض المرضية"
+//                   : 'أضف أعراض مرضية أخرى ان وجد',
+//               onPressed: () async {
+//                 final bool? result = await context.pushNamed(
+//                   Routes.addNewComplaintDetails,
+//                 );
 
-  //                 if (result != null && context.mounted) {
-  //                   await context
-  //                       .read<EmergencyComplaintsDataEntryCubit>()
-  //                       .fetchAllAddedComplaints();
+//                 if (result != null && context.mounted) {
+//                   await context
+//                       .read<EmergencyComplaintsDataEntryCubit>()
+//                       .fetchAllAddedComplaints();
 
-  //                   if (!context.mounted) return;
+//                   if (!context.mounted) return;
 
-  //                   ///to rebuild submitted button if user added new complain.
-  //                   context
-  //                       .read<EmergencyComplaintsDataEntryCubit>()
-  //                       .validateRequiredFields();
-  //                 }
-  //               },
-  //             ),
-  //             Positioned(
-  //               top: -2, // move it up (negative means up)
-  //               left: -120,
-  //               child: Lottie.asset(
-  //                 'assets/images/hand_animation.json',
-  //                 width: 120, // adjust sizes
-  //                 height: 120,
-  //                 addRepaintBoundary: true,
-  //                 repeat: true,
-  //                 alignment: Alignment.center,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+//                   ///to rebuild submitted button if user added new complain.
+//                   context
+//                       .read<EmergencyComplaintsDataEntryCubit>()
+//                       .validateRequiredFields();
+//                 }
+//               },
+//             ),
+//             Positioned(
+//               top: -2, // move it up (negative means up)
+//               left: -120,
+//               child: Lottie.asset(
+//                 'assets/images/hand_animation.json',
+//                 width: 120, // adjust sizes
+//                 height: 120,
+//                 addRepaintBoundary: true,
+//                 repeat: true,
+//                 alignment: Alignment.center,
+//               ),
+//             ),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
 // Widget submitXrayDataEntryButtonBlocConsumer(
 //   BuildContext context, {
 
@@ -343,3 +346,112 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
 //     ),
 //   );
 // }
+
+class HasIncidentEffectQuestionWidget extends StatelessWidget {
+  const HasIncidentEffectQuestionWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MedicalIllnessesDataEntryCubit,
+        MedicalIllnessesDataEntryState>(
+      builder: (context, state) {
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 16.h,
+            horizontal: 8.w,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColorsManager.mainDarkBlue,
+              width: 1.1,
+            ),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Column(
+            children: [
+              Text(
+                "حادث له تأثير",
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              verticalSpacing(16),
+
+              // Yes/No Question using GenericQuestionWidget
+              GenericQuestionWidget(
+                questionTitle: "وجود حادث أو موقف له تأثير؟",
+                initialValue: state.hasIncidentEffect,
+                onAnswerChanged: (value) {
+                  context
+                      .read<MedicalIllnessesDataEntryCubit>()
+                      .updateHasIncidentEffect(value);
+                },
+              ),
+
+              // Additional fields if "Yes" selected
+              if (state.hasIncidentEffect == true) ...[
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "نوع الموقف",
+                  containerHintText: state.incidentType ?? "اختر نوع الموقف",
+                  options: const [
+                    "حادث مرور",
+                    "وفاة قريب",
+                    "مشكلة عائلية",
+                    "مشكلة مالية",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateIncidentType(value);
+                  },
+                  bottomSheetTitle: "اختر نوع الموقف",
+                  searchHintText: "اختر نوع الموقف",
+                ),
+                verticalSpacing(18),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "تاريخ الموقف",
+                      style: AppTextStyles.font18blackWight500,
+                    ),
+                    verticalSpacing(10),
+                    DateTimePickerContainer(
+                      placeholderText: state.incidentDate ?? "يوم / شهر / سنة",
+                      onDateSelected: (pickedDate) {
+                        context
+                            .read<MedicalIllnessesDataEntryCubit>()
+                            .updateIncidentDate(pickedDate);
+                      },
+                    ),
+                  ],
+                ),
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "تأثير الموقف على الحالة النفسية",
+                  containerHintText: state.incidentEffect ??
+                      "اختر نوع التأثير على الحالة النفسية",
+                  options: const [
+                    "قلق",
+                    "اكتئاب",
+                    "أرق",
+                    "نوبات هلع",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateIncidentEffect(value);
+                  },
+                  bottomSheetTitle: "اختر تأثير الموقف",
+                  searchHintText: "اختر تأثير الموقف",
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

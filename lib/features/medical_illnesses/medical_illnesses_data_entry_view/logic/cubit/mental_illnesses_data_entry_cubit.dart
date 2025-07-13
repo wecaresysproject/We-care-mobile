@@ -66,6 +66,31 @@ class MedicalIllnessesDataEntryCubit
   // void updateSelectedHospitalName(String? val) {
   //   emit(state.copyWith(selectedHospitalCenter: val));
   // }
+  //! وجود حادث أو موقف له تأثير ؟
+  void updateHasIncidentEffect(bool? value) {
+    emit(state.copyWith(hasIncidentEffect: value));
+    if (value == false) {
+      emit(
+        state.copyWith(
+          incidentType: null,
+          incidentDate: null,
+          incidentEffect: null,
+        ),
+      );
+    }
+  }
+
+  void updateIncidentType(String? value) {
+    emit(state.copyWith(incidentType: value));
+  }
+
+  void updateIncidentDate(String? value) {
+    emit(state.copyWith(incidentDate: value));
+  }
+
+  void updateIncidentEffect(String? value) {
+    emit(state.copyWith(incidentEffect: value));
+  }
 
   getInitialRequests() {
     // emitCountriesData();
