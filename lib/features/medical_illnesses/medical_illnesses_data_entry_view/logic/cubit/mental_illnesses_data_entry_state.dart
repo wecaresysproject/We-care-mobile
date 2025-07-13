@@ -26,6 +26,19 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final bool? hasFamilySimilarMentalCases; // نعم/لا selection
   final String? selectedFamilyRelationType;
   //هل يوجد حالات نفسية مشابهة فى العائلة؟ end
+
+// هل تتلقى العلاج النفسي/الاستشارات؟
+  final bool? isReceivingPsychologicalTreatment;
+  final String? psychologicalTreatmentType; // نوع العلاج النفسي/السلوكي
+  final String? medicationsUsed; // الأدوية المستخدمة
+  final String? medicationEffectOnLife; // تأثير الأدوية على الحياة اليومية
+  final String? numberOfSessions; // عدد الجلسات النفسية
+  final String? treatmentSatisfaction; // رضا عن نتيجة الجلسات
+  final String? psychologistName; // الطبيب/الاخصائي النفسي
+  final String? selectedCountry; // المركز الدولة
+  final String? selectedHospitalName; //المستشفي
+  // هل تتلقى العلاج النفسي/الاستشارات؟
+
   final bool isEditMode;
   final String editDecumentId;
 
@@ -49,6 +62,15 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.incidentEffect,
     this.hasFamilySimilarMentalCases,
     this.selectedFamilyRelationType,
+    this.isReceivingPsychologicalTreatment,
+    this.psychologicalTreatmentType, // نوع العلاج النفسي/السلوكي
+    this.medicationsUsed, // الأدوية المستخدمة
+    this.medicationEffectOnLife, // تأثير الأدوية على الحياة اليومية
+    this.numberOfSessions, // عدد الجلسات النفسية
+    this.treatmentSatisfaction, // رضا عن نتيجة الجلسات
+    this.psychologistName, // الطبيب/الاخصائي النفسي
+    this.selectedCountry, // المركز الدولة
+    this.selectedHospitalName, //المستشفي
     this.isEditMode = false,
     this.editDecumentId = '',
   }) : super();
@@ -73,6 +95,15 @@ class MedicalIllnessesDataEntryState extends Equatable {
           incidentEffect: null,
           hasFamilySimilarMentalCases: null,
           selectedFamilyRelationType: null,
+          isReceivingPsychologicalTreatment: null,
+          psychologicalTreatmentType: null,
+          medicationsUsed: null,
+          medicationEffectOnLife: null,
+          numberOfSessions: null,
+          treatmentSatisfaction: null,
+          psychologistName: null,
+          selectedCountry: null,
+          selectedHospitalName: null,
           isEditMode: false,
           editDecumentId: '',
         );
@@ -97,6 +128,15 @@ class MedicalIllnessesDataEntryState extends Equatable {
     String? incidentEffect,
     bool? hasFamilySimilarMentalCases,
     String? selectedFamilyRelationType,
+    bool? isReceivingPsychologicalTreatment,
+    String? psychologicalTreatmentType,
+    String? medicationsUsed,
+    String? medicationEffectOnLife,
+    String? numberOfSessions,
+    String? treatmentSatisfaction,
+    String? psychologistName,
+    String? selectedCountry,
+    String? selectedHospitalName,
     bool? isEditMode,
     String? editDecumentId,
   }) {
@@ -129,6 +169,19 @@ class MedicalIllnessesDataEntryState extends Equatable {
           hasFamilySimilarMentalCases ?? this.hasFamilySimilarMentalCases,
       selectedFamilyRelationType:
           selectedFamilyRelationType ?? this.selectedFamilyRelationType,
+      isReceivingPsychologicalTreatment: isReceivingPsychologicalTreatment ??
+          this.isReceivingPsychologicalTreatment,
+      psychologicalTreatmentType:
+          psychologicalTreatmentType ?? this.psychologicalTreatmentType,
+      medicationsUsed: medicationsUsed ?? this.medicationsUsed,
+      medicationEffectOnLife:
+          medicationEffectOnLife ?? this.medicationEffectOnLife,
+      numberOfSessions: numberOfSessions ?? this.numberOfSessions,
+      treatmentSatisfaction:
+          treatmentSatisfaction ?? this.treatmentSatisfaction,
+      psychologistName: psychologistName ?? this.psychologistName,
+      selectedCountry: selectedCountry ?? this.selectedCountry,
+      selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
       isEditMode: isEditMode ?? this.isEditMode,
       editDecumentId: editDecumentId ?? this.editDecumentId,
       mentalIllnessesType: mentalIllnessesType ?? this.mentalIllnessesType,
@@ -156,6 +209,15 @@ class MedicalIllnessesDataEntryState extends Equatable {
         incidentEffect,
         hasFamilySimilarMentalCases,
         selectedFamilyRelationType,
+        isReceivingPsychologicalTreatment,
+        psychologicalTreatmentType,
+        medicationsUsed,
+        medicationEffectOnLife,
+        numberOfSessions,
+        treatmentSatisfaction,
+        psychologistName,
+        selectedCountry,
+        selectedHospitalName,
         isEditMode,
         editDecumentId,
       ];

@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/Database/dummy_data.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
@@ -208,11 +213,10 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 bottomSheetTitle: "اختر الأنشطة لتحسين الحالة النفسية",
                 searchHintText: "اختر الأنشطة لتحسين الحالة النفسية",
               ),
-
+              verticalSpacing(18),
+              PsychologicalTreatmentQuestionWidget(),
               verticalSpacing(32),
-              // submitXrayDataEntryButtonBlocConsumer(
-              //   context,
-              // ),
+              submitMentalIlnessDataEntryButtonBlocConsumer(context),
             ],
           ),
         );
@@ -271,80 +275,54 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
 //     },
 //   );
 // }
-// Widget submitXrayDataEntryButtonBlocConsumer(
-//   BuildContext context, {
-
-// }) {
-//   return BlocConsumer<MedicalIllnessesDataEntryCubit
-//, EyesDataEntryState>(
-//     listenWhen: (prev, curr) =>
-//         curr.eyeDataEntryStatus == RequestStatus.failure ||
-//         curr.eyeDataEntryStatus == RequestStatus.success,
-//     buildWhen: (prev, curr) =>
-//         prev.isFormValidated != curr.isFormValidated ||
-//         prev.eyeDataEntryStatus != curr.eyeDataEntryStatus,
-//     listener: (context, state) async {
-//       if (state.eyeDataEntryStatus == RequestStatus.success) {
-//         await showSuccess(state.message);
-//         if (!context.mounted) return;
-//         //* in order to catch it again to rebuild details view
-//         context.pop(result: true);
-//       } else {
-//         await showError(state.message);
-//       }
-//     },
-//     builder: (context, state) {
-//       return AppCustomButton(
-//         isLoading: state.eyeDataEntryStatus == RequestStatus.loading,
-//         title: state.isEditMode ? 'ارسل التعديلات' : context.translate.send,
-//         onPressed: () async {
-//           if (state.isFormValidated) {
-//             if (state.isEditMode) {
+Widget submitMentalIlnessDataEntryButtonBlocConsumer(
+  BuildContext context,
+) {
+  return BlocConsumer<MedicalIllnessesDataEntryCubit,
+      MedicalIllnessesDataEntryState>(
+    listenWhen: (prev, curr) =>
+        curr.mentalIllnessesDataEntryStatus == RequestStatus.failure ||
+        curr.mentalIllnessesDataEntryStatus == RequestStatus.success,
+    buildWhen: (prev, curr) =>
+        prev.isFormValidated != curr.isFormValidated ||
+        prev.mentalIllnessesDataEntryStatus !=
+            curr.mentalIllnessesDataEntryStatus,
+    listener: (context, state) async {
+      if (state.mentalIllnessesDataEntryStatus == RequestStatus.success) {
+        await showSuccess(state.message);
+        if (!context.mounted) return;
+        //* in order to catch it again to rebuild details view
+        context.pop(result: true);
+      } else {
+        await showError(state.message);
+      }
+    },
+    builder: (context, state) {
+      return AppCustomButton(
+        isLoading:
+            state.mentalIllnessesDataEntryStatus == RequestStatus.loading,
+        title: state.isEditMode ? 'ارسل التعديلات' : context.translate.send,
+        onPressed: () async {
+          if (state.isFormValidated) {
+            if (state.isEditMode) {
 //               await context
 //                   .read<MedicalIllnessesDataEntryCubit
 // >()
 //                   .submitEyeDataEnteredEdits();
 //               return;
-//             }
+            }
 //             await context.read<MedicalIllnessesDataEntryCubit
 // >().postEyeDataEntry(
 //                   context.translate,
 
 //                 );
-//           }
-//         },
-//         isEnabled: state.isFormValidated ? true : false,
-//       );
-//     },
-//   );
-// }
-
-// Widget buildCustomContainer({required SymptomAndProcedureItem model}) {
-//   return Container(
-//     width: double.infinity,
-//     padding: EdgeInsets.only(right: 16.w, top: 4.h, bottom: 4.h),
-//     margin: EdgeInsets.only(bottom: 10.h),
-//     decoration: BoxDecoration(
-//       borderRadius: BorderRadius.circular(
-//         8.r,
-//       ),
-//       border: Border.all(
-//         color: Color(0xff555555),
-//         width: .5,
-//       ),
-//     ),
-//     child: Expanded(
-//       child: Text(
-//         model.title,
-//         style: AppTextStyles.font14blackWeight400,
-//         textAlign: TextAlign.right,
-//         maxLines: 2,
-//         overflow: TextOverflow.ellipsis,
-//         textDirection: TextDirection.ltr,
-//       ),
-//     ),
-//   );
-// }
+          }
+        },
+        isEnabled: state.isFormValidated ? true : false,
+      );
+    },
+  );
+}
 
 class HasIncidentEffectQuestionWidget extends StatelessWidget {
   const HasIncidentEffectQuestionWidget({super.key});
@@ -508,6 +486,204 @@ class HasFamilySimilarMentalCasesQuestionWidget extends StatelessWidget {
                   },
                   bottomSheetTitle: "اختر الصلة",
                   searchHintText: "اختر الصلة",
+                ),
+              ],
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
+  const PsychologicalTreatmentQuestionWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MedicalIllnessesDataEntryCubit,
+        MedicalIllnessesDataEntryState>(
+      builder: (context, state) {
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 16.h,
+            horizontal: 8.w,
+          ),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColorsManager.mainDarkBlue,
+              width: 1.1,
+            ),
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // هل تتلقى العلاج النفسي/الاستشارات؟
+              GenericQuestionWidget(
+                questionTitle: "هل تتلقى العلاج النفسي/الاستشارات؟",
+                initialValue: state.isReceivingPsychologicalTreatment,
+                onAnswerChanged: (value) {
+                  context
+                      .read<MedicalIllnessesDataEntryCubit>()
+                      .updateIsReceivingPsychologicalTreatment(value);
+                },
+              ),
+
+              // Show additional fields only if "نعم" is selected
+              if (state.isReceivingPsychologicalTreatment == true) ...[
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "الأدوية المستخدمة",
+                  containerHintText:
+                      state.medicationsUsed ?? "اختر الأدوية المستخدمة",
+                  options: const [
+                    "مضادات الاكتئاب",
+                    "مضادات القلق",
+                    "مثبتات المزاج",
+                    "أدوية نفسية أخرى",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateMedicationsUsed(value);
+                  },
+                  bottomSheetTitle: "اختر الأدوية المستخدمة",
+                  searchHintText: "اختر الأدوية المستخدمة",
+                ),
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "تأثير الأدوية على الحياة اليومية",
+                  containerHintText: state.medicationEffectOnLife ??
+                      "اختر التأثير على حياتك اليومية",
+                  options: const [
+                    "تحسن كبير",
+                    "تحسن بسيط",
+                    "لا تأثير",
+                    "تأثير سلبي",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateMedicationEffectOnLife(value);
+                  },
+                  bottomSheetTitle: "اختر تأثير الأدوية",
+                  searchHintText: "اختر تأثير الأدوية",
+                ),
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel:
+                      "نوع العلاج النفسى/السلوكى (الذى قمت بتلقيه فى الماضى )",
+                  containerHintText:
+                      state.psychologicalTreatmentType ?? "اختر نوع العلاج",
+                  options: const [
+                    "علاج معرفي سلوكي",
+                    "علاج تحليلي",
+                    "علاج جماعي",
+                    "علاج أسري",
+                    "علاج دوائي فقط",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updatePsychologicalTreatmentType(value);
+                  },
+                  bottomSheetTitle: "اختر نوع العلاج",
+                  searchHintText: "اختر نوع العلاج",
+                ),
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "عدد الجلسات النفسية",
+                  containerHintText:
+                      state.numberOfSessions ?? "اختر عدد الجلسات",
+                  options: const [
+                    "1-5 جلسات",
+                    "6-10 جلسات",
+                    "11-20 جلسة",
+                    "أكثر من 20 جلسة",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateNumberOfSessions(value);
+                  },
+                  bottomSheetTitle: "اختر عدد الجلسات",
+                  searchHintText: "اختر عدد الجلسات",
+                ),
+                verticalSpacing(18),
+                Text(
+                  "رضائك عن نتيجة الجلسات",
+                  style: AppTextStyles.font18blackWight500,
+                ),
+                verticalSpacing(10),
+                OptionSelectorWidget(
+                  options: [
+                    "راض تماماً",
+                    "مقبول",
+                    "أقل من المتوقع",
+                    "غير راض تماماً",
+                  ],
+                  initialSelectedOption: state.treatmentSatisfaction,
+                  onOptionSelected: (p0) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updateTreatmentSatisfaction(p0);
+                  },
+                ),
+                verticalSpacing(18),
+                UserSelectionContainer(
+                  categoryLabel: "الطبيب/الاخصائي النفسي",
+                  containerHintText: state.psychologistName ??
+                      "اختر اسم الطبيب النفسي/الاخصائي",
+                  options: const [
+                    "د. أحمد محمد",
+                    "د. سارة علي",
+                    "د. خالد حسن",
+                    "د. نورة عبدالله",
+                  ],
+                  onOptionSelected: (value) {
+                    context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .updatePsychologistName(value);
+                  },
+                  bottomSheetTitle: "اختر الطبيب/الاخصائي",
+                  searchHintText: "اختر الطبيب/الاخصائي",
+                ),
+                verticalSpacing(18),
+                Row(
+                  children: [
+                    Expanded(
+                      child: UserSelectionContainer(
+                        categoryLabel: "المستشفى/المركز",
+                        containerHintText:
+                            state.selectedHospitalName ?? "اختر اسم المستشفى",
+                        options: hosptitalsNames,
+                        onOptionSelected: (value) {
+                          context
+                              .read<MedicalIllnessesDataEntryCubit>()
+                              .updateSelectedHospitalName(value);
+                        },
+                        bottomSheetTitle: "اختر اسم المستشفس",
+                        searchHintText: "ابحث عن اسم المستشفي",
+                      ),
+                    ),
+                    horizontalSpacing(16),
+                    Expanded(
+                      child: UserSelectionContainer(
+                        categoryLabel: "الدولة",
+                        containerHintText:
+                            state.selectedCountry ?? "اختر اسم الدولة",
+                        options: hosptitalsNames,
+                        onOptionSelected: (value) {
+                          context
+                              .read<MedicalIllnessesDataEntryCubit>()
+                              .updateTreatmentCountry(value);
+                        },
+                        bottomSheetTitle: "اختر اسم الدولة",
+                        searchHintText: "ابحث عن اسم الدولة",
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ],

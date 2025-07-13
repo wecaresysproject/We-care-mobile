@@ -53,6 +53,7 @@ class MedicalIllnessesDataEntryCubit
 
   void updateMentalIllnessesType(String? val) {
     emit(state.copyWith(mentalIllnessesType: val));
+    validateRequiredFields();
   }
 
   void updateMedicalSyptoms(String? val) {
@@ -63,9 +64,6 @@ class MedicalIllnessesDataEntryCubit
   //   emit(state.copyWith(doctorName: val));
   // }
 
-  // void updateSelectedHospitalName(String? val) {
-  //   emit(state.copyWith(selectedHospitalCenter: val));
-  // }
   //! وجود حادث أو موقف له تأثير ؟
   void updateHasIncidentEffect(bool? value) {
     emit(state.copyWith(hasIncidentEffect: value));
@@ -106,6 +104,44 @@ class MedicalIllnessesDataEntryCubit
 
   void updateIncidentEffect(String? value) {
     emit(state.copyWith(incidentEffect: value));
+  }
+
+// In MedicalIllnessesDataEntryCubit
+
+  void updateIsReceivingPsychologicalTreatment(bool? value) {
+    emit(state.copyWith(isReceivingPsychologicalTreatment: value));
+  }
+
+  void updatePsychologicalTreatmentType(String? value) {
+    emit(state.copyWith(psychologicalTreatmentType: value));
+  }
+
+  void updateMedicationsUsed(String? value) {
+    emit(state.copyWith(medicationsUsed: value));
+  }
+
+  void updateMedicationEffectOnLife(String? value) {
+    emit(state.copyWith(medicationEffectOnLife: value));
+  }
+
+  void updateNumberOfSessions(String? value) {
+    emit(state.copyWith(numberOfSessions: value));
+  }
+
+  void updateTreatmentSatisfaction(String? value) {
+    emit(state.copyWith(treatmentSatisfaction: value));
+  }
+
+  void updatePsychologistName(String? value) {
+    emit(state.copyWith(psychologistName: value));
+  }
+
+  void updateTreatmentCountry(String? value) {
+    emit(state.copyWith(selectedCountry: value));
+  }
+
+  void updateSelectedHospitalName(String? val) {
+    emit(state.copyWith(selectedHospitalName: val));
   }
 
   getInitialRequests() {
