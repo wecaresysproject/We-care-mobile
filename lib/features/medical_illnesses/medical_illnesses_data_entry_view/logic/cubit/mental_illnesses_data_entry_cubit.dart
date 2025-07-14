@@ -110,6 +110,21 @@ class MedicalIllnessesDataEntryCubit
 
   void updateIsReceivingPsychologicalTreatment(bool? value) {
     emit(state.copyWith(isReceivingPsychologicalTreatment: value));
+    if (value == false) {
+      emit(
+        state.copyWith(
+          isReceivingPsychologicalTreatment: null,
+          psychologicalTreatmentType: null,
+          medicationsUsed: null,
+          medicationEffectOnLife: null,
+          numberOfSessions: null,
+          treatmentSatisfaction: null,
+          psychologistName: null,
+          selectedCountry: null,
+          selectedHospitalName: null,
+        ),
+      );
+    }
   }
 
   void updatePsychologicalTreatmentType(String? value) {
