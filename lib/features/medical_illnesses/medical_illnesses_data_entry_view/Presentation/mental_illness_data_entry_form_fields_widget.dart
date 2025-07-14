@@ -57,8 +57,8 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                     "ااختر المرض النفسى أو السلوكى",
                 options: [
                   //! from backend
-                  "المرض النفسى",
-                  "المرض السلوكى",
+
+                  "لم يتم تربيطها من الباك اند بعد",
                 ],
                 onOptionSelected: (value) {
                   context
@@ -76,8 +76,7 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                     state.selectedMedicalSyptoms ?? "اختر الأعراض الظاهرة عليك",
                 options: [
                   //! from backend
-                  "المرض النفسى",
-                  "المرض السلوكى",
+                  "لم يتم تربيطها من الباك اند بعد",
                 ],
                 onOptionSelected: (value) {
                   context
@@ -117,18 +116,10 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 categoryLabel: "مدة المرض",
                 containerHintText: state.diseaseDuration ?? "اختر مدة المرض",
                 options: [
-                  "يوم",
-                  "يومين",
-                  "ثلاث ايام",
-                  "اربع ايام",
-                  "خمسة ايام",
-                  "ستة ايام",
-                  "اسبوع",
-                  "عشر ايام",
-                  "اسبوعين",
-                  "ثلاث اسابيع",
-                  "شهر",
-                  "اكثر من شهر",
+                  "أقل من شهر",
+                  "من شهر إلي 6 أشهر",
+                  "من 6 أشهر إلى سنة",
+                  "أكثر من سنة",
                 ],
                 onOptionSelected: (value) {
                   context
@@ -169,7 +160,12 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 categoryLabel: "الدعم الاجتماعى",
                 containerHintText:
                     state.selectedsocialSupport ?? "اختر الدعم الاجتماعى",
-                options: [],
+                options: [
+                  'دعم أسري',
+                  'دعم من أصدقاء',
+                  'دعم من مجتمعات أو مجموعات دعم',
+                  'لا يوجد دعم اجتماعي',
+                ],
                 onOptionSelected: (value) {
                   context
                       .read<MedicalIllnessesDataEntryCubit>()
@@ -185,7 +181,10 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 containerHintText: state.selectedMedicationSideEffects ??
                     "اختر التأثيرات الجانبية للأدوية",
                 options: [
-                  'قريبا من الباك اند',
+                  'أدى إلى تفاقم الأعراض النفسية',
+                  'ساهم في ظهور الأعراض لأول مرة',
+                  'لا يوجد تأثير كبير',
+                  'لا استطيع الربط',
                 ],
                 onOptionSelected: (value) {
                   context
@@ -648,11 +647,12 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                                 state.psychologicalTreatmentType ??
                                     "اختر نوع العلاج",
                             options: const [
-                              "علاج معرفي سلوكي",
-                              "علاج تحليلي",
-                              "علاج جماعي",
-                              "علاج أسري",
-                              "علاج دوائي فقط",
+                              'علاج دوائي',
+                              'علاج نفسي (جلسات مع طبيب نفسي)',
+                              'العلاج بالتحدث (مثل العلاج السلوكي المعرفي)',
+                              'علاج جماعي (مجموعات الدعم)',
+                              'العلاج البديل (مثل اليوغا أو العلاج بالطبيعة)',
+                              'لا يوجد علاج حاليًا',
                             ],
                             onOptionSelected: (value) {
                               context
