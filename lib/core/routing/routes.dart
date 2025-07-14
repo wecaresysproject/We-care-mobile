@@ -72,6 +72,14 @@ class Routes {
   static const eyesOrGlassesDataView = '/eyesOrGlassesDataView';
   static const eyePartsView = '/eyePartsView';
 
+  static const mentalIllnessesRecordsView = '/mentalIllnessesRecordsView';
+  static const mentalIllnessesDataEntryView = '/mentalIllnessesDataEntryView';
+  static const mentalIllnessChoiceScreen = '/mentalIllnessChoiceScreen';
+  static const medicalIllnessOrMindUmbrellaView =
+      '/medicalIllnessOrMindUmbrellaView';
+  static const mentalIllnessOrMindUmbrellaViewDataEntryView =
+      '/mentalIllnessOrMindUmbrellaViewDataEntryView';
+
   static const eyeDataEntry = '/eyeDataEntry';
   static const eyeProceduresAndSyptomsDataEntry =
       '/eyeProceduresAndSyptomsDataEntry';

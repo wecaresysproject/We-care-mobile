@@ -52,8 +52,12 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
         MedicalCategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
-          routeName: "basicDataEntry",
-          isActive: false,
+          routeName: Routes.medicalIllnessOrMindUmbrellaView,
+          isActive: true,
+          onTap: () async {
+            await Navigator.pushNamed(
+                context, Routes.medicalIllnessOrMindUmbrellaView);
+          },
         ),
       ],
     );
