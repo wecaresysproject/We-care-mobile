@@ -74,6 +74,7 @@ class Routes {
 
   static const mentalIllnessesRecordsView = '/mentalIllnessesRecordsView';
   static const mentalIllnessesDataEntryView = '/mentalIllnessesDataEntryView';
+  static const mentalIllnessChoiceScreen = '/mentalIllnessChoiceScreen';
   static const medicalIllnessOrMindUmbrellaView =
       '/medicalIllnessOrMindUmbrellaView';
   static const mentalIllnessOrMindUmbrellaViewDataEntryView =

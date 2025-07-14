@@ -418,6 +418,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const MentalIllnessDataEntry(),
         );
+      case Routes.mentalIllnessChoiceScreen:
+        return MaterialPageRoute(
+          builder: (context) => const MentalIllnessChoiceScreen(),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

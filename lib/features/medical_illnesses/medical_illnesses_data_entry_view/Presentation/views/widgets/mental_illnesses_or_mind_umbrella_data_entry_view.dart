@@ -32,7 +32,7 @@ class MentalIllnessOrMindUmbrellaViewDataEntryView extends StatelessWidget {
                 CustomImageWithTextMedicalIllnessModuleWidget(
                   onTap: () async {
                     await context.pushNamed(
-                      Routes.mentalIllnessesDataEntryView,
+                      Routes.mentalIllnessChoiceScreen,
                     );
                   },
                   imagePath: "assets/images/medical_illnesses_icon.png",
