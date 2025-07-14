@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/medical_illness_footer_row.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/mental_illness_card_horizontal_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
@@ -74,7 +75,16 @@ class MentalIllnessRecordsView extends StatelessWidget {
                             duration: doc.duration,
                             severity: doc.severity,
                           ),
-                          onArrowTap: () {},
+                          onArrowTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MentalIllnessDetailsView(
+                                  docId:'mockDocId', // Use a mock ID for now
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
                     ),

@@ -20,6 +20,7 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             shape: RoundedRectangleBorder(),
+            
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),

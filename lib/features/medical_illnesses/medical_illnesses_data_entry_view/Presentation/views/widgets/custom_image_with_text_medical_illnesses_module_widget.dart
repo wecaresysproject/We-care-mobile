@@ -26,8 +26,11 @@ class CustomImageWithTextMedicalIllnessModuleWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(
-          vertical: 13.h,
+              padding: EdgeInsets.only(
+          top: 13.h,
+          bottom: 13.h,
+          left: 20.w,
+         
         ),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
