@@ -368,69 +368,89 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
                 },
               ),
 
-              // Additional fields if "Yes" selected
-              if (state.hasIncidentEffect == true) ...[
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "نوع الموقف",
-                  containerHintText: state.incidentType ?? "اختر نوع الموقف",
-                  options: const [
-                    "حادث مرور",
-                    "وفاة قريب",
-                    "مشكلة عائلية",
-                    "مشكلة مالية",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateIncidentType(value);
-                  },
-                  bottomSheetTitle: "اختر نوع الموقف",
-                  searchHintText: "اختر نوع الموقف",
-                ),
-                verticalSpacing(18),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "تاريخ الموقف",
-                      style: AppTextStyles.font18blackWight500,
-                    ),
-                    verticalSpacing(10),
-                    DateTimePickerContainer(
-                      placeholderText: state.incidentDate ?? "يوم / شهر / سنة",
-                      onDateSelected: (pickedDate) {
-                        context
-                            .read<MedicalIllnessesDataEntryCubit>()
-                            .updateIncidentDate(pickedDate);
-                      },
-                    ),
-                  ],
-                ),
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "تأثير الموقف على الحالة النفسية",
-                  containerHintText: state.incidentEffect ??
-                      "اختر نوع التأثير على الحالة النفسية",
-                  options: const [
-                    "قلق",
-                    "اكتئاب",
-                    "أرق",
-                    "نوبات هلع",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateIncidentEffect(value);
-                  },
-                  bottomSheetTitle: "اختر تأثير الموقف",
-                  searchHintText: "اختر تأثير الموقف",
-                ),
-              ],
+              // This is where we'll add the animation
+              _buildAnimatedContent(state),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildAnimatedContent(MedicalIllnessesDataEntryState state) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      switchInCurve: Curves.easeInOut,
+      switchOutCurve: Curves.easeInOut,
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
+      },
+      child: state.hasIncidentEffect == true
+          ? _buildFormFields()
+          : SizedBox.shrink(key: Key('empty')),
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Column(
+      key: Key('formFields'), // Important for animation
+      children: [
+        verticalSpacing(18),
+        UserSelectionContainer(
+          categoryLabel: "نوع الموقف",
+          containerHintText: "اختر نوع الموقف",
+          options: const [
+            "حادث مرور",
+            "وفاة قريب",
+            "مشكلة عائلية",
+            "مشكلة مالية",
+          ],
+          onOptionSelected: (value) {
+            // Handle selection
+          },
+          bottomSheetTitle: "اختر نوع الموقف",
+          searchHintText: "اختر نوع الموقف",
+        ),
+        verticalSpacing(18),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "تاريخ الموقف",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            DateTimePickerContainer(
+              placeholderText: "يوم / شهر / سنة",
+              onDateSelected: (pickedDate) {
+                // Handle date selection
+              },
+            ),
+          ],
+        ),
+        verticalSpacing(18),
+        UserSelectionContainer(
+          categoryLabel: "تأثير الموقف على الحالة النفسية",
+          containerHintText: "اختر نوع التأثير على الحالة النفسية",
+          options: const [
+            "قلق",
+            "اكتئاب",
+            "أرق",
+            "نوبات هلع",
+          ],
+          onOptionSelected: (value) {
+            // Handle selection
+          },
+          bottomSheetTitle: "اختر تأثير الموقف",
+          searchHintText: "اختر تأثير الموقف",
+        ),
+      ],
     );
   }
 }
@@ -460,7 +480,7 @@ class HasFamilySimilarMentalCasesQuestionWidget extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Yes/No Question using GenericQuestionWidget
+              // سؤال نعم/لا
               GenericQuestionWidget(
                 questionTitle: "هل يوجد حالات نفسية مشابهة فى العائلة؟",
                 initialValue: state.hasFamilySimilarMentalCases,
@@ -470,24 +490,53 @@ class HasFamilySimilarMentalCasesQuestionWidget extends StatelessWidget {
                       .updateHasFamilySimilarMentalCases(value);
                 },
               ),
+              verticalSpacing(10),
 
-              // Additional fields if "Yes" selected
-              if (state.hasFamilySimilarMentalCases == true) ...[
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "الصلة العائلية",
-                  containerHintText:
-                      state.selectedFamilyRelationType ?? "اختر الصلة",
-                  options: const [],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateFamilyRelationType(value);
-                  },
-                  bottomSheetTitle: "اختر الصلة",
-                  searchHintText: "اختر الصلة",
-                ),
-              ],
+              // Animated content
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                transitionBuilder: (child, animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    ),
+                  );
+                },
+                child: state.hasFamilySimilarMentalCases == true
+                    ? Column(
+                        key: const Key('familySimilarCasesForm'),
+                        children: [
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "الصلة العائلية",
+                            containerHintText:
+                                state.selectedFamilyRelationType ??
+                                    "اختر الصلة",
+                            options: const [
+                              "الأب",
+                              "الأم",
+                              "الأخ",
+                              "الأخت",
+                              "الجد",
+                              "الابن",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateFamilyRelationType(value);
+                            },
+                            bottomSheetTitle: "اختر الصلة",
+                            searchHintText: "اختر الصلة",
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(
+                        key: Key('emptyFamilySimilarCases')),
+              ),
             ],
           ),
         );
@@ -503,6 +552,9 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MedicalIllnessesDataEntryCubit,
         MedicalIllnessesDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.isReceivingPsychologicalTreatment !=
+          current.isReceivingPsychologicalTreatment,
       builder: (context, state) {
         return Container(
           padding: EdgeInsets.symmetric(
@@ -519,7 +571,7 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // هل تتلقى العلاج النفسي/الاستشارات؟
+              // السؤال
               GenericQuestionWidget(
                 questionTitle: "هل تتلقى العلاج النفسي/الاستشارات؟",
                 initialValue: state.isReceivingPsychologicalTreatment,
@@ -529,163 +581,187 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                       .updateIsReceivingPsychologicalTreatment(value);
                 },
               ),
+              verticalSpacing(10),
 
-              // Show additional fields only if "نعم" is selected
-              if (state.isReceivingPsychologicalTreatment == true) ...[
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "الأدوية المستخدمة",
-                  containerHintText:
-                      state.medicationsUsed ?? "اختر الأدوية المستخدمة",
-                  options: const [
-                    "مضادات الاكتئاب",
-                    "مضادات القلق",
-                    "مثبتات المزاج",
-                    "أدوية نفسية أخرى",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateMedicationsUsed(value);
-                  },
-                  bottomSheetTitle: "اختر الأدوية المستخدمة",
-                  searchHintText: "اختر الأدوية المستخدمة",
-                ),
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "تأثير الأدوية على الحياة اليومية",
-                  containerHintText: state.medicationEffectOnLife ??
-                      "اختر التأثير على حياتك اليومية",
-                  options: const [
-                    "تحسن كبير",
-                    "تحسن بسيط",
-                    "لا تأثير",
-                    "تأثير سلبي",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateMedicationEffectOnLife(value);
-                  },
-                  bottomSheetTitle: "اختر تأثير الأدوية",
-                  searchHintText: "اختر تأثير الأدوية",
-                ),
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel:
-                      "نوع العلاج النفسى/السلوكى (الذى قمت بتلقيه فى الماضى )",
-                  containerHintText:
-                      state.psychologicalTreatmentType ?? "اختر نوع العلاج",
-                  options: const [
-                    "علاج معرفي سلوكي",
-                    "علاج تحليلي",
-                    "علاج جماعي",
-                    "علاج أسري",
-                    "علاج دوائي فقط",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updatePsychologicalTreatmentType(value);
-                  },
-                  bottomSheetTitle: "اختر نوع العلاج",
-                  searchHintText: "اختر نوع العلاج",
-                ),
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "عدد الجلسات النفسية",
-                  containerHintText:
-                      state.numberOfSessions ?? "اختر عدد الجلسات",
-                  options: const [
-                    "1-5 جلسات",
-                    "6-10 جلسات",
-                    "11-20 جلسة",
-                    "أكثر من 20 جلسة",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateNumberOfSessions(value);
-                  },
-                  bottomSheetTitle: "اختر عدد الجلسات",
-                  searchHintText: "اختر عدد الجلسات",
-                ),
-                verticalSpacing(18),
-                Text(
-                  "رضائك عن نتيجة الجلسات",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(10),
-                OptionSelectorWidget(
-                  options: [
-                    "راض تماماً",
-                    "مقبول",
-                    "أقل من المتوقع",
-                    "غير راض تماماً",
-                  ],
-                  initialSelectedOption: state.treatmentSatisfaction,
-                  onOptionSelected: (p0) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updateTreatmentSatisfaction(p0);
-                  },
-                ),
-                verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: "الطبيب/الاخصائي النفسي",
-                  containerHintText: state.psychologistName ??
-                      "اختر اسم الطبيب النفسي/الاخصائي",
-                  options: const [
-                    "د. أحمد محمد",
-                    "د. سارة علي",
-                    "د. خالد حسن",
-                    "د. نورة عبدالله",
-                  ],
-                  onOptionSelected: (value) {
-                    context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .updatePsychologistName(value);
-                  },
-                  bottomSheetTitle: "اختر الطبيب/الاخصائي",
-                  searchHintText: "اختر الطبيب/الاخصائي",
-                ),
-                verticalSpacing(18),
-                Row(
-                  children: [
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "المستشفى/المركز",
-                        containerHintText:
-                            state.selectedHospitalName ?? "اختر اسم المستشفى",
-                        options: hosptitalsNames,
-                        onOptionSelected: (value) {
-                          context
-                              .read<MedicalIllnessesDataEntryCubit>()
-                              .updateSelectedHospitalName(value);
-                        },
-                        bottomSheetTitle: "اختر اسم المستشفس",
-                        searchHintText: "ابحث عن اسم المستشفي",
-                      ),
+              // Animated content
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                transitionBuilder: (child, animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
                     ),
-                    horizontalSpacing(16),
-                    Expanded(
-                      child: UserSelectionContainer(
-                        categoryLabel: "الدولة",
-                        containerHintText:
-                            state.selectedCountry ?? "اختر اسم الدولة",
-                        options: hosptitalsNames,
-                        onOptionSelected: (value) {
-                          context
-                              .read<MedicalIllnessesDataEntryCubit>()
-                              .updateTreatmentCountry(value);
-                        },
-                        bottomSheetTitle: "اختر اسم الدولة",
-                        searchHintText: "ابحث عن اسم الدولة",
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  );
+                },
+                child: state.isReceivingPsychologicalTreatment == true
+                    ? Column(
+                        key: const Key('psychologicalTreatmentForm'),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "الأدوية المستخدمة",
+                            containerHintText: state.medicationsUsed ??
+                                "اختر الأدوية المستخدمة",
+                            options: const [
+                              "مضادات الاكتئاب",
+                              "مضادات القلق",
+                              "مثبتات المزاج",
+                              "أدوية نفسية أخرى",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateMedicationsUsed(value);
+                            },
+                            bottomSheetTitle: "اختر الأدوية المستخدمة",
+                            searchHintText: "اختر الأدوية المستخدمة",
+                          ),
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "تأثير الأدوية على الحياة اليومية",
+                            containerHintText: state.medicationEffectOnLife ??
+                                "اختر التأثير على حياتك اليومية",
+                            options: const [
+                              "تحسن كبير",
+                              "تحسن بسيط",
+                              "لا تأثير",
+                              "تأثير سلبي",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateMedicationEffectOnLife(value);
+                            },
+                            bottomSheetTitle: "اختر تأثير الأدوية",
+                            searchHintText: "اختر تأثير الأدوية",
+                          ),
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel:
+                                "نوع العلاج النفسى/السلوكى (الذى قمت بتلقيه فى الماضى )",
+                            containerHintText:
+                                state.psychologicalTreatmentType ??
+                                    "اختر نوع العلاج",
+                            options: const [
+                              "علاج معرفي سلوكي",
+                              "علاج تحليلي",
+                              "علاج جماعي",
+                              "علاج أسري",
+                              "علاج دوائي فقط",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updatePsychologicalTreatmentType(value);
+                            },
+                            bottomSheetTitle: "اختر نوع العلاج",
+                            searchHintText: "اختر نوع العلاج",
+                          ),
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "عدد الجلسات النفسية",
+                            containerHintText:
+                                state.numberOfSessions ?? "اختر عدد الجلسات",
+                            options: const [
+                              "1-5 جلسات",
+                              "6-10 جلسات",
+                              "11-20 جلسة",
+                              "أكثر من 20 جلسة",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateNumberOfSessions(value);
+                            },
+                            bottomSheetTitle: "اختر عدد الجلسات",
+                            searchHintText: "اختر عدد الجلسات",
+                          ),
+                          verticalSpacing(18),
+                          Text(
+                            "رضائك عن نتيجة الجلسات",
+                            style: AppTextStyles.font18blackWight500,
+                          ),
+                          verticalSpacing(10),
+                          OptionSelectorWidget(
+                            options: const [
+                              "راض تماماً",
+                              "مقبول",
+                              "أقل من المتوقع",
+                              "غير راض تماماً",
+                            ],
+                            initialSelectedOption: state.treatmentSatisfaction,
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateTreatmentSatisfaction(value);
+                            },
+                          ),
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "الطبيب/الاخصائي النفسي",
+                            containerHintText: state.psychologistName ??
+                                "اختر اسم الطبيب النفسي/الاخصائي",
+                            options: const [
+                              "د. أحمد محمد",
+                              "د. سارة علي",
+                              "د. خالد حسن",
+                              "د. نورة عبدالله",
+                            ],
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updatePsychologistName(value);
+                            },
+                            bottomSheetTitle: "اختر الطبيب/الاخصائي",
+                            searchHintText: "اختر الطبيب/الاخصائي",
+                          ),
+                          verticalSpacing(18),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: UserSelectionContainer(
+                                  categoryLabel: "المستشفى/المركز",
+                                  containerHintText:
+                                      state.selectedHospitalName ??
+                                          "اختر اسم المستشفى",
+                                  options: hosptitalsNames,
+                                  onOptionSelected: (value) {
+                                    context
+                                        .read<MedicalIllnessesDataEntryCubit>()
+                                        .updateSelectedHospitalName(value);
+                                  },
+                                  bottomSheetTitle: "اختر اسم المستشفى",
+                                  searchHintText: "ابحث عن اسم المستشفى",
+                                ),
+                              ),
+                              horizontalSpacing(16),
+                              Expanded(
+                                child: UserSelectionContainer(
+                                  categoryLabel: "الدولة",
+                                  containerHintText: state.selectedCountry ??
+                                      "اختر اسم الدولة",
+                                  options: [],
+                                  onOptionSelected: (value) {
+                                    context
+                                        .read<MedicalIllnessesDataEntryCubit>()
+                                        .updateTreatmentCountry(value);
+                                  },
+                                  bottomSheetTitle: "اختر اسم الدولة",
+                                  searchHintText: "ابحث عن اسم الدولة",
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(
+                        key: Key('emptyPsychologicalTreatment')),
+              ),
             ],
           ),
         );
