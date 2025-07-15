@@ -19,4 +19,16 @@ class AppColorsManager {
   static const Color backGroundColor = Color(0xffFEFEFE);
   static const Color babyBlueColor = Color(0xffDAE9FA);
   static const Color redBackgroundValidationColor = Color(0x19CE0000);
+
+  /// Indicates a normal/healthy status
+  static const Color safe = Color(0xff8BC84A); // طبيعي - Green
+
+  /// Indicates a need for monitoring
+  static const Color warning = Color(0xffF0F000); // مراقبة - Yellow
+
+  /// Indicates a partial or potential risk
+  static const Color elevatedRisk = Color(0xffFF8800); // خطر جزئي - Orange
+
+  /// Indicates a confirmed or critical risk
+  static const Color criticalRisk = Color(0xffED0202); // خطر مؤكد - Red
 }
