@@ -40,6 +40,7 @@ import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/umbrella_mental_ilnesss_records_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -425,7 +426,7 @@ class AppRouter {
         );
       case Routes.mentalIlnesssUmbrellaView:
         return MaterialPageRoute(
-          builder: (context) => MentalIllnessesUmbrellaView(),
+          builder: (context) => MentalIllnessesUmbrellRecordsView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

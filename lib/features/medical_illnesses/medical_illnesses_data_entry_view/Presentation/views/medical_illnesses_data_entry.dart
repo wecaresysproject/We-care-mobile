@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/mental_illness_data_entry_form_fields_widget.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 
@@ -18,17 +19,24 @@ class MentalIllnessDataEntry extends StatelessWidget {
   // final String? editModelId;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<MedicalIllnessesDataEntryCubit>(
-      create: (context) {
-        // if (pastEyeData != null) {
-        //   return getIt<EyesDataEntryCubit>()
-        //     ..loadPastEyeDataEnteredForEditing(
-        //       pastEyeData: pastEyeData!,
-        //       id: editModelId!,
-        //     );
-        // }
-        return getIt<MedicalIllnessesDataEntryCubit>();
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MedicalIllnessesDataEntryCubit>(
+          create: (context) {
+            // if (pastEyeData != null) {
+            //   return getIt<EyesDataEntryCubit>()
+            //     ..loadPastEyeDataEnteredForEditing(
+            //       pastEyeData: pastEyeData!,
+            //       id: editModelId!,
+            //     );
+            // }
+            return getIt<MedicalIllnessesDataEntryCubit>();
+          },
+        ),
+        BlocProvider(
+          create: (context) => getIt<EmergencyComplaintsDataEntryCubit>(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

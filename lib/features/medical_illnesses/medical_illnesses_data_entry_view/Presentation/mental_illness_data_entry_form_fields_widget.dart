@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
@@ -13,6 +15,9 @@ import 'package:we_care/core/global/SharedWidgets/options_selector_shared_contai
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/medical_complains_list_view_widget.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 
 class MentalIlnessesDataEntryFormFields extends StatelessWidget {
@@ -22,258 +27,269 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MedicalIllnessesDataEntryCubit,
-        MedicalIllnessesDataEntryState>(
-      builder: (context, state) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: 70.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "تاريخ التشخيص",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              DateTimePickerContainer(
-                containerBorderColor: state.examinationDate == null
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                placeholderText: state.examinationDate ?? "يوم / شهر / سنة",
-                onDateSelected: (pickedDate) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updatExaminationDate(pickedDate);
-                },
-              ),
-              verticalSpacing(18),
+    return BlocBuilder<EmergencyComplaintsDataEntryCubit,
+        EmergencyComplaintsDataEntryState>(
+      builder: (context, emergencyState) {
+        return BlocBuilder<MedicalIllnessesDataEntryCubit,
+            MedicalIllnessesDataEntryState>(
+          builder: (context, state) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: 70.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "تاريخ التشخيص",
+                    style: AppTextStyles.font18blackWight500,
+                  ),
+                  verticalSpacing(10),
+                  DateTimePickerContainer(
+                    containerBorderColor: state.examinationDate == null
+                        ? AppColorsManager.warningColor
+                        : AppColorsManager.textfieldOutsideBorderColor,
+                    placeholderText: state.examinationDate ?? "يوم / شهر / سنة",
+                    onDateSelected: (pickedDate) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updatExaminationDate(pickedDate);
+                    },
+                  ),
+                  verticalSpacing(18),
 
-              UserSelectionContainer(
-                containerBorderColor: state.mentalIllnessesType == null
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                categoryLabel: "نوع المرض النفسى/السلوكى",
-                containerHintText: state.mentalIllnessesType ??
-                    "ااختر المرض النفسى أو السلوكى",
-                options: [
+                  UserSelectionContainer(
+                    containerBorderColor: state.mentalIllnessesType == null
+                        ? AppColorsManager.warningColor
+                        : AppColorsManager.textfieldOutsideBorderColor,
+                    categoryLabel: "نوع المرض النفسى/السلوكى",
+                    containerHintText: state.mentalIllnessesType ??
+                        "ااختر المرض النفسى أو السلوكى",
+                    options: [
+                      //! from backend
+                      "لم يتم تربيطها من الباك اند بعد",
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateMentalIllnessesType(value);
+                    },
+                    bottomSheetTitle: "اختر المرض النفسى أو السلوكى",
+                    searchHintText: "اختر المرض النفسى أو السلوكى",
+                  ),
+                  verticalSpacing(18),
+
+                  UserSelectionContainer(
+                    categoryLabel: "الأعراض المرضية",
+                    containerHintText: state.selectedMedicalSyptoms ??
+                        "اختر الأعراض الظاهرة عليك",
+                    options: [
+                      //! from backend
+                      "لم يتم تربيطها من الباك اند بعد",
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateMedicalSyptoms(value);
+                    },
+                    bottomSheetTitle: "اختر الأعراض الظاهرة عليك",
+                    searchHintText: "اختر الأعراض الظاهرة عليك",
+                  ),
+                  verticalSpacing(16),
+                  emergencyState.medicalComplaints.isNotEmpty
+                      ? verticalSpacing(16)
+                      : SizedBox.shrink(),
+
+                  MedicalComplaintsListBlocBuilder(),
+                  buildAddNewComplainButtonBlocBuilder(context),
+                  verticalSpacing(18),
+                  Text(
+                    "شدة الشكوى",
+                    style: AppTextStyles.font18blackWight500,
+                  ),
+                  verticalSpacing(10),
+                  OptionSelectorWidget(
+                    options: [
+                      "شديد جدا",
+                      "شديد",
+                      "متوسط",
+                      "خفيف",
+                      "لا يوجد",
+                    ],
+                    initialSelectedOption:
+                        state.selectedDiseaseIntensity, //!check it later
+                    onOptionSelected: (p0) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateSelectedDiseaseIntensity(p0);
+                    },
+                  ),
+                  verticalSpacing(16),
+                  UserSelectionContainer(
+                    categoryLabel: "مدة المرض",
+                    containerHintText:
+                        state.diseaseDuration ?? "اختر مدة المرض",
+                    options: [
+                      "أقل من شهر",
+                      "من شهر إلي 6 أشهر",
+                      "من 6 أشهر إلى سنة",
+                      "أكثر من سنة",
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateDiseaseDuration(value);
+                    },
+                    bottomSheetTitle: "اختر مدة المرض",
+                    searchHintText: "اختر مدة المرض",
+                  ),
+                  verticalSpacing(18),
+
+                  HasIncidentEffectQuestionWidget(),
+                  verticalSpacing(18),
+
+                  //! handle its ui هل يوجد حالات نفسية مشابهة فى العائلة؟
+                  HasFamilySimilarMentalCasesQuestionWidget(),
+                  verticalSpacing(16),
+
                   //! from backend
+                  UserSelectionContainer(
+                    categoryLabel: "حالات الطوارئ النفسية",
+                    containerHintText: state.selectedMentalHealthEmergency ??
+                        "اختر حالات الطوارئ النفسية ان وجد",
+                    options: [
+                      'قريبا من الباك اند',
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateMentalHealthEmergency(value);
+                    },
+                    bottomSheetTitle: "اختر حالات الطوارئ النفسية ان وجد",
+                    searchHintText: "اختر حالات الطوارئ النفسية ان وجد",
+                  ),
 
-                  "لم يتم تربيطها من الباك اند بعد",
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateMentalIllnessesType(value);
-                },
-                bottomSheetTitle: "اختر المرض النفسى أو السلوكى",
-                searchHintText: "اختر المرض النفسى أو السلوكى",
-              ),
-              verticalSpacing(18),
-
-              UserSelectionContainer(
-                categoryLabel: "الأعراض المرضية",
-                containerHintText:
-                    state.selectedMedicalSyptoms ?? "اختر الأعراض الظاهرة عليك",
-                options: [
+                  verticalSpacing(18),
+                  UserSelectionContainer(
+                    categoryLabel: "الدعم الاجتماعى",
+                    containerHintText:
+                        state.selectedsocialSupport ?? "اختر الدعم الاجتماعى",
+                    options: [
+                      'دعم أسري',
+                      'دعم من أصدقاء',
+                      'دعم من مجتمعات أو مجموعات دعم',
+                      'لا يوجد دعم اجتماعي',
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateSelectedSocialSupport(value);
+                    },
+                    bottomSheetTitle: "اختر الدعم الاجتماعى",
+                    searchHintText: "اختر الدعم الاجتماعى",
+                  ),
+                  verticalSpacing(18),
                   //! from backend
-                  "لم يتم تربيطها من الباك اند بعد",
+                  UserSelectionContainer(
+                    categoryLabel: "التأثيرات الجانبية للأدوية",
+                    containerHintText: state.selectedMedicationSideEffects ??
+                        "اختر التأثيرات الجانبية للأدوية",
+                    options: [
+                      'أدى إلى تفاقم الأعراض النفسية',
+                      'ساهم في ظهور الأعراض لأول مرة',
+                      'لا يوجد تأثير كبير',
+                      'لا استطيع الربط',
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updateSelectedMedicationSideEffects(value);
+                    },
+                    bottomSheetTitle: "اختر التأثيرات الجانبية للأدوية",
+                    searchHintText: "اختر التأثيرات الجانبية للأدوية",
+                  ),
+                  verticalSpacing(18),
+                  //! from backend
+                  UserSelectionContainer(
+                    categoryLabel: "الأنشطة المفضلة لتحسين النفسية",
+                    containerHintText:
+                        state.selectedPreferredMentalWellnessActivities ??
+                            "اختر الأنشطة لتحسين الحالة النفسية",
+                    options: [
+                      'قريبا من الباك اند',
+                    ],
+                    onOptionSelected: (value) {
+                      context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .updatePreferredMentalWellnessActivities(value);
+                    },
+                    bottomSheetTitle: "اختر الأنشطة لتحسين الحالة النفسية",
+                    searchHintText: "اختر الأنشطة لتحسين الحالة النفسية",
+                  ),
+                  verticalSpacing(18),
+                  PsychologicalTreatmentQuestionWidget(),
+                  verticalSpacing(32),
+                  submitMentalIlnessDataEntryButtonBlocConsumer(context),
                 ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateMedicalSyptoms(value);
-                },
-                bottomSheetTitle: "اختر الأعراض الظاهرة عليك",
-                searchHintText: "اختر الأعراض الظاهرة عليك",
               ),
-              verticalSpacing(16),
-
-// buildAddNewComplainButtonBlocBuilder(),
-              verticalSpacing(18),
-              Text(
-                "شدة الشكوى",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              OptionSelectorWidget(
-                options: [
-                  "شديد جدا",
-                  "شديد",
-                  "متوسط",
-                  "خفيف",
-                  "لا يوجد",
-                ],
-                initialSelectedOption:
-                    state.selectedDiseaseIntensity, //!check it later
-                onOptionSelected: (p0) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateSelectedDiseaseIntensity(p0);
-                },
-              ),
-              verticalSpacing(16),
-              UserSelectionContainer(
-                categoryLabel: "مدة المرض",
-                containerHintText: state.diseaseDuration ?? "اختر مدة المرض",
-                options: [
-                  "أقل من شهر",
-                  "من شهر إلي 6 أشهر",
-                  "من 6 أشهر إلى سنة",
-                  "أكثر من سنة",
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateDiseaseDuration(value);
-                },
-                bottomSheetTitle: "اختر مدة المرض",
-                searchHintText: "اختر مدة المرض",
-              ),
-              verticalSpacing(18),
-
-              HasIncidentEffectQuestionWidget(),
-              verticalSpacing(18),
-
-              //! handle its ui هل يوجد حالات نفسية مشابهة فى العائلة؟
-              HasFamilySimilarMentalCasesQuestionWidget(),
-              verticalSpacing(16),
-
-              //! from backend
-              UserSelectionContainer(
-                categoryLabel: "حالات الطوارئ النفسية",
-                containerHintText: state.selectedMentalHealthEmergency ??
-                    "اختر حالات الطوارئ النفسية ان وجد",
-                options: [
-                  'قريبا من الباك اند',
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateMentalHealthEmergency(value);
-                },
-                bottomSheetTitle: "اختر حالات الطوارئ النفسية ان وجد",
-                searchHintText: "اختر حالات الطوارئ النفسية ان وجد",
-              ),
-
-              verticalSpacing(18),
-              UserSelectionContainer(
-                categoryLabel: "الدعم الاجتماعى",
-                containerHintText:
-                    state.selectedsocialSupport ?? "اختر الدعم الاجتماعى",
-                options: [
-                  'دعم أسري',
-                  'دعم من أصدقاء',
-                  'دعم من مجتمعات أو مجموعات دعم',
-                  'لا يوجد دعم اجتماعي',
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateSelectedSocialSupport(value);
-                },
-                bottomSheetTitle: "اختر الدعم الاجتماعى",
-                searchHintText: "اختر الدعم الاجتماعى",
-              ),
-              verticalSpacing(18),
-              //! from backend
-              UserSelectionContainer(
-                categoryLabel: "التأثيرات الجانبية للأدوية",
-                containerHintText: state.selectedMedicationSideEffects ??
-                    "اختر التأثيرات الجانبية للأدوية",
-                options: [
-                  'أدى إلى تفاقم الأعراض النفسية',
-                  'ساهم في ظهور الأعراض لأول مرة',
-                  'لا يوجد تأثير كبير',
-                  'لا استطيع الربط',
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateSelectedMedicationSideEffects(value);
-                },
-                bottomSheetTitle: "اختر التأثيرات الجانبية للأدوية",
-                searchHintText: "اختر التأثيرات الجانبية للأدوية",
-              ),
-              verticalSpacing(18),
-              //! from backend
-              UserSelectionContainer(
-                categoryLabel: "الأنشطة المفضلة لتحسين النفسية",
-                containerHintText:
-                    state.selectedPreferredMentalWellnessActivities ??
-                        "اختر الأنشطة لتحسين الحالة النفسية",
-                options: [
-                  'قريبا من الباك اند',
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updatePreferredMentalWellnessActivities(value);
-                },
-                bottomSheetTitle: "اختر الأنشطة لتحسين الحالة النفسية",
-                searchHintText: "اختر الأنشطة لتحسين الحالة النفسية",
-              ),
-              verticalSpacing(18),
-              PsychologicalTreatmentQuestionWidget(),
-              verticalSpacing(32),
-              submitMentalIlnessDataEntryButtonBlocConsumer(context),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 }
-// Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
-//   return BlocBuilder<EmergencyComplaintsDataEntryCubit,
-//       EmergencyComplaintsDataEntryState>(
-//     buildWhen: (previous, current) =>
-//         current.medicalComplaints.length != previous.medicalComplaints.length,
-//     builder: (context, state) {
-//       return Center(
-//         child: Stack(
-//           clipBehavior: Clip.none,
-//           children: [
-//             AddNewItemButton(
-//               text: state.medicalComplaints.isEmpty
-//                   ? "اضف الاعراض المرضية"
-//                   : 'أضف أعراض مرضية أخرى ان وجد',
-//               onPressed: () async {
-//                 final bool? result = await context.pushNamed(
-//                   Routes.addNewComplaintDetails,
-//                 );
 
-//                 if (result != null && context.mounted) {
-//                   await context
-//                       .read<EmergencyComplaintsDataEntryCubit>()
-//                       .fetchAllAddedComplaints();
+Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+  return BlocBuilder<EmergencyComplaintsDataEntryCubit,
+      EmergencyComplaintsDataEntryState>(
+    buildWhen: (previous, current) =>
+        current.medicalComplaints.length != previous.medicalComplaints.length,
+    builder: (context, state) {
+      return Center(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            AddNewItemButton(
+              text: state.medicalComplaints.isEmpty
+                  ? "اضف الاعراض المرضية"
+                  : 'أضف أعراض مرضية أخرى ان وجد',
+              onPressed: () async {
+                final bool? result = await context.pushNamed(
+                  Routes.addNewComplaintDetails,
+                );
 
-//                   if (!context.mounted) return;
+                if (result != null && context.mounted) {
+                  await context
+                      .read<EmergencyComplaintsDataEntryCubit>()
+                      .fetchAllAddedComplaints();
 
-//                   ///to rebuild submitted button if user added new complain.
-//                   context
-//                       .read<EmergencyComplaintsDataEntryCubit>()
-//                       .validateRequiredFields();
-//                 }
-//               },
-//             ),
-//             Positioned(
-//               top: -2, // move it up (negative means up)
-//               left: -120,
-//               child: Lottie.asset(
-//                 'assets/images/hand_animation.json',
-//                 width: 120, // adjust sizes
-//                 height: 120,
-//                 addRepaintBoundary: true,
-//                 repeat: true,
-//                 alignment: Alignment.center,
-//               ),
-//             ),
-//           ],
-//         ),
-//       );
-//     },
-//   );
-// }
+                  if (!context.mounted) return;
+
+                  ///to rebuild submitted button if user added new complain.
+                  context
+                      .read<EmergencyComplaintsDataEntryCubit>()
+                      .validateRequiredFields();
+                }
+              },
+            ),
+            Positioned(
+              top: -2, // move it up (negative means up)
+              left: -120,
+              child: Lottie.asset(
+                'assets/images/hand_animation.json',
+                width: 120, // adjust sizes
+                height: 120,
+                addRepaintBoundary: true,
+                repeat: true,
+                alignment: Alignment.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 Widget submitMentalIlnessDataEntryButtonBlocConsumer(
   BuildContext context,
 ) {
