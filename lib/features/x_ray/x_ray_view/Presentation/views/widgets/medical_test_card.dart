@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -62,7 +63,8 @@ class MedicalItemCard extends StatelessWidget {
                   fit: BoxFit.scaleDown,
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                        vertical: 8.h, horizontal: isExpandingTitle ? 70.w : 6.w),
+                        vertical: 8.h,
+                        horizontal: isExpandingTitle ? 70.w : 6.w),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.r),
                       border: Border.all(
@@ -90,9 +92,7 @@ class MedicalItemCard extends StatelessWidget {
                 ),
               ),
               verticalSpacing(4),
-              ...infoRows
-                  .map((row) => _infoRow(row["title"]!, row["value"]!))
-                  .toList(),
+              ...infoRows.map((row) => _infoRow(row["title"]!, row["value"]!)),
               const Spacer(
                 flex: 4,
               ),
@@ -136,23 +136,75 @@ class MedicalItemCard extends StatelessWidget {
     );
   }
 
+  // Widget _infoRow(String label, String value) {
+  //   mapReportTypeToRelativeColor(value);
+  //   return RichText(
+  //     overflow: TextOverflow.ellipsis,
+  // maxLines: label == "ملاحظات:" || label == "العرض الرئيسي:" ? 2 : 1,
+  //     text: TextSpan(
+  //       children: [
+  //         TextSpan(
+  //             text: "$label ",
+  //             style:
+  //                 AppTextStyles.font10blueWeight400.copyWith(fontSize: 13.sp)),
+  //         TextSpan(
+  //           text: value,
+  //           style: AppTextStyles.font14blackWeight400,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _infoRow(String label, String value) {
-    return RichText(
-      overflow: TextOverflow.ellipsis,
-      maxLines: label == "ملاحظات:" || label == "العرض الرئيسي:" ? 2 : 1,
-      text: TextSpan(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextSpan(
-              text: "$label ",
-              style:
-                  AppTextStyles.font10blueWeight400.copyWith(fontSize: 13.sp)),
-          TextSpan(
-            text: value,
-            style: AppTextStyles.font14blackWeight400,
+          Text(
+            "$label ",
+            maxLines: label == "ملاحظات:" || label == "العرض الرئيسي:" ? 2 : 1,
+            style: AppTextStyles.font10blueWeight400.copyWith(fontSize: 13.sp),
+          ),
+          mapReportTypeToRelativeColor(value),
+          horizontalSpacing(4),
+          Expanded(
+            child: Text(
+              value,
+              maxLines:
+                  (label == "ملاحظات:" || label == "العرض الرئيسي:") ? 2 : 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.font14blackWeight400,
+            ),
           ),
         ],
       ),
     );
   }
-}
 
+  mapReportTypeToRelativeColor(value) {
+    if (value == 'مراقبة') {
+      return CircleAvatar(
+        radius: 8,
+        backgroundColor: AppColorsManager.warning,
+      ).paddingSymmetricHorizontal(4);
+    } else if (value == 'خطر مؤكد') {
+      return CircleAvatar(
+        radius: 8,
+        backgroundColor: AppColorsManager.criticalRisk,
+      ).paddingSymmetricHorizontal(4);
+    } else if (value == 'خطر جزئى') {
+      return CircleAvatar(
+        radius: 8,
+        backgroundColor: AppColorsManager.elevatedRisk,
+      ).paddingSymmetricHorizontal(4);
+    } else if (value == 'طبيعى') {
+      return CircleAvatar(
+        radius: 8,
+        backgroundColor: AppColorsManager.safe,
+      ).paddingSymmetricHorizontal(4);
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+}

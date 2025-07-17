@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:accordion/accordion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/severity_level_enum.dart';
 import 'package:we_care/features/medical_illnesses/data/models/umbrella_mental_ilness_record_model.dart';
 
@@ -141,7 +145,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                 const SizedBox(height: 24),
                 GridView.builder(
                   shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: categories.length,
                   reverse: true, // This ensures proper z-index layering
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -186,7 +190,6 @@ class _MentalIllnessesUmbrellRecordsViewState
                           size: 26,
                           color: _getDesiredColor(category),
                         ),
-                        // rightIcon: SizedBox.shrink(),
                         children: [
                           AccordionSection(
                             isOpen: isOpen,
@@ -214,8 +217,12 @@ class _MentalIllnessesUmbrellRecordsViewState
                                       category.title,
                                       style: AppTextStyles.font14whiteWeight600
                                           .copyWith(
-                                        fontSize: 13.sp,
+                                        fontSize: 13.2.sp,
                                         color: _getDesiredColor(category),
+                                        fontWeight: category.severityLevel ==
+                                                SeverityLevel.confirmedRisk
+                                            ? FontWeight.bold
+                                            : FontWeight.w600,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -262,7 +269,7 @@ class _MentalIllnessesUmbrellRecordsViewState
     if (category.severityLevel == SeverityLevel.confirmedRisk) {
       return Colors.white;
     }
-    return Color(0xff4C4C4C);
+    return Colors.black;
   }
 
   Widget _buildSeverityItem(String label, Color color) {
@@ -365,53 +372,65 @@ class _MentalIllnessesUmbrellRecordsViewState
       children: [
         Expanded(
           child: _buildActionButton(
-            'الأسئلة المجاني عنها يعم',
-            "assets/images/question_mark.png",
+            title: 'الأسئلة المجاني عليها يعم',
+            iconPath: "assets/images/question_mark.png",
+            onTap: () {},
           ),
         ),
         horizontalSpacing(16),
         Expanded(
           child: _buildActionButton(
-            'تقارير المتابعة',
-            'assets/images/medical_reports_image.png',
+            title: 'تقارير المتابعة',
+            iconPath: 'assets/images/medical_reports_image.png',
+            onTap: () async {
+              log('jjjjj');
+              await context.pushNamed(Routes.mentalIllnessFollowUpReports);
+            },
           ),
         ),
       ],
     );
   }
 
-  Widget _buildActionButton(String title, String iconPath) {
-    return Container(
-      height: 52.h,
-      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 14.w),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: AppColorsManager.mainDarkBlue,
-          width: 2,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            iconPath,
+  Widget _buildActionButton({
+    required String title,
+    required String iconPath,
+    required void Function()? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 52.h,
+        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 14.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
             color: AppColorsManager.mainDarkBlue,
-            width: 24,
-            height: 24,
+            width: 2,
           ),
-          horizontalSpacing(5.5),
-          Flexible(
-            child: Text(
-              title,
-              style: AppTextStyles.font14whiteWeight600.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-                fontSize: 14.sp,
-              ),
-              textAlign: TextAlign.center,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              iconPath,
+              color: AppColorsManager.mainDarkBlue,
+              width: 24,
+              height: 24,
             ),
-          ),
-        ],
+            horizontalSpacing(5.5),
+            Flexible(
+              child: Text(
+                title,
+                style: AppTextStyles.font14whiteWeight600.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                  fontSize: 14.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

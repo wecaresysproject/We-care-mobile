@@ -71,9 +71,10 @@ class PrescriptionViewListBuilder extends StatelessWidget {
         return MedicalItemGridView(
           items: state.userPrescriptions,
           onTap: (id) async {
-            final result = await context.pushNamed(
-                Routes.prescriptionDetailsView,
-                arguments: {'id': id});
+            final result = await context
+                .pushNamed(Routes.prescriptionDetailsView, arguments: {
+              'id': id,
+            });
             if (result != null && result as bool && context.mounted) {
               await context
                   .read<PrescriptionViewCubit>()
@@ -137,6 +138,7 @@ class PrescriptionsViewFilersRow extends StatelessWidget {
     );
   }
 }
+
 class PrescriptionViewFooterRow extends StatelessWidget {
   const PrescriptionViewFooterRow({super.key});
 
@@ -251,4 +253,3 @@ class PrescriptionViewFooterRow extends StatelessWidget {
     );
   }
 }
-

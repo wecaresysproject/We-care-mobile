@@ -39,6 +39,7 @@ import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_reports_data_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/umbrella_mental_ilnesss_records_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -428,6 +429,53 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => MentalIllnessesUmbrellRecordsView(),
         );
+      case Routes.mentalIllnessFollowUpReports:
+        return MaterialPageRoute(
+          builder: (context) => MentalIllnessFollowUpReports(),
+        );
+      // case Routes.mentalUmbrellaHealthQuestionnairePage:
+      //   return MaterialPageRoute(
+      //     builder: (context) => MentalHealthQuestionnairePage(
+      //       questions: [
+      //         const QuestionnaireItem(
+      //           text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تشعر بالقلق أو التوتر الزائد؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
+      //         ),
+      //         const QuestionnaireItem(
+      //           text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
+      //         ),
+      //       ],
+      //       onAnswersChanged: (answers) => print(answers),
+      //       onPrevious: () {},
+      //     ),
+      //   );
+
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

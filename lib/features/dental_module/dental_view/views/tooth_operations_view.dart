@@ -82,16 +82,16 @@ class ToothOperationsView extends StatelessWidget {
                     },
                     titleBuilder: (item) => 'السن ${item.teethNumber}',
                     infoRowBuilder: (item) => [
-                      {"title": "السن:", "value": item.teethNumber},
+                      {"title": "السن:", "value": item.teethNumber!},
                       {
                         "title": "تاريخ الأعراض:",
-                        "value": item.symptomStartDate
+                        "value": item.symptomStartDate!
                       },
                       {
                         "title": "الإجراء الطبي:",
-                        "value": item.primaryProcedure
+                        "value": item.primaryProcedure!
                       },
-                      {"title": "نوع الألم:", "value": item.painNature},
+                      {"title": "نوع الألم:", "value": item.painNature!},
                     ],
                   );
                 },
