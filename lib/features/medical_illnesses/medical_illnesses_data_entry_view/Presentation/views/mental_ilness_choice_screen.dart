@@ -38,18 +38,24 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
               verticalSpacing(40),
               // Buttons
               _buildOptionButton(
-                label: 'أود تلقى المتابعة النفسية',
+                label:
+                    'أود تلقى المتابعة النفسية', //! disable border color and its text inside it , handle it with backend in sha2allah
                 iconPath: "assets/images/check_right.png",
-                onTap: () {
-                  // Handle activation
+                onTap: () async {
+                  await context.pushNamed(
+                    Routes.enableViewForWeCareMentalHealthUmbrella,
+                  );
                 },
               ),
               verticalSpacing(32),
               _buildOptionButton(
-                label: 'أود التفعيل لاحقا',
+                label:
+                    'أود التفعيل لاحقا', //! الغاء التفعيل ، in case it enabled by user and return back to this screen , handled with backend
                 iconPath: "assets/images/check_wrong.png",
-                onTap: () {
-                  // Handle later choice
+                onTap: () async {
+                  await context.pushNamed(
+                    Routes.disableViewForWeCareMentalHealthUmbrella,
+                  );
                 },
                 iconColor: Colors.red,
               ),

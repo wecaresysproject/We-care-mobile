@@ -81,6 +81,10 @@ class Routes {
       '/medicalIllnessOrMindUmbrellaView';
   static const mentalIllnessOrMindUmbrellaViewDataEntryView =
       '/mentalIllnessOrMindUmbrellaViewDataEntryView';
+  static const enableViewForWeCareMentalHealthUmbrella =
+      '/enableViewForWeCareMentalHealthUmbrella';
+  static const disableViewForWeCareMentalHealthUmbrella =
+      '/disableViewForWeCareMentalHealthUmbrella';
 
   static const eyeDataEntry = '/eyeDataEntry';
   static const eyeProceduresAndSyptomsDataEntry =

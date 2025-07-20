@@ -30,6 +30,7 @@ class WeCareApp extends StatelessWidget {
             );
           },
           debugShowCheckedModeBanner: false,
+
           onGenerateRoute: appRouter.onGenerateRoutes,
           locale: const Locale(
             AppStrings.arabicLang,
