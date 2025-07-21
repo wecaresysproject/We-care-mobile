@@ -9,7 +9,7 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -63,7 +63,7 @@ class MedicineDetailsView extends StatelessWidget {
                 child: Column(
                   spacing: 16.h,
                   children: [
-                    DetailsViewAppBar(
+                    AppBarWithCenteredTitle(
                       title: 'الدواء',
                       deleteFunction: () async {
                         await BlocProvider.of<MedicineViewCubit>(context)

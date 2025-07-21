@@ -7,7 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -92,7 +92,7 @@ ${detailsList.join("\n\n")}
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        DetailsViewAppBar(
+                        AppBarWithCenteredTitle(
                           title: familyMemberName,
                           shareFunction: () => shareDetails(context, state),
                           editFunction: () async {

@@ -85,6 +85,10 @@ class Routes {
       '/enableViewForWeCareMentalHealthUmbrella';
   static const disableViewForWeCareMentalHealthUmbrella =
       '/disableViewForWeCareMentalHealthUmbrella';
+  static const mentalIllnessAnsweredQuestionsView =
+      '/mentalIllnessAnsweredQuestionsView';
+  static const mentalIllnessFollowUpReportDetailsView =
+      '/mentalIllnessFollowUpReportDetailsView';
 
   static const eyeDataEntry = '/eyeDataEntry';
   static const eyeProceduresAndSyptomsDataEntry =

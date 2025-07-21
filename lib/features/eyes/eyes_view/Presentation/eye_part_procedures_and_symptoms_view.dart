@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/eye_parts_proscedure_and_symptoms_details_view.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/eye_documents_footer_row.dart';
@@ -35,7 +35,7 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          DetailsViewAppBar(
+                          AppBarWithCenteredTitle(
                             title: eyePart,
                             showActionButtons: false,
                           ),

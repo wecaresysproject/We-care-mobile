@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
@@ -72,10 +74,15 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
             MedicalItemGridView(
               items: dummyPrescriptions,
               // isExpendingTileTitle: true,
-              onTap: (id) {
+              onTap: (id) async {
                 // يمكن عرض SnackBar أو التنقل لصفحة التفاصيل
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('تم الضغط على العنصر برقم: $id')),
+                await context.pushNamed(
+                  Routes.mentalIllnessFollowUpReportDetailsView,
+                  arguments: {
+                    'detailsModel': dummyPrescriptions.firstWhere(
+                      (element) => element.id == id,
+                    ),
+                  },
                 );
               },
               titleBuilder: (item) => item.title,

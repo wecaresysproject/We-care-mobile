@@ -102,7 +102,7 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                   buildAddNewComplainButtonBlocBuilder(context),
                   verticalSpacing(18),
                   Text(
-                    "شدة الشكوى",
+                    "شدة المرض",
                     style: AppTextStyles.font18blackWight500,
                   ),
                   verticalSpacing(10),

@@ -7,7 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -49,7 +49,7 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                 spacing: 16.h,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DetailsViewAppBar(
+                  AppBarWithCenteredTitle(
                     title: 'الشكاوى المرضية الطارئة',
                     editFunction: () async {
                       await context.pushNamed(
@@ -71,13 +71,13 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                           .deleteEmergencyComplaintById(documentId);
                     },
                   ),
-                      DetailsViewInfoTile(
-                        title: "تاريخ ظهور الشكوى",
-                        value: complaint.date,
-                        icon: 'assets/images/date_icon.png',
-                        isExpanded: true,
-                      ),
-            
+                  DetailsViewInfoTile(
+                    title: "تاريخ ظهور الشكوى",
+                    value: complaint.date,
+                    icon: 'assets/images/date_icon.png',
+                    isExpanded: true,
+                  ),
+
                   // Display the main symptoms using SymptomContainer
                   ...complaint.mainSymptoms.asMap().entries.map((entry) {
                     final index = entry.key;

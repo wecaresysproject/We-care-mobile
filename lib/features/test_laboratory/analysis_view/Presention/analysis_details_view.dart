@@ -7,9 +7,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
@@ -20,7 +19,8 @@ import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analys
 class AnalysisDetailsView extends StatelessWidget {
   final String documentId;
   final String testName;
-  const AnalysisDetailsView({super.key, required this.documentId,  required this.testName});
+  const AnalysisDetailsView(
+      {super.key, required this.documentId, required this.testName});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class AnalysisDetailsView extends StatelessWidget {
               child: Column(
                 spacing: 16.h,
                 children: [
-                  DetailsViewAppBar(
+                  AppBarWithCenteredTitle(
                       title: 'التحليل',
                       editFunction: () async {
                         final result = await context.pushNamed(

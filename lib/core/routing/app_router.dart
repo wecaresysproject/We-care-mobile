@@ -35,12 +35,15 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_answered_questions_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_report_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_reports_data_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/umbrella_mental_ilnesss_records_view.dart';
@@ -435,6 +438,15 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => MentalIllnessFollowUpReports(),
         );
+      case Routes.mentalIllnessFollowUpReportDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (context) => MentalIllnessFollowUpReportDetailsView(
+            detailsModel: argumentsMap?['detailsModel']
+                as MentalIllnessFollowUpReportModel,
+          ), //MentalIllnessFollowUpReportDetailsView(),
+        );
       // case Routes.mentalUmbrellaHealthQuestionnairePage:
       //   return MaterialPageRoute(
       //     builder: (context) => MentalHealthQuestionnairePage(
@@ -483,6 +495,10 @@ class AppRouter {
       case Routes.disableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => DisableViewForWeCareMentalHealthUmbrella());
+      case Routes.mentalIllnessAnsweredQuestionsView:
+        return MaterialPageRoute(
+          builder: (_) => MentalIllnessYesAnswersView(),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

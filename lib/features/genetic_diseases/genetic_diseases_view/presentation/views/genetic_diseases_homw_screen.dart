@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 
@@ -19,7 +19,7 @@ class GeneticDiseasesHomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DetailsViewAppBar(
+            AppBarWithCenteredTitle(
               title: 'الامراض الوراثية',
               showActionButtons: false,
             ),
@@ -39,7 +39,8 @@ class GeneticDiseasesHomeScreen extends StatelessWidget {
               title: 'امراضي الوراثية',
               image: 'assets/images/dna_icon.png',
               onTap: () {
-                Navigator.pushNamed(context, Routes.personalGeneticDiseasesScreen);
+                Navigator.pushNamed(
+                    context, Routes.personalGeneticDiseasesScreen);
               },
             ),
 
@@ -92,10 +93,8 @@ class CustomButton extends StatelessWidget {
                 SizedBox(
                   width: 100,
                   height: 100,
-                  
                   child: Image.asset(
                     image,
-              
                     fit: BoxFit.fill,
                   ),
                 ),

@@ -374,7 +374,12 @@ class _MentalIllnessesUmbrellRecordsViewState
           child: _buildActionButton(
             title: 'الأسئلة المجاني عليها يعم',
             iconPath: "assets/images/question_mark.png",
-            onTap: () {},
+            onTap: () async {
+              log('nnaaavigatttte');
+              await context.pushNamed(
+                Routes.mentalIllnessAnsweredQuestionsView,
+              );
+            },
           ),
         ),
         horizontalSpacing(16),
@@ -383,7 +388,6 @@ class _MentalIllnessesUmbrellRecordsViewState
             title: 'تقارير المتابعة',
             iconPath: 'assets/images/medical_reports_image.png',
             onTap: () async {
-              log('jjjjj');
               await context.pushNamed(Routes.mentalIllnessFollowUpReports);
             },
           ),
