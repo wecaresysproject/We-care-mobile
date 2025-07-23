@@ -1,21 +1,21 @@
 class MentalIllnessesConstants {
   static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
-  // static const getCountries = "/api/EnterSectionSurgery/countries";
-  static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
-  static const postGlassesEssentialDataEntryEndPoint =
-      "/EyesDataEntry/submit-glasses-essential";
 
-  static const getAllLensSurfaces = "/EyesDataEntry/lens-surfaces";
-  static const getEyePartSyptomsAndProcedures =
-      "/EyesDataEntry/eye-part-details";
-  static const getEyePartDescribtion = "/EyesDataEntry/eye-section-description";
-  static const getAllLensTypes = "/EyesDataEntry/lens-types";
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllCountries = "/countries";
-  static const postEyeDataEntry = "/EyesDataEntry/submit-eye-entry";
-  static const editEyeDataEntered = "/EyesDataEntry/update-eye-entry";
-  static const editGlassesDataEntered = "/EyesDataEntry/edit-glasses-essential";
+  //!New
+  static const postMentalIlnessDataEntryEndPoint =
+      "/EyesDataEntry/submit-glasses-essential";
+  static const editMentalIlnessDataEntryEndPoint =
+      "/EyesDataEntry/update-eye-entry";
+  static const getMentalIllnessTypes = "/mental-illness-types";
+  static const getMedicalSyptoms = "/medical-symptoms";
+  static const getIncidentTypes = "/incident-types";
+  static const getMedicationImpactOnDailyLife = "/";
+  static const getPsychologicalEmergencies = '';
+  static const getMedicationSideEffects = '';
+  static const getPreferredActivitiesForPsychologicalImprovement = '';
 
   //View Entry
   static const deleteSurgeryById = "/api/EnterSectionSurgery";
