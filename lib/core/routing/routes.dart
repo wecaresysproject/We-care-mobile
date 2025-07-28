@@ -34,6 +34,7 @@ class Routes {
   static const addNewComplaintDetails = '/addNewComplaintDetails';
   static const medcinesView = '/medcineView';
   static const medcinesDataEntryView = '/medcinesDataEntryView';
+  static const mentalIllnessFollowUpReports = '/mentalIllnessFollowUpReports';
   static const medicationSymptomsFormFieldView =
       '/medicationSymptomsFormFieldView';
 
@@ -75,10 +76,19 @@ class Routes {
   static const mentalIllnessesRecordsView = '/mentalIllnessesRecordsView';
   static const mentalIllnessesDataEntryView = '/mentalIllnessesDataEntryView';
   static const mentalIllnessChoiceScreen = '/mentalIllnessChoiceScreen';
+  static const mentalIlnesssUmbrellaView = '/mentalIlnesssUmbrellaView';
   static const medicalIllnessOrMindUmbrellaView =
       '/medicalIllnessOrMindUmbrellaView';
   static const mentalIllnessOrMindUmbrellaViewDataEntryView =
       '/mentalIllnessOrMindUmbrellaViewDataEntryView';
+  static const enableViewForWeCareMentalHealthUmbrella =
+      '/enableViewForWeCareMentalHealthUmbrella';
+  static const disableViewForWeCareMentalHealthUmbrella =
+      '/disableViewForWeCareMentalHealthUmbrella';
+  static const mentalIllnessAnsweredQuestionsView =
+      '/mentalIllnessAnsweredQuestionsView';
+  static const mentalIllnessFollowUpReportDetailsView =
+      '/mentalIllnessFollowUpReportDetailsView';
 
   static const eyeDataEntry = '/eyeDataEntry';
   static const eyeProceduresAndSyptomsDataEntry =

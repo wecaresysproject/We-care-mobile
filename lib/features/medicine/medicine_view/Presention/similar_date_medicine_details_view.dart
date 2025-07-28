@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -24,7 +24,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            DetailsViewAppBar(
+            AppBarWithCenteredTitle(
               title: 'الأدوية في تاريخ $date',
               showShareButtonOnly: true,
               shareFunction: () => shareDetails(date, medicines),
@@ -142,7 +142,7 @@ void shareDetails(String date, List<MedicineModel> medicines) {
     buffer.writeln('   - عدد مرات الجرعة: ${medicine.dosageFrequency}');
     buffer.writeln('   - مدة العلاج: ${medicine.timeDuration}');
     buffer.writeln('   - اسم الطبيب: ${medicine.doctorName}');
-    buffer.writeln('   - الشكل الدوائي: أقراص'); 
+    buffer.writeln('   - الشكل الدوائي: أقراص');
     buffer.writeln('   - الملاحظات: ${medicine.personalNotes}');
     buffer.writeln(
         '   - التنبيهات: ${medicine.reminderStatus ? 'مفعل' : 'غير مفعل'}');

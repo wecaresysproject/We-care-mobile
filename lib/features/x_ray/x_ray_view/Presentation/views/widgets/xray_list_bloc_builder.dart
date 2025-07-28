@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,16 +26,15 @@ class XrayListBlocBuilder extends StatelessWidget {
             color: AppColorsManager.mainDarkBlue,
             backgroundColor: Colors.white,
           )));
-        } else if (state.requestStatus==RequestStatus.failure){
-             return Expanded(
+        } else if (state.requestStatus == RequestStatus.failure) {
+          return Expanded(
             child: Center(
-              child: Text( 'حدث خطأ في تحميل البيانات',
+              child: Text('حدث خطأ في تحميل البيانات',
                   style: AppTextStyles.font22MainBlueWeight700),
             ),
           );
-        } 
-        else if (state.userRadiologyData.isEmpty &&
-            state.requestStatus ==RequestStatus.success) {
+        } else if (state.userRadiologyData.isEmpty &&
+            state.requestStatus == RequestStatus.success) {
           return Expanded(
             child: Center(
               child: Text('لا توجد نتائج',
@@ -44,7 +42,7 @@ class XrayListBlocBuilder extends StatelessWidget {
             ),
           );
         } else if (state.userRadiologyData.isNotEmpty &&
-            state.requestStatus ==RequestStatus.success) {
+            state.requestStatus == RequestStatus.success) {
           return MedicalItemGridView(
             items: state.userRadiologyData,
             onTap: (id) async {
@@ -56,9 +54,7 @@ class XrayListBlocBuilder extends StatelessWidget {
                     ),
                   ));
               if (context.mounted) {
-                await context
-                    .read<XRayViewCubit>()
-                    .emitUserRadiologyData();
+                await context.read<XRayViewCubit>().emitUserRadiologyData();
               }
             },
             titleBuilder: (item) => item.radioType,
@@ -69,7 +65,7 @@ class XrayListBlocBuilder extends StatelessWidget {
                 "title": "دواعي الفحص:",
                 "value": item.symptoms ?? 'لم يتم ادخاله'
               },
-              {"title": "ملاحظات:", "value": item.radiologyNote},
+              {"title": "ملاحظات:", "value": item.radiologyNote!},
             ],
           );
         } else {

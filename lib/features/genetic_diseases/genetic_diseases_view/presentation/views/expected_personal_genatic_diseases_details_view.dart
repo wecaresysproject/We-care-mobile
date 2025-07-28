@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
@@ -12,7 +12,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/ge
 
 class PersonalGenaticDiseasesDetailsView extends StatelessWidget {
   const PersonalGenaticDiseasesDetailsView({super.key, required this.disease});
- final String disease;
+  final String disease;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GeneticsDiseasesViewCubit>(
@@ -31,7 +31,7 @@ class PersonalGenaticDiseasesDetailsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DetailsViewAppBar(
+                  AppBarWithCenteredTitle(
                     title: 'المرض الوراثى',
                     showActionButtons: true,
                     showShareButtonOnly: true,

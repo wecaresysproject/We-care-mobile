@@ -20,7 +20,6 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
           decoration: ShapeDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             shape: RoundedRectangleBorder(),
-            
           ),
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -43,7 +42,9 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
                 ),
                 verticalSpacing(88),
                 CustomImageWithTextMedicalIllnessModuleWidget(
-                  onTap: () {},
+                  onTap: () async {
+                    await context.pushNamed(Routes.mentalIlnesssUmbrellaView);
+                  },
                   imagePath:
                       "assets/images/medical_illnesses_umbrella_icon.png",
                   text: "المظلة النفسية",

@@ -27,7 +27,7 @@ class MentalIllnessDataEntry extends StatelessWidget {
         //       id: editModelId!,
         //     );
         // }
-        return getIt<MedicalIllnessesDataEntryCubit>();
+        return getIt<MedicalIllnessesDataEntryCubit>()..initialRequests();
       },
       child: Scaffold(
         appBar: AppBar(),

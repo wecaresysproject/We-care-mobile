@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_constants.dart';
 
 part 'mental_illnesses_services.g.dart';
@@ -11,27 +11,11 @@ abstract class MentalIllnessesServices {
   factory MentalIllnessesServices(Dio dio, {String? baseUrl}) =
       _MentalIllnessesServices;
 
-  // @MultiPart()
-  // @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
-  // Future<UploadReportResponseModel> uploadReportImage(
-  //   @Part() File report,
-  //   @Header("Content-Type") String contentType,
-  //   @Query("language") String language,
-  // );
-
-  // @MultiPart()
-  // @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
-  // Future<UploadImageResponseModel> uploadMedicalExaminationImage(
-  //   @Part() File image,
-  //   @Header("Content-Type") String contentType,
-  //   @Query("language") String language,
-  // );
-
-  @POST(EyesApiConstants.postGlassesEssentialDataEntryEndPoint)
-  Future<dynamic> postGlassesLensDataEntry(
+  @POST(MentalIllnessesConstants.postMentalIlnessDataEntryEndPoint)
+  Future<dynamic> postMentalIlnessDataEntryEndPoint(
+    @Query("userType") String userType,
     @Query("language") String language,
-    @Query("UserType") String userType,
-    @Body() EyeGlassesLensDataRequestBodyModel requestBody,
+    @Body() MentalIllnessRequestBody requestBody,
   );
 
   @GET(EyesApiConstants.getAllDoctors)
@@ -43,29 +27,47 @@ abstract class MentalIllnessesServices {
   Future<dynamic> getCountries(
     @Query('language') String language,
   );
+  //!New
+  @GET(MentalIllnessesConstants.getMentalIllnessTypes)
+  Future<dynamic> getMentalIllnessTypes(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
 
-  // @POST(EyesApiConstants.postEyeDataEntry)
-  // Future<dynamic> postEyeDataEntry(
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  //   @Body() EyeDataEntryRequestBody requestBody,
-  // );
+  @GET(MentalIllnessesConstants.getIncidentTypes)
+  Future<dynamic> getIncidentTypes(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+  @GET(MentalIllnessesConstants.getMedicationImpactOnDailyLife)
+  Future<dynamic> getMedicationImpactOnDailyLife(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+  @GET(MentalIllnessesConstants.getPsychologicalEmergencies)
+  Future<dynamic> getPsychologicalEmergencies(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+  @GET(MentalIllnessesConstants.getMedicationSideEffects)
+  Future<dynamic> getMedicationSideEffects(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+  @GET(MentalIllnessesConstants
+      .getPreferredActivitiesForPsychologicalImprovement)
+  Future<dynamic> getPreferredActivitiesForPsychologicalImprovement(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
 
-  // @PUT(EyesApiConstants.editEyeDataEntered)
-  // Future<dynamic> editEyeDataEntered(
-  //   @Query('language') String language,
-  //   @Query('id') String documentId,
-  //   @Query('UserType') String userType,
-  //   @Body() EyeDataEntryRequestBody requestBody,
-  // );
-
-  // @PUT(EyesApiConstants.editGlassesDataEntered)
-  // Future<dynamic> editGlassesDataEntered(
-  //   @Body() EyeGlassesLensDataRequestBodyModel requestBody,
-  //   @Query('language') String language,
-  //   @Query('id') String documentId,
-  //   @Query('UserType') String userType,
-  // );
+  @PUT(MentalIllnessesConstants.editMentalIlnessDataEntryEndPoint)
+  Future<dynamic> editMentalIllnessDataEntered(
+    @Query("userType") String userType,
+    @Query("language") String language,
+    @Query('id') String documentId,
+    @Body() MentalIllnessRequestBody requestBody,
+  );
 
   // /// 1. Get Available Years
   // @GET(EyesApiConstants.getAvailableYears)

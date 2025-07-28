@@ -1,6 +1,9 @@
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_services.dart';
 
 class MentalIllnessesDataEntryRepo {
@@ -23,112 +26,131 @@ class MentalIllnessesDataEntryRepo {
     }
   }
 
-  // Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
-  //   required String language,
-  //   required String contentType,
-  //   required File image,
-  // }) async {
-  //   try {
-  //     final response = await _illnessesServices.uploadReportImage(
-  //       image,
-  //       contentType,
-  //       language,
-  //     );
-  //     return ApiResult.success(response);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getMentalIllnessTypes(
+      {required String language}) async {
+    try {
+      final response = await _illnessesServices.getMentalIllnessTypes(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  // Future<ApiResult<UploadImageResponseModel>> uploadMedicalExaminationImage({
-  //   required String language,
-  //   required String contentType,
-  //   required File image,
-  // }) async {
-  //   try {
-  //     final response = await _eyesService.uploadMedicalExaminationImage(
-  //       image,
-  //       contentType,
-  //       language,
-  //     );
-  //     return ApiResult.success(response);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getIncidentTypes(
+      {required String language}) async {
+    try {
+      final response = await _illnessesServices.getIncidentTypes(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  // Future<ApiResult<String>> getEyePartDescribtion({
-  //   required String language,
-  //   required String userType,
-  //   required String selectedEyePart,
-  // }) async {
-  //   try {
-  //     final response = await _eyesService.getEyePartDescribtion(
-  //       language,
-  //       userType,
-  //       selectedEyePart,
-  //     );
+  Future<ApiResult<List<String>>> getMedicationImpactOnDailyLife(
+      {required String language}) async {
+    try {
+      final response = await _illnessesServices.getMedicationImpactOnDailyLife(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  //     return ApiResult.success(response['data']['description']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>> getPsychologicalEmergencies(
+      {required String language}) async {
+    try {
+      final response = await _illnessesServices.getPsychologicalEmergencies(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  // Future<ApiResult<String>> postEyeDataEntry({
-  //   required String language,
-  //   required String userType,
-  //   required EyeDataEntryRequestBody requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _eyesService.postEyeDataEntry(
-  //       language,
-  //       userType,
-  //       requestBody,
-  //     );
+  Future<ApiResult<List<String>>> getMedicationSideEffects(
+      {required String language}) async {
+    try {
+      final response = await _illnessesServices.getMedicationSideEffects(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<List<String>>>
+      getPreferredActivitiesForPsychologicalImprovement(
+          {required String language}) async {
+    try {
+      final response = await _illnessesServices
+          .getPreferredActivitiesForPsychologicalImprovement(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      return ApiResult.success(
+        List<String>.from(response["data"] as List<dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  // Future<ApiResult<EyePartSyptomsAndProceduresResponseModel>>
-  //     getEyePartSyptomsAndProcedures({
-  //   required String language,
-  //   required String userType,
-  //   required String selectedEyePart,
-  // }) async {
-  //   try {
-  //     final response = await _eyesService.getEyePartSyptomsAndProcedures(
-  //       language,
-  //       userType,
-  //       selectedEyePart,
-  //     );
+  Future<ApiResult<String>> postMentalIlnessDataEntryEndPoint({
+    required String language,
+    required MentalIllnessRequestBody requestBody,
+  }) async {
+    try {
+      final response =
+          await _illnessesServices.postMentalIlnessDataEntryEndPoint(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+        requestBody,
+      );
 
-  //     return ApiResult.success(
-  //       EyePartSyptomsAndProceduresResponseModel.fromJson(response['data']),
-  //     );
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
-  // Future<ApiResult<String>> editEyeDataEntered({
-  //   required String id,
-  //   required String language,
-  //   required EyeDataEntryRequestBody requestBody,
-  // }) async {
-  //   try {
-  //     final response = await _eyesService.editEyeDataEntered(
-  //       language,
-  //       id,
-  //       UserTypes.patient.name.firstLetterToUpperCase,
-  //       requestBody,
-  //     );
-  //     return ApiResult.success(response["message"]);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> editMentalIllnessDataEntered({
+    required String id,
+    required String language,
+    required MentalIllnessRequestBody requestBody,
+  }) async {
+    try {
+      final response = await _illnessesServices.editMentalIllnessDataEntered(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+        id,
+        requestBody,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

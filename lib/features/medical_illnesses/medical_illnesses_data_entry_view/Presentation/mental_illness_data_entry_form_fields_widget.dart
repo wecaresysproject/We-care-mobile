@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
@@ -49,17 +52,13 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
               verticalSpacing(18),
 
               UserSelectionContainer(
-                containerBorderColor: state.mentalIllnessesType == null
+                containerBorderColor: state.selectedMentalIllnessesType == null
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 categoryLabel: "نوع المرض النفسى/السلوكى",
-                containerHintText: state.mentalIllnessesType ??
+                containerHintText: state.selectedMentalIllnessesType ??
                     "ااختر المرض النفسى أو السلوكى",
-                options: [
-                  //! from backend
-
-                  "لم يتم تربيطها من الباك اند بعد",
-                ],
+                options: state.mentalIllnessTypes,
                 onOptionSelected: (value) {
                   context
                       .read<MedicalIllnessesDataEntryCubit>()
@@ -69,29 +68,70 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 searchHintText: "اختر المرض النفسى أو السلوكى",
               ),
               verticalSpacing(18),
-
-              UserSelectionContainer(
-                categoryLabel: "الأعراض المرضية",
-                containerHintText:
-                    state.selectedMedicalSyptoms ?? "اختر الأعراض الظاهرة عليك",
-                options: [
-                  //! from backend
-                  "لم يتم تربيطها من الباك اند بعد",
-                ],
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicalIllnessesDataEntryCubit>()
-                      .updateMedicalSyptoms(value);
-                },
-                bottomSheetTitle: "اختر الأعراض الظاهرة عليك",
-                searchHintText: "اختر الأعراض الظاهرة عليك",
+              Text(
+                "الأعراض المرضية",
+                style: AppTextStyles.font18blackWight500,
               ),
-              verticalSpacing(16),
+              verticalSpacing(10),
 
-// buildAddNewComplainButtonBlocBuilder(),
+// Display all dynamic symptom text fields
+              ...state.symptomControllers.asMap().entries.map((entry) {
+                final index = entry.key;
+                final controller = entry.value;
+                final isFirstField = index == 0;
+
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextField(
+                            controller: controller,
+                            hintText: isFirstField
+                                ? "اكتب عرضك المرضي"
+                                : "الأعراض المرضية ${index + 1}",
+                            validator: (val) {
+                              // Add your validation logic here
+                              return null;
+                            },
+                            onChanged: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateSymptom(index, value);
+                            },
+                          ),
+                        ),
+                        // Only show remove button if there's more than one field and it's not the first field
+                        if (!isFirstField) ...[
+                          horizontalSpacing(8),
+                          IconButton(
+                            onPressed: () {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .removeSymptomField(index);
+                            },
+                            icon: Icon(
+                              Icons.remove_circle_outline,
+                              color: AppColorsManager.warningColor,
+                              size: 24.sp,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    if (index < state.symptomControllers.length - 1)
+                      verticalSpacing(12),
+                  ],
+                );
+              }),
+
+              // Add spacing if there are existing fields
+              if (state.symptomControllers.isNotEmpty) verticalSpacing(16),
+
+              buildAddNewComplainButtonBlocBuilder(context),
               verticalSpacing(18),
               Text(
-                "شدة الشكوى",
+                "شدة المرض",
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
@@ -143,9 +183,7 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 categoryLabel: "حالات الطوارئ النفسية",
                 containerHintText: state.selectedMentalHealthEmergency ??
                     "اختر حالات الطوارئ النفسية ان وجد",
-                options: [
-                  'قريبا من الباك اند',
-                ],
+                options: state.psychologicalEmergencies,
                 onOptionSelected: (value) {
                   context
                       .read<MedicalIllnessesDataEntryCubit>()
@@ -180,12 +218,7 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 categoryLabel: "التأثيرات الجانبية للأدوية",
                 containerHintText: state.selectedMedicationSideEffects ??
                     "اختر التأثيرات الجانبية للأدوية",
-                options: [
-                  'أدى إلى تفاقم الأعراض النفسية',
-                  'ساهم في ظهور الأعراض لأول مرة',
-                  'لا يوجد تأثير كبير',
-                  'لا استطيع الربط',
-                ],
+                options: state.medicationSideEffects,
                 onOptionSelected: (value) {
                   context
                       .read<MedicalIllnessesDataEntryCubit>()
@@ -201,9 +234,7 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
                 containerHintText:
                     state.selectedPreferredMentalWellnessActivities ??
                         "اختر الأنشطة لتحسين الحالة النفسية",
-                options: [
-                  'قريبا من الباك اند',
-                ],
+                options: state.preferredActivitiesForPsychologicalImprovement,
                 onOptionSelected: (value) {
                   context
                       .read<MedicalIllnessesDataEntryCubit>()
@@ -223,57 +254,48 @@ class MentalIlnessesDataEntryFormFields extends StatelessWidget {
     );
   }
 }
-// Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
-//   return BlocBuilder<EmergencyComplaintsDataEntryCubit,
-//       EmergencyComplaintsDataEntryState>(
-//     buildWhen: (previous, current) =>
-//         current.medicalComplaints.length != previous.medicalComplaints.length,
-//     builder: (context, state) {
-//       return Center(
-//         child: Stack(
-//           clipBehavior: Clip.none,
-//           children: [
-//             AddNewItemButton(
-//               text: state.medicalComplaints.isEmpty
-//                   ? "اضف الاعراض المرضية"
-//                   : 'أضف أعراض مرضية أخرى ان وجد',
-//               onPressed: () async {
-//                 final bool? result = await context.pushNamed(
-//                   Routes.addNewComplaintDetails,
-//                 );
 
-//                 if (result != null && context.mounted) {
-//                   await context
-//                       .read<EmergencyComplaintsDataEntryCubit>()
-//                       .fetchAllAddedComplaints();
+// Update your buildAddNewComplainButtonBlocBuilder function:
 
-//                   if (!context.mounted) return;
+Widget buildAddNewComplainButtonBlocBuilder(BuildContext context) {
+  return BlocBuilder<MedicalIllnessesDataEntryCubit,
+      MedicalIllnessesDataEntryState>(
+    buildWhen: (previous, current) =>
+        current.symptomControllers.length != previous.symptomControllers.length,
+    builder: (context, state) {
+      return Center(
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            AddNewItemButton(
+              text: state.symptomControllers.isEmpty
+                  ? "اضف الاعراض المرضية"
+                  : 'أضف أعراض مرضية أخرى ان وجد',
+              onPressed: () {
+                context
+                    .read<MedicalIllnessesDataEntryCubit>()
+                    .addNewSymptomField();
+              },
+            ),
+            Positioned(
+              top: -2,
+              left: -120,
+              child: Lottie.asset(
+                'assets/images/hand_animation.json',
+                width: 120,
+                height: 120,
+                addRepaintBoundary: true,
+                repeat: true,
+                alignment: Alignment.center,
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
-//                   ///to rebuild submitted button if user added new complain.
-//                   context
-//                       .read<EmergencyComplaintsDataEntryCubit>()
-//                       .validateRequiredFields();
-//                 }
-//               },
-//             ),
-//             Positioned(
-//               top: -2, // move it up (negative means up)
-//               left: -120,
-//               child: Lottie.asset(
-//                 'assets/images/hand_animation.json',
-//                 width: 120, // adjust sizes
-//                 height: 120,
-//                 addRepaintBoundary: true,
-//                 repeat: true,
-//                 alignment: Alignment.center,
-//               ),
-//             ),
-//           ],
-//         ),
-//       );
-//     },
-//   );
-// }
 Widget submitMentalIlnessDataEntryButtonBlocConsumer(
   BuildContext context,
 ) {
@@ -304,17 +326,16 @@ Widget submitMentalIlnessDataEntryButtonBlocConsumer(
         onPressed: () async {
           if (state.isFormValidated) {
             if (state.isEditMode) {
-//               await context
-//                   .read<MedicalIllnessesDataEntryCubit
-// >()
-//                   .submitEyeDataEnteredEdits();
-//               return;
+              await context
+                  .read<MedicalIllnessesDataEntryCubit>()
+                  .submitMentalIllnessDataEnteredEdits();
+              return;
             }
-//             await context.read<MedicalIllnessesDataEntryCubit
-// >().postEyeDataEntry(
-//                   context.translate,
-
-//                 );
+            await context
+                .read<MedicalIllnessesDataEntryCubit>()
+                .postMentalIlnessDataEntryEndPoint(
+                  context.translate,
+                );
           }
         },
         isEnabled: state.isFormValidated ? true : false,
@@ -368,7 +389,7 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
               ),
 
               // This is where we'll add the animation
-              _buildAnimatedContent(state),
+              _buildAnimatedContent(state, context),
             ],
           ),
         );
@@ -376,7 +397,8 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildAnimatedContent(MedicalIllnessesDataEntryState state) {
+  Widget _buildAnimatedContent(
+      MedicalIllnessesDataEntryState state, BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 400),
       switchInCurve: Curves.easeInOut,
@@ -391,27 +413,26 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
         );
       },
       child: state.hasIncidentEffect == true
-          ? _buildFormFields()
+          ? _buildFormFields(state, context)
           : SizedBox.shrink(key: Key('empty')),
     );
   }
 
-  Widget _buildFormFields() {
+  Widget _buildFormFields(
+      MedicalIllnessesDataEntryState state, BuildContext context) {
     return Column(
       key: Key('formFields'), // Important for animation
       children: [
         verticalSpacing(18),
         UserSelectionContainer(
           categoryLabel: "نوع الموقف",
-          containerHintText: "اختر نوع الموقف",
-          options: const [
-            "حادث مرور",
-            "وفاة قريب",
-            "مشكلة عائلية",
-            "مشكلة مالية",
-          ],
+          containerHintText: state.selectedIncidentType ?? "اختر نوع الموقف",
+          options: state.incidentTypes,
           onOptionSelected: (value) {
             // Handle selection
+            context
+                .read<MedicalIllnessesDataEntryCubit>()
+                .updateIncidentType(value);
           },
           bottomSheetTitle: "اختر نوع الموقف",
           searchHintText: "اختر نوع الموقف",
@@ -426,9 +447,15 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
             ),
             verticalSpacing(10),
             DateTimePickerContainer(
-              placeholderText: "يوم / شهر / سنة",
+              placeholderText: state.incidentDate == null
+                  ? isArabic()
+                      ? "يوم / شهر / سنة"
+                      : "Date / Month / Year"
+                  : state.incidentDate!,
               onDateSelected: (pickedDate) {
-                // Handle date selection
+                context
+                    .read<MedicalIllnessesDataEntryCubit>()
+                    .updateIncidentDate(pickedDate);
               },
             ),
           ],
@@ -436,7 +463,8 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
         verticalSpacing(18),
         UserSelectionContainer(
           categoryLabel: "تأثير الموقف على الحالة النفسية",
-          containerHintText: "اختر نوع التأثير على الحالة النفسية",
+          containerHintText:
+              state.incidentEffect ?? "اختر نوع التأثير على الحالة النفسية",
           options: const [
             "قلق",
             "اكتئاب",
@@ -444,7 +472,9 @@ class HasIncidentEffectQuestionWidget extends StatelessWidget {
             "نوبات هلع",
           ],
           onOptionSelected: (value) {
-            // Handle selection
+            context
+                .read<MedicalIllnessesDataEntryCubit>()
+                .updateIncidentEffect(value);
           },
           bottomSheetTitle: "اختر تأثير الموقف",
           searchHintText: "اختر تأثير الموقف",
@@ -625,12 +655,7 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                             categoryLabel: "تأثير الأدوية على الحياة اليومية",
                             containerHintText: state.medicationEffectOnLife ??
                                 "اختر التأثير على حياتك اليومية",
-                            options: const [
-                              "تحسن كبير",
-                              "تحسن بسيط",
-                              "لا تأثير",
-                              "تأثير سلبي",
-                            ],
+                            options: state.medicationImpactOnDailyLife,
                             onOptionSelected: (value) {
                               context
                                   .read<MedicalIllnessesDataEntryCubit>()
@@ -663,23 +688,18 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                             searchHintText: "اختر نوع العلاج",
                           ),
                           verticalSpacing(18),
-                          UserSelectionContainer(
-                            categoryLabel: "عدد الجلسات النفسية",
-                            containerHintText:
-                                state.numberOfSessions ?? "اختر عدد الجلسات",
-                            options: const [
-                              "1-5 جلسات",
-                              "6-10 جلسات",
-                              "11-20 جلسة",
-                              "أكثر من 20 جلسة",
-                            ],
-                            onOptionSelected: (value) {
-                              context
-                                  .read<MedicalIllnessesDataEntryCubit>()
-                                  .updateNumberOfSessions(value);
-                            },
-                            bottomSheetTitle: "اختر عدد الجلسات",
-                            searchHintText: "اختر عدد الجلسات",
+                          Text(
+                            "عدد الجلسات النفسية",
+                            style: AppTextStyles.font18blackWight500,
+                          ),
+                          verticalSpacing(10),
+                          CustomTextField(
+                            hintText: "اكتب عدد الجلسسات",
+                            keyboardType: TextInputType.number,
+                            controller: context
+                                .read<MedicalIllnessesDataEntryCubit>()
+                                .noOfSessionsController,
+                            validator: (value) {},
                           ),
                           verticalSpacing(18),
                           Text(
@@ -745,7 +765,7 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                                   categoryLabel: "الدولة",
                                   containerHintText: state.selectedCountry ??
                                       "اختر اسم الدولة",
-                                  options: [],
+                                  options: state.countriesNames,
                                   onOptionSelected: (value) {
                                     context
                                         .read<MedicalIllnessesDataEntryCubit>()

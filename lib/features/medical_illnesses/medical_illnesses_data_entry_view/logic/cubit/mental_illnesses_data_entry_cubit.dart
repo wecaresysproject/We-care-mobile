@@ -1,8 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'mental_illnesses_data_entry_state.dart';
 
@@ -13,7 +18,53 @@ class MedicalIllnessesDataEntryCubit
           MedicalIllnessesDataEntryState.initialState(),
         );
   final MentalIllnessesDataEntryRepo _medicalIllnessesDataEntryRepo;
-  final personalNotesController = TextEditingController();
+  final noOfSessionsController = TextEditingController(); // عدد الجلسات
+  // List<String> medicalComplaints = [];
+  void addNewSymptomField() {
+    final newController = TextEditingController();
+    final updatedControllers =
+        List<TextEditingController>.from(state.symptomControllers)
+          ..add(newController);
+
+    emit(state.copyWith(symptomControllers: updatedControllers));
+  }
+
+  void removeSymptomField(int index) {
+    // Don't allow removing if only one field remains
+    if (state.symptomControllers.length <= 1) return;
+
+    if (index < state.symptomControllers.length) {
+      state.symptomControllers[index].dispose();
+      final updatedControllers =
+          List<TextEditingController>.from(state.symptomControllers)
+            ..removeAt(index);
+
+      final updatedSymptoms = List<String>.from(state.symptoms);
+      if (index < updatedSymptoms.length) {
+        updatedSymptoms.removeAt(index);
+      }
+
+      emit(state.copyWith(
+        symptomControllers: updatedControllers,
+        symptoms: updatedSymptoms,
+      ));
+    }
+  }
+
+  void updateSymptom(int index, String value) {
+    final updatedSymptoms = List<String>.from(state.symptoms);
+    if (index < updatedSymptoms.length) {
+      updatedSymptoms[index] = value;
+    } else {
+      // If the list is shorter, fill it up to the index
+      while (updatedSymptoms.length <= index) {
+        updatedSymptoms.add('');
+      }
+      updatedSymptoms[index] = value;
+    }
+
+    emit(state.copyWith(symptoms: updatedSymptoms));
+  }
 
   // Future<void> loadPastEyeDataEnteredForEditing({
   //   required EyeProceduresAndSymptomsDetailsModel pastEyeData,
@@ -45,6 +96,18 @@ class MedicalIllnessesDataEntryCubit
   //   validateRequiredFields();
   //   await getInitialRequests();
   // }
+  Future<void> initialRequests() async {
+    //! check comments later
+    await Future.wait([
+      emitMentalIllnessTypes(),
+      emitCountriesData(),
+      emitIncidentTypes(),
+      getMedicationSideEffects(),
+      getPsychologicalEmergencies(),
+      getMedicationImpactOnDailyLife(),
+      getPreferredActivitiesForPsychologicalImprovement(),
+    ]);
+  }
 
   void updatExaminationDate(String? val) {
     emit(state.copyWith(examinationDate: val));
@@ -52,17 +115,9 @@ class MedicalIllnessesDataEntryCubit
   }
 
   void updateMentalIllnessesType(String? val) {
-    emit(state.copyWith(mentalIllnessesType: val));
+    emit(state.copyWith(selectedMentalIllnessesType: val));
     validateRequiredFields();
   }
-
-  void updateMedicalSyptoms(String? val) {
-    emit(state.copyWith(selectedMedicalSyptoms: val));
-  }
-
-  // void updateSelectedDoctorName(String? val) {
-  //   emit(state.copyWith(doctorName: val));
-  // }
 
   //! وجود حادث أو موقف له تأثير ؟
   void updateHasIncidentEffect(bool? value) {
@@ -70,7 +125,7 @@ class MedicalIllnessesDataEntryCubit
     if (value == false) {
       emit(
         state.copyWith(
-          incidentType: null,
+          selectedIncidentType: null,
           incidentDate: null,
           incidentEffect: null,
         ),
@@ -95,7 +150,7 @@ class MedicalIllnessesDataEntryCubit
   }
 
   void updateIncidentType(String? value) {
-    emit(state.copyWith(incidentType: value));
+    emit(state.copyWith(selectedIncidentType: value));
   }
 
   void updateIncidentDate(String? value) {
@@ -117,14 +172,157 @@ class MedicalIllnessesDataEntryCubit
           psychologicalTreatmentType: null,
           medicationsUsed: null,
           medicationEffectOnLife: null,
-          numberOfSessions: null,
           treatmentSatisfaction: null,
           psychologistName: null,
           selectedCountry: null,
           selectedHospitalName: null,
         ),
       );
+      noOfSessionsController.text = '';
     }
+  }
+
+  Future<void> emitMentalIllnessTypes() async {
+    final response = await _medicalIllnessesDataEntryRepo.getMentalIllnessTypes(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (mentalIllnessTypes) {
+        emit(
+          state.copyWith(
+            mentalIllnessTypes: mentalIllnessTypes,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitIncidentTypes() async {
+    final response = await _medicalIllnessesDataEntryRepo.getIncidentTypes(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (incidentTypes) {
+        emit(
+          state.copyWith(
+            incidentTypes: incidentTypes,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getMedicationImpactOnDailyLife() async {
+    final response =
+        await _medicalIllnessesDataEntryRepo.getMedicationImpactOnDailyLife(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (medicationImpactOnDailyLife) {
+        emit(
+          state.copyWith(
+            medicationImpactOnDailyLife: medicationImpactOnDailyLife,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getPsychologicalEmergencies() async {
+    final response =
+        await _medicalIllnessesDataEntryRepo.getPsychologicalEmergencies(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (psychologicalEmergencies) {
+        emit(
+          state.copyWith(
+            psychologicalEmergencies: psychologicalEmergencies,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getMedicationSideEffects() async {
+    final response =
+        await _medicalIllnessesDataEntryRepo.getMedicationSideEffects(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (medicationSideEffects) {
+        emit(
+          state.copyWith(
+            medicationSideEffects: medicationSideEffects,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getPreferredActivitiesForPsychologicalImprovement() async {
+    final response = await _medicalIllnessesDataEntryRepo
+        .getPreferredActivitiesForPsychologicalImprovement(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (preferredActivitiesForPsychologicalImprovement) {
+        emit(
+          state.copyWith(
+            preferredActivitiesForPsychologicalImprovement:
+                preferredActivitiesForPsychologicalImprovement,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   void updatePsychologicalTreatmentType(String? value) {
@@ -137,10 +335,6 @@ class MedicalIllnessesDataEntryCubit
 
   void updateMedicationEffectOnLife(String? value) {
     emit(state.copyWith(medicationEffectOnLife: value));
-  }
-
-  void updateNumberOfSessions(String? value) {
-    emit(state.copyWith(numberOfSessions: value));
   }
 
   void updateTreatmentSatisfaction(String? value) {
@@ -162,10 +356,6 @@ class MedicalIllnessesDataEntryCubit
   getInitialRequests() {
     // emitCountriesData();
   }
-
-  // void updateSelectedCountry(String? selectedCountry) {
-  //   emit(state.copyWith(selectedCountryName: selectedCountry));
-  // }
 
   void updateSelectedDiseaseIntensity(String? val) {
     emit(state.copyWith(selectedDiseaseIntensity: val));
@@ -241,194 +431,187 @@ class MedicalIllnessesDataEntryCubit
   //   );
   // }
 
-  // Future<void> uploadMedicalExaminationImage(
-  //     {required String imagePath}) async {
-  //   emit(
-  //     state.copyWith(
-  //       uploadMedicalExaminationStatus: UploadImageRequestStatus.initial,
-  //     ),
-  //   );
-  //   final response = await _eyesDataEntryRepo.uploadMedicalExaminationImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           medicalExaminationImageUploadedUrl: response.imageUrl,
-  //           uploadMedicalExaminationStatus: UploadImageRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           uploadMedicalExaminationStatus: UploadImageRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> postMentalIlnessDataEntryEndPoint(
+    S locale,
+  ) async {
+    emit(
+      state.copyWith(
+        mentalIllnessesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _medicalIllnessesDataEntryRepo.postMentalIlnessDataEntryEndPoint(
+      requestBody: MentalIllnessRequestBody(
+        diagnosisDate: state.examinationDate!,
+        mentalIllnessType: state.selectedMentalIllnessesType!,
+        symptomsList: state
+            .symptoms, //! check it later after delete one , is it update and after edit too
+        illnessSeverity:
+            state.selectedDiseaseIntensity ?? locale.no_data_entered,
+        illnessDuration: state.diseaseDuration ?? locale.no_data_entered,
+        hasImpactfulIncident: ImpactfulIncident(
+          answer: state.hasIncidentEffect,
+          incidentType: state.selectedIncidentType ?? locale.no_data_entered,
+          incidentDate: state.incidentDate ?? locale.no_data_entered,
+          incidentPsychologicalImpact:
+              state.incidentEffect ?? locale.no_data_entered,
+        ),
+        hasFamilySimilarMentalIllnessCases: FamilyMentalIllness(
+          answer: state.hasFamilySimilarMentalCases,
+          relationship:
+              state.selectedFamilyRelationType ?? locale.no_data_entered,
+        ),
+        selectedPsychologicalEmergencies:
+            state.selectedMentalHealthEmergency ?? locale.no_data_entered,
+        socialSupport: state.selectedsocialSupport ?? locale.no_data_entered,
+        selectedMedicationSideEffects:
+            state.selectedMedicationSideEffects ?? locale.no_data_entered,
+        preferredActivitiesForImprovement:
+            state.selectedPreferredMentalWellnessActivities ??
+                locale.no_data_entered,
+        isReceivingPsychologicalTreatment: PsychologicalTreatment(
+          answer: state.isReceivingPsychologicalTreatment,
+          medicationsUsed: state.medicationsUsed ?? locale.no_data_entered,
+          medicationEffectOnDailyLife:
+              state.medicationEffectOnLife ?? locale.no_data_entered,
+          previousTherapyType:
+              state.psychologicalTreatmentType ?? locale.no_data_entered,
+          numberOfSessions: int.tryParse(noOfSessionsController.text) ?? 0,
+          therapySatisfaction:
+              state.treatmentSatisfaction ?? locale.no_data_entered,
+          doctorOrSpecialist: state.psychologistName ?? locale.no_data_entered,
+          hospitalOrCenter:
+              state.selectedHospitalName ?? locale.no_data_entered,
+          country: state.selectedCountry ?? locale.no_data_entered,
+        ),
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            mentalIllnessesDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            mentalIllnessesDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
-  // Future<void> getEyePartSyptomsAndProcedures(
-  //     {required String selectedEyePart}) async {
-  //   final response = await _eyesDataEntryRepo.getEyePartSyptomsAndProcedures(
-  //     language: AppStrings.arabicLang,
-  //     selectedEyePart: selectedEyePart,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //   );
-  //   response.when(
-  //     success: (eyePartSyptomsAndProcedures) {
-  //       emit(
-  //         state.copyWith(
-  //           eyePartSyptomsAndProcedures: eyePartSyptomsAndProcedures,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> submitMentalIllnessDataEnteredEdits() async {
+    emit(
+      state.copyWith(
+        mentalIllnessesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _medicalIllnessesDataEntryRepo.editMentalIllnessDataEntered(
+      requestBody: MentalIllnessRequestBody(
+        diagnosisDate: state.examinationDate!,
+        mentalIllnessType: state.selectedMentalIllnessesType!,
+        symptomsList: state.symptoms,
+        illnessSeverity: state.selectedDiseaseIntensity!,
+        illnessDuration: state.diseaseDuration!,
+        hasImpactfulIncident: ImpactfulIncident(
+          answer: state.hasIncidentEffect!,
+          incidentType: state.selectedIncidentType!,
+          incidentDate: state.incidentDate!,
+          incidentPsychologicalImpact: state.incidentEffect!,
+        ),
+        hasFamilySimilarMentalIllnessCases: FamilyMentalIllness(
+          answer: state.hasFamilySimilarMentalCases!,
+          relationship: state.selectedFamilyRelationType!,
+        ),
+        selectedPsychologicalEmergencies: state.selectedMentalHealthEmergency!,
+        socialSupport: state.selectedsocialSupport!,
+        selectedMedicationSideEffects: state.selectedMedicationSideEffects!,
+        preferredActivitiesForImprovement:
+            state.selectedPreferredMentalWellnessActivities!,
+        isReceivingPsychologicalTreatment: PsychologicalTreatment(
+          answer: state.isReceivingPsychologicalTreatment!,
+          medicationsUsed: state.medicationsUsed!,
+          medicationEffectOnDailyLife: state.medicationEffectOnLife!,
+          previousTherapyType: state.psychologicalTreatmentType!,
+          numberOfSessions: int.tryParse(noOfSessionsController.text) ?? 0,
+          therapySatisfaction: state.treatmentSatisfaction!,
+          doctorOrSpecialist: state.psychologistName!,
+          hospitalOrCenter: state.selectedHospitalName!,
+          country: state.selectedCountry!,
+        ),
+      ),
+      id: state
+          .editDecumentId, //! update it later in state varaible when load for first time comming from data view
+      language: 'ar',
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            mentalIllnessesDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            mentalIllnessesDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
-  // Future<void> postEyeDataEntry(
-  //   S locale, {
-  //   required List<SymptomAndProcedureItem> symptoms,
-  //   required List<SymptomAndProcedureItem> procedures,
-  //   required String affectedEyePart,
-  // }) async {
-  //   emit(
-  //     state.copyWith(
-  //       eyeDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await _eyesDataEntryRepo.postEyeDataEntry(
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //     requestBody: EyeDataEntryRequestBody(
-  //       affectedEyePart: affectedEyePart,
-  //       symptomStartDate: state.syptomStartDate!,
-  //       centerHospitalName:
-  //           state.selectedHospitalCenter ?? locale.no_data_entered,
-  //       country: state.selectedCountryName ?? locale.no_data_entered,
-  //       symptoms: symptoms.map((e) => e.title).toList().isEmpty
-  //           ? [locale.no_data_entered]
-  //           : symptoms.map((e) => e.title).toList(),
-  //       symptomDuration: state.symptomDuration ?? locale.no_data_entered,
-  //       medicalProcedures: procedures.map((e) => e.title).toList().isEmpty
-  //           ? [locale.no_data_entered]
-  //           : procedures.map((e) => e.title).toList(),
-  //       medicalReportDate:
-  //           state.procedureDateSelection ?? locale.no_data_entered,
-  //       medicalReportUrl:
-  //           state.reportImageUploadedUrl ?? locale.no_data_entered,
-  //       medicalExaminationImages:
-  //           state.medicalExaminationImageUploadedUrl ?? locale.no_data_entered,
-  //       doctorName: state.doctorName ?? locale.no_data_entered,
-  //       additionalNotes: personalNotesController.text.isEmpty
-  //           ? '--'
-  //           : personalNotesController.text,
-  //     ),
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           message: successMessage,
-  //           eyeDataEntryStatus: RequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           eyeDataEntryStatus: RequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> emitCountriesData() async {
+    final response = await _medicalIllnessesDataEntryRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
 
-  // Future<void> submitEyeDataEnteredEdits() async {
-  //   emit(
-  //     state.copyWith(
-  //       eyeDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await _eyesDataEntryRepo.editEyeDataEntered(
-  //     requestBody: EyeDataEntryRequestBody(
-  //       affectedEyePart: state.affectedEyePart!,
-  //       symptomStartDate: state.syptomStartDate!,
-  //       centerHospitalName: state.selectedHospitalCenter!,
-  //       country: state.selectedCountryName!,
-  //       symptoms: state.eyePartSyptomsAndProcedures!.symptoms,
-  //       symptomDuration: state.symptomDuration!,
-  //       medicalProcedures: state.eyePartSyptomsAndProcedures!.procedures,
-  //       medicalReportDate: state.procedureDateSelection!,
-  //       medicalReportUrl: state.reportImageUploadedUrl!,
-  //       medicalExaminationImages: state.medicalExaminationImageUploadedUrl!,
-  //       doctorName: state.doctorName!,
-  //       additionalNotes: personalNotesController.text.isEmpty
-  //           ? '--'
-  //           : personalNotesController.text,
-  //     ),
-  //     id: state.editDecumentId,
-  //     language: 'ar',
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           eyeDataEntryStatus: RequestStatus.success,
-  //           message: successMessage,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           eyeDataEntryStatus: RequestStatus.failure,
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+    response.when(
+      success: (countries) {
+        emit(
+          state.copyWith(
+            countriesNames: countries,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
-  // Future<void> emitCountriesData() async {
-  //   final response = await _medicalIllnessesDataEntryRepo.getCountriesData(
-  //     language: AppStrings.arabicLang,
-  //   );
-
-  //   response.when(
-  //     success: (countries) {
-  //       emit(
-  //         state.copyWith(
-  //           countriesNames: countries,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> clearAllAddedComplaints() async {
+    try {
+      final medicalComplaintBox =
+          Hive.box<MedicalComplaint>("medical_complaints");
+      await medicalComplaintBox.clear();
+    } catch (e) {
+      emit(
+        state.copyWith(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   void validateRequiredFields() {
-    if (state.examinationDate == null || state.mentalIllnessesType == null) {
+    if (state.examinationDate == null ||
+        state.selectedMentalIllnessesType == null) {
       emit(
         state.copyWith(
           isFormValidated: false,
@@ -444,8 +627,14 @@ class MedicalIllnessesDataEntryCubit
   }
 
   @override
-  Future<void> close() {
-    personalNotesController.dispose();
+  Future<void> close() async {
+    noOfSessionsController.dispose();
+    await clearAllAddedComplaints();
+    // Dispose all controllers when cubit is closed
+    for (final controller in state.symptomControllers) {
+      controller.dispose();
+    }
+
     return super.close();
   }
 }

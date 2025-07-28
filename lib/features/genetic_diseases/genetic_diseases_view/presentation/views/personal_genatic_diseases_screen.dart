@@ -5,7 +5,7 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -54,7 +54,7 @@ class _PersonalGenaticDiseasesScreenState
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  DetailsViewAppBar(
+                  AppBarWithCenteredTitle(
                     title: 'الامراض الوراثية',
                     showActionButtons: false,
                   ),
@@ -192,7 +192,8 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
             ),
           );
         }
-        if (state.expextedPersonalGeneticDiseases == null &&state.requestStatus == RequestStatus.success) {
+        if (state.expextedPersonalGeneticDiseases == null &&
+            state.requestStatus == RequestStatus.success) {
           return Center(
             child: Text("لا توجد بيانات متاحة",
                 style: AppTextStyles.font22MainBlueWeight700),
@@ -248,7 +249,7 @@ class ExpectedPersonalGeneticDiseaseTable extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: DataTable(
             clipBehavior: Clip.antiAliasWithSaveLayer,
-            headingRowColor: MaterialStateProperty.all(const Color(0xFF014C8A)),
+            headingRowColor: WidgetStateProperty.all(const Color(0xFF014C8A)),
             headingTextStyle: const TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold),
             columnSpacing: 8.w,

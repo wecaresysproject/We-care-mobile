@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  accordion: ^2.6.0
   alarm: ^5.1.2
   audioplayers: ^6.4.0
   bloc: ^9.0.0
