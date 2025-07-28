@@ -13,8 +13,8 @@ abstract class MentalIllnessesServices {
 
   @POST(MentalIllnessesConstants.postMentalIlnessDataEntryEndPoint)
   Future<dynamic> postMentalIlnessDataEntryEndPoint(
+    @Query("userType") String userType,
     @Query("language") String language,
-    @Query("UserType") String userType, //!check it later
     @Body() MentalIllnessRequestBody requestBody,
   );
 
@@ -63,9 +63,9 @@ abstract class MentalIllnessesServices {
 
   @PUT(MentalIllnessesConstants.editMentalIlnessDataEntryEndPoint)
   Future<dynamic> editMentalIllnessDataEntered(
-    @Query('language') String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
     @Query('id') String documentId,
-    @Query('UserType') String userType, //!check it later
     @Body() MentalIllnessRequestBody requestBody,
   );
 

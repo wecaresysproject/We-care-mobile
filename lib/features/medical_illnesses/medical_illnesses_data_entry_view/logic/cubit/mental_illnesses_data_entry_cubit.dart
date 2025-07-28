@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
@@ -442,7 +441,6 @@ class MedicalIllnessesDataEntryCubit
     );
     final response =
         await _medicalIllnessesDataEntryRepo.postMentalIlnessDataEntryEndPoint(
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: MentalIllnessRequestBody(
         diagnosisDate: state.examinationDate!,
         mentalIllnessType: state.selectedMentalIllnessesType!,

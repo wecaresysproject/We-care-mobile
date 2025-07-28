@@ -120,14 +120,13 @@ class MentalIllnessesDataEntryRepo {
 
   Future<ApiResult<String>> postMentalIlnessDataEntryEndPoint({
     required String language,
-    required String userType,
     required MentalIllnessRequestBody requestBody,
   }) async {
     try {
       final response =
           await _illnessesServices.postMentalIlnessDataEntryEndPoint(
+        UserTypes.patient.name.firstLetterToUpperCase,
         language,
-        userType,
         requestBody,
       );
 
@@ -144,9 +143,9 @@ class MentalIllnessesDataEntryRepo {
   }) async {
     try {
       final response = await _illnessesServices.editMentalIllnessDataEntered(
+        UserTypes.patient.name.firstLetterToUpperCase,
         language,
         id,
-        UserTypes.patient.name.firstLetterToUpperCase,
         requestBody,
       );
       return ApiResult.success(response["message"]);

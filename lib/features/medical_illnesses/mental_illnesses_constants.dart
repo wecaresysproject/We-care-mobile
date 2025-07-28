@@ -5,10 +5,8 @@ class MentalIllnessesConstants {
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllCountries = "/countries";
   //!New
-  static const postMentalIlnessDataEntryEndPoint =
-      "/EyesDataEntry/submit-glasses-essential";
-  static const editMentalIlnessDataEntryEndPoint =
-      "/EyesDataEntry/update-eye-entry";
+  static const postMentalIlnessDataEntryEndPoint = "/v1/submit-medical-illness";
+  static const editMentalIlnessDataEntryEndPoint = "/v1/update-medical-illness";
   static const getMentalIllnessTypes = "/v1/lookup/mental-illness-types";
   static const getIncidentTypes = "/v1/lookup/incident-types";
   static const getMedicationImpactOnDailyLife = "/v1/lookup/daily-life-impacts";
