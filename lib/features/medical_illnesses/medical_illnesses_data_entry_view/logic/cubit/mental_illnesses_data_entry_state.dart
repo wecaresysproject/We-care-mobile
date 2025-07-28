@@ -15,7 +15,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final String? selectedsocialSupport;
   final String? selectedMedicationSideEffects;
   final String? selectedPreferredMentalWellnessActivities;
-  final List<MedicalComplaint> medicalComplaints;
+  final List<String> symptoms;
+  final List<TextEditingController> symptomControllers;
 
   //حادث له آثر
   final bool? hasIncidentEffect; // نعم/لا selection
@@ -62,7 +63,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.selectedDiseaseIntensity,
     this.diseaseDuration, // مدة المرض,
     this.selectedMentalHealthEmergency,
-    this.medicalComplaints = const [],
+    this.symptoms = const [],
     this.message = '',
     this.selectedsocialSupport,
     this.selectedMedicationSideEffects,
@@ -91,9 +92,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.medicationSideEffects = const [],
     this.preferredActivitiesForPsychologicalImprovement = const [],
     this.countriesNames = const [],
+    this.symptomControllers = const [],
   }) : super();
 
-  const MedicalIllnessesDataEntryState.initialState()
+  MedicalIllnessesDataEntryState.initialState()
       : this(
           mentalIllnessesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
@@ -124,7 +126,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
           isEditMode: false,
           editDecumentId: '',
           mentalIllnessTypes: const [],
-          medicalComplaints: const [],
+          symptoms: const [],
           medicalSyptoms: const [],
           incidentTypes: const [],
           medicationImpactOnDailyLife: const [],
@@ -132,6 +134,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
           medicationSideEffects: const [],
           preferredActivitiesForPsychologicalImprovement: const [],
           countriesNames: const [],
+          symptomControllers: [TextEditingController()],
         );
 
   MedicalIllnessesDataEntryState copyWith({
@@ -172,7 +175,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
     List<String>? medicationSideEffects,
     List<String>? preferredActivitiesForPsychologicalImprovement,
     List<String>? countriesNames,
-    List<MedicalComplaint>? medicalComplaints,
+    List<String>? symptoms,
+    List<TextEditingController>? symptomControllers,
   }) {
     return MedicalIllnessesDataEntryState(
       mentalIllnessesDataEntryStatus:
@@ -232,7 +236,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
           preferredActivitiesForPsychologicalImprovement ??
               this.preferredActivitiesForPsychologicalImprovement,
       countriesNames: countriesNames ?? this.countriesNames,
-      medicalComplaints: medicalComplaints ?? this.medicalComplaints,
+      symptoms: symptoms ?? this.symptoms,
+      symptomControllers: symptomControllers ?? this.symptomControllers,
     );
   }
 
@@ -275,6 +280,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
         medicationSideEffects,
         preferredActivitiesForPsychologicalImprovement,
         countriesNames,
-        medicalComplaints,
+        symptoms,
+        symptomControllers,
       ];
 }

@@ -7,8 +7,7 @@ part 'mental_illness_request_body.g.dart';
 class MentalIllnessRequestBody {
   final String diagnosisDate;
   final String mentalIllnessType;
-  final String selectedMedicalSymptom;
-  final List<MedicalComplaint> medicalSymptomsList;
+  final List<String> symptomsList;
   final String illnessSeverity;
   final String illnessDuration;
   final ImpactfulIncident hasImpactfulIncident;
@@ -24,8 +23,7 @@ class MentalIllnessRequestBody {
   MentalIllnessRequestBody({
     required this.diagnosisDate,
     required this.mentalIllnessType,
-    required this.selectedMedicalSymptom,
-    required this.medicalSymptomsList,
+    required this.symptomsList,
     required this.illnessSeverity,
     required this.illnessDuration,
     required this.hasImpactfulIncident,

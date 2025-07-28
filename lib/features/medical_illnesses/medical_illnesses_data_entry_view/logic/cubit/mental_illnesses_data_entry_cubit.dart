@@ -20,26 +20,53 @@ class MedicalIllnessesDataEntryCubit
         );
   final MentalIllnessesDataEntryRepo _medicalIllnessesDataEntryRepo;
   final noOfSessionsController = TextEditingController(); // عدد الجلسات
-  List<MedicalComplaint> medicalComplaints = [];
-  Future<void> fetchAllAddedComplaints() async {
-    try {
-      final medicalComplaintBox =
-          Hive.box<MedicalComplaint>("medical_complaints");
-      medicalComplaints = medicalComplaintBox.values.toList(growable: true);
-      emit(
-        state.copyWith(
-          medicalComplaints: medicalComplaints,
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          medicalComplaints: [],
-          message: e.toString(),
-        ),
-      );
+  // List<String> medicalComplaints = [];
+  void addNewSymptomField() {
+    final newController = TextEditingController();
+    final updatedControllers =
+        List<TextEditingController>.from(state.symptomControllers)
+          ..add(newController);
+
+    emit(state.copyWith(symptomControllers: updatedControllers));
+  }
+
+  void removeSymptomField(int index) {
+    // Don't allow removing if only one field remains
+    if (state.symptomControllers.length <= 1) return;
+
+    if (index < state.symptomControllers.length) {
+      state.symptomControllers[index].dispose();
+      final updatedControllers =
+          List<TextEditingController>.from(state.symptomControllers)
+            ..removeAt(index);
+
+      final updatedSymptoms = List<String>.from(state.symptoms);
+      if (index < updatedSymptoms.length) {
+        updatedSymptoms.removeAt(index);
+      }
+
+      emit(state.copyWith(
+        symptomControllers: updatedControllers,
+        symptoms: updatedSymptoms,
+      ));
     }
   }
+
+  void updateSymptom(int index, String value) {
+    final updatedSymptoms = List<String>.from(state.symptoms);
+    if (index < updatedSymptoms.length) {
+      updatedSymptoms[index] = value;
+    } else {
+      // If the list is shorter, fill it up to the index
+      while (updatedSymptoms.length <= index) {
+        updatedSymptoms.add('');
+      }
+      updatedSymptoms[index] = value;
+    }
+
+    emit(state.copyWith(symptoms: updatedSymptoms));
+  }
+
   // Future<void> loadPastEyeDataEnteredForEditing({
   //   required EyeProceduresAndSymptomsDetailsModel pastEyeData,
   //   required String id,
@@ -92,10 +119,6 @@ class MedicalIllnessesDataEntryCubit
   void updateMentalIllnessesType(String? val) {
     emit(state.copyWith(selectedMentalIllnessesType: val));
     validateRequiredFields();
-  }
-
-  void updateMedicalSyptoms(String? val) {
-    emit(state.copyWith(selectedMedicalSyptoms: val));
   }
 
   //! وجود حادث أو موقف له تأثير ؟
@@ -359,10 +382,6 @@ class MedicalIllnessesDataEntryCubit
     // emitCountriesData();
   }
 
-  // void updateSelectedCountry(String? selectedCountry) {
-  //   emit(state.copyWith(selectedCountryName: selectedCountry));
-  // }
-
   void updateSelectedDiseaseIntensity(String? val) {
     emit(state.copyWith(selectedDiseaseIntensity: val));
   }
@@ -451,10 +470,8 @@ class MedicalIllnessesDataEntryCubit
       requestBody: MentalIllnessRequestBody(
         diagnosisDate: state.examinationDate!,
         mentalIllnessType: state.selectedMentalIllnessesType!,
-        selectedMedicalSymptom:
-            state.selectedMedicalSyptoms ?? locale.no_data_entered,
-        medicalSymptomsList: state
-            .medicalComplaints, //! check it later after delete one , is it update and after edit too
+        symptomsList: state
+            .symptoms, //! check it later after delete one , is it update and after edit too
         illnessSeverity:
             state.selectedDiseaseIntensity ?? locale.no_data_entered,
         illnessDuration: state.diseaseDuration ?? locale.no_data_entered,
@@ -527,8 +544,7 @@ class MedicalIllnessesDataEntryCubit
       requestBody: MentalIllnessRequestBody(
         diagnosisDate: state.examinationDate!,
         mentalIllnessType: state.selectedMentalIllnessesType!,
-        selectedMedicalSymptom: state.selectedMedicalSyptoms!,
-        medicalSymptomsList: state.medicalComplaints,
+        symptomsList: state.symptoms,
         illnessSeverity: state.selectedDiseaseIntensity!,
         illnessDuration: state.diseaseDuration!,
         hasImpactfulIncident: ImpactfulIncident(
@@ -640,6 +656,11 @@ class MedicalIllnessesDataEntryCubit
   Future<void> close() async {
     noOfSessionsController.dispose();
     await clearAllAddedComplaints();
+    // Dispose all controllers when cubit is closed
+    for (final controller in state.symptomControllers) {
+      controller.dispose();
+    }
+
     return super.close();
   }
 }
