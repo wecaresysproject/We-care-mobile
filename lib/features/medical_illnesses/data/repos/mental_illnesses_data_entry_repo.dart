@@ -29,7 +29,10 @@ class MentalIllnessesDataEntryRepo {
   Future<ApiResult<List<String>>> getMentalIllnessTypes(
       {required String language}) async {
     try {
-      final response = await _illnessesServices.getMentalIllnessTypes(language);
+      final response = await _illnessesServices.getMentalIllnessTypes(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );
@@ -41,7 +44,10 @@ class MentalIllnessesDataEntryRepo {
   Future<ApiResult<List<String>>> getMedicalSyptoms(
       {required String language}) async {
     try {
-      final response = await _illnessesServices.getMedicalSyptoms(language);
+      final response = await _illnessesServices.getMedicalSyptoms(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );

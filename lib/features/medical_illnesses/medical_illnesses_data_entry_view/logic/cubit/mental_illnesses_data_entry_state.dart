@@ -7,7 +7,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final bool isFormValidated;
   final String? examinationDate; //تاريخ التشخيص
   final String? selectedMentalIllnessesType; // نوع المرض النفسى/السلوكى
-  final String? selectedMedicalSyptoms; // الأعراض المرضية
   final String? selectedDiseaseIntensity;
   final String? diseaseDuration; // مدة المرض
   final String? selectedMentalHealthEmergency;
@@ -59,7 +58,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.isFormValidated = false,
     this.examinationDate,
     this.selectedMentalIllnessesType,
-    this.selectedMedicalSyptoms,
     this.selectedDiseaseIntensity,
     this.diseaseDuration, // مدة المرض,
     this.selectedMentalHealthEmergency,
@@ -101,7 +99,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
           isFormValidated: false,
           examinationDate: null,
           selectedMentalIllnessesType: null,
-          selectedMedicalSyptoms: null,
           selectedDiseaseIntensity: null,
           diseaseDuration: null, // مدة المرض,
           selectedMentalHealthEmergency: null,
@@ -143,7 +140,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
     bool? isFormValidated,
     String? examinationDate,
     String? selectedMentalIllnessesType,
-    String? selectedMedicalSyptoms,
     String? selectedDiseaseIntensity,
     String? diseaseDuration, // مدة المرض,
     String? selectedMentalHealthEmergency,
@@ -168,7 +164,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
     bool? isEditMode,
     String? editDecumentId,
     List<String>? mentalIllnessTypes,
-    List<String>? medicalSyptoms,
     List<String>? incidentTypes,
     List<String>? medicationImpactOnDailyLife,
     List<String>? psychologicalEmergencies,
@@ -184,8 +179,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       examinationDate: examinationDate ?? this.examinationDate,
-      selectedMedicalSyptoms:
-          selectedMedicalSyptoms ?? this.selectedMedicalSyptoms,
       selectedDiseaseIntensity:
           selectedDiseaseIntensity ?? this.selectedDiseaseIntensity,
       diseaseDuration: diseaseDuration ?? this.diseaseDuration,
@@ -224,7 +217,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
       selectedMentalIllnessesType:
           selectedMentalIllnessesType ?? this.selectedMentalIllnessesType,
       mentalIllnessTypes: mentalIllnessTypes ?? this.mentalIllnessTypes,
-      medicalSyptoms: medicalSyptoms ?? this.medicalSyptoms,
+      medicalSyptoms: medicalSyptoms ?? medicalSyptoms,
       incidentTypes: incidentTypes ?? this.incidentTypes,
       medicationImpactOnDailyLife:
           medicationImpactOnDailyLife ?? this.medicationImpactOnDailyLife,
@@ -247,7 +240,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
         errorMessage,
         isFormValidated,
         examinationDate,
-        selectedMedicalSyptoms,
         diseaseDuration, // مدة المرض,
         selectedMentalHealthEmergency,
         message,

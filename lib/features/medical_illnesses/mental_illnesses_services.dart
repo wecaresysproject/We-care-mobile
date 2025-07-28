@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_constants.dart';
@@ -31,13 +30,13 @@ abstract class MentalIllnessesServices {
   //!New
   @GET(MentalIllnessesConstants.getMentalIllnessTypes)
   Future<dynamic> getMentalIllnessTypes(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
   @GET(MentalIllnessesConstants.getMedicalSyptoms)
   Future<dynamic> getMedicalSyptoms(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
   @GET(MentalIllnessesConstants.getIncidentTypes)
   Future<dynamic> getIncidentTypes(

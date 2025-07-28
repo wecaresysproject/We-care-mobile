@@ -100,9 +100,8 @@ class MedicalIllnessesDataEntryCubit
   Future<void> initialRequests() async {
     //! check comments later
     await Future.wait([
-      // emitMentalIllnessTypes(),
+      emitMentalIllnessTypes(),
       emitCountriesData(),
-      // emitMedicalSyptoms(),
       // emitIncidentTypes(),
       // getMedicationSideEffects(),
       // getPsychologicalEmergencies(),
@@ -194,29 +193,6 @@ class MedicalIllnessesDataEntryCubit
         emit(
           state.copyWith(
             mentalIllnessTypes: mentalIllnessTypes,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> emitMedicalSyptoms() async {
-    final response = await _medicalIllnessesDataEntryRepo.getMedicalSyptoms(
-      language: AppStrings.arabicLang,
-    );
-
-    response.when(
-      success: (medicalSyptoms) {
-        emit(
-          state.copyWith(
-            medicalSyptoms: medicalSyptoms,
           ),
         );
       },

@@ -9,8 +9,8 @@ class MentalIllnessesConstants {
       "/EyesDataEntry/submit-glasses-essential";
   static const editMentalIlnessDataEntryEndPoint =
       "/EyesDataEntry/update-eye-entry";
-  static const getMentalIllnessTypes = "/mental-illness-types";
-  static const getMedicalSyptoms = "/medical-symptoms";
+  static const getMentalIllnessTypes = "/v1/lookup/mental-illness-types";
+  static const getMedicalSyptoms = "/v1/lookup/medical-symptoms";
   static const getIncidentTypes = "/incident-types";
   static const getMedicationImpactOnDailyLife = "/";
   static const getPsychologicalEmergencies = '';
