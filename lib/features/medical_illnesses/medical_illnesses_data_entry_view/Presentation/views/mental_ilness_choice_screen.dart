@@ -81,7 +81,7 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
                   },
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
                   label: Text(
-                    'الذهاب للأمراض الوراثية',
+                    'الذهاب للأمراض النفسية',
                     style: AppTextStyles.font22WhiteWeight600.copyWith(
                       fontSize: 20.sp,
                     ),
