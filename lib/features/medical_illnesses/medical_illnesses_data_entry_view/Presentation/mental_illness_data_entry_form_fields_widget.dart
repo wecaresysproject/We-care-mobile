@@ -688,8 +688,13 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                             searchHintText: "اختر نوع العلاج",
                           ),
                           verticalSpacing(18),
+                          Text(
+                            "عدد الجلسات النفسية",
+                            style: AppTextStyles.font18blackWight500,
+                          ),
+                          verticalSpacing(10),
                           CustomTextField(
-                            hintText: "عدد الجلسات النفسية",
+                            hintText: "اكتب عدد الجلسسات",
                             keyboardType: TextInputType.number,
                             controller: context
                                 .read<MedicalIllnessesDataEntryCubit>()

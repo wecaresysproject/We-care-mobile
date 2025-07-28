@@ -41,10 +41,10 @@ class MentalIllnessesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getMedicalSyptoms(
+  Future<ApiResult<List<String>>> getIncidentTypes(
       {required String language}) async {
     try {
-      final response = await _illnessesServices.getMedicalSyptoms(
+      final response = await _illnessesServices.getIncidentTypes(
         UserTypes.patient.name.firstLetterToUpperCase,
         language,
       );
@@ -56,23 +56,13 @@ class MentalIllnessesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getIncidentTypes(
-      {required String language}) async {
-    try {
-      final response = await _illnessesServices.getIncidentTypes(language);
-      return ApiResult.success(
-        List<String>.from(response["data"] as List<dynamic>),
-      );
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
   Future<ApiResult<List<String>>> getMedicationImpactOnDailyLife(
       {required String language}) async {
     try {
-      final response =
-          await _illnessesServices.getMedicationImpactOnDailyLife(language);
+      final response = await _illnessesServices.getMedicationImpactOnDailyLife(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );
@@ -84,8 +74,10 @@ class MentalIllnessesDataEntryRepo {
   Future<ApiResult<List<String>>> getPsychologicalEmergencies(
       {required String language}) async {
     try {
-      final response =
-          await _illnessesServices.getPsychologicalEmergencies(language);
+      final response = await _illnessesServices.getPsychologicalEmergencies(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );
@@ -97,8 +89,10 @@ class MentalIllnessesDataEntryRepo {
   Future<ApiResult<List<String>>> getMedicationSideEffects(
       {required String language}) async {
     try {
-      final response =
-          await _illnessesServices.getMedicationSideEffects(language);
+      final response = await _illnessesServices.getMedicationSideEffects(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );
@@ -112,7 +106,10 @@ class MentalIllnessesDataEntryRepo {
           {required String language}) async {
     try {
       final response = await _illnessesServices
-          .getPreferredActivitiesForPsychologicalImprovement(language);
+          .getPreferredActivitiesForPsychologicalImprovement(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       return ApiResult.success(
         List<String>.from(response["data"] as List<dynamic>),
       );

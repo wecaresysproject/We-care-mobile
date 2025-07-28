@@ -10,12 +10,13 @@ class MentalIllnessesConstants {
   static const editMentalIlnessDataEntryEndPoint =
       "/EyesDataEntry/update-eye-entry";
   static const getMentalIllnessTypes = "/v1/lookup/mental-illness-types";
-  static const getMedicalSyptoms = "/v1/lookup/medical-symptoms";
-  static const getIncidentTypes = "/incident-types";
-  static const getMedicationImpactOnDailyLife = "/";
-  static const getPsychologicalEmergencies = '';
-  static const getMedicationSideEffects = '';
-  static const getPreferredActivitiesForPsychologicalImprovement = '';
+  static const getIncidentTypes = "/v1/lookup/incident-types";
+  static const getMedicationImpactOnDailyLife = "/v1/lookup/daily-life-impacts";
+  static const getPsychologicalEmergencies =
+      '/v1/lookup/psychological-emergencies';
+  static const getMedicationSideEffects = '/v1/lookup/medication-side-effects';
+  static const getPreferredActivitiesForPsychologicalImprovement =
+      '/v1/lookup/preferred-activities';
 
   //View Entry
   static const deleteSurgeryById = "/api/EnterSectionSurgery";

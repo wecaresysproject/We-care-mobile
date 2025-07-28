@@ -33,36 +33,32 @@ abstract class MentalIllnessesServices {
     @Query("userType") String userType,
     @Query("language") String language,
   );
-  @GET(MentalIllnessesConstants.getMedicalSyptoms)
-  Future<dynamic> getMedicalSyptoms(
+
+  @GET(MentalIllnessesConstants.getIncidentTypes)
+  Future<dynamic> getIncidentTypes(
     @Query("userType") String userType,
     @Query("language") String language,
   );
-  @GET(MentalIllnessesConstants.getIncidentTypes)
-  Future<dynamic> getIncidentTypes(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
-  );
   @GET(MentalIllnessesConstants.getMedicationImpactOnDailyLife)
   Future<dynamic> getMedicationImpactOnDailyLife(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
   @GET(MentalIllnessesConstants.getPsychologicalEmergencies)
   Future<dynamic> getPsychologicalEmergencies(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
   @GET(MentalIllnessesConstants.getMedicationSideEffects)
   Future<dynamic> getMedicationSideEffects(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
   @GET(MentalIllnessesConstants
       .getPreferredActivitiesForPsychologicalImprovement)
   Future<dynamic> getPreferredActivitiesForPsychologicalImprovement(
-    // @Query("usertype") String userType, //!check it later
-    @Query("Language") String language,
+    @Query("userType") String userType,
+    @Query("language") String language,
   );
 
   @PUT(MentalIllnessesConstants.editMentalIlnessDataEntryEndPoint)

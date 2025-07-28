@@ -102,11 +102,11 @@ class MedicalIllnessesDataEntryCubit
     await Future.wait([
       emitMentalIllnessTypes(),
       emitCountriesData(),
-      // emitIncidentTypes(),
-      // getMedicationSideEffects(),
-      // getPsychologicalEmergencies(),
-      // getMedicationImpactOnDailyLife(),
-      // getPreferredActivitiesForPsychologicalImprovement(),
+      emitIncidentTypes(),
+      getMedicationSideEffects(),
+      getPsychologicalEmergencies(),
+      getMedicationImpactOnDailyLife(),
+      getPreferredActivitiesForPsychologicalImprovement(),
     ]);
   }
 
