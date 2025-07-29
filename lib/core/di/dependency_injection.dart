@@ -32,7 +32,9 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/lo
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_data_entry_repo.dart';
+import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_view_repo.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_services.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
@@ -269,6 +271,11 @@ void setupAppCubits() {
       getIt<MentalIllnessesDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory<MentalIllnessDataViewCubit>(
+    () => MentalIllnessDataViewCubit(
+      getIt<MentalIllnessesViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -430,6 +437,11 @@ void setupAppRepos() {
   getIt.registerLazySingleton<MentalIllnessesDataEntryRepo>(
     () => MentalIllnessesDataEntryRepo(
       illnessesServices: getIt<MentalIllnessesServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<MentalIllnessesViewRepo>(
+    () => MentalIllnessesViewRepo(
+      mentalIllnessesServices: getIt<MentalIllnessesServices>(),
     ),
   );
 }

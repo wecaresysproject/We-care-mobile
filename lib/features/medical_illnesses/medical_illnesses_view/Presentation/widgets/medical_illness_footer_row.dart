@@ -4,17 +4,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
-import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
 class MentalIllnessFooterRow extends StatelessWidget {
   const MentalIllnessFooterRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EyeViewCubit, EyeViewState>(
+    return BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
       builder: (context, state) {
-        final cubit = context.read<EyeViewCubit>();
+        final cubit = context.read<MentalIllnessDataViewCubit>();
         return Column(
           children: [
             if (state.isLoadingMore)
@@ -33,7 +33,7 @@ class MentalIllnessFooterRow extends StatelessWidget {
                 ElevatedButton(
                   onPressed: state.isLoadingMore || !cubit.hasMore
                       ? null
-                      : () => cubit.loadMoreEyePartDocuments(eyePart: ''),
+                      : () => cubit.loadMoreMentalIllnessRecords(),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(158.w, 32.h),
                     backgroundColor: state.isLoadingMore || !cubit.hasMore

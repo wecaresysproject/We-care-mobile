@@ -68,6 +68,26 @@ abstract class MentalIllnessesServices {
     @Query('id') String documentId,
     @Body() MentalIllnessRequestBody requestBody,
   );
+  //! Data View
+  //! 1.
+
+  @GET(MentalIllnessesConstants.getIsUmbrellaMentalIllnessButtonActivated)
+  Future<dynamic> getIsUmbrellaMentalIllnessButtonActivated();
+
+  //! 2.
+  @GET(MentalIllnessesConstants.getMedicalIllnessDocsAvailableYears)
+  Future<dynamic> getMedicalIllnessDocsAvailableYears(
+      // @Query("language") String language,
+      // @Query("UserType") String userType,
+      );
+  //! 3. getMentalIllnessRecords  (With Pagination)
+  @GET(MentalIllnessesConstants.getMentalIllnessRecords)
+  Future<dynamic> getMentalIllnessRecords({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
 
   // /// 1. Get Available Years
   // @GET(EyesApiConstants.getAvailableYears)
