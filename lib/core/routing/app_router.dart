@@ -43,6 +43,7 @@ import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_answered_questions_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_report_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_reports_data_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
@@ -489,6 +490,14 @@ class AppRouter {
       //       onPrevious: () {},
       //     ),
       //   );
+      case Routes.mentalIllnessDocDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => MentalIllnessDetailsView(
+            docId: argumentsMap['docId'],
+          ),
+        );
       case Routes.enableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => EnableViewForWeCareMentalHealthUmbrella());

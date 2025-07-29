@@ -23,6 +23,8 @@ class MentalIllnessesConstants {
   static const getMedicalIllnessDocsAvailableYears =
       "/v1/lookup/getMedicalIllnessDocsAvailableYears";
   static const getMentalIllnessRecords = "/v1/lookup/getMentalIllnessRecords";
+  static const getFilteredMentalIllnessDocuments =
+      "/v1/lookup/getFilteredMentalIllnessDocuments";
   static const deleteSurgeryById = "/api/EnterSectionSurgery";
   static const getAllSurgeries = "/api/EnterSectionSurgery";
   static const getSingleSurgery = "/api/ViewSectionSurgery/filter-by-id";

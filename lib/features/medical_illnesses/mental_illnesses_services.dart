@@ -88,6 +88,14 @@ abstract class MentalIllnessesServices {
     @Query("page") required int page,
     @Query("limit") required int limit,
   });
+  //! 4.
+
+  @GET(MentalIllnessesConstants.getFilteredMentalIllnessDocuments)
+  Future<dynamic> getFilteredMentalIllnessDocuments(
+    @Query("year") String? year,
+    @Query("language") String language,
+    @Query("UserType") String userType,
+  );
 
   // /// 1. Get Available Years
   // @GET(EyesApiConstants.getAvailableYears)

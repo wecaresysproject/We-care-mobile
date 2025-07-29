@@ -82,6 +82,34 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     );
   }
 
+  Future<void> getFilteredMentalIllnessDocuments({
+    String? year,
+  }) async {
+    final result = await _repo.getFilteredMentalIllnessDocuments(
+      year: year,
+    );
+
+    result.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            mentalIllnessRecords: response,
+            isLoadingMore: false,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            isLoadingMore: false,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> loadMoreMentalIllnessRecords() async {
     if (!hasMore || isLoadingMore) return;
     await getMentalIllnessRecords(page: currentPage + 1);

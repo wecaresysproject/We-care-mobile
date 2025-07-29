@@ -215,4 +215,23 @@ class MentalIllnessesViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<MentalIllnessModel>>> getFilteredMentalIllnessDocuments(
+      {String? year}) async {
+    try {
+      final response =
+          await mentalIllnessesServices.getFilteredMentalIllnessDocuments(
+        year,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      final List<dynamic>? rawList = response['data'];
+
+      return ApiResult.success(
+        rawList?.map((e) => MentalIllnessModel.fromJson(e)).toList() ?? [],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
