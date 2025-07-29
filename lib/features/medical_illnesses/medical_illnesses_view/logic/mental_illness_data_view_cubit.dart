@@ -115,43 +115,33 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     await getMentalIllnessRecords(page: currentPage + 1);
   }
 
-  // Future<void> getInitialRequests({required String eyePart}) async {
-  //   await getEyePartDocuments(eyePart: eyePart);
-  //   getAvailableYears(eyePart: eyePart);
-  // }
+  Future<void> getMentalIllnessDocumentDetailsById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.getMentalIllnessDocumentDetailsById(
+      id: id,
+    );
+    result.when(
+      success: (data) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.success,
+          selectedMentalIllnessDocumentDetails: data,
+        ),
+      ),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+        ),
+      ),
+    );
+  }
 
-  // Future<void> getEyePartDocuments({int? page, required String eyePart}) async {
-  //   if (page != null && page > 1) {
-  //     emit(state.copyWith(isLoadingMore: true));
-  //   } else {
-  //     emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //     currentPage = 1;
-  //     hasMore = true;
-  //   }
-
-  //   final result = await _repo.getEyePartProceduresAndSymptomsDocuments(
-  //     page: page ?? currentPage,
-  //     limit: pageSize,
-  //     affectedEyePart: eyePart,
-  //   );
-
-  //   result.when(success: (response) {
-  //     final newDocs = response.data;
-
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       eyePartDocuments: page == null || page == 1
-  //           ? newDocs
-  //           : [...state.eyePartDocuments, ...newDocs],
-  //       isLoadingMore: false,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.failure,
-  //       isLoadingMore: false,
-  //     ));
-  //   });
-  // }
+  Future<void> getInitialRequests() async {
+    await Future.wait([
+      getMentalIllnessRecords(),
+      getMedicalIllnessDocsAvailableYears(),
+    ]);
+  }
 
   // Future<void> getFilteredEyePartProceduresAndSymptomsDocuments({
   //   String? year,
@@ -176,25 +166,6 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
   //       isLoadingMore: false,
   //     ));
   //   });
-  // }
-
-  // Future<void> getEyePartDocumentDetails(String id) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _repo.getEyePartDocumentDetailsById(
-  //     id: id,
-  //     language: AppStrings.arabicLang,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //   );
-  //   result.when(
-  //     success: (data) => emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       selectedEyePartDocumentDetails: data,
-  //     )),
-  //     failure: (error) => emit(state.copyWith(
-  //       requestStatus: RequestStatus.failure,
-  //       responseMessage: error.errors.first,
-  //     )),
-  //   );
   // }
 
   // Future<void> deleteEyePartDocument(String id) async {

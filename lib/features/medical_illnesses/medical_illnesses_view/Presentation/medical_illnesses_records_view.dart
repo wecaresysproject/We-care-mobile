@@ -24,9 +24,8 @@ class MentalIllnessRecordsView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MentalIllnessDataViewCubit>(
-            create: (_) => getIt<MentalIllnessDataViewCubit>()
-            // ..getMentalIllnessRecords()
-            // ..getMedicalIllnessDocsAvailableYears(),
+            create: (_) =>
+                getIt<MentalIllnessDataViewCubit>() //..getInitialRequests(),
             ),
       ],
       child: Scaffold(

@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
-import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 
 class MentalIllnessDataViewState extends Equatable {
   final RequestStatus requestStatus;
   final bool isUmbrellaMentalIllnessButtonActivated;
   final String responseMessage;
   final List<String> yearsFilter;
-  final EyeProceduresAndSymptomsDetailsModel? selectedEyePartDocumentDetails;
+  final MentalIllnessRequestBody? selectedMentalIllnessDocumentDetails;
   final List<MentalIllnessModel> mentalIllnessRecords;
   final EyeGlassesDetailsModel? selectedEyeGlassesDetails;
   final bool isDeleteRequest;
@@ -20,7 +20,7 @@ class MentalIllnessDataViewState extends Equatable {
     this.isUmbrellaMentalIllnessButtonActivated = true,
     this.responseMessage = '',
     this.yearsFilter = const [],
-    this.selectedEyePartDocumentDetails,
+    this.selectedMentalIllnessDocumentDetails,
     this.mentalIllnessRecords = const [],
     this.selectedEyeGlassesDetails,
     this.isDeleteRequest = false,
@@ -31,7 +31,7 @@ class MentalIllnessDataViewState extends Equatable {
     RequestStatus? requestStatus,
     String? responseMessage,
     List<String>? yearsFilter,
-    EyeProceduresAndSymptomsDetailsModel? selectedEyePartDocumentDetails,
+    MentalIllnessRequestBody? selectedMentalIllnessDocumentDetails,
     List<MentalIllnessModel>? mentalIllnessRecords,
     EyeGlassesDetailsModel? selectedEyeGlassesDetails,
     bool? isDeleteRequest,
@@ -42,8 +42,9 @@ class MentalIllnessDataViewState extends Equatable {
       requestStatus: requestStatus ?? this.requestStatus,
       responseMessage: responseMessage ?? this.responseMessage,
       yearsFilter: yearsFilter ?? this.yearsFilter,
-      selectedEyePartDocumentDetails:
-          selectedEyePartDocumentDetails ?? this.selectedEyePartDocumentDetails,
+      selectedMentalIllnessDocumentDetails:
+          selectedMentalIllnessDocumentDetails ??
+              this.selectedMentalIllnessDocumentDetails,
       mentalIllnessRecords: mentalIllnessRecords ?? this.mentalIllnessRecords,
       selectedEyeGlassesDetails:
           selectedEyeGlassesDetails ?? this.selectedEyeGlassesDetails,
@@ -60,7 +61,7 @@ class MentalIllnessDataViewState extends Equatable {
         requestStatus,
         responseMessage,
         yearsFilter,
-        selectedEyePartDocumentDetails,
+        selectedMentalIllnessDocumentDetails,
         mentalIllnessRecords,
         selectedEyeGlassesDetails,
         isDeleteRequest,

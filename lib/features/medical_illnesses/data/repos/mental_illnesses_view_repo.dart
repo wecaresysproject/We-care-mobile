@@ -3,6 +3,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_services.dart';
 
 class MentalIllnessesViewRepo {
@@ -229,6 +230,25 @@ class MentalIllnessesViewRepo {
 
       return ApiResult.success(
         rawList?.map((e) => MentalIllnessModel.fromJson(e)).toList() ?? [],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MentalIllnessRequestBody>>
+      getMentalIllnessDocumentDetailsById({
+    required String id,
+  }) async {
+    try {
+      final response =
+          await mentalIllnessesServices.getMentalIllnessDocumentDetailsById(
+        id,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      return ApiResult.success(
+        MentalIllnessRequestBody.fromJson(response['data']),
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

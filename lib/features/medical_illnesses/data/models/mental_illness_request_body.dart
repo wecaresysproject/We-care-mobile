@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 part 'mental_illness_request_body.g.dart';
 
