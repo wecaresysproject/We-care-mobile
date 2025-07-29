@@ -23,13 +23,13 @@ class MentalIllnessDetailsView extends StatelessWidget {
       illnessSeverity: "متوسط",
       illnessDuration: "7 شهور",
       hasImpactfulIncident: ImpactfulIncident(
-        answer: true,
+        answer: false,
         incidentType: "حادث سير",
         incidentDate: "2024-06-10",
         incidentPsychologicalImpact: "أدى إلى توتر وقلق مستمر",
       ),
       hasFamilySimilarMentalIllnessCases: FamilyMentalIllness(
-        answer: true,
+        answer: false,
         relationship: "الأب",
       ),
       selectedPsychologicalEmergencies: "حالة طارئة",
@@ -37,7 +37,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
       selectedMedicationSideEffects: "شعور بالدوخة والخمول",
       preferredActivitiesForImprovement: "الرياضة والتأمل",
       isReceivingPsychologicalTreatment: PsychologicalTreatment(
-        answer: true,
+        answer: false,
         medicationsUsed: "دواء مضاد للاكتئاب",
         medicationEffectOnDailyLife: "يسبب بعض النعاس أثناء النهار",
         previousTherapyType: "العلاج السلوكي المعرفي",
@@ -60,7 +60,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               AppBarWithCenteredTitle(
-                title: "اضطراب الهلع",
+                title: mockMentalIllnessRequest.mentalIllnessType,
                 shareFunction: () {},
                 deleteFunction: () {
                   // Add deletion logic if needed
@@ -83,25 +83,27 @@ class MentalIllnessDetailsView extends StatelessWidget {
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "الأعراض المرضية",
-                value: mockDetails["symptoms"].toString(),
+                value: mockMentalIllnessRequest.symptomsList.join(", "),
                 icon: 'assets/images/symptoms_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "شدة المرض",
-                value: mockDetails["severity"].toString(),
+                value: mockMentalIllnessRequest.illnessSeverity,
                 icon: 'assets/images/heart_rate_search_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "مدة المرض",
-                value: mockDetails["acuteness"]!.toString(),
+                value: mockMentalIllnessRequest.illnessDuration,
                 icon: 'assets/images/time_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
+
+              // Incident Information Container - Always show
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
@@ -126,36 +128,48 @@ class MentalIllnessDetailsView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    DetailsViewInfoTile(
-                      title: "نوع الموقف",
-                      value: mockDetails["incidentType"]!.toString(),
-                      icon: 'assets/images/analysis_type.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "تاريخ الموقف",
-                      value: mockDetails["incidentDate"]!.toString(),
-                      icon: 'assets/images/date_icon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "تأثير الحادث على الحالة النفسية",
-                      value: mockDetails["incidentEffect"]!.toString(),
-                      icon: 'assets/images/psychology_icon.png',
-                      isExpanded: true,
-                    ),
+                    if (mockMentalIllnessRequest.hasImpactfulIncident.answer ==
+                        true) ...[
+                      DetailsViewInfoTile(
+                        title: "نوع الموقف",
+                        value: mockMentalIllnessRequest
+                                .hasImpactfulIncident.incidentType ??
+                            "غير محدد",
+                        icon: 'assets/images/analysis_type.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "تاريخ الموقف",
+                        value: mockMentalIllnessRequest
+                                .hasImpactfulIncident.incidentDate ??
+                            "غير محدد",
+                        icon: 'assets/images/date_icon.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "تأثير الحادث على الحالة النفسية",
+                        value: mockMentalIllnessRequest.hasImpactfulIncident
+                                .incidentPsychologicalImpact ??
+                            "غير محدد",
+                        icon: 'assets/images/psychology_icon.png',
+                        isExpanded: true,
+                      ),
+                    ] else ...[
+                      DetailsViewInfoTile(
+                        title: "وجود حادث أو موقف له تأثير؟",
+                        value: "لا",
+                        icon: 'assets/images/psychology_icon.png',
+                        isExpanded: true,
+                      ),
+                    ],
                   ],
                 ),
               ),
               verticalSpacing(16),
-              // DetailsViewInfoTile(
-              //   title: "حالات نفسية مشابهة في العائلة",
-              //   value: mockDetails["similarFamilyCases"]!.toString(),
-              //   icon: 'assets/images/psychology_icon.png',
-              //   isExpanded: true,
-              // ),
+
+              // Family Mental Illness Container - Always show
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
@@ -171,58 +185,69 @@ class MentalIllnessDetailsView extends StatelessWidget {
                 child: Column(
                   children: [
                     DetailsViewInfoTile(
-                      title: "حالات نفسية مشابهة فى العائلة ",
-                      value: "نعم",
+                      title: "حالات نفسية مشابهة فى العائلة",
+                      value: mockMentalIllnessRequest
+                                  .hasFamilySimilarMentalIllnessCases.answer ==
+                              true
+                          ? "نعم"
+                          : "لا",
                       icon: 'assets/images/psychology_icon.png',
                       isExpanded: true,
                     ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "الصله العائلية",
-                      value: "الاب",
-                      icon: 'assets/images/group_icon.png',
-                      isExpanded: true,
-                    ),
+                    if (mockMentalIllnessRequest
+                            .hasFamilySimilarMentalIllnessCases.answer ==
+                        true) ...[
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "الصله العائلية",
+                        value: mockMentalIllnessRequest
+                                .hasFamilySimilarMentalIllnessCases
+                                .relationship ??
+                            "غير محدد",
+                        icon: 'assets/images/group_icon.png',
+                        isExpanded: true,
+                      ),
+                    ],
                   ],
                 ),
               ),
               verticalSpacing(16),
+
               DetailsViewInfoTile(
                 title: "حالات الطوارىء النفسية",
-                value: mockDetails["emergencyCases"]!.toString(),
+                value:
+                    mockMentalIllnessRequest.selectedPsychologicalEmergencies ??
+                        "لا توجد",
                 icon: 'assets/images/warning_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "الدعم الاجتماعي",
-                value: mockDetails["socialSupport"]!.toString(),
+                value: mockMentalIllnessRequest.socialSupport ?? "غير محدد",
                 icon: 'assets/images/group_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "التأثيرات الجانبية للدواء",
-                value: mockDetails["drugSideEffects"]!.toString(),
+                value: mockMentalIllnessRequest.selectedMedicationSideEffects ??
+                    "لا توجد",
                 icon: 'assets/images/psychology_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
                 title: "الأنشطة المساندة للصحة النفسية",
-                value: mockDetails["psychActivities"]!.toString(),
+                value: mockMentalIllnessRequest
+                        .preferredActivitiesForImprovement ??
+                    "غير محدد",
                 icon: 'assets/images/activity_icon.png',
                 isExpanded: true,
               ),
               verticalSpacing(16),
-              // DetailsViewInfoTile(
-              //   title: "هل يُتابع العلاج النفسي / السلوكي؟",
-              //   value: mockDetails["followsTherapy"]!.toString() == "true"
-              //       ? "نعم"
-              //       : "لا",
-              //   icon: 'assets/images/doctor_icon.png',
-              //   isExpanded: true,
-              // ),
+
+              // Psychological Treatment Container - Always show
               Container(
                 padding: EdgeInsets.all(12.w),
                 decoration: BoxDecoration(
@@ -241,89 +266,107 @@ class MentalIllnessDetailsView extends StatelessWidget {
                   children: [
                     DetailsViewInfoTile(
                       title: "تلقي العلاج النفسي / الاستشارات",
-                      value: "نعم",
+                      value: mockMentalIllnessRequest
+                                  .isReceivingPsychologicalTreatment.answer ==
+                              true
+                          ? "نعم"
+                          : "لا",
                       icon: 'assets/images/doctor_examination_tool_icon.png',
                       isExpanded: true,
                     ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "أدوية مستخدمة",
-                      value: "هذا النص هو مثال لنص يمكن أن يستبدل",
-                      icon: 'assets/images/medicines_icon_2.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "تأثير الدواء على الحياة اليومية",
-                      value: "هذا النص هو مثال لنص يمكن أن يستبدل في",
-                      icon: 'assets/images/medicines_icon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "نوع العلاج النفسي",
-                      value: "النص مثال",
-                      icon: 'assets/images/hugeicons_medicine.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "عدد الجلسات",
-                      value: "النص مثال",
-                      icon: 'assets/images/counterـicon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "الجرعة",
-                      value: "النص مثال",
-                      icon: 'assets/images/hugeicons_medicine.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "عدد مرات الدواء",
-                      value: "النص مثال",
-                      icon: 'assets/images/counterـicon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    verticalSpacing(8),
-                    DetailsViewInfoTile(
-                      title: "رضاك عن نتيجة الجلسات",
-                      value: "النص مثال",
-                      icon: 'assets/images/heart_rate_search_icon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    DetailsViewInfoTile(
-                      title: "الطبيب / الأخصائي النفسي",
-                      value: "النص مثال",
-                      icon: 'assets/images/doctor_icon.png',
-                      isExpanded: true,
-                    ),
-                    verticalSpacing(16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DetailsViewInfoTile(
-                            title: "المستشفى/المركز",
-                            value: "دار الفؤاد",
-                            icon: 'assets/images/hospital_icon.png',
-                            isExpanded: true,
+                    if (mockMentalIllnessRequest
+                            .isReceivingPsychologicalTreatment.answer ==
+                        true) ...[
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "أدوية مستخدمة",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .medicationsUsed ??
+                            "غير محدد",
+                        icon: 'assets/images/medicines_icon_2.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "تأثير الدواء على الحياة اليومية",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .medicationEffectOnDailyLife ??
+                            "غير محدد",
+                        icon: 'assets/images/medicines_icon.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "نوع العلاج النفسي",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .previousTherapyType ??
+                            "غير محدد",
+                        icon: 'assets/images/hugeicons_medicine.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "عدد الجلسات",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .numberOfSessions
+                                ?.toString() ??
+                            "غير محدد",
+                        icon: 'assets/images/counterـicon.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "رضاك عن نتيجة الجلسات",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .therapySatisfaction ??
+                            "غير محدد",
+                        icon: 'assets/images/heart_rate_search_icon.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "الطبيب / الأخصائي النفسي",
+                        value: mockMentalIllnessRequest
+                                .isReceivingPsychologicalTreatment
+                                .doctorOrSpecialist ??
+                            "غير محدد",
+                        icon: 'assets/images/doctor_icon.png',
+                        isExpanded: true,
+                      ),
+                      verticalSpacing(16),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: DetailsViewInfoTile(
+                              title: "المستشفى/المركز",
+                              value: mockMentalIllnessRequest
+                                      .isReceivingPsychologicalTreatment
+                                      .hospitalOrCenter ??
+                                  "غير محدد",
+                              icon: 'assets/images/hospital_icon.png',
+                              isExpanded: true,
+                            ),
                           ),
-                        ),
-                        horizontalSpacing(16),
-                        Expanded(
-                          child: DetailsViewInfoTile(
-                            title: "الدولة",
-                            value: "دار الفؤاد",
-                            icon: 'assets/images/country_icon.png',
-                            isExpanded: true,
+                          horizontalSpacing(16),
+                          Expanded(
+                            child: DetailsViewInfoTile(
+                              title: "الدولة",
+                              value: mockMentalIllnessRequest
+                                      .isReceivingPsychologicalTreatment
+                                      .country ??
+                                  "غير محدد",
+                              icon: 'assets/images/country_icon.png',
+                              isExpanded: true,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
