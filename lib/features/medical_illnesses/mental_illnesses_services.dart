@@ -105,13 +105,13 @@ abstract class MentalIllnessesServices {
     @Query("userType") String userType,
   );
 
-  // /// 5. Delete Document by ID
-  // @DELETE(EyesApiConstants.deleteDocumentById)
-  // Future<dynamic> deleteDocumentById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  // );
+  //! 6.
+  @DELETE(MentalIllnessesConstants.deleteMentalIllnessDetailsDocumentById)
+  Future<dynamic> deleteMentalIllnessDetailsDocumentById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
   // /// 6. Get Glasses Records (With Pagination)
   // @GET(EyesApiConstants.getGlassesRecords)

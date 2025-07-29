@@ -254,4 +254,20 @@ class MentalIllnessesViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> deleteMentalIllnessDetailsDocumentById({
+    required String id,
+  }) async {
+    try {
+      final response =
+          await mentalIllnessesServices.deleteMentalIllnessDetailsDocumentById(
+        id,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

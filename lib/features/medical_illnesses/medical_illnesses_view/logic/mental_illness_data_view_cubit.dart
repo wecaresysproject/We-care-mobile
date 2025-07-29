@@ -136,6 +136,25 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     );
   }
 
+  Future<void> deleteMentalIllnessDetailsDocumentById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.deleteMentalIllnessDetailsDocumentById(
+      id: id,
+    );
+    result.when(
+      success: (msg) => emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        responseMessage: msg,
+        isDeleteRequest: true,
+      )),
+      failure: (error) => emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        responseMessage: error.errors.first,
+        isDeleteRequest: true,
+      )),
+    );
+  }
+
   Future<void> getInitialRequests() async {
     await Future.wait([
       getMentalIllnessRecords(),
@@ -166,27 +185,6 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
   //       isLoadingMore: false,
   //     ));
   //   });
-  // }
-
-  // Future<void> deleteEyePartDocument(String id) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _repo.deleteEyePartDocumentById(
-  //     id: id,
-  //     language: AppStrings.arabicLang,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //   );
-  //   result.when(
-  //     success: (msg) => emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       responseMessage: msg,
-  //       isDeleteRequest: true,
-  //     )),
-  //     failure: (error) => emit(state.copyWith(
-  //       requestStatus: RequestStatus.failure,
-  //       responseMessage: error.errors.first,
-  //       isDeleteRequest: true,
-  //     )),
-  //   );
   // }
 
   // Future<void> getEyeGlassesRecords({int? page}) async {
