@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
@@ -13,6 +14,7 @@ class MentalIllnessDataViewState extends Equatable {
   final MentalIllnessRequestBody? selectedMentalIllnessDocumentDetails;
   final List<MentalIllnessModel> mentalIllnessRecords;
   final List<MentalIllnessUmbrellaModel> mentalIllnessUmbrellaRecords;
+  final List<AnsweredQuestionModel>? mentalIllnessAnsweredQuestions;
   final EyeGlassesDetailsModel? selectedEyeGlassesDetails;
   final bool isDeleteRequest;
   final bool isLoadingMore;
@@ -28,6 +30,7 @@ class MentalIllnessDataViewState extends Equatable {
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
     this.mentalIllnessUmbrellaRecords = const [],
+    this.mentalIllnessAnsweredQuestions = const [],
   });
 
   MentalIllnessDataViewState copyWith({
@@ -41,6 +44,7 @@ class MentalIllnessDataViewState extends Equatable {
     bool? isLoadingMore,
     bool? isUmbrellaMentalIllnessButtonActivated,
     List<MentalIllnessUmbrellaModel>? mentalIllnessUmbrellaRecords,
+    List<AnsweredQuestionModel>? mentalIllnessAnsweredQuestions,
   }) {
     return MentalIllnessDataViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -59,6 +63,8 @@ class MentalIllnessDataViewState extends Equatable {
               this.isUmbrellaMentalIllnessButtonActivated,
       mentalIllnessUmbrellaRecords:
           mentalIllnessUmbrellaRecords ?? this.mentalIllnessUmbrellaRecords,
+      mentalIllnessAnsweredQuestions:
+          mentalIllnessAnsweredQuestions ?? this.mentalIllnessAnsweredQuestions,
     );
   }
 
@@ -74,5 +80,6 @@ class MentalIllnessDataViewState extends Equatable {
         isLoadingMore,
         isUmbrellaMentalIllnessButtonActivated,
         mentalIllnessUmbrellaRecords,
+        mentalIllnessAnsweredQuestions,
       ];
 }

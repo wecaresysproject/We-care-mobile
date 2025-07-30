@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
 class MentalIllnessYesAnswersView extends StatelessWidget {
   const MentalIllnessYesAnswersView({super.key});
@@ -41,21 +46,25 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
       ),
     ];
 
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            AppBarWithCenteredTitle(
-              title: 'الأسئلة المجاب عنها بنعم',
-              titleColor: AppColorsManager.mainDarkBlue,
-              showShareButtonOnly: true,
-              shareFunction: () {},
-            ),
-            verticalSpacing(16),
-            Expanded(child: buildQuestionTable(context, mockQuestions)),
-          ],
+    return BlocProvider<MentalIllnessDataViewCubit>(
+      create: (context) =>
+          getIt<MentalIllnessDataViewCubit>()..getAllAnsweredQuestions(),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              AppBarWithCenteredTitle(
+                title: 'الأسئلة المجاب عليها بنعم',
+                titleColor: AppColorsManager.mainDarkBlue,
+                showShareButtonOnly: true,
+                shareFunction: () {},
+              ),
+              verticalSpacing(16),
+              Expanded(child: buildQuestionTable(context, mockQuestions)),
+            ],
+          ),
         ),
       ),
     );
@@ -63,43 +72,71 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
 
   Widget buildQuestionTable(
       BuildContext context, List<QuestionData> questions) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: DataTable(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        headingRowColor: WidgetStateProperty.all(const Color(0xFF014C8A)),
-        headingTextStyle:
-            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        columnSpacing: 5.w,
-        dataRowHeight: 130.h,
-        horizontalMargin: 8,
-        showBottomBorder: true,
-        border: TableBorder.all(
-          borderRadius: BorderRadius.circular(16.r),
-          color: Colors.grey.withAlpha(90),
-          width: .7,
-        ),
-        decoration: BoxDecoration(
-            color: AppColorsManager.secondaryColor.withAlpha(75),
-            borderRadius: BorderRadius.circular(16.r)),
-        columns: [
-          _buildDataColumn("المحور"),
-          _buildDataColumn("السؤال"),
-          _buildDataColumn("النطاق"),
-          _buildDataColumn("التاريخ"),
-        ],
-        rows: questions.map((q) {
-          return DataRow(cells: [
-            _buildDataCellCenter(q.category),
-            _buildDataCellCenter(q.question, maxLines: 6),
-            _buildDataCellCenter(q.domain),
-            _buildDataCellCenter(
-              q.date,
-              maxLines: 2,
+    return BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
+      builder: (context, state) {
+        if (state.requestStatus == RequestStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state.requestStatus == RequestStatus.failure) {
+          return Center(
+            child: Text(
+              state.responseMessage ?? "حدث خطأ ما",
+              style: AppTextStyles.font18blackWight500.copyWith(
+                color: AppColorsManager.textColor,
+              ),
             ),
-          ]);
-        }).toList(),
-      ),
+          );
+        }
+        final answeredQuestions = state.mentalIllnessAnsweredQuestions;
+
+        if (state.requestStatus == RequestStatus.success &&
+            (answeredQuestions == null || answeredQuestions.isEmpty)) {
+          return Center(
+            child: Text(
+              "لا توجد بيانات متاحة",
+              style: AppTextStyles.font22MainBlueWeight700,
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            headingRowColor: WidgetStateProperty.all(const Color(0xFF014C8A)),
+            headingTextStyle: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
+            columnSpacing: 5.w,
+            dataRowHeight: 130.h,
+            horizontalMargin: 8,
+            showBottomBorder: true,
+            border: TableBorder.all(
+              borderRadius: BorderRadius.circular(16.r),
+              color: Colors.grey.withAlpha(90),
+              width: .7,
+            ),
+            decoration: BoxDecoration(
+                color: AppColorsManager.secondaryColor.withAlpha(75),
+                borderRadius: BorderRadius.circular(16.r)),
+            columns: [
+              _buildDataColumn("المحور"),
+              _buildDataColumn("السؤال"),
+              _buildDataColumn("النطاق"),
+              _buildDataColumn("التاريخ"),
+            ],
+            rows: questions.map((q) {
+              return DataRow(cells: [
+                _buildDataCellCenter(q.category),
+                _buildDataCellCenter(q.question, maxLines: 6),
+                _buildDataCellCenter(q.domain),
+                _buildDataCellCenter(
+                  q.date,
+                  maxLines: 2,
+                ),
+              ]);
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 

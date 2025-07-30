@@ -2,6 +2,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
@@ -290,6 +291,23 @@ class MentalIllnessesViewRepo {
       return ApiResult.success(
         rawList?.map((e) => MentalIllnessUmbrellaModel.fromJson(e)).toList() ??
             [],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<AnsweredQuestionModel>>>
+      getAllAnsweredQuestions() async {
+    try {
+      final response = await mentalIllnessesServices.getAllAnsweredQuestions(
+        language: 'ar',
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      final List<dynamic>? rawList = response['data'];
+
+      return ApiResult.success(
+        rawList?.map((e) => AnsweredQuestionModel.fromJson(e)).toList() ?? [],
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

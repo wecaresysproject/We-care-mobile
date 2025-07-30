@@ -175,6 +175,25 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     );
   }
 
+  Future<void> getAllAnsweredQuestions() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.getAllAnsweredQuestions();
+    result.when(
+      success: (data) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.success,
+          mentalIllnessAnsweredQuestions: data,
+        ),
+      ),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+        ),
+      ),
+    );
+  }
+
   Future<void> deleteMentalIllnessDetailsDocumentById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _repo.deleteMentalIllnessDetailsDocumentById(

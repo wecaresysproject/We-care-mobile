@@ -32,6 +32,8 @@ class MentalIllnessesConstants {
       "/api/deleteMentalIllnessDetailsDocumentById";
   static const getMedicalIllnessUmbrellaDocs =
       "/api/getMedicalIllnessUmbrellaDocs";
+  static const getAllAnsweredQuestions = "/v1/lookup/getAllAnsweredQuestions";
+
   static const editSurgeryEndpoint = "/api/EnterSectionSurgery";
   //filters
   static const getSurgeriesFilters = "/api/ViewSectionSurgery/surgery-info";
