@@ -175,6 +175,97 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     );
   }
 
+  Future<void> getFollowUpReportsAvailableYears() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.getFollowUpReportsAvailableYears();
+    result.when(
+      success: (data) => emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        yearsFilter: data,
+      )),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+        ),
+      ),
+    );
+  }
+
+  Future<void> getAllFollowUpReportsRecords({int? page}) async {
+    if (page != null && page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
+      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      currentPage = 1;
+      hasMore = true;
+    }
+
+    final result = await _repo.getAllFollowUpReportsRecords(
+      page: page ?? currentPage,
+      limit: pageSize,
+    );
+
+    result.when(
+      success: (data) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.success,
+          followUpRecords: page == null || page == 1
+              ? data
+              : [...state.followUpRecords, ...data],
+          isLoadingMore: false,
+        ),
+      ),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isLoadingMore: false,
+        ),
+      ),
+    );
+  }
+
+  Future<void> loadMoreFollowUpRecords() async {
+    if (!hasMore || isLoadingMore) return;
+    await getAllFollowUpReportsRecords(page: currentPage + 1);
+  }
+
+  Future<void> getFilteredFollowUpReports({
+    String? year,
+  }) async {
+    final result = await _repo.getFilteredFollowUpReports(
+      year: year,
+    );
+
+    result.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            followUpRecords: response,
+            isLoadingMore: false,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            isLoadingMore: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> initialRequestsForFollowUpView() async {
+    await Future.wait([
+      getAllFollowUpReportsRecords(),
+      getFollowUpReportsAvailableYears(),
+    ]);
+  }
+
   Future<void> getAllAnsweredQuestions() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _repo.getAllAnsweredQuestions();

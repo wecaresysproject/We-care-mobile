@@ -3,6 +3,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/follow_up_record_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
@@ -180,17 +181,13 @@ class MentalIllnessesViewRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getMedicalIllnessDocsAvailableYears(
-
-      // {
-      // required String language,
-      // required String userType,
-      // }
-
-      ) async {
+  Future<ApiResult<List<String>>> getMedicalIllnessDocsAvailableYears() async {
     try {
       final response =
-          await mentalIllnessesServices.getMedicalIllnessDocsAvailableYears();
+          await mentalIllnessesServices.getMedicalIllnessDocsAvailableYears(
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
       final List<String> years = List<String>.from(response['data']);
       return ApiResult.success(years);
     } catch (error) {
@@ -308,6 +305,61 @@ class MentalIllnessesViewRepo {
 
       return ApiResult.success(
         rawList?.map((e) => AnsweredQuestionModel.fromJson(e)).toList() ?? [],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getFollowUpReportsAvailableYears() async {
+    try {
+      final response =
+          await mentalIllnessesServices.getFollowUpReportsAvailableYears(
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      final List<String> years = List<String>.from(response['data']);
+      return ApiResult.success(years);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<FollowUpRecordModel>>> getAllFollowUpReportsRecords({
+    required int page,
+    required int limit,
+  }) async {
+    try {
+      final response =
+          await mentalIllnessesServices.getAllFollowUpReportsRecords(
+        language: 'ar',
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+        page: page,
+        limit: limit,
+      );
+      final List<dynamic>? rawList = response['data'];
+
+      return ApiResult.success(
+        rawList?.map((e) => FollowUpRecordModel.fromJson(e)).toList() ?? [],
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<FollowUpRecordModel>>> getFilteredFollowUpReports({
+    String? year,
+  }) async {
+    try {
+      final response = await mentalIllnessesServices.getFilteredFollowUpReports(
+        year,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+      );
+      final List<dynamic>? rawList = response['data'];
+
+      return ApiResult.success(
+        rawList?.map((e) => FollowUpRecordModel.fromJson(e)).toList() ?? [],
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

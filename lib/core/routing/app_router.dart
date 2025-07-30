@@ -35,7 +35,6 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
-import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
@@ -444,8 +443,7 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) => MentalIllnessFollowUpReportDetailsView(
-            detailsModel: argumentsMap?['detailsModel']
-                as MentalIllnessFollowUpReportModel,
+            detailsModel: argumentsMap?['docId'],
           ), //MentalIllnessFollowUpReportDetailsView(),
         );
       // case Routes.mentalUmbrellaHealthQuestionnairePage:

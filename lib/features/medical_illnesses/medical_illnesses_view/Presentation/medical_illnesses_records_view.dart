@@ -83,12 +83,22 @@ class MentalIllnessRecordsView extends StatelessWidget {
                               return MentalIllnessItemCardHorizontal(
                                 item: doc,
                                 onArrowTap: () async {
-                                  await context.pushNamed(
+                                  final result = await context.pushNamed(
                                     Routes.mentalIllnessDocDetailsView,
                                     arguments: {
                                       'docId': doc.id,
                                     },
                                   );
+                                  if (result != null &&
+                                      result as bool &&
+                                      context.mounted) {
+                                    await context
+                                        .read<MentalIllnessDataViewCubit>()
+                                        .getMentalIllnessRecords();
+                                    await context
+                                        .read<MentalIllnessDataViewCubit>()
+                                        .getMedicalIllnessDocsAvailableYears();
+                                  }
                                 },
                               );
                             },
