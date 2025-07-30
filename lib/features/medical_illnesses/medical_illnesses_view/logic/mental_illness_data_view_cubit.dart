@@ -110,6 +110,45 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     );
   }
 
+  Future<void> getMedicalIllnessUmbrellaDocs({int? page}) async {
+    if (page != null && page > 1) {
+      emit(state.copyWith(isLoadingMore: true));
+    } else {
+      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      currentPage = 1;
+      hasMore = true;
+    }
+
+    final result = await _repo.getMedicalIllnessUmbrellaDocs(
+      page: page ?? currentPage,
+      limit: pageSize,
+    );
+
+    result.when(
+      success: (data) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.success,
+          mentalIllnessUmbrellaRecords: page == null || page == 1
+              ? data
+              : [...state.mentalIllnessUmbrellaRecords, ...data],
+          isLoadingMore: false,
+        ),
+      ),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+          isLoadingMore: false,
+        ),
+      ),
+    );
+  }
+
+  Future<void> loadMoreMentalIllnessUmbrellaRecords() async {
+    if (!hasMore || isLoadingMore) return;
+    await getMedicalIllnessUmbrellaDocs(page: currentPage + 1);
+  }
+
   Future<void> loadMoreMentalIllnessRecords() async {
     if (!hasMore || isLoadingMore) return;
     await getMentalIllnessRecords(page: currentPage + 1);

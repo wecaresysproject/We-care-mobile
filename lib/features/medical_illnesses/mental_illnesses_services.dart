@@ -113,6 +113,13 @@ abstract class MentalIllnessesServices {
     @Query("userType") String userType,
   );
 
+  @GET(MentalIllnessesConstants.getMedicalIllnessUmbrellaDocs)
+  Future<dynamic> getMedicalIllnessUmbrellaDocs({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
   // /// 6. Get Glasses Records (With Pagination)
   // @GET(EyesApiConstants.getGlassesRecords)
   // Future<dynamic> getAllGlasses({

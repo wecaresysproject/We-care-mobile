@@ -4,6 +4,7 @@ import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_services.dart';
 
 class MentalIllnessesViewRepo {
@@ -266,6 +267,30 @@ class MentalIllnessesViewRepo {
         UserTypes.patient.name.firstLetterToUpperCase,
       );
       return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<MentalIllnessUmbrellaModel>>>
+      getMedicalIllnessUmbrellaDocs({
+    required int page,
+    required int limit,
+  }) async {
+    try {
+      final response =
+          await mentalIllnessesServices.getMedicalIllnessUmbrellaDocs(
+        language: 'ar',
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+        page: page,
+        limit: limit,
+      );
+      final List<dynamic>? rawList = response['data'];
+
+      return ApiResult.success(
+        rawList?.map((e) => MentalIllnessUmbrellaModel.fromJson(e)).toList() ??
+            [],
+      );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
