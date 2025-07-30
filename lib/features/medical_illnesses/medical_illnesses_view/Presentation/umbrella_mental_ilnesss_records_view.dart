@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -13,6 +14,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
 class MentalIllnessesUmbrellRecordsView extends StatefulWidget {
   const MentalIllnessesUmbrellRecordsView({super.key});
@@ -124,109 +126,144 @@ class _MentalIllnessesUmbrellRecordsViewState
                   const SizedBox(height: 24),
                   _buildSeverityIndicator(),
                   const SizedBox(height: 24),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: dummyMentalIllnessCategories.length,
-                    reverse: true, // This ensures proper z-index layering
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 2,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0,
-                    ),
-                    itemBuilder: (context, index) {
-                      final category = dummyMentalIllnessCategories[index];
-                      final isOpen = openedIndex == index;
+                  BlocBuilder<MentalIllnessDataViewCubit,
+                      MentalIllnessDataViewState>(
+                    builder: (context, state) {
+                      // Handle different states
+                      if (state.requestStatus == RequestStatus.loading) {
+                        //  !state.isLoadingMore) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                      return OverflowBox(
-                        maxHeight:
-                            400, // Adjust this value based on your content height
-                        alignment: Alignment.topCenter,
-                        child: Accordion(
-                          disableScrolling: false,
-                          paddingListTop: 0,
-                          paddingBetweenOpenSections: 0,
-                          paddingBetweenClosedSections: 0,
-                          paddingListBottom: 0,
-                          maxOpenSections: 1,
-                          headerBackgroundColor:
-                              getCategoryColorRelativeToRiskLevel(
-                                  category.riskLevel),
-                          paddingListHorizontal: 10,
-                          flipLeftIconIfOpen: true,
-                          contentVerticalPadding: 4,
-                          contentBorderColor:
-                              getCategoryColorRelativeToRiskLevel(
-                            category.riskLevel,
+                      if (state.requestStatus == RequestStatus.failure) {
+                        return Center(
+                          child: Text(
+                            state.responseMessage.isNotEmpty
+                                ? state.responseMessage
+                                : 'حدث خطأ ما',
+                            style: AppTextStyles.font22MainBlueWeight700,
                           ),
-                          contentBackgroundColor:
-                              Colors.white, // Make content background solid
-                          contentBorderRadius: 12.r,
-                          contentHorizontalPadding: 12,
-                          contentBorderWidth: 2,
-                          openAndCloseAnimation: true,
-                          headerBorderColor: Colors.transparent,
-                          headerBorderRadius: 16.r,
-                          headerPadding: EdgeInsets.symmetric(horizontal: 12.w),
-                          flipRightIconIfOpen: false,
-                          scaleWhenAnimating: true,
-                          rightIcon: Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 26,
-                            color: _getCategoryTitleDesiredColor(category),
+                        );
+                      }
+
+                      final records = state.mentalIllnessUmbrellaRecords;
+                      if (records.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'لا توجد بيانات',
+                            style: AppTextStyles.font22MainBlueWeight700,
                           ),
-                          children: [
-                            AccordionSection(
-                              isOpen: isOpen,
-                              index: openedIndex ?? 0,
-                              onOpenSection: () {
-                                setState(() => openedIndex = index);
-                              },
-                              onCloseSection: () {
-                                setState(() => openedIndex = null);
-                              },
+                        );
+                      }
+
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: dummyMentalIllnessCategories.length,
+                        reverse: true, // This ensures proper z-index layering
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 2,
+                          crossAxisSpacing: 0,
+                          mainAxisSpacing: 0,
+                        ),
+                        itemBuilder: (context, index) {
+                          final category = dummyMentalIllnessCategories[index];
+                          final isOpen = openedIndex == index;
+
+                          return OverflowBox(
+                            maxHeight:
+                                400, // Adjust this value based on your content height
+                            alignment: Alignment.topCenter,
+                            child: Accordion(
+                              disableScrolling: false,
+                              paddingListTop: 0,
+                              paddingBetweenOpenSections: 0,
+                              paddingBetweenClosedSections: 0,
+                              paddingListBottom: 0,
+                              maxOpenSections: 1,
+                              headerBackgroundColor:
+                                  getCategoryColorRelativeToRiskLevel(
+                                      category.riskLevel),
+                              paddingListHorizontal: 10,
+                              flipLeftIconIfOpen: true,
+                              contentVerticalPadding: 4,
                               contentBorderColor:
                                   getCategoryColorRelativeToRiskLevel(
                                 category.riskLevel,
-                              ).withOpacity(0.3),
-                              header: Container(
-                                height: 70.h,
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: getCategoryColorRelativeToRiskLevel(
-                                    category.riskLevel,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        category.title,
-                                        style: AppTextStyles
-                                            .font14whiteWeight600
-                                            .copyWith(
-                                          fontSize: 13.2.sp,
-                                          color: _getCategoryTitleDesiredColor(
-                                              category),
-                                          fontWeight: category.riskLevel ==
-                                                  RiskLevel.confirmedRisk
-                                              ? FontWeight.bold
-                                              : FontWeight.w600,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ),
-                              content: _buildExpandedContent(category),
+                              contentBackgroundColor:
+                                  Colors.white, // Make content background solid
+                              contentBorderRadius: 12.r,
+                              contentHorizontalPadding: 12,
+                              contentBorderWidth: 2,
+                              openAndCloseAnimation: true,
+                              headerBorderColor: Colors.transparent,
+                              headerBorderRadius: 16.r,
+                              headerPadding:
+                                  EdgeInsets.symmetric(horizontal: 12.w),
+                              flipRightIconIfOpen: false,
+                              scaleWhenAnimating: true,
+                              rightIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 26,
+                                color: _getCategoryTitleDesiredColor(category),
+                              ),
+                              children: [
+                                AccordionSection(
+                                  isOpen: isOpen,
+                                  index: openedIndex ?? 0,
+                                  onOpenSection: () {
+                                    setState(() => openedIndex = index);
+                                  },
+                                  onCloseSection: () {
+                                    setState(() => openedIndex = null);
+                                  },
+                                  contentBorderColor:
+                                      getCategoryColorRelativeToRiskLevel(
+                                    category.riskLevel,
+                                  ).withOpacity(0.3),
+                                  header: Container(
+                                    height: 70.h,
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          getCategoryColorRelativeToRiskLevel(
+                                        category.riskLevel,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            category.title,
+                                            style: AppTextStyles
+                                                .font14whiteWeight600
+                                                .copyWith(
+                                              fontSize: 13.2.sp,
+                                              color:
+                                                  _getCategoryTitleDesiredColor(
+                                                      category),
+                                              fontWeight: category.riskLevel ==
+                                                      RiskLevel.confirmedRisk
+                                                  ? FontWeight.bold
+                                                  : FontWeight.w600,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  content: _buildExpandedContent(category),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       );
                     },
                   ),
