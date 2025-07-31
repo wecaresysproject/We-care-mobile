@@ -20,60 +20,27 @@ class MentalIllnessDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mockMentalIllnessRequest = MentalIllnessRequestBody(
-      diagnosisDate: "2025-01-25",
-      mentalIllnessType: "اضطراب القلق العام",
-      symptomsList: ["الأرق", "سرعة الانفعال", "صعوبة التركيز"],
-      illnessSeverity: "متوسط",
-      illnessDuration: "7 شهور",
-      hasImpactfulIncident: ImpactfulIncident(
-        answer: false,
-        incidentType: "حادث سير",
-        incidentDate: "2024-06-10",
-        incidentPsychologicalImpact: "أدى إلى توتر وقلق مستمر",
-      ),
-      hasFamilySimilarMentalIllnessCases: FamilyMentalIllness(
-        answer: false,
-        relationship: "الأب",
-      ),
-      selectedPsychologicalEmergencies: "حالة طارئة",
-      socialSupport: "العائلة والأصدقاء يقدمون دعمًا جيدًا",
-      selectedMedicationSideEffects: "شعور بالدوخة والخمول",
-      preferredActivitiesForImprovement: "الرياضة والتأمل",
-      isReceivingPsychologicalTreatment: PsychologicalTreatment(
-        answer: false,
-        medicationsUsed: "دواء مضاد للاكتئاب",
-        medicationEffectOnDailyLife: "يسبب بعض النعاس أثناء النهار",
-        previousTherapyType: "العلاج السلوكي المعرفي",
-        numberOfSessions: 12,
-        therapySatisfaction: "مقبول",
-        doctorOrSpecialist: "د. محمد علي",
-        hospitalOrCenter: "دار الفؤاد",
-        country: "مصر",
-      ),
-    );
-
     return BlocProvider(
-      create: (context) => getIt<MentalIllnessDataViewCubit>(),
-      // ..getMentalIllnessDocumentDetailsById(docId),
+      create: (context) => getIt<MentalIllnessDataViewCubit>()
+        ..getMentalIllnessDocumentDetailsById(docId),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: BlocConsumer<MentalIllnessDataViewCubit,
             MentalIllnessDataViewState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.requestStatus == RequestStatus.success &&
                 state.isDeleteRequest) {
-              showSuccess("تم حذف الشكوى بنجاح");
               Navigator.pop(context);
+              await showSuccess(state.responseMessage);
             } else if (state.requestStatus == RequestStatus.failure) {
-              showError(state.responseMessage);
+              await showError(state.responseMessage);
             }
           },
           builder: (context, state) {
             final docDetails = state.selectedMentalIllnessDocumentDetails;
-            // if (docDetails == null) {
-            //   return Center(child: CircularProgressIndicator());
-            // }
+            if (docDetails == null) {
+              return Center(child: CircularProgressIndicator());
+            }
 
             return SingleChildScrollView(
               padding: EdgeInsets.all(16.w),
@@ -81,9 +48,9 @@ class MentalIllnessDetailsView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppBarWithCenteredTitle(
-                    title: mockMentalIllnessRequest.mentalIllnessType,
+                    title: docDetails.mentalIllnessType,
                     shareFunction: () async {
-                      await _shareMentalIllnessDetails(context, state);
+                      await _shareMentalIllnessDetails(context, docDetails);
                     },
                     deleteFunction: () async {
                       await context
@@ -95,35 +62,35 @@ class MentalIllnessDetailsView extends StatelessWidget {
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "تاريخ التشخيص",
-                    value: mockMentalIllnessRequest.diagnosisDate,
+                    value: docDetails.diagnosisDate,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "نوع المرض",
-                    value: mockMentalIllnessRequest.mentalIllnessType,
+                    value: docDetails.mentalIllnessType,
                     icon: 'assets/images/analysis_type.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "الأعراض المرضية",
-                    value: mockMentalIllnessRequest.symptomsList.join(", "),
+                    value: docDetails.symptomsList.join(", "),
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "شدة المرض",
-                    value: mockMentalIllnessRequest.illnessSeverity,
+                    value: docDetails.illnessSeverity,
                     icon: 'assets/images/heart_rate_search_icon.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "مدة المرض",
-                    value: mockMentalIllnessRequest.illnessDuration,
+                    value: docDetails.illnessDuration,
                     icon: 'assets/images/time_icon.png',
                     isExpanded: true,
                   ),
@@ -144,8 +111,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        mockMentalIllnessRequest.hasImpactfulIncident.answer ==
-                                true
+                        docDetails.hasImpactfulIncident.answer == true
                             ? Padding(
                                 padding: EdgeInsets.only(bottom: 12.h),
                                 child: Text(
@@ -158,30 +124,28 @@ class MentalIllnessDetailsView extends StatelessWidget {
                                 ),
                               )
                             : SizedBox.shrink(),
-                        if (mockMentalIllnessRequest
-                                .hasImpactfulIncident.answer ==
-                            true) ...[
+                        if (docDetails.hasImpactfulIncident.answer == true) ...[
                           DetailsViewInfoTile(
                             title: "نوع الموقف",
-                            value: mockMentalIllnessRequest
-                                    .hasImpactfulIncident.incidentType ??
-                                "غير محدد",
+                            value:
+                                docDetails.hasImpactfulIncident.incidentType ??
+                                    "غير محدد",
                             icon: 'assets/images/analysis_type.png',
                             isExpanded: true,
                           ),
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "تاريخ الموقف",
-                            value: mockMentalIllnessRequest
-                                    .hasImpactfulIncident.incidentDate ??
-                                "غير محدد",
+                            value:
+                                docDetails.hasImpactfulIncident.incidentDate ??
+                                    "غير محدد",
                             icon: 'assets/images/date_icon.png',
                             isExpanded: true,
                           ),
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "تأثير الحادث على الحالة النفسية",
-                            value: mockMentalIllnessRequest.hasImpactfulIncident
+                            value: docDetails.hasImpactfulIncident
                                     .incidentPsychologicalImpact ??
                                 "غير محدد",
                             icon: 'assets/images/psychology_icon.png',
@@ -217,8 +181,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                       children: [
                         DetailsViewInfoTile(
                           title: "حالات نفسية مشابهة فى العائلة",
-                          value: mockMentalIllnessRequest
-                                      .hasFamilySimilarMentalIllnessCases
+                          value: docDetails.hasFamilySimilarMentalIllnessCases
                                       .answer ==
                                   true
                               ? "نعم"
@@ -226,14 +189,13 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           icon: 'assets/images/psychology_icon.png',
                           isExpanded: true,
                         ),
-                        if (mockMentalIllnessRequest
+                        if (docDetails
                                 .hasFamilySimilarMentalIllnessCases.answer ==
                             true) ...[
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "الصله العائلية",
-                            value: mockMentalIllnessRequest
-                                    .hasFamilySimilarMentalIllnessCases
+                            value: docDetails.hasFamilySimilarMentalIllnessCases
                                     .relationship ??
                                 "غير محدد",
                             icon: 'assets/images/group_icon.png',
@@ -247,8 +209,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
 
                   DetailsViewInfoTile(
                     title: "حالات الطوارىء النفسية",
-                    value: mockMentalIllnessRequest
-                            .selectedPsychologicalEmergencies ??
+                    value: docDetails.selectedPsychologicalEmergencies ??
                         "لا توجد",
                     icon: 'assets/images/warning_icon.png',
                     isExpanded: true,
@@ -256,24 +217,22 @@ class MentalIllnessDetailsView extends StatelessWidget {
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "الدعم الاجتماعي",
-                    value: mockMentalIllnessRequest.socialSupport ?? "غير محدد",
+                    value: docDetails.socialSupport ?? "غير محدد",
                     icon: 'assets/images/group_icon.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "التأثيرات الجانبية للدواء",
-                    value: mockMentalIllnessRequest
-                            .selectedMedicationSideEffects ??
-                        "لا توجد",
+                    value:
+                        docDetails.selectedMedicationSideEffects ?? "لا توجد",
                     icon: 'assets/images/psychology_icon.png',
                     isExpanded: true,
                   ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "الأنشطة المساندة للصحة النفسية",
-                    value: mockMentalIllnessRequest
-                            .preferredActivitiesForImprovement ??
+                    value: docDetails.preferredActivitiesForImprovement ??
                         "غير محدد",
                     icon: 'assets/images/activity_icon.png',
                     isExpanded: true,
@@ -299,8 +258,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                       children: [
                         DetailsViewInfoTile(
                           title: "تلقي العلاج النفسي / الاستشارات",
-                          value: mockMentalIllnessRequest
-                                      .isReceivingPsychologicalTreatment
+                          value: docDetails.isReceivingPsychologicalTreatment
                                       .answer ==
                                   true
                               ? "نعم"
@@ -309,14 +267,13 @@ class MentalIllnessDetailsView extends StatelessWidget {
                               'assets/images/doctor_examination_tool_icon.png',
                           isExpanded: true,
                         ),
-                        if (mockMentalIllnessRequest
+                        if (docDetails
                                 .isReceivingPsychologicalTreatment.answer ==
                             true) ...[
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "أدوية مستخدمة",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .medicationsUsed ??
                                 "غير محدد",
                             icon: 'assets/images/medicines_icon_2.png',
@@ -325,8 +282,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "تأثير الدواء على الحياة اليومية",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .medicationEffectOnDailyLife ??
                                 "غير محدد",
                             icon: 'assets/images/medicines_icon.png',
@@ -335,8 +291,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "نوع العلاج النفسي",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .previousTherapyType ??
                                 "غير محدد",
                             icon: 'assets/images/hugeicons_medicine.png',
@@ -345,8 +300,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "عدد الجلسات",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .numberOfSessions
                                     ?.toString() ??
                                 "غير محدد",
@@ -356,8 +310,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "رضاك عن نتيجة الجلسات",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .therapySatisfaction ??
                                 "غير محدد",
                             icon: 'assets/images/heart_rate_search_icon.png',
@@ -366,8 +319,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                           verticalSpacing(16),
                           DetailsViewInfoTile(
                             title: "الطبيب / الأخصائي النفسي",
-                            value: mockMentalIllnessRequest
-                                    .isReceivingPsychologicalTreatment
+                            value: docDetails.isReceivingPsychologicalTreatment
                                     .doctorOrSpecialist ??
                                 "غير محدد",
                             icon: 'assets/images/doctor_icon.png',
@@ -379,7 +331,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                               Expanded(
                                 child: DetailsViewInfoTile(
                                   title: "المستشفى/المركز",
-                                  value: mockMentalIllnessRequest
+                                  value: docDetails
                                           .isReceivingPsychologicalTreatment
                                           .hospitalOrCenter ??
                                       "غير محدد",
@@ -391,7 +343,7 @@ class MentalIllnessDetailsView extends StatelessWidget {
                               Expanded(
                                 child: DetailsViewInfoTile(
                                   title: "الدولة",
-                                  value: mockMentalIllnessRequest
+                                  value: docDetails
                                           .isReceivingPsychologicalTreatment
                                           .country ??
                                       "غير محدد",
@@ -415,81 +367,46 @@ class MentalIllnessDetailsView extends StatelessWidget {
   }
 
   Future<void> _shareMentalIllnessDetails(
-      BuildContext context, MentalIllnessDataViewState state) async {
+      BuildContext context, MentalIllnessRequestBody state) async {
     try {
-      // Using mock data for now - replace with actual data when available
-      final details = MentalIllnessRequestBody(
-        diagnosisDate: "2025-01-25",
-        mentalIllnessType: "اضطراب القلق العام",
-        symptomsList: ["الأرق", "سرعة الانفعال", "صعوبة التركيز"],
-        illnessSeverity: "متوسط",
-        illnessDuration: "7 شهور",
-        hasImpactfulIncident: ImpactfulIncident(
-          answer: false,
-          incidentType: "حادث سير",
-          incidentDate: "2024-06-10",
-          incidentPsychologicalImpact: "أدى إلى توتر وقلق مستمر",
-        ),
-        hasFamilySimilarMentalIllnessCases: FamilyMentalIllness(
-          answer: false,
-          relationship: "الأب",
-        ),
-        selectedPsychologicalEmergencies: "حالة طارئة",
-        socialSupport: "العائلة والأصدقاء يقدمون دعمًا جيدًا",
-        selectedMedicationSideEffects: "شعور بالدوخة والخمول",
-        preferredActivitiesForImprovement: "الرياضة والتأمل",
-        isReceivingPsychologicalTreatment: PsychologicalTreatment(
-          answer: false,
-          medicationsUsed: "دواء مضاد للاكتئاب",
-          medicationEffectOnDailyLife: "يسبب بعض النعاس أثناء النهار",
-          previousTherapyType: "العلاج السلوكي المعرفي",
-          numberOfSessions: 12,
-          therapySatisfaction: "مقبول",
-          doctorOrSpecialist: "د. محمد علي",
-          hospitalOrCenter: "دار الفؤاد",
-          country: "مصر",
-        ),
-      );
-
       // When you have real data, use this instead:
-      // final details = state.selectedMentalIllnessDocumentDetails!;
 
       final text = '''
     🧠 *تفاصيل الحالة النفسية* 🧠
 
-    📅 *تاريخ التشخيص*: ${details.diagnosisDate}
-    🏷️ *نوع المرض*: ${details.mentalIllnessType}
+    📅 *تاريخ التشخيص*: ${state.diagnosisDate}
+    🏷️ *نوع المرض*: ${state.mentalIllnessType}
 
     💡 *الأعراض*:
-    ${details.symptomsList.map((symptom) => "🔹 $symptom").join('\n')}
+    ${state.symptomsList.map((symptom) => "🔹 $symptom").join('\n')}
 
-    ⚠️ *شدة المرض*: ${details.illnessSeverity}
-    ⏳ *مدة المرض*: ${details.illnessDuration}
+    ⚠️ *شدة المرض*: ${state.illnessSeverity}
+    ⏳ *مدة المرض*: ${state.illnessDuration}
 
-    🚨 *حالات الطوارئ النفسية*: ${details.selectedPsychologicalEmergencies ?? "لا توجد"}
-    👨‍👩‍👧‍👦 *الدعم الاجتماعي*: ${details.socialSupport ?? "غير محدد"}
+    🚨 *حالات الطوارئ النفسية*: ${state.selectedPsychologicalEmergencies ?? "لا توجد"}
+    👨‍👩‍👧‍👦 *الدعم الاجتماعي*: ${state.socialSupport ?? "غير محدد"}
 
     💊 *التأثيرات الجانبية للدواء*: 
-    ${details.selectedMedicationSideEffects ?? "لا توجد"}
+    ${state.selectedMedicationSideEffects ?? "لا توجد"}
 
     🏋️ *الأنشطة المساندة*: 
-    ${details.preferredActivitiesForImprovement ?? "غير محدد"}
+    ${state.preferredActivitiesForImprovement ?? "غير محدد"}
 
-    ${details.hasImpactfulIncident.answer! ? '🚑 *حادث مؤثر*:\n- النوع: ${details.hasImpactfulIncident.incidentType}\n- التاريخ: ${details.hasImpactfulIncident.incidentDate}\n- التأثير: ${details.hasImpactfulIncident.incidentPsychologicalImpact}' : '🚑 *حادث مؤثر*: لا'}
+    ${state.hasImpactfulIncident.answer == true ? '🚑 *حادث مؤثر*:\n- النوع: ${state.hasImpactfulIncident.incidentType}\n- التاريخ: ${state.hasImpactfulIncident.incidentDate}\n- التأثير: ${state.hasImpactfulIncident.incidentPsychologicalImpact}' : '🚑 *حادث مؤثر*: لا'}
 
     👪 *حالات عائلية مشابهة*: 
-    ${details.hasFamilySimilarMentalIllnessCases.answer! ? 'نعم (${details.hasFamilySimilarMentalIllnessCases.relationship})' : 'لا'}
+    ${state.hasFamilySimilarMentalIllnessCases.answer == true ? 'نعم (${state.hasFamilySimilarMentalIllnessCases.relationship})' : 'لا'}
 
     🏥 *العلاج النفسي*: 
-    ${details.isReceivingPsychologicalTreatment.answer! ? '''
-    - الأدوية: ${details.isReceivingPsychologicalTreatment.medicationsUsed}
-    - تأثير الأدوية: ${details.isReceivingPsychologicalTreatment.medicationEffectOnDailyLife}
-    - نوع العلاج: ${details.isReceivingPsychologicalTreatment.previousTherapyType}
-    - عدد الجلسات: ${details.isReceivingPsychologicalTreatment.numberOfSessions}
-    - الرضا عن العلاج: ${details.isReceivingPsychologicalTreatment.therapySatisfaction}
-    - الطبيب: ${details.isReceivingPsychologicalTreatment.doctorOrSpecialist}
-    - المركز: ${details.isReceivingPsychologicalTreatment.hospitalOrCenter}
-    - الدولة: ${details.isReceivingPsychologicalTreatment.country}
+    ${state.isReceivingPsychologicalTreatment.answer == true ? '''
+    - الأدوية: ${state.isReceivingPsychologicalTreatment.medicationsUsed}
+    - تأثير الأدوية: ${state.isReceivingPsychologicalTreatment.medicationEffectOnDailyLife}
+    - نوع العلاج: ${state.isReceivingPsychologicalTreatment.previousTherapyType}
+    - عدد الجلسات: ${state.isReceivingPsychologicalTreatment.numberOfSessions}
+    - الرضا عن العلاج: ${state.isReceivingPsychologicalTreatment.therapySatisfaction}
+    - الطبيب: ${state.isReceivingPsychologicalTreatment.doctorOrSpecialist}
+    - المركز: ${state.isReceivingPsychologicalTreatment.hospitalOrCenter}
+    - الدولة: ${state.isReceivingPsychologicalTreatment.country}
     ''' : 'لا'}
     ''';
 

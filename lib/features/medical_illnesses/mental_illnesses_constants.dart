@@ -20,16 +20,12 @@ class MentalIllnessesConstants {
   //!New
   static const getIsUmbrellaMentalIllnessButtonActivated =
       "/v1/lookup/mental-illness-umbrella-activated";
-  static const getMedicalIllnessDocsAvailableYears =
-      "/v1/lookup/getMedicalIllnessDocsAvailableYears";
-  static const getMentalIllnessRecords = "/v1/lookup/getMentalIllnessRecords";
-  static const getFilteredMentalIllnessDocuments =
-      "/v1/lookup/getFilteredMentalIllnessDocuments";
-  static const getMentalIllnessDocumentDetailsById =
-      "/api/ViewSectionSurgery/getMentalIllnessDocumentDetailsById";
+  static const getMedicalIllnessDocsAvailableYears = "/v1/available-years";
+  static const getMentalIllnessRecords = "/v1/medicalIllnessDocuments";
+  static const getFilteredMentalIllnessDocuments = "/v1/documents/filter";
+  static const getMentalIllnessDocumentDetailsById = "/v1/document";
 
-  static const deleteMentalIllnessDetailsDocumentById =
-      "/api/deleteMentalIllnessDetailsDocumentById";
+  static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
   static const getMedicalIllnessUmbrellaDocs =
       "/api/getMedicalIllnessUmbrellaDocs";
   static const getAllAnsweredQuestions = "/v1/lookup/getAllAnsweredQuestions";

@@ -6,7 +6,6 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/medical_illness_footer_row.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/mental_illness_card_horizontal_widget.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
@@ -24,9 +23,9 @@ class MentalIllnessRecordsView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MentalIllnessDataViewCubit>(
-            create: (_) =>
-                getIt<MentalIllnessDataViewCubit>() //..getInitialRequests(),
-            ),
+          create: (_) =>
+              getIt<MentalIllnessDataViewCubit>()..getInitialRequests(),
+        ),
       ],
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
@@ -59,8 +58,7 @@ class MentalIllnessRecordsView extends StatelessWidget {
                         ),
                         if (state.requestStatus == RequestStatus.loading)
                           const Center(child: CircularProgressIndicator())
-                        else if (state.mentalIllnessRecords
-                            .isNotEmpty) //! put it isEmpty instead plz
+                        else if (state.mentalIllnessRecords.isEmpty)
                           Center(
                             child: Text(
                               "لا يوجد بيانات",
@@ -71,33 +69,20 @@ class MentalIllnessRecordsView extends StatelessWidget {
                           ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 3,
+                            itemCount: state.mentalIllnessRecords.length,
                             itemBuilder: (context, index) {
-                              final doc = MentalIllnessModel(
-                                id: '1',
-                                mentalIllnessType: 'اضطراب القلق العام',
-                                diagnosisDate: '2022-12-12',
-                                duration: '2 ساعات',
-                                illnessSeverity: 'متوسط',
-                              );
+                              final doc = state.mentalIllnessRecords[index];
                               return MentalIllnessItemCardHorizontal(
                                 item: doc,
                                 onArrowTap: () async {
-                                  final result = await context.pushNamed(
+                                  await context.pushNamed(
                                     Routes.mentalIllnessDocDetailsView,
                                     arguments: {
                                       'docId': doc.id,
                                     },
                                   );
-                                  if (result != null &&
-                                      result as bool &&
-                                      context.mounted) {
-                                    await context
-                                        .read<MentalIllnessDataViewCubit>()
-                                        .getMentalIllnessRecords();
-                                    await context
-                                        .read<MentalIllnessDataViewCubit>()
-                                        .getMedicalIllnessDocsAvailableYears();
+                                  if (context.mounted) {
+                                    await cubit.getInitialRequests();
                                   }
                                 },
                               );
