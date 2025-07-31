@@ -443,7 +443,7 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) => MentalIllnessFollowUpReportDetailsView(
-            detailsModel: argumentsMap?['docId'],
+            docId: argumentsMap?['docId'],
           ), //MentalIllnessFollowUpReportDetailsView(),
         );
       // case Routes.mentalUmbrellaHealthQuestionnairePage:

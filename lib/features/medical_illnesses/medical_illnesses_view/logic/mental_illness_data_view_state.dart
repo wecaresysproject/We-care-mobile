@@ -3,6 +3,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/follow_up_record_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/get_follow_up_report_section_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
@@ -15,6 +16,7 @@ class MentalIllnessDataViewState extends Equatable {
   final MentalIllnessRequestBody? selectedMentalIllnessDocumentDetails;
   final List<MentalIllnessModel> mentalIllnessRecords;
   final List<MentalIllnessUmbrellaModel> mentalIllnessUmbrellaRecords;
+  final List<GetFollowUpReportSectionModel> followUpSectionsDetailsContent;
   final List<FollowUpRecordModel> followUpRecords;
   final List<AnsweredQuestionModel>? mentalIllnessAnsweredQuestions;
   final EyeGlassesDetailsModel? selectedEyeGlassesDetails;
@@ -34,6 +36,7 @@ class MentalIllnessDataViewState extends Equatable {
     this.mentalIllnessUmbrellaRecords = const [],
     this.mentalIllnessAnsweredQuestions = const [],
     this.followUpRecords = const [],
+    this.followUpSectionsDetailsContent = const [],
   });
 
   MentalIllnessDataViewState copyWith({
@@ -49,6 +52,7 @@ class MentalIllnessDataViewState extends Equatable {
     List<MentalIllnessUmbrellaModel>? mentalIllnessUmbrellaRecords,
     List<AnsweredQuestionModel>? mentalIllnessAnsweredQuestions,
     List<FollowUpRecordModel>? followUpRecords,
+    List<GetFollowUpReportSectionModel>? followUpSectionsDetailsContent,
   }) {
     return MentalIllnessDataViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -70,6 +74,8 @@ class MentalIllnessDataViewState extends Equatable {
       mentalIllnessAnsweredQuestions:
           mentalIllnessAnsweredQuestions ?? this.mentalIllnessAnsweredQuestions,
       followUpRecords: followUpRecords ?? this.followUpRecords,
+      followUpSectionsDetailsContent:
+          followUpSectionsDetailsContent ?? this.followUpSectionsDetailsContent,
     );
   }
 
@@ -87,5 +93,6 @@ class MentalIllnessDataViewState extends Equatable {
         mentalIllnessUmbrellaRecords,
         mentalIllnessAnsweredQuestions,
         followUpRecords,
+        followUpSectionsDetailsContent,
       ];
 }

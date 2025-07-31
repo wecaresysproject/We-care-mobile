@@ -48,8 +48,8 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MentalIllnessDataViewCubit>(
-      create: (context) => getIt<
-          MentalIllnessDataViewCubit>(), //..initialRequestsForFollowUpView(),
+      create: (context) =>
+          getIt<MentalIllnessDataViewCubit>()..initialRequestsForFollowUpView(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
@@ -85,8 +85,7 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
                     const Center(
                       child: CircularProgressIndicator(),
                     )
-                  else if (state
-                      .followUpRecords.isNotEmpty) //!chnage to  isEmpty
+                  else if (state.followUpRecords.isEmpty)
                     Center(
                       child: Text(
                         "لا يوجد بيانات",
@@ -95,7 +94,7 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
                     )
                   else ...[
                     MedicalItemGridView(
-                      items: dummyPrescriptions,
+                      items: state.followUpRecords,
                       // isExpendingTileTitle: true,
                       onTap: (id) async {
                         // يمكن عرض SnackBar أو التنقل لصفحة التفاصيل

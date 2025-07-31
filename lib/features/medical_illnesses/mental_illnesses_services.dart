@@ -152,6 +152,13 @@ abstract class MentalIllnessesServices {
     @Query("page") required int page,
     @Query("limit") required int limit,
   });
+  //! 12.
+  @GET(MentalIllnessesConstants.getFollowUpDocumentDetailsById)
+  Future<dynamic> getFollowUpDocumentDetailsById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
   // /// 6. Get Glasses Records (With Pagination)
   // @GET(EyesApiConstants.getGlassesRecords)
   // Future<dynamic> getAllGlasses({

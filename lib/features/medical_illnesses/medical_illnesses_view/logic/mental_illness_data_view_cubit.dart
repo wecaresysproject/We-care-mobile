@@ -311,6 +311,26 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
     ]);
   }
 
+  Future<void> getFollowUpDocumentDetailsById(String id) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.getFollowUpDocumentDetailsById(
+      id: id,
+    );
+    result.when(
+      success: (data) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.success,
+          followUpSectionsDetailsContent: data,
+        ),
+      ),
+      failure: (error) => emit(
+        state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+        ),
+      ),
+    );
+  }
   // Future<void> getFilteredEyePartProceduresAndSymptomsDocuments({
   //   String? year,
   //   String? category,
