@@ -87,7 +87,7 @@ class AnalysisDetailsView extends StatelessWidget {
                     Spacer(),
                     DetailsViewInfoTile(
                       title: "نوع التحليل",
-                      value: state.selectedAnalysisDetails!.groupName,
+                      value: state.selectedAnalysisDetails!.groupName ?? "jkn",
                       icon: 'assets/images/analysis_type.png',
                     ),
                   ]),
@@ -140,7 +140,7 @@ Future<void> _shareDetails(
     🩺 *تفاصيل التحليل* 🩺
 
     📅 *التاريخ*: ${analysisDetails.testDate}
-    🔬 *نوع التحليل*: ${analysisDetails.groupName}
+    🔬 *نوع التحليل*: ${analysisDetails.groupName ?? 'jjnj'}
     👨‍⚕️ *الطبيب المعالج*: ${analysisDetails.doctor}
     🏥 *المستشفى/المعمل*: ${analysisDetails.hospital}
     🌍 *الدولة*: ${analysisDetails.country}

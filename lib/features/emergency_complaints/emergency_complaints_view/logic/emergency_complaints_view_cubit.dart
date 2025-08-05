@@ -8,46 +8,51 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
   EmergencyComplaintsViewCubit(this._emergencyComplaintsViewRepo)
       : super(EmergencyComplaintViewState.initial());
   final EmergencyComplaintsViewRepo _emergencyComplaintsViewRepo;
-      int currentPage = 1;
+  int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
+  Future<void> intialRequests() async {
+    await Future.wait([
+      getUserEmergencyComplaintsList(),
+      getFilters(),
+    ]);
+  }
 
-    Future<void> getUserEmergencyComplaintsList({int? page, int? pageSize}) async {
-    // If loading more, set the flag
+  Future<void> getUserEmergencyComplaintsList(
+      {int? page, int? pageSize}) async {
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
     } else {
-      emit(state.copyWith(requestStatus: RequestStatus.loading));
+      // Clear list before reload
+      emit(state.copyWith(
+        requestStatus: RequestStatus.loading,
+        emergencyComplaints: [],
+      ));
       currentPage = 1;
       hasMore = true;
     }
 
     final result = await _emergencyComplaintsViewRepo.getAllEmergencyComplaints(
       language: AppStrings.arabicLang,
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
+      page: page ?? currentPage,
+      pageSize: pageSize ?? this.pageSize,
     );
 
     result.when(success: (response) {
       final newEmergencyComplaints = response;
-      
-      // Update hasMore based on whether we got a full page of results
+
       hasMore = newEmergencyComplaints.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        emergencyComplaints: page == 1 || page == null 
-          ? newEmergencyComplaints 
-          : [...state.emergencyComplaints, ...newEmergencyComplaints],
+        emergencyComplaints: page == null || page == 1
+            ? List.of(newEmergencyComplaints) // Always new instance
+            : [...state.emergencyComplaints, ...newEmergencyComplaints],
         isLoadingMore: false,
       ));
-      
-      if (page == null || page == 1) {
-        currentPage = 1;
-      } else {
-        currentPage = page;
-      }
+
+      currentPage = page ?? 1;
     }, failure: (error) {
       emit(state.copyWith(
         requestStatus: RequestStatus.failure,
@@ -56,12 +61,54 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
     });
   }
 
+  // Future<void> getUserEmergencyComplaintsList(
+  //     {int? page, int? pageSize}) async {
+  //   // If loading more, set the flag
+  //   if (page != null && page > 1) {
+  //     emit(state.copyWith(isLoadingMore: true));
+  //   } else {
+  //     emit(state.copyWith(requestStatus: RequestStatus.loading));
+  //     currentPage = 1;
+  //     hasMore = true;
+  //   }
+
+  //   final result = await _emergencyComplaintsViewRepo.getAllEmergencyComplaints(
+  //       language: AppStrings.arabicLang,
+  //       page: page ?? currentPage,
+  //       pageSize: pageSize ?? this.pageSize);
+
+  //   result.when(success: (response) {
+  //     final newEmergencyComplaints = response;
+
+  //     // Update hasMore based on whether we got a full page of results
+  //     hasMore = newEmergencyComplaints.length >= (pageSize ?? this.pageSize);
+
+  //     emit(state.copyWith(
+  //       requestStatus: RequestStatus.success,
+  //       emergencyComplaints: page == 1 || page == null
+  //           ? newEmergencyComplaints
+  //           : [...state.emergencyComplaints, ...newEmergencyComplaints],
+  //       isLoadingMore: false,
+  //     ));
+
+  //     if (page == null || page == 1) {
+  //       currentPage = 1;
+  //     } else {
+  //       currentPage = page;
+  //     }
+  //   }, failure: (error) {
+  //     emit(state.copyWith(
+  //       requestStatus: RequestStatus.failure,
+  //       isLoadingMore: false,
+  //     ));
+  //   });
+  // }
+
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await getUserEmergencyComplaintsList(page: currentPage + 1);
   }
-
 
   Future<void> getYearFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -98,7 +145,6 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
     await getYearFilter();
     await getPlaceOfComplaintFilter();
   }
-
 
   Future<void> getEmergencyComplaintDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));

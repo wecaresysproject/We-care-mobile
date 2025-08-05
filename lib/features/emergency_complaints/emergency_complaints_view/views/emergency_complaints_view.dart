@@ -53,9 +53,9 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EmergencyComplaintsViewCubit,
         EmergencyComplaintViewState>(
-      buildWhen: (previous, current) =>
-          previous.emergencyComplaints != current.emergencyComplaints,
       builder: (context, state) {
+        final cubit = context.read<EmergencyComplaintsViewCubit>();
+
         if (state.requestStatus == RequestStatus.loading) {
           return Expanded(
             child: Center(
@@ -75,16 +75,14 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
         return MedicalItemGridView(
           items: state.emergencyComplaints,
           onTap: (id) async {
-            await Navigator.push(context, MaterialPageRoute(builder: (_) {
+            final result =
+                await Navigator.push(context, MaterialPageRoute(builder: (_) {
               return EmergencyComplaintsDetailsView(
                 documentId: id,
               );
             }));
-            if (context.mounted) {
-              await context
-                  .read<EmergencyComplaintsViewCubit>()
-                  .getUserEmergencyComplaintsList();
-              await context.read<EmergencyComplaintsViewCubit>().getFilters();
+            if (context.mounted && result as bool && result == true) {
+              await cubit.intialRequests();
             }
           },
           titleBuilder: (item) =>
