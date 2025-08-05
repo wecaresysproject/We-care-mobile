@@ -1,6 +1,10 @@
 // Main questionnaire page
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MentalHealthQuestionnaireView extends StatefulWidget {
   final List<QuestionnaireItem> questions;
@@ -114,8 +118,12 @@ class QuestionCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColorsManager.backGroundColor,
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(
+          color: AppColorsManager.mainDarkBlue,
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -179,50 +187,40 @@ class AnswerOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: isSelected ? const Color(0xFF4A90E2) : Colors.grey[300]!,
-            width: 2,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected
+                    ? AppColorsManager.mainDarkBlue
+                    : AppColorsManager.placeHolderColor,
+                width: 2,
+              ),
+              color: isSelected
+                  ? AppColorsManager.mainDarkBlue
+                  : Colors.transparent,
+            ),
+            child: isSelected
+                ? const Icon(
+                    Icons.circle,
+                    size: 10,
+                    color: Colors.white,
+                  )
+                : null,
           ),
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 20,
-              height: 20,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color:
-                      isSelected ? const Color(0xFF4A90E2) : Colors.grey[400]!,
-                  width: 2,
-                ),
-                color:
-                    isSelected ? const Color(0xFF4A90E2) : Colors.transparent,
-              ),
-              child: isSelected
-                  ? const Icon(
-                      Icons.circle,
-                      size: 10,
-                      color: Colors.white,
-                    )
-                  : null,
+          horizontalSpacing(8),
+          Text(
+            text,
+            style: AppTextStyles.font18blackWight500.copyWith(
+              fontSize: 15.sp,
             ),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: isSelected ? const Color(0xFF4A90E2) : Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
