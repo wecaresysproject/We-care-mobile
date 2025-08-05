@@ -2,62 +2,72 @@ import 'dart:developer';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:we_care/core/Services/local_notifications_services.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/firebase_options.dart';
 
 class PushNotificationsService {
-  static FirebaseMessaging messaging = FirebaseMessaging.instance;
+  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
 
-  static Future init() async {
-    await messaging.requestPermission();
-    await messaging.getToken().then((value) {
-      log('xxxtoken: $value');
-
-      // sendTokenToServer(value!);
-    });
-    messaging.onTokenRefresh.listen((value) {
-      sendTokenToServer(value);
-    });
-    FirebaseMessaging.onBackgroundMessage(handlebackgroundMessage);
-    //foreground
-    handleForegroundMessage();
-    // messaging.subscribeToTopic('all').then((val) {
-    //   log('sub');
-    // });
-
-    // messaging.unsubscribeFromTopic('all');
+  static Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
+    await _messaging.requestPermission();
+    await _getAndLogToken();
+    //!when the app is in the background or terminated.
+    FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
+    _handleForegroundNotifications(navigatorKey);
+    _handleNotificationTap(navigatorKey);
   }
 
-  static Future<void> handlebackgroundMessage(RemoteMessage message) async {
-    await Firebase.initializeApp();
-    log(message.notification?.title ?? 'null');
+  static Future<String> _getAndLogToken() async {
+    final token = await _messaging.getToken();
+    log('FCM Token: $token');
+    return token ?? '';
   }
 
-  static void handleForegroundMessage() {
-    FirebaseMessaging.onMessage.listen(
-      (RemoteMessage message) {
-        if (message.notification != null) {
-          // show local notification
-          LocalNotificationService.showBasicNotification(message);
-        }
-      },
-    );
+  static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+
+    log('Background message received: ${message.notification?.title ?? 'No title'}');
+  }
+
+  static void _handleForegroundNotifications(
+      GlobalKey<NavigatorState> navigatorKey) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log("Foreground notification: ${message.notification?.title}");
+      if (message.notification != null) {
+        LocalNotificationService.showBasicNotification(message);
+        _navigateBasedOnNotification(navigatorKey, message);
+      }
+    });
+  }
+
+  static void _handleNotificationTap(GlobalKey<NavigatorState> navigatorKey) {
+    // Handle notification taps when the app is in the background
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      log(" onMessageOpenedApp Notification tapped in background: ${message.data} ");
+      _navigateBasedOnNotification(navigatorKey, message);
+    });
+
+    _messaging.getInitialMessage().then((message) {
+      if (message != null) {
+        log("Notification tapped from terminated state: ${message.data}");
+        _navigateBasedOnNotification(navigatorKey, message);
+      }
+    });
+  }
+
+  static void _navigateBasedOnNotification(
+      GlobalKey<NavigatorState> navigatorKey, RemoteMessage message) {
+    //! Add check here according to route name comes from message.data , navigate to needed screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      navigatorKey.currentState
+          ?.pushNamed(Routes.mentalUmbrellaHealthQuestionnairePage);
+    });
   }
 
   static void sendTokenToServer(String token) {
-    // option 1 => API
-    // option 2 => Firebase
+    // Implement API call to send token to your backend if needed
   }
 }
-/*
-  1.Permissions [done]
-  2.fcm token [done]
-  3.test using token with Firebase [done]
-  4.fire notification [background] [done]
-  5.fire notification [killed] [done]
-  6.fire notification [foreground] [done]
-  7.test using token with Postman [done]
-  8.send Image with notification [done]
-  9.send notfification with custom sound [done]
-  10.send token to server [done]
-  11.topic [done]
- */

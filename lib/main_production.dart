@@ -10,6 +10,7 @@ import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
@@ -26,7 +27,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await PushNotificationsService.init();
+  await PushNotificationsService.init(navigatorKey);
   tz.initializeTimeZones();
 
   await Hive.initFlutter();

@@ -446,48 +446,48 @@ class AppRouter {
             docId: argumentsMap?['docId'],
           ), //MentalIllnessFollowUpReportDetailsView(),
         );
-      // case Routes.mentalUmbrellaHealthQuestionnairePage:
-      //   return MaterialPageRoute(
-      //     builder: (context) => MentalHealthQuestionnairePage(
-      //       questions: [
-      //         const QuestionnaireItem(
-      //           text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالقلق أو التوتر الزائد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
-      //         ),
-      //       ],
-      //       onAnswersChanged: (answers) => print(answers),
-      //       onPrevious: () {},
-      //     ),
-      //   );
+      case Routes.mentalUmbrellaHealthQuestionnairePage:
+        return MaterialPageRoute(
+          builder: (context) => MentalHealthQuestionnairePage(
+            questions: [
+              const QuestionnaireItem(
+                text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالقلق أو التوتر الزائد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
+              ),
+            ],
+            onAnswersChanged: (answers) => print(answers),
+            onPrevious: () {},
+          ),
+        );
       case Routes.mentalIllnessDocDetailsView:
         final argumentsMap = arguments as Map<String, dynamic>;
 
