@@ -38,6 +38,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_health_questionare_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
@@ -448,7 +449,7 @@ class AppRouter {
         );
       case Routes.mentalUmbrellaHealthQuestionnairePage:
         return MaterialPageRoute(
-          builder: (context) => MentalHealthQuestionnairePage(
+          builder: (context) => MentalHealthQuestionnaireView(
             questions: [
               const QuestionnaireItem(
                 text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
