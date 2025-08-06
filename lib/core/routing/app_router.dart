@@ -485,8 +485,6 @@ class AppRouter {
                 text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
               ),
             ],
-            onAnswersChanged: (answers) => print(answers),
-            onPrevious: () {},
           ),
         );
       case Routes.mentalIllnessDocDetailsView:

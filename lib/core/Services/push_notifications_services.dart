@@ -38,7 +38,7 @@ class PushNotificationsService {
       log("Foreground notification: ${message.notification?.title}");
       if (message.notification != null) {
         LocalNotificationService.showBasicNotification(message);
-        _navigateBasedOnNotification(navigatorKey, message);
+        // _navigateBasedOnNotification(navigatorKey, message);
       }
     });
   }
@@ -49,7 +49,7 @@ class PushNotificationsService {
       log(" onMessageOpenedApp Notification tapped in background: ${message.data} ");
       _navigateBasedOnNotification(navigatorKey, message);
     });
-
+    // Handle notification taps when the app is in the terminated state
     _messaging.getInitialMessage().then((message) {
       if (message != null) {
         log("Notification tapped from terminated state: ${message.data}");
@@ -61,10 +61,12 @@ class PushNotificationsService {
   static void _navigateBasedOnNotification(
       GlobalKey<NavigatorState> navigatorKey, RemoteMessage message) {
     //! Add check here according to route name comes from message.data , navigate to needed screen
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      navigatorKey.currentState
-          ?.pushNamed(Routes.mentalUmbrellaHealthQuestionnairePage);
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        navigatorKey.currentState
+            ?.pushNamed(Routes.mentalUmbrellaHealthQuestionnairePage);
+      },
+    );
   }
 
   static void sendTokenToServer(String token) {

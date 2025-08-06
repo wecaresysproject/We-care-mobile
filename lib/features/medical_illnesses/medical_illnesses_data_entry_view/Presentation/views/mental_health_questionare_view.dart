@@ -2,22 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MentalHealthQuestionnaireView extends StatefulWidget {
   final List<QuestionnaireItem> questions;
-  final VoidCallback? onNext;
-  final VoidCallback? onPrevious;
-  final Function(Map<int, bool>)? onAnswersChanged;
 
   const MentalHealthQuestionnaireView({
     super.key,
     required this.questions,
-    this.onNext,
-    this.onPrevious,
-    this.onAnswersChanged,
   });
 
   @override
@@ -47,22 +41,22 @@ class _MentalHealthQuestionnairePageState
       answers[questionIndex] = answer;
       _updateProgress();
     });
-    widget.onAnswersChanged?.call(answers);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          toolbarHeight: 0,
-        ),
-        body: Column(
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+        child: Column(
           children: [
-            CustomAppBarWidget(
-              haveBackArrow: true,
+            AppBarWithCenteredTitle(
+              title: 'تقييم الحالة النفسية',
+              showActionButtons: false,
+              titleColor: AppColorsManager.mainDarkBlue,
             ),
             // Progress Header
             ProgressHeader(
@@ -90,9 +84,7 @@ class _MentalHealthQuestionnairePageState
 
             // Navigation Footer
             NavigationFooter(
-              onNext: widget.onNext,
-              onPrevious: widget.onPrevious,
-              canProceed: answers.length == widget.questions.length,
+              onPress: () => print('Send answers'),
             ),
           ],
         ),
@@ -145,7 +137,7 @@ class QuestionCard extends StatelessWidget {
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 20),
+          verticalSpacing(20),
           Row(
             children: [
               Expanded(
@@ -238,22 +230,31 @@ class ProgressHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.only(bottom: 20, left: 8.w, right: 8.w, top: 12.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${(progress * 100).toInt()}%',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.grey,
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: LinearProgressIndicator(
+              value: progress,
+              backgroundColor: Colors.grey[300],
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColorsManager.mainDarkBlue,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: Colors.grey[300],
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4A90E2)),
+          verticalSpacing(4),
+          Row(
+            children: [
+              Text(
+                '${(progress * 100).toInt()}%',
+                style: AppTextStyles.font22WhiteWeight600.copyWith(
+                  fontSize: 16.sp,
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -263,80 +264,46 @@ class ProgressHeader extends StatelessWidget {
 
 // Navigation footer component
 class NavigationFooter extends StatelessWidget {
-  final VoidCallback? onNext;
-  final VoidCallback? onPrevious;
-  final bool canProceed;
+  final VoidCallback? onPress;
 
   const NavigationFooter({
     super.key,
-    this.onNext,
-    this.onPrevious,
-    required this.canProceed,
+    this.onPress,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Colors.grey[100],
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          if (onPrevious != null)
-            Expanded(
-              child: OutlinedButton(
-                onPressed: onPrevious,
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  side: const BorderSide(color: Color(0xFF4A90E2)),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.arrow_back, color: Color(0xFF4A90E2)),
-                    SizedBox(width: 8),
-                    Text(
-                      'السابق',
-                      style: TextStyle(
-                        color: Color(0xFF4A90E2),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+          Expanded(
+            child: OutlinedButton(
+              onPressed: onPress,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                side: const BorderSide(color: AppColorsManager.mainDarkBlue),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-            ),
-          if (onPrevious != null && onNext != null) const SizedBox(width: 16),
-          if (onNext != null)
-            Expanded(
-              child: ElevatedButton(
-                onPressed: canProceed ? onNext : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A90E2),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  disabledBackgroundColor: Colors.grey[300],
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'التالي',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Icon(Icons.arrow_back, color: Color(0xFF4A90E2)),
+                  SizedBox(width: 8),
+                  Text(
+                    'إرسال إجاباتي',
+                    style: AppTextStyles.font20blackWeight600.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColorsManager.mainDarkBlue,
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, color: Colors.white),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
+          ),
         ],
       ),
     );
@@ -354,45 +321,4 @@ class QuestionnaireItem {
     this.yesText,
     this.noText,
   });
-}
-
-// Example usage
-class ExampleUsage extends StatefulWidget {
-  const ExampleUsage({super.key});
-
-  @override
-  _ExampleUsageState createState() => _ExampleUsageState();
-}
-
-class _ExampleUsageState extends State<ExampleUsage> {
-  final List<QuestionnaireItem> questions = [
-    const QuestionnaireItem(
-      text: 'هل تشعر أنك لا تستطيع أن تكون أكثر إنتاجية؟',
-    ),
-    const QuestionnaireItem(
-      text: 'هل تشعر بأنك عبء على من حولك دون فائدة حقيقية؟',
-    ),
-    const QuestionnaireItem(
-      text: 'هل تشعر أحياناً بأن لا شيء سيتغير مهما حاولت؟',
-    ),
-    const QuestionnaireItem(
-      text: 'هل تفكر لديك أفكار بأنك شخص فاشل أو غير جدير بالحياة؟',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return MentalHealthQuestionnaireView(
-      questions: questions,
-      onNext: () {
-        print('Next button pressed');
-      },
-      onPrevious: () {
-        print('Previous button pressed');
-      },
-      onAnswersChanged: (answers) {
-        print('Answers changed: $answers');
-      },
-    );
-  }
 }
