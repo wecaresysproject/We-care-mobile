@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
-import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/widgets/medical_categories_types_grid_view.dart';
 
 class MedicalCategoriesTypesView extends StatelessWidget {
@@ -23,7 +22,7 @@ class MedicalCategoriesTypesView extends StatelessWidget {
           ),
           verticalSpacing(24),
           BasicDataAndBiometricMeasurementsCategoriesView(),
-          // MedicalCategoriesTypesGridView(),
+          MedicalCategoriesTypesGridView(),
         ],
       ).paddingSymmetricHorizontal(16),
     );
@@ -43,21 +42,16 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
         MedicalCategoryItem(
           title: "القياسات الحيوية",
           imagePath: "assets/images/medical_tools_img.png",
-          routeName: Routes.eyesOrGlassesDataView,
-          isActive: true,
-          onTap: () async {
-            await Navigator.pushNamed(context, Routes.eyesOrGlassesDataView);
-          },
+          routeName: '',
+          isActive: false,
+          onTap: () async {},
         ),
         MedicalCategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
-          routeName: Routes.medicalIllnessOrMindUmbrellaView,
-          isActive: true,
-          onTap: () async {
-            await Navigator.pushNamed(
-                context, Routes.medicalIllnessOrMindUmbrellaView);
-          },
+          routeName: '',
+          isActive: false,
+          onTap: () async {},
         ),
       ],
     );

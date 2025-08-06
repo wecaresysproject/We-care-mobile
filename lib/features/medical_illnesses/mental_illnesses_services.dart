@@ -68,51 +68,97 @@ abstract class MentalIllnessesServices {
     @Query('id') String documentId,
     @Body() MentalIllnessRequestBody requestBody,
   );
+  //! Data View
+  //! 1.
 
-  // /// 1. Get Available Years
-  // @GET(EyesApiConstants.getAvailableYears)
-  // Future<dynamic> getAvailableYears(
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  //   @Query("affectedEyePart") String affectedEyePart,
-  // );
+  @GET(MentalIllnessesConstants.getIsUmbrellaMentalIllnessButtonActivated)
+  Future<dynamic> getIsUmbrellaMentalIllnessButtonActivated();
 
-  // /// 2. Get All Documents (With Pagination)
-  // @GET(EyesApiConstants.getAllDocuments)
-  // Future<dynamic> getAllDocuments({
-  //   @Query("page") required int page,
-  //   @Query("limit") required int limit,
-  //   @Query("language") required String language,
-  //   @Query("UserType") required String userType,
-  //   @Query("affectedEyePart") required String affectedEyePart,
-  // });
+  //! 2.
+  @GET(MentalIllnessesConstants.getMedicalIllnessDocsAvailableYears)
+  Future<dynamic> getMedicalIllnessDocsAvailableYears(
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+  //! 3. getMentalIllnessRecords  (With Pagination)
+  @GET(MentalIllnessesConstants.getMentalIllnessRecords)
+  Future<dynamic> getMentalIllnessRecords({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
+  //! 4.
 
-  // /// 3. Get Filtered Documents
-  // @GET(EyesApiConstants.getFilteredDocuments)
-  // Future<dynamic> getFilteredDocuments(
-  //   @Query("year") String? year,
-  //   @Query("category") String? category,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  //   @Query("affectedEyePart") String affectedEyePart,
-  // );
+  @GET(MentalIllnessesConstants.getFilteredMentalIllnessDocuments)
+  Future<dynamic> getFilteredMentalIllnessDocuments(
+    @Query("year") String? year,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
-  // /// 4. Get Document Details by ID
-  // @GET(EyesApiConstants.getDocumentDetailsById)
-  // Future<dynamic> getDocumentDetailsById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  // );
+  //! 5
+  @GET(MentalIllnessesConstants.getMentalIllnessDocumentDetailsById)
+  Future<dynamic> getMentalIllnessDocumentDetailsById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
-  // /// 5. Delete Document by ID
-  // @DELETE(EyesApiConstants.deleteDocumentById)
-  // Future<dynamic> deleteDocumentById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  // );
+  //! 6.
+  @DELETE(MentalIllnessesConstants.deleteMentalIllnessDetailsDocumentById)
+  Future<dynamic> deleteMentalIllnessDetailsDocumentById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+  //! 7.
 
+  @GET(MentalIllnessesConstants.getMedicalIllnessUmbrellaDocs)
+  Future<dynamic> getMedicalIllnessUmbrellaDocs({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
+  //! 8.
+
+  @GET(MentalIllnessesConstants.getAllAnsweredQuestions)
+  Future<dynamic> getAllAnsweredQuestions({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+  });
+  //! 9.
+
+  @GET(MentalIllnessesConstants.getFollowUpReportsAvailableYears)
+  Future<dynamic> getFollowUpReportsAvailableYears(
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+  //! 10.
+
+  @GET(MentalIllnessesConstants.getFilteredFollowUpReports)
+  Future<dynamic> getFilteredFollowUpReports(
+    @Query("year") String? year,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
+  //! 11.
+
+  @GET(MentalIllnessesConstants.getAllFollowUpReportsRecords)
+  Future<dynamic> getAllFollowUpReportsRecords({
+    @Query("language") required String language,
+    @Query("userType") required String userType,
+    @Query("page") required int page,
+    @Query("limit") required int limit,
+  });
+  //! 12.
+  @GET(MentalIllnessesConstants.getFollowUpDocumentDetailsById)
+  Future<dynamic> getFollowUpDocumentDetailsById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
   // /// 6. Get Glasses Records (With Pagination)
   // @GET(EyesApiConstants.getGlassesRecords)
   // Future<dynamic> getAllGlasses({

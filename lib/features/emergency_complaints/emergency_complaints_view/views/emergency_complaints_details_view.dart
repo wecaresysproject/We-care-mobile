@@ -28,13 +28,13 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
         appBar: AppBar(toolbarHeight: 0.h),
         body: BlocConsumer<EmergencyComplaintsViewCubit,
             EmergencyComplaintViewState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.requestStatus == RequestStatus.success &&
                 state.isDeleteRequest) {
-              showSuccess("تم حذف الشكوى بنجاح");
-              Navigator.pop(context);
+              Navigator.pop(context, true);
+              await showSuccess("تم حذف الشكوى بنجاح");
             } else if (state.requestStatus == RequestStatus.failure) {
-              showError(state.responseMessage);
+              await showError(state.responseMessage);
             }
           },
           builder: (context, state) {

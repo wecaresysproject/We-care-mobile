@@ -325,7 +325,7 @@ final List<Map<String, dynamic>> categoriesView = [
   },
   {
     "title": "العيون",
-    "image": "assets/images/hand_icon.png", //TODO: Change Icon مشفثق
+    "image": "assets/images/eye_module_pic.png",
     "route": Routes.eyesOrGlassesDataView,
     "isActive": true,
   },
@@ -374,8 +374,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
-    "route": "/general_health",
-    "isActive": false,
+    "route": Routes.medicalIllnessOrMindUmbrellaView,
+    "isActive": true,
   },
   {
     "title": "السلوكيات\nالخطرة",

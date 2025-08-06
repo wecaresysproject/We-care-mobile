@@ -2,15 +2,19 @@ import 'dart:developer';
 
 import 'package:accordion/accordion.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/medical_illnesses/data/models/severity_level_enum.dart';
-import 'package:we_care/features/medical_illnesses/data/models/umbrella_mental_ilness_record_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
 class MentalIllnessesUmbrellRecordsView extends StatefulWidget {
   const MentalIllnessesUmbrellRecordsView({super.key});
@@ -25,232 +29,273 @@ class _MentalIllnessesUmbrellRecordsViewState
   // Control open/close logic
   int? openedIndex;
 
-  final List<UmbrellaMentalIlnesssRecordModel> categories = [
-    UmbrellaMentalIlnesssRecordModel(
-        'الأفكار الوسواسية\nوالمعتقدات\nالمنحرفة',
-        SeverityLevel.confirmedRisk,
-        AppColorsManager.criticalRisk,
-        Icons.psychology,
-        45,
-        45,
-        45,
-        45),
-    UmbrellaMentalIlnesssRecordModel(
-      'الأفكار السلبية\nوالاتجاهات\nالتدميرية',
-      SeverityLevel.normal,
-      AppColorsManager.safe,
-      Icons.dangerous,
-      45,
-      45,
-      45,
-      45,
+  final List<MentalIllnessUmbrellaModel> dummyMentalIllnessCategories = [
+    MentalIllnessUmbrellaModel(
+      id: 'risk_001',
+      title: 'الأفكار الوسواسية والمعتقدات المنحرفة',
+      riskLevel: RiskLevel.confirmedRisk,
+      followUpMonths: 6,
+      answeredQuestionsCount: 12,
+      lastMonthScore: 18,
+      cumulativeScore: 85,
     ),
-    UmbrellaMentalIlnesssRecordModel(
-      'الحالة المزاجية',
-      SeverityLevel.partialRisk,
-      AppColorsManager.elevatedRisk,
-      Icons.mood,
-      45,
-      45,
-      45,
-      45,
+    MentalIllnessUmbrellaModel(
+      id: 'risk_009',
+      title: 'الأفكار الوسواسية والمعتقدات المنحرفة',
+      riskLevel: RiskLevel.confirmedRisk,
+      followUpMonths: 6,
+      answeredQuestionsCount: 12,
+      lastMonthScore: 18,
+      cumulativeScore: 85,
     ),
-    UmbrellaMentalIlnesssRecordModel(
-        'العلاقات الاجتماعية\nوالاندماج المجتمعي',
-        SeverityLevel.monitoring,
-        AppColorsManager.warning,
-        Icons.people,
-        45,
-        45,
-        45,
-        45),
-    UmbrellaMentalIlnesssRecordModel(
-      'الذكيرة والانتباه\nوالاضطرابات\nالتذكيرية والحسية',
-      SeverityLevel.normal,
-      Colors.green,
-      Icons.memory,
-      45,
-      45,
-      45,
-      45,
+    MentalIllnessUmbrellaModel(
+      id: 'risk_002',
+      title: 'الأفكار الوسواسية والمعتقدات المنحرفة',
+      riskLevel: RiskLevel.confirmedRisk,
+      followUpMonths: 6,
+      answeredQuestionsCount: 12,
+      lastMonthScore: 18,
+      cumulativeScore: 85,
     ),
-    UmbrellaMentalIlnesssRecordModel(
-        'الأفكار الوسواسية\nوالمعتقدات\nالمنحرفة',
-        SeverityLevel.confirmedRisk,
-        AppColorsManager.criticalRisk,
-        Icons.psychology,
-        45,
-        45,
-        45,
-        45),
-    UmbrellaMentalIlnesssRecordModel(
-      'الأفكار السلبية\nوالاتجاهات\nالتدميرية',
-      SeverityLevel.normal,
-      AppColorsManager.safe,
-      Icons.dangerous,
-      45,
-      45,
-      45,
-      45,
+    MentalIllnessUmbrellaModel(
+      id: 'risk_003',
+      title: 'الحالة المزاجية',
+      riskLevel: RiskLevel.partialRisk,
+      followUpMonths: 4,
+      answeredQuestionsCount: 10,
+      lastMonthScore: 14,
+      cumulativeScore: 55,
     ),
-    UmbrellaMentalIlnesssRecordModel(
-      'الحالة المزاجية',
-      SeverityLevel.partialRisk,
-      AppColorsManager.elevatedRisk,
-      Icons.mood,
-      45,
-      45,
-      45,
-      45,
+    MentalIllnessUmbrellaModel(
+      id: 'risk_004',
+      title: 'العلاقات الاجتماعية والاندماج المجتمعي',
+      riskLevel: RiskLevel.underObservation,
+      followUpMonths: 5,
+      answeredQuestionsCount: 9,
+      lastMonthScore: 13,
+      cumulativeScore: 60,
     ),
-    UmbrellaMentalIlnesssRecordModel(
-        'العلاقات الاجتماعية\nوالاندماج المجتمعي',
-        SeverityLevel.monitoring,
-        AppColorsManager.warning,
-        Icons.people,
-        45,
-        45,
-        45,
-        45),
-    UmbrellaMentalIlnesssRecordModel(
-      'الذكيرة والانتباه\nوالاضطرابات\nالتذكيرية والحسية',
-      SeverityLevel.normal,
-      Colors.green,
-      Icons.memory,
-      45,
-      45,
-      45,
-      45,
+    MentalIllnessUmbrellaModel(
+      id: 'risk_005',
+      title: 'الذاكرة والانتباه والاضطرابات الحسية',
+      riskLevel: RiskLevel.normal,
+      followUpMonths: 2,
+      answeredQuestionsCount: 7,
+      lastMonthScore: 10,
+      cumulativeScore: 35,
+    ),
+    MentalIllnessUmbrellaModel(
+      id: 'risk_006',
+      title: 'القلق والتوتر والاضطرابات النفسية',
+      riskLevel: RiskLevel.confirmedRisk,
+      followUpMonths: 8,
+      answeredQuestionsCount: 15,
+      lastMonthScore: 20,
+      cumulativeScore: 90,
+    ),
+    MentalIllnessUmbrellaModel(
+      id: 'risk_007',
+      title: 'الاضطرابات السلوكية والانفعالية',
+      riskLevel: RiskLevel.partialRisk,
+      followUpMonths: 4,
+      answeredQuestionsCount: 11,
+      lastMonthScore: 16,
+      cumulativeScore: 70,
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                CustomAppBarWidget(
-                  haveBackArrow: true,
-                ),
-                verticalSpacing(40),
-                _buildActionButtons(),
-                verticalSpacing(36),
-                const SizedBox(height: 24),
-                _buildSeverityIndicator(),
-                const SizedBox(height: 24),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: categories.length,
-                  reverse: true, // This ensures proper z-index layering
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 2,
-                    crossAxisSpacing: 0,
-                    mainAxisSpacing: 0,
+    return BlocProvider<MentalIllnessDataViewCubit>(
+      create: (context) => getIt<
+          MentalIllnessDataViewCubit>(), //..getMedicalIllnessUmbrellaDocs(),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  CustomAppBarWidget(
+                    haveBackArrow: true,
                   ),
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    final isOpen = openedIndex == index;
+                  verticalSpacing(40),
+                  _buildActionButtons(),
+                  verticalSpacing(36),
+                  const SizedBox(height: 24),
+                  _buildSeverityIndicator(),
+                  const SizedBox(height: 24),
+                  BlocBuilder<MentalIllnessDataViewCubit,
+                      MentalIllnessDataViewState>(
+                    builder: (context, state) {
+                      // Handle different states
+                      if (state.requestStatus == RequestStatus.loading) {
+                        //  !state.isLoadingMore) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    return OverflowBox(
-                      maxHeight:
-                          400, // Adjust this value based on your content height
-                      alignment: Alignment.topCenter,
-                      child: Accordion(
-                        disableScrolling: false,
-                        paddingListTop: 0,
-                        paddingBetweenOpenSections: 0,
-                        paddingBetweenClosedSections: 0,
-                        paddingListBottom: 0,
-                        maxOpenSections: 1,
-                        headerBackgroundColor: category.color,
-                        paddingListHorizontal: 10,
-                        flipLeftIconIfOpen: true,
-                        contentVerticalPadding: 4,
-                        contentBorderColor: category.color,
-                        contentBackgroundColor:
-                            Colors.white, // Make content background solid
-                        contentBorderRadius: 12.r,
-                        contentHorizontalPadding: 12,
-                        contentBorderWidth: 2,
-                        openAndCloseAnimation: true,
-                        headerBorderColor: Colors.transparent,
-                        headerBorderRadius: 16.r,
-                        headerPadding: EdgeInsets.symmetric(horizontal: 12.w),
-                        flipRightIconIfOpen: false,
-                        scaleWhenAnimating: true,
-                        rightIcon: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 26,
-                          color: _getDesiredColor(category),
+                      if (state.requestStatus == RequestStatus.failure) {
+                        return Center(
+                          child: Text(
+                            state.responseMessage.isNotEmpty
+                                ? state.responseMessage
+                                : 'حدث خطأ ما',
+                            style: AppTextStyles.font22MainBlueWeight700,
+                          ),
+                        );
+                      }
+
+                      final records = state.mentalIllnessUmbrellaRecords;
+                      if (records.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'لا توجد بيانات',
+                            style: AppTextStyles.font22MainBlueWeight700,
+                          ),
+                        );
+                      }
+
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: dummyMentalIllnessCategories.length,
+                        reverse: true, // This ensures proper z-index layering
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 2,
+                          crossAxisSpacing: 0,
+                          mainAxisSpacing: 0,
                         ),
-                        children: [
-                          AccordionSection(
-                            isOpen: isOpen,
-                            index: openedIndex ?? 0,
-                            onOpenSection: () {
-                              setState(() => openedIndex = index);
-                            },
-                            onCloseSection: () {
-                              setState(() => openedIndex = null);
-                            },
-                            contentBorderColor: category.color.withOpacity(0.3),
-                            header: Container(
-                              height: 70.h,
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: category.color,
-                                borderRadius: BorderRadius.circular(12.r),
+                        itemBuilder: (context, index) {
+                          final category = dummyMentalIllnessCategories[index];
+                          final isOpen = openedIndex == index;
+
+                          return OverflowBox(
+                            maxHeight:
+                                400, // Adjust this value based on your content height
+                            alignment: Alignment.topCenter,
+                            child: Accordion(
+                              disableScrolling: false,
+                              paddingListTop: 0,
+                              paddingBetweenOpenSections: 0,
+                              paddingBetweenClosedSections: 0,
+                              paddingListBottom: 0,
+                              maxOpenSections: 1,
+                              headerBackgroundColor:
+                                  getCategoryColorRelativeToRiskLevel(
+                                      category.riskLevel),
+                              paddingListHorizontal: 10,
+                              flipLeftIconIfOpen: true,
+                              contentVerticalPadding: 4,
+                              contentBorderColor:
+                                  getCategoryColorRelativeToRiskLevel(
+                                category.riskLevel,
                               ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      category.title,
-                                      style: AppTextStyles.font14whiteWeight600
-                                          .copyWith(
-                                        fontSize: 13.2.sp,
-                                        color: _getDesiredColor(category),
-                                        fontWeight: category.severityLevel ==
-                                                SeverityLevel.confirmedRisk
-                                            ? FontWeight.bold
-                                            : FontWeight.w600,
+                              contentBackgroundColor:
+                                  Colors.white, // Make content background solid
+                              contentBorderRadius: 12.r,
+                              contentHorizontalPadding: 12,
+                              contentBorderWidth: 2,
+                              openAndCloseAnimation: true,
+                              headerBorderColor: Colors.transparent,
+                              headerBorderRadius: 16.r,
+                              headerPadding:
+                                  EdgeInsets.symmetric(horizontal: 12.w),
+                              flipRightIconIfOpen: false,
+                              scaleWhenAnimating: true,
+                              rightIcon: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 26,
+                                color: _getCategoryTitleDesiredColor(category),
+                              ),
+                              children: [
+                                AccordionSection(
+                                  isOpen: isOpen,
+                                  index: openedIndex ?? 0,
+                                  onOpenSection: () {
+                                    setState(() => openedIndex = index);
+                                  },
+                                  onCloseSection: () {
+                                    setState(() => openedIndex = null);
+                                  },
+                                  contentBorderColor:
+                                      getCategoryColorRelativeToRiskLevel(
+                                    category.riskLevel,
+                                  ).withOpacity(0.3),
+                                  header: Container(
+                                    height: 70.h,
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          getCategoryColorRelativeToRiskLevel(
+                                        category.riskLevel,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      borderRadius: BorderRadius.circular(12.r),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            category.title,
+                                            style: AppTextStyles
+                                                .font14whiteWeight600
+                                                .copyWith(
+                                              fontSize: 13.2.sp,
+                                              color:
+                                                  _getCategoryTitleDesiredColor(
+                                                      category),
+                                              fontWeight: category.riskLevel ==
+                                                      RiskLevel.confirmedRisk
+                                                  ? FontWeight.bold
+                                                  : FontWeight.w600,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                  content: _buildExpandedContent(category),
+                                ),
+                              ],
                             ),
-                            content: _buildExpandedContent(category),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-          // Optional: Add a semi-transparent overlay when any item is expanded
-          if (openedIndex != null)
-            GestureDetector(
-              onTap: () {
-                setState(() => openedIndex = null);
-              },
-              child: SizedBox.shrink(),
-            ),
-        ],
+            // Optional: Add a semi-transparent overlay when any item is expanded
+            if (openedIndex != null)
+              GestureDetector(
+                onTap: () {
+                  setState(() => openedIndex = null);
+                },
+                child: SizedBox.shrink(),
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  /// Returns color corresponding to the given [RiskLevel].
+  Color getCategoryColorRelativeToRiskLevel(RiskLevel level) {
+    switch (level) {
+      case RiskLevel.normal:
+        return AppColorsManager.safe;
+      case RiskLevel.underObservation:
+        return AppColorsManager.warning;
+      case RiskLevel.partialRisk:
+        return AppColorsManager.elevatedRisk;
+      case RiskLevel.confirmedRisk:
+        return AppColorsManager.criticalRisk;
+    }
   }
 
   Widget _buildSeverityIndicator() {
@@ -265,8 +310,8 @@ class _MentalIllnessesUmbrellRecordsViewState
     );
   }
 
-  _getDesiredColor(UmbrellaMentalIlnesssRecordModel category) {
-    if (category.severityLevel == SeverityLevel.confirmedRisk) {
+  _getCategoryTitleDesiredColor(MentalIllnessUmbrellaModel category) {
+    if (category.riskLevel == RiskLevel.confirmedRisk) {
       return Colors.white;
     }
     return Colors.black;
@@ -287,11 +332,11 @@ class _MentalIllnessesUmbrellRecordsViewState
     );
   }
 
-  Widget _buildExpandedContent(UmbrellaMentalIlnesssRecordModel category) {
+  Widget _buildExpandedContent(MentalIllnessUmbrellaModel category) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (category.severityLevel == SeverityLevel.confirmedRisk)
+        if (category.riskLevel == RiskLevel.confirmedRisk)
           Column(
             children: [
               _buildContactItem(
@@ -299,7 +344,7 @@ class _MentalIllnessesUmbrellRecordsViewState
               const Divider(height: 1),
             ],
           ),
-        if (category.severityLevel == SeverityLevel.partialRisk) ...[
+        if (category.riskLevel == RiskLevel.partialRisk) ...[
           Column(
             children: [
               _buildContactItem(
@@ -311,15 +356,15 @@ class _MentalIllnessesUmbrellRecordsViewState
             ],
           ),
         ],
-        _buildStatRow('عدد أشهر المتابعة:', category.followUpCount.toString()),
+        _buildStatRow('عدد أشهر المتابعة:', category.followUpMonths.toString()),
         const Divider(height: 1),
         _buildStatRow(
-            'عدد الأسئلة المجابة:', category.answeredQuestions.toString()),
+            'عدد الأسئلة المجابة:', category.answeredQuestionsCount.toString()),
         const Divider(height: 1),
-        _buildStatRow('درجات أشهر الخطر:', category.riskScores.toString()),
+        _buildStatRow('درجات أشهر الخطر:', category.lastMonthScore.toString()),
         const Divider(height: 1),
         _buildStatRow(
-            'الدرجات التراكمية:', category.cumulativeScores.toString()),
+            'الدرجات التراكمية:', category.cumulativeScore.toString()),
       ],
     );
   }
@@ -372,7 +417,7 @@ class _MentalIllnessesUmbrellRecordsViewState
       children: [
         Expanded(
           child: _buildActionButton(
-            title: 'الأسئلة المجاني عليها يعم',
+            title: 'الأسئلة المجاب عليها يعم',
             iconPath: "assets/images/question_mark.png",
             onTap: () async {
               log('nnaaavigatttte');

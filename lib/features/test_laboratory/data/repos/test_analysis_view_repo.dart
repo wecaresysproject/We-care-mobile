@@ -22,11 +22,11 @@ class TestAnalysisViewRepo {
     }
   }
 
-  Future<ApiResult<GetUserAnalysisReponseModel>> getTests({int? page, int? pageSize}) async {
+  Future<ApiResult<GetUserAnalysisReponseModel>> getTests(
+      {int? page, int? pageSize}) async {
     try {
-      final response =
-          await testAnalysisSerices.getUserTests(AppStrings.arabicLang,
-              'Patient', page ?? 1, pageSize ?? 10);
+      final response = await testAnalysisSerices.getUserTests(
+          AppStrings.arabicLang, 'Patient', page ?? 1, pageSize ?? 10);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

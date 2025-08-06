@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
@@ -42,58 +47,87 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 16.h,
+    return BlocProvider<MentalIllnessDataViewCubit>(
+      create: (context) =>
+          getIt<MentalIllnessDataViewCubit>()..initialRequestsForFollowUpView(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
         ),
-        child: Column(
-          children: [
-            ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(
-                  title: "السنة",
-                  options: [],
-                ), // state.yearsFilter ?? []),
-              ],
-              onApply: (selectedOption) {
-                // context.read<DentalViewCubit>().getFilteredToothDocuments(
-                //       year: selectedOption['السنة'] as int?,
-                //       procedureType:
-                //           selectedOption["نوع الاجراء الطبي"] as String?,
-                //       toothNumber: selectedOption['رقم السن'] as String?,
-                //     );
-              },
-            ),
-            verticalSpacing(16),
-            MedicalItemGridView(
-              items: dummyPrescriptions,
-              // isExpendingTileTitle: true,
-              onTap: (id) async {
-                // يمكن عرض SnackBar أو التنقل لصفحة التفاصيل
-                await context.pushNamed(
-                  Routes.mentalIllnessFollowUpReportDetailsView,
-                  arguments: {
-                    'detailsModel': dummyPrescriptions.firstWhere(
-                      (element) => element.id == id,
+        body:
+            BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
+          builder: (context, state) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 16.h,
+              ),
+              child: Column(
+                children: [
+                  ViewAppBar(),
+                  DataViewFiltersRow(
+                    filters: [
+                      FilterConfig(
+                        title: "السنة",
+                        options: state.yearsFilter,
+                      ),
+                    ],
+                    onApply: (selectedOption) async {
+                      await context
+                          .read<MentalIllnessDataViewCubit>()
+                          .getFilteredFollowUpReports(
+                            year: selectedOption['السنة'],
+                          );
+                    },
+                  ),
+                  verticalSpacing(16),
+                  if (state.requestStatus == RequestStatus.loading)
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  else if (state.followUpRecords.isEmpty)
+                    Center(
+                      child: Text(
+                        "لا يوجد بيانات",
+                        style: AppTextStyles.font22MainBlueWeight700,
+                      ),
+                    )
+                  else ...[
+                    MedicalItemGridView(
+                      items: state.followUpRecords,
+                      // isExpendingTileTitle: true,
+                      onTap: (id) async {
+                        // يمكن عرض SnackBar أو التنقل لصفحة التفاصيل
+                        final result = await context.pushNamed(
+                          Routes.mentalIllnessFollowUpReportDetailsView,
+                          arguments: {
+                            'docId': id,
+                          },
+                        );
+                        if (result != null &&
+                            result as bool &&
+                            context.mounted) {
+                          await context
+                              .read<MentalIllnessDataViewCubit>()
+                              .getAllFollowUpReportsRecords();
+                          await context
+                              .read<MentalIllnessDataViewCubit>()
+                              .getFollowUpReportsAvailableYears();
+                        }
+                      },
+                      titleBuilder: (item) => item.title,
+                      infoRowBuilder: (item) => [
+                        {'title': 'التاريخ:', 'value': item.date},
+                        {'title': 'نوع التقرير:', 'value': item.reportType},
+                      ],
                     ),
-                  },
-                );
-              },
-              titleBuilder: (item) => item.title,
-              infoRowBuilder: (item) => [
-                {'title': 'التاريخ:', 'value': item.date},
-                {'title': 'نوع التقرير:', 'value': item.reportType},
-              ],
-            ),
-            verticalSpacing(16),
-            MentalIlnessFollowUpFooterRow(),
-          ],
+                  ],
+                  verticalSpacing(16),
+                  MentalIlnessFollowUpFooterRow(),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

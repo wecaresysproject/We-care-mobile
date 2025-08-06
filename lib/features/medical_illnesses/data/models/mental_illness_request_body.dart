@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 
 part 'mental_illness_request_body.g.dart';
 
@@ -7,6 +6,7 @@ part 'mental_illness_request_body.g.dart';
 class MentalIllnessRequestBody {
   final String diagnosisDate;
   final String mentalIllnessType;
+  @JsonKey(name: 'medicalSymptomsList')
   final List<String> symptomsList;
   final String illnessSeverity;
   final String illnessDuration;

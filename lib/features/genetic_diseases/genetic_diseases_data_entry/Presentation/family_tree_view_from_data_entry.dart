@@ -587,6 +587,8 @@ class _AddFamilyMemberDialogState extends State<AddFamilyMemberDialog> {
               ),
               SizedBox(height: 16.h),
               TextFormField(
+                onTapOutside: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: 'ادخل اسم فرد عائلتك',

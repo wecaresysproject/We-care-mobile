@@ -17,29 +17,25 @@ class MentalIllnessesConstants {
       '/v1/lookup/preferred-activities';
 
   //View Entry
-  static const deleteSurgeryById = "/api/EnterSectionSurgery";
-  static const getAllSurgeries = "/api/EnterSectionSurgery";
-  static const getSingleSurgery = "/api/ViewSectionSurgery/filter-by-id";
+  //!New
+  static const getIsUmbrellaMentalIllnessButtonActivated =
+      "/v1/lookup/mental-illness-umbrella-activated";
+  static const getMedicalIllnessDocsAvailableYears = "/v1/available-years";
+  static const getMentalIllnessRecords = "/v1/medicalIllnessDocuments";
+  static const getFilteredMentalIllnessDocuments = "/v1/documents/filter";
+  static const getMentalIllnessDocumentDetailsById = "/v1/document";
+
+  static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
+  static const getMedicalIllnessUmbrellaDocs =
+      "/api/getMedicalIllnessUmbrellaDocs";
+  static const getAllAnsweredQuestions = "/v1/lookup/getAllAnsweredQuestions";
+  static const getFollowUpReportsAvailableYears =
+      "/v1/lookup/getFollowUpReportsAvailableYears";
+  static const getAllFollowUpReportsRecords =
+      "/v1/lookup/getAllFollowUpReportsRecords";
+  static const getFilteredFollowUpReports =
+      "/v1/lookup/getFilteredFollowUpReports";
   static const editSurgeryEndpoint = "/api/EnterSectionSurgery";
-  //filters
-  static const getSurgeriesFilters = "/api/ViewSectionSurgery/surgery-info";
-  static const getFilteredSurgeries = "/api/ViewSectionSurgery/filter";
-
-  // -------------------------------
-  // 🔹 Procedures and Symptoms
-  // Figma Screen: 12.choose Procedures and symptoms (all)
-  // -------------------------------
-  static const getAvailableYears = "/EyesDataEntry/lens/available-years";
-  static const getAllDocuments = "/EyesDataEntry/lens/documents";
-  static const getFilteredDocuments = "/EyesDataEntry/lens/documents/filter";
-  static const getDocumentDetailsById = "/EyesDataEntry/lens/document";
-  static const deleteDocumentById = "/EyesDataEntry/lens/document";
-
-  // -------------------------------
-  // 🔹 Glasses
-  // Figma Screen: 14.choose eye glasses to view, 15.view eye glasses ...
-  // -------------------------------
-  static const getGlassesRecords = "/EyesDataEntry/glasses";
-  static const getGlassesDetailsById = "/EyesDataEntry/glasses/details";
-  static const deleteGlassesById = "/EyesDataEntry/glasses";
+  static const getFollowUpDocumentDetailsById =
+      "/v1/lookup/mental-getFollowUpDocumentDetailsById";
 }

@@ -2,7 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'categories_services.g.dart';
-@RestApi(baseUrl: "http://147.93.57.70:5299/api/")
+
+@RestApi(baseUrl: "http://147.93.57.70/api/")
 abstract class CategoriesServices {
   factory CategoriesServices(Dio dio, {String? baseUrl}) = _CategoriesServices;
 
@@ -11,5 +12,4 @@ abstract class CategoriesServices {
     @Query('language') String language,
     @Query('userType') String userType,
   );
-
 }

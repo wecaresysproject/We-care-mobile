@@ -5,12 +5,12 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_model.dart';
 
 class MentalIllnessItemCardHorizontal extends StatelessWidget {
-  final MentalIllnessModel medicalItem;
+  final MentalIllnessModel item;
   final VoidCallback? onArrowTap;
 
   const MentalIllnessItemCardHorizontal({
     super.key,
-    required this.medicalItem,
+    required this.item,
     this.onArrowTap,
   });
 
@@ -51,7 +51,7 @@ class MentalIllnessItemCardHorizontal extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                medicalItem.title,
+                item.mentalIllnessType,
                 style: AppTextStyles.font14BlueWeight700
                     .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
@@ -76,7 +76,7 @@ class MentalIllnessItemCardHorizontal extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            medicalItem.date,
+                            item.diagnosisDate,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),
@@ -95,7 +95,7 @@ class MentalIllnessItemCardHorizontal extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            medicalItem.duration,
+                            item.duration,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),
@@ -114,7 +114,7 @@ class MentalIllnessItemCardHorizontal extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            medicalItem.severity,
+                            item.illnessSeverity,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),

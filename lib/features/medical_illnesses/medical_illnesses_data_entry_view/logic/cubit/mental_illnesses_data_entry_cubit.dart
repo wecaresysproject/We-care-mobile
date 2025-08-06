@@ -444,8 +444,10 @@ class MedicalIllnessesDataEntryCubit
       requestBody: MentalIllnessRequestBody(
         diagnosisDate: state.examinationDate!,
         mentalIllnessType: state.selectedMentalIllnessesType!,
-        symptomsList: state
-            .symptoms, //! check it later after delete one , is it update and after edit too
+        symptomsList: state.symptoms.isEmpty
+            ? [locale.no_data_entered]
+            : state
+                .symptoms, //! check it later after delete one , is it update and after edit too
         illnessSeverity:
             state.selectedDiseaseIntensity ?? locale.no_data_entered,
         illnessDuration: state.diseaseDuration ?? locale.no_data_entered,

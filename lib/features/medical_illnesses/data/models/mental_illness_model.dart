@@ -4,16 +4,18 @@ part 'mental_illness_model.g.dart';
 
 @JsonSerializable()
 class MentalIllnessModel {
-  final String title;
-  final String date;
+  final String id;
+  final String mentalIllnessType;
+  final String diagnosisDate;
   final String duration;
-  final String severity; // شدة المرض
+  final String illnessSeverity;
 
   MentalIllnessModel({
-    required this.title,
-    required this.date,
+    required this.id,
+    required this.mentalIllnessType,
+    required this.diagnosisDate,
     required this.duration,
-    required this.severity,
+    required this.illnessSeverity,
   });
 
   factory MentalIllnessModel.fromJson(Map<String, dynamic> json) =>

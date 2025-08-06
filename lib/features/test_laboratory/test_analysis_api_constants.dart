@@ -1,46 +1,36 @@
 class TestAnalysisApiConstants {
-  static const baseUrl = "http://147.93.57.70:5299";
+  static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
   static const getCountries = "/countries";
 
   static const uploadXImageEndpoint = "/FileUpload/upload-image";
   static const uploadXReportEndpoint = "/FileUpload/upload-report";
-  static const updateTestAnalysisEndpoint = "/m2/api/lab-tests/update";
+  static const updateTestAnalysisEndpoint = "/lab-tests/update";
 
   //View Endpoints
 
-  static const getYearsFilter = "/m2/api/lab-tests/years";
+  static const getYearsFilter = "/lab-tests/years";
 
-  static const getUserTests = "/m2/api/lab-tests/summary";
+  static const getUserTests = "/lab-tests/summary";
 
-  static const getFilteredTestsByYear = "/m2/api//lab-tests/filter";
+  static const getFilteredTestsByYear = "/lab-tests/filter";
 
-  static const getTestbyId = "/m2/api/lab-tests/doc";
+  static const getTestbyId = "/lab-tests/doc";
 
-  static const deleteAnalysisById = '/m2/api/lab-tests';
+  static const deleteAnalysisById = '/lab-tests';
 
-  static const getSimilarTests = "/m2/api/lab-tests/search";
+  static const getSimilarTests = "/lab-tests/search";
 
-  static const editTestResultByIdAndName =
-      '/api/lab-tests/updateWrittenPercent';
+  static const editTestResultByIdAndName = '/lab-tests/updateWrittenPercent';
 
-  //Data Entry
-  static const getTestAnnotationsEndpoint =
-      "/m2/api/flutter/SortsAnalysis/codes";
   static const getTestByGroupNamesEndpoint =
-      "/m2/api/flutter/SortsAnalysis/group-names";
-  static const getTestNamesEndpoint =
-      "/m2/api/flutter/SortsAnalysis/test-names";
-  static const getTableOfDataEndpoint = "/api/flutter/SortsAnalysis/test-info";
+      "/flutter/SortsAnalysis/group-names";
+  static const getTestAnnotationsEndpoint = "/flutter/SortsAnalysis/codes";
+  static const getTestNamesEndpoint = "/flutter/SortsAnalysis/test-names";
+  static const getTableOfDataEndpoint = "/flutter/SortsAnalysis/test-info";
 
-  static const postTestAnalysisEndpoint = "/m2/api/lab-tests";
+  static const postTestAnalysisEndpoint = "/lab-tests";
 
-  static const uploadLaboratoryTestImageEndpoint =
-      "/m2/api/FileUpload/upload-image";
-  static const uploadLaboratoryTestReportEndpoint =
-      "/m2/api/FileUpload/upload-report";
-
-  //View Entry
-
-  //filters
+  static const uploadLaboratoryTestImageEndpoint = "/FileUpload/upload-image";
+  static const uploadLaboratoryTestReportEndpoint = "/FileUpload/upload-report";
 }

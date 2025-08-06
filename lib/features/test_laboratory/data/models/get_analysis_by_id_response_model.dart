@@ -5,11 +5,9 @@ part 'get_analysis_by_id_response_model.g.dart';
 @JsonSerializable()
 class GetAnalysisByIdResponseModel {
   bool success;
-  String message;
-  List<AnalysisDetailedData> data;
+  AnalysisDetailedData data;
 
-  GetAnalysisByIdResponseModel(
-      {required this.success, required this.message, required this.data});
+  GetAnalysisByIdResponseModel({required this.success, required this.data});
 
   factory GetAnalysisByIdResponseModel.fromJson(Map<String, dynamic> json) =>
       _$GetAnalysisByIdResponseModelFromJson(json);
@@ -20,7 +18,7 @@ class AnalysisDetailedData {
   String id;
   String userId;
   String testDate;
-  String groupName;
+  String? groupName;
   String? testNeedType;
   String? symptomsForProcedure;
   String imageBase64;

@@ -35,14 +35,15 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
-import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_health_questionare_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_answered_questions_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_report_details_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_reports_data_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
@@ -443,52 +444,57 @@ class AppRouter {
 
         return MaterialPageRoute(
           builder: (context) => MentalIllnessFollowUpReportDetailsView(
-            detailsModel: argumentsMap?['detailsModel']
-                as MentalIllnessFollowUpReportModel,
+            docId: argumentsMap?['docId'],
           ), //MentalIllnessFollowUpReportDetailsView(),
         );
-      // case Routes.mentalUmbrellaHealthQuestionnairePage:
-      //   return MaterialPageRoute(
-      //     builder: (context) => MentalHealthQuestionnairePage(
-      //       questions: [
-      //         const QuestionnaireItem(
-      //           text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالقلق أو التوتر الزائد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
-      //         ),
-      //         const QuestionnaireItem(
-      //           text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
-      //         ),
-      //       ],
-      //       onAnswersChanged: (answers) => print(answers),
-      //       onPrevious: () {},
-      //     ),
-      //   );
+      case Routes.mentalUmbrellaHealthQuestionnairePage:
+        return MaterialPageRoute(
+          builder: (context) => MentalHealthQuestionnaireView(
+            questions: [
+              const QuestionnaireItem(
+                text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالقلق أو التوتر الزائد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
+              ),
+              const QuestionnaireItem(
+                text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
+              ),
+            ],
+          ),
+        );
+      case Routes.mentalIllnessDocDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => MentalIllnessDetailsView(
+            docId: argumentsMap['docId'],
+          ),
+        );
       case Routes.enableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => EnableViewForWeCareMentalHealthUmbrella());

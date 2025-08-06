@@ -10,6 +10,7 @@ class CustomImageWithTextMedicalIllnessModuleWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final VoidCallback? onTap;
   final bool isTextFirst;
+  final Color? containerColor;
 
   const CustomImageWithTextMedicalIllnessModuleWidget({
     super.key,
@@ -18,6 +19,7 @@ class CustomImageWithTextMedicalIllnessModuleWidget extends StatelessWidget {
     this.textStyle,
     this.onTap,
     this.isTextFirst = false,
+    this.containerColor = AppColorsManager.mainDarkBlue,
   });
 
   @override
@@ -26,14 +28,13 @@ class CustomImageWithTextMedicalIllnessModuleWidget extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-              padding: EdgeInsets.only(
+        padding: EdgeInsets.only(
           top: 13.h,
           bottom: 13.h,
           left: 20.w,
-         
         ),
         decoration: BoxDecoration(
-          color: AppColorsManager.mainDarkBlue,
+          color: containerColor,
           borderRadius: BorderRadius.circular(40.r),
           boxShadow: [
             BoxShadow(

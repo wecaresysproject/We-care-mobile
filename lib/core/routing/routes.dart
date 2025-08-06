@@ -89,6 +89,9 @@ class Routes {
       '/mentalIllnessAnsweredQuestionsView';
   static const mentalIllnessFollowUpReportDetailsView =
       '/mentalIllnessFollowUpReportDetailsView';
+  static const mentalIllnessDocDetailsView = '/mentalIllnessDocDetailsView';
+  static const mentalUmbrellaHealthQuestionnairePage =
+      '/mentalUmbrellaHealthQuestionnairePage';
 
   static const eyeDataEntry = '/eyeDataEntry';
   static const eyeProceduresAndSyptomsDataEntry =

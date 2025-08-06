@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
+import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 
 class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
   TestAnalysisViewCubit(this.testAnalysisViewRepo)
       : super(TestAnalysisViewState.initial());
   final TestAnalysisViewRepo testAnalysisViewRepo;
   final resultEditingController = TextEditingController();
-    int currentPage = 1;
+  int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
@@ -20,7 +20,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     await emitFilters();
   }
 
-    Future<void> emitTests({int? page, int? pageSize}) async {
+  Future<void> emitTests({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -31,25 +31,23 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     }
 
     final result = await testAnalysisViewRepo.getTests(
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        page: page ?? currentPage, pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newTestAnalysisTests = response.data;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newTestAnalysisTests.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        analysisSummarizedDataList: page == 1 || page == null 
-          ? newTestAnalysisTests 
-          : [...state.analysisSummarizedDataList, ...newTestAnalysisTests],
+        analysisSummarizedDataList: page == 1 || page == null
+            ? newTestAnalysisTests
+            : [...state.analysisSummarizedDataList, ...newTestAnalysisTests],
         message: response.message,
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -66,7 +64,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await emitTests(page: currentPage + 1);
   }
 
@@ -75,7 +73,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
 
     final response = await testAnalysisViewRepo.gettFilters();
     response.when(success: (response) async {
-     response.add(0);
+      response.add(0);
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
         yearsFilter: response,
@@ -112,7 +110,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     response.when(success: (response) async {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        selectedAnalysisDetails: response.data.first,
+        selectedAnalysisDetails: response.data,
       ));
     }, failure: (error) {
       emit(state.copyWith(

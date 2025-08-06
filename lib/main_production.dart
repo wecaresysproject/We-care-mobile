@@ -1,13 +1,16 @@
 import 'package:alarm/alarm.dart';
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
@@ -16,11 +19,15 @@ import 'package:we_care/features/genetic_diseases/data/models/new_genetic_diseas
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/firebase_options.dart';
 import 'package:we_care/we_care_app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await PushNotificationsService.init(navigatorKey);
   tz.initializeTimeZones();
 
   await Hive.initFlutter();
