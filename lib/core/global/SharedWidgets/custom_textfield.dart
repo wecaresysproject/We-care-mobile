@@ -49,6 +49,7 @@ class CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: widget.controller,
 

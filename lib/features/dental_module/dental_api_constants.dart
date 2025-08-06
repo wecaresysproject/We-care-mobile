@@ -1,5 +1,3 @@
-bool isLoggedInUser = false;
-
 class DentalApiConstants {
   static const baseUrl = "http://147.93.57.70/api";
 

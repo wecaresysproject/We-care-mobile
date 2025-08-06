@@ -49,12 +49,14 @@ class PushNotificationsService {
       log(" onMessageOpenedApp Notification tapped in background: ${message.data} ");
       _navigateBasedOnNotification(navigatorKey, message);
     });
-    // Handle notification taps when the app is in the terminated state
+    // // Handle notification taps when the app is in the terminated state
     _messaging.getInitialMessage().then((message) {
-      if (message != null) {
-        log("Notification tapped from terminated state: ${message.data}");
-        _navigateBasedOnNotification(navigatorKey, message);
-      }
+      // Check after first frame
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (message != null) {
+          _navigateBasedOnNotification(navigatorKey, message);
+        }
+      });
     });
   }
 
@@ -63,8 +65,9 @@ class PushNotificationsService {
     //! Add check here according to route name comes from message.data , navigate to needed screen
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        navigatorKey.currentState
-            ?.pushNamed(Routes.mentalUmbrellaHealthQuestionnairePage);
+        navigatorKey.currentState?.pushNamed(
+          Routes.mentalUmbrellaHealthQuestionnairePage,
+        );
       },
     );
   }

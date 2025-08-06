@@ -8,7 +8,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MentalHealthQuestionnaireView extends StatefulWidget {
   final List<QuestionnaireItem> questions;
-
   const MentalHealthQuestionnaireView({
     super.key,
     required this.questions,
@@ -182,28 +181,16 @@ class AnswerOption extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 20,
-            height: 20,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isSelected
-                    ? AppColorsManager.mainDarkBlue
-                    : AppColorsManager.placeHolderColor,
-                width: 2,
-              ),
-              color: isSelected
-                  ? AppColorsManager.mainDarkBlue
-                  : Colors.transparent,
+          Transform.scale(
+            scale: 1.2,
+            child: Radio<bool>(
+              value: true, // The actual selection value for this option
+              groupValue: isSelected,
+              activeColor: AppColorsManager.mainDarkBlue,
+              visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (_) => onTap(), // Call parent onTap
             ),
-            child: isSelected
-                ? const Icon(
-                    Icons.circle,
-                    size: 10,
-                    color: Colors.white,
-                  )
-                : null,
           ),
           horizontalSpacing(8),
           Text(
@@ -238,10 +225,12 @@ class ProgressHeader extends StatelessWidget {
             textDirection: TextDirection.ltr,
             child: LinearProgressIndicator(
               value: progress,
-              backgroundColor: Colors.grey[300],
+              minHeight: 8.h,
+              backgroundColor: Color(0xffE4E7EB),
               valueColor: const AlwaysStoppedAnimation<Color>(
                 AppColorsManager.mainDarkBlue,
               ),
+              borderRadius: BorderRadius.circular(12.r),
             ),
           ),
           verticalSpacing(4),
