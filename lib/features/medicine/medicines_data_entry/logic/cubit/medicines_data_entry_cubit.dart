@@ -815,6 +815,22 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     }
   }
 
+  Future<void> loadMedicineDetailsViewForEditing(
+      AddNewMedicineModel model) async {
+    emit(
+      state.copyWith(
+        isEditingAddedMedicine: true,
+        medicineStartDate: model.startDate,
+        selectedMedicalForm: model.medicalForm,
+        selectedMedicineName: model.medicineName,
+        selectedNoOfDose: model.numberOfDoses,
+        selectedDose: model.dose,
+      ),
+    );
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    await initialDataEntryRequests();
+  }
+
   @override
   Future<void> close() async {
     personalInfoController.dispose();

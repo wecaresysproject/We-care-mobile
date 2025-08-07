@@ -45,6 +45,7 @@ class MedicinesDataEntryState extends Equatable {
 
   final bool isNewMedicineAddedSuccefuly;
   final bool isEditingNewMedicineSuccess;
+  final bool isEditingAddedMedicine;
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -52,6 +53,7 @@ class MedicinesDataEntryState extends Equatable {
     this.isAddNewMedicineFormValidated = false,
     this.isNewMedicineAddedSuccefuly = false,
     this.isEditingNewMedicineSuccess = false,
+    this.isEditingAddedMedicine = false,
     this.message = '',
     this.isEditMode = false,
     this.medicineStartDate,
@@ -92,6 +94,7 @@ class MedicinesDataEntryState extends Equatable {
           isAddNewMedicineFormValidated: false,
           isNewMedicineAddedSuccefuly: false,
           isEditingNewMedicineSuccess: false,
+          isEditingAddedMedicine: false,
           message: '',
           isEditMode: false,
           medicineStartDate: null,
@@ -131,6 +134,7 @@ class MedicinesDataEntryState extends Equatable {
     bool? isAddNewMedicineFormValidated,
     bool? isNewMedicineAddedSuccefuly,
     bool? isEditingNewMedicineSuccess,
+    bool? isEditingAddedMedicine,
     String? message,
     bool? isEditMode,
     String? medicineStartDate,
@@ -173,6 +177,8 @@ class MedicinesDataEntryState extends Equatable {
           isEditingNewMedicineSuccess ?? this.isEditingNewMedicineSuccess,
       isAddNewMedicineFormValidated:
           isAddNewMedicineFormValidated ?? this.isAddNewMedicineFormValidated,
+      isEditingAddedMedicine:
+          isEditingAddedMedicine ?? this.isEditingAddedMedicine,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
       medicineStartDate: medicineStartDate ?? this.medicineStartDate,
@@ -224,6 +230,7 @@ class MedicinesDataEntryState extends Equatable {
         isAddNewMedicineFormValidated,
         isNewMedicineAddedSuccefuly,
         isEditingNewMedicineSuccess,
+        isEditingAddedMedicine,
         message,
         isEditMode,
         medicineStartDate,
