@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/selection_medicine_list_view_item.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state.dart';
 
 class MatchedMedicineResultsList extends StatelessWidget {
   const MatchedMedicineResultsList({
@@ -16,8 +15,7 @@ class MatchedMedicineResultsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MedicineScannerCubit, MedicineScannerState>(
       listener: (context, state) async {
-        if (state.matchedMedicines.isEmpty &&
-            state.message.isNotEmpty) {
+        if (state.matchedMedicines.isEmpty && state.message.isNotEmpty) {
           await showError(state.message);
         }
       },
@@ -29,8 +27,7 @@ class MatchedMedicineResultsList extends StatelessWidget {
               margin: EdgeInsets.only(top: 8),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
@@ -60,15 +57,13 @@ class MatchedMedicineResultsList extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
                                   Icon(
                                     Icons.medication_liquid,
-                                    color:
-                                        AppColorsManager.mainDarkBlue,
+                                    color: AppColorsManager.mainDarkBlue,
                                     size: 20,
                                   ),
                                   SizedBox(width: 8),
@@ -88,16 +83,14 @@ class MatchedMedicineResultsList extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: AppColorsManager.mainDarkBlue
                                       .withOpacity(0.1),
-                                  borderRadius:
-                                      BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   '${state.matchedMedicines.length} نتيجة',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color:
-                                        AppColorsManager.mainDarkBlue,
+                                    color: AppColorsManager.mainDarkBlue,
                                   ),
                                 ),
                               ),
@@ -107,9 +100,8 @@ class MatchedMedicineResultsList extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Divider(
-                      height: 1, thickness: 1, color: Colors.grey[200]),
-    
+                  Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+
                   // Results list
                   Expanded(
                     child: ListView.builder(
@@ -117,9 +109,8 @@ class MatchedMedicineResultsList extends StatelessWidget {
                       itemCount: state.matchedMedicines.length,
                       itemBuilder: (context, index) {
                         final medicine = state.matchedMedicines[index];
-                        return SelectionMedicineListViewItem(medicine: medicine,
-                            index: index,
-                            state: state);
+                        return SelectionMedicineListViewItem(
+                            medicine: medicine, index: index, state: state);
                       },
                     ),
                   ),

@@ -25,6 +25,7 @@ class PushNotificationsService {
     return token ?? '';
   }
 
+  @pragma('vm:entry-point') // 👈 ADD THIS LINE
   static Future<void> _handleBackgroundMessage(RemoteMessage message) async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);

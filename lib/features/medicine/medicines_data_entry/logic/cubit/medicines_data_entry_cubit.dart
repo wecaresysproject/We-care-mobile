@@ -670,11 +670,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void updateStartMedicineDate(String? date) {
     emit(state.copyWith(medicineStartDate: date));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   Future<void> updateSelectedMedicineName(String? medicineName) async {
     emit(state.copyWith(selectedMedicineName: medicineName));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     getMedcineIdByName(medicineName!);
     await emitMedicineforms();
   }
@@ -683,16 +685,19 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     emit(state.copyWith(selectedMedicalForm: form));
     await emitMedcineDosesByForms();
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   void updateSelectedDose(String? dose) {
     emit(state.copyWith(selectedDose: dose));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   void updateSelectedDoseFrequency(String? noOfDose) {
     emit(state.copyWith(selectedNoOfDose: noOfDose));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   Future<void> updateSelectedDoseDuration(String? doseDuration) async {
@@ -731,6 +736,26 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       emit(
         state.copyWith(
           isFormValidated: true,
+        ),
+      );
+    }
+  }
+
+  void validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule() {
+    if (state.medicineStartDate == null ||
+        state.selectedMedicineName == null ||
+        state.selectedMedicalForm == null ||
+        state.selectedDose == null ||
+        state.selectedNoOfDose == null) {
+      emit(
+        state.copyWith(
+          isAddNewMedicineFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isAddNewMedicineFormValidated: true,
         ),
       );
     }

@@ -19,6 +19,7 @@ class MedicinesDataEntryState extends Equatable {
   final String? selectedChronicDisease;
   final String? selectedDoctorName;
   final bool isFormValidated;
+  final bool isAddNewMedicineFormValidated;
   final List<MedicalComplaint> medicalComplaints;
   final List<String> medicinesNames;
   final List<String> medicineForms;
@@ -45,6 +46,7 @@ class MedicinesDataEntryState extends Equatable {
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.isAddNewMedicineFormValidated = false,
     this.message = '',
     this.isEditMode = false,
     this.medicineStartDate,
@@ -82,6 +84,7 @@ class MedicinesDataEntryState extends Equatable {
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
+          isAddNewMedicineFormValidated: false,
           message: '',
           isEditMode: false,
           medicineStartDate: null,
@@ -118,6 +121,7 @@ class MedicinesDataEntryState extends Equatable {
   MedicinesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
+    bool? isAddNewMedicineFormValidated,
     String? message,
     bool? isEditMode,
     String? medicineStartDate,
@@ -154,6 +158,8 @@ class MedicinesDataEntryState extends Equatable {
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      isAddNewMedicineFormValidated:
+          isAddNewMedicineFormValidated ?? this.isAddNewMedicineFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
       medicineStartDate: medicineStartDate ?? this.medicineStartDate,
@@ -202,6 +208,7 @@ class MedicinesDataEntryState extends Equatable {
   List<Object?> get props => [
         medicinesDataEntryStatus,
         isFormValidated,
+        isAddNewMedicineFormValidated,
         message,
         isEditMode,
         medicineStartDate,

@@ -24,7 +24,7 @@ class AddNewMedicationView extends StatelessWidget {
             toolbarHeight: 0.h,
           ),
           body: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -145,25 +145,59 @@ class AddNewMedicationView extends StatelessWidget {
                   },
                 ),
                 verticalSpacing(16),
-                AppCustomButton(
-                  isLoading: false,
-                  title: 'اضف دواء جديد',
-                  onPressed: () async {
-                    // if (state.isFormValidated) {
-                    //   state.isEditMode
-                    //       ? await context
-                    //           .read<EmergencyComplaintsDataEntryCubit>()
-                    //           .updateSpecifcEmergencyDocumentDataDetails(
-                    //               context.translate)
-                    //       : await context
-                    //           .read<EmergencyComplaintsDataEntryCubit>()
-                    //           .postEmergencyDataEntry(
-                    //             context.translate,
-                    //           );
+                // AppCustomButton(
+                //   isLoading: false,
+                //   title: 'اضف دواء جديد',
+                //   onPressed: () async {
+                //     // if (state.isFormValidated) {
+                //     //   state.isEditMode
+                //     //       ? await context
+                //     //           .read<EmergencyComplaintsDataEntryCubit>()
+                //     //           .updateSpecifcEmergencyDocumentDataDetails(
+                //     //               context.translate)
+                //     //       : await context
+                //     //           .read<EmergencyComplaintsDataEntryCubit>()
+                //     //           .postEmergencyDataEntry(
+                //     //             context.translate,
+                //     //           );
+                //     // }
+                //   },
+                //   isEnabled: ,
+                // ),
+                BlocListener<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+                  listener: (context, state) async {
+                    // if (state.isNewComplaintAddedSuccefully) {
+                    //   await showSuccess("تم اضافة العرض بنجاح");
+                    //   if (!context.mounted) return;
+                    //   context.pop(result: true);
+                    // }
+                    // if (state.isEditingComplaintSuccess) {
+                    //   await showSuccess("تم تعديل  تفاصيل العرض بنجاح");
+                    //   if (!context.mounted) return;
+                    //   context.pop(result: true);
                     // }
                   },
-                  isEnabled: true,
+                  child: AppCustomButton(
+                    // title: state.isEditingComplaint
+                    //     ? "تَعديلُ مَعْلوماتِ العرض"
+                    //     : "اضافة عرض",
+                    title: 'اضف دواء جديد',
+                    onPressed: () async {
+                      //   state.isEditingComplaint
+                      //       ? await context
+                      //           .read<
+                      //               EmergencyComplaintDataEntryDetailsCubit>()
+                      //           .updateMedicalComplaint(
+                      //               complaintId!, editingComplaintDetails!)
+                      //       : await context
+                      //           .read<
+                      //               EmergencyComplaintDataEntryDetailsCubit>()
+                      //           .saveNewMedicalComplaint();
+                    },
+                    isEnabled: state.isAddNewMedicineFormValidated,
+                  ),
                 ),
+                verticalSpacing(24),
               ],
             ),
           ),
@@ -172,3 +206,46 @@ class AddNewMedicationView extends StatelessWidget {
     );
   }
 }
+
+  // Widget submitPrescriptionDataEnteredBlocConsumer() {
+  //   return BlocConsumer<PrescriptionDataEntryCubit, PrescriptionDataEntryState>(
+  //     listenWhen: (prev, curr) =>
+  //         curr.preceriptionDataEntryStatus == RequestStatus.failure ||
+  //         curr.preceriptionDataEntryStatus == RequestStatus.success,
+  //     buildWhen: (prev, curr) =>
+  //         prev.isFormValidated != curr.isFormValidated ||
+  //         prev.preceriptionDataEntryStatus != curr.preceriptionDataEntryStatus,
+  //     listener: (context, state) async {
+  //       if (state.preceriptionDataEntryStatus == RequestStatus.success) {
+  //         await showSuccess(state.message);
+  //         if (!context.mounted) return;
+  //         context.pop(result: true);
+  //       } else {
+  //         await showError(state.message);
+  //       }
+  //     },
+  //     builder: (context, state) {
+  //       return AppCustomButton(
+  //         isLoading: state.preceriptionDataEntryStatus == RequestStatus.loading,
+  //         title: context.translate.send,
+  //         onPressed: () async {
+  //           if (state.isFormValidated) {
+  //             state.isEditMode
+  //                 ? await context
+  //                     .read<PrescriptionDataEntryCubit>()
+  //                     .submitEditsOnPrescription()
+  //                 : await context
+  //                     .read<PrescriptionDataEntryCubit>()
+  //                     .postPrescriptionDataEntry(
+  //                       context.translate,
+  //                     );
+  //             log("xxx:Save Data Entry");
+  //           } else {
+  //             log("form not validated");
+  //           }
+  //         },
+  //         isEnabled: state.isFormValidated ? true : false,
+  //       );
+  //     },
+  //   );
+  // }

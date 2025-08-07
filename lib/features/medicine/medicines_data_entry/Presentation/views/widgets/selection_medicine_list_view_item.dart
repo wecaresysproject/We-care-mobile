@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state.dart';
 
 class SelectionMedicineListViewItem extends StatelessWidget {
   const SelectionMedicineListViewItem({
@@ -14,7 +13,7 @@ class SelectionMedicineListViewItem extends StatelessWidget {
   });
 
   final MatchedMedicineModel medicine;
-  final int index ;
+  final int index;
   final MedicineScannerState state;
 
   @override
@@ -33,8 +32,7 @@ class SelectionMedicineListViewItem extends StatelessWidget {
               Navigator.pop(context);
             },
             child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: 12, horizontal: 8),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               child: Row(
                 children: [
                   // Medicine icon with colored background
@@ -44,17 +42,13 @@ class SelectionMedicineListViewItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColorsManager
-                              .mainDarkBlue,
-                          AppColorsManager
-                              .mainDarkBlue
-                              .withOpacity(0.7),
+                          AppColorsManager.mainDarkBlue,
+                          AppColorsManager.mainDarkBlue.withOpacity(0.7),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
-                      borderRadius:
-                          BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
                       child: Icon(
@@ -68,15 +62,13 @@ class SelectionMedicineListViewItem extends StatelessWidget {
                   // Medicine info
                   Expanded(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           medicine.medicineName,
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight:
-                                FontWeight.w600,
+                            fontWeight: FontWeight.w600,
                             color: Colors.black87,
                           ),
                         ),
@@ -95,14 +87,12 @@ class SelectionMedicineListViewItem extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.grey[100],
-                      borderRadius:
-                          BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     padding: EdgeInsets.all(6),
                     child: Icon(
                       Icons.chevron_right,
-                      color: AppColorsManager
-                          .mainDarkBlue,
+                      color: AppColorsManager.mainDarkBlue,
                       size: 20,
                     ),
                   ),
@@ -112,12 +102,8 @@ class SelectionMedicineListViewItem extends StatelessWidget {
           ),
         ),
         // Divider except for last item
-        if (index <
-            state.matchedMedicines.length - 1)
-          Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey[200]),
+        if (index < state.matchedMedicines.length - 1)
+          Divider(height: 1, thickness: 1, color: Colors.grey[200]),
       ],
     );
   }

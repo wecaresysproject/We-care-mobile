@@ -24,7 +24,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/Presentation/view
 import 'package:we_care/firebase_options.dart';
 import 'package:we_care/we_care_app.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
