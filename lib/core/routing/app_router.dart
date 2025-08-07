@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_anatomy_view.dart';
@@ -505,6 +506,8 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => MentalIllnessYesAnswersView(),
         );
+      case Routes.chronicDiseaseDataEntry:
+        return MaterialPageRoute(builder: (_) => ChronicDiseaseDataEntryView());
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }
