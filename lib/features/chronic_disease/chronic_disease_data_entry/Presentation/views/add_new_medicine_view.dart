@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -145,37 +147,18 @@ class AddNewMedicationView extends StatelessWidget {
                   },
                 ),
                 verticalSpacing(16),
-                // AppCustomButton(
-                //   isLoading: false,
-                //   title: 'اضف دواء جديد',
-                //   onPressed: () async {
-                //     // if (state.isFormValidated) {
-                //     //   state.isEditMode
-                //     //       ? await context
-                //     //           .read<EmergencyComplaintsDataEntryCubit>()
-                //     //           .updateSpecifcEmergencyDocumentDataDetails(
-                //     //               context.translate)
-                //     //       : await context
-                //     //           .read<EmergencyComplaintsDataEntryCubit>()
-                //     //           .postEmergencyDataEntry(
-                //     //             context.translate,
-                //     //           );
-                //     // }
-                //   },
-                //   isEnabled: ,
-                // ),
                 BlocListener<MedicinesDataEntryCubit, MedicinesDataEntryState>(
                   listener: (context, state) async {
-                    // if (state.isNewComplaintAddedSuccefully) {
-                    //   await showSuccess("تم اضافة العرض بنجاح");
-                    //   if (!context.mounted) return;
-                    //   context.pop(result: true);
-                    // }
-                    // if (state.isEditingComplaintSuccess) {
-                    //   await showSuccess("تم تعديل  تفاصيل العرض بنجاح");
-                    //   if (!context.mounted) return;
-                    //   context.pop(result: true);
-                    // }
+                    if (state.isNewMedicineAddedSuccefuly) {
+                      await showSuccess("تم اضافة الدواء بنجاح");
+                      if (!context.mounted) return;
+                      context.pop(result: true);
+                    }
+                    if (state.isEditingNewMedicineSuccess) {
+                      await showSuccess("تم تعديل  تفاصيل الدواء بنجاح");
+                      if (!context.mounted) return;
+                      context.pop(result: true);
+                    }
                   },
                   child: AppCustomButton(
                     // title: state.isEditingComplaint
@@ -183,16 +166,18 @@ class AddNewMedicationView extends StatelessWidget {
                     //     : "اضافة عرض",
                     title: 'اضف دواء جديد',
                     onPressed: () async {
-                      //   state.isEditingComplaint
-                      //       ? await context
-                      //           .read<
-                      //               EmergencyComplaintDataEntryDetailsCubit>()
-                      //           .updateMedicalComplaint(
-                      //               complaintId!, editingComplaintDetails!)
-                      //       : await context
-                      //           .read<
-                      //               EmergencyComplaintDataEntryDetailsCubit>()
-                      //           .saveNewMedicalComplaint();
+                      if (state.isAddNewMedicineFormValidated) {
+                        await context
+                            .read<MedicinesDataEntryCubit>()
+                            .saveAddedNewMedicine();
+                      }
+                      // }
+                      // state.isEditingNewMedicineSuccess
+                      //     ? await context
+                      //         .read<EmergencyComplaintDataEntryDetailsCubit>()
+                      //         .updateMedicalComplaint(
+                      //             complaintId!, editingComplaintDetails!)
+                      //     :
                     },
                     isEnabled: state.isAddNewMedicineFormValidated,
                   ),
@@ -206,46 +191,3 @@ class AddNewMedicationView extends StatelessWidget {
     );
   }
 }
-
-  // Widget submitPrescriptionDataEnteredBlocConsumer() {
-  //   return BlocConsumer<PrescriptionDataEntryCubit, PrescriptionDataEntryState>(
-  //     listenWhen: (prev, curr) =>
-  //         curr.preceriptionDataEntryStatus == RequestStatus.failure ||
-  //         curr.preceriptionDataEntryStatus == RequestStatus.success,
-  //     buildWhen: (prev, curr) =>
-  //         prev.isFormValidated != curr.isFormValidated ||
-  //         prev.preceriptionDataEntryStatus != curr.preceriptionDataEntryStatus,
-  //     listener: (context, state) async {
-  //       if (state.preceriptionDataEntryStatus == RequestStatus.success) {
-  //         await showSuccess(state.message);
-  //         if (!context.mounted) return;
-  //         context.pop(result: true);
-  //       } else {
-  //         await showError(state.message);
-  //       }
-  //     },
-  //     builder: (context, state) {
-  //       return AppCustomButton(
-  //         isLoading: state.preceriptionDataEntryStatus == RequestStatus.loading,
-  //         title: context.translate.send,
-  //         onPressed: () async {
-  //           if (state.isFormValidated) {
-  //             state.isEditMode
-  //                 ? await context
-  //                     .read<PrescriptionDataEntryCubit>()
-  //                     .submitEditsOnPrescription()
-  //                 : await context
-  //                     .read<PrescriptionDataEntryCubit>()
-  //                     .postPrescriptionDataEntry(
-  //                       context.translate,
-  //                     );
-  //             log("xxx:Save Data Entry");
-  //           } else {
-  //             log("form not validated");
-  //           }
-  //         },
-  //         isEnabled: state.isFormValidated ? true : false,
-  //       );
-  //     },
-  //   );
-  // }

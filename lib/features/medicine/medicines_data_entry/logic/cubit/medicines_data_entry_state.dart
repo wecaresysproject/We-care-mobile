@@ -43,10 +43,15 @@ class MedicinesDataEntryState extends Equatable {
   final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
   final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
+  final bool isNewMedicineAddedSuccefuly;
+  final bool isEditingNewMedicineSuccess;
+
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.isAddNewMedicineFormValidated = false,
+    this.isNewMedicineAddedSuccefuly = false,
+    this.isEditingNewMedicineSuccess = false,
     this.message = '',
     this.isEditMode = false,
     this.medicineStartDate,
@@ -85,6 +90,8 @@ class MedicinesDataEntryState extends Equatable {
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
           isAddNewMedicineFormValidated: false,
+          isNewMedicineAddedSuccefuly: false,
+          isEditingNewMedicineSuccess: false,
           message: '',
           isEditMode: false,
           medicineStartDate: null,
@@ -122,6 +129,8 @@ class MedicinesDataEntryState extends Equatable {
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
     bool? isAddNewMedicineFormValidated,
+    bool? isNewMedicineAddedSuccefuly,
+    bool? isEditingNewMedicineSuccess,
     String? message,
     bool? isEditMode,
     String? medicineStartDate,
@@ -158,6 +167,10 @@ class MedicinesDataEntryState extends Equatable {
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      isNewMedicineAddedSuccefuly:
+          isNewMedicineAddedSuccefuly ?? this.isNewMedicineAddedSuccefuly,
+      isEditingNewMedicineSuccess:
+          isEditingNewMedicineSuccess ?? this.isEditingNewMedicineSuccess,
       isAddNewMedicineFormValidated:
           isAddNewMedicineFormValidated ?? this.isAddNewMedicineFormValidated,
       message: message ?? this.message,
@@ -209,6 +222,8 @@ class MedicinesDataEntryState extends Equatable {
         medicinesDataEntryStatus,
         isFormValidated,
         isAddNewMedicineFormValidated,
+        isNewMedicineAddedSuccefuly,
+        isEditingNewMedicineSuccess,
         message,
         isEditMode,
         medicineStartDate,

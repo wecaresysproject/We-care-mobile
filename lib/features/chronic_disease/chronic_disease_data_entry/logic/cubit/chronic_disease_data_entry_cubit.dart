@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 
@@ -18,6 +20,25 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   final sideEffectsController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  List<AddNewMedicineModel> addedNewMedicines = [];
+  Future<void> fetchAllAddedMedicines() async {
+    try {
+      final addNewMedicineBox = Hive.box<AddNewMedicineModel>("addNewMedicine");
+      addedNewMedicines = addNewMedicineBox.values.toList(growable: true);
+      emit(
+        state.copyWith(
+          addedNewMedicines: addedNewMedicines,
+        ),
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          addedNewMedicines: [],
+          message: e.toString(),
+        ),
+      );
+    }
+  }
 
   /// Update Field Values
   void updateDiagnosisStartDate(String? date) {
@@ -248,10 +269,39 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
     }
   }
 
+  Future<void> removeAddedMedicine(int index) async {
+    final Box<AddNewMedicineModel> medicinesBox =
+        Hive.box<AddNewMedicineModel>("addNewMedicine");
+
+    if (index < 0 || index >= medicinesBox.length) return;
+
+    await medicinesBox.deleteAt(index);
+
+    final updatedMedicines = medicinesBox.values.toList();
+
+    emit(
+      state.copyWith(addedNewMedicines: updatedMedicines),
+    );
+  }
+
+  Future<void> clearAllMedicines() async {
+    try {
+      final medicinesBox = Hive.box<AddNewMedicineModel>("addNewMedicine");
+      await medicinesBox.clear();
+    } catch (e) {
+      emit(
+        state.copyWith(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
   @override
-  Future<void> close() {
+  Future<void> close() async {
     personalNotesController.dispose();
     sideEffectsController.dispose();
+    await clearAllMedicines();
     formKey.currentState?.reset();
     return super.close();
   }

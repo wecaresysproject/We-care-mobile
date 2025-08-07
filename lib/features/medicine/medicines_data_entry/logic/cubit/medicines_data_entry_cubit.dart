@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
@@ -738,6 +739,59 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           isFormValidated: true,
         ),
       );
+    }
+  }
+
+  Future<void> saveAddedNewMedicine() async {
+    final newMedicalComplaint = AddNewMedicineModel(
+      medicineName: state.selectedMedicineName!,
+      startDate: state.medicineStartDate!,
+      medicalForm: state.selectedMedicalForm!,
+      dose: state.selectedDose!,
+      numberOfDoses: state.selectedNoOfDose!,
+    );
+    final Box<AddNewMedicineModel> addedNewMedicineBox =
+        Hive.box<AddNewMedicineModel>("addNewMedicine");
+
+    await addedNewMedicineBox.add(newMedicalComplaint);
+
+    emit(
+      state.copyWith(
+        isNewMedicineAddedSuccefuly: true,
+      ),
+    );
+  }
+
+  Future<void> updateAddedMedicine(
+      int index, AddNewMedicineModel oldMedicineDetails) async {
+    final Box<AddNewMedicineModel> addedNewMedicineBox =
+        Hive.box<AddNewMedicineModel>("addNewMedicine");
+
+    final updatedMedicine = oldMedicineDetails.updateWith(
+      medicineName: state.selectedMedicineName!,
+      startDate: state.medicineStartDate!,
+      medicalForm: state.selectedMedicalForm!,
+      dose: state.selectedDose!,
+      numberOfDoses: state.selectedNoOfDose!,
+    );
+    if (index >= 0 && index < addedNewMedicineBox.length) {
+      await addedNewMedicineBox.put(
+        index,
+        updatedMedicine,
+      );
+
+      emit(
+        state.copyWith(
+          isEditingNewMedicineSuccess: true,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isEditingNewMedicineSuccess: false,
+        ),
+      );
+      throw Exception("Invalid index: $index");
     }
   }
 
