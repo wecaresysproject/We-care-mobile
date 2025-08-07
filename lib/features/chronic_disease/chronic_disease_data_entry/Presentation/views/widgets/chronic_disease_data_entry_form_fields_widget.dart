@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
@@ -76,21 +77,21 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 searchHintText: "ابحث عن المرض المزمن",
               ),
               verticalSpacing(16),
-              UserSelectionContainer(
-                allowManualEntry: true,
-                categoryLabel: "الأدوية", // Another Dropdown Example
-                containerHintText:
-                    state.selectedMedicationName ?? "اختر بيانات الأدوية",
-                options: [],
-                onOptionSelected: (value) {
-                  context
-                      .read<ChronicDiseaseDataEntryCubit>()
-                      .updateSelectedMedication(value);
-                  log("xxx:Selected: $value");
-                },
-                bottomSheetTitle: 'اختر بيانات الأدوية',
-                searchHintText: "ابحث عن بيانات الأدوية",
-              ),
+              // UserSelectionContainer(
+              //   allowManualEntry: true,
+              //   categoryLabel: "الأدوية", // Another Dropdown Example
+              //   containerHintText:
+              //       state.selectedMedicationName ?? "اختر بيانات الأدوية",
+              //   options: [],
+              //   onOptionSelected: (value) {
+              //     context
+              //         .read<ChronicDiseaseDataEntryCubit>()
+              //         .updateSelectedMedication(value);
+              //     log("xxx:Selected: $value");
+              //   },
+              //   bottomSheetTitle: 'اختر بيانات الأدوية',
+              //   searchHintText: "ابحث عن بيانات الأدوية",
+              // ),
 
               verticalSpacing(16),
               UserSelectionContainer(
@@ -134,6 +135,19 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 },
               ),
               verticalSpacing(16),
+              Text(
+                "الأعراض الجانبية",
+                style: AppTextStyles.font18blackWight500,
+              ),
+              verticalSpacing(10),
+              CustomTextField(
+                controller: context
+                    .read<ChronicDiseaseDataEntryCubit>()
+                    .sideEffectsController,
+                hintText: 'اكتب الأعراض الجانبية',
+                validator: (val) {},
+              ),
+              verticalSpacing(10),
 
               Text(
                 "ملاحظات شخصية",

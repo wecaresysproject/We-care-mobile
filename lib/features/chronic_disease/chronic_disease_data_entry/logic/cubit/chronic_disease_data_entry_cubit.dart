@@ -15,8 +15,7 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
         );
   final ChronicDiseaseDataEntryRepo dataEntryRepo;
   final personalNotesController = TextEditingController();
-  final symptomsAccompanyingComplaintController =
-      TextEditingController(); // الاعراض المصاحبة للشكوى
+  final sideEffectsController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -252,7 +251,7 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   @override
   Future<void> close() {
     personalNotesController.dispose();
-    symptomsAccompanyingComplaintController.dispose();
+    sideEffectsController.dispose();
     formKey.currentState?.reset();
     return super.close();
   }
