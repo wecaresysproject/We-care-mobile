@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
@@ -14,6 +16,7 @@ import 'package:we_care/core/global/SharedWidgets/options_selector_shared_contai
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/logic/cubit/chronic_disease_data_entry_cubit.dart';
 
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -77,22 +80,8 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 searchHintText: "ابحث عن المرض المزمن",
               ),
               verticalSpacing(16),
-              // UserSelectionContainer(
-              //   allowManualEntry: true,
-              //   categoryLabel: "الأدوية", // Another Dropdown Example
-              //   containerHintText:
-              //       state.selectedMedicationName ?? "اختر بيانات الأدوية",
-              //   options: [],
-              //   onOptionSelected: (value) {
-              //     context
-              //         .read<ChronicDiseaseDataEntryCubit>()
-              //         .updateSelectedMedication(value);
-              //     log("xxx:Selected: $value");
-              //   },
-              //   bottomSheetTitle: 'اختر بيانات الأدوية',
-              //   searchHintText: "ابحث عن بيانات الأدوية",
-              // ),
 
+              buildAddNewMedicationButtonBlocBuilder(context),
               verticalSpacing(16),
               UserSelectionContainer(
                 allowManualEntry: true,
@@ -172,6 +161,52 @@ class _ChronicDiseaseDataEntryFormFieldsState
           ),
         );
       },
+    );
+  }
+
+  Widget buildAddNewMedicationButtonBlocBuilder(BuildContext context) {
+    return Center(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          AddNewItemButton(
+            text: // state.medicalComplaints.isEmpty
+                // ? "اضف الاعراض المرضية"
+                //:
+                'أضف دواء جديد',
+            onPressed: () async {
+              final bool? result = await context.pushNamed(
+                Routes.addNewMedicationView,
+              );
+
+              // if (result != null && context.mounted) {
+              //   await context
+              //       .read<EmergencyComplaintsDataEntryCubit>()
+              //       .fetchAllAddedComplaints();
+
+              //   if (!context.mounted) return;
+
+              //   ///to rebuild submitted button if user added new complain.
+              //   context
+              //       .read<EmergencyComplaintsDataEntryCubit>()
+              //       .validateRequiredFields();
+              // }
+            },
+          ),
+          Positioned(
+            top: -2, // move it up (negative means up)
+            left: -120,
+            child: Lottie.asset(
+              'assets/images/hand_animation.json',
+              width: 120, // adjust sizes
+              height: 120,
+              addRepaintBoundary: true,
+              repeat: true,
+              alignment: Alignment.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

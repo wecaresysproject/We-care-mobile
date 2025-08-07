@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
@@ -54,6 +55,7 @@ import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -499,6 +501,14 @@ class AppRouter {
       case Routes.enableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => EnableViewForWeCareMentalHealthUmbrella());
+      case Routes.addNewMedicationView:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<MedicinesDataEntryCubit>(
+            create: (context) =>
+                getIt<MedicinesDataEntryCubit>()..initialDataEntryRequests(),
+            child: AddNewMedicationView(),
+          ),
+        );
       case Routes.disableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => DisableViewForWeCareMentalHealthUmbrella());

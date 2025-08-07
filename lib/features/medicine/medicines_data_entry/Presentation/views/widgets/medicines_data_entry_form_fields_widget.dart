@@ -89,9 +89,8 @@ class _MedicinesDataEntryFormFieldsWidgetState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "طريقة الاستخدام (الاشكال الدوائية)",
-              containerHintText: state.selectedMedicalForm ??
-                  state.selectedMedicalForm ??
-                  "اختر طريقة الاستخدام",
+              containerHintText:
+                  state.selectedMedicalForm ?? "اختر طريقة الاستخدام",
               options: state.medicineForms,
               loadingState: state.medicalFormsOptionsLoadingState,
               onOptionSelected: (value) async {
