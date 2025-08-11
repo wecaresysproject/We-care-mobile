@@ -68,20 +68,6 @@ class ChronicDiseaseViewListBuilder extends StatelessWidget {
       diseaseStatus: "تحت السيطرة",
       id: "3",
     ),
-    ChronicDiseaseModel(
-      title: "مرض السكري",
-      diagnosisStartDate: "2024-05-10",
-      treatingDoctorName: "د / سارة محمد",
-      diseaseStatus: "تحت السيطرة",
-      id: "2",
-    ),
-    ChronicDiseaseModel(
-      title: "ارتفاع ضغط الدم",
-      diagnosisStartDate: "2023-11-15",
-      treatingDoctorName: "د / سارة محمد",
-      diseaseStatus: "تحت السيطرة",
-      id: "3",
-    ),
   ];
 
   @override

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
-import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 
 class ChronicDiseaseDetailsView extends StatelessWidget {
   const ChronicDiseaseDetailsView({super.key, required this.documentId});
@@ -24,9 +23,9 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
         toolbarHeight: 0.h,
       ),
       body: BlocProvider.value(
-        value: getIt<PrescriptionViewCubit>()
-          ..getUserPrescriptionDetailsById(documentId),
-        child: BlocConsumer<PrescriptionViewCubit, PrescriptionViewState>(
+        value: getIt<ChronicDiseaseViewCubit>(),
+        // ..getUserPrescriptionDetailsById(documentId),
+        child: BlocConsumer<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
           listenWhen: (previous, current) =>
               previous.isDeleteRequest != current.isDeleteRequest,
           listener: (context, state) {
@@ -57,71 +56,77 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                       // if (result) {
                       //   if (!context.mounted) return;
                       //   await context
-                      //       .read<PrescriptionViewCubit>()
+                      //       .read<ChronicDiseaseViewCubit>()
                       //       .getUserPrescriptionDetailsById(documentId);
                       // }
                     },
-                    shareFunction: () => _shareDetails(context, state),
+                    // shareFunction: () => _shareDetails(context, state),
+
                     deleteFunction: () async {
                       await context
-                          .read<PrescriptionViewCubit>()
+                          .read<ChronicDiseaseViewCubit>()
                           .deletePrescriptionById(documentId);
                     },
                   ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "تاريخ بداية التشخيص",
-                        value: state
-                            .selectedPrescriptionDetails!.preDescriptionDate,
-                        icon: 'assets/images/date_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "التشخيص",
-                      value: state.selectedPrescriptionDetails!.disease,
-                      icon: 'assets/images/symptoms_icon.png',
-                    ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "اسم الطبيب",
-                      value: state.selectedPrescriptionDetails!.doctorName,
-                      icon: 'assets/images/doctor_name.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "التخصص ",
-                        value:
-                            state.selectedPrescriptionDetails!.doctorSpecialty,
-                        icon: 'assets/images/doctor_icon.png'),
-                  ]),
-                  DetailsViewImageWithTitleTile(
-                    image:
-                        state.selectedPrescriptionDetails!.preDescriptionPhoto,
-                    title: "صورة الروشتة",
-                    isShareEnabled: true,
+                  DetailsViewInfoTile(
+                    title: "تاريخ بداية التشخيص",
+                    // value: state
+                    //     .selectedPrescriptionDetails!.preDescriptionDate,
+                    value: "غير محدد",
+                    icon: 'assets/images/date_icon.png',
+                    isExpanded: true,
                   ),
                   DetailsViewInfoTile(
-                      title: "الأعراض",
-                      value: state.selectedPrescriptionDetails!.cause,
-                      icon: 'assets/images/symptoms_icon.png',
-                      isExpanded: true),
+                    title: "المرض المزمن",
+                    // value: state.selectedPrescriptionDetails!.disease,
+                    value: "غير محدد",
+
+                    isExpanded: true,
+
+                    icon: 'assets/images/t_icon.png',
+                  ),
+                  MedicineDetailsTemplate(
+                    model: AddNewMedicineModel(
+                      medicineName: "دواء ضغط الدم",
+                      startDate: "2024-05-10",
+                      dose: "50 ملغ",
+                      numberOfDoses: "مرتين يوميًا",
+                      medicalForm: "حبوب",
+                    ),
+                  ),
                   DetailsViewInfoTile(
-                      title: "ملاحظات",
-                      value: state
-                          .selectedPrescriptionDetails!.preDescriptionNotes,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: state.selectedPrescriptionDetails!.country,
-                        icon: 'assets/images/country_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "المدينة",
-                        value: state.selectedPrescriptionDetails!.governate,
-                        icon: 'assets/images/hospital_icon.png'),
-                  ]),
+                    title: "الطبيب المتابع",
+                    // value: state.selectedPrescriptionDetails!.cause,
+                    value: "غير محدد",
+
+                    icon: 'assets/images/doctor_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "حالة المرض",
+                    // value: state.selectedPrescriptionDetails!.cause,
+                    value: "غير محدد",
+
+                    icon: 'assets/images/thunder_image.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الأعراض الجانبية",
+                    // value: state.selectedPrescriptionDetails!.cause,
+                    value: "غير محدد",
+
+                    icon: 'assets/images/symptoms_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "ملاحظات شخصية",
+                    // value:
+                    // state.selectedPrescriptionDetails!.preDescriptionNotes,
+                    value: "غير محدد",
+
+                    icon: 'assets/images/notes_icon.png',
+                    isExpanded: true,
+                  ),
                 ],
               ),
             );
@@ -132,44 +137,139 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
   }
 }
 
-Future<void> _shareDetails(
-    BuildContext context, PrescriptionViewState state) async {
-  try {
-    final prescriptionDetails = state.selectedPrescriptionDetails!;
+// Future<void> _shareDetails(
+//     BuildContext context, PrescriptionViewState state) async {
+//   try {
+//     final prescriptionDetails = state.selectedPrescriptionDetails!;
 
-    // 📝 Extract text details
-    final text = '''
-    🩺 *تفاصيل الروشتة* 🩺
+//     // 📝 Extract text details
+//     final text = '''
+//     🩺 *تفاصيل الروشتة* 🩺
 
-    📅 *التاريخ*: ${prescriptionDetails.preDescriptionDate}
-    👩‍⚕️ *الاعراض *: ${prescriptionDetails.cause}
-    🔬 * المرض*: ${prescriptionDetails.disease}
-    👨‍⚕️ *الطبيب المعالج*: ${prescriptionDetails.doctorName}
-    🏥 *التخصص*: ${prescriptionDetails.doctorSpecialty}
-    🌍 *الدولة*: ${prescriptionDetails.country}
-    📝 *ملاحظات*: ${prescriptionDetails.preDescriptionNotes}
-    ''';
+//     📅 *التاريخ*: ${prescriptionDetails.preDescriptionDate}
+//     👩‍⚕️ *الاعراض *: ${prescriptionDetails.cause}
+//     🔬 * المرض*: ${prescriptionDetails.disease}
+//     👨‍⚕️ *الطبيب المعالج*: ${prescriptionDetails.doctorName}
+//     🏥 *التخصص*: ${prescriptionDetails.doctorSpecialty}
+//     🌍 *الدولة*: ${prescriptionDetails.country}
+//     📝 *ملاحظات*: ${prescriptionDetails.preDescriptionNotes}
+//     ''';
 
-    // 📥 Download images
-    final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
+//     // 📥 Download images
+//     final tempDir = await getTemporaryDirectory();
+//     List<String> imagePaths = [];
 
-    if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
-      final imagePath = await downloadImage(
-          prescriptionDetails.preDescriptionPhoto,
-          tempDir,
-          'analysis_image.png');
-      if (imagePath != null) imagePaths.add(imagePath);
-    }
+//     if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
+//       final imagePath = await downloadImage(
+//           prescriptionDetails.preDescriptionPhoto,
+//           tempDir,
+//           'analysis_image.png');
+//       if (imagePath != null) imagePaths.add(imagePath);
+//     }
 
-//!TODO: to be removed after adding real data
-    // 📤 Share text & images
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles([XFile(imagePaths.first)], text: text);
-    } else {
-      await Share.share(text);
-    }
-  } catch (e) {
-    await showError("❌ حدث خطأ أثناء المشاركة");
+// //!TODO: to be removed after adding real data
+//     // 📤 Share text & images
+//     if (imagePaths.isNotEmpty) {
+//       await Share.shareXFiles([XFile(imagePaths.first)], text: text);
+//     } else {
+//       await Share.share(text);
+//     }
+//   } catch (e) {
+//     await showError("❌ حدث خطأ أثناء المشاركة");
+//   }
+//
+
+class MedicineDetailsTemplate extends StatelessWidget {
+  const MedicineDetailsTemplate({
+    super.key,
+    required this.model,
+  });
+
+  final AddNewMedicineModel model;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(8.r),
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),
+        borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/medicine_icon.png',
+                height: 16,
+                width: 16,
+                fit: BoxFit.cover,
+              ),
+              horizontalSpacing(4),
+              Text(
+                "الأدوية",
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          Row(
+            children: [
+              Expanded(
+                child: DetailsViewInfoTile(
+                  title: "اسم الدواء",
+                  value: model.medicineName,
+                  isExpanded: true,
+                  icon: 'assets/images/t_icon.png',
+                ),
+              ),
+              horizontalSpacing(8),
+              Expanded(
+                child: DetailsViewInfoTile(
+                  title: "تاريخ بدء الدواء",
+                  value: model.startDate!,
+                  isExpanded: true,
+                  icon: 'assets/images/date_icon.png',
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          Row(
+            children: [
+              Expanded(
+                child: DetailsViewInfoTile(
+                  title: "الجرعة",
+                  value: model.dose!,
+                  icon: 'assets/images/hand_with_caution.png',
+                ),
+              ),
+              horizontalSpacing(8),
+              Expanded(
+                child: DetailsViewInfoTile(
+                  title: "عدد مرات الجرعة",
+                  value: model.numberOfDoses!,
+                  icon: 'assets/images/heart_rate_search_icon.png',
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(16),
+          DetailsViewInfoTile(
+            title: "طريقة الاستخدام",
+            value: model.medicalForm!,
+            icon: 'assets/images/chat_question.png',
+          ),
+        ],
+      ),
+    );
   }
 }
