@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -58,8 +59,7 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                       //       .getUserPrescriptionDetailsById(documentId);
                       // }
                     },
-                    // shareFunction: () => _shareDetails(context, state),
-
+                    shareFunction: () => _shareDetailsDummy(context),
                     deleteFunction: () async {
                       await context
                           .read<ChronicDiseaseViewCubit>()
@@ -135,44 +135,91 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
   }
 }
 
+Future<void> _shareDetailsDummy(BuildContext context) async {
+  try {
+    // 📝 بيانات الأدوية (مثال على أكتر من دواء)
+    final medications = [
+      {
+        "medicineName": "Clavulanic acid",
+        "startDate": "2025-03-01",
+        "dose": "مرتين في اليوم",
+        "numberOfDoses": "مرتين",
+        "medicalForm": "حبوب"
+      },
+      {
+        "medicineName": "دواء ضغط الدم",
+        "startDate": "2024-05-10",
+        "dose": "50 ملغ",
+        "numberOfDoses": "مرتين يوميًا",
+        "medicalForm": "حبوب"
+      }
+    ];
+
+    // 📝 تحويل الأدوية لنص
+    final medicationsText = medications.map((med) {
+      return '''
+💊 اسم الدواء: ${med["medicineName"]}
+📅 تاريخ بدء الدواء: ${med["startDate"]}
+💉 الجرعة: ${med["dose"]}
+🔄 عدد مرات الجرعة: ${med["numberOfDoses"]}
+💊 الشكل الصيدلاني: ${med["medicalForm"]}
+''';
+    }).join("\n-----------------\n");
+
+    // 📝 النص النهائي حسب ترتيب الصفحة
+    final text = '''
+🩺 *تفاصيل المرض المزمن* 🩺
+
+📅 *تاريخ بداية التشخيص*: 2025-03-01
+🦠 *المرض المزمن*: التهاب المفاصل الروماتويدي
+
+$medicationsText
+
+👨‍⚕️ *الطبيب المتابع*: د. أسامة أحمد
+📊 *حالة المرض*: تحت السيطرة
+🤒 *الأعراض الجانبية*: صداع مزمن
+📝 *ملاحظات شخصية*: هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.
+''';
+
+    await Share.share(text);
+  } catch (e) {
+    await showError("❌ حدث خطأ أثناء المشاركة");
+  }
+}
+
 // Future<void> _shareDetails(
-//     BuildContext context, PrescriptionViewState state) async {
+//     BuildContext context, ChronicDiseaseViewState state) async {
 //   try {
-//     final prescriptionDetails = state.selectedPrescriptionDetails!;
+//     final details = state.selectedPrescriptionDetails!;
 
-//     // 📝 Extract text details
+//     // 📝 الأدوية (ممكن أكتر من دواء)
+//     final medicationsText = (details.medications ?? []).map((med) {
+//       return '''
+// 💊 اسم الدواء: ${med.medicineName}
+// 📅 تاريخ بدء الدواء: ${med.startDate}
+// 💉 الجرعة: ${med.dose}
+// 🔄 عدد مرات الجرعة: ${med.numberOfDoses}
+// 💊 الشكل الصيدلاني: ${med.medicalForm}
+// ''';
+//     }).join("\n-----------------\n");
+
+//     // 📝 النص النهائي حسب ترتيب الصفحة
 //     final text = '''
-//     🩺 *تفاصيل الروشتة* 🩺
+// 🩺 *تفاصيل المرض المزمن* 🩺
 
-//     📅 *التاريخ*: ${prescriptionDetails.preDescriptionDate}
-//     👩‍⚕️ *الاعراض *: ${prescriptionDetails.cause}
-//     🔬 * المرض*: ${prescriptionDetails.disease}
-//     👨‍⚕️ *الطبيب المعالج*: ${prescriptionDetails.doctorName}
-//     🏥 *التخصص*: ${prescriptionDetails.doctorSpecialty}
-//     🌍 *الدولة*: ${prescriptionDetails.country}
-//     📝 *ملاحظات*: ${prescriptionDetails.preDescriptionNotes}
-//     ''';
+// 📅 *تاريخ بداية التشخيص*: ${details.diagnosisStartDate}
+// 🦠 *المرض المزمن*: ${details.diseaseName}
 
-//     // 📥 Download images
-//     final tempDir = await getTemporaryDirectory();
-//     List<String> imagePaths = [];
+// $medicationsText
 
-//     if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
-//       final imagePath = await downloadImage(
-//           prescriptionDetails.preDescriptionPhoto,
-//           tempDir,
-//           'analysis_image.png');
-//       if (imagePath != null) imagePaths.add(imagePath);
-//     }
+// 👨‍⚕️ *الطبيب المتابع*: ${details.attendingPhysician}
+// 📊 *حالة المرض*: ${details.diseaseStatus}
+// 🤒 *الأعراض الجانبية*: ${details.physicalSymptoms}
+// 📝 *ملاحظات شخصية*: ${details.personalNotes}
+// ''';
 
-// //!TODO: to be removed after adding real data
-//     // 📤 Share text & images
-//     if (imagePaths.isNotEmpty) {
-//       await Share.shareXFiles([XFile(imagePaths.first)], text: text);
-//     } else {
-//       await Share.share(text);
-//     }
+//     await Share.share(text);
 //   } catch (e) {
 //     await showError("❌ حدث خطأ أثناء المشاركة");
 //   }
-//
+// }
