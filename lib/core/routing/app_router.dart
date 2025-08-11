@@ -460,9 +460,11 @@ class AppRouter {
               ),
               const QuestionnaireItem(
                 text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
+                answer: true,
               ),
               const QuestionnaireItem(
                 text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
+                answer: true,
               ),
               const QuestionnaireItem(
                 text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',

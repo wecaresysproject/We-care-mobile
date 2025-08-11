@@ -302,12 +302,11 @@ class NavigationFooter extends StatelessWidget {
 // Data model for questionnaire items
 class QuestionnaireItem {
   final String text;
-  final bool? yesText;
-  final bool? noText;
+
+  final bool? answer;
 
   const QuestionnaireItem({
     required this.text,
-    this.yesText,
-    this.noText,
+    this.answer,
   });
 }
