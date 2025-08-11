@@ -8,21 +8,19 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
-import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/views/widgets/chronic_disease_item_card_widget.dart';
+import 'package:we_care/features/chronic_disease/data/models/chronic_disease_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
-class PrescriptionView extends StatelessWidget {
-  const PrescriptionView({super.key});
+class ChronicDiseaseView extends StatelessWidget {
+  const ChronicDiseaseView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PrescriptionViewCubit>(
-      create: (context) => getIt<PrescriptionViewCubit>()
-        ..getPrescriptionFilters()
-        ..getUserPrescriptionList(),
+    return BlocProvider<ChronicDiseaseViewCubit>(
+      create: (context) =>
+          getIt<ChronicDiseaseViewCubit>()..getUserPrescriptionList(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
@@ -32,11 +30,10 @@ class PrescriptionView extends StatelessWidget {
           child: Column(
             children: [
               ViewAppBar(),
-              PrescriptionsViewFilersRow(),
               verticalSpacing(16),
-              PrescriptionViewListBuilder(),
+              ChronicDiseaseViewListBuilder(),
               verticalSpacing(16),
-              PrescriptionViewFooterRow(),
+              ChronicDiseaseViewFooterRow(),
             ],
           ),
         ),
@@ -45,14 +42,51 @@ class PrescriptionView extends StatelessWidget {
   }
 }
 
-class PrescriptionViewListBuilder extends StatelessWidget {
-  const PrescriptionViewListBuilder({
+class ChronicDiseaseViewListBuilder extends StatelessWidget {
+  ChronicDiseaseViewListBuilder({
     super.key,
   });
+  final List<ChronicDiseaseModel> dummyChronicDiseases = [
+    ChronicDiseaseModel(
+      title: "التهاب المفاصل الروماتويدي",
+      diagnosisStartDate: "2025-01-25",
+      treatingDoctorName: "د / أحمد أسامة",
+      diseaseStatus: "تحت السيطرة",
+      id: "1",
+    ),
+    ChronicDiseaseModel(
+      title: "مرض السكري",
+      diagnosisStartDate: "2024-05-10",
+      treatingDoctorName: "د / سارة محمد",
+      diseaseStatus: "تحت السيطرة",
+      id: "2",
+    ),
+    ChronicDiseaseModel(
+      title: "ارتفاع ضغط الدم",
+      diagnosisStartDate: "2023-11-15",
+      treatingDoctorName: "د / سارة محمد",
+      diseaseStatus: "تحت السيطرة",
+      id: "3",
+    ),
+    ChronicDiseaseModel(
+      title: "مرض السكري",
+      diagnosisStartDate: "2024-05-10",
+      treatingDoctorName: "د / سارة محمد",
+      diseaseStatus: "تحت السيطرة",
+      id: "2",
+    ),
+    ChronicDiseaseModel(
+      title: "ارتفاع ضغط الدم",
+      diagnosisStartDate: "2023-11-15",
+      treatingDoctorName: "د / سارة محمد",
+      diseaseStatus: "تحت السيطرة",
+      id: "3",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+    return BlocBuilder<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
       builder: (context, state) {
         if (state.requestStatus == RequestStatus.loading ||
             state.requestStatus == RequestStatus.initial) {
@@ -68,85 +102,87 @@ class PrescriptionViewListBuilder extends StatelessWidget {
             ),
           );
         }
-        return MedicalItemGridView(
-          items: state.userPrescriptions,
-          onTap: (id) async {
-            final result = await context
-                .pushNamed(Routes.prescriptionDetailsView, arguments: {
-              'id': id,
-            });
-            if (result != null && result as bool && context.mounted) {
-              await context
-                  .read<PrescriptionViewCubit>()
-                  .getUserPrescriptionList();
-              await context
-                  .read<PrescriptionViewCubit>()
-                  .getPrescriptionFilters();
-            }
-          },
-          titleBuilder: (item) =>
-              item.doctorName, // Extract the title dynamically
-          infoRowBuilder: (item) => [
-            {"title": "التخصص:", "value": item.doctorSpecialty},
-            {"title": "التاريخ:", "value": item.preDescriptionDate},
-            {"title": "المرض:", "value": item.disease},
-          ],
+        final cubit = context.read<ChronicDiseaseViewCubit>();
+        return Expanded(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount:
+                dummyChronicDiseases.length, //state.userPrescriptions.length,
+            itemBuilder: (context, index) {
+              // final doc = state.userPrescriptions[index];
+              final doc = dummyChronicDiseases[index];
+              return ChronicDiseaseItemCardHorizontalWidget(
+                item: doc,
+                onArrowTap: () async {
+                  await context.pushNamed(
+                    Routes.chronicDiseaseDetailsView,
+                    arguments: {
+                      'docId': doc.id,
+                    },
+                  );
+                  if (context.mounted) {
+                    await cubit.getUserPrescriptionList();
+                  }
+                },
+              );
+            },
+          ),
         );
       },
     );
   }
 }
 
-class PrescriptionsViewFilersRow extends StatelessWidget {
-  const PrescriptionsViewFilersRow({
-    super.key,
-  });
+// class PrescriptionsViewFilersRow extends StatelessWidget {
+//   const PrescriptionsViewFilersRow({
+//     super.key,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
+//       buildWhen: (previous, current) {
+//         return previous.yearsFilter != current.yearsFilter ||
+//             previous.specificationsFilter != current.specificationsFilter ||
+//             previous.doctorNameFilter != current.doctorNameFilter;
+//       },
+//       builder: (context, state) {
+//         return DataViewFiltersRow(
+//           filters: [
+//             FilterConfig(
+//                 title: 'السنة', options: state.yearsFilter, isYearFilter: true),
+//             FilterConfig(
+//               title: 'التخصص',
+//               options: state.specificationsFilter,
+//             ),
+//             FilterConfig(
+//               title: 'الطبيب',
+//               options: state.doctorNameFilter,
+//             ),
+//           ],
+//           onApply: (selectedFilters) async {
+//             print("Selected Filters: $selectedFilters");
+//             await context
+//                 .read<ChronicDiseaseViewCubit>()
+//                 .getFilteredPrescriptionList(
+//                     year: selectedFilters['السنة'],
+//                     specification: selectedFilters['التخصص'],
+//                     doctorName: selectedFilters['الطبيب']);
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+class ChronicDiseaseViewFooterRow extends StatelessWidget {
+  const ChronicDiseaseViewFooterRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
-      buildWhen: (previous, current) {
-        return previous.yearsFilter != current.yearsFilter ||
-            previous.specificationsFilter != current.specificationsFilter ||
-            previous.doctorNameFilter != current.doctorNameFilter;
-      },
+    return BlocBuilder<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
       builder: (context, state) {
-        return DataViewFiltersRow(
-          filters: [
-            FilterConfig(
-                title: 'السنة', options: state.yearsFilter, isYearFilter: true),
-            FilterConfig(
-              title: 'التخصص',
-              options: state.specificationsFilter,
-            ),
-            FilterConfig(
-              title: 'الطبيب',
-              options: state.doctorNameFilter,
-            ),
-          ],
-          onApply: (selectedFilters) async {
-            print("Selected Filters: $selectedFilters");
-            await context
-                .read<PrescriptionViewCubit>()
-                .getFilteredPrescriptionList(
-                    year: selectedFilters['السنة'],
-                    specification: selectedFilters['التخصص'],
-                    doctorName: selectedFilters['الطبيب']);
-          },
-        );
-      },
-    );
-  }
-}
-
-class PrescriptionViewFooterRow extends StatelessWidget {
-  const PrescriptionViewFooterRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
-      builder: (context, state) {
-        final cubit = context.read<PrescriptionViewCubit>();
+        final cubit = context.read<ChronicDiseaseViewCubit>();
         return Column(
           children: [
             // Loading indicator that appears above the footer when loading more items

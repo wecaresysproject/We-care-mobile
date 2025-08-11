@@ -296,8 +296,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
-    "route": "/organic_disorders",
-    "isActive": false,
+    "route": Routes.chronicDiseaseDataView,
+    "isActive": true,
   },
   {
     "title": "الأورام",

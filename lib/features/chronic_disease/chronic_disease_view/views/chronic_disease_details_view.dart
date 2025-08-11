@@ -6,17 +6,15 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
 
-class PrescriptionDetailsView extends StatelessWidget {
-  const PrescriptionDetailsView({super.key, required this.documentId});
+class ChronicDiseaseDetailsView extends StatelessWidget {
+  const ChronicDiseaseDetailsView({super.key, required this.documentId});
   final String documentId;
 
   @override
@@ -50,18 +48,18 @@ class PrescriptionDetailsView extends StatelessWidget {
                 spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
-                    title: 'الروشتة',
+                    title: 'الامراض المزمنة',
                     editFunction: () async {
-                      final result = await context.pushNamed(
-                        Routes.prescriptionCategoryDataEntryView,
-                        arguments: state.selectedPrescriptionDetails!,
-                      );
-                      if (result) {
-                        if (!context.mounted) return;
-                        await context
-                            .read<PrescriptionViewCubit>()
-                            .getUserPrescriptionDetailsById(documentId);
-                      }
+                      // final result = await context.pushNamed(
+                      //   Routes.prescriptionCategoryDataEntryView,
+                      //   arguments: state.selectedPrescriptionDetails!,
+                      // );
+                      // if (result) {
+                      //   if (!context.mounted) return;
+                      //   await context
+                      //       .read<PrescriptionViewCubit>()
+                      //       .getUserPrescriptionDetailsById(documentId);
+                      // }
                     },
                     shareFunction: () => _shareDetails(context, state),
                     deleteFunction: () async {
@@ -72,7 +70,7 @@ class PrescriptionDetailsView extends StatelessWidget {
                   ),
                   Row(children: [
                     DetailsViewInfoTile(
-                        title: "التاريخ",
+                        title: "تاريخ بداية التشخيص",
                         value: state
                             .selectedPrescriptionDetails!.preDescriptionDate,
                         icon: 'assets/images/date_icon.png'),

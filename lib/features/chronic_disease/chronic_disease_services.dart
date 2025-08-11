@@ -1,48 +1,45 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_api_constants.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
-import 'package:we_care/features/prescription/prescription_api_constants.dart';
 
 part 'chronic_disease_services.g.dart';
 
-@RestApi(baseUrl: PrescriptionApiConstants.baseUrl)
+@RestApi(baseUrl: ChronicDiseaseApiConstants.baseUrl)
 abstract class ChronicDiseaseServices {
   factory ChronicDiseaseServices(Dio dio, {String? baseUrl}) =
       _ChronicDiseaseServices;
 
-  @GET(PrescriptionApiConstants.getCountries)
+  @GET(ChronicDiseaseApiConstants.getCountries)
   Future<dynamic> getCountries(@Query('language') String language);
 
-  @GET(PrescriptionApiConstants.getCitiesByCountryName)
+  @GET(ChronicDiseaseApiConstants.getCitiesByCountryName)
   Future<dynamic> getCitiesByCountryName(
     @Query('language') String language,
     @Query('country') String country,
   );
-  @POST(PrescriptionApiConstants.postPrescriptionDataEntry)
+  @POST(ChronicDiseaseApiConstants.postPrescriptionDataEntry)
   Future<dynamic> postPrescriptionDataEntry(
     @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
   );
 
-  // @GET(PrescriptionApiConstants.getPrescriptionFilters)
-  // Future<dynamic> getPrescriptionFilters(
-  //     @Query("language") String language, @Query("UserType") String userType);
+  @GET(ChronicDiseaseApiConstants.getPrescriptionFilters)
+  Future<dynamic> getPrescriptionFilters(
+      @Query("language") String language, @Query("UserType") String userType);
 
-  @GET(PrescriptionApiConstants.getUserPrescriptionList)
+  @GET(ChronicDiseaseApiConstants.getUserPrescriptionList)
   Future<GetUserPrescriptionsResponseModel> getUserPrescriptionList(
       @Query("language") String language, @Query("UserType") String userType,
       {@Query("page") int? page, @Query("pageSize") int? pageSize});
 
-  @GET(PrescriptionApiConstants.getUserPrescriptionDetailsById)
+  @GET(ChronicDiseaseApiConstants.getUserPrescriptionDetailsById)
   Future<dynamic> getUserPrescriptionDetailsById(
     @Query("DocumentId") String id,
     @Query("language") String language,
     @Query("UserType") String userType,
   );
-  @PUT(PrescriptionApiConstants.updatePrescriptionDocumentDetails)
+  @PUT(ChronicDiseaseApiConstants.updatePrescriptionDocumentDetails)
   Future<dynamic> updatePrescriptionDocumentDetails(
     @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
     @Query('language') String language,
@@ -50,14 +47,14 @@ abstract class ChronicDiseaseServices {
     @Query('documentId') String documentId,
   );
 
-  @DELETE(PrescriptionApiConstants.deletePrescriptionById)
+  @DELETE(ChronicDiseaseApiConstants.deletePrescriptionById)
   Future<dynamic> deletePrescriptionById(
     @Query("documentId") String id,
     @Query("language") String language,
     @Query("UserType") String userType,
   );
 
-  // @GET(PrescriptionApiConstants.getFilteredPrescriptionList)
+  // @GET(ChronicDiseaseApiConstants.getFilteredPrescriptionList)
   // Future<GetUserPrescriptionsResponseModel> getFilteredPrescriptionList({
   //   @Query("language") required String language,
   //   @Query("doctorName") String? doctorName,

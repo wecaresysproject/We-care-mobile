@@ -1,8 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
+part of 'chronic_disease_view_cubit.dart';
 
-class PrescriptionViewState extends Equatable {
+class ChronicDiseaseViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
   final List<PrescriptionModel> userPrescriptions;
@@ -13,7 +11,7 @@ class PrescriptionViewState extends Equatable {
   final bool isDeleteRequest;
   final bool isLoadingMore;
 
-  const PrescriptionViewState({
+  const ChronicDiseaseViewState({
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
@@ -25,8 +23,8 @@ class PrescriptionViewState extends Equatable {
     this.isLoadingMore = false,
   });
 
-  factory PrescriptionViewState.initial() {
-    return PrescriptionViewState(
+  factory ChronicDiseaseViewState.initial() {
+    return ChronicDiseaseViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
       yearsFilter: const [],
@@ -39,7 +37,7 @@ class PrescriptionViewState extends Equatable {
     );
   }
 
-  PrescriptionViewState copyWith({
+  ChronicDiseaseViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
     List<int>? yearsFilter,
@@ -50,7 +48,7 @@ class PrescriptionViewState extends Equatable {
     bool? isDeleteRequest,
     bool? isLoadingMore,
   }) {
-    return PrescriptionViewState(
+    return ChronicDiseaseViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
       yearsFilter: yearsFilter ?? this.yearsFilter,

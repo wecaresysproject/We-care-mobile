@@ -1,18 +1,18 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_filters_response_model.dart';
-import 'package:we_care/features/prescription/prescription_services.dart';
 
-class PrescriptionViewRepo {
-  final PrescriptionServices prescriptionServices;
-  PrescriptionViewRepo({required this.prescriptionServices});
+class ChronicDiseaseViewRepo {
+  final ChronicDiseaseServices diseaseServices;
+  ChronicDiseaseViewRepo({required this.diseaseServices});
 
-  Future<ApiResult<PrescriptionFiltersResponseModel>> gettFilters(
+  Future<ApiResult<PrescriptionFiltersResponseModel>> getFilters(
       {required String language, required String userType}) async {
     try {
       final response =
-          await prescriptionServices.getPrescriptionFilters(language, userType);
+          await diseaseServices.getPrescriptionFilters(language, userType);
       return ApiResult.success(
           PrescriptionFiltersResponseModel.fromJson(response['data']));
     } catch (error) {
@@ -21,11 +21,14 @@ class PrescriptionViewRepo {
   }
 
   Future<ApiResult<GetUserPrescriptionsResponseModel>> getUserPrescriptionList(
-      {required String language, required String userType,int? page, int? pageSize}) async {
+      {required String language,
+      required String userType,
+      int? page,
+      int? pageSize}) async {
     try {
-      final response =
-          await prescriptionServices.getUserPrescriptionList(language, userType,
-              page: page, pageSize: pageSize);
+      final response = await diseaseServices.getUserPrescriptionList(
+          language, userType,
+          page: page, pageSize: pageSize);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -37,8 +40,8 @@ class PrescriptionViewRepo {
       required String language,
       required String userType}) async {
     try {
-      final response = await prescriptionServices
-          .getUserPrescriptionDetailsById(id, language, userType);
+      final response = await diseaseServices.getUserPrescriptionDetailsById(
+          id, language, userType);
       return ApiResult.success(PrescriptionModel.fromJson(response['data']));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -50,32 +53,32 @@ class PrescriptionViewRepo {
       required String language,
       required String userType}) async {
     try {
-      final response = await prescriptionServices.deletePrescriptionById(
-          id, language, userType);
+      final response =
+          await diseaseServices.deletePrescriptionById(id, language, userType);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<GetUserPrescriptionsResponseModel>>
-      getFilteredPrescriptionList(
-          {required String language,
-          required String userType,
-          int? year,
-          String? doctorName,
-          String? specification}) async {
-    try {
-      final response = await prescriptionServices.getFilteredPrescriptionList(
-          language: language,
-          userType: userType,
-          year: year,
-          doctorName: doctorName,
-          specialization: specification);
+  // Future<ApiResult<GetUserPrescriptionsResponseModel>>
+  //     getFilteredPrescriptionList(
+  //         {required String language,
+  //         required String userType,
+  //         int? year,
+  //         String? doctorName,
+  //         String? specification}) async {
+  //   try {
+  //     final response = await diseaseServices.getFilteredPrescriptionList(
+  //         language: language,
+  //         userType: userType,
+  //         year: year,
+  //         doctorName: doctorName,
+  //         specialization: specification);
 
-      return ApiResult.success(response);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  //     return ApiResult.success(response);
+  //   } catch (error) {
+  //     return ApiResult.failure(ApiErrorHandler.handle(error));
+  //   }
+  // }
 }

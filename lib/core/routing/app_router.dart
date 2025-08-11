@@ -5,6 +5,8 @@ import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/v
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_view.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
@@ -524,6 +526,24 @@ class AppRouter {
       case Routes.mentalIllnessAnsweredQuestionsView:
         return MaterialPageRoute(
           builder: (_) => MentalIllnessYesAnswersView(),
+        );
+      case Routes.chronicDiseaseDataView:
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseView(),
+        );
+      // case Routes.chronicDiseaseDetailsView:
+      //   return MaterialPageRoute(
+      //     builder: (_) => ChronicDiseaseDetailsView(
+
+      //     ),
+      //   );
+      case Routes.chronicDiseaseDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseDetailsView(
+            documentId: argumentsMap['docId'] ?? "",
+          ),
         );
       case Routes.chronicDiseaseDataEntry:
         return MaterialPageRoute(builder: (_) => ChronicDiseaseDataEntryView());
