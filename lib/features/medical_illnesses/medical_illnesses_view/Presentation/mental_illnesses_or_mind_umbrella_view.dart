@@ -21,8 +21,8 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MentalIllnessDataViewCubit>(
-      create: (context) => getIt<MentalIllnessDataViewCubit>(),
-      //!..getIsUmbrellaMentalIllnessButtonActivated(),
+      create: (context) => getIt<MentalIllnessDataViewCubit>()
+        ..getIsUmbrellaMentalIllnessButtonActivated(),
       child:
           BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
         builder: (context, state) {
@@ -66,8 +66,10 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
                             await context
                                 .pushNamed(Routes.mentalIlnesssUmbrellaView);
                           },
-                          imagePath:
-                              "assets/images/medical_illnesses_umbrella_icon.png", // assets/images/un_activated_umbrella.png
+                          imagePath: state
+                                  .isUmbrellaMentalIllnessButtonActivated
+                              ? "assets/images/medical_illnesses_umbrella_icon.png"
+                              : "assets/images/un_activated_umbrella.png",
                           text: "المظلة النفسية",
                           textStyle:
                               AppTextStyles.font22WhiteWeight600.copyWith(
@@ -76,7 +78,7 @@ class MedicalIllnessOrMindUmbrellaView extends StatelessWidget {
                           containerColor:
                               state.isUmbrellaMentalIllnessButtonActivated
                                   ? AppColorsManager.mainDarkBlue
-                                  : null,
+                                  : AppColorsManager.placeHolderColor,
                         ),
                       ]
                     ],

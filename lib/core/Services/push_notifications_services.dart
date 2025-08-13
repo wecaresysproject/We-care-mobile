@@ -12,14 +12,14 @@ class PushNotificationsService {
 
   static Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     await _messaging.requestPermission();
-    await _getAndLogToken();
+    // await getAndLogToken();
     //!when the app is in the background or terminated.
     FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
     _handleForegroundNotifications(navigatorKey);
     _handleNotificationTap(navigatorKey);
   }
 
-  static Future<String> _getAndLogToken() async {
+  Future<String> getAndLogToken() async {
     final token = await _messaging.getToken();
     log('FCM Token: $token');
     return token ?? '';

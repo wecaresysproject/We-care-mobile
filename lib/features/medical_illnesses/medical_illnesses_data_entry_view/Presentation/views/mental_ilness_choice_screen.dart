@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -6,9 +7,30 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 
-class MentalIllnessChoiceScreen extends StatelessWidget {
+class MentalIllnessChoiceScreen extends StatefulWidget {
   const MentalIllnessChoiceScreen({super.key});
+
+  @override
+  State<MentalIllnessChoiceScreen> createState() =>
+      _MentalIllnessChoiceScreenState();
+}
+
+class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Call the Cubit method after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        context
+            .read<MedicalIllnessesDataEntryCubit>()
+            .getActivationStatusOfUmbrella();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +64,15 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
                     'أود تلقى المتابعة النفسية', //! disable border color and its text inside it , handle it with backend in sha2allah
                 iconPath: "assets/images/check_right.png",
                 onTap: () async {
-                  await context.pushNamed(
+                  final bool? result = await context.pushNamed(
                     Routes.enableViewForWeCareMentalHealthUmbrella,
                   );
+                  if (result != null && result == true && context.mounted) {
+                    await context
+                        .read<MedicalIllnessesDataEntryCubit>()
+                        .getActivationStatusOfUmbrella();
+                    // Handle successful navigation
+                  }
                 },
               ),
               verticalSpacing(32),
@@ -57,7 +85,7 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
                     Routes.disableViewForWeCareMentalHealthUmbrella,
                   );
                 },
-                iconColor: Colors.red,
+                // iconColor: Colors.red,
               ),
 
               verticalSpacing(72),
@@ -97,18 +125,23 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
 
   Widget _buildOptionButton({
     required String label,
-    required String iconPath, // e.g., "assets/icons/check.svg"
+    required String iconPath,
     required VoidCallback onTap,
+    bool isSelected = false,
     Color? iconColor,
   }) {
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(
-            color: AppColorsManager.mainDarkBlue,
+          side: BorderSide(
+            color: isSelected
+                ? AppColorsManager.mainDarkBlue
+                : Colors.grey.shade400,
             width: 1.5,
           ),
+          backgroundColor:
+              isSelected ? AppColorsManager.placeHolderColor : Colors.white,
           padding: EdgeInsets.symmetric(
             vertical: 12.h,
             horizontal: 16.w,
@@ -124,13 +157,18 @@ class MentalIllnessChoiceScreen extends StatelessWidget {
               iconPath,
               width: 22.w,
               height: 22.h,
-              color: iconColor ?? AppColorsManager.mainDarkBlue,
+              color: iconColor ??
+                  (isSelected
+                      ? AppColorsManager.mainDarkBlue
+                      : Colors.grey.shade500),
             ),
             horizontalSpacing(12),
             Text(
               label,
               style: AppTextStyles.font20blackWeight600.copyWith(
-                color: AppColorsManager.mainDarkBlue,
+                color: isSelected
+                    ? AppColorsManager.mainDarkBlue
+                    : Colors.grey.shade500,
               ),
             ),
           ],

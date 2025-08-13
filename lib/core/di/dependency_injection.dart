@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
 import 'package:we_care/features/Biometrics/biometrics_services.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_cubit.dart';
@@ -274,6 +275,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicalIllnessesDataEntryCubit>(
     () => MedicalIllnessesDataEntryCubit(
       getIt<MentalIllnessesDataEntryRepo>(),
+      getIt<PushNotificationsService>(),
     ),
   );
   getIt.registerFactory<MentalIllnessDataViewCubit>(
@@ -526,5 +528,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<ChronicDiseaseServices>(
     () => ChronicDiseaseServices(dio),
+  );
+  getIt.registerLazySingleton<PushNotificationsService>(
+    () => PushNotificationsService(),
   );
 }

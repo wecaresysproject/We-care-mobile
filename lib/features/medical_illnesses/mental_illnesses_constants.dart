@@ -24,6 +24,8 @@ class MentalIllnessesConstants {
   static const getMentalIllnessRecords = "/v1/medicalIllnessDocuments";
   static const getFilteredMentalIllnessDocuments = "/v1/documents/filter";
   static const getMentalIllnessDocumentDetailsById = "/v1/document";
+  static const postActivationOfUmbrella = "/MentalAssessment/activate-umbrella";
+  static const getActivationOfUmbrella = "/MentalAssessment/umbrella-status";
 
   static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
   static const getMedicalIllnessUmbrellaDocs =

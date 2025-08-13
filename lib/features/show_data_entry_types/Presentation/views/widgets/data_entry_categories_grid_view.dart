@@ -370,7 +370,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
-    "route": Routes.mentalIllnessOrMindUmbrellaViewDataEntryView,
+    "route": Routes.mentalIllnessChoiceScreen,
     "cornerImagePath": "assets/images/mental_disorder_module.png",
     "audio": "",
     "isActive": true,

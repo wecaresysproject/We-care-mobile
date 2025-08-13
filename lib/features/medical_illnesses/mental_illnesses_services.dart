@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
+import 'package:we_care/features/medical_illnesses/data/models/post_fcm_token_request_model.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_constants.dart';
 
 part 'mental_illnesses_services.g.dart';
@@ -159,28 +160,17 @@ abstract class MentalIllnessesServices {
     @Query("language") String language,
     @Query("userType") String userType,
   );
-  // /// 6. Get Glasses Records (With Pagination)
-  // @GET(EyesApiConstants.getGlassesRecords)
-  // Future<dynamic> getAllGlasses({
-  //   @Query("language") required String language,
-  //   @Query("UserType") required String userType,
-  //   @Query("page") required int page,
-  //   @Query("limit") required int limit,
-  // });
 
-  // /// 7. Get Glasses Details by ID
-  // @GET(EyesApiConstants.getGlassesDetailsById)
-  // Future<dynamic> getGlassesDetailsById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  // );
+  @POST(MentalIllnessesConstants.postActivationOfUmbrella)
+  Future<dynamic> postActivationOfUmbrella(
+    @Query("userType") String userType,
+    @Query("language") String language,
+    @Body() PostFcmTokenRequest requestBody,
+  );
 
-  // /// 8. Delete Glasses Record by ID
-  // @DELETE(EyesApiConstants.deleteGlassesById)
-  // Future<dynamic> deleteGlassesById(
-  //   @Query("id") String id,
-  //   @Query("language") String language,
-  //   @Query("UserType") String userType,
-  // );
+  @GET(MentalIllnessesConstants.getActivationOfUmbrella)
+  Future<dynamic> getActivationOfUmbrella(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
 }

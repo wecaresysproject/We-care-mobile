@@ -45,7 +45,7 @@ import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_health_questionare_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
-import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_answered_questions_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_details_view.dart';
@@ -420,11 +420,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const MedicalIllnessOrMindUmbrellaView(),
         );
-      case Routes.mentalIllnessOrMindUmbrellaViewDataEntryView:
-        return MaterialPageRoute(
-          builder: (context) =>
-              const MentalIllnessOrMindUmbrellaViewDataEntryView(),
-        );
+
       case Routes.mentalIllnessesRecordsView:
         return MaterialPageRoute(
           builder: (context) => const MentalIllnessRecordsView(),
@@ -435,7 +431,10 @@ class AppRouter {
         );
       case Routes.mentalIllnessChoiceScreen:
         return MaterialPageRoute(
-          builder: (context) => const MentalIllnessChoiceScreen(),
+          builder: (context) => BlocProvider<MedicalIllnessesDataEntryCubit>(
+            create: (context) => getIt<MedicalIllnessesDataEntryCubit>(),
+            child: const MentalIllnessChoiceScreen(),
+          ),
         );
       case Routes.mentalIlnesssUmbrellaView:
         return MaterialPageRoute(

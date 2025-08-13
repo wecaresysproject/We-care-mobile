@@ -173,10 +173,11 @@ class MentalIllnessesViewRepo {
   // }
   Future<ApiResult<bool>> getIsUmbrellaMentalIllnessButtonActivated() async {
     try {
-      final response = await mentalIllnessesServices
-          .getIsUmbrellaMentalIllnessButtonActivated();
-      return ApiResult.success(
-          response['isMedicalIlnessUmbrellaButtonActivated']);
+      final response = await mentalIllnessesServices.getActivationOfUmbrella(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        'ar',
+      );
+      return ApiResult.success(response['data']['isActivated']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
