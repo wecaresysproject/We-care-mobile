@@ -160,9 +160,9 @@ class EnableMentalHealthUmbrellaDialogWidget extends StatelessWidget {
                     child: TextButton(
                       onPressed: () async {
                         // Handle cancel action
-                        context.read<MedicalIllnessesDataEntryCubit>()
-                          ..updateUmbrellaActivationStatus(false)
-                          ..postActivationOfUmbrella();
+                        // context.read<MedicalIllnessesDataEntryCubit>()
+                        //   ..updateUmbrellaActivationStatus(false)
+                        //   ..postActivationOfUmbrella();
                         context.pop();
                       },
                       style: TextButton.styleFrom(

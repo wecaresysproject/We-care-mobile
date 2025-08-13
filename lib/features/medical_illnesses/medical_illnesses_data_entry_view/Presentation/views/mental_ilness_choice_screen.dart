@@ -38,85 +38,103 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomAppBarWidget(
-                haveBackArrow: true,
-              ),
-
-              verticalSpacing(72),
-
-              // Main Question
-              Text(
-                'هل تود تفعيل المتابعة النفسية الآمنة\nضمن مظلة WECARE؟',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: AppColorsManager.textColor,
-                  fontSize: 20.sp,
-                ),
-              ),
-              verticalSpacing(40),
-              // Buttons
-              _buildOptionButton(
-                label:
-                    'أود تلقى المتابعة النفسية', //! disable border color and its text inside it , handle it with backend in sha2allah
-                iconPath: "assets/images/check_right.png",
-                onTap: () async {
-                  final bool? result = await context.pushNamed(
-                    Routes.enableViewForWeCareMentalHealthUmbrella,
-                  );
-                  if (result != null && result == true && context.mounted) {
-                    await context
-                        .read<MedicalIllnessesDataEntryCubit>()
-                        .getActivationStatusOfUmbrella();
-                    // Handle successful navigation
-                  }
-                },
-              ),
-              verticalSpacing(32),
-              _buildOptionButton(
-                label:
-                    'أود التفعيل لاحقا', //! الغاء التفعيل ، in case it enabled by user and return back to this screen , handled with backend
-                iconPath: "assets/images/check_wrong.png",
-                onTap: () async {
-                  await context.pushNamed(
-                    Routes.disableViewForWeCareMentalHealthUmbrella,
-                  );
-                },
-                // iconColor: Colors.red,
-              ),
-
-              verticalSpacing(72),
-
-              // Go to genetic diseases
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    iconSize: 28.sp,
-                    backgroundColor: Color(0xFF003E78), // dark blue
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
+          child: BlocBuilder<MedicalIllnessesDataEntryCubit,
+              MedicalIllnessesDataEntryState>(
+            buildWhen: (previous, current) =>
+                previous.umbrellaActivationStatus !=
+                current.umbrellaActivationStatus,
+            builder: (context, state) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomAppBarWidget(
+                    haveBackArrow: true,
                   ),
-                  onPressed: () async {
-                    await context.pushNamed(
-                      Routes.mentalIllnessesDataEntryView,
-                    );
-                  },
-                  icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  label: Text(
-                    'الذهاب للأمراض النفسية',
-                    style: AppTextStyles.font22WhiteWeight600.copyWith(
+
+                  verticalSpacing(72),
+
+                  // Main Question
+                  Text(
+                    'هل تود تفعيل المتابعة النفسية الآمنة\nضمن مظلة WECARE؟',
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: AppColorsManager.textColor,
                       fontSize: 20.sp,
                     ),
                   ),
-                ),
-              ),
-            ],
+                  verticalSpacing(40),
+                  // Buttons
+                  _buildOptionButton(
+                    label:
+                        'أود تلقى المتابعة النفسية', //! disable border color and its text inside it , handle it with backend in sha2allah
+                    iconPath: "assets/images/check_right.png",
+                    isSelected: !state.umbrellaActivationStatus,
+                    onTap: () async {
+                      final bool? result = await context.pushNamed(
+                        Routes.enableViewForWeCareMentalHealthUmbrella,
+                      );
+                      if (result != null && result == true && context.mounted) {
+                        await context
+                            .read<MedicalIllnessesDataEntryCubit>()
+                            .getActivationStatusOfUmbrella();
+                        // Handle successful navigation
+                      }
+                    },
+                  ),
+                  verticalSpacing(32),
+                  _buildOptionButton(
+                    isSelected: true,
+                    label: state.umbrellaActivationStatus
+                        ? 'الغاء التفعيل'
+                        : 'أود التفعيل لاحقا', //! الغاء التفعيل ، in case it enabled by user and return back to this screen , handled with backend
+                    iconPath: "assets/images/check_wrong.png",
+                    onTap: () async {
+                      final bool? result = await context.pushNamed(
+                        Routes.disableViewForWeCareMentalHealthUmbrella,
+                      );
+                      if (result != null && result == true && context.mounted) {
+                        await context
+                            .read<MedicalIllnessesDataEntryCubit>()
+                            .getActivationStatusOfUmbrella();
+                        // Handle successful navigation
+                      }
+                    },
+                    iconColor:
+                        state.umbrellaActivationStatus ? Colors.red : null,
+                  ),
+
+                  verticalSpacing(72),
+
+                  // Go to genetic diseases
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        iconSize: 28.sp,
+                        backgroundColor: Color(0xFF003E78), // dark blue
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                      ),
+                      onPressed: () async {
+                        await context.pushNamed(
+                          Routes.mentalIllnessesDataEntryView,
+                        );
+                      },
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      label: Text(
+                        'الذهاب للأمراض النفسية',
+                        style: AppTextStyles.font22WhiteWeight600.copyWith(
+                          fontSize: 20.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -140,8 +158,7 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
                 : Colors.grey.shade400,
             width: 1.5,
           ),
-          backgroundColor:
-              isSelected ? AppColorsManager.placeHolderColor : Colors.white,
+          backgroundColor: isSelected ? Colors.transparent : Colors.white,
           padding: EdgeInsets.symmetric(
             vertical: 12.h,
             horizontal: 16.w,
