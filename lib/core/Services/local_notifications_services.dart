@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,11 +10,34 @@ class LocalNotificationService {
       FlutterLocalNotificationsPlugin();
   static StreamController<NotificationResponse> streamController =
       StreamController();
+  // @pragma('vm:entry-point')
+  // static notificationTapBackground(NotificationResponse notificationResponse) {
+  //   LocalNotificationService.onTap(notificationResponse);
+  // }
+
   static onTap(NotificationResponse notificationResponse) {
     // log(notificationResponse.id!.toString());
     // log(notificationResponse.payload!.toString());
-    streamController.add(notificationResponse);
+    // streamController.add(notificationResponse);
     // Navigator.push(context, route);
+    // final payload = notificationResponse.payload;
+    // if (payload != null) {
+    //   final Map<String, dynamic> bodyJson = jsonDecode(payload);
+    //   final fcmMessage = FcmMessageModel.fromJson(bodyJson);
+
+    //   if (fcmMessage.pageRoute ==
+    //       Routes.mentalUmbrellaHealthQuestionnairePage) {
+    //     navigatorKey.currentState?.pushNamed(
+    //       Routes.mentalUmbrellaHealthQuestionnairePage,
+    //       arguments: {'questions': fcmMessage.questions},
+    //     );
+    //   }
+    // }
+
+    log('for ground on tap xxx id : ${notificationResponse.id}');
+    log('for ground on tap xxx data : ${notificationResponse.payload}');
+    log('for ground on tap xxx data payload : ${notificationResponse.data['payload']}');
+    log('for ground on tap xxx notification type: ${notificationResponse.notificationResponseType.name}');
   }
 
   static Future init() async {
@@ -29,7 +53,9 @@ class LocalNotificationService {
   }
 
   //basic Notification
-  static void showBasicNotification(RemoteMessage message) async {
+  static void showBasicNotification(
+    RemoteMessage message,
+  ) async {
     AndroidNotificationDetails android = AndroidNotificationDetails(
       'channel_id',
       'channel_name',

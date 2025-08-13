@@ -39,15 +39,18 @@ class PushNotificationsService {
       GlobalKey<NavigatorState> navigatorKey) {
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {
-        log("Foreground notification message.notification?.title: ${message.notification?.title}");
-        log("Foreground notification message.notification?.body}: ${message.notification?.body}");
-        log("Foreground notification message.notification?.android: ${message.notification?.android}");
-        log("Foreground notification message.data.toString: ${message.data.toString()}");
-        log("Foreground notification message.data['questions']: ${message.data['questions']}");
-        log("Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
+        // log("Foreground notification message.notification?.title: ${message.notification?.title}");
+        // log("Foreground notification message.notification?.body}: ${message.notification?.body}");
+        // log("Foreground notification message.notification?.android: ${message.notification?.android}");
+        // log("Foreground notification message.data.toString: ${message.data.toString()}");
+        // log("Foreground notification message.data['questions']: ${message.data['questions']}");
+        // log("Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
         if (message.notification != null) {
-          LocalNotificationService.showBasicNotification(message);
-          // _navigateBasedOnNotification(navigatorKey, message);
+          LocalNotificationService.showBasicNotification(
+            message,
+          );
+
+          _navigateBasedOnNotification(navigatorKey, message);
         }
       },
     );
