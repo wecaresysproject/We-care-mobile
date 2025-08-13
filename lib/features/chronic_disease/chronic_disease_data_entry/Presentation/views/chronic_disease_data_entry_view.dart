@@ -22,7 +22,7 @@ class ChronicDiseaseDataEntryView extends StatelessWidget {
         //   return cubit
         //     ..loadPrescriptionDataForEditing(editingPrescriptionDetailsData!);
         // }
-        return cubit;
+        return cubit..intialRequests();
       },
       child: Scaffold(
         appBar: AppBar(),

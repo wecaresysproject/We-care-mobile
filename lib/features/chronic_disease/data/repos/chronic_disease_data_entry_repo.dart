@@ -1,7 +1,5 @@
-import 'dart:developer';
-
-import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 
 import '../../../../core/networking/api_error_handler.dart';
@@ -12,42 +10,29 @@ class ChronicDiseaseDataEntryRepo {
 
   ChronicDiseaseDataEntryRepo(this._services);
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
+  Future<ApiResult<List<String>>> getChronicDiseasesNames({
+    required String language,
+  }) async {
     try {
-      final response = await _services.getCountries(
-        language,
-      );
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
+      final response = await _services.getChronicDiseasesNames(language);
+      final diseases =
+          (response['data'] as List).map((e) => e as String).toList();
+
+      return ApiResult.success(diseases);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
-      {required String language, required String cityName}) async {
+  Future<ApiResult<String>> postChronicDiseaseData({
+    required PostChronicDiseaseModel requestBody,
+    required String language,
+  }) async {
     try {
-      final response = await _services.getCitiesByCountryName(
+      final response = await _services.postChronicDiseaseData(
+        requestBody,
         language,
-        cityName,
       );
-      final cityNames = (response['data'] as List)
-          .map((city) => city['name'] as String)
-          .toList();
-      log("xxx: cityNames from repo: $cityNames");
-      return ApiResult.success(cityNames);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<String>> postPrescriptionDataEntry(
-      PrescriptionRequestBodyModel requestBody) async {
-    try {
-      final response = await _services.postPrescriptionDataEntry(requestBody);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

@@ -5,8 +5,10 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'chronic_disease_data_entry_state.dart';
 
@@ -144,21 +146,38 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   // }
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
-  Future<void> intialRequestsForPrescriptionDataEntry() async {
-    await emitCountriesData();
+  Future<void> intialRequests() async {
+    await getChronicDiseasesNames();
   }
 
-  Future<void> emitCitiesData() async {
-    final response = await dataEntryRepo.getCitiesBasedOnCountryName(
-      language: AppStrings.arabicLang,
-      cityName: state.selectedCountryName ?? "egypt",
+  Future<void> postChronicDiseaseData(S locale) async {
+    emit(
+      state.copyWith(
+        chronicDiseaseDataEntryStatus: RequestStatus.loading,
+      ),
     );
-
+    final response = await dataEntryRepo.postChronicDiseaseData(
+      requestBody: PostChronicDiseaseModel(
+        diagnosisStartDate: state.diagnosisStartDate!,
+        diseaseName: state.chronicDiseaseName!,
+        medications: state.addedNewMedicines,
+        treatingDoctorName: state.doctorNameSelection ?? locale.no_data_entered,
+        diseaseStatus: state.diseaseStatus!,
+        sideEffect: sideEffectsController.text.isNotEmpty
+            ? sideEffectsController.text
+            : locale.no_data_entered,
+        personalNotes: personalNotesController.text.isNotEmpty
+            ? personalNotesController.text
+            : locale.no_data_entered,
+      ),
+      language: AppStrings.arabicLang,
+    );
     response.when(
-      success: (citiesList) {
+      success: (successMessage) {
         emit(
           state.copyWith(
-            citiesNames: citiesList,
+            message: successMessage,
+            chronicDiseaseDataEntryStatus: RequestStatus.success,
           ),
         );
       },
@@ -166,75 +185,25 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
+            chronicDiseaseDataEntryStatus: RequestStatus.failure,
           ),
         );
       },
     );
   }
 
-  // Future<void> postPrescriptionDataEntry(S localozation) async {
-  //   emit(
-  //     state.copyWith(
-  //       preceriptionDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await dataEntryRepo.postPrescriptionDataEntry(
-  //     PrescriptionRequestBodyModel(
-  //       prescriptionDate: state.diagnosisStartDate!,
-
-  //       userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //       language: AppStrings.arabicLang,
-  //       doctorName: state.doctorNameSelection!, // TODO: handle it later
-  //       country: state.selectedCountryName ?? localozation.no_data_entered,
-
-  //       cause: symptomsAccompanyingComplaintController.text.isNotEmpty
-  //           ? symptomsAccompanyingComplaintController.text
-  //           : localozation.no_data_entered,
-  //       disease: state.selectedDisease ?? localozation.no_data_entered,
-  //       preDescriptionPhoto: state.prescriptionPictureUploadedUrl.isNotEmpty
-  //           ? state.prescriptionPictureUploadedUrl
-  //           : localozation.no_data_entered,
-  //       governate: state.selectedCityName ?? localozation.no_data_entered,
-  //       preDescriptionNotes: personalNotesController.text.isNotEmpty
-  //           ? personalNotesController.text
-  //           : localozation.no_data_entered,
-  //       doctorSpecialty:
-  //           state.chronicDiseaseName ?? localozation.no_data_entered,
-  //     ),
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           message: successMessage,
-  //           preceriptionDataEntryStatus: RequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           preceriptionDataEntryStatus: RequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  Future<void> emitCountriesData() async {
-    final response = await dataEntryRepo.getCountriesData(
+  Future<void> getChronicDiseasesNames() async {
+    final response = await dataEntryRepo.getChronicDiseasesNames(
       language: AppStrings.arabicLang,
     );
 
     response.when(
-      success: (response) {
+      success: (diseasesList) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            chronicDiseaseNames: diseasesList,
           ),
         );
-        emitCitiesData();
       },
       failure: (error) {
         emit(

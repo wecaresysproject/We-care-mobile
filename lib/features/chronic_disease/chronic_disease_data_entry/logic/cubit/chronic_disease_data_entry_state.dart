@@ -8,7 +8,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
   final String? doctorNameSelection;
   final String? chronicDiseaseName;
   final bool? isPrescriptionPictureSelected;
-  final List<String> countriesNames;
+  final List<String> chronicDiseaseNames;
   final List<String> citiesNames;
   final String? selectedCountryName;
   final String? diseaseStatus;
@@ -32,7 +32,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
     this.selectedCountryName,
     this.diseaseStatus,
     this.selectedMedicationName,
-    this.countriesNames = const [],
+    this.chronicDiseaseNames = const [],
     this.citiesNames = const [],
     this.message = '',
     this.prescriptionPictureUploadedUrl = '',
@@ -57,6 +57,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
           prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
           isEditMode: false,
           addedNewMedicines: const [],
+          chronicDiseaseNames: const [],
         );
 
   ChronicDiseaseDataEntryState copyWith({
@@ -68,7 +69,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
     bool? isPrescriptionPictureSelected,
     String? selectedCountryName,
     String? diseaseStatus,
-    List<String>? countriesNames,
+    List<String>? chronicDiseaseNames,
     String? message,
     List<String>? citiesNames,
     String? prescriptionPictureUploadedUrl,
@@ -88,7 +89,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
       isPrescriptionPictureSelected:
           isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-      countriesNames: countriesNames ?? this.countriesNames,
+      chronicDiseaseNames: chronicDiseaseNames ?? this.chronicDiseaseNames,
       message: message ?? this.message,
       citiesNames: citiesNames ?? this.citiesNames,
       diseaseStatus: diseaseStatus ?? this.diseaseStatus,
@@ -114,7 +115,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
         chronicDiseaseName,
         isPrescriptionPictureSelected,
         selectedCountryName,
-        countriesNames,
+        chronicDiseaseNames,
         message,
         citiesNames,
         diseaseStatus,

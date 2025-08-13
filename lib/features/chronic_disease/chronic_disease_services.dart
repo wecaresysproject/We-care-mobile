@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_api_constants.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 
@@ -11,22 +12,20 @@ abstract class ChronicDiseaseServices {
   factory ChronicDiseaseServices(Dio dio, {String? baseUrl}) =
       _ChronicDiseaseServices;
 
-  @GET(ChronicDiseaseApiConstants.getCountries)
-  Future<dynamic> getCountries(@Query('language') String language);
-
-  @GET(ChronicDiseaseApiConstants.getCitiesByCountryName)
-  Future<dynamic> getCitiesByCountryName(
+  @GET(ChronicDiseaseApiConstants.getChronicDiseasesNames)
+  Future<dynamic> getChronicDiseasesNames(
     @Query('language') String language,
-    @Query('country') String country,
-  );
-  @POST(ChronicDiseaseApiConstants.postPrescriptionDataEntry)
-  Future<dynamic> postPrescriptionDataEntry(
-    @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
   );
 
-  @GET(ChronicDiseaseApiConstants.getPrescriptionFilters)
-  Future<dynamic> getPrescriptionFilters(
-      @Query("language") String language, @Query("UserType") String userType);
+  @POST(ChronicDiseaseApiConstants.postChrconicDiseaseData)
+  Future<dynamic> postChronicDiseaseData(
+    @Body() PostChronicDiseaseModel requestbody,
+    @Query('language') String language,
+  );
+
+  // @GET(ChronicDiseaseApiConstants.getPrescriptionFilters)
+  // Future<dynamic> getPrescriptionFilters(
+  //     @Query("language") String language, @Query("UserType") String userType);
 
   @GET(ChronicDiseaseApiConstants.getUserPrescriptionList)
   Future<GetUserPrescriptionsResponseModel> getUserPrescriptionList(

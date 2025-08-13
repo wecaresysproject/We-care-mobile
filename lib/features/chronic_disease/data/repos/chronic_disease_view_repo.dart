@@ -2,23 +2,22 @@ import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
-import 'package:we_care/features/prescription/data/models/prescription_filters_response_model.dart';
 
 class ChronicDiseaseViewRepo {
   final ChronicDiseaseServices diseaseServices;
   ChronicDiseaseViewRepo({required this.diseaseServices});
 
-  Future<ApiResult<PrescriptionFiltersResponseModel>> getFilters(
-      {required String language, required String userType}) async {
-    try {
-      final response =
-          await diseaseServices.getPrescriptionFilters(language, userType);
-      return ApiResult.success(
-          PrescriptionFiltersResponseModel.fromJson(response['data']));
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  // Future<ApiResult<PrescriptionFiltersResponseModel>> getFilters(
+  //     {required String language, required String userType}) async {
+  //   try {
+  //     final response =
+  //         await diseaseServices.getPrescriptionFilters(language, userType);
+  //     return ApiResult.success(
+  //         PrescriptionFiltersResponseModel.fromJson(response['data']));
+  //   } catch (error) {
+  //     return ApiResult.failure(ApiErrorHandler.handle(error));
+  //   }
+  // }
 
   Future<ApiResult<GetUserPrescriptionsResponseModel>> getUserPrescriptionList(
       {required String language,

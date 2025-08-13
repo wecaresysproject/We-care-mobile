@@ -1,11 +1,9 @@
 class ChronicDiseaseApiConstants {
   static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
-  static const postPrescriptionDataEntry =
-      "/PreDescriptionUserEntryPage/AddPreDescriptionUserEntry";
-  static const getCountries = "/countries";
-  static const getCitiesByCountryName = "/countries/cities";
-  static const uploadPrescriptionImageEndpoint = "/FileUpload/upload-image";
+  static const postChrconicDiseaseData = "/ChronicDiseases/add-disease";
+  static const getChronicDiseasesNames =
+      "/ChronicDiseases/all-name-chronic-diseases";
 
   //View Entry
   static const updatePrescriptionDocumentDetails =

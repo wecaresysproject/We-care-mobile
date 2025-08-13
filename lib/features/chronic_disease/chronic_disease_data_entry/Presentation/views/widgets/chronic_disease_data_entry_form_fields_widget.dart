@@ -73,7 +73,7 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 categoryLabel: "المرض المزمن",
                 containerHintText:
                     state.chronicDiseaseName ?? "اختر المرض المزمن",
-                options: medicalSpecialties,
+                options: state.chronicDiseaseNames,
                 onOptionSelected: (value) {
                   context
                       .read<ChronicDiseaseDataEntryCubit>()
@@ -295,22 +295,20 @@ class _ChronicDiseaseDataEntryFormFieldsState
         return AppCustomButton(
           isLoading:
               state.chronicDiseaseDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          title: state.isEditMode ? "حفظ التعديلات" : context.translate.send,
           onPressed: () async {
-            // if (state.isFormValidated) {
-            //   state.isEditMode
-            //       ? await context
-            //           .read<ChronicDiseaseDataEntryCubit>()
-            //           .submitEditsOnPrescription()
-            //       : await context
-            //           .read<ChronicDiseaseDataEntryCubit>()
-            //           .postPrescriptionDataEntry(
-            //             context.translate,
-            //           );
-            //   log("xxx:Save Data Entry");
-            // } else {
-            //   log("form not validated");
-            // }
+            if (state.isFormValidated) {
+              // state.isEditMode
+              //     ? await context
+              //         .read<ChronicDiseaseDataEntryCubit>()
+              //         .submitEditsOnPrescription()
+              //     :
+              await context
+                  .read<ChronicDiseaseDataEntryCubit>()
+                  .postChronicDiseaseData(
+                    context.translate,
+                  );
+            }
           },
           isEnabled: state.isFormValidated ? true : false,
         );
