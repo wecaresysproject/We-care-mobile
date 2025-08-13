@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class LocalNotificationService {
   static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -35,6 +36,9 @@ class LocalNotificationService {
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
+      color: AppColorsManager.mainDarkBlue,
+      // colorized:
+
       // sound: RawResourceAndroidNotificationSound(
       //     'long_notification_sound'.split('.').first),
     );
