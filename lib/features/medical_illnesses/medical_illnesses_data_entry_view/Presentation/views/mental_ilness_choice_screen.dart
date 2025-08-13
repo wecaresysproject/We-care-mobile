@@ -167,7 +167,7 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
             borderRadius: BorderRadius.circular(16.r),
           ),
         ),
-        onPressed: onTap,
+        onPressed: isSelected ? onTap : null, // 🔹 disable if not selected
         child: Row(
           children: [
             Image.asset(
