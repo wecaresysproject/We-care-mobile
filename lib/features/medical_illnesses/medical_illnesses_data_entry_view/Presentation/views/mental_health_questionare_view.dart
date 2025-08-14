@@ -50,7 +50,8 @@ class _MentalHealthQuestionnairePageState
     });
   }
 
-  bool get allAnswered => widget.questions.every((q) => q.answer != null);
+  bool get isAllQuestionsAnswered =>
+      widget.questions.every((q) => q.answer != null);
 
   @override
   Widget build(BuildContext context) {
@@ -84,17 +85,7 @@ class _MentalHealthQuestionnairePageState
               ),
             ),
             NavigationFooter(
-              // onPress: allAnswered
-              //     ? () async {
-              //         // هنا نقدر نرسل الـ List<FcmQuestionModel> مباشرة للـ backend
-              //         log("Sending answers: ${widget.questions.map((q) => q.toJson())}");
-              //         await context
-              //             .read<MedicalIllnessesDataEntryCubit>()
-              //             .sendQuestionareAnswers(
-              //               questions: widget.questions,
-              //             );
-              //       }
-              //     : null,
+              isAllQuestionsAnswered: isAllQuestionsAnswered,
               questions: widget.questions, // يفضل null لو مش كلهم جاوبوا
             ),
           ],
@@ -263,57 +254,14 @@ class ProgressHeader extends StatelessWidget {
   }
 }
 
-// Navigation footer component
-// class NavigationFooter extends StatelessWidget {
-//   final VoidCallback? onPress;
-
-//   const NavigationFooter({
-//     super.key,
-//     this.onPress,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       color: Colors.grey[100],
-//       padding: const EdgeInsets.all(16),
-//       child: Row(
-//         children: [
-//           Expanded(
-//             child: OutlinedButton(
-//               onPressed: onPress,
-//               style: OutlinedButton.styleFrom(
-//                 padding: const EdgeInsets.symmetric(vertical: 12),
-//                 side: const BorderSide(color: AppColorsManager.mainDarkBlue),
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                 ),
-//                 backgroundColor:
-//                     onPress == null ? Colors.grey.shade300 : Colors.white,
-//               ),
-//               child: Text(
-//                 'إرسال إجاباتي',
-// style: AppTextStyles.font20blackWeight600.copyWith(
-//   fontWeight: FontWeight.w700,
-//   color: onPress == null
-//       ? Colors.grey
-//       : AppColorsManager.mainDarkBlue,
-// ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class NavigationFooter extends StatelessWidget {
   final List<FcmQuestionModel> questions;
+  final bool isAllQuestionsAnswered; // ✅ نضيف المتغير
 
   const NavigationFooter({
     super.key,
     required this.questions,
+    required this.isAllQuestionsAnswered, // ✅
   });
 
   @override
@@ -341,11 +289,7 @@ class NavigationFooter extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 24.sp,
-                ),
+                Icon(Icons.check_circle, color: Colors.green, size: 24),
                 horizontalSpacing(8),
                 Text(
                   'تم الإرسال',
@@ -363,11 +307,7 @@ class NavigationFooter extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 24.sp,
-                ),
+                Icon(Icons.error, color: Colors.red, size: 24),
                 horizontalSpacing(8),
                 Text(
                   'فشل الإرسال',
@@ -385,20 +325,23 @@ class NavigationFooter extends StatelessWidget {
               'إرسال إجاباتي',
               style: AppTextStyles.font20blackWeight600.copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColorsManager.mainDarkBlue,
+                color: isAllQuestionsAnswered
+                    ? AppColorsManager.mainDarkBlue
+                    : Colors.grey, // ✅ اللون يتغير لو disabled
               ),
             );
         }
 
         return Container(
-          color: Colors.grey[100],
+          color: Colors.grey[50],
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: status == RequestStatus.loading
-                      ? null
+                  onPressed: (!isAllQuestionsAnswered ||
+                          status == RequestStatus.loading)
+                      ? null // ✅ disabled لو مش كلهم جاوبوا
                       : () async {
                           await context
                               .read<MedicalIllnessesDataEntryCubit>()
