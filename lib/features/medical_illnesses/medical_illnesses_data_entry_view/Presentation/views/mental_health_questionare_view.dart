@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -254,20 +255,142 @@ class ProgressHeader extends StatelessWidget {
   }
 }
 
+// class NavigationFooter extends StatelessWidget {
+//   final List<FcmQuestionModel> questions;
+//   final bool isAllQuestionsAnswered; // ✅ نضيف المتغير
+
+//   const NavigationFooter({
+//     super.key,
+//     required this.questions,
+//     required this.isAllQuestionsAnswered, // ✅
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocBuilder<MedicalIllnessesDataEntryCubit,
+//         MedicalIllnessesDataEntryState>(
+//       builder: (context, state) {
+//         final RequestStatus status = state.questionareAnswersStatus;
+//         Widget child;
+
+//         switch (status) {
+//           case RequestStatus.loading:
+//             child = const SizedBox(
+//               height: 30,
+//               width: 30,
+//               child: CircularProgressIndicator(
+//                 strokeWidth: 3,
+//                 color: AppColorsManager.mainDarkBlue,
+//               ),
+//             );
+//             break;
+
+//           case RequestStatus.success:
+//             child = Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.end,
+//               children: [
+//                 Icon(Icons.check_circle, color: Colors.green, size: 24),
+//                 horizontalSpacing(8),
+//                 Text(
+//                   'تم الإرسال',
+//                   style: AppTextStyles.font20blackWeight600.copyWith(
+//                     fontWeight: FontWeight.w700,
+//                     color: Colors.green,
+//                   ),
+//                 ),
+//               ],
+//             );
+//             break;
+
+//           case RequestStatus.failure:
+//             child = Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               crossAxisAlignment: CrossAxisAlignment.end,
+//               children: [
+//                 Icon(Icons.error, color: Colors.red, size: 24),
+//                 horizontalSpacing(8),
+//                 Text(
+//                   'فشل الإرسال',
+//                   style: AppTextStyles.font20blackWeight600.copyWith(
+//                     fontWeight: FontWeight.w700,
+//                     color: Colors.red,
+//                   ),
+//                 ),
+//               ],
+//             );
+//             break;
+
+//           case RequestStatus.initial:
+//             child = Text(
+//               'إرسال إجاباتي',
+//               style: AppTextStyles.font20blackWeight600.copyWith(
+//                 fontWeight: FontWeight.w700,
+//                 color: isAllQuestionsAnswered
+//                     ? AppColorsManager.mainDarkBlue
+//                     : Colors.grey, // ✅ اللون يتغير لو disabled
+//               ),
+//             );
+//         }
+
+//         return Container(
+//           color: Colors.grey[50],
+//           padding: const EdgeInsets.all(16),
+//           child: Row(
+//             children: [
+//               Expanded(
+//                 child: OutlinedButton(
+//                   onPressed: (!isAllQuestionsAnswered ||
+//                           status == RequestStatus.loading)
+//                       ? null // ✅ disabled لو مش كلهم جاوبوا
+//                       : () async {
+//                           await context
+//                               .read<MedicalIllnessesDataEntryCubit>()
+//                               .sendQuestionareAnswers(questions: questions);
+//                         },
+//                   style: OutlinedButton.styleFrom(
+//                     padding: const EdgeInsets.symmetric(vertical: 12),
+//                     side: BorderSide(
+//                       color: isAllQuestionsAnswered
+//                           ? AppColorsManager.mainDarkBlue
+//                           : Colors.grey,
+//                     ),
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(8),
+//                     ),
+//                     backgroundColor: Colors.white,
+//                   ),
+//                   child: child,
+//                 ),
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
 class NavigationFooter extends StatelessWidget {
   final List<FcmQuestionModel> questions;
-  final bool isAllQuestionsAnswered; // ✅ نضيف المتغير
+  final bool isAllQuestionsAnswered;
 
   const NavigationFooter({
     super.key,
     required this.questions,
-    required this.isAllQuestionsAnswered, // ✅
+    required this.isAllQuestionsAnswered,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MedicalIllnessesDataEntryCubit,
+    return BlocConsumer<MedicalIllnessesDataEntryCubit,
         MedicalIllnessesDataEntryState>(
+      listener: (context, state) {
+        if (state.questionareAnswersStatus == RequestStatus.success) {
+          // ✅ Close the page when submission is successful
+          context.pop();
+        }
+      },
       builder: (context, state) {
         final RequestStatus status = state.questionareAnswersStatus;
         Widget child;
@@ -287,9 +410,8 @@ class NavigationFooter extends StatelessWidget {
           case RequestStatus.success:
             child = Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(Icons.check_circle, color: Colors.green, size: 24),
+                const Icon(Icons.check_circle, color: Colors.green, size: 24),
                 horizontalSpacing(8),
                 Text(
                   'تم الإرسال',
@@ -305,9 +427,8 @@ class NavigationFooter extends StatelessWidget {
           case RequestStatus.failure:
             child = Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Icon(Icons.error, color: Colors.red, size: 24),
+                const Icon(Icons.error, color: Colors.red, size: 24),
                 horizontalSpacing(8),
                 Text(
                   'فشل الإرسال',
@@ -327,7 +448,7 @@ class NavigationFooter extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: isAllQuestionsAnswered
                     ? AppColorsManager.mainDarkBlue
-                    : Colors.grey, // ✅ اللون يتغير لو disabled
+                    : Colors.grey,
               ),
             );
         }
@@ -341,7 +462,7 @@ class NavigationFooter extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: (!isAllQuestionsAnswered ||
                           status == RequestStatus.loading)
-                      ? null // ✅ disabled لو مش كلهم جاوبوا
+                      ? null
                       : () async {
                           await context
                               .read<MedicalIllnessesDataEntryCubit>()
@@ -349,8 +470,10 @@ class NavigationFooter extends StatelessWidget {
                         },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    side:
-                        const BorderSide(color: AppColorsManager.mainDarkBlue),
+                    side: BorderSide(
+                        color: isAllQuestionsAnswered
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
