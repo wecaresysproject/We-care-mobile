@@ -39,12 +39,12 @@ class PushNotificationsService {
       GlobalKey<NavigatorState> navigatorKey) {
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {
-        // log("Foreground notification message.notification?.title: ${message.notification?.title}");
-        // log("Foreground notification message.notification?.body}: ${message.notification?.body}");
-        // log("Foreground notification message.notification?.android: ${message.notification?.android}");
-        // log("Foreground notification message.data.toString: ${message.data.toString()}");
-        // log("Foreground notification message.data['questions']: ${message.data['questions']}");
-        // log("Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
+        log("Foreground notification message.notification?.title: ${message.notification?.title}");
+        log("Foreground notification message.notification?.body}: ${message.notification?.body}");
+        log("Foreground notification message.notification?.android: ${message.notification?.android}");
+        log("Foreground notification message.data.toString: ${message.data.toString()}");
+        log("Foreground notification message.data['questions']: ${message.data['questions']}");
+        log("Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
         if (message.notification != null) {
           LocalNotificationService.showBasicNotification(
             message,
@@ -77,37 +77,88 @@ class PushNotificationsService {
     );
   }
 
+  // static void _navigateBasedOnNotification(
+  //   GlobalKey<NavigatorState> navigatorKey,
+  //   RemoteMessage message,
+  // ) {
+  //   try {
+  //     final msgPayload = message.data['payload'] as String?;
+  //     FcmMessageModel? fcmMessage;
+  //     if (msgPayload != null) {
+  //       final Map<String, dynamic> bodyJson = jsonDecode(msgPayload);
+  //       // نحول الـ data لـ model مباشرة
+  //       fcmMessage = FcmMessageModel.fromJson(bodyJson);
+  //       log(
+  //         'FCM Message questions seperated by one line : ${fcmMessage.questions.map((question) => question.toJson().toString()).join('\n')}',
+  //       );
+  //     }
+
+  //     WidgetsBinding.instance.addPostFrameCallback(
+  //       (_) {
+  //         if (fcmMessage!.pageRoute ==
+  //             Routes.mentalUmbrellaHealthQuestionnairePage) {
+  //           navigatorKey.currentState?.pushNamed(
+  //             Routes.mentalUmbrellaHealthQuestionnairePage,
+  //             arguments: {
+  //               'questions': fcmMessage.questions,
+  //             },
+  //           );
+  //         } else {
+  //           log("Unknown pageRoute: ${fcmMessage.pageRoute}");
+  //         }
+  //       },
+  //     );
+  //   } catch (e, stack) {
+  //     log("Error navigating from notification: $e");
+  //     log(stack.toString());
+  //   }
+  // }
   static void _navigateBasedOnNotification(
     GlobalKey<NavigatorState> navigatorKey,
     RemoteMessage message,
   ) {
     try {
       final msgPayload = message.data['payload'] as String?;
-      FcmMessageModel? fcmMessage;
-      if (msgPayload != null) {
-        final Map<String, dynamic> bodyJson = jsonDecode(msgPayload);
-        // نحول الـ data لـ model مباشرة
-        fcmMessage = FcmMessageModel.fromJson(bodyJson);
-        log(
-          'FCM Message questions seperated by one line : ${fcmMessage.questions.map((question) => question.toJson().toString()).join('\n')}',
-        );
+      if (msgPayload == null) {
+        log("No payload found in notification");
+        return;
       }
 
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          if (fcmMessage!.pageRoute ==
-              Routes.mentalUmbrellaHealthQuestionnairePage) {
+      final Map<String, dynamic> bodyJson = jsonDecode(msgPayload);
+
+      final pageRoute = bodyJson['pageRoute'] as String?;
+      if (pageRoute == null) {
+        log("No pageRoute found in payload");
+        return;
+      }
+
+      log("Received notification for pageRoute: $pageRoute");
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        switch (pageRoute) {
+          case Routes.mentalUmbrellaHealthQuestionnairePage:
+            final fcmMessage = FcmMessageModel.fromJson(bodyJson);
+            log(
+              'FCM Questions:\n${fcmMessage.questions.map((q) => q.toJson().toString()).join('\n')}',
+            );
             navigatorKey.currentState?.pushNamed(
               Routes.mentalUmbrellaHealthQuestionnairePage,
-              arguments: {
-                'questions': fcmMessage.questions,
-              },
+              arguments: {'questions': fcmMessage.questions},
             );
-          } else {
-            log("Unknown pageRoute: ${fcmMessage.pageRoute}");
-          }
-        },
-      );
+
+            break;
+
+          case Routes.mentalIllnessFollowUpReports: // مثال لصفحة أخرى
+            navigatorKey.currentState?.pushNamed(
+              Routes.mentalIllnessFollowUpReports,
+            );
+            break;
+
+          default:
+            log("Unknown pageRoute: $pageRoute");
+            break;
+        }
+      });
     } catch (e, stack) {
       log("Error navigating from notification: $e");
       log(stack.toString());
