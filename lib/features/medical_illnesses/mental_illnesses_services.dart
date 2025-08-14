@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/eyes/eyes_api_constants.dart';
+import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/post_fcm_token_request_model.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_constants.dart';
@@ -17,6 +18,12 @@ abstract class MentalIllnessesServices {
     @Query("userType") String userType,
     @Query("language") String language,
     @Body() MentalIllnessRequestBody requestBody,
+  );
+  @POST(MentalIllnessesConstants.postQuestionnaireAnswers)
+  Future<dynamic> postQuestionnaireAnswers(
+    @Query("userType") String userType,
+    @Query("language") String language,
+    @Body() List<FcmQuestionModel> questions,
   );
 
   @GET(EyesApiConstants.getAllDoctors)

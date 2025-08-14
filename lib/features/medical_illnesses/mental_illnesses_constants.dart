@@ -6,6 +6,7 @@ class MentalIllnessesConstants {
   static const getAllCountries = "/countries";
   //!New
   static const postMentalIlnessDataEntryEndPoint = "/v1/submit-medical-illness";
+  static const postQuestionnaireAnswers = "";
   static const editMentalIlnessDataEntryEndPoint = "/v1/update-medical-illness";
   static const getMentalIllnessTypes = "/v1/lookup/mental-illness-types";
   static const getIncidentTypes = "/v1/lookup/incident-types";

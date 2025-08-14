@@ -24,7 +24,7 @@ class FcmMessageModel {
 class FcmQuestionModel {
   final String id;
   final String text;
-  final String? answer;
+  final bool? answer;
 
   FcmQuestionModel({
     required this.id,

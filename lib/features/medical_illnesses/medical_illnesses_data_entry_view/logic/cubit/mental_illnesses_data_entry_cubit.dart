@@ -6,6 +6,7 @@ import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
 import 'package:we_care/features/medical_illnesses/data/models/post_fcm_token_request_model.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_data_entry_repo.dart';
@@ -434,6 +435,38 @@ class MedicalIllnessesDataEntryCubit
   //     },
   //   );
   // }
+  Future<void> sendQuestionareAnswers({
+    required List<FcmQuestionModel> questions,
+  }) async {
+    emit(
+      state.copyWith(
+        mentalIllnessesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _medicalIllnessesDataEntryRepo.sendQuestionareAnswers(
+      questions: questions,
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            mentalIllnessesDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            mentalIllnessesDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> postMentalIlnessDataEntryEndPoint(
     S locale,

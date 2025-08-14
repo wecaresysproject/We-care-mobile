@@ -457,8 +457,11 @@ class AppRouter {
         final argumentsMap = arguments as Map<String, dynamic>?;
 
         return MaterialPageRoute(
-          builder: (context) => MentalHealthQuestionnaireView(
-            questions: argumentsMap?['questions'] as List<FcmQuestionModel>,
+          builder: (context) => BlocProvider<MedicalIllnessesDataEntryCubit>(
+            create: (context) => getIt<MedicalIllnessesDataEntryCubit>(),
+            child: MentalHealthQuestionnaireView(
+              questions: argumentsMap?['questions'] as List<FcmQuestionModel>,
+            ),
           ),
         );
       case Routes.mentalIllnessDocDetailsView:

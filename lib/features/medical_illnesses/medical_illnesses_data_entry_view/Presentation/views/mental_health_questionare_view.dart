@@ -1,11 +1,14 @@
-// Main questionnaire page
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 
 class MentalHealthQuestionnaireView extends StatefulWidget {
   final List<FcmQuestionModel> questions;
@@ -21,7 +24,6 @@ class MentalHealthQuestionnaireView extends StatefulWidget {
 
 class _MentalHealthQuestionnairePageState
     extends State<MentalHealthQuestionnaireView> {
-  Map<int, bool> answers = {};
   double progress = 0.0;
 
   @override
@@ -31,24 +33,30 @@ class _MentalHealthQuestionnairePageState
   }
 
   void _updateProgress() {
-    if (widget.questions.isNotEmpty) {
-      progress = answers.length / widget.questions.length;
-    }
+    final answeredCount =
+        widget.questions.where((q) => q.answer != null).length;
+    progress = answeredCount / widget.questions.length;
   }
 
   void _onAnswerChanged(int questionIndex, bool answer) {
     setState(() {
-      answers[questionIndex] = answer;
+      // عمل نسخة جديدة بالموديل مع تحديث الإجابة
+      widget.questions[questionIndex] = FcmQuestionModel(
+        id: widget.questions[questionIndex].id,
+        text: widget.questions[questionIndex].text,
+        answer: answer,
+      );
+
       _updateProgress();
     });
   }
 
+  bool get allAnswered => widget.questions.every((q) => q.answer != null);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
+      appBar: AppBar(toolbarHeight: 0),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
         child: Column(
@@ -58,12 +66,7 @@ class _MentalHealthQuestionnairePageState
               showActionButtons: false,
               titleColor: AppColorsManager.mainDarkBlue,
             ),
-            // Progress Header
-            ProgressHeader(
-              progress: progress,
-            ),
-
-            // Questions List
+            ProgressHeader(progress: progress),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16),
@@ -73,7 +76,7 @@ class _MentalHealthQuestionnairePageState
                     padding: const EdgeInsets.only(bottom: 16),
                     child: QuestionCard(
                       question: widget.questions[index],
-                      selectedAnswer: answers[index],
+                      selectedAnswer: widget.questions[index].answer,
                       onAnswerChanged: (answer) =>
                           _onAnswerChanged(index, answer),
                     ),
@@ -81,10 +84,18 @@ class _MentalHealthQuestionnairePageState
                 },
               ),
             ),
-
-            // Navigation Footer
             NavigationFooter(
-              onPress: () => print('Send answers'),
+              onPress: allAnswered
+                  ? () async {
+                      // هنا نقدر نرسل الـ List<FcmQuestionModel> مباشرة للـ backend
+                      log("Sending answers: ${widget.questions.map((q) => q.toJson())}");
+                      await context
+                          .read<MedicalIllnessesDataEntryCubit>()
+                          .sendQuestionareAnswers(
+                            questions: widget.questions,
+                          );
+                    }
+                  : null, // يفضل null لو مش كلهم جاوبوا
             ),
           ],
         ),
@@ -277,20 +288,17 @@ class NavigationFooter extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                backgroundColor:
+                    onPress == null ? Colors.grey.shade300 : Colors.white,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Icon(Icons.arrow_back, color: Color(0xFF4A90E2)),
-                  SizedBox(width: 8),
-                  Text(
-                    'إرسال إجاباتي',
-                    style: AppTextStyles.font20blackWeight600.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppColorsManager.mainDarkBlue,
-                    ),
-                  ),
-                ],
+              child: Text(
+                'إرسال إجاباتي',
+                style: AppTextStyles.font20blackWeight600.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: onPress == null
+                      ? Colors.grey
+                      : AppColorsManager.mainDarkBlue,
+                ),
               ),
             ),
           ),
@@ -300,14 +308,49 @@ class NavigationFooter extends StatelessWidget {
   }
 }
 
-// Data model for questionnaire items
-class QuestionnaireItem {
-  final String text;
+// class NavigationFooter extends StatelessWidget {
+//   final VoidCallback? onPress;
 
-  final bool? answer;
+//   const NavigationFooter({
+//     super.key,
+//     this.onPress,
+//   });
 
-  const QuestionnaireItem({
-    required this.text,
-    this.answer,
-  });
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: Colors.grey[100],
+//       padding: const EdgeInsets.all(16),
+//       child: Row(
+//         children: [
+//           Expanded(
+//             child: OutlinedButton(
+//               onPressed: onPress,
+//               style: OutlinedButton.styleFrom(
+//                 padding: const EdgeInsets.symmetric(vertical: 12),
+//                 side: const BorderSide(color: AppColorsManager.mainDarkBlue),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(8),
+//                 ),
+//               ),
+//               child: Row(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   // Icon(Icons.arrow_back, color: Color(0xFF4A90E2)),
+//                   SizedBox(width: 8),
+//                   Text(
+//                     'إرسال إجاباتي',
+//                     style: AppTextStyles.font20blackWeight600.copyWith(
+//                       fontWeight: FontWeight.w700,
+//                       color: AppColorsManager.mainDarkBlue,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
