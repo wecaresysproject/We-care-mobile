@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -85,17 +84,18 @@ class _MentalHealthQuestionnairePageState
               ),
             ),
             NavigationFooter(
-              onPress: allAnswered
-                  ? () async {
-                      // هنا نقدر نرسل الـ List<FcmQuestionModel> مباشرة للـ backend
-                      log("Sending answers: ${widget.questions.map((q) => q.toJson())}");
-                      await context
-                          .read<MedicalIllnessesDataEntryCubit>()
-                          .sendQuestionareAnswers(
-                            questions: widget.questions,
-                          );
-                    }
-                  : null, // يفضل null لو مش كلهم جاوبوا
+              // onPress: allAnswered
+              //     ? () async {
+              //         // هنا نقدر نرسل الـ List<FcmQuestionModel> مباشرة للـ backend
+              //         log("Sending answers: ${widget.questions.map((q) => q.toJson())}");
+              //         await context
+              //             .read<MedicalIllnessesDataEntryCubit>()
+              //             .sendQuestionareAnswers(
+              //               questions: widget.questions,
+              //             );
+              //       }
+              //     : null,
+              questions: widget.questions, // يفضل null لو مش كلهم جاوبوا
             ),
           ],
         ),
@@ -264,50 +264,6 @@ class ProgressHeader extends StatelessWidget {
 }
 
 // Navigation footer component
-class NavigationFooter extends StatelessWidget {
-  final VoidCallback? onPress;
-
-  const NavigationFooter({
-    super.key,
-    this.onPress,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[100],
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: onPress,
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                side: const BorderSide(color: AppColorsManager.mainDarkBlue),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                backgroundColor:
-                    onPress == null ? Colors.grey.shade300 : Colors.white,
-              ),
-              child: Text(
-                'إرسال إجاباتي',
-                style: AppTextStyles.font20blackWeight600.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: onPress == null
-                      ? Colors.grey
-                      : AppColorsManager.mainDarkBlue,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 // class NavigationFooter extends StatelessWidget {
 //   final VoidCallback? onPress;
 
@@ -332,20 +288,17 @@ class NavigationFooter extends StatelessWidget {
 //                 shape: RoundedRectangleBorder(
 //                   borderRadius: BorderRadius.circular(8),
 //                 ),
+//                 backgroundColor:
+//                     onPress == null ? Colors.grey.shade300 : Colors.white,
 //               ),
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   // Icon(Icons.arrow_back, color: Color(0xFF4A90E2)),
-//                   SizedBox(width: 8),
-//                   Text(
-//                     'إرسال إجاباتي',
-//                     style: AppTextStyles.font20blackWeight600.copyWith(
-//                       fontWeight: FontWeight.w700,
-//                       color: AppColorsManager.mainDarkBlue,
-//                     ),
-//                   ),
-//                 ],
+//               child: Text(
+//                 'إرسال إجاباتي',
+// style: AppTextStyles.font20blackWeight600.copyWith(
+//   fontWeight: FontWeight.w700,
+//   color: onPress == null
+//       ? Colors.grey
+//       : AppColorsManager.mainDarkBlue,
+// ),
 //               ),
 //             ),
 //           ),
@@ -354,3 +307,119 @@ class NavigationFooter extends StatelessWidget {
 //     );
 //   }
 // }
+
+class NavigationFooter extends StatelessWidget {
+  final List<FcmQuestionModel> questions;
+
+  const NavigationFooter({
+    super.key,
+    required this.questions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MedicalIllnessesDataEntryCubit,
+        MedicalIllnessesDataEntryState>(
+      builder: (context, state) {
+        final RequestStatus status = state.questionareAnswersStatus;
+        Widget child;
+
+        switch (status) {
+          case RequestStatus.loading:
+            child = const SizedBox(
+              height: 30,
+              width: 30,
+              child: CircularProgressIndicator(
+                strokeWidth: 3,
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            );
+            break;
+
+          case RequestStatus.success:
+            child = Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 24.sp,
+                ),
+                horizontalSpacing(8),
+                Text(
+                  'تم الإرسال',
+                  style: AppTextStyles.font20blackWeight600.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            );
+            break;
+
+          case RequestStatus.failure:
+            child = Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 24.sp,
+                ),
+                horizontalSpacing(8),
+                Text(
+                  'فشل الإرسال',
+                  style: AppTextStyles.font20blackWeight600.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            );
+            break;
+
+          case RequestStatus.initial:
+            child = Text(
+              'إرسال إجاباتي',
+              style: AppTextStyles.font20blackWeight600.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            );
+        }
+
+        return Container(
+          color: Colors.grey[100],
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: status == RequestStatus.loading
+                      ? null
+                      : () async {
+                          await context
+                              .read<MedicalIllnessesDataEntryCubit>()
+                              .sendQuestionareAnswers(questions: questions);
+                        },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    side:
+                        const BorderSide(color: AppColorsManager.mainDarkBlue),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  child: child,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

@@ -385,62 +385,13 @@ class MedicalIllnessesDataEntryCubit
   void updatePreferredMentalWellnessActivities(String? val) {
     emit(state.copyWith(selectedPreferredMentalWellnessActivities: val));
   }
-  // Future<String> getEyePartDescribtion({
-  //   required String selectedEyePart,
-  // }) async {
-  //   final response = await _eyesDataEntryRepo.getEyePartDescribtion(
-  //     language: AppStrings.arabicLang,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //     selectedEyePart: selectedEyePart,
-  //   );
 
-  //   return response.when(
-  //     success: (response) {
-  //       return response;
-  //     },
-  //     failure: (error) {
-  //       return error.errors.first;
-  //     },
-  //   );
-  // }
-
-  // Future<void> uploadReportImagePicked({required String imagePath}) async {
-  //   emit(
-  //     state.copyWith(
-  //       uploadReportStatus: UploadReportRequestStatus.initial,
-  //     ),
-  //   );
-  //   final response = await _eyesDataEntryRepo.uploadReportImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           reportImageUploadedUrl: response.reportUrl,
-  //           uploadReportStatus: UploadReportRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           uploadReportStatus: UploadReportRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
   Future<void> sendQuestionareAnswers({
     required List<FcmQuestionModel> questions,
   }) async {
     emit(
       state.copyWith(
-        mentalIllnessesDataEntryStatus: RequestStatus.loading,
+        questionareAnswersStatus: RequestStatus.loading,
       ),
     );
     final response =
@@ -453,7 +404,7 @@ class MedicalIllnessesDataEntryCubit
         emit(
           state.copyWith(
             message: successMessage,
-            mentalIllnessesDataEntryStatus: RequestStatus.success,
+            questionareAnswersStatus: RequestStatus.success,
           ),
         );
       },
@@ -461,7 +412,7 @@ class MedicalIllnessesDataEntryCubit
         emit(
           state.copyWith(
             message: error.errors.first,
-            mentalIllnessesDataEntryStatus: RequestStatus.failure,
+            questionareAnswersStatus: RequestStatus.failure,
           ),
         );
       },
