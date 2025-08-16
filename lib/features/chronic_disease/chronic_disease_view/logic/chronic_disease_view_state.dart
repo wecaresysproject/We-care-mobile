@@ -3,8 +3,8 @@ part of 'chronic_disease_view_cubit.dart';
 class ChronicDiseaseViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
-  final List<PrescriptionModel> userPrescriptions;
-  final PrescriptionModel? selectedPrescriptionDetails;
+  final List<ChronicDiseaseModel> userChronicDisease;
+  final PostChronicDiseaseModel? selectedChronicDiseaseDetails;
   final List<int> yearsFilter;
   final List<String> doctorNameFilter;
   final List<String> specificationsFilter;
@@ -17,8 +17,8 @@ class ChronicDiseaseViewState extends Equatable {
     this.yearsFilter = const [],
     this.doctorNameFilter = const ['الكل'],
     this.specificationsFilter = const ['الكل'],
-    this.userPrescriptions = const [],
-    this.selectedPrescriptionDetails,
+    this.userChronicDisease = const [],
+    this.selectedChronicDiseaseDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
   });
@@ -30,8 +30,8 @@ class ChronicDiseaseViewState extends Equatable {
       yearsFilter: const [],
       doctorNameFilter: const ['الكل'],
       specificationsFilter: const ['الكل'],
-      userPrescriptions: const [],
-      selectedPrescriptionDetails: null,
+      userChronicDisease: const [],
+      selectedChronicDiseaseDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
     );
@@ -43,8 +43,8 @@ class ChronicDiseaseViewState extends Equatable {
     List<int>? yearsFilter,
     List<String>? doctorNameFilter,
     List<String>? specificationsFilter,
-    List<PrescriptionModel>? userPrescriptions,
-    PrescriptionModel? selectedPrescriptionDetails,
+    List<ChronicDiseaseModel>? userChronicDisease,
+    PostChronicDiseaseModel? selectedChronicDiseaseDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
   }) {
@@ -54,9 +54,9 @@ class ChronicDiseaseViewState extends Equatable {
       yearsFilter: yearsFilter ?? this.yearsFilter,
       doctorNameFilter: doctorNameFilter ?? this.doctorNameFilter,
       specificationsFilter: specificationsFilter ?? this.specificationsFilter,
-      userPrescriptions: userPrescriptions ?? this.userPrescriptions,
-      selectedPrescriptionDetails:
-          selectedPrescriptionDetails ?? this.selectedPrescriptionDetails,
+      userChronicDisease: userChronicDisease ?? this.userChronicDisease,
+      selectedChronicDiseaseDetails:
+          selectedChronicDiseaseDetails ?? this.selectedChronicDiseaseDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
@@ -69,8 +69,8 @@ class ChronicDiseaseViewState extends Equatable {
         yearsFilter,
         doctorNameFilter,
         specificationsFilter,
-        userPrescriptions,
-        selectedPrescriptionDetails,
+        userChronicDisease,
+        selectedChronicDiseaseDetails,
         isDeleteRequest,
         isLoadingMore
       ];

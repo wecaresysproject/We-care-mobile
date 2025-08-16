@@ -92,12 +92,14 @@ class ChronicDiseaseItemCardHorizontalWidget extends StatelessWidget {
                             'الطبيب المتابع :',
                             style: AppTextStyles.font14BlueWeight700
                                 .copyWith(fontSize: 14.sp),
+                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(width: 8.w),
                           Text(
                             item.treatingDoctorName,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ],
                       ),

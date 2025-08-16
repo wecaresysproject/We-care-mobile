@@ -22,8 +22,8 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
         toolbarHeight: 0.h,
       ),
       body: BlocProvider.value(
-        value: getIt<ChronicDiseaseViewCubit>(),
-        // ..getUserPrescriptionDetailsById(documentId),
+        value: getIt<ChronicDiseaseViewCubit>()
+          ..getUserChronicDiseaseDetailsById(documentId),
         child: BlocConsumer<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
           listenWhen: (previous, current) =>
               previous.isDeleteRequest != current.isDeleteRequest,
@@ -59,69 +59,63 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                       //       .getUserPrescriptionDetailsById(documentId);
                       // }
                     },
-                    shareFunction: () => _shareDetailsDummy(context),
+                    shareFunction: () async {
+                      await _shareDetails(context, state);
+                    },
                     deleteFunction: () async {
                       await context
                           .read<ChronicDiseaseViewCubit>()
-                          .deletePrescriptionById(documentId);
+                          .deleteUserChronicDiseaseById(documentId);
                     },
                   ),
                   DetailsViewInfoTile(
                     title: "تاريخ بداية التشخيص",
-                    // value: state
-                    //     .selectedPrescriptionDetails!.preDescriptionDate,
-                    value: "غير محدد",
+                    value:
+                        state.selectedChronicDiseaseDetails!.diagnosisStartDate,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "المرض المزمن",
-                    // value: state.selectedPrescriptionDetails!.disease,
-                    value: "غير محدد",
-
+                    value: state.selectedChronicDiseaseDetails!.diseaseName,
                     isExpanded: true,
-
                     icon: 'assets/images/t_icon.png',
                   ),
-                  MedicineDetailsTemplate(
-                    model: AddNewMedicineModel(
-                      medicineName: "دواء ضغط الدم",
-                      startDate: "2024-05-10",
-                      dose: "50 ملغ",
-                      numberOfDoses: "مرتين يوميًا",
-                      medicalForm: "حبوب",
+                  //  state.selectedChronicDiseaseDetails!.medications.map((med)
+                  ...state.selectedChronicDiseaseDetails!.medications.map(
+                    (med) => MedicineDetailsTemplate(
+                      model: AddNewMedicineModel(
+                        medicineName: med.medicineName,
+                        startDate: med.startDate,
+                        dose: med.dose,
+                        numberOfDoses: med.numberOfDoses,
+                        medicalForm: med.medicalForm,
+                      ),
                     ),
                   ),
+
                   DetailsViewInfoTile(
                     title: "الطبيب المتابع",
-                    // value: state.selectedPrescriptionDetails!.cause,
-                    value: "غير محدد",
-
+                    value:
+                        state.selectedChronicDiseaseDetails!.treatingDoctorName,
                     icon: 'assets/images/doctor_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "حالة المرض",
-                    // value: state.selectedPrescriptionDetails!.cause,
-                    value: "غير محدد",
-
+                    value: state.selectedChronicDiseaseDetails!.diseaseStatus,
                     icon: 'assets/images/thunder_image.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "الأعراض الجانبية",
-                    // value: state.selectedPrescriptionDetails!.cause,
-                    value: "غير محدد",
-
+                    value: state.selectedChronicDiseaseDetails!.sideEffect,
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "ملاحظات شخصية",
-                    // value:
-                    // state.selectedPrescriptionDetails!.preDescriptionNotes,
-                    value: "غير محدد",
-
+                    value: state.selectedChronicDiseaseDetails!.personalNotes,
                     icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),
@@ -135,71 +129,34 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
   }
 }
 
-Future<void> _shareDetailsDummy(BuildContext context) async {
-  try {
-    // 📝 بيانات الأدوية (مثال على أكتر من دواء)
-    final medications = [
-      {
-        "medicineName": "Clavulanic acid",
-        "startDate": "2025-03-01",
-        "dose": "مرتين في اليوم",
-        "numberOfDoses": "مرتين",
-        "medicalForm": "حبوب"
-      },
-      {
-        "medicineName": "دواء ضغط الدم",
-        "startDate": "2024-05-10",
-        "dose": "50 ملغ",
-        "numberOfDoses": "مرتين يوميًا",
-        "medicalForm": "حبوب"
-      }
-    ];
-
-    // 📝 تحويل الأدوية لنص
-    final medicationsText = medications.map((med) {
-      return '''
-💊 اسم الدواء: ${med["medicineName"]}
-📅 تاريخ بدء الدواء: ${med["startDate"]}
-💉 الجرعة: ${med["dose"]}
-🔄 عدد مرات الجرعة: ${med["numberOfDoses"]}
-💊 الشكل الصيدلاني: ${med["medicalForm"]}
-''';
-    }).join("\n-----------------\n");
-
-    // 📝 النص النهائي حسب ترتيب الصفحة
-    final text = '''
-🩺 *تفاصيل المرض المزمن* 🩺
-
-📅 *تاريخ بداية التشخيص*: 2025-03-01
-🦠 *المرض المزمن*: التهاب المفاصل الروماتويدي
-
-$medicationsText
-
-👨‍⚕️ *الطبيب المتابع*: د. أسامة أحمد
-📊 *حالة المرض*: تحت السيطرة
-🤒 *الأعراض الجانبية*: صداع مزمن
-📝 *ملاحظات شخصية*: هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.
-''';
-
-    await Share.share(text);
-  } catch (e) {
-    await showError("❌ حدث خطأ أثناء المشاركة");
-  }
-}
-
-// Future<void> _shareDetails(
-//     BuildContext context, ChronicDiseaseViewState state) async {
+// Future<void> _shareDetailsDummy(BuildContext context) async {
 //   try {
-//     final details = state.selectedPrescriptionDetails!;
+//     // 📝 بيانات الأدوية (مثال على أكتر من دواء)
+//     final medications = [
+//       {
+//         "medicineName": "Clavulanic acid",
+//         "startDate": "2025-03-01",
+//         "dose": "مرتين في اليوم",
+//         "numberOfDoses": "مرتين",
+//         "medicalForm": "حبوب"
+//       },
+//       {
+//         "medicineName": "دواء ضغط الدم",
+//         "startDate": "2024-05-10",
+//         "dose": "50 ملغ",
+//         "numberOfDoses": "مرتين يوميًا",
+//         "medicalForm": "حبوب"
+//       }
+//     ];
 
-//     // 📝 الأدوية (ممكن أكتر من دواء)
-//     final medicationsText = (details.medications ?? []).map((med) {
+//     // 📝 تحويل الأدوية لنص
+//     final medicationsText = medications.map((med) {
 //       return '''
-// 💊 اسم الدواء: ${med.medicineName}
-// 📅 تاريخ بدء الدواء: ${med.startDate}
-// 💉 الجرعة: ${med.dose}
-// 🔄 عدد مرات الجرعة: ${med.numberOfDoses}
-// 💊 الشكل الصيدلاني: ${med.medicalForm}
+// 💊 اسم الدواء: ${med["medicineName"]}
+// 📅 تاريخ بدء الدواء: ${med["startDate"]}
+// 💉 الجرعة: ${med["dose"]}
+// 🔄 عدد مرات الجرعة: ${med["numberOfDoses"]}
+// 💊 الشكل الصيدلاني: ${med["medicalForm"]}
 // ''';
 //     }).join("\n-----------------\n");
 
@@ -207,15 +164,15 @@ $medicationsText
 //     final text = '''
 // 🩺 *تفاصيل المرض المزمن* 🩺
 
-// 📅 *تاريخ بداية التشخيص*: ${details.diagnosisStartDate}
-// 🦠 *المرض المزمن*: ${details.diseaseName}
+// 📅 *تاريخ بداية التشخيص*: 2025-03-01
+// 🦠 *المرض المزمن*: التهاب المفاصل الروماتويدي
 
 // $medicationsText
 
-// 👨‍⚕️ *الطبيب المتابع*: ${details.attendingPhysician}
-// 📊 *حالة المرض*: ${details.diseaseStatus}
-// 🤒 *الأعراض الجانبية*: ${details.physicalSymptoms}
-// 📝 *ملاحظات شخصية*: ${details.personalNotes}
+// 👨‍⚕️ *الطبيب المتابع*: د. أسامة أحمد
+// 📊 *حالة المرض*: تحت السيطرة
+// 🤒 *الأعراض الجانبية*: صداع مزمن
+// 📝 *ملاحظات شخصية*: هذا النص هو مثال نص يمكن أن يستبدل في نفس المساحة.
 // ''';
 
 //     await Share.share(text);
@@ -223,3 +180,40 @@ $medicationsText
 //     await showError("❌ حدث خطأ أثناء المشاركة");
 //   }
 // }
+
+Future<void> _shareDetails(
+    BuildContext context, ChronicDiseaseViewState state) async {
+  try {
+    final details = state.selectedChronicDiseaseDetails!;
+
+    // 📝 الأدوية (ممكن أكتر من دواء)
+    final medicationsText = (details.medications ?? []).map((med) {
+      return '''
+💊 اسم الدواء: ${med.medicineName}
+📅 تاريخ بدء الدواء: ${med.startDate}
+💉 الجرعة: ${med.dose}
+🔄 عدد مرات الجرعة: ${med.numberOfDoses}
+💊 الشكل الصيدلاني: ${med.medicalForm}
+''';
+    }).join("\n-----------------\n");
+
+    // 📝 النص النهائي حسب ترتيب الصفحة
+    final text = '''
+🩺 *تفاصيل المرض المزمن* 🩺
+
+📅 *تاريخ بداية التشخيص*: ${details.diagnosisStartDate}
+🦠 *المرض المزمن*: ${details.diseaseName}
+
+$medicationsText
+
+👨‍⚕️ *الطبيب المتابع*: ${details.treatingDoctorName}
+📊 *حالة المرض*: ${details.diseaseStatus}
+🤒 *الأعراض الجانبية*: ${details.sideEffect}
+📝 *ملاحظات شخصية*: ${details.personalNotes}
+''';
+
+    await Share.share(text);
+  } catch (e) {
+    await showError("❌ حدث خطأ أثناء المشاركة");
+  }
+}

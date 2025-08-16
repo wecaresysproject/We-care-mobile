@@ -1,7 +1,8 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/chronic_disease_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 
 class ChronicDiseaseViewRepo {
   final ChronicDiseaseServices diseaseServices;
@@ -19,41 +20,50 @@ class ChronicDiseaseViewRepo {
   //   }
   // }
 
-  Future<ApiResult<GetUserPrescriptionsResponseModel>> getUserPrescriptionList(
+//! handle at as all model to got message in order to show for user according to message
+  Future<ApiResult<List<ChronicDiseaseModel>>> getAllChronicDiseasesDocuments(
       {required String language,
       required String userType,
       int? page,
       int? pageSize}) async {
     try {
-      final response = await diseaseServices.getUserPrescriptionList(
-          language, userType,
-          page: page, pageSize: pageSize);
-      return ApiResult.success(response);
+      final response = await diseaseServices.getAllChronicDiseasesDocuments(
+        language,
+        userType,
+        page: page,
+        pageSize: pageSize,
+      );
+      final chronicDiseases = response['data']
+          .map<ChronicDiseaseModel>((e) => ChronicDiseaseModel.fromJson(e))
+          .toList();
+      return ApiResult.success(chronicDiseases);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<PrescriptionModel>> getUserPrescriptionDetailsById(
+  Future<ApiResult<PostChronicDiseaseModel>> getUserChronicDiseaseDetailsById(
       {required String id,
       required String language,
       required String userType}) async {
     try {
-      final response = await diseaseServices.getUserPrescriptionDetailsById(
+      final response = await diseaseServices.getUserChronicDiseaseDetailsById(
           id, language, userType);
-      return ApiResult.success(PrescriptionModel.fromJson(response['data']));
+      return ApiResult.success(
+          PostChronicDiseaseModel.fromJson(response['data']));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<String>> deletePrescriptionById(
-      {required String id,
-      required String language,
-      required String userType}) async {
+  Future<ApiResult<String>> deleteUserChronicDiseaseById({
+    required String id,
+    required String language,
+    required String userType,
+  }) async {
     try {
-      final response =
-          await diseaseServices.deletePrescriptionById(id, language, userType);
+      final response = await diseaseServices.deleteUserChronicDiseaseById(
+          id, language, userType);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

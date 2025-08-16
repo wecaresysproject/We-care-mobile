@@ -2,8 +2,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/chronic_disease/data/models/chronic_disease_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_view_repo.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 
 part 'chronic_disease_view_state.dart';
 
@@ -16,7 +17,8 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
   bool hasMore = true;
   bool isLoadingMore = false;
 
-  Future<void> getUserPrescriptionList({int? page, int? pageSize}) async {
+  Future<void> getAllChronicDiseasesDocuments(
+      {int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -26,24 +28,24 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
       hasMore = true;
     }
 
-    final result = await _diseaseViewRepo.getUserPrescriptionList(
+    final result = await _diseaseViewRepo.getAllChronicDiseasesDocuments(
         language: AppStrings.arabicLang,
         userType: 'Patient',
         page: page ?? currentPage,
         pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
-      final newPrescriptionList = response.prescriptionList;
+      final newChronicDiseasesList = response;
 
       // Update hasMore based on whether we got a full page of results
-      hasMore = newPrescriptionList.length >= (pageSize ?? this.pageSize);
+      hasMore = newChronicDiseasesList.length >= (pageSize ?? this.pageSize);
 
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userPrescriptions: page == 1 || page == null
-            ? newPrescriptionList
-            : [...state.userPrescriptions, ...newPrescriptionList],
-        responseMessage: response.message,
+        userChronicDisease: page == 1 || page == null
+            ? newChronicDiseasesList
+            : [...state.userChronicDisease, ...newChronicDiseasesList],
+        responseMessage: 'تم العرض بنجاح.',
         isLoadingMore: false,
       ));
 
@@ -61,10 +63,10 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
     });
   }
 
-  Future<void> loadMoreMedicines() async {
+  Future<void> loadMoreChronicDiseases() async {
     if (!hasMore || isLoadingMore) return;
 
-    await getUserPrescriptionList(page: currentPage + 1);
+    await getAllChronicDiseasesDocuments(page: currentPage + 1);
   }
 
   // Future<void> getPrescriptionFilters() async {
@@ -84,25 +86,28 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
   //   });
   // }
 
-  Future<void> getUserPrescriptionDetailsById(String id) async {
+  Future<void> getUserChronicDiseaseDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _diseaseViewRepo.getUserPrescriptionDetailsById(
+    final result = await _diseaseViewRepo.getUserChronicDiseaseDetailsById(
         id: id, language: AppStrings.arabicLang, userType: 'Patient');
 
     result.when(success: (response) {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        selectedPrescriptionDetails: response,
+        selectedChronicDiseaseDetails: response,
       ));
     }, failure: (error) {
       emit(state.copyWith(requestStatus: RequestStatus.failure));
     });
   }
 
-  Future<void> deletePrescriptionById(String id) async {
+  Future<void> deleteUserChronicDiseaseById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _diseaseViewRepo.deletePrescriptionById(
-        id: id, language: AppStrings.arabicLang, userType: 'Patient');
+    final result = await _diseaseViewRepo.deleteUserChronicDiseaseById(
+      id: id,
+      language: AppStrings.arabicLang,
+      userType: 'Patient',
+    );
 
     result.when(success: (response) {
       emit(state.copyWith(

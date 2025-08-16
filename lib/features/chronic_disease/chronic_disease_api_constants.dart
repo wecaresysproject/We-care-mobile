@@ -9,14 +9,13 @@ class ChronicDiseaseApiConstants {
   static const updatePrescriptionDocumentDetails =
       "/PreDescriptionUserEntryPage/EditPreDescriptionUserDocument";
 
-  static const getUserPrescriptionList =
-      "/PreDescriptionUserEntryPage/PreDescriptionGetUserDocuments";
+  static const getAllChronicDiseasesDocuments =
+      "/ChronicDiseases/summery-diseases";
 
-  static const getUserPrescriptionDetailsById =
-      "/PreDescriptionUserEntryPage/GetPreDescriptionPerOne";
+  static const getUserChronicDiseaseDetailsById =
+      "/ChronicDiseases/disease-by-id";
 
-  static const deletePrescriptionById =
-      "/PreDescriptionUserEntryPage/DeletePreDescriptionUserDocument";
+  static const deleteUserChronicDisease = "/ChronicDiseases/delete-disease";
 
   static const getFilteredPrescriptionList =
       "/PreDescriptionUserEntryPage/PreDescriptionSearchUserDocuments";

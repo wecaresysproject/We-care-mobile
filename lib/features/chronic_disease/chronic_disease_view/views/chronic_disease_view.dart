@@ -10,7 +10,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/widgets/chronic_disease_item_card_widget.dart';
-import 'package:we_care/features/chronic_disease/data/models/chronic_disease_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class ChronicDiseaseView extends StatelessWidget {
@@ -20,7 +19,7 @@ class ChronicDiseaseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ChronicDiseaseViewCubit>(
       create: (context) =>
-          getIt<ChronicDiseaseViewCubit>()..getUserPrescriptionList(),
+          getIt<ChronicDiseaseViewCubit>()..getAllChronicDiseasesDocuments(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
@@ -43,32 +42,9 @@ class ChronicDiseaseView extends StatelessWidget {
 }
 
 class ChronicDiseaseViewListBuilder extends StatelessWidget {
-  ChronicDiseaseViewListBuilder({
+  const ChronicDiseaseViewListBuilder({
     super.key,
   });
-  final List<ChronicDiseaseModel> dummyChronicDiseases = [
-    ChronicDiseaseModel(
-      title: "التهاب المفاصل الروماتويدي",
-      diagnosisStartDate: "2025-01-25",
-      treatingDoctorName: "د / أحمد أسامة",
-      diseaseStatus: "تحت السيطرة",
-      id: "1",
-    ),
-    ChronicDiseaseModel(
-      title: "مرض السكري",
-      diagnosisStartDate: "2024-05-10",
-      treatingDoctorName: "د / سارة محمد",
-      diseaseStatus: "تحت السيطرة",
-      id: "2",
-    ),
-    ChronicDiseaseModel(
-      title: "ارتفاع ضغط الدم",
-      diagnosisStartDate: "2023-11-15",
-      treatingDoctorName: "د / سارة محمد",
-      diseaseStatus: "تحت السيطرة",
-      id: "3",
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +54,7 @@ class ChronicDiseaseViewListBuilder extends StatelessWidget {
             state.requestStatus == RequestStatus.initial) {
           return Expanded(
               child: const Center(child: CircularProgressIndicator()));
-        } else if (state.userPrescriptions.isEmpty) {
+        } else if (state.userChronicDisease.isEmpty) {
           return Expanded(
             child: Center(
               child: Text(
@@ -92,11 +68,9 @@ class ChronicDiseaseViewListBuilder extends StatelessWidget {
         return Expanded(
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
-            itemCount:
-                dummyChronicDiseases.length, //state.userPrescriptions.length,
+            itemCount: state.userChronicDisease.length,
             itemBuilder: (context, index) {
-              // final doc = state.userPrescriptions[index];
-              final doc = dummyChronicDiseases[index];
+              final doc = state.userChronicDisease[index];
               return ChronicDiseaseItemCardHorizontalWidget(
                 item: doc,
                 onArrowTap: () async {
@@ -107,7 +81,7 @@ class ChronicDiseaseViewListBuilder extends StatelessWidget {
                     },
                   );
                   if (context.mounted) {
-                    await cubit.getUserPrescriptionList();
+                    await cubit.getAllChronicDiseasesDocuments();
                   }
                 },
               );
@@ -190,7 +164,7 @@ class ChronicDiseaseViewFooterRow extends StatelessWidget {
                 ElevatedButton(
                   onPressed: state.isLoadingMore || !cubit.hasMore
                       ? null
-                      : () => cubit.loadMoreMedicines(),
+                      : () => cubit.loadMoreChronicDiseases(),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(158.w, 32.h),
                     backgroundColor: state.isLoadingMore || !cubit.hasMore
