@@ -22,7 +22,7 @@ abstract class MentalIllnessesServices {
   @POST(MentalIllnessesConstants.postQuestionnaireAnswers)
   Future<dynamic> postQuestionnaireAnswers(
     @Query("userType") String userType,
-    @Query("language") String language,
+    @Query("Language") String language,
     @Body() List<FcmQuestionModel> questions,
   );
 

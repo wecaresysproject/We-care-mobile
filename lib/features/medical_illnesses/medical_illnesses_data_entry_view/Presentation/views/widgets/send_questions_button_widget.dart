@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -22,9 +23,11 @@ class SendButtonBlocConsumer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MedicalIllnessesDataEntryCubit,
         MedicalIllnessesDataEntryState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.questionareAnswersStatus == RequestStatus.success) {
           // ✅ Close the page when submission is successful
+
+          await showSuccess(state.message);
           context.pop();
         }
       },
