@@ -6,8 +6,7 @@ class ChronicDiseaseApiConstants {
       "/ChronicDiseases/all-name-chronic-diseases";
 
   //View Entry
-  static const updatePrescriptionDocumentDetails =
-      "/PreDescriptionUserEntryPage/EditPreDescriptionUserDocument";
+  static const updateChronicDisease = "/ChronicDiseases/update-disease";
 
   static const getAllChronicDiseasesDocuments =
       "/ChronicDiseases/summery-diseases";

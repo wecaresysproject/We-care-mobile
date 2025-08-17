@@ -1,3 +1,6 @@
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 
@@ -38,20 +41,20 @@ class ChronicDiseaseDataEntryRepo {
     }
   }
 
-  // Future<ApiResult<String>> updatePrescriptionDocumentDetails({
-  //   required PrescriptionRequestBodyModel requestBody,
-  //   required String documentId,
-  // }) async {
-  //   try {
-  //     final response = await _services.updatePrescriptionDocumentDetails(
-  //       requestBody,
-  //       requestBody.language,
-  //       requestBody.userType,
-  //       documentId,
-  //     );
-  //     return ApiResult.success(response['message']);
-  //   } catch (error) {
-  //     return ApiResult.failure(ApiErrorHandler.handle(error));
-  //   }
-  // }
+  Future<ApiResult<String>> updateChronicDiseaseDocDetailsById({
+    required PostChronicDiseaseModel requestBody,
+    required String documentId,
+  }) async {
+    try {
+      final response = await _services.updateChronicDiseaseDocDetailsById(
+        requestBody,
+        AppStrings.arabicLang,
+        UserTypes.patient.name.firstLetterToUpperCase,
+        documentId,
+      );
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

@@ -9,18 +9,17 @@ class ChronicDiseaseDataEntryState extends Equatable {
   final String? chronicDiseaseName;
   final bool? isPrescriptionPictureSelected;
   final List<String> chronicDiseaseNames;
-  final List<String> citiesNames;
-  final String? selectedCountryName;
   final String? diseaseStatus;
   final String? selectedMedicationName;
   final bool isEditMode;
-  final PrescriptionModel? prescribtionEditedModel;
+  final PostChronicDiseaseModel? chronincDiseaseEditedModel;
 
   final String message; // error or success message
   final String prescriptionPictureUploadedUrl;
 
   final UploadImageRequestStatus prescriptionImageRequestStatus;
   final List<AddNewMedicineModel> addedNewMedicines;
+  final String documentId;
 
   const ChronicDiseaseDataEntryState({
     this.chronicDiseaseDataEntryStatus = RequestStatus.initial,
@@ -29,17 +28,16 @@ class ChronicDiseaseDataEntryState extends Equatable {
     this.doctorNameSelection,
     this.chronicDiseaseName,
     this.isPrescriptionPictureSelected,
-    this.selectedCountryName,
     this.diseaseStatus,
     this.selectedMedicationName,
     this.chronicDiseaseNames = const [],
-    this.citiesNames = const [],
     this.message = '',
     this.prescriptionPictureUploadedUrl = '',
     this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
     this.isEditMode = false,
-    this.prescribtionEditedModel,
+    this.chronincDiseaseEditedModel,
     this.addedNewMedicines = const [],
+    this.documentId = '',
   }) : super();
 
   const ChronicDiseaseDataEntryState.initialState()
@@ -49,8 +47,6 @@ class ChronicDiseaseDataEntryState extends Equatable {
           diagnosisStartDate: null,
           doctorNameSelection: null,
           chronicDiseaseName: null,
-          isPrescriptionPictureSelected: null,
-          selectedCountryName: null,
           diseaseStatus: null,
           selectedMedicationName: null,
           message: '',
@@ -58,6 +54,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
           isEditMode: false,
           addedNewMedicines: const [],
           chronicDiseaseNames: const [],
+          documentId: '',
         );
 
   ChronicDiseaseDataEntryState copyWith({
@@ -66,18 +63,14 @@ class ChronicDiseaseDataEntryState extends Equatable {
     String? diagnosisStartDate,
     String? doctorNameSelection,
     String? chronicDiseaseName,
-    bool? isPrescriptionPictureSelected,
-    String? selectedCountryName,
     String? diseaseStatus,
     List<String>? chronicDiseaseNames,
     String? message,
-    List<String>? citiesNames,
-    String? prescriptionPictureUploadedUrl,
-    UploadImageRequestStatus? prescriptionImageRequestStatus,
     String? selectedMedicationName,
     bool? isEditMode,
-    PrescriptionModel? prescribtionEditedModel,
+    PostChronicDiseaseModel? chronincDiseaseEditedModel,
     List<AddNewMedicineModel>? addedNewMedicines,
+    String? documentId,
   }) {
     return ChronicDiseaseDataEntryState(
       chronicDiseaseDataEntryStatus:
@@ -86,23 +79,16 @@ class ChronicDiseaseDataEntryState extends Equatable {
       diagnosisStartDate: diagnosisStartDate ?? this.diagnosisStartDate,
       doctorNameSelection: doctorNameSelection ?? this.doctorNameSelection,
       chronicDiseaseName: chronicDiseaseName ?? this.chronicDiseaseName,
-      isPrescriptionPictureSelected:
-          isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
-      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       chronicDiseaseNames: chronicDiseaseNames ?? this.chronicDiseaseNames,
       message: message ?? this.message,
-      citiesNames: citiesNames ?? this.citiesNames,
       diseaseStatus: diseaseStatus ?? this.diseaseStatus,
-      prescriptionPictureUploadedUrl:
-          prescriptionPictureUploadedUrl ?? this.prescriptionPictureUploadedUrl,
-      prescriptionImageRequestStatus:
-          prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
       selectedMedicationName:
           selectedMedicationName ?? this.selectedMedicationName,
       isEditMode: isEditMode ?? this.isEditMode,
-      prescribtionEditedModel:
-          prescribtionEditedModel ?? this.prescribtionEditedModel,
+      chronincDiseaseEditedModel:
+          chronincDiseaseEditedModel ?? this.chronincDiseaseEditedModel,
       addedNewMedicines: addedNewMedicines ?? this.addedNewMedicines,
+      documentId: documentId ?? this.documentId,
     );
   }
 
@@ -113,17 +99,13 @@ class ChronicDiseaseDataEntryState extends Equatable {
         diagnosisStartDate,
         doctorNameSelection,
         chronicDiseaseName,
-        isPrescriptionPictureSelected,
-        selectedCountryName,
         chronicDiseaseNames,
         message,
-        citiesNames,
         diseaseStatus,
-        prescriptionPictureUploadedUrl,
-        prescriptionImageRequestStatus,
         selectedMedicationName,
         isEditMode,
-        prescribtionEditedModel,
+        chronincDiseaseEditedModel,
         addedNewMedicines,
+        documentId,
       ];
 }

@@ -39,13 +39,13 @@ abstract class ChronicDiseaseServices {
     @Query("language") String language,
     @Query("userType") String userType,
   );
-  // @PUT(ChronicDiseaseApiConstants.updatePrescriptionDocumentDetails)
-  // Future<dynamic> updatePrescriptionDocumentDetails(
-  //   @Body() PrescriptionRequestBodyModel prescriptionRequestBodyModel,
-  //   @Query('language') String language,
-  //   @Query('UserType') String userType,
-  //   @Query('documentId') String documentId,
-  // );
+  @PUT(ChronicDiseaseApiConstants.updateChronicDisease)
+  Future<dynamic> updateChronicDiseaseDocDetailsById(
+    @Body() PostChronicDiseaseModel requestBody,
+    @Query('language') String language,
+    @Query('UserType') String userType,
+    @Query('id') String id,
+  );
 
   @DELETE(ChronicDiseaseApiConstants.deleteUserChronicDisease)
   Future<dynamic> deleteUserChronicDiseaseById(

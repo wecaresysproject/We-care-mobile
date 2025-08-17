@@ -275,7 +275,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
     "route": Routes.chronicDiseaseDataEntry,
-    "cornerImagePath": "assets/images/chronic_disease_module.png",
+    "cornerImagePath": "assets/images/chronic_disease_module_agent.png",
     "audio": "sounds/ebn_sena.mp3",
     "isActive": true,
   },

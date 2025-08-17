@@ -8,6 +8,7 @@ import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Pres
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_view.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_anatomy_view.dart';
@@ -515,7 +516,14 @@ class AppRouter {
           ),
         );
       case Routes.chronicDiseaseDataEntry:
-        return MaterialPageRoute(builder: (_) => ChronicDiseaseDataEntryView());
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseDataEntryView(
+            editModel: argumentsMap?['editModel'] as PostChronicDiseaseModel?,
+            documentId: argumentsMap?['id'] as String?,
+          ),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }

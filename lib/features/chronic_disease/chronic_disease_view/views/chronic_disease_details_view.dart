@@ -48,15 +48,19 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                   AppBarWithCenteredTitle(
                     title: 'الامراض المزمنة',
                     editFunction: () async {
+                      //! just un comment this section
                       // final result = await context.pushNamed(
-                      //   Routes.prescriptionCategoryDataEntryView,
-                      //   arguments: state.selectedPrescriptionDetails!,
+                      //   Routes.chronicDiseaseDataEntry,
+                      //   arguments: {
+                      //     'id': documentId,
+                      //     'editModel': state.selectedChronicDiseaseDetails
+                      //   },
                       // );
                       // if (result) {
                       //   if (!context.mounted) return;
                       //   await context
                       //       .read<ChronicDiseaseViewCubit>()
-                      //       .getUserPrescriptionDetailsById(documentId);
+                      //       .getUserChronicDiseaseDetailsById(documentId);
                       // }
                     },
                     shareFunction: () async {

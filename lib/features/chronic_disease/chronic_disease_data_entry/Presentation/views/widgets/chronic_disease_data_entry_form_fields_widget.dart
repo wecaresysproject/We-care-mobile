@@ -151,7 +151,7 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 controller: context
                     .read<ChronicDiseaseDataEntryCubit>()
                     .personalNotesController,
-                hintText: state.prescribtionEditedModel?.preDescriptionNotes ??
+                hintText: state.chronincDiseaseEditedModel?.personalNotes ??
                     "اكتب باختصار اى معلومات مهمة اخرى",
               ),
 
@@ -298,16 +298,15 @@ class _ChronicDiseaseDataEntryFormFieldsState
           title: state.isEditMode ? "حفظ التعديلات" : context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode
-              //     ? await context
-              //         .read<ChronicDiseaseDataEntryCubit>()
-              //         .submitEditsOnPrescription()
-              //     :
-              await context
-                  .read<ChronicDiseaseDataEntryCubit>()
-                  .postChronicDiseaseData(
-                    context.translate,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<ChronicDiseaseDataEntryCubit>()
+                      .submitEditsForChronicDisease()
+                  : await context
+                      .read<ChronicDiseaseDataEntryCubit>()
+                      .postChronicDiseaseData(
+                        context.translate,
+                      );
             }
           },
           isEnabled: state.isFormValidated ? true : false,
