@@ -8,7 +8,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
-import 'package:we_care/core/Services/local_notifications_services.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -56,8 +55,6 @@ void main() async {
   await ScreenUtil.ensureScreenSize();
 
   await checkIfLoggedInUser();
-
-  await Notifications.init();
 
   //* The plugin redirects the user to auto-start permission screen to allow auto-start and fix background problems in some phones.
   // await getAutoStartPermission();

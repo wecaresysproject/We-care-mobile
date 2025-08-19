@@ -33,7 +33,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         unawaited(loadAlarms());
       },
     );
-    notifications = Notifications();
+    notifications = LocalNotificationService();
   }
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
@@ -67,7 +67,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   List<AlarmSettings> alarms = [];
-  Notifications? notifications;
+  LocalNotificationService? notifications;
 
   static StreamSubscription<AlarmSet>? ringSubscription;
   static StreamSubscription<AlarmSet>? updateSubscription;

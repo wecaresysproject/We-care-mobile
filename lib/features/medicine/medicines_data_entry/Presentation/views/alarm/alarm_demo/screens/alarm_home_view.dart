@@ -20,7 +20,7 @@ class AlarmHomeScreen extends StatefulWidget {
 
 class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
   List<AlarmSettings> alarms = [];
-  Notifications? notifications;
+  LocalNotificationService? notifications;
 
   static StreamSubscription<AlarmSet>? ringSubscription;
   static StreamSubscription<AlarmSet>? updateSubscription;
@@ -38,7 +38,7 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
         unawaited(loadAlarms());
       },
     );
-    notifications = Notifications();
+    notifications = LocalNotificationService();
   }
 
   @override

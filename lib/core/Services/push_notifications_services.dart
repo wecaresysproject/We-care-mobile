@@ -4,9 +4,9 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:we_care/core/Services/local_notifications_services.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
 import 'package:we_care/firebase_options.dart';
 
 class PushNotificationsService {
@@ -15,6 +15,12 @@ class PushNotificationsService {
   static Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     await _messaging.requestPermission();
     // await getAndLogToken();
+    // final token = await _messaging.getToken();
+    // log('FCM Token: $token');
+    // Set the navigator key in LocalNotificationService
+    // await LocalNotificationService.init();
+    LocalNotificationService.setNavigatorKey(navigatorKey);
+
     //!when the app is in the background or terminated.
     FirebaseMessaging.onBackgroundMessage(_handleBackgroundMessage);
     _handleForegroundNotifications(navigatorKey);
@@ -46,11 +52,9 @@ class PushNotificationsService {
         log("Foreground notification message.data['questions']: ${message.data['questions']}");
         log("Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
         if (message.notification != null) {
-          LocalNotificationService.showBasicNotification(
-            message,
-          );
+          LocalNotificationService.showForgroundFcmNotification(message);
 
-          _navigateBasedOnNotification(navigatorKey, message);
+          // _navigateBasedOnNotification(navigatorKey, message);
         }
       },
     );
@@ -77,42 +81,6 @@ class PushNotificationsService {
     );
   }
 
-  // static void _navigateBasedOnNotification(
-  //   GlobalKey<NavigatorState> navigatorKey,
-  //   RemoteMessage message,
-  // ) {
-  //   try {
-  //     final msgPayload = message.data['payload'] as String?;
-  //     FcmMessageModel? fcmMessage;
-  //     if (msgPayload != null) {
-  //       final Map<String, dynamic> bodyJson = jsonDecode(msgPayload);
-  //       // نحول الـ data لـ model مباشرة
-  //       fcmMessage = FcmMessageModel.fromJson(bodyJson);
-  //       log(
-  //         'FCM Message questions seperated by one line : ${fcmMessage.questions.map((question) => question.toJson().toString()).join('\n')}',
-  //       );
-  //     }
-
-  //     WidgetsBinding.instance.addPostFrameCallback(
-  //       (_) {
-  //         if (fcmMessage!.pageRoute ==
-  //             Routes.mentalUmbrellaHealthQuestionnairePage) {
-  //           navigatorKey.currentState?.pushNamed(
-  //             Routes.mentalUmbrellaHealthQuestionnairePage,
-  //             arguments: {
-  //               'questions': fcmMessage.questions,
-  //             },
-  //           );
-  //         } else {
-  //           log("Unknown pageRoute: ${fcmMessage.pageRoute}");
-  //         }
-  //       },
-  //     );
-  //   } catch (e, stack) {
-  //     log("Error navigating from notification: $e");
-  //     log(stack.toString());
-  //   }
-  // }
   static void _navigateBasedOnNotification(
     GlobalKey<NavigatorState> navigatorKey,
     RemoteMessage message,
