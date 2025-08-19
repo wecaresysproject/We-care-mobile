@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/firebase_options.dart';
 
 class PushNotificationsService {

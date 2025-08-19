@@ -13,7 +13,7 @@ import 'package:we_care/features/emergency_complaints/data/models/medical_compla
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 import 'package:we_care/generated/l10n.dart';

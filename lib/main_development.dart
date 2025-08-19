@@ -20,7 +20,7 @@ import 'package:we_care/features/emergency_complaints/data/models/medical_compla
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/utils/logging.dart';
 import 'package:we_care/firebase_options.dart';
 import 'package:we_care/we_care_app.dart';
