@@ -58,10 +58,7 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
             BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
           builder: (context, state) {
             return Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 16.h,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
                 children: [
                   ViewAppBar(),
@@ -81,48 +78,53 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
                     },
                   ),
                   verticalSpacing(16),
-                  if (state.requestStatus == RequestStatus.loading)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (state.followUpRecords.isEmpty)
-                    Center(
-                      child: Text(
-                        "لا يوجد بيانات",
-                        style: AppTextStyles.font22MainBlueWeight700,
-                      ),
-                    )
-                  else ...[
-                    MedicalItemGridView(
-                      items: state.followUpRecords,
-                      // isExpendingTileTitle: true,
-                      onTap: (id) async {
-                        // يمكن عرض SnackBar أو التنقل لصفحة التفاصيل
-                        final result = await context.pushNamed(
-                          Routes.mentalIllnessFollowUpReportDetailsView,
-                          arguments: {
-                            'docId': id,
-                          },
-                        );
-                        if (result != null &&
-                            result as bool &&
-                            context.mounted) {
-                          await context
-                              .read<MentalIllnessDataViewCubit>()
-                              .getAllFollowUpReportsRecords();
-                          await context
-                              .read<MentalIllnessDataViewCubit>()
-                              .getFollowUpReportsAvailableYears();
-                        }
-                      },
-                      titleBuilder: (item) => item.title,
-                      infoRowBuilder: (item) => [
-                        {'title': 'التاريخ:', 'value': item.date},
-                        {'title': 'نوع التقرير:', 'value': item.reportType},
-                      ],
-                    ),
-                  ],
+
+                  // Expanded علشان المحتوى ياخد المساحة الباقية
+                  Expanded(
+                    child: state.requestStatus == RequestStatus.loading
+                        ? const Center(child: CircularProgressIndicator())
+                        : state.followUpRecords.isEmpty
+                            ? Center(
+                                child: Text(
+                                  "لا يوجد بيانات",
+                                  style: AppTextStyles.font22MainBlueWeight700,
+                                ),
+                              )
+                            : ListView(
+                                children: [
+                                  MedicalItemGridView(
+                                    items: state.followUpRecords,
+                                    onTap: (id) async {
+                                      final result = await context.pushNamed(
+                                        Routes
+                                            .mentalIllnessFollowUpReportDetailsView,
+                                        arguments: {'docId': id},
+                                      );
+                                      if (result != null &&
+                                          result as bool &&
+                                          context.mounted) {
+                                        await context
+                                            .read<MentalIllnessDataViewCubit>()
+                                            .getAllFollowUpReportsRecords();
+                                        await context
+                                            .read<MentalIllnessDataViewCubit>()
+                                            .getFollowUpReportsAvailableYears();
+                                      }
+                                    },
+                                    titleBuilder: (item) => item.title,
+                                    infoRowBuilder: (item) => [
+                                      {'title': 'التاريخ:', 'value': item.date},
+                                      {
+                                        'title': 'نوع التقرير:',
+                                        'value': item.reportType
+                                      },
+                                    ],
+                                  ),
+                                ],
+                              ),
+                  ),
                   verticalSpacing(16),
+
                   MentalIlnessFollowUpFooterRow(),
                 ],
               ),

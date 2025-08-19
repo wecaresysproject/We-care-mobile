@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/edit_alarm.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/ring.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/shortcut_button.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/widgets/tile.dart';
 
@@ -20,7 +20,7 @@ class AlarmHomeScreen extends StatefulWidget {
 
 class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
   List<AlarmSettings> alarms = [];
-  Notifications? notifications;
+  LocalNotificationService? notifications;
 
   static StreamSubscription<AlarmSet>? ringSubscription;
   static StreamSubscription<AlarmSet>? updateSubscription;
@@ -38,7 +38,7 @@ class _AlarmHomeScreenState extends State<AlarmHomeScreen> {
         unawaited(loadAlarms());
       },
     );
-    notifications = Notifications();
+    notifications = LocalNotificationService();
   }
 
   @override

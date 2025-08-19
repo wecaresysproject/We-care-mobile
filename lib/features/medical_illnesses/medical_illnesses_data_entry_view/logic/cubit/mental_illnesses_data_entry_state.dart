@@ -3,8 +3,10 @@ part of 'mental_illnesses_data_entry_cubit.dart';
 @immutable
 class MedicalIllnessesDataEntryState extends Equatable {
   final RequestStatus mentalIllnessesDataEntryStatus;
+  final RequestStatus questionareAnswersStatus;
   final String? errorMessage;
   final bool isFormValidated;
+  final bool umbrellaActivationStatus;
   final String? examinationDate; //تاريخ التشخيص
   final String? selectedMentalIllnessesType; // نوع المرض النفسى/السلوكى
   final String? selectedDiseaseIntensity;
@@ -54,8 +56,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
 
   const MedicalIllnessesDataEntryState({
     this.mentalIllnessesDataEntryStatus = RequestStatus.initial,
+    this.questionareAnswersStatus = RequestStatus.initial,
     this.errorMessage,
     this.isFormValidated = false,
+    this.umbrellaActivationStatus = false,
     this.examinationDate,
     this.selectedMentalIllnessesType,
     this.selectedDiseaseIntensity,
@@ -96,7 +100,9 @@ class MedicalIllnessesDataEntryState extends Equatable {
   MedicalIllnessesDataEntryState.initialState()
       : this(
           mentalIllnessesDataEntryStatus: RequestStatus.initial,
+          questionareAnswersStatus: RequestStatus.initial,
           isFormValidated: false,
+          umbrellaActivationStatus: false,
           examinationDate: null,
           selectedMentalIllnessesType: null,
           selectedDiseaseIntensity: null,
@@ -136,8 +142,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
 
   MedicalIllnessesDataEntryState copyWith({
     RequestStatus? mentalIllnessesDataEntryStatus,
+    RequestStatus? questionareAnswersStatus,
     String? errorMessage,
     bool? isFormValidated,
+    bool? umbrellaActivationStatus,
     String? examinationDate,
     String? selectedMentalIllnessesType,
     String? selectedDiseaseIntensity,
@@ -176,8 +184,12 @@ class MedicalIllnessesDataEntryState extends Equatable {
     return MedicalIllnessesDataEntryState(
       mentalIllnessesDataEntryStatus:
           mentalIllnessesDataEntryStatus ?? this.mentalIllnessesDataEntryStatus,
+      questionareAnswersStatus:
+          questionareAnswersStatus ?? this.questionareAnswersStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      umbrellaActivationStatus:
+          umbrellaActivationStatus ?? this.umbrellaActivationStatus,
       examinationDate: examinationDate ?? this.examinationDate,
       selectedDiseaseIntensity:
           selectedDiseaseIntensity ?? this.selectedDiseaseIntensity,
@@ -237,8 +249,10 @@ class MedicalIllnessesDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         mentalIllnessesDataEntryStatus,
+        questionareAnswersStatus,
         errorMessage,
         isFormValidated,
+        umbrellaActivationStatus,
         examinationDate,
         diseaseDuration, // مدة المرض,
         selectedMentalHealthEmergency,

@@ -94,6 +94,11 @@ class Routes {
       '/mentalUmbrellaHealthQuestionnairePage';
 
   static const eyeDataEntry = '/eyeDataEntry';
+  static const addNewMedicationView = '/addNewMedicationView';
+  static const chronicDiseaseDataEntry = '/chronicDiseaseDataEntry';
+  static const chronicDiseaseDataView = '/chronicDiseaseDataView';
+  static const chronicDiseaseDetailsView = '/chronicDiseaseDetailsView';
+
   static const eyeProceduresAndSyptomsDataEntry =
       '/eyeProceduresAndSyptomsDataEntry';
 }

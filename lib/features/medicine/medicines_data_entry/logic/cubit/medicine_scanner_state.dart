@@ -1,14 +1,10 @@
-import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
-import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 
 @immutable
 class MedicineScannerState extends Equatable {
-
   final List<MatchedMedicineModel> matchedMedicines;
   final String message; // error or success message
   final RequestStatus medicinesScannerStatus;
@@ -34,7 +30,8 @@ class MedicineScannerState extends Equatable {
     return MedicineScannerState(
       matchedMedicines: matchedMedicines ?? this.matchedMedicines,
       message: message ?? this.message,
-      medicinesScannerStatus: medicinesScannerStatus ?? this.medicinesScannerStatus,
+      medicinesScannerStatus:
+          medicinesScannerStatus ?? this.medicinesScannerStatus,
     );
   }
 

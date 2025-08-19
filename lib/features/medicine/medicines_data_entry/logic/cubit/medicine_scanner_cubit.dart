@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart' show MedicinesDataEntryRepo;
-import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state';
-
+import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart'
+    show MedicinesDataEntryRepo;
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_state.dart';
 
 class MedicineScannerCubit extends Cubit<MedicineScannerState> {
   final MedicinesDataEntryRepo _medicinesDataEntryRepo;

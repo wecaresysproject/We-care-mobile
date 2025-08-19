@@ -3,6 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
+import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_view.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
+import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_anatomy_view.dart';
@@ -35,12 +41,13 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_tree_view.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
+import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/medical_illnesses_data_entry.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_health_questionare_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/mental_ilness_choice_screen.dart';
-import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/widgets/mental_illnesses_or_mind_umbrella_data_entry_view.dart';
+import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/medical_illnesses_records_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_answered_questions_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_details_view.dart';
@@ -53,6 +60,7 @@ import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -414,11 +422,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => const MedicalIllnessOrMindUmbrellaView(),
         );
-      case Routes.mentalIllnessOrMindUmbrellaViewDataEntryView:
-        return MaterialPageRoute(
-          builder: (context) =>
-              const MentalIllnessOrMindUmbrellaViewDataEntryView(),
-        );
+
       case Routes.mentalIllnessesRecordsView:
         return MaterialPageRoute(
           builder: (context) => const MentalIllnessRecordsView(),
@@ -429,7 +433,10 @@ class AppRouter {
         );
       case Routes.mentalIllnessChoiceScreen:
         return MaterialPageRoute(
-          builder: (context) => const MentalIllnessChoiceScreen(),
+          builder: (context) => BlocProvider<MedicalIllnessesDataEntryCubit>(
+            create: (context) => getIt<MedicalIllnessesDataEntryCubit>(),
+            child: const MentalIllnessChoiceScreen(),
+          ),
         );
       case Routes.mentalIlnesssUmbrellaView:
         return MaterialPageRoute(
@@ -448,43 +455,14 @@ class AppRouter {
           ), //MentalIllnessFollowUpReportDetailsView(),
         );
       case Routes.mentalUmbrellaHealthQuestionnairePage:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
         return MaterialPageRoute(
-          builder: (context) => MentalHealthQuestionnaireView(
-            questions: [
-              const QuestionnaireItem(
-                text: 'هل فقدت الاهتمام بالأنشطة التي كنت تستمتع بها من قبل؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تواجه صعوبة في النوم أو تنام أكثر من المعتاد؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تشعر بالتعب أو نقص الطاقة باستمرار؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تعاني من تغيرات في الشهية أو الوزن؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تشعر بصعوبة في التركيز أو اتخاذ القرارات؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تشعر بالذنب أو انعدام القيمة الذاتية؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تشعر بالقلق أو التوتر الزائد؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تعاني من نوبات هلع أو خوف شديد؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تتجنب المواقف الاجتماعية أو التجمعات؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تشعر بالوحدة حتى عندما تكون مع الآخرين؟',
-              ),
-              const QuestionnaireItem(
-                text: 'هل تواجه صعوبة في التحكم في أفكارك أو مشاعرك؟',
-              ),
-            ],
+          builder: (context) => BlocProvider<MedicalIllnessesDataEntryCubit>(
+            create: (context) => getIt<MedicalIllnessesDataEntryCubit>(),
+            child: MentalHealthQuestionnaireView(
+              questions: argumentsMap?['questions'] as List<FcmQuestionModel>,
+            ),
           ),
         );
       case Routes.mentalIllnessDocDetailsView:
@@ -498,12 +476,53 @@ class AppRouter {
       case Routes.enableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => EnableViewForWeCareMentalHealthUmbrella());
+      case Routes.addNewMedicationView:
+        final medicineDetails = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<MedicinesDataEntryCubit>(
+            create: (context) =>
+                getIt<MedicinesDataEntryCubit>()..initialDataEntryRequests(),
+            child: AddNewMedicationView(
+              medicineId: medicineDetails?['id'] as int?,
+              editingMedicineDetailsData:
+                  medicineDetails?['medicine'] as AddNewMedicineModel?,
+            ),
+          ),
+        );
       case Routes.disableViewForWeCareMentalHealthUmbrella:
         return MaterialPageRoute(
             builder: (_) => DisableViewForWeCareMentalHealthUmbrella());
       case Routes.mentalIllnessAnsweredQuestionsView:
         return MaterialPageRoute(
           builder: (_) => MentalIllnessYesAnswersView(),
+        );
+      case Routes.chronicDiseaseDataView:
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseView(),
+        );
+      // case Routes.chronicDiseaseDetailsView:
+      //   return MaterialPageRoute(
+      //     builder: (_) => ChronicDiseaseDetailsView(
+
+      //     ),
+      //   );
+      case Routes.chronicDiseaseDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseDetailsView(
+            documentId: argumentsMap['docId'] ?? "",
+          ),
+        );
+      case Routes.chronicDiseaseDataEntry:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (_) => ChronicDiseaseDataEntryView(
+            editModel: argumentsMap?['editModel'] as PostChronicDiseaseModel?,
+            documentId: argumentsMap?['id'] as String?,
+          ),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

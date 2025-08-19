@@ -8,11 +8,12 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -32,7 +33,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         unawaited(loadAlarms());
       },
     );
-    notifications = Notifications();
+    notifications = LocalNotificationService();
   }
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
@@ -66,7 +67,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   List<AlarmSettings> alarms = [];
-  Notifications? notifications;
+  LocalNotificationService? notifications;
 
   static StreamSubscription<AlarmSet>? ringSubscription;
   static StreamSubscription<AlarmSet>? updateSubscription;
@@ -670,11 +671,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void updateStartMedicineDate(String? date) {
     emit(state.copyWith(medicineStartDate: date));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   Future<void> updateSelectedMedicineName(String? medicineName) async {
     emit(state.copyWith(selectedMedicineName: medicineName));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     getMedcineIdByName(medicineName!);
     await emitMedicineforms();
   }
@@ -683,16 +686,19 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     emit(state.copyWith(selectedMedicalForm: form));
     await emitMedcineDosesByForms();
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   void updateSelectedDose(String? dose) {
     emit(state.copyWith(selectedDose: dose));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   void updateSelectedDoseFrequency(String? noOfDose) {
     emit(state.copyWith(selectedNoOfDose: noOfDose));
     validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
   Future<void> updateSelectedDoseDuration(String? doseDuration) async {
@@ -734,6 +740,95 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         ),
       );
     }
+  }
+
+  Future<void> saveAddedNewMedicine() async {
+    final newMedicalComplaint = AddNewMedicineModel(
+      medicineName: state.selectedMedicineName!,
+      startDate: state.medicineStartDate!,
+      medicalForm: state.selectedMedicalForm!,
+      dose: state.selectedDose!,
+      numberOfDoses: state.selectedNoOfDose!,
+    );
+    final Box<AddNewMedicineModel> addedNewMedicineBox =
+        Hive.box<AddNewMedicineModel>("addNewMedicine");
+
+    await addedNewMedicineBox.add(newMedicalComplaint);
+
+    emit(
+      state.copyWith(
+        isNewMedicineAddedSuccefuly: true,
+      ),
+    );
+  }
+
+  Future<void> updateAddedMedicine(
+      int index, AddNewMedicineModel oldMedicineDetails) async {
+    final Box<AddNewMedicineModel> addedNewMedicineBox =
+        Hive.box<AddNewMedicineModel>("addNewMedicine");
+
+    final updatedMedicine = oldMedicineDetails.updateWith(
+      medicineName: state.selectedMedicineName!,
+      startDate: state.medicineStartDate!,
+      medicalForm: state.selectedMedicalForm!,
+      dose: state.selectedDose!,
+      numberOfDoses: state.selectedNoOfDose!,
+    );
+    if (index >= 0 && index < addedNewMedicineBox.length) {
+      await addedNewMedicineBox.put(
+        index,
+        updatedMedicine,
+      );
+
+      emit(
+        state.copyWith(
+          isEditingNewMedicineSuccess: true,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isEditingNewMedicineSuccess: false,
+        ),
+      );
+      throw Exception("Invalid index: $index");
+    }
+  }
+
+  void validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule() {
+    if (state.medicineStartDate == null ||
+        state.selectedMedicineName == null ||
+        state.selectedMedicalForm == null ||
+        state.selectedDose == null ||
+        state.selectedNoOfDose == null) {
+      emit(
+        state.copyWith(
+          isAddNewMedicineFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isAddNewMedicineFormValidated: true,
+        ),
+      );
+    }
+  }
+
+  Future<void> loadMedicineDetailsViewForEditing(
+      AddNewMedicineModel model) async {
+    emit(
+      state.copyWith(
+        isEditingAddedMedicine: true,
+        medicineStartDate: model.startDate,
+        selectedMedicalForm: model.medicalForm,
+        selectedMedicineName: model.medicineName,
+        selectedNoOfDose: model.numberOfDoses,
+        selectedDose: model.dose,
+      ),
+    );
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    await initialDataEntryRequests();
   }
 
   @override

@@ -19,6 +19,7 @@ class MedicinesDataEntryState extends Equatable {
   final String? selectedChronicDisease;
   final String? selectedDoctorName;
   final bool isFormValidated;
+  final bool isAddNewMedicineFormValidated;
   final List<MedicalComplaint> medicalComplaints;
   final List<String> medicinesNames;
   final List<String> medicineForms;
@@ -42,9 +43,17 @@ class MedicinesDataEntryState extends Equatable {
   final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
   final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
+  final bool isNewMedicineAddedSuccefuly;
+  final bool isEditingNewMedicineSuccess;
+  final bool isEditingAddedMedicine;
+
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.isAddNewMedicineFormValidated = false,
+    this.isNewMedicineAddedSuccefuly = false,
+    this.isEditingNewMedicineSuccess = false,
+    this.isEditingAddedMedicine = false,
     this.message = '',
     this.isEditMode = false,
     this.medicineStartDate,
@@ -82,6 +91,10 @@ class MedicinesDataEntryState extends Equatable {
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
+          isAddNewMedicineFormValidated: false,
+          isNewMedicineAddedSuccefuly: false,
+          isEditingNewMedicineSuccess: false,
+          isEditingAddedMedicine: false,
           message: '',
           isEditMode: false,
           medicineStartDate: null,
@@ -118,6 +131,10 @@ class MedicinesDataEntryState extends Equatable {
   MedicinesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
+    bool? isAddNewMedicineFormValidated,
+    bool? isNewMedicineAddedSuccefuly,
+    bool? isEditingNewMedicineSuccess,
+    bool? isEditingAddedMedicine,
     String? message,
     bool? isEditMode,
     String? medicineStartDate,
@@ -154,6 +171,14 @@ class MedicinesDataEntryState extends Equatable {
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      isNewMedicineAddedSuccefuly:
+          isNewMedicineAddedSuccefuly ?? this.isNewMedicineAddedSuccefuly,
+      isEditingNewMedicineSuccess:
+          isEditingNewMedicineSuccess ?? this.isEditingNewMedicineSuccess,
+      isAddNewMedicineFormValidated:
+          isAddNewMedicineFormValidated ?? this.isAddNewMedicineFormValidated,
+      isEditingAddedMedicine:
+          isEditingAddedMedicine ?? this.isEditingAddedMedicine,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
       medicineStartDate: medicineStartDate ?? this.medicineStartDate,
@@ -202,6 +227,10 @@ class MedicinesDataEntryState extends Equatable {
   List<Object?> get props => [
         medicinesDataEntryStatus,
         isFormValidated,
+        isAddNewMedicineFormValidated,
+        isNewMedicineAddedSuccefuly,
+        isEditingNewMedicineSuccess,
+        isEditingAddedMedicine,
         message,
         isEditMode,
         medicineStartDate,

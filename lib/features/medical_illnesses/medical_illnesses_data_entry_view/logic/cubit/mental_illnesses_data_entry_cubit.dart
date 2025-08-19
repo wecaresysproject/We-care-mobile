@@ -2,10 +2,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
+import 'package:we_care/features/medical_illnesses/data/models/post_fcm_token_request_model.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -13,13 +16,15 @@ part 'mental_illnesses_data_entry_state.dart';
 
 class MedicalIllnessesDataEntryCubit
     extends Cubit<MedicalIllnessesDataEntryState> {
-  MedicalIllnessesDataEntryCubit(this._medicalIllnessesDataEntryRepo)
+  MedicalIllnessesDataEntryCubit(
+      this._medicalIllnessesDataEntryRepo, this.pushNotificationsService)
       : super(
           MedicalIllnessesDataEntryState.initialState(),
         );
   final MentalIllnessesDataEntryRepo _medicalIllnessesDataEntryRepo;
   final noOfSessionsController = TextEditingController(); // عدد الجلسات
-  // List<String> medicalComplaints = [];
+
+  final PushNotificationsService pushNotificationsService;
   void addNewSymptomField() {
     final newController = TextEditingController();
     final updatedControllers =
@@ -380,56 +385,39 @@ class MedicalIllnessesDataEntryCubit
   void updatePreferredMentalWellnessActivities(String? val) {
     emit(state.copyWith(selectedPreferredMentalWellnessActivities: val));
   }
-  // Future<String> getEyePartDescribtion({
-  //   required String selectedEyePart,
-  // }) async {
-  //   final response = await _eyesDataEntryRepo.getEyePartDescribtion(
-  //     language: AppStrings.arabicLang,
-  //     userType: UserTypes.patient.name.firstLetterToUpperCase,
-  //     selectedEyePart: selectedEyePart,
-  //   );
 
-  //   return response.when(
-  //     success: (response) {
-  //       return response;
-  //     },
-  //     failure: (error) {
-  //       return error.errors.first;
-  //     },
-  //   );
-  // }
-
-  // Future<void> uploadReportImagePicked({required String imagePath}) async {
-  //   emit(
-  //     state.copyWith(
-  //       uploadReportStatus: UploadReportRequestStatus.initial,
-  //     ),
-  //   );
-  //   final response = await _eyesDataEntryRepo.uploadReportImage(
-  //     contentType: AppStrings.contentTypeMultiPartValue,
-  //     language: AppStrings.arabicLang,
-  //     image: File(imagePath),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response.message,
-  //           reportImageUploadedUrl: response.reportUrl,
-  //           uploadReportStatus: UploadReportRequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           uploadReportStatus: UploadReportRequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> sendQuestionareAnswers({
+    required List<FcmQuestionModel> questions,
+  }) async {
+    emit(
+      state.copyWith(
+        questionareAnswersStatus: RequestStatus.loading,
+      ),
+    );
+    final response =
+        await _medicalIllnessesDataEntryRepo.sendQuestionareAnswers(
+      questions: questions,
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            questionareAnswersStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            questionareAnswersStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> postMentalIlnessDataEntryEndPoint(
     S locale,
@@ -503,6 +491,69 @@ class MedicalIllnessesDataEntryCubit
           state.copyWith(
             message: error.errors.first,
             mentalIllnessesDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  void updateUmbrellaActivationStatus(bool? value) {
+    emit(state.copyWith(umbrellaActivationStatus: value));
+  }
+
+  Future<void> postActivationOfUmbrella() async {
+    emit(
+      state.copyWith(
+        mentalIllnessesDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final token = await pushNotificationsService.getAndLogToken();
+    final response =
+        await _medicalIllnessesDataEntryRepo.postActivationOfUmbrella(
+      requestBody: PostFcmTokenRequest(
+        deviceToken: token,
+        isActivated: state.umbrellaActivationStatus,
+      ),
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            message: successMessage,
+            mentalIllnessesDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            mentalIllnessesDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getActivationStatusOfUmbrella() async {
+    final response =
+        await _medicalIllnessesDataEntryRepo.getActivationStatusOfUmbrella(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (status) {
+        emit(
+          state.copyWith(
+            umbrellaActivationStatus: status.isActivated,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            umbrellaActivationStatus: false,
+            message: error.errors.first,
           ),
         );
       },

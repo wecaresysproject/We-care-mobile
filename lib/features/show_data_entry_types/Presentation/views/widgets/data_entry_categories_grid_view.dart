@@ -274,9 +274,10 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
-    "route": "/organic_disorders",
-    "cornerImagePath": "assets/images/chronic_disease_module.png",
+    "route": Routes.chronicDiseaseDataEntry,
+    "cornerImagePath": "assets/images/chronic_disease_module_agent.png",
     "audio": "sounds/ebn_sena.mp3",
+    "isActive": true,
   },
   {
     "title": "الأورام",
@@ -369,7 +370,7 @@ final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
-    "route": Routes.mentalIllnessOrMindUmbrellaViewDataEntryView,
+    "route": Routes.mentalIllnessChoiceScreen,
     "cornerImagePath": "assets/images/mental_disorder_module.png",
     "audio": "",
     "isActive": true,

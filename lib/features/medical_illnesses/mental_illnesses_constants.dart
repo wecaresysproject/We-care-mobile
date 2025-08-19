@@ -6,6 +6,7 @@ class MentalIllnessesConstants {
   static const getAllCountries = "/countries";
   //!New
   static const postMentalIlnessDataEntryEndPoint = "/v1/submit-medical-illness";
+  static const postQuestionnaireAnswers = "/MentalAssessment/submit-answers";
   static const editMentalIlnessDataEntryEndPoint = "/v1/update-medical-illness";
   static const getMentalIllnessTypes = "/v1/lookup/mental-illness-types";
   static const getIncidentTypes = "/v1/lookup/incident-types";
@@ -24,6 +25,8 @@ class MentalIllnessesConstants {
   static const getMentalIllnessRecords = "/v1/medicalIllnessDocuments";
   static const getFilteredMentalIllnessDocuments = "/v1/documents/filter";
   static const getMentalIllnessDocumentDetailsById = "/v1/document";
+  static const postActivationOfUmbrella = "/MentalAssessment/activate-umbrella";
+  static const getActivationOfUmbrella = "/MentalAssessment/umbrella-status";
 
   static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
   static const getMedicalIllnessUmbrellaDocs =

@@ -15,27 +15,32 @@ import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
+import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/notifications.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/utils/logging.dart';
 import 'package:we_care/firebase_options.dart';
 import 'package:we_care/we_care_app.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  await LocalNotificationService.init();
   await PushNotificationsService.init(navigatorKey);
   tz.initializeTimeZones();
 
   await Hive.initFlutter();
   Hive.registerAdapter(MedicalComplaintAdapter());
   await Hive.openBox<MedicalComplaint>("medical_complaints");
+
+  Hive.registerAdapter(AddNewMedicineModelAdapter());
+
+  await Hive.openBox<AddNewMedicineModel>("addNewMedicine");
 
   Hive.registerAdapter(NewGeneticDiseaseModelAdapter());
   await Hive.openBox<NewGeneticDiseaseModel>("medical_genetic_diseases");
@@ -50,8 +55,6 @@ Future<void> main() async {
   await ScreenUtil.ensureScreenSize();
 
   await checkIfLoggedInUser();
-
-  await Notifications.init();
 
   //* The plugin redirects the user to auto-start permission screen to allow auto-start and fix background problems in some phones.
   // await getAutoStartPermission();
