@@ -57,56 +57,47 @@ class _UserNutrationInfoDataEntryViewState
               ),
             ),
             verticalSpacing(40),
-
-            // Form fields
-            Row(
-              children: [
-                Expanded(
-                  child: buildInputField(
-                    title: 'الطول',
-                    imagePath: 'assets/images/measure_height.png',
-                    controller: _heightController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'من فضلك أدخل الطول';
-                      }
-                      final height = int.tryParse(value);
-                      if (height == null) {
-                        return 'الطول يجب أن يكون رقم صحيح';
-                      }
-                      if (height < 50 || height > 250) {
-                        return 'الطول يجب أن يكون بين 50 و 250 سم';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: buildInputField(
-                    title: 'الوزن',
-                    imagePath: 'assets/images/measure_body_weight.png',
-                    controller: _weightController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'من فضلك أدخل الوزن';
-                      }
-                      final weight = int.tryParse(value);
-                      if (weight == null) {
-                        return 'الوزن يجب أن يكون رقم صحيح';
-                      }
-                      if (weight < 4 || weight > 350) {
-                        return 'الوزن يجب أن يكون بين 4 و 350 كجم';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ],
+            buildInputField(
+              title: 'الطول',
+              imagePath: 'assets/images/measure_height.png',
+              controller: _heightController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'من فضلك أدخل الطول';
+                }
+                final height = int.tryParse(value);
+                if (height == null) {
+                  return 'الطول يجب أن يكون رقم صحيح';
+                }
+                if (height < 50 || height > 230) {
+                  return 'الطول يجب أن يكون بين 50 و 230 سم';
+                }
+                return null;
+              },
             ),
-            verticalSpacing(32),
+            verticalSpacing(22),
+            buildInputField(
+              title: 'الوزن',
+              imagePath: 'assets/images/measure_body_weight.png',
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'من فضلك أدخل الوزن';
+                }
+                final weight = int.tryParse(value);
+                if (weight == null) {
+                  return 'الوزن يجب أن يكون رقم صحيح';
+                }
+                if (weight < 4 || weight > 350) {
+                  return 'الوزن يجب أن يكون بين 4 و 350 كجم';
+                }
+                return null;
+              },
+            ),
+
+            verticalSpacing(22),
 
             buildInputField(
               title: 'السن',
@@ -128,7 +119,7 @@ class _UserNutrationInfoDataEntryViewState
               },
             ),
 
-            verticalSpacing(32),
+            verticalSpacing(22),
             buildGenderInputField(
               imagePath: 'assets/images/gender_image.png',
               title: 'النوع',
@@ -216,39 +207,35 @@ Widget buildInputField({
   required dynamic Function(String?) validator,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Container(
-    width: double.infinity,
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      children: [
-        // Icon
-        Image.asset(
-          imagePath,
-          color: AppColorsManager.mainDarkBlue,
-          height: 23,
-          width: 23,
-        ),
-        horizontalSpacing(8),
-        // Label text
-        Text(
-          title,
-          style: AppTextStyles.font18blackWight500,
-          textDirection: TextDirection.rtl,
-        ),
+  return Row(
+    children: [
+      // Icon
+      Image.asset(
+        imagePath,
+        color: AppColorsManager.mainDarkBlue,
+        height: 23,
+        width: 23,
+      ),
+      horizontalSpacing(8),
+      // Label text
+      Text(
+        title,
+        style: AppTextStyles.font18blackWight500,
+        textDirection: TextDirection.rtl,
+      ),
 
-        horizontalSpacing(12),
+      horizontalSpacing(12),
 
-        // Text field
-        Expanded(
-          child: CustomTextField(
-            hintText: '',
-            validator: validator,
-            controller: controller,
-            keyboardType: keyboardType,
-          ),
+      // Text field
+      Expanded(
+        child: CustomTextField(
+          hintText: '',
+          validator: validator,
+          controller: controller,
+          keyboardType: keyboardType,
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }
 
@@ -280,35 +267,32 @@ Widget buildGenderInputField({
   required dynamic Function(String?) validator,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Container(
-    width: double.infinity,
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    child: Row(
-      children: [
-        // Icon
-        Image.asset(
-          imagePath,
-          color: AppColorsManager.mainDarkBlue,
-          height: 35,
-          width: 35,
-        ),
-        horizontalSpacing(8),
-        // Label text
-        Text(
-          title,
-          style: AppTextStyles.font18blackWight500,
-        ),
+  return Row(
+    children: [
+      // Icon
+      Image.asset(
+        imagePath,
+        color: AppColorsManager.mainDarkBlue,
+        height: 35,
+        width: 35,
+        fit: BoxFit.contain,
+      ),
+      horizontalSpacing(8),
+      // Label text
+      Text(
+        title,
+        style: AppTextStyles.font18blackWight500,
+      ),
 
-        horizontalSpacing(12),
+      horizontalSpacing(12),
 
-        // Text field
-        Expanded(
-          child: GenderQuestionWidget(
-            onAnswerChanged: (p0) {},
-            initialValue: true,
-          ),
+      // Text field
+      Expanded(
+        child: GenderQuestionWidget(
+          onAnswerChanged: (p0) {},
+          initialValue: true,
         ),
-      ],
-    ),
+      ),
+    ],
   );
 }
