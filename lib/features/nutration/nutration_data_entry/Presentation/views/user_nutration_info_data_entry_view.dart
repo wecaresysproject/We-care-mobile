@@ -96,9 +96,7 @@ class _UserNutrationInfoDataEntryViewState
                 return null;
               },
             ),
-
             verticalSpacing(22),
-
             buildInputField(
               title: 'السن',
               imagePath: 'assets/images/year_image.png',
@@ -118,7 +116,6 @@ class _UserNutrationInfoDataEntryViewState
                 return null;
               },
             ),
-
             verticalSpacing(22),
             buildGenderInputField(
               imagePath: 'assets/images/gender_image.png',
@@ -128,11 +125,6 @@ class _UserNutrationInfoDataEntryViewState
               keyboardType: TextInputType.number,
             ),
             verticalSpacing(32),
-
-            // iconWithTextInRow(
-            //   title: ' النشاط البدنى',
-            //   imagePath: 'assets/images/man_running.png',
-            // ),
             UserSelectionContainer(
               categoryLabel: ' النشاط البدنى',
               containerHintText: 'اختر معدل النشاط البدنى لديك',
@@ -153,7 +145,6 @@ class _UserNutrationInfoDataEntryViewState
               searchHintText: "اختر معدل النشاط البدنى لديك",
             ),
             verticalSpacing(32),
-
             UserSelectionContainer(
               categoryLabel: 'الأمراض المزمنة',
               containerHintText: 'اختر الأمراض المزمنة لديك',
@@ -168,7 +159,6 @@ class _UserNutrationInfoDataEntryViewState
               searchHintText: 'اختر الأمراض المزمنة لديك',
             ),
             verticalSpacing(50),
-
             AppCustomButton(
               isLoading: false,
               title: 'اكمل',
