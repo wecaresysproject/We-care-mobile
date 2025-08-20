@@ -390,11 +390,10 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "audio": "",
   },
   {
-    "title": "العادات\nالغذائية",
-    "image": "assets/images/spoon_icon.png",
-    "route": "/mental_issues",
-    "cornerImagePath": "assets/images/eating_habits_module.png",
-    "audio": "",
+    "title": "المتابعه الغذائية",
+    "image": "assets/images/chemical_medicine.png",
+    "route": Routes.userInfoNutrationDataEntry,
+    "isActive": true,
   },
   // {
   //   "title": "المكملات\nالغذائية",

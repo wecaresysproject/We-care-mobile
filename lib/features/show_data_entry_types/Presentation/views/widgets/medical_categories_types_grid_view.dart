@@ -396,10 +396,10 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": false,
   },
   {
-    "title": "المكملات\nالغذائية",
+    "title": "المتابعه الغذائية",
     "image": "assets/images/chemical_medicine.png",
-    "route": "/mental_issues",
-    "isActive": false,
+    "route": Routes.userInfoNutrationDataEntry,
+    "isActive": true,
   },
 ];
 
