@@ -297,7 +297,7 @@ class _AllergyDataFormFieldsWidgetState
             verticalSpacing(10),
 
             WordLimitTextField(
-              hintText: "اختر الأشخاص المصابون",
+              hintText: "اكتب باختصار الأشخاص المصابون",
               controller:
                   context.read<AllergyDataEntryCubit>().effectedFamilyMembers,
             ),
