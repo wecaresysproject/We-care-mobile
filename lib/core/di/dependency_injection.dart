@@ -8,6 +8,9 @@ import 'package:we_care/features/Biometrics/biometrics_services.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_cubit.dart';
 import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_repo.dart';
 import 'package:we_care/features/Biometrics/data/repos/biometrics_view_repo.dart';
+import 'package:we_care/features/allergy/allergy_data_entry_view/logic/cubit/allergy_data_entry_cubit.dart';
+import 'package:we_care/features/allergy/allergy_services.dart';
+import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/logic/cubit/chronic_disease_data_entry_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
@@ -293,6 +296,11 @@ void setupAppCubits() {
       getIt<ChronicDiseaseViewRepo>(),
     ),
   );
+  getIt.registerFactory<AllergyDataEntryCubit>(
+    () => AllergyDataEntryCubit(
+      getIt<AllergyDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -471,6 +479,11 @@ void setupAppRepos() {
       diseaseServices: getIt<ChronicDiseaseServices>(),
     ),
   );
+  getIt.registerLazySingleton<AllergyDataEntryRepo>(
+    () => AllergyDataEntryRepo(
+      allergyServices: getIt<AllergyServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -531,5 +544,10 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<PushNotificationsService>(
     () => PushNotificationsService(),
+  );
+  getIt.registerLazySingleton<AllergyServices>(
+    () => AllergyServices(
+      dio,
+    ),
   );
 }
