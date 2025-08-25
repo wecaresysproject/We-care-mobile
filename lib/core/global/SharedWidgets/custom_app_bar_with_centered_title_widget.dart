@@ -6,7 +6,8 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class AppBarWithCenteredTitle extends StatelessWidget {
+class AppBarWithCenteredTitle extends StatelessWidget
+    implements PreferredSizeWidget {
   const AppBarWithCenteredTitle({
     super.key,
     required this.title,
@@ -116,4 +117,7 @@ class AppBarWithCenteredTitle extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(40);
 }

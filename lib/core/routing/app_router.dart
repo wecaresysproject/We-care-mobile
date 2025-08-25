@@ -62,6 +62,8 @@ import 'package:we_care/features/medicine/medicines_data_entry/Presentation/view
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
@@ -533,6 +535,14 @@ class AppRouter {
       case Routes.allergyDataEntry:
         return MaterialPageRoute(
           builder: (_) => AllergyDataEntryView(),
+        );
+      case Routes.followUpNutrationPlansView:
+        return MaterialPageRoute(
+          builder: (_) => FollowUpNutrationPlansView(),
+        );
+      case Routes.nutritionFollowUpReportView:
+        return MaterialPageRoute(
+          builder: (_) => NutritionFollowUpReportView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

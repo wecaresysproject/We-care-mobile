@@ -99,6 +99,9 @@ class Routes {
   static const chronicDiseaseDataView = '/chronicDiseaseDataView';
   static const chronicDiseaseDetailsView = '/chronicDiseaseDetailsView';
   static const userInfoNutrationDataEntry = '/userInfoNutrationDataEntry';
+  static const followUpNutrationPlansView = '/followUpNutrationPlansView';
+  static const nutritionFollowUpReportView = '/NutritionFollowUpReportView';
+
   static const allergyDataEntry = '/allergyDataEntry';
 
   static const eyeProceduresAndSyptomsDataEntry =

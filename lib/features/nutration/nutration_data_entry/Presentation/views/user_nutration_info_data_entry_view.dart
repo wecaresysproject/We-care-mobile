@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -7,6 +8,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/gender_question_widget.dart';
 
 class UserNutrationInfoDataEntryView extends StatefulWidget {
@@ -163,6 +165,7 @@ class _UserNutrationInfoDataEntryViewState
               isLoading: false,
               title: 'اكمل',
               onPressed: () async {
+                context.pushNamed(Routes.followUpNutrationPlansView);
                 // if (state.isFormValidated) {
                 //   state.isEditMode
                 //       ? await context
