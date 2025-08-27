@@ -320,8 +320,8 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
-    "route": "/genetic_disorders",
-    "isActive": false,
+    "route": Routes.allergyDataView,
+    "isActive": true,
   },
   {
     "title": "العيون",
@@ -398,7 +398,7 @@ final List<Map<String, dynamic>> categoriesView = [
   {
     "title": "المتابعه الغذائية",
     "image": "assets/images/chemical_medicine.png",
-    "route": Routes.userInfoNutrationDataEntry,
+    "route": Routes.nutritionPlanDataView,
     "isActive": true,
   },
 ];
