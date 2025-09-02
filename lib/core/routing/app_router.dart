@@ -4,6 +4,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/allergy_data_entry_view.dart';
+import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view.dart';
+import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
@@ -65,6 +67,8 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
+import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
+import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -505,12 +509,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => ChronicDiseaseView(),
         );
-      // case Routes.chronicDiseaseDetailsView:
-      //   return MaterialPageRoute(
-      //     builder: (_) => ChronicDiseaseDetailsView(
 
-      //     ),
-      //   );
       case Routes.chronicDiseaseDetailsView:
         final argumentsMap = arguments as Map<String, dynamic>;
 
@@ -543,6 +542,26 @@ class AppRouter {
       case Routes.nutritionFollowUpReportView:
         return MaterialPageRoute(
           builder: (_) => NutritionFollowUpReportView(),
+        );
+      case Routes.foodAlternativesView:
+        return MaterialPageRoute(
+          builder: (_) => FoodAlternativesView(),
+        );
+      case Routes.allergyDataView:
+        return MaterialPageRoute(
+          builder: (_) => AllergyDataView(),
+        );
+      case Routes.allergyDocDetailsView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
+        return MaterialPageRoute(
+          builder: (_) => AllergyDetailsView(
+            documentId: argumentsMap?['docId'] as String,
+          ),
+        );
+      case Routes.nutritionPlanDataView:
+        return MaterialPageRoute(
+          builder: (_) => NutrationPlanDataView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

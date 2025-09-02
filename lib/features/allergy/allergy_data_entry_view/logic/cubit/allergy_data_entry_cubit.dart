@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -5,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
+import 'package:we_care/generated/l10n.dart';
 
 part 'allergy_data_entry_state.dart';
 
@@ -16,7 +19,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
         );
   final AllergyDataEntryRepo _allergyDataEntryRepo;
   final personalNotesController = TextEditingController();
-  final suergeryDescriptionController = TextEditingController(); // وصف اضافي
   final effectedFamilyMembers = TextEditingController();
   final precautions = TextEditingController(); // الاحتياطات
 
@@ -61,10 +63,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     emit(state.copyWith(isThereMedicalWarningOnExposure: value));
   }
 
-  void updateSelectedHospitalCenter(String? selectedHospital) {
-    emit(state.copyWith(selectedHospitalCenter: selectedHospital));
-  }
-
   void updateIsDoctorConsulted(bool? val) {
     emit(state.copyWith(isDoctorConsulted: val));
   }
@@ -81,30 +79,15 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     emit(state.copyWith(isTreatmentsEffective: val));
   }
 
-  void updateSelectedInternist(String? selectedInternist) {
-    emit(state.copyWith(internistName: selectedInternist));
-  }
-
-  void updateSelectedSurgeonName(String? surgeonName) {
-    emit(state.copyWith(surgeonName: surgeonName));
-  }
-
-  void updateSelectedCountry(String? selectedCountry) {
-    emit(state.copyWith(selectedCountryName: selectedCountry));
-  }
-
   void updateAllergyType(String? bodyPart) {
     emit(state.copyWith(alleryTypeSelection: bodyPart));
+    emitAlleryTriggersBasedOnSelectedAllergyType();
     validateRequiredFields();
   }
 
   void updateExpectedSideEffect(String? name) {
     emit(state.copyWith(expectedSideEffectSelection: name));
     validateRequiredFields();
-  }
-
-  void updateSurgeryStatus(String? bodyPart) {
-    emit(state.copyWith(selectedSurgeryStatus: bodyPart));
   }
 
   Future<void> updateSymptomOnsetAfterExposure(String? val) async {
@@ -115,9 +98,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     emit(state.copyWith(selectedSyptomSeverity: val));
   }
 
-  // Future<void> updateSelectedAllergyCauses(String? value) async {
-  //   emit(state.copyWith(selectedAllergyCauses: value));
-  // }
   Future<void> updateSelectedAllergyCauses(String? value) async {
     if (value == null || value.isEmpty) return;
 
@@ -142,9 +122,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
-    await emitGetAllSurgeriesRegions();
-    await emitCountriesData();
-    await emitGetSurgeryStatus();
+    await emitGetAllAllergyTypes();
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
@@ -178,31 +156,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
       },
     );
   }
-
-  // Future<void> emitGetAllTechUsed() async {
-  //   final response = await _allergyDataEntryRepo.getAllTechUsed(
-  //     language: AppStrings.arabicLang,
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: state.selectedSubSurgery!,
-  //     surgeryName: state.surgeryNameSelection!,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allTechUsed: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   // Future<void> submitUpdatedSurgery() async {
   //   emit(
@@ -250,15 +203,16 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   //   );
   // }
 
-  Future<void> emitGetSurgeryStatus() async {
-    final response = await _allergyDataEntryRepo.getSurgeryStatus(
+  Future<void> emitAlleryTriggersBasedOnSelectedAllergyType() async {
+    final response = await _allergyDataEntryRepo.getAllergyTriggers(
       language: AppStrings.arabicLang,
+      allergyType: state.alleryTypeSelection!,
     );
     response.when(
       success: (response) {
         emit(
           state.copyWith(
-            allSurgeryStatuses: response,
+            allergyTriggers: response,
           ),
         );
       },
@@ -273,17 +227,15 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   }
   // المناطق العمليه الفرعيه
 
-  Future<void> emitGetAllSubSurgeriesRegions(
-      {required String selectedRegion}) async {
-    final response = await _allergyDataEntryRepo.getAllSubSurgeriesRegions(
+  Future<void> emitGetAllAllergyTypes() async {
+    final response = await _allergyDataEntryRepo.getAllAllergyTypes(
       language: AppStrings.arabicLang,
-      region: selectedRegion,
     );
     response.when(
       success: (response) {
         emit(
           state.copyWith(
-            subSurgeryRegions: response,
+            allergyTypes: response,
           ),
         );
       },
@@ -296,103 +248,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
       },
     );
   }
-
-  Future<void> emitSurgeryNamesBasedOnRegion(
-      {required String region, required String subRegion}) async {
-    final response = await _allergyDataEntryRepo.getSurgeryNamesBasedOnRegion(
-      language: AppStrings.arabicLang,
-      region: region,
-      subRegion: subRegion,
-    );
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            surgeryNames: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> emitGetAllSurgeriesRegions() async {
-    final response = await _allergyDataEntryRepo.getAllSurgeriesRegions(
-      language: AppStrings.arabicLang,
-    );
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            bodyParts: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> emitCountriesData() async {
-    final response = await _allergyDataEntryRepo.getCountriesData(
-      language: AppStrings.arabicLang,
-    );
-
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  // Future<void> emitSurgeryPurpose() async {
-  //   final response = await _allergyDataEntryRepo.getSurgeryPurpose(
-  //     language: AppStrings.arabicLang,
-  //     region: state.surgeryBodyPartSelection!,
-  //     subRegion: state.selectedSubSurgery!,
-  //     surgeryName: state.surgeryNameSelection!,
-  //     techUsed: state.selectedTechUsed!,
-  //   );
-
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeryPurpose: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
@@ -412,57 +267,71 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     }
   }
 
-  // Future<void> postModuleData(S locale) async {
-  //   final response = await _allergyDataEntryRepo.postModuleData(
-  //     language: AppStrings.arabicLang,
-  //     requestBody: SurgeryRequestBodyModel(
-  //       surgeryDate: state.allergyDateSelection!,
-  //       surgeryName: state.surgeryNameSelection!,
-  //       surgeryRegion: state.surgeryBodyPartSelection!,
-  //       subSurgeryRegion: state.selectedSubSurgery!,
-  //       usedTechnique: state.selectedTechUsed!,
-  //       surgeryDescription: suergeryDescriptionController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : suergeryDescriptionController.text,
-  //       medicalReportImage:
-  //           state.reportImageUploadedUrl ?? locale.no_data_entered,
-  //       surgeryStatus: state.selectedSurgeryStatus ?? locale.no_data_entered,
-  //       hospitalCenter: state.selectedHospitalCenter ?? locale.no_data_entered,
-  //       surgeonName: state.surgeryNameSelection ?? locale.no_data_entered,
-  //       anesthesiologistName: state.internistName ?? locale.no_data_entered,
-  //       postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : suergeryDescriptionController.text,
-  //       country: state.selectedCountryName ?? locale.no_data_entered,
-  //       additionalNotes: personalNotesController.text.isEmpty
-  //           ? locale.no_data_entered
-  //           : personalNotesController.text,
-  //     ),
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           message: response,
-  //           surgeriesDataEntryStatus: RequestStatus.success,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //           surgeriesDataEntryStatus: RequestStatus.failure,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> updateSelectedMedicineName(String? medicineName) async {
+    log('xxx updateSelectedMedicineName: $medicineName');
+    emit(state.copyWith(selectedMedicineName: medicineName));
+  }
+
+  Future<void> postModuleData(S locale) async {
+    emit(
+      state.copyWith(
+        allergyDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _allergyDataEntryRepo.postAllergyModuleData(
+      language: AppStrings.arabicLang,
+      requestBody: PostAllergyModuleDataModel(
+        allergyOccurrenceDate: state.allergyDateSelection!,
+        allergyType: state.alleryTypeSelection!,
+        allergyTriggers: state.allergyTriggers.isEmpty
+            ? [locale.no_data_entered]
+            : state.allergyTriggers,
+        expectedSideEffects:
+            state.expectedSideEffectSelection ?? locale.no_data_entered,
+        symptomSeverity: state.selectedSyptomSeverity ?? locale.no_data_entered,
+        timeToSymptomOnset:
+            state.symptomOnsetAfterExposure ?? locale.no_data_entered,
+        isDoctorConsulted: state.isDoctorConsulted,
+        isAllergyTestPerformed: state.isAllergyTestDn,
+        medicationName: state.selectedMedicineName ?? locale.no_data_entered,
+        isTreatmentsEffective: state.isTreatmentsEffective,
+        medicalReportImage:
+            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        familyHistory: effectedFamilyMembers.text.isEmpty
+            ? locale.no_data_entered
+            : effectedFamilyMembers.text,
+        precautions: precautions.text.isEmpty
+            ? locale.no_data_entered
+            : precautions.text,
+        proneToAllergies: state.isAtRiskOfAnaphylaxis ?? locale.no_data_entered,
+        isMedicalWarningReceived:
+            state.isThereMedicalWarningOnExposure ?? locale.no_data_entered,
+        carryEpinephrine: state.isEpinephrineInjectorCarried,
+      ),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response,
+            allergyDataEntryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            allergyDataEntryStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Future<void> close() {
     personalNotesController.dispose();
-    suergeryDescriptionController.dispose();
     effectedFamilyMembers.dispose();
     precautions.dispose();
     return super.close();

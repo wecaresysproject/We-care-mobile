@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/allergy/allergy_api_constants.dart';
+import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
@@ -27,9 +28,8 @@ abstract class AllergyServices {
   Future<dynamic> getAllSurgeriesRegions(
     @Query("language") String language,
   );
-  @GET(AllergyApiConstants.getSubSurgeriesRegions)
-  Future<dynamic> getAllSubSurgeriesRegions(
-    @Query("surgeryRegion") String region,
+  @GET(AllergyApiConstants.getAllAllergyTypes)
+  Future<dynamic> getAllAllergyTypes(
     @Query("language") String language,
   );
   @GET(AllergyApiConstants.getAllTechUsed)
@@ -40,9 +40,10 @@ abstract class AllergyServices {
     @Query("language") String language,
   );
 
-  @GET(AllergyApiConstants.getSurgeryStatus)
-  Future<dynamic> getSurgeryStatus(
+  @GET(AllergyApiConstants.getAllergyTriggers)
+  Future<dynamic> getAllergyTriggers(
     @Query("language") String language,
+    @Query("allergyType") String allergyType,
   );
   @GET(AllergyApiConstants.getSurgeryName)
   Future<dynamic> getSurgeryNameBasedOnRegion(
@@ -66,10 +67,10 @@ abstract class AllergyServices {
     @Query("usedTechniqueName") String techUsed,
     @Query("language") String language,
   );
-  @POST(AllergyApiConstants.postSurgeryEndpoint)
-  Future<dynamic> postSurgeryData(
+  @POST(AllergyApiConstants.postAllergyModuleData)
+  Future<dynamic> postAllergyModuleData(
     @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Body() PostAllergyModuleDataModel requestBody,
   );
 
   @GET(AllergyApiConstants.getSingleSurgery)

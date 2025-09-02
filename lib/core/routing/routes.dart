@@ -101,8 +101,12 @@ class Routes {
   static const userInfoNutrationDataEntry = '/userInfoNutrationDataEntry';
   static const followUpNutrationPlansView = '/followUpNutrationPlansView';
   static const nutritionFollowUpReportView = '/NutritionFollowUpReportView';
+  static const nutritionPlanDataView = '/nutritionPlanDataView';
+  static const foodAlternativesView = '/foodAlternativesView';
 
   static const allergyDataEntry = '/allergyDataEntry';
+  static const allergyDataView = '/allergyDataView';
+  static const allergyDocDetailsView = '/allergyDocDetailsView';
 
   static const eyeProceduresAndSyptomsDataEntry =
       '/eyeProceduresAndSyptomsDataEntry';

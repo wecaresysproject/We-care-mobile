@@ -5,16 +5,14 @@ class AllergyApiConstants {
   static const uploadReportEndpoint = "/FileUpload/upload-report";
   static const getAllSurgeriesRegions = // العضو
       "/EnterSectionSurgery/surgery-regions";
-  static const getSubSurgeriesRegions =
-      "/EnterSectionSurgery/sub-surgery-regions-connected";
+  static const getAllAllergyTypes = "/";
 
   static const getSurgeryName = "/EnterSectionSurgery/surgery-names-connected";
   static const getAllTechUsed =
       "/EnterSectionSurgery/used-techniques-connected"; // التقنيه المستخدمه
-  static const getSurgeryStatus =
-      "/EnterSectionSurgery/status-surgery"; // التقنيه المستخدمه
+  static const getAllergyTriggers = "/";
   static const surgeryPurpose = "/EnterSectionSurgery/purpose";
-  static const postSurgeryEndpoint = "/EnterSectionSurgery";
+  static const postAllergyModuleData = "/";
   //View Entry
   static const deleteSurgeryById = "/EnterSectionSurgery";
   static const getAllSurgeries = "/EnterSectionSurgery";

@@ -5,6 +5,7 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/allergy/allergy_services.dart';
+import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
 class AllergyDataEntryRepo {
@@ -58,13 +59,11 @@ class AllergyDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getAllSubSurgeriesRegions({
+  Future<ApiResult<List<String>>> getAllAllergyTypes({
     required String language,
-    required String region,
   }) async {
     try {
-      final response = await _allergyServices.getAllSubSurgeriesRegions(
-        region,
+      final response = await _allergyServices.getAllAllergyTypes(
         language,
       );
       final partSubRegions =
@@ -114,13 +113,16 @@ class AllergyDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getSurgeryStatus({
+  Future<ApiResult<List<String>>> getAllergyTriggers({
     required String language,
+    required String allergyType,
   }) async {
     try {
-      final response = await _allergyServices.getSurgeryStatus(
+      final response = await _allergyServices.getAllergyTriggers(
         language,
+        allergyType,
       );
+
       final data = (response['data'] as List).map((e) => e as String).toList();
 
       return ApiResult.success(data);
@@ -152,12 +154,12 @@ class AllergyDataEntryRepo {
     }
   }
 
-  Future<ApiResult<String>> postModuleData({
+  Future<ApiResult<String>> postAllergyModuleData({
     required String language,
-    required SurgeryRequestBodyModel requestBody,
+    required PostAllergyModuleDataModel requestBody,
   }) async {
     try {
-      final response = await _allergyServices.postSurgeryData(
+      final response = await _allergyServices.postAllergyModuleData(
         language,
         requestBody,
       );
