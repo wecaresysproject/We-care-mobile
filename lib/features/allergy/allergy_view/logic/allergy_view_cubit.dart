@@ -1,20 +1,22 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
+import 'package:we_care/features/allergy/data/repos/allergy_view_repo.dart';
+import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 
-class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
-  SurgeriesViewCubit(this._surgeriesViewRepo)
-      : super(SurgeriesViewState.initial());
-  final SurgeriesViewRepo _surgeriesViewRepo;
+part 'allergy_view_state.dart';
+
+class AllergyViewCubit extends Cubit<AllergyViewState> {
+  AllergyViewCubit(this.allergyViewRepo) : super(AllergyViewState.initial());
+  final AllergyViewRepo allergyViewRepo;
 
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
-    Future<void> getUserSurgeriesList({int? page, int? pageSize}) async {
+  Future<void> getUserSurgeriesList({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -24,26 +26,25 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
       hasMore = true;
     }
 
-    final result = await _surgeriesViewRepo.getUserSurgeriesList(
-      language: AppStrings.arabicLang,
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+    final result = await allergyViewRepo.getUserSurgeriesList(
+        language: AppStrings.arabicLang,
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newSurgeriesList = response.surgeries;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newSurgeriesList.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userSurgeries: page == 1 || page == null 
-          ? newSurgeriesList 
-          : [...state.userSurgeries, ...newSurgeriesList],
+        userSurgeries: page == 1 || page == null
+            ? newSurgeriesList
+            : [...state.userSurgeries, ...newSurgeriesList],
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -59,14 +60,14 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await getUserSurgeriesList(page: currentPage + 1);
   }
 
   Future<void> getSurgeriesFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result =
-        await _surgeriesViewRepo.gettFilters(language: AppStrings.arabicLang);
+        await allergyViewRepo.gettFilters(language: AppStrings.arabicLang);
 
     result.when(success: (response) {
       emit(state.copyWith(
@@ -81,7 +82,7 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
 
   Future<void> getSurgeryDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.getSurgeryDetailsById(
+    final result = await allergyViewRepo.getSurgeryDetailsById(
         id: id, language: AppStrings.arabicLang);
 
     result.when(success: (response) {
@@ -96,7 +97,7 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
 
   Future<void> deleteSurgeryById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.deleteSurgeryById(
+    final result = await allergyViewRepo.deleteSurgeryById(
       id: id,
     );
 
@@ -116,7 +117,7 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
 
   Future<void> getFilteredSurgeryList({int? year, String? surgeryName}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result = await _surgeriesViewRepo.getFilteredSurgeries(
+    final result = await allergyViewRepo.getFilteredSurgeries(
       language: AppStrings.arabicLang,
       surgeryName: surgeryName,
       year: year,

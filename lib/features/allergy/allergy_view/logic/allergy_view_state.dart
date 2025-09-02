@@ -1,9 +1,6 @@
-import 'package:equatable/equatable.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+part of 'allergy_view_cubit.dart';
 
-class SurgeriesViewState extends Equatable {
+class AllergyViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
   final List<SurgeryModel> userSurgeries;
@@ -13,7 +10,7 @@ class SurgeriesViewState extends Equatable {
   final bool isDeleteRequest;
   final bool isLoadingMore;
 
-  const SurgeriesViewState({
+  const AllergyViewState({
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
@@ -24,8 +21,8 @@ class SurgeriesViewState extends Equatable {
     this.isLoadingMore = false,
   });
 
-  factory SurgeriesViewState.initial() {
-    return SurgeriesViewState(
+  factory AllergyViewState.initial() {
+    return AllergyViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
       yearsFilter: const [],
@@ -37,7 +34,7 @@ class SurgeriesViewState extends Equatable {
     );
   }
 
-  SurgeriesViewState copyWith({
+  AllergyViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
     List<int>? yearsFilter,
@@ -47,7 +44,7 @@ class SurgeriesViewState extends Equatable {
     bool? isDeleteRequest,
     bool? isLoadingMore,
   }) {
-    return SurgeriesViewState(
+    return AllergyViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
       yearsFilter: yearsFilter ?? this.yearsFilter,
