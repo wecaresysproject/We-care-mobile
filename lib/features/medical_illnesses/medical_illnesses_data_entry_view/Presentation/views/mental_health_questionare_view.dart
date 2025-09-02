@@ -82,9 +82,28 @@ class _MentalHealthQuestionnairePageState
                 },
               ),
             ),
+
+            /// ✅ زرار الإجابة الكاملة
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  for (int i = 0; i < widget.questions.length; i++) {
+                    widget.questions[i] = FcmQuestionModel(
+                      id: widget.questions[i].id,
+                      text: widget.questions[i].text,
+                      answer: true,
+                    );
+                  }
+                  _updateProgress();
+                });
+              },
+              child: Text('الإجابة على الكل بـ نعم'),
+            ),
+
+            /// زرار الإرسال
             SendButtonBlocConsumer(
               isAllQuestionsAnswered: isAllQuestionsAnswered,
-              questions: widget.questions, // يفضل null لو مش كلهم جاوبوا
+              questions: widget.questions,
             ),
           ],
         ),
@@ -92,3 +111,44 @@ class _MentalHealthQuestionnairePageState
     );
   }
 }
+
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(toolbarHeight: 0),
+//       body: Padding(
+//         padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+//         child: Column(
+//           children: [
+//             AppBarWithCenteredTitle(
+//               title: 'تقييم الحالة النفسية',
+//               showActionButtons: false,
+//               titleColor: AppColorsManager.mainDarkBlue,
+//             ),
+//             ProgressHeader(progress: progress),
+//             Expanded(
+//               child: ListView.builder(
+//                 padding: const EdgeInsets.all(16),
+//                 itemCount: widget.questions.length,
+//                 itemBuilder: (context, index) {
+//                   return Padding(
+//                     padding: const EdgeInsets.only(bottom: 16),
+//                     child: QuestionCard(
+//                       question: widget.questions[index],
+//                       selectedAnswer: widget.questions[index].answer,
+//                       onAnswerChanged: (answer) =>
+//                           _onAnswerChanged(index, answer),
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ),
+//             SendButtonBlocConsumer(
+//               isAllQuestionsAnswered: isAllQuestionsAnswered,
+//               questions: widget.questions, // يفضل null لو مش كلهم جاوبوا
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

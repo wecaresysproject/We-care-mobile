@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
 class NutrationPlanDataView extends StatefulWidget {
@@ -60,7 +61,10 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                       ), // state.yearsFilter ?? []),
                       FilterConfig(
                         title: "التاريخ",
-                        options: [],
+                        options: [
+                          // "من 1/7/2025 الى 8/7/2025",
+                          // "من 1/7/2025 الى 8/7/2025",
+                        ],
                       ), // state.procedureTypeFilter ?? []),
                     ],
                     onApply: (selectedOption) {
@@ -163,7 +167,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
         'consumed': 120,
         'standard': 120,
         'difference': 0,
-        'percentage': 50,
+        'percentage': null,
         'hasPercentage': false,
       },
     ];
@@ -209,8 +213,16 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildActionButton('بدائل غذائية'),
-              _buildActionButton('توصيات'),
+              _buildActionButton(
+                text: 'بدائل غذائية',
+                onTap: () async {
+                  await context.pushNamed(Routes.foodAlternativesView);
+                },
+              ),
+              _buildActionButton(
+                text: 'توصيات',
+                onTap: () {},
+              ),
             ],
           ),
           !isConsumedEqual ? verticalSpacing(9) : verticalSpacing(20),
@@ -366,36 +378,40 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
     );
   }
 
-  Widget _buildActionButton(
-    String text,
-  ) {
-    return Container(
-      height: 28.h,
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
-      margin: EdgeInsets.only(left: 3.w, right: 0.w),
-      decoration: BoxDecoration(
-        color: AppColorsManager.mainDarkBlue,
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.font12blackWeight400.copyWith(
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontSize: 11.sp,
+  Widget _buildActionButton({
+    required String text,
+    required void Function()? onTap,
+  }) {
+    return GestureDetector(
+      onTap: () => onTap?.call(),
+      child: Container(
+        height: 28.h,
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
+        margin: EdgeInsets.only(left: 3.w, right: 0.w),
+        decoration: BoxDecoration(
+          color: AppColorsManager.mainDarkBlue,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font12blackWeight400.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                fontSize: 11.sp,
+              ),
             ),
-          ),
-          horizontalSpacing(4),
-          Icon(
-            Icons.arrow_forward,
-            color: Colors.white,
-            size: 14,
-          ),
-        ],
+            horizontalSpacing(4),
+            Icon(
+              Icons.arrow_forward,
+              color: Colors.white,
+              size: 14,
+            ),
+          ],
+        ),
       ),
     );
   }
