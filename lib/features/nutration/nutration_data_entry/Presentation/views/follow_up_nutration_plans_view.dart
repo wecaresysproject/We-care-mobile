@@ -28,9 +28,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   // TabController for managing tabs
   late TabController _tabController;
 
-  // Controllers for each tab
-  final TextEditingController _weeklyMessageController =
-      TextEditingController();
   final TextEditingController _monthlyMessageController =
       TextEditingController();
 
@@ -63,7 +60,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   @override
   void dispose() {
     _tabController.dispose();
-    _weeklyMessageController.dispose();
     _monthlyMessageController.dispose();
     super.dispose();
   }
@@ -83,75 +79,81 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   Widget build(BuildContext context) {
     return BlocProvider<NutrationDataEntryCubit>(
       create: (context) => getIt<NutrationDataEntryCubit>(),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0.h,
-        ),
-        body: Column(
-          children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: const AppBarWithCenteredTitle(
-                title: 'خطة المتابعة',
-                showActionButtons: false,
-              ),
+      child: Builder(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0.h,
             ),
+            body: Column(
+              children: [
+                // Header
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: const AppBarWithCenteredTitle(
+                    title: 'خطة المتابعة',
+                    showActionButtons: false,
+                  ),
+                ),
 
-            // Custom Tab Bar
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16.0),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey[300]!,
-                    width: 1,
+                // Custom Tab Bar
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey[300]!,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    labelColor: AppColorsManager.mainDarkBlue,
+                    unselectedLabelColor: AppColorsManager.placeHolderColor,
+                    labelStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    unselectedLabelStyle:
+                        AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    indicatorColor: AppColorsManager.mainDarkBlue,
+                    indicatorWeight: 3,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    tabs: const [
+                      Tab(text: 'خطة أسبوعية'),
+                      Tab(text: 'خطة شهرية'),
+                    ],
                   ),
                 ),
-              ),
-              child: TabBar(
-                controller: _tabController,
-                labelColor: AppColorsManager.mainDarkBlue,
-                unselectedLabelColor: AppColorsManager.placeHolderColor,
-                labelStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                unselectedLabelStyle:
-                    AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-                indicatorColor: AppColorsManager.mainDarkBlue,
-                indicatorWeight: 3,
-                indicatorSize: TabBarIndicatorSize.tab,
-                tabs: const [
-                  Tab(text: 'خطة أسبوعية'),
-                  Tab(text: 'خطة شهرية'),
-                ],
-              ),
-            ),
 
-            // Tab Content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // Weekly Plan Tab
-                  _buildTabContent(
-                    isWeeklyPlan: true,
-                    isActive: _weeklyPlanActive,
-                    messageController: _weeklyMessageController,
+                // Tab Content
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // Weekly Plan Tab
+                      _buildTabContent(
+                        isWeeklyPlan: true,
+                        isActive: _weeklyPlanActive,
+                        messageController: context
+                            .read<NutrationDataEntryCubit>()
+                            .weeklyMessageController,
+                      ),
+                      // Monthly Plan Tab
+                      _buildTabContent(
+                        isWeeklyPlan: false,
+                        isActive: _monthlyPlanActive,
+                        messageController: _monthlyMessageController,
+                      ),
+                    ],
                   ),
-                  // Monthly Plan Tab
-                  _buildTabContent(
-                    isWeeklyPlan: false,
-                    isActive: _monthlyPlanActive,
-                    messageController: _monthlyMessageController,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -218,62 +220,69 @@ class MessageInputSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        GestureDetector(
-          onTap: () {
-            // TODO: Implement voice recording functionality
-          },
-          child: Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
-              ),
-            ),
-            child: Icon(
-              Icons.mic,
-              color: AppColorsManager.mainDarkBlue,
-              size: 24,
-            ),
-          ),
-        ),
-        horizontalSpacing(12),
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.grey[300]!),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
+    return BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
+      builder: (context, state) {
+        return Row(
+          children: [
+            GestureDetector(
+              onTap: () async {
+                // Handle voice input tap
+                await context.read<NutrationDataEntryCubit>().toggleListening();
+              },
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                  ),
                 ),
-              ],
-            ),
-            child: TextField(
-              controller: controller,
-              textAlign: TextAlign.right,
-              maxLines: 3,
-              minLines: 1,
-              decoration: const InputDecoration(
-                hintText: 'رسالة نصية أو تسجيل صوتي',
-                hintStyle: TextStyle(color: Colors.grey),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
+                child: Icon(
+                  state.isListening ? Icons.stop : Icons.mic,
+                  color: state.isListening
+                      ? Colors.red
+                      : AppColorsManager.mainDarkBlue,
+                  size: 24,
                 ),
               ),
             ),
-          ),
-        ),
-      ],
+            horizontalSpacing(12),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Colors.grey[300]!),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: controller,
+                  textAlign: TextAlign.right,
+                  maxLines: 3,
+                  minLines: 1,
+                  decoration: const InputDecoration(
+                    hintText: 'رسالة نصية أو تسجيل صوتي',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

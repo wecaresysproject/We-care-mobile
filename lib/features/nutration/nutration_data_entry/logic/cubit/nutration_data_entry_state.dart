@@ -7,13 +7,17 @@ class NutrationDataEntryState extends Equatable {
   final bool isFormValidated;
 
   final bool isEditMode;
+  final bool isListening;
   final String message; // error or success message
+  final String recognizedText;
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
+    this.isListening = false,
+    this.recognizedText = '',
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -22,6 +26,8 @@ class NutrationDataEntryState extends Equatable {
           isFormValidated: false,
           message: '',
           isEditMode: false,
+          isListening: false,
+          recognizedText: '',
         );
 
   NutrationDataEntryState copyWith({
@@ -29,6 +35,8 @@ class NutrationDataEntryState extends Equatable {
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
+    bool? isListening,
+    String? recognizedText,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -36,6 +44,8 @@ class NutrationDataEntryState extends Equatable {
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
+      isListening: isListening ?? this.isListening,
+      recognizedText: recognizedText ?? this.recognizedText,
     );
   }
 
@@ -45,5 +55,7 @@ class NutrationDataEntryState extends Equatable {
         isFormValidated,
         isEditMode,
         message,
+        isListening,
+        recognizedText,
       ];
 }
