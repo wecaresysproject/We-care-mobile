@@ -118,13 +118,15 @@ class AllergyDataEntryState extends Equatable {
       selectedSyptomSeverity:
           selectedSyptomSeverity ?? this.selectedSyptomSeverity,
       isDoctorConsulted: isDoctorConsulted ?? this.isDoctorConsulted,
-      isAllergyTestDn: isAllergyTestDn ?? isAllergyTestDn,
-      isThereMedicalWarningOnExposure:
-          isThereMedicalWarningOnExposure ?? isThereMedicalWarningOnExposure,
+      isAllergyTestDn: isAllergyTestDn ?? this.isAllergyTestDn,
+      isThereMedicalWarningOnExposure: isThereMedicalWarningOnExposure ??
+          this.isThereMedicalWarningOnExposure,
       isEpinephrineInjectorCarried:
-          isEpinephrineInjectorCarried ?? isEpinephrineInjectorCarried,
-      isTreatmentsEffective: isTreatmentsEffective ?? isTreatmentsEffective,
-      isAtRiskOfAnaphylaxis: isAtRiskOfAnaphylaxis ?? isAtRiskOfAnaphylaxis,
+          isEpinephrineInjectorCarried ?? this.isEpinephrineInjectorCarried,
+      isTreatmentsEffective:
+          isTreatmentsEffective ?? this.isTreatmentsEffective,
+      isAtRiskOfAnaphylaxis:
+          isAtRiskOfAnaphylaxis ?? this.isAtRiskOfAnaphylaxis,
       message: message ?? this.message,
       reportImageUploadedUrl:
           reportImageUploadedUrl ?? this.reportImageUploadedUrl,
@@ -135,7 +137,7 @@ class AllergyDataEntryState extends Equatable {
       allergyTriggers: allergyTriggers ?? this.allergyTriggers,
       symptomOnsetAfterExposure:
           symptomOnsetAfterExposure ?? this.symptomOnsetAfterExposure,
-      selectedMedicineName: selectedMedicineName ?? selectedMedicineName,
+      selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
       isEditMode: isEditMode ?? this.isEditMode,
       updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
     );

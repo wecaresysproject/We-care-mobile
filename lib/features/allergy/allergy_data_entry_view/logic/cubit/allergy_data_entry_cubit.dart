@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
@@ -55,11 +56,11 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     validateRequiredFields();
   }
 
-  Future<void> updateIsAtRiskOfAnaphylaxis(String? value) async {
+  void updateIsAtRiskOfAnaphylaxis(String? value) {
     emit(state.copyWith(isAtRiskOfAnaphylaxis: value));
   }
 
-  Future<void> updateIsThereMedicalWarningOnExposure(String? value) async {
+  void updateIsThereMedicalWarningOnExposure(String? value) {
     emit(state.copyWith(isThereMedicalWarningOnExposure: value));
   }
 
@@ -90,15 +91,15 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     validateRequiredFields();
   }
 
-  Future<void> updateSymptomOnsetAfterExposure(String? val) async {
+  void updateSymptomOnsetAfterExposure(String? val) {
     emit(state.copyWith(symptomOnsetAfterExposure: val));
   }
 
-  Future<void> updateSyptomSeverity(String? val) async {
+  void updateSyptomSeverity(String? val) {
     emit(state.copyWith(selectedSyptomSeverity: val));
   }
 
-  Future<void> updateSelectedAllergyCauses(String? value) async {
+  void updateSelectedAllergyCauses(String? value) {
     if (value == null || value.isEmpty) return;
 
     List<String> currentCauses = List.from(state.selectedAllergyCauses);
@@ -115,7 +116,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   }
 
 // Add a method to remove a specific cause
-  Future<void> removeAllergyCause(String cause) async {
+  void removeAllergyCause(String cause) {
     List<String> currentCauses = List.from(state.selectedAllergyCauses);
     currentCauses.remove(cause);
     emit(state.copyWith(selectedAllergyCauses: currentCauses));
@@ -207,6 +208,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     final response = await _allergyDataEntryRepo.getAllergyTriggers(
       language: AppStrings.arabicLang,
       allergyType: state.alleryTypeSelection!,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     response.when(
       success: (response) {
@@ -230,6 +232,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   Future<void> emitGetAllAllergyTypes() async {
     final response = await _allergyDataEntryRepo.getAllAllergyTypes(
       language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     response.when(
       success: (response) {
@@ -267,7 +270,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     }
   }
 
-  Future<void> updateSelectedMedicineName(String? medicineName) async {
+  void updateSelectedMedicineName(String? medicineName) {
     log('xxx updateSelectedMedicineName: $medicineName');
     emit(state.copyWith(selectedMedicineName: medicineName));
   }
@@ -280,6 +283,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     );
     final response = await _allergyDataEntryRepo.postAllergyModuleData(
       language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: PostAllergyModuleDataModel(
         allergyOccurrenceDate: state.allergyDateSelection!,
         allergyType: state.alleryTypeSelection!,

@@ -29,7 +29,7 @@ class MedicineNameSelectorSection extends StatelessWidget {
                       .read<MedicinesDataEntryCubit>()
                       .updateSelectedMedicineName(value);
                   if (!context.mounted) return;
-                  await context
+                  context
                       .read<AllergyDataEntryCubit>()
                       .updateSelectedMedicineName(value);
                 },

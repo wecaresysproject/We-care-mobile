@@ -16,7 +16,6 @@ class PostAllergyModuleDataModel {
   final bool? isTreatmentsEffective;
   final String medicalReportImage;
   final String familyHistory;
-  @JsonKey(name: 'Precautions')
   final String precautions;
   final String proneToAllergies;
   final String isMedicalWarningReceived;

@@ -31,6 +31,7 @@ abstract class AllergyServices {
   @GET(AllergyApiConstants.getAllAllergyTypes)
   Future<dynamic> getAllAllergyTypes(
     @Query("language") String language,
+    @Query("userType") String userType,
   );
   @GET(AllergyApiConstants.getAllTechUsed)
   Future<dynamic> getAllTechUsed(
@@ -43,6 +44,7 @@ abstract class AllergyServices {
   @GET(AllergyApiConstants.getAllergyTriggers)
   Future<dynamic> getAllergyTriggers(
     @Query("language") String language,
+    @Query("userType") String userType,
     @Query("allergyType") String allergyType,
   );
   @GET(AllergyApiConstants.getSurgeryName)
@@ -71,6 +73,7 @@ abstract class AllergyServices {
   Future<dynamic> postAllergyModuleData(
     @Query("language") String language,
     @Body() PostAllergyModuleDataModel requestBody,
+    @Query("userType") String userType,
   );
 
   @GET(AllergyApiConstants.getSingleSurgery)

@@ -68,7 +68,7 @@ class _AllergyDataFormFieldsWidgetState
               categoryLabel: "النوع",
               containerHintText:
                   state.alleryTypeSelection ?? "اختر نوع الحساسية",
-              options: ['ddd'], //! get from backend
+              options: state.allergyTypes, //! get from backend
               onOptionSelected: (value) {
                 context.read<AllergyDataEntryCubit>().updateAllergyType(value);
               },
@@ -86,8 +86,8 @@ class _AllergyDataFormFieldsWidgetState
                   ? 'اختر الأشياء المسببة للحساسية'
                   : '${state.selectedAllergyCauses.length} مسببات محددة',
               options: state.allergyTriggers, //! get from backend
-              onOptionSelected: (value) async {
-                await context
+              onOptionSelected: (value) {
+                context
                     .read<AllergyDataEntryCubit>()
                     .updateSelectedAllergyCauses(value);
               },
@@ -153,7 +153,10 @@ class _AllergyDataFormFieldsWidgetState
                   "الأعراض الجانبية المتوقعة", // Another Dropdown Example
               containerHintText: state.expectedSideEffectSelection ??
                   "اختر الأعراض الجانبية المتوقعة",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+              ],
               onOptionSelected: (value) {
                 context
                     .read<AllergyDataEntryCubit>()

@@ -23,7 +23,7 @@ class AllergyDataEntryView extends StatelessWidget {
         // } else {
         //   cubit.intialRequestsForDataEntry();
         // }
-        return cubit;
+        return cubit..intialRequestsForDataEntry();
       },
       child: Scaffold(
         appBar: AppBar(),
