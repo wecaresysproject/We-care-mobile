@@ -6,8 +6,8 @@ import 'package:we_care/features/Biometrics/data/models/post_biometric_data_of_s
 part 'nutration_services.g.dart';
 
 @RestApi(baseUrl: BiometricsApiConstants.baseUrl)
-abstract class BiometricsServices {
-  factory BiometricsServices(Dio dio, {String? baseUrl}) = _BiometricsServices;
+abstract class NutrationServices {
+  factory NutrationServices(Dio dio, {String? baseUrl}) = _NutrationServices;
 
   @POST(BiometricsApiConstants.postBiometricDataOfSpecifcCategory)
   Future<dynamic> postBiometricDataOfSpecifcCategory(

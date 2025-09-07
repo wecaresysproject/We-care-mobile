@@ -1,27 +1,30 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_state.dart';
 import 'package:we_care/features/Biometrics/data/models/post_biometric_data_of_specifc_category_model.dart';
-import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_repo.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 
-class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
-  BiometricsDataEntryCubit(this.biometricsDataEntryRepo)
+part 'nutration_data_entry_state.dart';
+
+class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
+  NutrationDataEntryCubit(this._nutrationDataEntryRepo)
       : super(
-          BiometricsDataEntryState.initialState(),
+          NutrationDataEntryState.initialState(),
         );
 
-  final BiometricsDataEntryRepo biometricsDataEntryRepo;
+  final NutrationDataEntryRepo _nutrationDataEntryRepo;
 
-  Future<void> postBiometricsDataEntry({
+  Future<void> postNutrationDataEntry({
     required String categoryName,
     required String minValue,
     String? maxValue,
   }) async {
-    emit(state.copyWith(submitBiometricDataStatus: RequestStatus.loading));
+    emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
 
-    final result = await biometricsDataEntryRepo.postBiometricsDataEntry(
+    final result = await _nutrationDataEntryRepo.postNutrationDataEntry(
       requestBody: PostBiometricCategoryModel(
         categoryName: categoryName,
         minValue: minValue,
@@ -34,14 +37,14 @@ class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
     result.when(success: (successMessage) {
       emit(
         state.copyWith(
-          submitBiometricDataStatus: RequestStatus.success,
+          submitNutrationDataStatus: RequestStatus.success,
           message: successMessage,
         ),
       );
     }, failure: (failure) {
       emit(
         state.copyWith(
-          submitBiometricDataStatus: RequestStatus.failure,
+          submitNutrationDataStatus: RequestStatus.failure,
           message: failure.errors.first,
         ),
       );

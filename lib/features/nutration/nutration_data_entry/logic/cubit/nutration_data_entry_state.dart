@@ -1,40 +1,38 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
+part of 'nutration_data_entry_cubit.dart';
 
 @immutable
-class BiometricsDataEntryState extends Equatable {
-  final RequestStatus submitBiometricDataStatus;
+class NutrationDataEntryState extends Equatable {
+  final RequestStatus submitNutrationDataStatus;
 
   final bool isFormValidated;
 
   final bool isEditMode;
   final String message; // error or success message
 
-  const BiometricsDataEntryState({
-    this.submitBiometricDataStatus = RequestStatus.initial,
+  const NutrationDataEntryState({
+    this.submitNutrationDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
   }) : super();
 
-  const BiometricsDataEntryState.initialState()
+  const NutrationDataEntryState.initialState()
       : this(
-          submitBiometricDataStatus: RequestStatus.initial,
+          submitNutrationDataStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
         );
 
-  BiometricsDataEntryState copyWith({
-    RequestStatus? submitBiometricDataStatus,
+  NutrationDataEntryState copyWith({
+    RequestStatus? submitNutrationDataStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
   }) {
-    return BiometricsDataEntryState(
-      submitBiometricDataStatus:
-          submitBiometricDataStatus ?? this.submitBiometricDataStatus,
+    return NutrationDataEntryState(
+      submitNutrationDataStatus:
+          submitNutrationDataStatus ?? this.submitNutrationDataStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -43,7 +41,7 @@ class BiometricsDataEntryState extends Equatable {
 
   @override
   List<Object?> get props => [
-        submitBiometricDataStatus,
+        submitNutrationDataStatus,
         isFormValidated,
         isEditMode,
         message,

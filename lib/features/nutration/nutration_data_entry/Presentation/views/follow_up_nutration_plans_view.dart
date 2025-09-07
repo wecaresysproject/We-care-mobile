@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -11,6 +13,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/plan_activation_toggle_switch_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/weakly_plan_grid_view_widget.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class FollowUpNutrationPlansView extends StatefulWidget {
   const FollowUpNutrationPlansView({super.key});
@@ -78,74 +81,77 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0.h,
-      ),
-      body: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: const AppBarWithCenteredTitle(
-              title: 'خطة المتابعة',
-              showActionButtons: false,
+    return BlocProvider<NutrationDataEntryCubit>(
+      create: (context) => getIt<NutrationDataEntryCubit>(),
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0.h,
+        ),
+        body: Column(
+          children: [
+            // Header
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: const AppBarWithCenteredTitle(
+                title: 'خطة المتابعة',
+                showActionButtons: false,
+              ),
             ),
-          ),
 
-          // Custom Tab Bar
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey[300]!,
-                  width: 1,
+            // Custom Tab Bar
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey[300]!,
+                    width: 1,
+                  ),
                 ),
               ),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              labelColor: AppColorsManager.mainDarkBlue,
-              unselectedLabelColor: AppColorsManager.placeHolderColor,
-              labelStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                fontWeight: FontWeight.bold,
+              child: TabBar(
+                controller: _tabController,
+                labelColor: AppColorsManager.mainDarkBlue,
+                unselectedLabelColor: AppColorsManager.placeHolderColor,
+                labelStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                unselectedLabelStyle:
+                    AppTextStyles.font16DarkGreyWeight400.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+                indicatorColor: AppColorsManager.mainDarkBlue,
+                indicatorWeight: 3,
+                indicatorSize: TabBarIndicatorSize.tab,
+                tabs: const [
+                  Tab(text: 'خطة أسبوعية'),
+                  Tab(text: 'خطة شهرية'),
+                ],
               ),
-              unselectedLabelStyle:
-                  AppTextStyles.font16DarkGreyWeight400.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
-              indicatorColor: AppColorsManager.mainDarkBlue,
-              indicatorWeight: 3,
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: const [
-                Tab(text: 'خطة أسبوعية'),
-                Tab(text: 'خطة شهرية'),
-              ],
             ),
-          ),
 
-          // Tab Content
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Weekly Plan Tab
-                _buildTabContent(
-                  isWeeklyPlan: true,
-                  isActive: _weeklyPlanActive,
-                  messageController: _weeklyMessageController,
-                ),
-                // Monthly Plan Tab
-                _buildTabContent(
-                  isWeeklyPlan: false,
-                  isActive: _monthlyPlanActive,
-                  messageController: _monthlyMessageController,
-                ),
-              ],
+            // Tab Content
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Weekly Plan Tab
+                  _buildTabContent(
+                    isWeeklyPlan: true,
+                    isActive: _weeklyPlanActive,
+                    messageController: _weeklyMessageController,
+                  ),
+                  // Monthly Plan Tab
+                  _buildTabContent(
+                    isWeeklyPlan: false,
+                    isActive: _monthlyPlanActive,
+                    messageController: _monthlyMessageController,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
