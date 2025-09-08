@@ -54,8 +54,8 @@ abstract class AllergyServices {
     @Query("language") String language,
   );
 
-  @GET(AllergyApiConstants.getAllSurgeries)
-  Future<GetUserSurgeriesResponseModal> getSurgeries(
+  @GET(AllergyApiConstants.getAllergyDiseases)
+  Future<dynamic> getAllergyDiseases(
     @Query("language") String language,
     @Query("userType") String userType,
     @Query("page") int page,
@@ -76,9 +76,12 @@ abstract class AllergyServices {
     @Query("userType") String userType,
   );
 
-  @GET(AllergyApiConstants.getSingleSurgery)
-  Future<dynamic> getSurgeryById(
-      @Query("id") String id, @Query("language") String language);
+  @GET(AllergyApiConstants.getSingleAllergyDetailsById)
+  Future<dynamic> getSingleAllergyDetailsById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
   @GET(AllergyApiConstants.getSurgeriesFilters)
   Future<dynamic> getFilters(@Query("language") String language);
@@ -89,8 +92,12 @@ abstract class AllergyServices {
       @Query("surgeryName") String? surgeryName,
       @Query("year") int? year);
 
-  @DELETE(AllergyApiConstants.deleteSurgeryById)
-  Future<dynamic> deleteSurgeryById(@Query("id") String id);
+  @DELETE(AllergyApiConstants.deleteAllergyById)
+  Future<dynamic> deleteAllergyById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
   @PUT(AllergyApiConstants.editSurgeryEndpoint)
   Future<dynamic> updateSurgeryDocumentById(

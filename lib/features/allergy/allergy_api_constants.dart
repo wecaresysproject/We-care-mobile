@@ -14,9 +14,9 @@ class AllergyApiConstants {
   static const surgeryPurpose = "/EnterSectionSurgery/purpose";
   static const postAllergyModuleData = "/v1/allergy-data";
   //View Entry
-  static const deleteSurgeryById = "/EnterSectionSurgery";
-  static const getAllSurgeries = "/EnterSectionSurgery";
-  static const getSingleSurgery = "/ViewSectionSurgery/filter-by-id";
+  static const deleteAllergyById = "/v1/allergy-data";
+  static const getAllergyDiseases = "/v1/All-allergies";
+  static const getSingleAllergyDetailsById = "/v1/user-allergies";
   static const editSurgeryEndpoint = "/EnterSectionSurgery";
   //filters
   static const getSurgeriesFilters = "/ViewSectionSurgery/surgery-info";

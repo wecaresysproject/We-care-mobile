@@ -89,6 +89,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -96,7 +97,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
 import 'package:we_care/features/allergy/allergy_view/views/widgets/allergy_horizental_card_widget.dart';
-import 'package:we_care/features/allergy/data/models/allergy_disease_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class AllergyFooterRow extends StatelessWidget {
@@ -128,7 +128,7 @@ class AllergyFooterRow extends StatelessWidget {
                 ElevatedButton(
                   onPressed: state.isLoadingMore || !cubit.hasMore
                       ? null
-                      : () => cubit.loadMoreMedicines(),
+                      : () => cubit.loadMoreAllergyDiseases(),
                   style: ElevatedButton.styleFrom(
                     fixedSize: Size(158.w, 32.h),
                     backgroundColor: state.isLoadingMore || !cubit.hasMore
@@ -215,44 +215,44 @@ class AllergyFooterRow extends StatelessWidget {
 }
 
 class AllergyDataView extends StatelessWidget {
-  AllergyDataView({super.key});
+  const AllergyDataView({super.key});
 
-  List<AllergyDiseaseModel> dummyList = [
-    AllergyDiseaseModel(
-      causes: [
-        'غبار, حبوب لقاح',
-      ],
-      date: '2022-01-15',
-      severity: 'شديدة',
-      title: 'حساسية الحليب',
-      precautions: 'تجنب الخروج في أوقات الذروة',
-      id: '1',
-    ),
-    AllergyDiseaseModel(
-      causes: [
-        'مكسرات, شوكولاتة',
-      ],
-      date: '2021-11-10',
-      severity: 'متوسطة',
-      title: 'حساسية المكسرات',
-      precautions: 'قراءة مكونات الطعام بعناية',
-      id: '2',
-    ),
-    AllergyDiseaseModel(
-      causes: [
-        'غبار, حبوب لقاح',
-      ],
-      date: '2022-01-15',
-      severity: 'شديدة',
-      title: 'حساسية الربيع',
-      precautions: 'تجنب الخروج في أوقات الذروة',
-      id: '3',
-    ),
-  ];
+  // List<AllergyDiseaseModel> dummyList = [
+  //   AllergyDiseaseModel(
+  //     causes: [
+  //       'غبار, حبوب لقاح',
+  //     ],
+  //     date: '2022-01-15',
+  //     severity: 'شديدة',
+  //     title: 'حساسية الحليب',
+  //     precautions: 'تجنب الخروج في أوقات الذروة',
+  //     id: '1',
+  //   ),
+  //   AllergyDiseaseModel(
+  //     causes: [
+  //       'مكسرات, شوكولاتة',
+  //     ],
+  //     date: '2021-11-10',
+  //     severity: 'متوسطة',
+  //     title: 'حساسية المكسرات',
+  //     precautions: 'قراءة مكونات الطعام بعناية',
+  //     id: '2',
+  //   ),
+  //   AllergyDiseaseModel(
+  //     causes: [
+  //       'غبار, حبوب لقاح',
+  //     ],
+  //     date: '2022-01-15',
+  //     severity: 'شديدة',
+  //     title: 'حساسية الربيع',
+  //     precautions: 'تجنب الخروج في أوقات الذروة',
+  //     id: '3',
+  //   ),
+  // ];
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AllergyViewCubit>(
-      create: (context) => getIt<AllergyViewCubit>()..getUserSurgeriesList(),
+      create: (context) => getIt<AllergyViewCubit>()..getAllergyDiseases(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0.h),
         body: Padding(
@@ -264,38 +264,38 @@ class AllergyDataView extends StatelessWidget {
               Expanded(
                 child: BlocBuilder<AllergyViewCubit, AllergyViewState>(
                   buildWhen: (previous, current) =>
-                      previous.userSurgeries != current.userSurgeries,
+                      previous.userAllergies != current.userAllergies,
                   builder: (context, state) {
-                    // if (state.requestStatus == RequestStatus.loading) {
-                    //   return const Center(child: CircularProgressIndicator());
-                    // } else if (state.userSurgeries.isEmpty &&
-                    //     state.requestStatus == RequestStatus.success) {
-                    //   return Center(
-                    //     child: Text(
-                    //       "لا يوجد بيانات",
-                    //       style: AppTextStyles.font22MainBlueWeight700,
-                    //     ),
-                    //   );
-                    // }
+                    if (state.requestStatus == RequestStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state.userAllergies.isEmpty &&
+                        state.requestStatus == RequestStatus.success) {
+                      return Center(
+                        child: Text(
+                          "لا يوجد بيانات",
+                          style: AppTextStyles.font22MainBlueWeight700,
+                        ),
+                      );
+                    }
 
                     return ListView.separated(
-                      itemCount:
-                          dummyList.length, // state.userSurgeries.length,
+                      itemCount: state.userAllergies.length,
                       separatorBuilder: (_, __) => verticalSpacing(12),
                       itemBuilder: (context, index) {
-                        // final item = state.userSurgeries[index];
-                        final item = dummyList[index];
+                        final item = state.userAllergies[index];
                         return AllergyHorizentalCardWidget(
                           item: item,
                           onArrowTap: () async {
                             await context.pushNamed(
                               Routes.allergyDocDetailsView,
-                              arguments: {'docId': item.id},
+                              arguments: {
+                                'docId': item.id,
+                              },
                             );
                             if (context.mounted) {
                               await context
                                   .read<AllergyViewCubit>()
-                                  .getUserSurgeriesList();
+                                  .getAllergyDiseases();
                             }
                           },
                         );
@@ -314,108 +314,108 @@ class AllergyDataView extends StatelessWidget {
   }
 }
 
-class AllergyCard extends StatelessWidget {
-  final String title;
-  final String date;
-  final String causes;
-  final String severity;
-  final String precautions;
-  final VoidCallback onTap;
+// class AllergyCard extends StatelessWidget {
+//   final String title;
+//   final String date;
+//   final String causes;
+//   final String severity;
+//   final String precautions;
+//   final VoidCallback onTap;
 
-  const AllergyCard({
-    super.key,
-    required this.title,
-    required this.date,
-    required this.causes,
-    required this.severity,
-    required this.precautions,
-    required this.onTap,
-  });
+//   const AllergyCard({
+//     super.key,
+//     required this.title,
+//     required this.date,
+//     required this.causes,
+//     required this.severity,
+//     required this.precautions,
+//     required this.onTap,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Container(
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300, width: 1),
-          borderRadius: BorderRadius.circular(12.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            )
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Text Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title
-                  Center(
-                    child: Text(
-                      title,
-                      style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: AppColorsManager.mainDarkBlue,
-                      ),
-                    ),
-                  ),
-                  verticalSpacing(6),
-                  _buildInfoRow("التاريخ:", date),
-                  _buildInfoRow("المسببات:", causes),
-                  _buildInfoRow("حدة الأعراض:", severity),
-                  _buildInfoRow("الاحتياطات:", precautions, isMultiLine: true),
-                ],
-              ),
-            ),
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: onTap,
+//       borderRadius: BorderRadius.circular(12.r),
+//       child: Container(
+//         padding: EdgeInsets.all(12.w),
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           border: Border.all(color: Colors.grey.shade300, width: 1),
+//           borderRadius: BorderRadius.circular(12.r),
+//           boxShadow: [
+//             BoxShadow(
+//               color: Colors.black12,
+//               blurRadius: 4,
+//               offset: const Offset(0, 2),
+//             )
+//           ],
+//         ),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // Text Content
+//             Expanded(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   // Title
+//                   Center(
+//                     child: Text(
+//                       title,
+//                       style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+//                         fontWeight: FontWeight.w700,
+//                         color: AppColorsManager.mainDarkBlue,
+//                       ),
+//                     ),
+//                   ),
+//                   verticalSpacing(6),
+//                   _buildInfoRow("التاريخ:", date),
+//                   _buildInfoRow("المسببات:", causes),
+//                   _buildInfoRow("حدة الأعراض:", severity),
+//                   _buildInfoRow("الاحتياطات:", precautions, isMultiLine: true),
+//                 ],
+//               ),
+//             ),
 
-            horizontalSpacing(8.w),
+//             horizontalSpacing(8.w),
 
-            // Arrow icon
-            Icon(
-              Icons.arrow_back_ios,
-              color: AppColorsManager.mainDarkBlue,
-              size: 18.sp,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+//             // Arrow icon
+//             Icon(
+//               Icons.arrow_back_ios,
+//               color: AppColorsManager.mainDarkBlue,
+//               size: 18.sp,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 
-  Widget _buildInfoRow(String title, String value, {bool isMultiLine = false}) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 4.h),
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: "$title ",
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            TextSpan(
-              text: value,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                color: Colors.black,
-              ),
-            ),
-          ],
-        ),
-        maxLines: isMultiLine ? 3 : 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-}
+//   Widget _buildInfoRow(String title, String value, {bool isMultiLine = false}) {
+//     return Padding(
+//       padding: EdgeInsets.only(bottom: 4.h),
+//       child: RichText(
+//         text: TextSpan(
+//           children: [
+//             TextSpan(
+//               text: "$title ",
+//               style: AppTextStyles.font14blackWeight400.copyWith(
+//                 color: AppColorsManager.mainDarkBlue,
+//                 fontWeight: FontWeight.w600,
+//               ),
+//             ),
+//             TextSpan(
+//               text: value,
+//               style: AppTextStyles.font14blackWeight400.copyWith(
+//                 color: Colors.black,
+//               ),
+//             ),
+//           ],
+//         ),
+//         maxLines: isMultiLine ? 3 : 1,
+//         overflow: TextOverflow.ellipsis,
+//       ),
+//     );
+//   }
+// }

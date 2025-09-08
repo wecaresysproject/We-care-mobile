@@ -51,7 +51,7 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                item.title,
+                item.allergyType,
                 style: AppTextStyles.font14BlueWeight700
                     .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
@@ -76,7 +76,7 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.date,
+                            item.allergyOccurrenceDate,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),
@@ -95,7 +95,7 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.causes.join(','),
+                            item.allergyTriggers.join(','),
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),
@@ -114,7 +114,7 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.severity,
+                            item.symptomSeverity,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),

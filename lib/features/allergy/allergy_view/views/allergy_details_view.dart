@@ -6,13 +6,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 
 class AllergyDetailsView extends StatelessWidget {
   const AllergyDetailsView({super.key, required this.documentId});
@@ -21,27 +20,28 @@ class AllergyDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: getIt<AllergyViewCubit>()..getSurgeryDetailsById(documentId),
+      value: getIt<AllergyViewCubit>()..getSingleAllergyDetailsById(documentId),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
-        body: BlocConsumer<SurgeriesViewCubit, SurgeriesViewState>(
-          listener: (context, state) async {
-            if (state.requestStatus == RequestStatus.success &&
-                state.isDeleteRequest) {
-              Navigator.pop(context);
-              await showSuccess(state.responseMessage);
-            } else if (state.requestStatus == RequestStatus.failure &&
-                state.isDeleteRequest) {
-              await showError(state.responseMessage);
+        body: BlocConsumer<AllergyViewCubit, AllergyViewState>(
+          listenWhen: (previous, current) =>
+              previous.isDeleteRequest != current.isDeleteRequest,
+          listener: (context, state) {
+            if (state.requestStatus == RequestStatus.failure) {
+              showError(state.responseMessage);
+            }
+            if (state.requestStatus == RequestStatus.success) {
+              showSuccess(state.responseMessage);
+              Navigator.pop(context, true);
             }
           },
           buildWhen: (previous, current) =>
-              previous.selectedSurgeryDetails != current.selectedSurgeryDetails,
+              previous.selectedAllergyDetails != current.selectedAllergyDetails,
           builder: (context, state) {
             if (state.requestStatus == RequestStatus.loading ||
-                state.selectedSurgeryDetails == null) {
+                state.selectedAllergyDetails == null) {
               return Center(
                 child: CircularProgressIndicator(),
               );
@@ -54,14 +54,14 @@ class AllergyDetailsView extends StatelessWidget {
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الحساسية',
-                    // deleteFunction: () async => await context
-                    //     .read<SurgeriesViewCubit>()
-                    //     .deleteSurgeryById(documentId),
+                    deleteFunction: () async => await context
+                        .read<AllergyViewCubit>()
+                        .deleteAllergyById(documentId),
                     shareFunction: () => _shareAllergyDetails(context, state),
                     // editFunction: () async {
                     //   final result = await context.pushNamed(
                     //     Routes.surgeriesDataEntryView,
-                    //     arguments: state.selectedSurgeryDetails,
+                    //     arguments: state.selectedAllergyDetails,
                     //   );
                     //   if (result != null && result) {
                     //     if (!context.mounted) return;
@@ -73,7 +73,7 @@ class AllergyDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "التاريخ",
-                    value: state.selectedSurgeryDetails!.surgeryDate,
+                    value: state.selectedAllergyDetails!.allergyOccurrenceDate,
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
@@ -81,52 +81,64 @@ class AllergyDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: "النوع",
-                        value: state.selectedSurgeryDetails!.surgeryRegion,
+                        value: state.selectedAllergyDetails!.allergyType,
                         icon: 'assets/images/qr_code_icon.png',
                       ),
                       Spacer(),
                       DetailsViewInfoTile(
                           //!joint t later with 1/
                           title: "مسببات الحساسية",
-                          value: state.selectedSurgeryDetails!.subSurgeryRegion,
+                          value: state.selectedAllergyDetails!.allergyTriggers
+                              .join(', '),
                           icon: 'assets/images/chat_question.png'),
                     ],
                   ),
                   DetailsViewInfoTile(
-                    title: "الأعراض الجانبية المتوقعة ( رد الفعل التحسسى)",
-                    value: state.selectedSurgeryDetails!.surgeryName,
+                    title: "الأعراض الجانبية المتوقعة",
+                    value: state.selectedAllergyDetails!.expectedSideEffects!,
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "حدة الأعراض",
-                    value: state.selectedSurgeryDetails!.purpose ??
-                        "لم يتم تحديده",
+                    value: state.selectedAllergyDetails!.symptomSeverity!,
                     icon: 'assets/images/thunder_image.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "زمن بدء الأعراض بعد التعرض للمسبب",
-                    value: state.selectedSurgeryDetails!.surgeryDescription,
+                    value: state.selectedAllergyDetails!.timeToSymptomOnset!,
                     icon: 'assets/images/time_icon.png',
                     isExpanded: true,
                   ),
                   Row(children: [
                     DetailsViewInfoTile(
                       title: "استشارة طبيب",
-                      value: state.selectedSurgeryDetails!.usedTechnique,
+                      value: state.selectedAllergyDetails?.isDoctorConsulted ==
+                              null
+                          ? context.translate.no_data_entered
+                          : state.selectedAllergyDetails!.isDoctorConsulted!
+                              ? 'نعم'
+                              : 'لا',
                       icon: 'assets/images/doctor_icon.png',
                     ),
                     Spacer(),
                     DetailsViewInfoTile(
                       title: "اختبار حساسية",
-                      value: state.selectedSurgeryDetails!.surgeryStatus,
+                      value: state.selectedAllergyDetails!
+                                  .isAllergyTestPerformed ==
+                              null
+                          ? context.translate.no_data_entered
+                          : state.selectedAllergyDetails!
+                                  .isAllergyTestPerformed!
+                              ? 'نعم'
+                              : 'لا',
                       icon: 'assets/images/data_search_icon.png',
                     ),
                   ]),
                   DetailsViewInfoTile(
                     title: "الأدوية",
-                    value: state.selectedSurgeryDetails!.surgeryDescription,
+                    value: state.selectedAllergyDetails!.medicationName!,
                     icon: 'assets/images/medicine_icon.png',
                     isExpanded: true,
                   ),
@@ -134,35 +146,40 @@ class AllergyDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: "هل العلاجات فعالة",
-                        value: state.selectedSurgeryDetails!.surgeonName,
+                        value: state.selectedAllergyDetails!
+                                    .isTreatmentsEffective ==
+                                null
+                            ? context.translate.no_data_entered
+                            : state.selectedAllergyDetails!
+                                    .isTreatmentsEffective!
+                                ? 'نعم'
+                                : 'لا',
                         icon: 'assets/images/surgery_icon.png',
                       ),
                       Spacer(),
                       DetailsViewInfoTile(
                         title: "وجود صدمة تحسسية",
-                        value:
-                            state.selectedSurgeryDetails!.anesthesiologistName,
+                        value: state.selectedAllergyDetails!.proneToAllergies ??
+                            '--',
                         icon: 'assets/images/chat_question.png',
                       ),
                     ],
                   ),
                   DetailsViewImageWithTitleTile(
                     isShareEnabled: true,
-                    image: state.selectedSurgeryDetails!
-                        .medicalReportImage, // Replace with actual image URL or asset
+                    image: state.selectedAllergyDetails!
+                        .medicalReportImage!, // Replace with actual image URL or asset
                     title: "التقرير الطبى/اختبار الحساسية",
                   ),
                   DetailsViewInfoTile(
                     title: "التاريخ العائلى",
-                    value:
-                        state.selectedSurgeryDetails!.postSurgeryInstructions,
+                    value: state.selectedAllergyDetails!.familyHistory!,
                     icon: 'assets/images/icon_family.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "الاحتياطات",
-                    value: state.selectedSurgeryDetails!.description ??
-                        "لم يتم تحديده",
+                    value: state.selectedAllergyDetails!.precautions!,
                     icon: 'assets/images/file_icon.png',
                     isExpanded: true,
                   ),
@@ -170,14 +187,19 @@ class AllergyDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: "تحذير طبى للمسببات",
-                        value: state.selectedSurgeryDetails!.surgeonName,
+                        value: state
+                            .selectedAllergyDetails!.isMedicalWarningReceived!,
                         icon: 'assets/images/circular_warning.png',
                       ),
                       Spacer(),
                       DetailsViewInfoTile(
                         title: "حمل حقنة الإبينفرين",
-                        value:
-                            state.selectedSurgeryDetails!.anesthesiologistName,
+                        value: state
+                                .selectedAllergyDetails!.carryEpinephrine.isNull
+                            ? '--'
+                            : state.selectedAllergyDetails!.carryEpinephrine!
+                                ? 'نعم'
+                                : 'لا',
                         icon: 'assets/images/Injection.png',
                       ),
                     ],
@@ -193,38 +215,39 @@ class AllergyDetailsView extends StatelessWidget {
 }
 
 Future<void> _shareAllergyDetails(
-    BuildContext context, SurgeriesViewState state) async {
+    BuildContext context, AllergyViewState state) async {
   try {
-    final allergy = state.selectedSurgeryDetails!;
+    final allergy = state.selectedAllergyDetails!;
 
     // 📝 Extract text details (re-mapped to allergy fields)
     final text = '''
 ⚕️ *تفاصيل الحساسية* ⚕️
 
-📅 *التاريخ*: ${allergy.surgeryDate}
-🦠 *مسببات الحساسية*: ${allergy.subSurgeryRegion}
-🤧 *الأعراض الجانبية (رد الفعل التحسسي)*: ${allergy.surgeryName}
-⚡ *حدة الأعراض*: ${allergy.purpose ?? "لم يتم تحديده"}
-⏱ *زمن بدء الأعراض*: ${allergy.surgeryDescription}
-👨‍⚕️ *استشارة طبيب*: ${allergy.usedTechnique}
-🧪 *اختبار حساسية*: ${allergy.surgeryStatus}
-💊 *الأدوية*: ${allergy.surgeryDescription}
-💉 *هل العلاجات فعالة*: ${allergy.surgeonName}
-🚨 *وجود صدمة تحسسية*: ${allergy.anesthesiologistName}
+📅 *التاريخ*: ${allergy.allergyOccurrenceDate}
+🦠 *مسببات الحساسية*: ${allergy.allergyTriggers}
+🤧 *الأعراض الجانبية (رد الفعل التحسسي)*: ${allergy.expectedSideEffects}
+⚡ *حدة الأعراض*: ${allergy.symptomSeverity ?? "لم يتم تحديده"}
+⏱ *زمن بدء الأعراض*: ${allergy.timeToSymptomOnset}
+👨‍⚕️ *استشارة طبيب*: ${allergy.isDoctorConsulted}
+🧪 *اختبار حساسية*: ${allergy.isAllergyTestPerformed}
+💊 *الأدوية*: ${allergy.medicationName}
+💉 *هل العلاجات فعالة*: ${allergy.isTreatmentsEffective}
+🚨 *وجود صدمة تحسسية*: ${allergy.proneToAllergies}
 📷 *التقرير الطبي/اختبار الحساسية*: مرفق بالأسفل (إن وجد)
-👪 *التاريخ العائلي*: ${allergy.postSurgeryInstructions}
-📘 *الاحتياطات*: ${allergy.description ?? "لم يتم تحديده"}
-⚠️ *تحذير طبي للمسببات*: ${allergy.surgeonName}
-💉 *حمل حقنة الإبينفرين*: ${allergy.anesthesiologistName}
+👪 *التاريخ العائلي*: ${allergy.familyHistory}
+📘 *الاحتياطات*: ${allergy.precautions ?? "لم يتم تحديده"}
+⚠️ *تحذير طبي للمسببات*: ${allergy.isMedicalWarningReceived}
+💉 *حمل حقنة الإبينفرين*: ${allergy.carryEpinephrine}
     ''';
 
     // 📥 Download medical report image if available
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    if (allergy.medicalReportImage.startsWith("http")) {
+    if (allergy.medicalReportImage != null &&
+        allergy.medicalReportImage!.startsWith("http")) {
       final imagePath = await downloadImage(
-        allergy.medicalReportImage,
+        allergy.medicalReportImage!,
         tempDir,
         'allergy_report.png',
       );

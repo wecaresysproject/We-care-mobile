@@ -4,18 +4,18 @@ part 'allergy_disease_model.g.dart';
 
 @JsonSerializable()
 class AllergyDiseaseModel {
-  final String title;
-  final String date;
-  final List<String> causes;
-  final String severity;
+  final String allergyType;
+  final String allergyOccurrenceDate;
+  final List<String> allergyTriggers;
+  final String symptomSeverity;
   final String precautions;
   final String id;
 
   AllergyDiseaseModel({
-    required this.title,
-    required this.date,
-    required this.causes,
-    required this.severity,
+    required this.allergyType,
+    required this.allergyOccurrenceDate,
+    required this.allergyTriggers,
+    required this.symptomSeverity,
     required this.precautions,
     required this.id,
   });
