@@ -9,6 +9,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/instruction_text_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/plan_activation_toggle_switch_widget.dart';
@@ -78,7 +79,8 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NutrationDataEntryCubit>(
-      create: (context) => getIt<NutrationDataEntryCubit>(),
+      create: (context) =>
+          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
       child: Builder(
         builder: (BuildContext context) {
           return Scaffold(
@@ -121,6 +123,12 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
                     indicatorColor: AppColorsManager.mainDarkBlue,
                     indicatorWeight: 3,
                     indicatorSize: TabBarIndicatorSize.tab,
+                    onTap: (index) {
+                      // Call the cubit method when the tab is tapped
+                      context
+                          .read<NutrationDataEntryCubit>()
+                          .updateCurrentTab(index);
+                    },
                     tabs: const [
                       Tab(text: 'خطة أسبوعية'),
                       Tab(text: 'خطة شهرية'),
@@ -145,7 +153,9 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
                       _buildTabContent(
                         isWeeklyPlan: false,
                         isActive: _monthlyPlanActive,
-                        messageController: _monthlyMessageController,
+                        messageController: context
+                            .read<NutrationDataEntryCubit>()
+                            .monthlyMessageController,
                       ),
                     ],
                   ),
@@ -225,9 +235,9 @@ class MessageInputSection extends StatelessWidget {
         return Row(
           children: [
             GestureDetector(
-              onTap: () async {
+              onTap: () {
                 // Handle voice input tap
-                await context.read<NutrationDataEntryCubit>().toggleListening();
+                context.read<NutrationDataEntryCubit>().toggleListening();
               },
               child: Container(
                 width: 48,
@@ -268,8 +278,10 @@ class MessageInputSection extends StatelessWidget {
                   textAlign: TextAlign.right,
                   maxLines: 3,
                   minLines: 1,
-                  decoration: const InputDecoration(
-                    hintText: 'رسالة نصية أو تسجيل صوتي',
+                  decoration: InputDecoration(
+                    hintText: state.isListening
+                        ? 'جاري الاستماع...'
+                        : 'رسالة نصية أو تسجيل صوتي',
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(

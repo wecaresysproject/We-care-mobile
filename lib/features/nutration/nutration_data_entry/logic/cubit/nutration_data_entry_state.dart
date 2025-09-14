@@ -10,6 +10,7 @@ class NutrationDataEntryState extends Equatable {
   final bool isListening;
   final String message; // error or success message
   final String recognizedText;
+  final int followUpNutrationViewCurrentTabIndex;
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
@@ -18,6 +19,7 @@ class NutrationDataEntryState extends Equatable {
     this.isEditMode = false,
     this.isListening = false,
     this.recognizedText = '',
+    this.followUpNutrationViewCurrentTabIndex = 0,
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -28,6 +30,7 @@ class NutrationDataEntryState extends Equatable {
           isEditMode: false,
           isListening: false,
           recognizedText: '',
+          followUpNutrationViewCurrentTabIndex: 0,
         );
 
   NutrationDataEntryState copyWith({
@@ -37,6 +40,7 @@ class NutrationDataEntryState extends Equatable {
     bool? isEditMode,
     bool? isListening,
     String? recognizedText,
+    int? followUpNutrationViewCurrentTabIndex,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -46,6 +50,9 @@ class NutrationDataEntryState extends Equatable {
       isEditMode: isEditMode ?? this.isEditMode,
       isListening: isListening ?? this.isListening,
       recognizedText: recognizedText ?? this.recognizedText,
+      followUpNutrationViewCurrentTabIndex:
+          followUpNutrationViewCurrentTabIndex ??
+              this.followUpNutrationViewCurrentTabIndex,
     );
   }
 
@@ -57,5 +64,6 @@ class NutrationDataEntryState extends Equatable {
         message,
         isListening,
         recognizedText,
+        followUpNutrationViewCurrentTabIndex,
       ];
 }

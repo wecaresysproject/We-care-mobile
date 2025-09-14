@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -13,44 +13,64 @@ import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.
 part 'nutration_data_entry_state.dart';
 
 class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
-  NutrationDataEntryCubit(this._nutrationDataEntryRepo)
+  NutrationDataEntryCubit(this._nutrationDataEntryRepo, this.context)
       : super(
           NutrationDataEntryState.initialState(),
         ) {
-    _initSpeech();
+    _init();
+  }
+
+  // A private async method to handle all asynchronous setup
+  Future<void> _init() async {
+    _speechToTextController = ManualSttController(context);
+    _setupSpeechController();
   }
 
   final NutrationDataEntryRepo _nutrationDataEntryRepo;
+  final BuildContext context; // New addition
   // Controllers for each tab
   final TextEditingController weeklyMessageController = TextEditingController();
-  late SpeechToText _speechToText;
+  final TextEditingController monthlyMessageController =
+      TextEditingController();
+
+  late ManualSttController _speechToTextController; // Changed from SpeechToText
 
   // Initialize Speech-to-Text
-  Future<void> _initSpeech() async {
-    try {
-      _speechToText = SpeechToText();
-      bool isAvailable = await _speechToText.initialize();
+  void _setupSpeechController() {
+    _speechToTextController.listen(
+      onListeningStateChanged: (state) {
+        if (state == ManualSttState.listening) {
+          emit(this.state.copyWith(isListening: true));
+        } else {
+          emit(this.state.copyWith(isListening: false));
+        }
+        log('Speech state: ${state.name}');
+      },
+      onListeningTextChanged: (recognizedText) {
+        emit(
+          state.copyWith(
+            recognizedText: recognizedText,
+          ),
+        );
+        // Update the correct controller based on the current tab index
+        if (state.followUpNutrationViewCurrentTabIndex == 0) {
+          weeklyMessageController.text = recognizedText;
+        } else {
+          monthlyMessageController.text = recognizedText;
+        }
+        log("Recognized text: $recognizedText");
+      },
+    );
 
-      // if (isAvailable) {
-      //   emit(
-      //     state.copyWith(
-      //       isListening: true,
-      //     ),
-      //   );
-      // } else {
-      //   emit(
-      //     state.copyWith(
-      //       isListening: false,
-      //     ),
-      //   );
-      // }
-    } catch (e) {
-      log(e.toString());
-    }
+    // Optional: You can set other properties here
+    _speechToTextController.clearTextOnStart = true;
+    _speechToTextController.pauseIfMuteFor = Duration(seconds: 10);
+    _speechToTextController.localId = 'ar_EG';
+    // _speechToTextController.enableHapticFeedback = true;
   }
 
   // Start listening for speech
-  Future<void> startListening() async {
+  void startListening() {
     try {
       emit(
         state.copyWith(
@@ -58,46 +78,31 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
           recognizedText: '',
         ),
       );
-
-      await _speechToText.listen(
-        listenOptions: SpeechListenOptions(
-          // partialResults: true,
-          listenMode: ListenMode.confirmation,
-          cancelOnError: true,
-          // onDevice: true,
-        ),
-        onResult: (result) {
-          emit(
-            state.copyWith(
-              recognizedText: result.recognizedWords,
-              isListening: true,
-            ),
-          );
-          weeklyMessageController.text = result.recognizedWords;
-          log("Recognized text: ${result.recognizedWords}");
-        },
-
-        localeId: "ar_EG", // Arabic Egypt locale
-        listenFor: const Duration(minutes: 2), // Listen for 2 minutes
-        pauseFor: const Duration(
-          seconds: 2,
-        ), // Pause after 2 seconds of silence
-      );
+      // Use the new controller's start method
+      _speechToTextController.startStt();
     } catch (e) {
       log(e.toString());
+      emit(state.copyWith(isListening: false));
     }
   }
 
+  // New method to update the current tab index
+  void updateCurrentTab(int index) {
+    emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
+  }
+
   // Stop listening for speech
-  Future<void> stopListening() async {
+  void stopListening() {
     if (state.isListening) {
       try {
-        await _speechToText.stop();
         emit(
           state.copyWith(
             isListening: false,
           ),
         );
+        _speechToTextController.stopStt();
+
+        // The listener will update the state
       } catch (e) {
         emit(
           state.copyWith(
@@ -109,59 +114,13 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   }
 
   // Toggle listening (start/stop)
-  Future<void> toggleListening() async {
+  void toggleListening() {
     if (state.isListening) {
-      await stopListening();
+      stopListening();
     } else {
-      await startListening();
+      startListening();
     }
   }
-
-  // Clear recognized text
-  void clearRecognizedText() {
-    emit(state.copyWith(
-      recognizedText: '',
-    ));
-    weeklyMessageController.clear();
-  }
-
-  // Update recognized text manually (for testing or manual input)
-  void updateRecognizedText(String text) {
-    emit(state.copyWith(recognizedText: text));
-    weeklyMessageController.text = text;
-  }
-
-  // Apply recognized text to text controller
-  void applyRecognizedTextToController(TextEditingController controller) {
-    final currentText = controller.text;
-    final recognizedText = state.recognizedText;
-
-    if (recognizedText.isNotEmpty) {
-      // Append recognized text to existing text with a space
-      final newText =
-          currentText.isEmpty ? recognizedText : '$currentText $recognizedText';
-
-      controller.text = newText;
-
-      // Move cursor to the end
-      controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: controller.text.length),
-      );
-
-      // Clear recognized text after applying
-      clearRecognizedText();
-    }
-  }
-  // Reset all states
-  // void resetStates() {
-  //   emit(state.copyWith(
-  //     submitNutrationDataStatus: RequestStatus.idle,
-  //     speechStatus: RequestStatus.idle,
-  //     isListening: false,
-  //     recognizedText: '',
-  //     message: '',
-  //   ));
-  // }
 
   Future<void> postNutrationDataEntry({
     required String categoryName,
@@ -199,9 +158,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
   @override
   Future<void> close() {
-    // TODO: implement close
+    _speechToTextController.dispose();
+    monthlyMessageController.dispose();
     weeklyMessageController.dispose();
-
     return super.close();
   }
 }
