@@ -1,11 +1,12 @@
 import 'dart:io';
 
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/allergy/allergy_services.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
-import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
 class AllergyDataEntryRepo {
   final AllergyServices _allergyServices;
@@ -84,15 +85,16 @@ class AllergyDataEntryRepo {
     }
   }
 
-  Future<ApiResult<String>> updateSurgeryDocumentById({
+  Future<ApiResult<String>> updateAllergyDocumentById({
     required String id,
     required String langauge,
-    required SurgeryRequestBodyModel requestBody,
+    required PostAllergyModuleDataModel requestBody,
   }) async {
     try {
-      final response = await _allergyServices.updateSurgeryDocumentById(
+      final response = await _allergyServices.updateAllergyDocumentById(
         id,
         langauge,
+        UserTypes.patient.name.firstLetterToUpperCase,
         requestBody,
       );
       return ApiResult.success(response["message"]);

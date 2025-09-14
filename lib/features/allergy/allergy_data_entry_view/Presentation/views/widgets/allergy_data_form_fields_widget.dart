@@ -384,17 +384,16 @@ class _AllergyDataFormFieldsWidgetState
       builder: (context, state) {
         return AppCustomButton(
           isLoading: state.allergyDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
-              // state.isEditMode
-              //     ? await context
-              //         .read<AllergyDataEntryCubit>()
-              //         .submitUpdatedSurgery()
-              // :
-              await context.read<AllergyDataEntryCubit>().postModuleData(
-                    context.translate,
-                  );
+              state.isEditMode
+                  ? await context
+                      .read<AllergyDataEntryCubit>()
+                      .updateAllergyDocumentById()
+                  : await context.read<AllergyDataEntryCubit>().postModuleData(
+                        context.translate,
+                      );
             }
           },
           isEnabled: state.isFormValidated ? true : false,

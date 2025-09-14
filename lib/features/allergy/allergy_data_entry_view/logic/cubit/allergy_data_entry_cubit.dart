@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -19,36 +20,43 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
           AllergyDataEntryState.initialState(),
         );
   final AllergyDataEntryRepo _allergyDataEntryRepo;
-  final personalNotesController = TextEditingController();
   final effectedFamilyMembers = TextEditingController();
   final precautions = TextEditingController(); // الاحتياطات
 
-  // Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeryDateSelection: pastSurgery.surgeryDate,
-  //       surgeryBodyPartSelection: pastSurgery.surgeryRegion,
-  //       selectedSubSurgery: pastSurgery.subSurgeryRegion,
-  //       surgeryNameSelection: pastSurgery.surgeryName,
-  //       selectedTechUsed: pastSurgery.usedTechnique,
-  //       surgeryPurpose: pastSurgery.purpose,
-  //       reportImageUploadedUrl: pastSurgery.medicalReportImage,
-  //       selectedSurgeryStatus: pastSurgery.surgeryStatus,
-  //       selectedHospitalCenter: pastSurgery.hospitalCenter,
-  //       internistName: pastSurgery.anesthesiologistName,
-  //       selectedCountryName: pastSurgery.country,
-  //       surgeonName: pastSurgery.surgeonName,
-  //       isEditMode: true,
-  //       updatedSurgeryId: pastSurgery.id,
-  //     ),
-  //   );
-  //   personalNotesController.text = pastSurgery.additionalNotes;
-  //   suergeryDescriptionController.text = pastSurgery.surgeryDescription;
-  //   postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
+  Future<void> loadpastAllergyDataForEditing(
+      AllergyDetailsData pastAllergy, S locale) async {
+    emit(
+      state.copyWith(
+        allergyDateSelection: pastAllergy.allergyOccurrenceDate,
+        alleryTypeSelection: pastAllergy.allergyType,
+        allergyTriggers: pastAllergy.allergyTriggers,
+        expectedSideEffectSelection: pastAllergy.expectedSideEffects,
+        selectedSyptomSeverity: pastAllergy.symptomSeverity,
+        symptomOnsetAfterExposure: pastAllergy.timeToSymptomOnset,
+        isDoctorConsulted: pastAllergy.isDoctorConsulted,
+        isAllergyTestDn: pastAllergy.isAllergyTestPerformed,
+        selectedMedicineName: pastAllergy.medicationName,
+        isTreatmentsEffective: pastAllergy.isTreatmentsEffective,
+        reportImageUploadedUrl: pastAllergy.medicalReportImage,
+        isAtRiskOfAnaphylaxis: pastAllergy.proneToAllergies,
+        isThereMedicalWarningOnExposure: pastAllergy.isMedicalWarningReceived,
+        isEpinephrineInjectorCarried: pastAllergy.carryEpinephrine,
+        updatedDocId: pastAllergy.id,
+        selectedAllergyCauses: pastAllergy.allergyTriggers,
+        isEditMode: true,
+      ),
+    );
+    effectedFamilyMembers.text =
+        pastAllergy.familyHistory == locale.no_data_entered
+            ? ""
+            : pastAllergy.familyHistory!;
+    precautions.text = pastAllergy.precautions == locale.no_data_entered
+        ? ""
+        : pastAllergy.precautions!;
 
-  //   validateRequiredFields();
-  //   await intialRequestsForDataEntry();
-  // }
+    validateRequiredFields();
+    // await intialRequestsForDataEntry();
+  }
 
   /// Update Field Values
   void updateAllergyDate(String? date) {
@@ -158,51 +166,53 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     );
   }
 
-  // Future<void> submitUpdatedSurgery() async {
-  //   emit(
-  //     state.copyWith(
-  //       surgeriesDataEntryStatus: RequestStatus.loading,
-  //     ),
-  //   );
-  //   final response = await _allergyDataEntryRepo.updateSurgeryDocumentById(
-  //     langauge: AppStrings.arabicLang,
-  //     requestBody: SurgeryRequestBodyModel(
-  //       surgeryDate: state.surgeryDateSelection!,
-  //       surgeryRegion: state.surgeryBodyPartSelection!,
-  //       subSurgeryRegion: state.selectedSubSurgery!,
-  //       surgeryName: state.surgeryNameSelection!,
-  //       usedTechnique: state.selectedTechUsed!,
-  //       additionalNotes: personalNotesController.text,
-  //       surgeryDescription: suergeryDescriptionController.text,
-  //       postSurgeryInstructions: postSurgeryInstructions.text,
-  //       surgeryStatus: state.selectedSurgeryStatus!,
-  //       hospitalCenter: state.selectedHospitalCenter!,
-  //       anesthesiologistName: state.internistName!,
-  //       country: state.selectedCountryName!,
-  //       surgeonName: state.surgeonName!,
-  //       medicalReportImage: state.reportImageUploadedUrl!,
-  //     ),
-  //     id: state.updatedSurgeryId,
-  //   );
-  //   response.when(
-  //     success: (successMessage) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeriesDataEntryStatus: RequestStatus.success,
-  //           message: successMessage,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           surgeriesDataEntryStatus: RequestStatus.failure,
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Future<void> updateAllergyDocumentById() async {
+    emit(
+      state.copyWith(
+        allergyDataEntryStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _allergyDataEntryRepo.updateAllergyDocumentById(
+      langauge: AppStrings.arabicLang,
+      requestBody: PostAllergyModuleDataModel(
+        allergyOccurrenceDate: state.allergyDateSelection!,
+        allergyType: state.alleryTypeSelection!,
+        allergyTriggers: state.allergyTriggers,
+        expectedSideEffects: state.expectedSideEffectSelection!,
+        symptomSeverity: state.selectedSyptomSeverity!,
+        timeToSymptomOnset: state.symptomOnsetAfterExposure!,
+        isDoctorConsulted: state.isDoctorConsulted,
+        isAllergyTestPerformed: state.isAllergyTestDn,
+        medicationName: state.selectedMedicineName!,
+        isTreatmentsEffective: state.isTreatmentsEffective,
+        medicalReportImage: state.reportImageUploadedUrl!,
+        familyHistory: effectedFamilyMembers.text,
+        precautions: precautions.text,
+        proneToAllergies: state.isAtRiskOfAnaphylaxis!,
+        isMedicalWarningReceived: state.isThereMedicalWarningOnExposure!,
+        carryEpinephrine: state.isEpinephrineInjectorCarried,
+      ),
+      id: state.updatedDocId,
+    );
+    response.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            allergyDataEntryStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            allergyDataEntryStatus: RequestStatus.failure,
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> emitAlleryTriggersBasedOnSelectedAllergyType() async {
     final response = await _allergyDataEntryRepo.getAllergyTriggers(
@@ -307,9 +317,8 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
         precautions: precautions.text.isEmpty
             ? locale.no_data_entered
             : precautions.text,
-        proneToAllergies: state.isAtRiskOfAnaphylaxis ?? locale.no_data_entered,
-        isMedicalWarningReceived:
-            state.isThereMedicalWarningOnExposure ?? locale.no_data_entered,
+        proneToAllergies: state.isAtRiskOfAnaphylaxis,
+        isMedicalWarningReceived: state.isThereMedicalWarningOnExposure,
         carryEpinephrine: state.isEpinephrineInjectorCarried,
       ),
     );
@@ -335,7 +344,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
 
   @override
   Future<void> close() {
-    personalNotesController.dispose();
     effectedFamilyMembers.dispose();
     precautions.dispose();
     return super.close();

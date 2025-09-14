@@ -6,7 +6,6 @@ import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/allergy/allergy_api_constants.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
 part 'allergy_services.g.dart';
 
@@ -20,7 +19,7 @@ abstract class AllergyServices {
   @MultiPart()
   @POST(AllergyApiConstants.uploadReportEndpoint)
   Future<UploadReportResponseModel> uploadReportImage(
-    @Part() File report,
+    @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
@@ -99,10 +98,11 @@ abstract class AllergyServices {
     @Query("userType") String userType,
   );
 
-  @PUT(AllergyApiConstants.editSurgeryEndpoint)
-  Future<dynamic> updateSurgeryDocumentById(
+  @PUT(AllergyApiConstants.updateAllergyDocumentById)
+  Future<dynamic> updateAllergyDocumentById(
     @Query("id") String id,
     @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Query("userType") String userType,
+    @Body() PostAllergyModuleDataModel requestBody,
   );
 }

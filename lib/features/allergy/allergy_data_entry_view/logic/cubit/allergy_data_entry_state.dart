@@ -26,7 +26,7 @@ class AllergyDataEntryState extends Equatable {
   final String? symptomOnsetAfterExposure; //زمن بدء الأعراض بعد التعرض للمسبب
   final String? selectedMedicineName;
   final bool isEditMode;
-  final String updatedSurgeryId;
+  final String updatedDocId;
 
   const AllergyDataEntryState({
     this.allergyDataEntryStatus = RequestStatus.initial,
@@ -51,7 +51,7 @@ class AllergyDataEntryState extends Equatable {
     this.symptomOnsetAfterExposure,
     this.selectedMedicineName,
     this.isEditMode = false,
-    this.updatedSurgeryId = '',
+    this.updatedDocId = '',
   }) : super();
 
   const AllergyDataEntryState.initialState()
@@ -77,7 +77,7 @@ class AllergyDataEntryState extends Equatable {
           symptomOnsetAfterExposure: null,
           selectedMedicineName: null,
           isEditMode: false,
-          updatedSurgeryId: '',
+          updatedDocId: '',
         );
 
   AllergyDataEntryState copyWith({
@@ -104,7 +104,7 @@ class AllergyDataEntryState extends Equatable {
     String? symptomOnsetAfterExposure,
     String? selectedMedicineName,
     bool? isEditMode,
-    String? updatedSurgeryId,
+    String? updatedDocId,
   }) {
     return AllergyDataEntryState(
       allergyDataEntryStatus:
@@ -139,7 +139,7 @@ class AllergyDataEntryState extends Equatable {
           symptomOnsetAfterExposure ?? this.symptomOnsetAfterExposure,
       selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
       isEditMode: isEditMode ?? this.isEditMode,
-      updatedSurgeryId: updatedSurgeryId ?? this.updatedSurgeryId,
+      updatedDocId: updatedDocId ?? this.updatedDocId,
     );
   }
 
@@ -167,6 +167,6 @@ class AllergyDataEntryState extends Equatable {
         symptomOnsetAfterExposure,
         selectedMedicineName,
         isEditMode,
-        updatedSurgeryId,
+        updatedDocId,
       ];
 }

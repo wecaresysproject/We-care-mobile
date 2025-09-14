@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +13,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
 
 class AllergyDetailsView extends StatelessWidget {
@@ -58,18 +61,21 @@ class AllergyDetailsView extends StatelessWidget {
                         .read<AllergyViewCubit>()
                         .deleteAllergyById(documentId),
                     shareFunction: () => _shareAllergyDetails(context, state),
-                    // editFunction: () async {
-                    //   final result = await context.pushNamed(
-                    //     Routes.surgeriesDataEntryView,
-                    //     arguments: state.selectedAllergyDetails,
-                    //   );
-                    //   if (result != null && result) {
-                    //     if (!context.mounted) return;
-                    //     await context
-                    //         .read<SurgeriesViewCubit>()
-                    //         .getSurgeryDetailsById(documentId);
-                    //   }
-                    // },
+                    editFunction: () async {
+                      log('test');
+                      final result = await context.pushNamed(
+                        Routes.allergyDataEntry,
+                        arguments: {
+                          'editModel': state.selectedAllergyDetails,
+                        },
+                      );
+                      if (result != null && result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<AllergyViewCubit>()
+                            .getSingleAllergyDetailsById(documentId);
+                      }
+                    },
                   ),
                   DetailsViewInfoTile(
                     title: "التاريخ",
@@ -160,7 +166,7 @@ class AllergyDetailsView extends StatelessWidget {
                       DetailsViewInfoTile(
                         title: "وجود صدمة تحسسية",
                         value: state.selectedAllergyDetails!.proneToAllergies ??
-                            '--',
+                            context.translate.no_data_entered,
                         icon: 'assets/images/chat_question.png',
                       ),
                     ],
@@ -187,8 +193,9 @@ class AllergyDetailsView extends StatelessWidget {
                     children: [
                       DetailsViewInfoTile(
                         title: "تحذير طبى للمسببات",
-                        value: state
-                            .selectedAllergyDetails!.isMedicalWarningReceived!,
+                        value: state.selectedAllergyDetails!
+                                .isMedicalWarningReceived ??
+                            context.translate.no_data_entered,
                         icon: 'assets/images/circular_warning.png',
                       ),
                       Spacer(),
@@ -196,7 +203,7 @@ class AllergyDetailsView extends StatelessWidget {
                         title: "حمل حقنة الإبينفرين",
                         value: state
                                 .selectedAllergyDetails!.carryEpinephrine.isNull
-                            ? '--'
+                            ? context.translate.no_data_entered
                             : state.selectedAllergyDetails!.carryEpinephrine!
                                 ? 'نعم'
                                 : 'لا',

@@ -6,6 +6,7 @@ import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometric
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/allergy_data_entry_view.dart';
 import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view.dart';
 import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
+import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
@@ -532,8 +533,13 @@ class AppRouter {
           builder: (_) => UserNutrationInfoDataEntryView(),
         );
       case Routes.allergyDataEntry:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+
         return MaterialPageRoute(
-          builder: (_) => AllergyDataEntryView(),
+          builder: (_) => AllergyDataEntryView(
+            existingAllergyModel:
+                argumentsMap?['editModel'] as AllergyDetailsData?,
+          ),
         );
       case Routes.followUpNutrationPlansView:
         return MaterialPageRoute(

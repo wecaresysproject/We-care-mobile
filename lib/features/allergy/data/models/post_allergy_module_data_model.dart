@@ -17,8 +17,8 @@ class PostAllergyModuleDataModel {
   final String medicalReportImage;
   final String familyHistory;
   final String precautions;
-  final String proneToAllergies;
-  final String isMedicalWarningReceived;
+  final String? proneToAllergies;
+  final String? isMedicalWarningReceived;
   final bool? carryEpinephrine;
 
   const PostAllergyModuleDataModel({
