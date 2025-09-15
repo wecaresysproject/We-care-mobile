@@ -6,13 +6,11 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MealCard extends StatelessWidget {
   final String day;
-  final bool isEmpty;
   final bool haveAdocument;
 
   const MealCard({
     super.key,
     required this.day,
-    required this.isEmpty,
     this.haveAdocument = false,
   });
 
@@ -22,11 +20,13 @@ class MealCard extends StatelessWidget {
       height: 70,
       padding: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: Color(0xffF1F3F6),
+        color: haveAdocument ? Color(0xffDAE9FA) : Color(0xffF1F3F6),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           width: 1,
-          color: AppColorsManager.placeHolderColor,
+          color: haveAdocument
+              ? AppColorsManager.mainDarkBlue
+              : AppColorsManager.placeHolderColor,
         ),
         boxShadow: [
           BoxShadow(
@@ -57,8 +57,6 @@ class MealCard extends StatelessWidget {
           haveAdocument
               ? Container(
                   width: 69.w,
-
-                  // margin: EdgeInsets.only(bottom: 6.h),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
                     vertical: 4,

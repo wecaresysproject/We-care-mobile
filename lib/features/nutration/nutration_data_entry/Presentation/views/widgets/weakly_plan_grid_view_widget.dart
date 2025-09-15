@@ -29,7 +29,6 @@ class WeeklyMealGrid extends StatelessWidget {
         itemBuilder: (context, index) {
           return MealCard(
             day: days[index],
-            isEmpty: true,
             haveAdocument: index % 3 == 0, // Some cards have documents
           );
         },
