@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/instruction_text_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
@@ -28,9 +28,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
     with SingleTickerProviderStateMixin {
   // TabController for managing tabs
   late TabController _tabController;
-
-  final TextEditingController _monthlyMessageController =
-      TextEditingController();
 
   // State for each tab
   bool _weeklyPlanActive = false;
@@ -61,19 +58,20 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   @override
   void dispose() {
     _tabController.dispose();
-    _monthlyMessageController.dispose();
     super.dispose();
   }
 
   // Toggle plan active state for current tab
   void _togglePlanActive(bool value) {
-    setState(() {
-      if (_currentIndex == 0) {
-        _weeklyPlanActive = value;
-      } else {
-        _monthlyPlanActive = value;
-      }
-    });
+    setState(
+      () {
+        if (_currentIndex == 0) {
+          _weeklyPlanActive = value;
+        } else {
+          _monthlyPlanActive = value;
+        }
+      },
+    );
   }
 
   @override
@@ -204,15 +202,44 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
 
           verticalSpacing(12),
 
-          AppCustomButton(
-            title: 'حفظ',
-            isEnabled: true,
-            onPressed: () async {
-              await context.pushNamed(Routes.nutritionFollowUpReportView);
+          BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
+            builder: (context, state) {
+              if (state.submitNutrationDataStatus == RequestStatus.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                ).paddingFrom(right: 200);
+              }
+
+              return AppCustomButton(
+                title: 'حفظ',
+                isEnabled: messageController.text.isNotEmpty,
+                onPressed: () async {
+                  // Call the new analyzeDietPlan method
+                  await context
+                      .read<NutrationDataEntryCubit>()
+                      .analyzeDietPlan();
+
+                  // Show result message
+                  if (context.mounted) {
+                    final currentState =
+                        context.read<NutrationDataEntryCubit>().state;
+                    if (currentState.message.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(currentState.message),
+                          backgroundColor:
+                              currentState.submitNutrationDataStatus ==
+                                      RequestStatus.success
+                                  ? Colors.green
+                                  : Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                },
+              ).paddingFrom(right: 200);
             },
-          ).paddingFrom(
-            right: 200,
-          )
+          ),
         ],
       ),
     );
@@ -281,7 +308,9 @@ class MessageInputSection extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: state.isListening
                         ? 'جاري الاستماع...'
-                        : 'رسالة نصية أو تسجيل صوتي',
+                        : (state.selectedPlanDate.isEmpty
+                            ? 'اكتب او سجل غذائك'
+                            : 'اكتب او سجل غذائك ليوم ${state.selectedPlanDate}'),
                     hintStyle: TextStyle(color: Colors.grey),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
