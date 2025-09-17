@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/Biometrics/data/models/post_biometric_data_of_specifc_category_model.dart';
+import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/chat_gbt_services.dart';
 
 part 'nutration_data_entry_state.dart';
 
@@ -89,6 +88,15 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   // New method to update the current tab index
   void updateCurrentTab(int index) {
     emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
+    resetSelectedPlanDate();
+  }
+
+  void updateSelectedPlanDate(String date) {
+    emit(state.copyWith(selectedPlanDate: date));
+  }
+
+  void resetSelectedPlanDate() {
+    emit(state.copyWith(selectedPlanDate: ''));
   }
 
   // Stop listening for speech
@@ -122,38 +130,109 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     }
   }
 
+  // NEW METHOD: Analyze diet plan using ChatGPT
+  Future<void> analyzeDietPlan() async {
+    // Get the current diet input based on active tab
+    String dietInput;
+    if (state.followUpNutrationViewCurrentTabIndex == 0) {
+      dietInput = weeklyMessageController.text.trim();
+    } else {
+      dietInput = monthlyMessageController.text.trim();
+    }
+
+    if (dietInput.isEmpty) {
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.failure,
+          message: 'يرجى إدخال بيانات الطعام أولاً',
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.loading,
+          nutrationFactsModel: null,
+          message: 'جاري تحليل البيانات الغذائية...',
+        ),
+      );
+
+      // Call ChatGPT service
+      final nutritionData = await ChatGPTService.analyzeDietPlan(dietInput);
+
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.success,
+          nutrationFactsModel: nutritionData,
+          message: 'تم تحليل البيانات الغذائية بنجاح',
+        ),
+      );
+      clearRelativeControllerToCurrentTab();
+      // You can now use nutritionData to send to your backend
+      //  await _sendNutritionDataToBackend(nutritionData);
+    } catch (e) {
+      log('Error in analyzeDietPlan: $e');
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل البيانات الغذائية',
+        ),
+      );
+    }
+  }
+
+  clearRelativeControllerToCurrentTab() {
+    if (state.followUpNutrationViewCurrentTabIndex == 0) {
+      weeklyMessageController.clear();
+    } else {
+      monthlyMessageController.clear();
+    }
+    emit(state.copyWith(recognizedText: ''));
+  }
+
+  // Optional: Method to send nutrition data to your backend
+  Future<void> _sendNutritionDataToBackend(
+      NutrationFactsModel nutritionData) async {
+    // Implement your backend API call here
+    // This is where you would send the analyzed nutrition data to your server
+    log('Sending nutrition data to backend: ${nutritionData.toJson()}');
+  }
+
   Future<void> postNutrationDataEntry({
     required String categoryName,
     required String minValue,
     String? maxValue,
   }) async {
-    emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
+    // emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
 
-    final result = await _nutrationDataEntryRepo.postNutrationDataEntry(
-      requestBody: PostBiometricCategoryModel(
-        categoryName: categoryName,
-        minValue: minValue,
-        maxValue:
-            maxValue, //should handle in case there was an max an min value
-      ),
-      lanugage: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-    );
-    result.when(success: (successMessage) {
-      emit(
-        state.copyWith(
-          submitNutrationDataStatus: RequestStatus.success,
-          message: successMessage,
-        ),
-      );
-    }, failure: (failure) {
-      emit(
-        state.copyWith(
-          submitNutrationDataStatus: RequestStatus.failure,
-          message: failure.errors.first,
-        ),
-      );
-    });
+    // final result = await _nutrationDataEntryRepo.postNutrationDataEntry(
+    //   requestBody: PostBiometricCategoryModel(
+    //     categoryName: categoryName,
+    //     minValue: minValue,
+    //     maxValue:
+    //         maxValue, //should handle in case there was an max an min value
+    //   ),
+    //   lanugage: AppStrings.arabicLang,
+    //   userType: UserTypes.patient.name.firstLetterToUpperCase,
+    // );
+    // result.when(success: (successMessage) {
+    //   emit(
+    //     state.copyWith(
+    //       submitNutrationDataStatus: RequestStatus.success,
+    //       message: successMessage,
+    //     ),
+    //   );
+    // }, failure: (failure) {
+    //   emit(
+    //     state.copyWith(
+    //       submitNutrationDataStatus: RequestStatus.failure,
+    //       message: failure.errors.first,
+    //     ),
+    //   );
+    // });
   }
 
   @override

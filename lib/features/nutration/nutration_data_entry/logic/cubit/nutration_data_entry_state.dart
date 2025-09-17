@@ -11,6 +11,8 @@ class NutrationDataEntryState extends Equatable {
   final String message; // error or success message
   final String recognizedText;
   final int followUpNutrationViewCurrentTabIndex;
+  final String selectedPlanDate;
+  final NutrationFactsModel? nutrationFactsModel; // NEW: Add nutrition data
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
@@ -20,6 +22,8 @@ class NutrationDataEntryState extends Equatable {
     this.isListening = false,
     this.recognizedText = '',
     this.followUpNutrationViewCurrentTabIndex = 0,
+    this.nutrationFactsModel,
+    this.selectedPlanDate = '',
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -31,6 +35,8 @@ class NutrationDataEntryState extends Equatable {
           isListening: false,
           recognizedText: '',
           followUpNutrationViewCurrentTabIndex: 0,
+          nutrationFactsModel: null,
+          selectedPlanDate: '',
         );
 
   NutrationDataEntryState copyWith({
@@ -41,6 +47,8 @@ class NutrationDataEntryState extends Equatable {
     bool? isListening,
     String? recognizedText,
     int? followUpNutrationViewCurrentTabIndex,
+    NutrationFactsModel? nutrationFactsModel,
+    String? selectedPlanDate,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -53,6 +61,8 @@ class NutrationDataEntryState extends Equatable {
       followUpNutrationViewCurrentTabIndex:
           followUpNutrationViewCurrentTabIndex ??
               this.followUpNutrationViewCurrentTabIndex,
+      nutrationFactsModel: nutrationFactsModel ?? this.nutrationFactsModel,
+      selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
     );
   }
 
@@ -65,5 +75,7 @@ class NutrationDataEntryState extends Equatable {
         isListening,
         recognizedText,
         followUpNutrationViewCurrentTabIndex,
+        nutrationFactsModel,
+        selectedPlanDate,
       ];
 }

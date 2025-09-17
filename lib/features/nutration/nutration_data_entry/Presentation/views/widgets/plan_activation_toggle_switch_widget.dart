@@ -22,10 +22,13 @@ class PlanActivationToggle extends StatelessWidget {
         Switch(
           value: isActive,
           onChanged: onToggle,
-          activeColor: Colors.white,
-          activeTrackColor: Colors.grey[400],
-          inactiveThumbColor: Colors.white,
-          inactiveTrackColor: Colors.grey[300],
+          trackOutlineColor: WidgetStateProperty.all(
+            AppColorsManager.placeHolderColor.withAlpha(50),
+          ),
+          activeColor: AppColorsManager.mainDarkBlue,
+          activeTrackColor: Color(0xffDAE9FA),
+          inactiveThumbColor: AppColorsManager.placeHolderColor,
+          inactiveTrackColor: Colors.grey.withAlpha(100),
         ),
         horizontalSpacing(10),
         Text(
