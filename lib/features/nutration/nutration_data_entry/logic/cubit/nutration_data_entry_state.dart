@@ -12,7 +12,14 @@ class NutrationDataEntryState extends Equatable {
   final String recognizedText;
   final int followUpNutrationViewCurrentTabIndex;
   final String selectedPlanDate;
+  final String? genderType;
+  final String? selectedPhysicalActivity;
+  final List<String> selectedChronicDiseases;
+  final List<String> chronicDiseases;
+
   final NutrationFactsModel? nutrationFactsModel; // NEW: Add nutrition data
+  final bool monthlyActivationStatus;
+  final bool weeklyActivationStatus;
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
@@ -24,6 +31,12 @@ class NutrationDataEntryState extends Equatable {
     this.followUpNutrationViewCurrentTabIndex = 0,
     this.nutrationFactsModel,
     this.selectedPlanDate = '',
+    this.genderType = '',
+    this.selectedPhysicalActivity = '',
+    this.chronicDiseases = const [],
+    this.selectedChronicDiseases = const [],
+    this.monthlyActivationStatus = false,
+    this.weeklyActivationStatus = false,
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -37,6 +50,12 @@ class NutrationDataEntryState extends Equatable {
           followUpNutrationViewCurrentTabIndex: 0,
           nutrationFactsModel: null,
           selectedPlanDate: '',
+          genderType: '',
+          selectedPhysicalActivity: '',
+          chronicDiseases: const [],
+          selectedChronicDiseases: const [],
+          monthlyActivationStatus: false,
+          weeklyActivationStatus: false,
         );
 
   NutrationDataEntryState copyWith({
@@ -49,6 +68,12 @@ class NutrationDataEntryState extends Equatable {
     int? followUpNutrationViewCurrentTabIndex,
     NutrationFactsModel? nutrationFactsModel,
     String? selectedPlanDate,
+    String? genderType,
+    String? selectedPhysicalActivity,
+    List<String>? chronicDiseases,
+    List<String>? selectedChronicDiseases,
+    bool? monthlyActivationStatus,
+    bool? weeklyActivationStatus,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -63,6 +88,16 @@ class NutrationDataEntryState extends Equatable {
               this.followUpNutrationViewCurrentTabIndex,
       nutrationFactsModel: nutrationFactsModel ?? this.nutrationFactsModel,
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
+      genderType: genderType ?? this.genderType,
+      selectedPhysicalActivity:
+          selectedPhysicalActivity ?? this.selectedPhysicalActivity,
+      chronicDiseases: chronicDiseases ?? this.chronicDiseases,
+      selectedChronicDiseases:
+          selectedChronicDiseases ?? this.selectedChronicDiseases,
+      monthlyActivationStatus:
+          monthlyActivationStatus ?? this.monthlyActivationStatus,
+      weeklyActivationStatus:
+          weeklyActivationStatus ?? this.weeklyActivationStatus,
     );
   }
 
@@ -77,5 +112,11 @@ class NutrationDataEntryState extends Equatable {
         followUpNutrationViewCurrentTabIndex,
         nutrationFactsModel,
         selectedPlanDate,
+        genderType,
+        selectedPhysicalActivity,
+        chronicDiseases,
+        selectedChronicDiseases,
+        monthlyActivationStatus,
+        weeklyActivationStatus
       ];
 }

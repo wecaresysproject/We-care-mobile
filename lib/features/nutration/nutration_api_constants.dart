@@ -1,14 +1,17 @@
-class BiometricsApiConstants {
-  static const baseUrl = "http://147.93.57.70/api/";
+class NutrationApiConstants {
+  static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
-  static const postBiometricDataOfSpecifcCategory =
-      "VitalActivity/AddVitalActivity";
+  static const postPersonalNutritionData = "/SmartNutritionAnalyzer/calculate";
+  static const getAllChronicDiseases = "/SmartNutritionAnalyzer/names";
+  static const getPlanActivationStatus =
+      "/SmartNutritionAnalyzer/names"; //! change it later
+
   //View Entry
-  static const getAllAvailableBiometrics = "VitalActivity/GetAllAvailableCategories";
+  static const getAllAvailableBiometrics =
+      "VitalActivity/GetAllAvailableCategories";
   static const getAllFilters = "VitalActivity/GetFilterOptions";
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
-  static const getCurrentBiometricData =
-      "VitalActivity/currentbiometrics";
+  static const getCurrentBiometricData = "VitalActivity/currentbiometrics";
 
   //filters
 }

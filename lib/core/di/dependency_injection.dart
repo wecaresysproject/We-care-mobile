@@ -310,11 +310,6 @@ void setupAppCubits() {
       getIt<AllergyViewRepo>(),
     ),
   );
-  // getIt.registerFactory<NutrationDataEntryCubit>(
-  //   () => NutrationDataEntryCubit(
-  //     getIt<NutrationDataEntryRepo>()
-  //   ),
-  // );
 }
 
 void setupAppRepos() {
