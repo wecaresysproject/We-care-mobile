@@ -1,6 +1,5 @@
 part of 'eyes_data_entry_cubit.dart';
 
-@immutable
 class EyesDataEntryState extends Equatable {
   final RequestStatus eyeDataEntryStatus;
   final String? errorMessage;

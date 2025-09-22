@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
+import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/nutration_api_constants.dart';
 
@@ -9,16 +11,28 @@ part 'nutration_services.g.dart';
 abstract class NutrationServices {
   factory NutrationServices(Dio dio, {String? baseUrl}) = _NutrationServices;
 
-  @POST(NutrationApiConstants.postPersonalNutritionData)
-  Future<dynamic> postPersonalNutritionData(
-    @Body() PostPersonalNutritionData requestBody,
+  @POST(NutrationApiConstants.postPersonalUserInfoData)
+  Future<dynamic> postPersonalUserInfoData(
+    @Body() PostPersonalUserInfoData requestBody,
     @Query('Language') String language,
+  );
+  @POST(NutrationApiConstants.postDailyDietPlan)
+  Future<dynamic> postDailyDietPlan(
+    @Body() NutrationFactsModel requestBody,
+    @Query('language') String language,
+    @Query('date') String date,
+  );
+  @GET(NutrationApiConstants.getAllCreatedPlans)
+  Future<GetAllCreatedPlansModel> getAllCreatedPlans(
+    @Query('language') String language,
+    @Query('planStatus') bool planActivationStatus,
+    @Query('planType') String planType,
   );
   @GET(NutrationApiConstants.getAllChronicDiseases)
   Future<dynamic> getAllChronicDiseases(
     @Query('language') String language,
   );
-  @GET(NutrationApiConstants.getAllChronicDiseases)
+  @GET(NutrationApiConstants.getPlanActivationStatus)
   Future<dynamic> getPlanActivationStatus(
     @Query('language') String language,
     @Query('planType') String planType,

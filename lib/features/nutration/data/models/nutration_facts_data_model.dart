@@ -9,7 +9,7 @@ class NutrationFactsModel {
   final double saturatedFats;
   final double monounsaturatedFats;
   final double polyunsaturatedFats;
-  final double totalFats;
+  final double totalFat;
   final double cholesterol;
   final double carbohydrates;
   final double fiber;
@@ -45,7 +45,7 @@ class NutrationFactsModel {
     required this.saturatedFats,
     required this.monounsaturatedFats,
     required this.polyunsaturatedFats,
-    required this.totalFats,
+    required this.totalFat,
     required this.cholesterol,
     required this.carbohydrates,
     required this.fiber,

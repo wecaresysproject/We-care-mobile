@@ -16,6 +16,7 @@ class NutrationDataEntryState extends Equatable {
   final String? selectedPhysicalActivity;
   final List<String> selectedChronicDiseases;
   final List<String> chronicDiseases;
+  final List<Day> days;
 
   final NutrationFactsModel? nutrationFactsModel; // NEW: Add nutrition data
   final bool monthlyActivationStatus;
@@ -37,6 +38,7 @@ class NutrationDataEntryState extends Equatable {
     this.selectedChronicDiseases = const [],
     this.monthlyActivationStatus = false,
     this.weeklyActivationStatus = false,
+    this.days = const [],
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -56,6 +58,7 @@ class NutrationDataEntryState extends Equatable {
           selectedChronicDiseases: const [],
           monthlyActivationStatus: false,
           weeklyActivationStatus: false,
+          days: const [],
         );
 
   NutrationDataEntryState copyWith({
@@ -74,6 +77,7 @@ class NutrationDataEntryState extends Equatable {
     List<String>? selectedChronicDiseases,
     bool? monthlyActivationStatus,
     bool? weeklyActivationStatus,
+    List<Day>? days,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -98,6 +102,7 @@ class NutrationDataEntryState extends Equatable {
           monthlyActivationStatus ?? this.monthlyActivationStatus,
       weeklyActivationStatus:
           weeklyActivationStatus ?? this.weeklyActivationStatus,
+      days: days ?? this.days,
     );
   }
 
@@ -117,6 +122,7 @@ class NutrationDataEntryState extends Equatable {
         chronicDiseases,
         selectedChronicDiseases,
         monthlyActivationStatus,
-        weeklyActivationStatus
+        weeklyActivationStatus,
+        days,
       ];
 }

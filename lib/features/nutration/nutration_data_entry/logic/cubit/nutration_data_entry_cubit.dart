@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
@@ -92,8 +93,12 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   }
 
   // New method to update the current tab index
-  void updateCurrentTab(int index) {
+  Future<void> updateCurrentTab(int index) async {
     emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
+    await getPlanActivationStatus();
+
+    //! Load existing plans without toggling
+    await loadExistingPlans();
     // refetch data of the list of days
     resetSelectedPlanDate();
   }
@@ -176,11 +181,11 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       dietInput = monthlyMessageController.text.trim();
     }
 
-    if (dietInput.isEmpty) {
+    if (dietInput.isEmpty || state.selectedPlanDate.isEmpty) {
       emit(
         state.copyWith(
           submitNutrationDataStatus: RequestStatus.failure,
-          message: 'يرجى إدخال بيانات الطعام أولاً',
+          message: 'يرجى إدخال بيانات الطعام واختيار اليوم معا اولا',
         ),
       );
       return;
@@ -191,24 +196,14 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       emit(
         state.copyWith(
           submitNutrationDataStatus: RequestStatus.loading,
-          nutrationFactsModel: null,
-          message: 'جاري تحليل البيانات الغذائية...',
         ),
       );
 
       // Call ChatGPT service
       final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
 
-      emit(
-        state.copyWith(
-          submitNutrationDataStatus: RequestStatus.success,
-          nutrationFactsModel: nutritionData,
-          message: 'تم تحليل البيانات الغذائية بنجاح',
-        ),
-      );
-      clearRelativeControllerToCurrentTab();
       // You can now use nutritionData to send to your backend
-      //  await _sendNutritionDataToBackend(nutritionData);
+      await postDailyDietPlan(nutritionData!);
     } catch (e) {
       log('Error in analyzeDietPlan: $e');
       emit(
@@ -220,7 +215,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     }
   }
 
-  clearRelativeControllerToCurrentTab() {
+  void clearRelativeControllerToCurrentTab() {
     if (state.followUpNutrationViewCurrentTabIndex == 0) {
       weeklyMessageController.clear();
     } else {
@@ -230,18 +225,151 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   }
 
   // Optional: Method to send nutrition data to your backend
-  Future<void> _sendNutritionDataToBackend(
-      NutrationFactsModel nutritionData) async {
-    // Implement your backend API call here
-    // This is where you would send the analyzed nutrition data to your server
-    log('Sending nutrition data to backend: ${nutritionData.toJson()}');
+  Future<void> postDailyDietPlan(NutrationFactsModel nutritionData) async {
+    final result = await _nutrationDataEntryRepo.postDailyDietPlan(
+      requestBody: nutritionData,
+      lanugage: AppStrings.arabicLang,
+      date: state.selectedPlanDate,
+    );
+    result.when(
+      success: (successMessage) async {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+        clearRelativeControllerToCurrentTab();
+        await loadExistingPlans();
+        log(
+          'successMessage for  postDailyDietPlan: $successMessage'
+          'submitNutrationDataStatus: ${state.submitNutrationDataStatus}',
+        );
+        // call endpoint that returies the list of days
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
   }
 
-  Future<void> postPersonalNutritionData() async {
+// each change in tab will call this method
+  Future<void> togglePlanActivationAndLoadingExistingPlans() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    final bool currentPlanActivationStatus = planType == PlanType.weekly.name
+        ? state.weeklyActivationStatus
+        : state.monthlyActivationStatus;
+    emit(
+      state.copyWith(submitNutrationDataStatus: RequestStatus.loading),
+    );
+    final result = await _nutrationDataEntryRepo.getAllCreatedPlans(
+      lanugage: AppStrings.arabicLang,
+      planActivationStatus:
+          !currentPlanActivationStatus, //! toggle it before call get plan again
+      planType: planType,
+    );
+
+    result.when(
+      success: (response) {
+        final days = response.plan.days;
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              weeklyActivationStatus: response.planStatus,
+              days: days,
+              submitNutrationDataStatus: RequestStatus.success,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              monthlyActivationStatus: response.planStatus,
+              days: days,
+              submitNutrationDataStatus: RequestStatus.success,
+            ),
+          );
+        }
+
+        clearRelativeControllerToCurrentTab();
+
+        // call endpoint that returies the list of days
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+            days: [],
+          ),
+        );
+      },
+    );
+  }
+
+  // Separate method to just load/fetch existing plans without toggling
+  Future<void> loadExistingPlans() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    final bool currentPlanActivationStatus = planType == PlanType.weekly.name
+        ? state.weeklyActivationStatus
+        : state.monthlyActivationStatus;
+
     emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
 
-    final result = await _nutrationDataEntryRepo.postPersonalNutritionData(
-      requestBody: PostPersonalNutritionData(
+    final result = await _nutrationDataEntryRepo.getAllCreatedPlans(
+      lanugage: AppStrings.arabicLang,
+      planActivationStatus:
+          currentPlanActivationStatus, // DON'T toggle - just get current status
+      planType: planType,
+    );
+
+    result.when(
+      success: (response) {
+        final days = response.plan.days;
+
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              weeklyActivationStatus: response.planStatus,
+              days: days,
+              submitNutrationDataStatus: RequestStatus.success,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              monthlyActivationStatus: response.planStatus,
+              days: days,
+              submitNutrationDataStatus: RequestStatus.success,
+            ),
+          );
+        }
+
+        log('Plans loaded successfully: ${days.length} days, status: ${response.planStatus}');
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+            days: [],
+          ),
+        );
+
+        log('Failed to load plans: ${failure.errors.first}');
+      },
+    );
+  }
+
+  Future<void> postPersonalUserInfoData() async {
+    emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
+
+    final result = await _nutrationDataEntryRepo.postPersonalUserInfoData(
+      requestBody: PostPersonalUserInfoData(
         weight: int.parse(weightController.text),
         height: int.parse(heightController.text),
         age: int.parse(ageController.text),
@@ -285,6 +413,45 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       },
       failure: (failure) {
         log('Error in getAllChronicDiseases: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  String _getPlanTypeNameRelativeToCurrentActiveTab() {
+    return state.followUpNutrationViewCurrentTabIndex == 0
+        ? PlanType.weekly.name
+        : PlanType.monthly.name;
+  }
+
+  Future<void> getPlanActivationStatus() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+
+    final result = await _nutrationDataEntryRepo.getPlanActivationStatus(
+      language: AppStrings.arabicLang,
+      planType: planType,
+    );
+
+    result.when(
+      success: (status) {
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(weeklyActivationStatus: status),
+          );
+          status ? loadExistingPlans() : null;
+        } else {
+          emit(
+            state.copyWith(monthlyActivationStatus: status),
+          );
+        }
+        log(' getPlanActivationStatus called and => Plan activation status for $planType: $status');
+      },
+      failure: (failure) {
+        log('Error in getPlanActivationStatus: ${failure.errors.first}');
         safeEmit(
           state.copyWith(
             message: failure.errors.first,

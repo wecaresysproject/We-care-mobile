@@ -1,6 +1,5 @@
 part of 'create_new_password_cubit.dart';
 
-@immutable
 class CreateNewPasswordState extends Equatable {
   final RequestStatus createNewPasswordStatus;
   final String? message;

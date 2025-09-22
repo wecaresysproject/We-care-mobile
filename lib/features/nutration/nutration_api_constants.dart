@@ -1,10 +1,12 @@
 class NutrationApiConstants {
-  static const baseUrl = "http://147.93.57.70/api";
+  static const baseUrl = "http://147.93.57.70/api/";
   //Data Entry
-  static const postPersonalNutritionData = "/SmartNutritionAnalyzer/calculate";
-  static const getAllChronicDiseases = "/SmartNutritionAnalyzer/names";
+  static const postPersonalUserInfoData = "SmartNutritionAnalyzer/calculate";
+  static const postDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
+  static const getAllCreatedPlans = "SmartNutritionAnalyzer/generate-plan";
+  static const getAllChronicDiseases = "SmartNutritionAnalyzer/names";
   static const getPlanActivationStatus =
-      "/SmartNutritionAnalyzer/names"; //! change it later
+      "SmartNutritionAnalyzer/check"; //! change it later
 
   //View Entry
   static const getAllAvailableBiometrics =

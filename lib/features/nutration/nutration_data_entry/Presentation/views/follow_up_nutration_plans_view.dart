@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,13 +29,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   // TabController for managing tabs
   late TabController _tabController;
 
-  // State for each tab
-  bool _weeklyPlanActive = false;
-  bool _monthlyPlanActive = false;
-
-  // Current tab index
-  int _currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -46,15 +37,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
       vsync: this,
       initialIndex: 0,
     );
-
-    // Listen to tab changes
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging) {
-        setState(() {
-          _currentIndex = _tabController.index;
-        });
-      }
-    });
   }
 
   @override
@@ -63,25 +45,13 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
     super.dispose();
   }
 
-  // Toggle plan active state for current tab
-  void _togglePlanActive(bool value) {
-    log('Toggling plan active state for tab $_currentIndex to $value');
-    setState(
-      () {
-        if (_currentIndex == 0) {
-          _weeklyPlanActive = value;
-        } else {
-          _monthlyPlanActive = value;
-        }
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NutrationDataEntryCubit>(
       create: (context) =>
-          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
+          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context)
+            ..getPlanActivationStatus()
+            ..loadExistingPlans(),
       child: Builder(
         builder: (BuildContext context) {
           return Scaffold(
@@ -127,9 +97,9 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
                     indicatorColor: AppColorsManager.mainDarkBlue,
                     indicatorWeight: 3,
                     indicatorSize: TabBarIndicatorSize.tab,
-                    onTap: (index) {
+                    onTap: (index) async {
                       // Call the cubit method when the tab is tapped
-                      context
+                      await context
                           .read<NutrationDataEntryCubit>()
                           .updateCurrentTab(index);
                     },
@@ -149,7 +119,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
                       // Weekly Plan Tab
                       _buildTabContent(
                         isWeeklyPlan: true,
-                        isActive: _weeklyPlanActive,
                         messageController: context
                             .read<NutrationDataEntryCubit>()
                             .weeklyMessageController,
@@ -157,7 +126,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
                       // Monthly Plan Tab
                       _buildTabContent(
                         isWeeklyPlan: false,
-                        isActive: _monthlyPlanActive,
                         messageController: context
                             .read<NutrationDataEntryCubit>()
                             .monthlyMessageController,
@@ -173,93 +141,8 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
     );
   }
 
-// ظبط الي حدا ما
-//   Widget _buildTabContent({
-//     required bool isWeeklyPlan,
-//     required bool isActive,
-//     required TextEditingController messageController,
-//   }) {
-//     return SingleChildScrollView(
-//       padding: const EdgeInsets.all(16.0),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min, // Important: Use minimum size
-//         children: [
-//           // Plan activation toggle
-//           PlanActivationToggle(
-//             isActive: isActive,
-//             onToggle: _togglePlanActive,
-//           ),
-
-//           verticalSpacing(24),
-
-//           // Meal grid (different for weekly vs monthly) - Give it a fixed height
-//           SizedBox(
-//             height: MediaQuery.of(context).size.height *
-//                 0.35, // 35% of screen height
-//             child: isWeeklyPlan ? WeeklyMealGrid() : MonthlyMealGrid(),
-//           ),
-
-//           verticalSpacing(25),
-
-//           // Instruction text
-//           const InstructionText(),
-
-//           verticalSpacing(16),
-
-//           // Message input and voice button
-//           MessageInputSection(controller: messageController),
-
-//           verticalSpacing(12),
-
-//           BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
-//             builder: (context, state) {
-//               if (state.submitNutrationDataStatus == RequestStatus.loading) {
-//                 return const Center(
-//                   child: CircularProgressIndicator(),
-//                 ).paddingFrom(right: 200);
-//               }
-
-//               return AppCustomButton(
-//                 title: 'حفظ',
-//                 isEnabled: messageController.text.isNotEmpty,
-//                 onPressed: () async {
-//                   // Call the new analyzeDietPlan method
-//                   await context
-//                       .read<NutrationDataEntryCubit>()
-//                       .analyzeDietPlan();
-
-//                   // Show result message
-//                   if (context.mounted) {
-//                     final currentState =
-//                         context.read<NutrationDataEntryCubit>().state;
-//                     if (currentState.message.isNotEmpty) {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(
-//                           content: Text(currentState.message),
-//                           backgroundColor:
-//                               currentState.submitNutrationDataStatus ==
-//                                       RequestStatus.success
-//                                   ? Colors.green
-//                                   : Colors.red,
-//                         ),
-//                       );
-//                     }
-//                   }
-//                 },
-//               ).paddingFrom(right: 200);
-//             },
-//           ),
-
-//           // Add some bottom padding to ensure content is not cut off
-//           SizedBox(height: MediaQuery.of(context).viewInsets.bottom + 16.h),
-//         ],
-//       ),
-//     );
-//   }
-// }
   Widget _buildTabContent({
     required bool isWeeklyPlan,
-    required bool isActive,
     required TextEditingController messageController,
   }) {
     return Column(
@@ -271,17 +154,16 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
             child: Column(
               children: [
                 // Plan activation toggle
-                PlanActivationToggle(
-                  isActive: isActive,
-                  onToggle: _togglePlanActive,
-                ),
+                PlanActivationToggleBlocBuilder(),
 
                 verticalSpacing(24),
 
                 // Meal grid (different for weekly vs monthly)
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  child: isWeeklyPlan ? WeeklyMealGrid() : MonthlyMealGrid(),
+                  height: MediaQuery.of(context).size.height * 0.34,
+                  child: isWeeklyPlan
+                      ? WeeklyMealGridBLocBuilder()
+                      : MonthlyMealGridBlocBuilder(),
                 ),
 
                 // Instruction text
@@ -338,14 +220,12 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
 
                       // Show result message
                       if (context.mounted) {
-                        final currentState =
-                            context.read<NutrationDataEntryCubit>().state;
-                        if (currentState.message.isNotEmpty) {
+                        if (state.message.isNotEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(currentState.message),
+                              content: Text(state.message),
                               backgroundColor:
-                                  currentState.submitNutrationDataStatus ==
+                                  state.submitNutrationDataStatus ==
                                           RequestStatus.success
                                       ? Colors.green
                                       : Colors.red,
@@ -364,90 +244,6 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
     );
   }
 }
-//   Widget _buildTabContent({
-//     required bool isWeeklyPlan,
-//     required bool isActive,
-//     required TextEditingController messageController,
-//   }) {
-//     return Padding(
-//       padding: const EdgeInsets.all(16.0),
-//       child: Column(
-//         children: [
-//           // Plan activation toggle
-//           PlanActivationToggle(
-//             isActive: isActive,
-//             onToggle: _togglePlanActive,
-//           ),
-
-//           verticalSpacing(24),
-
-//           // Meal grid (different for weekly vs monthly)
-//           Expanded(
-//             child: isWeeklyPlan ? WeeklyMealGrid() : MonthlyMealGrid(),
-//           ),
-
-//           verticalSpacing(25),
-
-//           // Instruction text
-//           const InstructionText(),
-
-//           verticalSpacing(16),
-
-//           // Message input and voice button
-//           SingleChildScrollView(
-//             // reverse: true, // يخلي آخر عنصر يظهر فوق الكيبورد
-//             padding: EdgeInsets.only(
-//               bottom: MediaQuery.of(context).viewInsets.bottom,
-//             ),
-
-//             child: MessageInputSection(controller: messageController),
-//           ),
-
-//           verticalSpacing(12),
-
-//           BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
-//             builder: (context, state) {
-//               if (state.submitNutrationDataStatus == RequestStatus.loading) {
-//                 return const Center(
-//                   child: CircularProgressIndicator(),
-//                 ).paddingFrom(right: 200);
-//               }
-
-//               return AppCustomButton(
-//                 title: 'حفظ',
-//                 isEnabled: messageController.text.isNotEmpty,
-//                 onPressed: () async {
-//                   // Call the new analyzeDietPlan method
-//                   await context
-//                       .read<NutrationDataEntryCubit>()
-//                       .analyzeDietPlan();
-
-//                   // Show result message
-//                   if (context.mounted) {
-//                     final currentState =
-//                         context.read<NutrationDataEntryCubit>().state;
-//                     if (currentState.message.isNotEmpty) {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(
-//                           content: Text(currentState.message),
-//                           backgroundColor:
-//                               currentState.submitNutrationDataStatus ==
-//                                       RequestStatus.success
-//                                   ? Colors.green
-//                                   : Colors.red,
-//                         ),
-//                       );
-//                     }
-//                   }
-//                 },
-//               ).paddingFrom(right: 200);
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 // Updated Message Input Section
 class MessageInputSection extends StatelessWidget {
