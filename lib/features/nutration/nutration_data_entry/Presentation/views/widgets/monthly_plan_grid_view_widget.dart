@@ -57,7 +57,7 @@ class _MonthlyMealGridBlocBuilderState
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
-            final isSelected = selectedDay == day.dayOfWeek;
+            final isSelected = selectedDay == day.date;
 
             // اختر الـ constructor المناسب
             if (state.monthlyActivationStatus == false) {
@@ -82,7 +82,7 @@ class _MonthlyMealGridBlocBuilderState
                 date: day.date,
                 onTap: () {
                   setState(() {
-                    selectedDay = day.dayOfWeek;
+                    selectedDay = day.date;
                   });
                 },
                 backgroundColor: isSelected
@@ -96,7 +96,7 @@ class _MonthlyMealGridBlocBuilderState
                 date: day.date,
                 onTap: () {
                   setState(() {
-                    selectedDay = day.dayOfWeek;
+                    selectedDay = day.date;
                   });
                 },
                 backgroundColor: isSelected

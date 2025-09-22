@@ -54,7 +54,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
-            final isSelected = selectedDay == day.dayOfWeek;
+            final isSelected = selectedDay == day.date;
 
             // اختر الـ constructor المناسب
             if (state.weeklyActivationStatus == false) {
@@ -87,7 +87,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
                 date: day.date,
                 onTap: () {
                   setState(() {
-                    selectedDay = day.dayOfWeek;
+                    selectedDay = day.date;
                   });
                 },
                 backgroundColor: isSelected
