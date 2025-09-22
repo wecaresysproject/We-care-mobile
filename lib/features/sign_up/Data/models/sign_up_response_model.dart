@@ -27,6 +27,7 @@ class UserData {
     required this.firstName,
     required this.lastName,
     required this.phoneNumber,
+    required this.token,
   });
   int id;
 
@@ -38,6 +39,7 @@ class UserData {
   @JsonKey(name: "phone")
   String phoneNumber;
 
+  String token;
   factory UserData.fromJson(Map<String, dynamic> json) =>
       _$UserDataFromJson(json);
 }
