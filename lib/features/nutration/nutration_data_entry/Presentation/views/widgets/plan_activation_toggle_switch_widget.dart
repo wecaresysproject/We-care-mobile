@@ -1,43 +1,89 @@
-// Updated Plan Activation Toggle with plan type
+// Simplified version - more readable
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
-class PlanActivationToggle extends StatelessWidget {
-  final bool isActive;
-  final Function(bool) onToggle;
-
-  const PlanActivationToggle({
+class PlanActivationToggleBlocBuilder extends StatelessWidget {
+  const PlanActivationToggleBlocBuilder({
     super.key,
-    required this.isActive,
-    required this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Switch(
-          value: isActive,
-          onChanged: onToggle,
-          trackOutlineColor: WidgetStateProperty.all(
-            AppColorsManager.placeHolderColor.withAlpha(50),
-          ),
-          activeColor: AppColorsManager.mainDarkBlue,
-          activeTrackColor: Color(0xffDAE9FA),
-          inactiveThumbColor: AppColorsManager.placeHolderColor,
-          inactiveTrackColor: Colors.grey.withAlpha(100),
-        ),
-        horizontalSpacing(10),
-        Text(
-          'تفعيل الخطة',
-          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-            color: AppColorsManager.mainDarkBlue,
-          ),
-        ),
-      ],
+    return BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Switch(
+              value: state.followUpNutrationViewCurrentTabIndex == 0
+                  ? state.weeklyActivationStatus
+                  : state.monthlyActivationStatus,
+              onChanged: (value) {
+                final isWeeklyTab =
+                    state.followUpNutrationViewCurrentTabIndex == 0;
+                final isMonthlyTab =
+                    state.followUpNutrationViewCurrentTabIndex == 1;
+
+                log('Switch toggled: value=$value, isWeeklyTab=$isWeeklyTab');
+                log('Current status - Weekly: ${state.weeklyActivationStatus}, Monthly: ${state.monthlyActivationStatus}');
+
+                // Check if user is trying to ACTIVATE a plan while another is active
+                if (value == true) {
+                  // User wants to activate current plan
+                  if (isWeeklyTab && state.monthlyActivationStatus) {
+                    // Trying to activate weekly while monthly is active
+                    log('Blocked: Cannot activate weekly while monthly is active');
+                    showWarningDialog(
+                      context,
+                      message: "لا يمكن تفعيل أكثر من خطة في نفس الوقت",
+                    );
+                    return;
+                  }
+
+                  if (isMonthlyTab && state.weeklyActivationStatus) {
+                    // Trying to activate monthly while weekly is active
+                    log('Blocked: Cannot activate monthly while weekly is active');
+                    showWarningDialog(
+                      context,
+                      message: "لا يمكن تفعيل أكثر من خطة في نفس الوقت",
+                    );
+                    return;
+                  }
+                }
+
+                // If we reach here:
+                // - User is deactivating (value = false) -> Always allowed
+                // - User is activating but no other plan is active -> Allowed
+                log('Proceeding with plan toggle');
+                context
+                    .read<NutrationDataEntryCubit>()
+                    .togglePlanActivationAndLoadingExistingPlans();
+              },
+              trackOutlineColor: WidgetStateProperty.all(
+                AppColorsManager.placeHolderColor.withAlpha(50),
+              ),
+              activeColor: AppColorsManager.mainDarkBlue,
+              activeTrackColor: const Color(0xffDAE9FA),
+              inactiveThumbColor: AppColorsManager.placeHolderColor,
+              inactiveTrackColor: Colors.grey.withAlpha(100),
+            ),
+            horizontalSpacing(10),
+            Text(
+              'تفعيل الخطة',
+              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

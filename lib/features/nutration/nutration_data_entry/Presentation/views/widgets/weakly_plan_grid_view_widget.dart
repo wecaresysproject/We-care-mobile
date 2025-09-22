@@ -1,54 +1,101 @@
-// Weekly Meal Grid (7 days)
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_dialogs.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/meal_card_widget.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
-class WeeklyMealGrid extends StatefulWidget {
-  const WeeklyMealGrid({super.key});
+class WeeklyMealGridBLocBuilder extends StatefulWidget {
+  const WeeklyMealGridBLocBuilder({super.key});
 
   @override
-  State<WeeklyMealGrid> createState() => _WeeklyMealGridState();
+  State<WeeklyMealGridBLocBuilder> createState() =>
+      _WeeklyMealGridBLocBuilderState();
 }
 
-class _WeeklyMealGridState extends State<WeeklyMealGrid> {
-  // Map يربط اليوم بالتاريخ
-  final Map<String, String> dayToDate = {
-    'السبت': '5/7/2025',
-    'الأحد': '6/7/2025',
-    'الاثنين': '7/7/2025',
-    'الثلاثاء': '8/7/2025',
-    'الأربعاء': '9/7/2025',
-    'الخميس': '10/7/2025',
-    'الجمعة': '11/7/2025',
-  };
+class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
   String? selectedDay;
 
   @override
   Widget build(BuildContext context) {
-    final days = dayToDate.keys.toList();
+    return BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
+      builder: (context, state) {
+        if (state.submitNutrationDataStatus == RequestStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 1,
-      ),
-      itemCount: 7,
-      itemBuilder: (context, index) {
-        final day = days[index];
-        final date = dayToDate[day] ?? '--/--/----';
-        final bool isSelected = selectedDay == day; // متعلم ولا لأ
+        final days = state.days; // دي اللي راجعة من API
+        // Add debug information
+        if (days.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.calendar_month, size: 48, color: Colors.grey),
+                SizedBox(height: 16),
+                Text(
+                  state.weeklyActivationStatus
+                      ? 'لا توجد أيام متاحة في الخطة'
+                      : 'يجب تفعيل الخطة أولاً',
+                  style: TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          );
+        }
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 1,
+          ),
+          itemCount: days.length,
+          itemBuilder: (context, index) {
+            final day = days[index];
+            final isSelected = selectedDay == day.dayOfWeek;
 
-        return MealCard.planActivatedandHaveDocument(
-          day: day,
-          onTap: () {
-            setState(() {
-              selectedDay = day;
-            });
+            // اختر الـ constructor المناسب
+            if (state.weeklyActivationStatus == false) {
+              // لو الخطة مش مفعلة خالص
+              return MealCard.planNotActivated(
+                day: day.dayOfWeek,
+                date: day.date,
+                onTap: () async {
+                  await showWarningDialog(
+                    context,
+                    message: 'يجب تفعيل الخطة أولاً',
+                  );
+                  return;
+                },
+                backgroundColor: isSelected
+                    ? const Color(0xffDAE9FA)
+                    : const Color(0xffF1F3F6),
+              );
+            } else if (state.weeklyActivationStatus && day.hasDocument) {
+              // لو اليوم له تقرير
+              return MealCard.planActivatedandHaveDocument(
+                day: day.dayOfWeek,
+                date: day.date,
+                onTap: () {},
+              );
+            } else {
+              // لو اليوم مفعل بس مفيش تقرير
+              return MealCard.planActivatedandHaveNoDocument(
+                day: day.dayOfWeek,
+                date: day.date,
+                onTap: () {
+                  setState(() {
+                    selectedDay = day.dayOfWeek;
+                  });
+                },
+                backgroundColor: isSelected
+                    ? const Color(0xffDAE9FA)
+                    : const Color(0xffF1F3F6),
+              );
+            }
           },
-          date: date,
-          backgroundColor:
-              isSelected ? Color(0xffDAE9FA) : const Color(0xffF1F3F6),
         );
       },
     );

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -10,10 +11,12 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutr
 
 class MealCard extends StatelessWidget {
   final String day;
-  final String date; // <<<< جديد
+  final String date;
   final bool haveAdocument;
   final Color backgroundColor;
   final VoidCallback onTap;
+  final bool isSelectable; // خاصية جديدة للتحكم في إمكانية الاختيار
+
   const MealCard({
     super.key,
     required this.day,
@@ -21,6 +24,7 @@ class MealCard extends StatelessWidget {
     this.haveAdocument = false,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
+    this.isSelectable = true, // افتراضي قابل للاختيار
   });
 
   const MealCard.planNotActivated({
@@ -29,7 +33,8 @@ class MealCard extends StatelessWidget {
     this.date = '--/--/----',
     this.backgroundColor = const Color(0xffF1F3F6),
     required this.onTap,
-  }) : haveAdocument = false;
+  })  : haveAdocument = false,
+        isSelectable = true;
 
   const MealCard.planActivatedandHaveDocument({
     super.key,
@@ -37,23 +42,35 @@ class MealCard extends StatelessWidget {
     required this.date,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
-  }) : haveAdocument = true;
+  })  : haveAdocument = true,
+        isSelectable = false; // غير قابل للاختيار
+
   const MealCard.planActivatedandHaveNoDocument({
     super.key,
     required this.day,
     required this.date,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
-  }) : haveAdocument = false;
+  })  : haveAdocument = false,
+        isSelectable = true;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Handle card tap if needed
+      onTap: () async {
+        if (!isSelectable && haveAdocument) {
+          // إظهار رسالة تحذير للأيام التي لها تقرير بالفعل
+          await showWarningDialog(
+            context,
+            message: 'هذا اليوم مدخل فيه وجبات بالفعل',
+          );
+          return;
+        }
+
+        // التعامل العادي للأيام القابلة للاختيار
         log('Card tapped: $date');
-        context.read<NutrationDataEntryCubit>().updateSelectedPlanDate(date);
         onTap();
+        context.read<NutrationDataEntryCubit>().updateSelectedPlanDate(date);
       },
       child: Container(
         height: 70,
@@ -86,7 +103,7 @@ class MealCard extends StatelessWidget {
             ),
             verticalSpacing(8),
             Text(
-              date, // <<<< بدل ما كانت ثابتة
+              date,
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                 color: AppColorsManager.mainDarkBlue,
               ),
