@@ -322,8 +322,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
     final result = await _nutrationDataEntryRepo.getAllCreatedPlans(
       lanugage: AppStrings.arabicLang,
-      planActivationStatus:
-          currentPlanActivationStatus, // DON'T toggle - just get current status
+      planActivationStatus: currentPlanActivationStatus,
       planType: planType,
     );
 
