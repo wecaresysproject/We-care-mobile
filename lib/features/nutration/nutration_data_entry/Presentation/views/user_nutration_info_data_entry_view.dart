@@ -262,7 +262,7 @@ Widget submitUserInfoEnteredButtonBlocConsumer(GlobalKey<FormState> formKey) {
             // لو كل حاجة صح
             await context
                 .read<NutrationDataEntryCubit>()
-                .postPersonalNutritionData();
+                .postPersonalUserInfoData();
             log("✅ البيانات صحيحة - ابعت للسيرفر أو روح للخطوة التالية");
           }
         },

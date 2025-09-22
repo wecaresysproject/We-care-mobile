@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'post_personal_nutrition_data_model.g.dart';
 
 @JsonSerializable()
-class PostPersonalNutritionData {
+class PostPersonalUserInfoData {
   final int weight;
   final int height;
   final int age;
@@ -11,7 +11,7 @@ class PostPersonalNutritionData {
   final String physicalActivity;
   final List<String>? chronicDisease;
 
-  PostPersonalNutritionData({
+  PostPersonalUserInfoData({
     required this.weight,
     required this.height,
     required this.age,
@@ -20,8 +20,8 @@ class PostPersonalNutritionData {
     required this.chronicDisease,
   });
 
-  factory PostPersonalNutritionData.fromJson(Map<String, dynamic> json) =>
-      _$PostPersonalNutritionDataFromJson(json);
+  factory PostPersonalUserInfoData.fromJson(Map<String, dynamic> json) =>
+      _$PostPersonalUserInfoDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$PostPersonalNutritionDataToJson(this);
+  Map<String, dynamic> toJson() => _$PostPersonalUserInfoDataToJson(this);
 }
