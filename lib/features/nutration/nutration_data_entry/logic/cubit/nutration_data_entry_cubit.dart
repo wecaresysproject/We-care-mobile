@@ -237,6 +237,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
           state.copyWith(
             submitNutrationDataStatus: RequestStatus.success,
             message: successMessage,
+            isFoodAnalysisSuccess: true,
           ),
         );
         clearRelativeControllerToCurrentTab();

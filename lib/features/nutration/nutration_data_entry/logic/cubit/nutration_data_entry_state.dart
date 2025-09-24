@@ -21,6 +21,7 @@ class NutrationDataEntryState extends Equatable {
   final NutrationFactsModel? nutrationFactsModel; // NEW: Add nutrition data
   final bool monthlyActivationStatus;
   final bool weeklyActivationStatus;
+  final bool isFoodAnalysisSuccess;
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
@@ -32,13 +33,14 @@ class NutrationDataEntryState extends Equatable {
     this.followUpNutrationViewCurrentTabIndex = 0,
     this.nutrationFactsModel,
     this.selectedPlanDate = '',
-    this.genderType = '',
-    this.selectedPhysicalActivity = '',
+    this.genderType = 'ذكر',
+    this.selectedPhysicalActivity = 'متوسط',
     this.chronicDiseases = const [],
     this.selectedChronicDiseases = const [],
     this.monthlyActivationStatus = false,
     this.weeklyActivationStatus = false,
     this.days = const [],
+    this.isFoodAnalysisSuccess = false,
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -52,13 +54,14 @@ class NutrationDataEntryState extends Equatable {
           followUpNutrationViewCurrentTabIndex: 0,
           nutrationFactsModel: null,
           selectedPlanDate: '',
-          genderType: '',
-          selectedPhysicalActivity: '',
+          genderType: 'ذكر',
+          selectedPhysicalActivity: 'متوسط',
           chronicDiseases: const [],
           selectedChronicDiseases: const [],
           monthlyActivationStatus: false,
           weeklyActivationStatus: false,
           days: const [],
+          isFoodAnalysisSuccess: false,
         );
 
   NutrationDataEntryState copyWith({
@@ -78,6 +81,7 @@ class NutrationDataEntryState extends Equatable {
     bool? monthlyActivationStatus,
     bool? weeklyActivationStatus,
     List<Day>? days,
+    bool? isFoodAnalysisSuccess,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -103,6 +107,8 @@ class NutrationDataEntryState extends Equatable {
       weeklyActivationStatus:
           weeklyActivationStatus ?? this.weeklyActivationStatus,
       days: days ?? this.days,
+      isFoodAnalysisSuccess:
+          isFoodAnalysisSuccess ?? this.isFoodAnalysisSuccess,
     );
   }
 
@@ -124,5 +130,6 @@ class NutrationDataEntryState extends Equatable {
         monthlyActivationStatus,
         weeklyActivationStatus,
         days,
+        isFoodAnalysisSuccess,
       ];
 }

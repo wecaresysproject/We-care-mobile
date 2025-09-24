@@ -38,9 +38,7 @@ class _UserNutrationInfoDataEntryViewState
       create: (context) => NutrationDataEntryCubit(
         getIt<NutrationDataEntryRepo>(),
         context,
-      )
-        ..getAllChronicDiseases()
-        ..updateGenderType("ذكر"),
+      )..getAllChronicDiseases(),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
