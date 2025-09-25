@@ -38,9 +38,24 @@ abstract class NutrationServices {
     @Query('planType') String planType,
   );
 
-  // @GET(NutrationApiConstants.getAllAvailableBiometrics)
-  // Future<dynamic> getAllAvailableBiometrics(
-  //     @Query('Language') String language, @Query('userType') String userType);
+  @GET(NutrationApiConstants.getAllNutrationTableData)
+  Future<dynamic> getAllNutrationTableData(
+    @Query('Language') String language,
+    @Query('date') String date,
+  );
+  @GET(NutrationApiConstants.getFoodAlternatives)
+  Future<dynamic> getFoodAlternatives(
+    @Query('language') String language,
+    @Query('elementName') String elementName,
+  );
+  @GET(NutrationApiConstants.getAvailableYearsForWeeklyPlan)
+  Future<dynamic> getAvailableYearsForWeeklyPlan(
+    @Query('Language') String language,
+  );
+  @GET(NutrationApiConstants.getAvailableYearsForMonthlyPlan)
+  Future<dynamic> getAvailableYearsForMonthlyPlan(
+    @Query('Language') String language,
+  );
 
   // @GET(NutrationApiConstants.getAllFilters)
   // Future<dynamic> getAllFilters(
