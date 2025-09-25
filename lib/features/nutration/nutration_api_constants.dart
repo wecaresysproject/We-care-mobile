@@ -9,8 +9,12 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/check"; //! change it later
 
   //View Entry
-  static const getAllAvailableBiometrics =
-      "VitalActivity/GetAllAvailableCategories";
+  static const getAllNutrationTableData = "SmartNutritionAnalyzer/result-data";
+  static const getAvailableYearsForWeeklyPlan =
+      "SmartNutritionAnalyzer/weekly-plans-years";
+  static const getAvailableYearsForMonthlyPlan =
+      "SmartNutritionAnalyzer/monthly-plans-years";
+  static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
   static const getAllFilters = "VitalActivity/GetFilterOptions";
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
   static const getCurrentBiometricData = "VitalActivity/currentbiometrics";

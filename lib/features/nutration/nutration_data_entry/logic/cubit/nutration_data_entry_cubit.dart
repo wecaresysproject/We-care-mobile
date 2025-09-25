@@ -7,6 +7,7 @@ import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
+import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
@@ -392,6 +393,33 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         emit(
           state.copyWith(
             submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getAllNutrationTableData({required String date}) async {
+    emit(state.copyWith(dataTableStatus: RequestStatus.loading));
+
+    final result = await _nutrationDataEntryRepo.getAllNutrationTableData(
+      language: AppStrings.arabicLang,
+      date: date,
+    );
+    result.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            nutrationElementsRows: response,
+            dataTableStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            dataTableStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );

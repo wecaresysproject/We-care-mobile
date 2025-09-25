@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
+import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
@@ -85,6 +86,24 @@ class NutrationDataEntryRepo {
         planType,
       );
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<NutritionElement>>> getAllNutrationTableData({
+    required String language,
+    required String date,
+  }) async {
+    try {
+      final response = await _nutrationServices.getAllNutrationTableData(
+        language,
+        date,
+      );
+      final nutrationTableRows = (response['data'] as List)
+          .map((e) => NutritionElement.fromJson(e))
+          .toList();
+      return ApiResult.success(nutrationTableRows);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

@@ -55,6 +55,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
@@ -501,6 +502,11 @@ void setupAppRepos() {
   getIt.registerLazySingleton<NutrationDataEntryRepo>(
     () => NutrationDataEntryRepo(
       getIt<NutrationServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<NutrationViewRepo>(
+    () => NutrationViewRepo(
+      nutrationServices: getIt<NutrationServices>(),
     ),
   );
 }

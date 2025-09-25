@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class MealCard extends StatelessWidget {
@@ -63,6 +65,10 @@ class MealCard extends StatelessWidget {
           await showWarningDialog(
             context,
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
+          );
+          await context.pushNamed(
+            Routes.nutritionFollowUpReportTableView,
+            arguments: date,
           );
           return;
         }
@@ -122,10 +128,19 @@ class MealCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
-                          Icons.file_present,
-                          color: Colors.white,
-                          size: 20,
+                        GestureDetector(
+                          onTap: () async {
+                            log('xxx: View Report tapped for date: $date');
+                            // await context.pushNamed(
+                            //   Routes.nutritionFollowUpReportTableView,
+                            //   arguments: date,
+                            // );
+                          },
+                          child: const Icon(
+                            Icons.file_present,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                         horizontalSpacing(4),
                         Text(

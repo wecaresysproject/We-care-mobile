@@ -14,7 +14,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/message_input_section_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/plan_activation_toggle_switch_widget.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/success_dialog_with_confetti_wi';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/success_dialog_with_confetti_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/weakly_plan_grid_view_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 

@@ -100,7 +100,8 @@ class Routes {
   static const chronicDiseaseDetailsView = '/chronicDiseaseDetailsView';
   static const userInfoNutrationDataEntry = '/userInfoNutrationDataEntry';
   static const followUpNutrationPlansView = '/followUpNutrationPlansView';
-  static const nutritionFollowUpReportView = '/NutritionFollowUpReportView';
+  static const nutritionFollowUpReportTableView =
+      '/NutritionFollowUpReportView';
   static const nutritionPlanDataView = '/nutritionPlanDataView';
   static const foodAlternativesView = '/foodAlternativesView';
 

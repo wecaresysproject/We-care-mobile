@@ -15,6 +15,9 @@ class NutrationDataEntryState extends Equatable {
   final String? genderType;
   final String? selectedPhysicalActivity;
   final List<String> selectedChronicDiseases;
+  final List<NutritionElement> nutrationElementsRows;
+  final RequestStatus dataTableStatus;
+
   final List<String> chronicDiseases;
   final List<Day> days;
 
@@ -41,6 +44,8 @@ class NutrationDataEntryState extends Equatable {
     this.weeklyActivationStatus = false,
     this.days = const [],
     this.isFoodAnalysisSuccess = false,
+    this.nutrationElementsRows = const [],
+    this.dataTableStatus = RequestStatus.initial,
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -62,6 +67,8 @@ class NutrationDataEntryState extends Equatable {
           weeklyActivationStatus: false,
           days: const [],
           isFoodAnalysisSuccess: false,
+          nutrationElementsRows: const [],
+          dataTableStatus: RequestStatus.initial,
         );
 
   NutrationDataEntryState copyWith({
@@ -82,6 +89,8 @@ class NutrationDataEntryState extends Equatable {
     bool? weeklyActivationStatus,
     List<Day>? days,
     bool? isFoodAnalysisSuccess,
+    List<NutritionElement>? nutrationElementsRows,
+    RequestStatus? dataTableStatus,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -109,6 +118,9 @@ class NutrationDataEntryState extends Equatable {
       days: days ?? this.days,
       isFoodAnalysisSuccess:
           isFoodAnalysisSuccess ?? this.isFoodAnalysisSuccess,
+      nutrationElementsRows:
+          nutrationElementsRows ?? this.nutrationElementsRows,
+      dataTableStatus: dataTableStatus ?? this.dataTableStatus,
     );
   }
 
@@ -131,5 +143,7 @@ class NutrationDataEntryState extends Equatable {
         weeklyActivationStatus,
         days,
         isFoodAnalysisSuccess,
+        nutrationElementsRows,
+        dataTableStatus,
       ];
 }

@@ -545,9 +545,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => FollowUpNutrationPlansView(),
         );
-      case Routes.nutritionFollowUpReportView:
+      case Routes.nutritionFollowUpReportTableView:
         return MaterialPageRoute(
-          builder: (_) => NutritionFollowUpReportView(),
+          builder: (_) => NutritionFollowUpReportView(
+            date: arguments as String,
+          ),
         );
       case Routes.foodAlternativesView:
         return MaterialPageRoute(
