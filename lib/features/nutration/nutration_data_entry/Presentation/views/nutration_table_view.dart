@@ -134,7 +134,12 @@ class NutritionFollowUpReportView extends StatelessWidget {
                     .read<NutrationDataEntryCubit>()
                     .getAllNutrationTableData(date: date);
               },
-              child: const Text("إعادة المحاولة"),
+              child: const Text(
+                "إعادة المحاولة",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),
