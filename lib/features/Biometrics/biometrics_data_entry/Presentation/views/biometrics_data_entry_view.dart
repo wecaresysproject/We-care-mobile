@@ -32,16 +32,16 @@ class BiometricsDataEntryView extends StatelessWidget {
                 child: BlocListener<BiometricsDataEntryCubit,
                     BiometricsDataEntryState>(
                   listener: (context, state) async {
-                  // if (state.submitBiometricDataStatus ==
-                  //     RequestStatus.success) {
-                  //   await showSuccess(state.message);
-                  //   if (context.mounted) Navigator.pop(context);
-                  // }
-                  // if (state.submitBiometricDataStatus ==
-                  //     RequestStatus.failure) {
-                  //   await showError(state.message);
-                  // }
-                  // TODO: implement listener
+                    if (state.submitBiometricDataStatus ==
+                        RequestStatus.success) {
+                      await showSuccess(state.message);
+                      if (context.mounted) Navigator.pop(context);
+                    }
+                    if (state.submitBiometricDataStatus ==
+                        RequestStatus.failure) {
+                      await showError(state.message);
+                    }
+                    // TODO: implement listener
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -429,9 +429,9 @@ class _BiometricInputDialogState extends State<BiometricInputDialog> {
                       await showError('يرجى إدخال قيمة');
                       return;
                     }
-                   await widget.onSave?.call(
+                    await widget.onSave?.call(
                         widget.categoryName, _singleController.text, null);
-                     context.mounted?   context.pop():null;
+                    context.mounted ? context.pop() : null;
                   }
                 },
                 style: ElevatedButton.styleFrom(
