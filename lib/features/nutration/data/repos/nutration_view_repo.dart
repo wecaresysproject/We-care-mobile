@@ -7,28 +7,28 @@ class NutrationViewRepo {
 
   NutrationViewRepo({required this.nutrationServices});
 
-  Future<ApiResult<List<String>>> getAvailableYearsForWeeklyPlan({
+  Future<ApiResult<List<int>>> getAvailableYearsForWeeklyPlan({
     required String language,
   }) async {
     try {
       final response = await nutrationServices.getAvailableYearsForWeeklyPlan(
         language,
       );
-      final years = (response['data'] as List).map<String>((e) => e).toList();
+      final years = (response['data'] as List).map<int>((e) => e).toList();
       return ApiResult.success(years);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<List<String>>> getAvailableYearsForMonthlyPlan({
+  Future<ApiResult<List<int>>> getAvailableYearsForMonthlyPlan({
     required String language,
   }) async {
     try {
       final response = await nutrationServices.getAvailableYearsForMonthlyPlan(
         language,
       );
-      final years = (response['data'] as List).map<String>((e) => e).toList();
+      final years = (response['data'] as List).map<int>((e) => e).toList();
 
       return ApiResult.success(years);
     } catch (error) {

@@ -57,6 +57,7 @@ import 'package:we_care/features/medicine/medicines_services.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
+import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
@@ -309,6 +310,11 @@ void setupAppCubits() {
   getIt.registerFactory<AllergyViewCubit>(
     () => AllergyViewCubit(
       getIt<AllergyViewRepo>(),
+    ),
+  );
+  getIt.registerFactory<NutrationViewCubit>(
+    () => NutrationViewCubit(
+      getIt<NutrationViewRepo>(),
     ),
   );
 }

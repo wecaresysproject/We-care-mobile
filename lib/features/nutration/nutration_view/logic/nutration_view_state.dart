@@ -1,78 +1,74 @@
-import 'package:equatable/equatable.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
-import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
+part of 'nutration_view_cubit.dart';
 
-class BiometricsViewState extends Equatable {
+class NutrationViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
   final List<String> availableBiometricNames;
-  final List<int> yearsFilter;
-  final List<int> daysFilter;
+  final List<int> weaklyPlanYearsFilter;
+  final List<int> monthlyPlanYearsFilter;
   final List<int> monthFilter;
   final List<BiometricsDatasetModel> biometricsData;
- final CurrentBioMetricsData? currentBiometricsData;
+  final CurrentBioMetricsData? currentBiometricsData;
 
-  const BiometricsViewState({
+  const NutrationViewState({
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
-    this.yearsFilter = const [],
+    this.weaklyPlanYearsFilter = const [],
     this.availableBiometricNames = const [],
-    this.daysFilter = const [],
+    this.monthlyPlanYearsFilter = const [],
     this.monthFilter = const [],
     this.biometricsData = const [],
     this.currentBiometricsData,
   });
 
-  factory BiometricsViewState.initial() {
-    return BiometricsViewState(
+  factory NutrationViewState.initial() {
+    return NutrationViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
-      yearsFilter: const [
-      ],
-      availableBiometricNames: const [
-  ],
-      daysFilter: const [
-      ],
-      monthFilter: const [
-      ],
+      weaklyPlanYearsFilter: const [],
+      availableBiometricNames: const [],
+      monthlyPlanYearsFilter: const [],
+      monthFilter: const [],
       biometricsData: const [],
       currentBiometricsData: null,
     );
   }
 
-  BiometricsViewState copyWith({
+  NutrationViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
-    List<int>? yearsFilter,
+    List<int>? weaklyPlanYearsFilter,
     List<String>? availableBiometricNames,
-    List<int>? daysFilter,
+    List<int>? monthlyPlanYearsFilter,
     List<int>? monthFilter,
     List<BiometricsDatasetModel>? biometricsData,
     CurrentBioMetricsData? currentBiometricsData,
   }) {
-    return BiometricsViewState(
+    return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
-      yearsFilter: yearsFilter ?? this.yearsFilter,
-      availableBiometricNames: availableBiometricNames ?? this.availableBiometricNames,
-      daysFilter: daysFilter ?? this.daysFilter,
+      weaklyPlanYearsFilter:
+          weaklyPlanYearsFilter ?? this.weaklyPlanYearsFilter,
+      availableBiometricNames:
+          availableBiometricNames ?? this.availableBiometricNames,
+      monthlyPlanYearsFilter:
+          monthlyPlanYearsFilter ?? this.monthlyPlanYearsFilter,
       monthFilter: monthFilter ?? this.monthFilter,
       biometricsData: biometricsData ?? this.biometricsData,
-      currentBiometricsData: currentBiometricsData ?? this.currentBiometricsData,
+      currentBiometricsData:
+          currentBiometricsData ?? this.currentBiometricsData,
     );
   }
 
-
   @override
   List<Object?> get props => [
-    requestStatus,
-    responseMessage,
-    availableBiometricNames,
-    yearsFilter,
-    daysFilter,
-    monthFilter,  
-    biometricsData,
-    currentBiometricsData,
+        requestStatus,
+        responseMessage,
+        availableBiometricNames,
+        weaklyPlanYearsFilter,
+        monthlyPlanYearsFilter,
+        monthFilter,
+        biometricsData,
+        currentBiometricsData,
       ];
 }

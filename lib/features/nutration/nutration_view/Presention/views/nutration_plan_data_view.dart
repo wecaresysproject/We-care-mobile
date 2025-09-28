@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
 class NutrationPlanDataView extends StatefulWidget {
@@ -33,71 +36,43 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          // Tab Bar Section
-          Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                AppBarWithCenteredTitle(
-                  title: 'خطة المتابعة',
-                  showActionButtons: false,
-                ).paddingSymmetricHorizontal(16),
-                verticalSpacing(5),
-                _buildTabBar().paddingSymmetricHorizontal(16),
-                verticalSpacing(24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: DataViewFiltersRow(
-                    filters: [
-                      FilterConfig(
-                        title: "السنة",
-                        options: [],
-                      ), // state.yearsFilter ?? []),
-                      FilterConfig(
-                        title: "التاريخ",
-                        options: [
-                          // "من 1/7/2025 الى 8/7/2025",
-                          // "من 1/7/2025 الى 8/7/2025",
-                        ],
-                      ), // state.procedureTypeFilter ?? []),
-                    ],
-                    onApply: (selectedOption) {
-                      // context
-                      //     .read<DentalViewCubit>()
-                      //     .getFilteredToothDocuments(
-                      //       year: selectedOption['السنة'] as int?,
-                      //       procedureType:
-                      //           selectedOption["نوع الاجراء الطبي"]
-                      //               as String?,
-                      //       toothNumber:
-                      //           selectedOption['رقم السن'] as String?,
-                      //     );
-                    },
-                  ),
-                ),
-                verticalSpacing(20),
-              ],
+    return BlocProvider<NutrationViewCubit>(
+      create: (context) => getIt<NutrationViewCubit>()..getIntialRequests(),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            // Tab Bar Section
+            Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  AppBarWithCenteredTitle(
+                    title: 'خطة المتابعة',
+                    showActionButtons: false,
+                  ).paddingSymmetricHorizontal(16),
+                  verticalSpacing(5),
+                  _buildTabBar().paddingSymmetricHorizontal(16),
+                  verticalSpacing(24),
+                ],
+              ),
             ),
-          ),
-          // Tab View Content
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // Weekly Plan
-                _buildMealPlanGrid(),
-                // Monthly Plan
-                _buildMealPlanGrid(),
-              ],
+            // Tab View Content
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Weekly Plan
+                  _buildWeeklyMealPlanGrid(),
+                  // Monthly Plan
+                  _buildMonthlyMealPlanGrid(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -122,22 +97,131 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
     );
   }
 
-  Widget _buildMealPlanGrid() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.85,
-          mainAxisExtent: 220.h,
-        ),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return _buildMealCard(index);
-        },
-      ),
+  Widget _buildMonthlyMealPlanGrid() {
+    return BlocBuilder<NutrationViewCubit, NutrationViewState>(
+      buildWhen: (previous, current) =>
+          previous.monthlyPlanYearsFilter != current.monthlyPlanYearsFilter,
+      builder: (context, state) {
+        return Column(
+          children: [
+            // Filter row for this tab
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DataViewFiltersRow(
+                filters: [
+                  FilterConfig(
+                    title: "السنة",
+                    options: state.monthlyPlanYearsFilter,
+                  ), // state.yearsFilter ?? []),
+                  FilterConfig(
+                    title: "التاريخ",
+                    options: [
+                      // "من 1/7/2025 الى 8/7/2025",
+                      // "من 1/7/2025 الى 8/7/2025",
+                    ],
+                  ), // state.procedureTypeFilter ?? []),
+                ],
+                onApply: (selectedOption) {
+                  // context
+                  //     .read<DentalViewCubit>()
+                  //     .getFilteredToothDocuments(
+                  //       year: selectedOption['السنة'] as int?,
+                  //       procedureType:
+                  //           selectedOption["نوع الاجراء الطبي"]
+                  //               as String?,
+                  //       toothNumber:
+                  //           selectedOption['رقم السن'] as String?,
+                  //     );
+                },
+              ),
+            ),
+            verticalSpacing(20),
+            // Grid content
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                    mainAxisExtent: 220.h,
+                  ),
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return _buildMealCard(index);
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildWeeklyMealPlanGrid() {
+    return BlocBuilder<NutrationViewCubit, NutrationViewState>(
+      buildWhen: (previous, current) =>
+          previous.weaklyPlanYearsFilter != current.weaklyPlanYearsFilter,
+      builder: (context, state) {
+        return Column(
+          children: [
+            // Filter row for this tab
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: DataViewFiltersRow(
+                filters: [
+                  FilterConfig(
+                    title: "السنة",
+                    options: state.weaklyPlanYearsFilter,
+                  ), // state.yearsFilter ?? []),
+                  FilterConfig(
+                    title: "التاريخ",
+                    options: [
+                      // "من 1/7/2025 الى 8/7/2025",
+                      // "من 1/7/2025 الى 8/7/2025",
+                    ],
+                  ), // state.procedureTypeFilter ?? []),
+                ],
+                onApply: (selectedOption) {
+                  // context
+                  //     .read<DentalViewCubit>()
+                  //     .getFilteredToothDocuments(
+                  //       year: selectedOption['السنة'] as int?,
+                  //       procedureType:
+                  //           selectedOption["نوع الاجراء الطبي"]
+                  //               as String?,
+                  //       toothNumber:
+                  //           selectedOption['رقم السن'] as String?,
+                  //     );
+                },
+              ),
+            ),
+            verticalSpacing(20),
+            // Grid content
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                    mainAxisExtent: 220.h,
+                  ),
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return _buildMealCard(index);
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

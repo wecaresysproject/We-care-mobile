@@ -69,23 +69,6 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
     await getAllChronicDiseasesDocuments(page: currentPage + 1);
   }
 
-  // Future<void> getPrescriptionFilters() async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _diseaseViewRepo.gettFilters(
-  //       language: AppStrings.arabicLang, userType: 'Patient');
-
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       yearsFilter: response.years,
-  //       doctorNameFilter: response.doctors,
-  //       specificationsFilter: response.specification,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(requestStatus: RequestStatus.failure));
-  //   });
-  // }
-
   Future<void> getUserChronicDiseaseDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _diseaseViewRepo.getUserChronicDiseaseDetailsById(
@@ -122,27 +105,4 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
           isDeleteRequest: true));
     });
   }
-
-  // Future<void> getFilteredPrescriptionList(
-  //     {int? year, String? doctorName, String? specification}) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await _diseaseViewRepo.getFilteredPrescriptionList(
-  //       language: AppStrings.arabicLang,
-  //       userType: 'Patient',
-  //       year: year,
-  //       doctorName: doctorName,
-  //       specification: specification);
-
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       userPrescriptions: response.prescriptionList,
-  //       responseMessage: response.message,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //         responseMessage: error.errors.first));
-  //   });
-  // }
 }
