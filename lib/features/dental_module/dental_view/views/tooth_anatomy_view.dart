@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -70,7 +71,7 @@ class ToothAnatomyView extends StatelessWidget {
                     selectedActionsList: [],
                     onTap: (toothNumber) {
                       // Handle tap event
-                      print('Tooth $toothNumber tapped');
+                      AppLogger.debug('Tooth $toothNumber tapped');
                       navigateToToothDetail(toothNumber, context);
                     },
                   ),
@@ -112,7 +113,7 @@ class ToothAnatomyView extends StatelessWidget {
                         selectedActionsList: [],
                         onTap: (toothNumber) {
                           // Handle tap event
-                          print('Tooth $toothNumber tapped');
+                          AppLogger.debug('Tooth $toothNumber tapped');
                           navigateToToothDetail(toothNumber, context);
                         },
                       ),

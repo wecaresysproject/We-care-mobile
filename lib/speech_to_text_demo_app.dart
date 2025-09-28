@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 
 class SpeechToTextDemoApp extends StatefulWidget {
   const SpeechToTextDemoApp({super.key});
@@ -28,7 +27,7 @@ class SpeechToTextDemoAppState extends State<SpeechToTextDemoApp> {
     var locales = await speechToText.locales();
 
     for (var locale in locales) {
-      log('LocaleId: ${locale.localeId}, Name: ${locale.name}');
+      AppLogger.debug('LocaleId: ${locale.localeId}, Name: ${locale.name}');
     }
 
     if (isAvailable) {
@@ -46,7 +45,7 @@ class SpeechToTextDemoAppState extends State<SpeechToTextDemoApp> {
       onResult: (result) {
         setState(() {
           recognizedText = result.recognizedWords;
-          log("recognizedText: $recognizedText");
+          AppLogger.debug("recognizedText: $recognizedText");
         });
       },
       localeId: "ar_EG",

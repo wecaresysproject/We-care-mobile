@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 
@@ -39,7 +40,7 @@ Future<String?> downloadImage(
     await DioServices.getDio().download(imageUrl, filePath);
     return filePath;
   } catch (e) {
-    print("⚠️ Failed to download image: $imageUrl - Error: $e");
+    AppLogger.error("⚠️ Failed to download image: $imageUrl - Error: $e");
     return null;
   }
 }

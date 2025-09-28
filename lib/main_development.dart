@@ -11,6 +11,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -112,11 +113,11 @@ Future<void> checkIfLoggedInUser() async {
 
 Future<void> checkAndroidScheduleExactAlarmPermission() async {
   final status = await Permission.scheduleExactAlarm.status;
-  print('Schedule exact alarm permission: $status.');
+  AppLogger.info('Schedule exact alarm permission: $status.');
   if (status.isDenied) {
-    print('Requesting schedule exact alarm permission...');
+    AppLogger.info('Requesting schedule exact alarm permission...');
     final res = await Permission.scheduleExactAlarm.request();
-    print(
+    AppLogger.info(
         'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
   }
 }

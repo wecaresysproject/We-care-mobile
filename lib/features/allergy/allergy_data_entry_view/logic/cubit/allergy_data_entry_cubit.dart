@@ -1,10 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
@@ -281,7 +281,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   }
 
   void updateSelectedMedicineName(String? medicineName) {
-    log('xxx updateSelectedMedicineName: $medicineName');
+    AppLogger.debug('xxx updateSelectedMedicineName: $medicineName');
     emit(state.copyWith(selectedMedicineName: medicineName));
   }
 

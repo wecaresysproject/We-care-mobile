@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
 import 'dart:developer';
+
+import 'package:camera/camera.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/matched_medicines_results_list.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 
@@ -161,7 +163,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
           torchOn = !torchOn;
         });
       } catch (e) {
-        print('Error toggling torch: $e');
+        AppLogger.error('Error toggling torch: $e');
       }
     }
   }
@@ -198,7 +200,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
 
       inspect(recognizedText);
     } catch (e) {
-      print('Error scanning image: $e');
+      AppLogger.error('Error scanning image: $e');
     } finally {
       setState(() {
         loading = false;

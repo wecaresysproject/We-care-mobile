@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
@@ -51,7 +50,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         } else {
           emit(this.state.copyWith(isListening: false));
         }
-        log('Speech state: ${state.name}');
+        AppLogger.debug('Speech state: ${state.name}');
       },
       onListeningTextChanged: (recognizedText) {
         emit(
@@ -65,7 +64,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         } else {
           monthlyMessageController.text = recognizedText;
         }
-        log("Recognized text: $recognizedText");
+        AppLogger.debug("Recognized text: $recognizedText");
       },
     );
 
@@ -88,7 +87,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       // Use the new controller's start method
       _speechToTextController.startStt();
     } catch (e) {
-      log(e.toString());
+      AppLogger.error(e.toString());
       emit(state.copyWith(isListening: false));
     }
   }
@@ -206,7 +205,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       // You can now use nutritionData to send to your backend
       await postDailyDietPlan(nutritionData!);
     } catch (e) {
-      log('Error in analyzeDietPlan: $e');
+      AppLogger.error('Error in analyzeDietPlan: $e');
       emit(
         state.copyWith(
           submitNutrationDataStatus: RequestStatus.failure,
@@ -243,7 +242,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         );
         clearRelativeControllerToCurrentTab();
         await loadExistingPlans();
-        log(
+        AppLogger.debug(
           'successMessage for  postDailyDietPlan: $successMessage'
           'submitNutrationDataStatus: ${state.submitNutrationDataStatus}',
         );
@@ -350,7 +349,8 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
           );
         }
 
-        log('Plans loaded successfully: ${days.length} days, status: ${response.planStatus}');
+        AppLogger.debug(
+            'Plans loaded successfully: ${days.length} days, status: ${response.planStatus}');
       },
       failure: (failure) {
         emit(
@@ -361,7 +361,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
           ),
         );
 
-        log('Failed to load plans: ${failure.errors.first}');
+        AppLogger.error('Failed to load plans: ${failure.errors.first}');
       },
     );
   }
@@ -440,7 +440,8 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         );
       },
       failure: (failure) {
-        log('Error in getAllChronicDiseases: ${failure.errors.first}');
+        AppLogger.error(
+            'Error in getAllChronicDiseases: ${failure.errors.first}');
         safeEmit(
           state.copyWith(
             message: failure.errors.first,
@@ -476,10 +477,12 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
             state.copyWith(monthlyActivationStatus: status),
           );
         }
-        log(' getPlanActivationStatus called and => Plan activation status for $planType: $status');
+        AppLogger.debug(
+            ' getPlanActivationStatus called and => Plan activation status for $planType: $status');
       },
       failure: (failure) {
-        log('Error in getPlanActivationStatus: ${failure.errors.first}');
+        AppLogger.error(
+            'Error in getPlanActivationStatus: ${failure.errors.first}');
         safeEmit(
           state.copyWith(
             message: failure.errors.first,

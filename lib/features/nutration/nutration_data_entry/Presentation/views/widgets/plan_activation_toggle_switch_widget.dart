@@ -1,9 +1,8 @@
 // Simplified version - more readable
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -31,15 +30,18 @@ class PlanActivationToggleBlocBuilder extends StatelessWidget {
                 final isMonthlyTab =
                     state.followUpNutrationViewCurrentTabIndex == 1;
 
-                log('Switch toggled: value=$value, isWeeklyTab=$isWeeklyTab');
-                log('Current status - Weekly: ${state.weeklyActivationStatus}, Monthly: ${state.monthlyActivationStatus}');
+                AppLogger.debug(
+                    'Switch toggled: value=$value, isWeeklyTab=$isWeeklyTab');
+                AppLogger.debug(
+                    'Current status - Weekly: ${state.weeklyActivationStatus}, Monthly: ${state.monthlyActivationStatus}');
 
                 // Check if user is trying to ACTIVATE a plan while another is active
                 if (value == true) {
                   // User wants to activate current plan
                   if (isWeeklyTab && state.monthlyActivationStatus) {
                     // Trying to activate weekly while monthly is active
-                    log('Blocked: Cannot activate weekly while monthly is active');
+                    AppLogger.debug(
+                        'Blocked: Cannot activate weekly while monthly is active');
                     showWarningDialog(
                       context,
                       message: "لا يمكن تفعيل أكثر من خطة في نفس الوقت",
@@ -49,7 +51,8 @@ class PlanActivationToggleBlocBuilder extends StatelessWidget {
 
                   if (isMonthlyTab && state.weeklyActivationStatus) {
                     // Trying to activate monthly while weekly is active
-                    log('Blocked: Cannot activate monthly while weekly is active');
+                    AppLogger.debug(
+                        'Blocked: Cannot activate monthly while weekly is active');
                     showWarningDialog(
                       context,
                       message: "لا يمكن تفعيل أكثر من خطة في نفس الوقت",
@@ -61,7 +64,7 @@ class PlanActivationToggleBlocBuilder extends StatelessWidget {
                 // If we reach here:
                 // - User is deactivating (value = false) -> Always allowed
                 // - User is activating but no other plan is active -> Allowed
-                log('Proceeding with plan toggle');
+                AppLogger.debug('Proceeding with plan toggle');
                 context
                     .read<NutrationDataEntryCubit>()
                     .togglePlanActivationAndLoadingExistingPlans();
@@ -69,7 +72,7 @@ class PlanActivationToggleBlocBuilder extends StatelessWidget {
               trackOutlineColor: WidgetStateProperty.all(
                 AppColorsManager.placeHolderColor.withAlpha(50),
               ),
-              activeColor: AppColorsManager.mainDarkBlue,
+              activeThumbColor: AppColorsManager.mainDarkBlue,
               activeTrackColor: const Color(0xffDAE9FA),
               inactiveThumbColor: AppColorsManager.placeHolderColor,
               inactiveTrackColor: Colors.grey.withAlpha(100),

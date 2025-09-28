@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -56,7 +57,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
         return _buildSuccessState(state.nutrationElementsRows);
 
       case RequestStatus.failure:
-        return _buildErrorState(state.message ?? "حدث خطأ غير متوقع", context);
+        return _buildErrorState(state.message, context);
 
       default:
         return _buildInitialState();
@@ -270,7 +271,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    debugPrint("تعديل pressed for ${element.elementName}");
+                    AppLogger.debug("تعديل pressed for ${element.elementName}");
                     // ✨ هنا تحط Dialog أو أي أكشن للتعديل
                   },
                   icon: const Icon(

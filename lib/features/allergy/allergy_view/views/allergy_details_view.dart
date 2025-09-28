@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -62,7 +61,7 @@ class AllergyDetailsView extends StatelessWidget {
                         .deleteAllergyById(documentId),
                     shareFunction: () => _shareAllergyDetails(context, state),
                     editFunction: () async {
-                      log('test');
+                      AppLogger.debug('test');
                       final result = await context.pushNamed(
                         Routes.allergyDataEntry,
                         arguments: {

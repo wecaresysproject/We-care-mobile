@@ -1,10 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 
 import '../Database/cach_helper.dart';
@@ -52,7 +52,7 @@ class DioServices {
           if (error.response?.statusCode == 500) {
             // Retry logic
             final RequestOptions options = error.requestOptions;
-            log('Retrying...');
+            AppLogger.debug('Retrying...');
             final response = await dio!.request(
               options.path,
               options: Options(

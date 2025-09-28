@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
@@ -261,7 +260,8 @@ Widget submitUserInfoEnteredButtonBlocConsumer(GlobalKey<FormState> formKey) {
             await context
                 .read<NutrationDataEntryCubit>()
                 .postPersonalUserInfoData();
-            log("✅ البيانات صحيحة - ابعت للسيرفر أو روح للخطوة التالية");
+            AppLogger.debug(
+                "✅ البيانات صحيحة - ابعت للسيرفر أو روح للخطوة التالية");
           }
         },
         isEnabled: true,

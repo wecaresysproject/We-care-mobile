@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 
 class DeepSeekService {
@@ -12,9 +12,9 @@ class DeepSeekService {
 
   static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
     try {
-      log(' deepSeekBaseUrl: $apiKey $deepSeekBaseUrl');
+      AppLogger.debug(' deepSeekBaseUrl: $apiKey $deepSeekBaseUrl');
       final prompt = _buildPrompt(dietInput);
-      log('Prompt: $prompt');
+      AppLogger.debug('Prompt: $prompt');
       final response = await http.post(
         Uri.parse(deepSeekBaseUrl),
         headers: {
@@ -40,7 +40,7 @@ class DeepSeekService {
         final data = jsonDecode(response.body);
         final content = data['choices'][0]['message']['content'];
 
-        log('deepseek Response: $content');
+        AppLogger.debug('deepseek Response: $content');
 
         // Extract JSON from the response
         final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
@@ -51,10 +51,11 @@ class DeepSeekService {
           return NutrationFactsModel.fromJson(nutritionJson);
         }
       } else {
-        log('deepseek API Error: ${response.statusCode} - ${response.body}');
+        AppLogger.error(
+            'deepseek API Error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      log('Error analyzing diet plan: $e');
+      AppLogger.error('Error analyzing diet plan: $e');
     }
 
     return null;
