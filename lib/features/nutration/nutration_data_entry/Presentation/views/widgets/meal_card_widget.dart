@@ -66,6 +66,7 @@ class MealCard extends StatelessWidget {
             context,
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
           );
+          if (!context.mounted) return;
           await context.pushNamed(
             Routes.nutritionFollowUpReportTableView,
             arguments: date,
