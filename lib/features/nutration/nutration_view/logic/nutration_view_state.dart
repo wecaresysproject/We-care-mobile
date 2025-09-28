@@ -6,7 +6,9 @@ class NutrationViewState extends Equatable {
   final List<String> availableBiometricNames;
   final List<int> weaklyPlanYearsFilter;
   final List<int> monthlyPlanYearsFilter;
-  final List<int> monthFilter;
+  final List<String> monthlyPlanDateRangesFilter;
+  final List<String> weeklyPlanDateRangesFilter;
+
   final List<BiometricsDatasetModel> biometricsData;
   final CurrentBioMetricsData? currentBiometricsData;
 
@@ -16,7 +18,8 @@ class NutrationViewState extends Equatable {
     this.weaklyPlanYearsFilter = const [],
     this.availableBiometricNames = const [],
     this.monthlyPlanYearsFilter = const [],
-    this.monthFilter = const [],
+    this.monthlyPlanDateRangesFilter = const [],
+    this.weeklyPlanDateRangesFilter = const [],
     this.biometricsData = const [],
     this.currentBiometricsData,
   });
@@ -28,7 +31,8 @@ class NutrationViewState extends Equatable {
       weaklyPlanYearsFilter: const [],
       availableBiometricNames: const [],
       monthlyPlanYearsFilter: const [],
-      monthFilter: const [],
+      monthlyPlanDateRangesFilter: const [],
+      weeklyPlanDateRangesFilter: const [],
       biometricsData: const [],
       currentBiometricsData: null,
     );
@@ -40,7 +44,8 @@ class NutrationViewState extends Equatable {
     List<int>? weaklyPlanYearsFilter,
     List<String>? availableBiometricNames,
     List<int>? monthlyPlanYearsFilter,
-    List<int>? monthFilter,
+    List<String>? monthlyPlanDateRangesFilter,
+    List<String>? weeklyPlanDateRangesFilter,
     List<BiometricsDatasetModel>? biometricsData,
     CurrentBioMetricsData? currentBiometricsData,
   }) {
@@ -53,7 +58,10 @@ class NutrationViewState extends Equatable {
           availableBiometricNames ?? this.availableBiometricNames,
       monthlyPlanYearsFilter:
           monthlyPlanYearsFilter ?? this.monthlyPlanYearsFilter,
-      monthFilter: monthFilter ?? this.monthFilter,
+      monthlyPlanDateRangesFilter:
+          monthlyPlanDateRangesFilter ?? this.monthlyPlanDateRangesFilter,
+      weeklyPlanDateRangesFilter:
+          weeklyPlanDateRangesFilter ?? this.weeklyPlanDateRangesFilter,
       biometricsData: biometricsData ?? this.biometricsData,
       currentBiometricsData:
           currentBiometricsData ?? this.currentBiometricsData,
@@ -67,7 +75,8 @@ class NutrationViewState extends Equatable {
         availableBiometricNames,
         weaklyPlanYearsFilter,
         monthlyPlanYearsFilter,
-        monthFilter,
+        monthlyPlanDateRangesFilter,
+        weeklyPlanDateRangesFilter,
         biometricsData,
         currentBiometricsData,
       ];

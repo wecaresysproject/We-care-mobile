@@ -100,7 +100,9 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   Widget _buildMonthlyMealPlanGrid() {
     return BlocBuilder<NutrationViewCubit, NutrationViewState>(
       buildWhen: (previous, current) =>
-          previous.monthlyPlanYearsFilter != current.monthlyPlanYearsFilter,
+          previous.monthlyPlanYearsFilter != current.monthlyPlanYearsFilter ||
+          previous.monthlyPlanDateRangesFilter !=
+              current.monthlyPlanDateRangesFilter,
       builder: (context, state) {
         return Column(
           children: [
@@ -115,10 +117,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ), // state.yearsFilter ?? []),
                   FilterConfig(
                     title: "التاريخ",
-                    options: [
-                      // "من 1/7/2025 الى 8/7/2025",
-                      // "من 1/7/2025 الى 8/7/2025",
-                    ],
+                    options: state.monthlyPlanDateRangesFilter,
                   ), // state.procedureTypeFilter ?? []),
                 ],
                 onApply: (selectedOption) {
@@ -164,7 +163,9 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   Widget _buildWeeklyMealPlanGrid() {
     return BlocBuilder<NutrationViewCubit, NutrationViewState>(
       buildWhen: (previous, current) =>
-          previous.weaklyPlanYearsFilter != current.weaklyPlanYearsFilter,
+          previous.weaklyPlanYearsFilter != current.weaklyPlanYearsFilter ||
+          previous.weeklyPlanDateRangesFilter !=
+              current.weeklyPlanDateRangesFilter,
       builder: (context, state) {
         return Column(
           children: [
@@ -179,10 +180,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ), // state.yearsFilter ?? []),
                   FilterConfig(
                     title: "التاريخ",
-                    options: [
-                      // "من 1/7/2025 الى 8/7/2025",
-                      // "من 1/7/2025 الى 8/7/2025",
-                    ],
+                    options: state.weeklyPlanDateRangesFilter,
                   ), // state.procedureTypeFilter ?? []),
                 ],
                 onApply: (selectedOption) {

@@ -36,6 +36,37 @@ class NutrationViewRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getAvailableDateRangesForWeeklyPlan({
+    required String language,
+  }) async {
+    try {
+      final response =
+          await nutrationServices.getAvailableDateRangesForWeeklyPlan(
+        language,
+      );
+      final years = (response['data'] as List).map<String>((e) => e).toList();
+      return ApiResult.success(years);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAvailableDateRangesForMonthlyPlan({
+    required String language,
+  }) async {
+    try {
+      final response =
+          await nutrationServices.getAvailableDateRangesForMonthlyPlan(
+        language,
+      );
+      final years = (response['data'] as List).map<String>((e) => e).toList();
+
+      return ApiResult.success(years);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<BiometricFiltersModel>> getAllFilters({
   //   required String language,
   //   required String userType,
