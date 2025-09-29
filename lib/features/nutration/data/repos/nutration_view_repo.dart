@@ -1,5 +1,6 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationViewRepo {
@@ -62,6 +63,25 @@ class NutrationViewRepo {
       final years = (response['data'] as List).map<String>((e) => e).toList();
 
       return ApiResult.success(years);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<NutrationDocument>>> getNutrationDocuments({
+    required String language,
+    required String planType,
+  }) async {
+    try {
+      final response = await nutrationServices.getNutrationDocuments(
+        language,
+        planType,
+      );
+      final documents = (response['data'] as List)
+          .map<NutrationDocument>((e) => NutrationDocument.fromJson(e))
+          .toList();
+
+      return ApiResult.success(documents);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

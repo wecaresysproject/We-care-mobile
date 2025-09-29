@@ -18,6 +18,7 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/all-weekly-plans";
   static const getAvailableDateRangesForMonthlyPlan =
       "SmartNutritionAnalyzer/all-monthly-plans";
+  static const getNutrationDocuments = "/SmartNutritionAnalyzer/doc-data";
   static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
   static const getAllFilters = "VitalActivity/GetFilterOptions";
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";

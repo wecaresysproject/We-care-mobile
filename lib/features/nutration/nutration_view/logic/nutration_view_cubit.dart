@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
 import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
+import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 
 part 'nutration_view_state.dart';
@@ -116,53 +118,67 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
 
   Future<void> getIntialRequests() async {
     await Future.wait([
+      getNutrationDocuments(),
       getAvailableYearsForWeeklyPlan(),
       getAvailableDateRangesForWeeklyPlan(),
       getAvailableDateRangesForMonthlyPlan(),
       getAvailableYearsForMonthlyPlan(),
     ]);
   }
-  // Future<void> getAllAvailableBiometrics() async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-  //   final response = await nutrationViewRepo.getAllAvailableBiometrics(
-  //       language: 'ar', userType: 'Patient');
-  //   response.when(
-  //     success: (data) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.success,
-  //         availableBiometricNames: data,
-  //       ));
-  //     },
-  //     failure: (error) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //       ));
-  //     },
-  //   );
-  // }
+  String _getPlanTypeNameRelativeToCurrentActiveTab() {
+    return state.followUpNutrationViewCurrentTabIndex == 0
+        ? PlanType.weekly.name
+        : PlanType.monthly.name;
+  }
 
-  // Future<void> getAllFilters() async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
+  // New method to update the current tab index
+  Future<void> updateCurrentTab(int index) async {
+    emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
+    await getNutrationDocuments();
+  }
 
-  //   final response = await nutrationViewRepo.getAllFilters(
-  //       language: 'ar', userType: 'Patient');
-  //   response.when(
-  //     success: (data) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.success,
-  //         yearsFilter: data.years,
-  //         daysFilter: data.days,
-  //         monthFilter: data.months,
-  //       ));
-  //     },
-  //     failure: (error) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //       ));
-  //     },
-  //   );
-  // }
+  Future<void> getNutrationDocuments() async {
+    final currentPlanType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await nutrationViewRepo.getNutrationDocuments(
+      language: AppStrings.arabicLang,
+      planType: currentPlanType,
+    );
+    response.when(
+      success: (data) {
+        if (currentPlanType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              requestStatus: RequestStatus.success,
+              weeklyNutrationDocuments: data,
+            ),
+          );
+          AppLogger.info(
+            'Weekly Nutration Documents: ${state.weeklyNutrationDocuments.length}',
+          );
+        } else {
+          emit(
+            state.copyWith(
+              requestStatus: RequestStatus.success,
+              monthlyNutrationDocuments: data,
+            ),
+          );
+          AppLogger.info(
+            'Monthly Nutration Documents: ${state.monthlyNutrationDocuments.length}',
+          );
+        }
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
 
   // Future<void> getFilteredBiometrics({
   //   int? year,
@@ -184,26 +200,6 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
   //       emit(state.copyWith(
   //         requestStatus: RequestStatus.success,
   //         biometricsData: data,
-  //       ));
-  //     },
-  //     failure: (error) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //       ));
-  //     },
-  //   );
-  // }
-
-  // Future<void> getCurrentBiometricData() async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-
-  //   final response = await nutrationViewRepo.getCurrentBiometricData(
-  //       language: 'ar', userType: 'Patient');
-  //   response.when(
-  //     success: (data) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.success,
-  //         currentBiometricsData: data,
   //       ));
   //     },
   //     failure: (error) {
