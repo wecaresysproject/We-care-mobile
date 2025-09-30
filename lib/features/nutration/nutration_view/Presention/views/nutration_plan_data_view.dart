@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -127,8 +128,11 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
 
           case RequestStatus.success:
             if (state.monthlyNutrationDocuments.isEmpty) {
-              content = const Center(
-                child: Text("لا توجد بيانات متاحة"),
+              content = Center(
+                child: Text(
+                  "الخطة غير مفعلة أو لا توجد بيانات للعرض.",
+                  style: AppTextStyles.font16DarkGreyWeight400,
+                ),
               );
             } else {
               content = GridView.builder(
@@ -182,6 +186,13 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DataViewFiltersRow(
+                onFilterSelected: (filterTitle, selectedVal) {
+                  if (filterTitle == "السنة") {
+                    context
+                        .read<NutrationViewCubit>()
+                        .getAvailableDateRangesForMonthlyPlan(selectedVal);
+                  }
+                },
                 filters: [
                   FilterConfig(
                     title: "السنة",
@@ -230,8 +241,11 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
 
           case RequestStatus.success:
             if (state.weeklyNutrationDocuments.isEmpty) {
-              content = const Center(
-                child: Text("لا توجد بيانات متاحة"),
+              content = Center(
+                child: Text(
+                  "الخطة غير مفعلة أو لا توجد بيانات للعرض.",
+                  style: AppTextStyles.font16DarkGreyWeight400,
+                ),
               );
             } else {
               content = GridView.builder(
@@ -286,6 +300,14 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: DataViewFiltersRow(
+                onFilterSelected: (filterTitle, selectedVal) async {
+                  if (filterTitle == "السنة") {
+                    AppLogger.info("السنه : $selectedVal");
+                    await context
+                        .read<NutrationViewCubit>()
+                        .getAvailableDateRangesForWeeklyPlan(selectedVal);
+                  }
+                },
                 filters: [
                   FilterConfig(
                     title: "السنة",
@@ -314,175 +336,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
     );
   }
 
-  // Widget _buildNutrationCard(int index , ) {
-  //   List<Map<String, dynamic>> mealData = [
-  //     {
-  //       'name': 'الألياف',
-  //       'consumed': 50,
-  //       'standard': 100,
-  //       'difference': 50,
-  //       'percentage': 15,
-  //       'hasPercentage': true,
-  //     },
-  //     {
-  //       'name': 'الألياف',
-  //       'consumed': 120,
-  //       'standard': 80,
-  //       'difference': 40,
-  //       'percentage': 50,
-  //       'hasPercentage': true,
-  //     },
-  //     {
-  //       'name': 'الألياف',
-  //       'consumed': 120,
-  //       'standard': 120,
-  //       'difference': 0,
-  //       'percentage': null,
-  //       'hasPercentage': false,
-  //     },
-  //   ];
-
-  //   Map<String, dynamic> meal = mealData[index % mealData.length];
-  //   // Calculate comparison and colors
-  //   int consumed = meal['consumed'];
-  //   int standard = meal['standard'];
-  //   bool isConsumedHigher = consumed > standard;
-  //   bool isConsumedEqual = consumed == standard;
-
-  //   // Color configuration based on comparison
-  //   Color borderColor = isConsumedHigher
-  //       ? AppColorsManager.doneColor // Green when consumed > standard
-  //       : isConsumedEqual
-  //           ? AppColorsManager.mainDarkBlue // Amber when consumed == standard
-  //           : Color(0xFFE53E3E); // Red when consumed < standard
-
-  //   Color accentColor = isConsumedHigher
-  //       ? Color(0xFF00C896) // Green
-  //       : Color(0xFFE53E3E); // Red
-
-  //   String statusMessage =
-  //       isConsumedHigher ? 'أعلى من المستهدف' : 'أقل من المستهدف';
-
-  //   IconData arrowIcon =
-  //       !isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
-
-  //   return Container(
-  //     padding: EdgeInsets.fromLTRB(2.w, 8.h, 2.w, 0),
-  //     decoration: BoxDecoration(
-  //       color: Color(0xffF1F3F6),
-  //       borderRadius: BorderRadius.circular(16.r),
-  //       border: Border.all(
-  //         color: borderColor,
-  //         width: meal['hasPercentage'] ? 3 : 1,
-  //       ),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: [
-  //         // Header with buttons
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             _buildActionButton(
-  //               text: 'بدائل غذائية',
-  //               onTap: () async {
-  //                 await context.pushNamed(Routes.foodAlternativesView);
-  //               },
-  //             ),
-  //             _buildActionButton(
-  //               text: 'توصيات',
-  //               onTap: () {},
-  //             ),
-  //           ],
-  //         ),
-  //         !isConsumedEqual ? verticalSpacing(9) : verticalSpacing(20),
-
-  //         // Title
-  //         Row(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Text(
-  //               meal['name'],
-  //               textAlign: TextAlign.end,
-  //               style: AppTextStyles.font18blackWight500.copyWith(
-  //                 color: AppColorsManager.mainDarkBlue,
-  //                 fontSize: 16.sp,
-  //               ),
-  //             ),
-  //             horizontalSpacing(8),
-  //             // Percentage indicator (if exists)
-  //             if (meal['hasPercentage'])
-  //               Container(
-  //                 padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
-  //                 margin: EdgeInsets.only(right: 15),
-  //                 decoration: BoxDecoration(
-  //                   color: borderColor,
-  //                   borderRadius: BorderRadius.circular(6.r),
-  //                 ),
-  //                 child: Row(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     Text(
-  //                       '${meal['percentage']}%',
-  //                       style: TextStyle(
-  //                         color: Colors.white,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 14.sp,
-  //                       ),
-  //                     ),
-  //                     horizontalSpacing(4),
-  //                     Icon(
-  //                       arrowIcon,
-  //                       color: Colors.white,
-  //                       size: 16,
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //           ],
-  //         ),
-  //         Text(
-  //           "(جم)",
-  //           style: AppTextStyles.font18blackWight500.copyWith(
-  //             color: AppColorsManager.mainDarkBlue,
-  //             fontSize: 16.sp,
-  //           ),
-  //           textAlign: TextAlign.center,
-  //         ),
-
-  //         isConsumedEqual ? verticalSpacing(40) : verticalSpacing(20),
-
-  //         // Nutrition Info
-  //         Column(
-  //           children: [
-  //             _buildNutritionRow('الكمية المستهلكة:', '${meal['consumed']}'),
-  //             verticalSpacing(8),
-  //             _buildNutritionRow('الكمية المعيارية:', '${meal['standard']}'),
-  //             verticalSpacing(8),
-  //             if (!isConsumedEqual) ...[
-  //               _buildDifferenceIndicator(
-  //                 label: 'الفرق',
-  //                 value: '${meal['difference']}',
-  //                 backgroundColor: accentColor,
-  //               ),
-  //               verticalSpacing(3),
-  //               _buildTextWithIcon(
-  //                 backgroundColor: accentColor,
-  //                 icon: arrowIcon,
-  //                 label: statusMessage,
-  //               ),
-  //             ] else ...[
-  //               _buildNutritionRow('الفرق:', '${meal['consumed']}'),
-  //             ],
-  //           ],
-  //         ).paddingSymmetricHorizontal(4),
-  //       ],
-  //     ),
-  //   );
-  // }
   Widget _buildNutrationCard(NutrationDocument doc) {
-    // Extract data from model
-// قبل ما تعمل Text
     String shortenedName = doc.nutrient.split(" ").take(2).join(" ");
     final int consumed = doc.accumulativeActual.toInt();
     final int standard = doc.accumulativeStandard.toInt();
@@ -535,7 +389,12 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
               ),
               _buildActionButton(
                 text: 'توصيات',
-                onTap: () {},
+                onTap: () async {
+                  await context.pushNamed(
+                    Routes.foodRecomendationView,
+                    arguments: doc.nutrient,
+                  );
+                },
               ),
             ],
           ),

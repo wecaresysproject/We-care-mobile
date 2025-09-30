@@ -39,11 +39,13 @@ class NutrationViewRepo {
 
   Future<ApiResult<List<String>>> getAvailableDateRangesForWeeklyPlan({
     required String language,
+    required String year,
   }) async {
     try {
       final response =
           await nutrationServices.getAvailableDateRangesForWeeklyPlan(
         language,
+        year,
       );
       final years = (response['data'] as List).map<String>((e) => e).toList();
       return ApiResult.success(years);
@@ -54,11 +56,13 @@ class NutrationViewRepo {
 
   Future<ApiResult<List<String>>> getAvailableDateRangesForMonthlyPlan({
     required String language,
+    required String year,
   }) async {
     try {
       final response =
           await nutrationServices.getAvailableDateRangesForMonthlyPlan(
         language,
+        year,
       );
       final years = (response['data'] as List).map<String>((e) => e).toList();
 

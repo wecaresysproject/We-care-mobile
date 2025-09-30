@@ -219,11 +219,11 @@ class NutritionFollowUpReportView extends StatelessWidget {
   List<DataColumn> _buildColumns() {
     return [
       _buildColumn("العنصر"),
-      _buildColumn("يومي\nفعلي", isNumeric: true),
-      _buildColumn("يومي\nالمعيار", isNumeric: true),
-      _buildColumn("تراكمي\nفعلي", isNumeric: true),
-      _buildColumn("تراكمي\nالمعيار", isNumeric: true),
-      _buildColumn("الفرق", isNumeric: true),
+      _buildColumn("يومي\nفعلي"),
+      _buildColumn("يومي\nالمعيار"),
+      _buildColumn("تراكمي\nفعلي"),
+      _buildColumn("تراكمي\nالمعيار"),
+      _buildColumn("الفرق"),
     ];
   }
 
@@ -236,13 +236,16 @@ class NutritionFollowUpReportView extends StatelessWidget {
 
       return DataRow(
         cells: [
-          _buildCell(getRelativeNeededName(element.elementName),
-              isBold: true, isElement: true),
           _buildCell(
-              element.dailyActual?.toString() ?? "N/A"), //! check it later
-          // _buildCell(
-          //     element.dailyStandard?.toString() ?? "N/A"), //! check it later
-          // 🔹 يومي المعيار مع زرار تعديل (النص فوق - الزرار تحت)
+            getRelativeNeededName(element.elementName),
+            isBold: true,
+            isElement: true,
+            isNarrow: true,
+          ),
+          _buildCell(
+            element.dailyActual?.toString() ?? "N/A",
+          ), //! check it later
+
           DataCell(
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -296,8 +299,9 @@ class NutritionFollowUpReportView extends StatelessWidget {
 
           _buildCell(element.accumulativeActual?.toString() ??
               "N/A"), //! check it later
-          _buildCell(element.accumulativeStandard?.toString() ??
-              "N/A"), //! check it later
+          _buildCell(
+            element.accumulativeStandard?.toString() ?? "N/A",
+          ), //! check it later
           _buildColoredDiff(element.difference?.toString() ?? "N/A",
               diffColor), //! check it later
         ],
@@ -360,17 +364,17 @@ class NutritionFollowUpReportView extends StatelessWidget {
       case "فيتامين C (ملجم)":
         return "Vit C";
       case "فيتامين B1 - الثيامين (ملجم)":
-        return "B1";
+        return "Vit B1";
       case "فيتامين B2 - الريبوفلافين (ملجم)":
-        return "B2";
+        return "Vit B2";
       case "فيتامين B3 - النياسين (ملجم)":
-        return "B3";
+        return "Vit B3";
       case "فيتامين B6 (ملجم)":
-        return "B6";
+        return "Vit B6";
       case "الفولات (ميكروجم DFE)":
         return "فولات";
       case "فيتامين B12 (ميكروجم)":
-        return "B12";
+        return "Vit B12";
       case "الكولين (ملجم)":
         return "كولين";
       default:
@@ -396,50 +400,39 @@ class NutritionFollowUpReportView extends StatelessWidget {
   }
 
   // 📊 Build individual column
-  DataColumn _buildColumn(String label, {bool isNumeric = false}) {
+  DataColumn _buildColumn(String label) {
     return DataColumn(
-      label: Text(label, textAlign: TextAlign.center),
-      numeric: isNumeric,
+      headingRowAlignment: MainAxisAlignment.center, // قلل المسافة بين الأعمدة
+
+      label: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.font18blackWight500.copyWith(
+          fontSize: 11.5.sp,
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      numeric: true,
     );
   }
 
-  // 🔤 Build individual cell
+// // 🔤 Build individual cell
   DataCell _buildCell(String text,
-      {bool isBold = false, bool isElement = false}) {
-    if (isElement) {
-      // Split element name into multiple lines for better display
-      final parts = text.split(" ");
-      return DataCell(
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                parts.isNotEmpty ? parts.first : "",
-                style: _getCellTextStyle(isBold),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                parts.length > 1 ? parts.sublist(1).join(" ") : "",
-                style: _getCellTextStyle(isBold),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+      {bool isBold = false, bool isElement = false, bool isNarrow = false}) {
+    final style = _getCellTextStyle(isBold);
 
     return DataCell(
       Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: _getCellTextStyle(isBold),
+        child: SizedBox(
+          width: isNarrow ? 62 : null, // 👈 نفس العرض للأعمدة الصغيرة
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: style,
+          ),
         ),
       ),
     );
@@ -478,7 +471,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
   TextStyle _getCellTextStyle(bool isBold) {
     return AppTextStyles.font12blackWeight400.copyWith(
       fontWeight: FontWeight.w500,
-      fontSize: isBold ? 14.sp : 16.sp,
+      fontSize: isBold ? 14.sp : 15.sp,
       color: !isBold ? Colors.black : AppColorsManager.mainDarkBlue,
     );
   }

@@ -59,10 +59,12 @@ abstract class NutrationServices {
   @GET(NutrationApiConstants.getAvailableDateRangesForWeeklyPlan)
   Future<dynamic> getAvailableDateRangesForWeeklyPlan(
     @Query('Language') String language,
+    @Query('year') String year,
   );
   @GET(NutrationApiConstants.getAvailableDateRangesForMonthlyPlan)
   Future<dynamic> getAvailableDateRangesForMonthlyPlan(
     @Query('Language') String language,
+    @Query('year') String year,
   );
 
   @GET(NutrationApiConstants.getNutrationDocuments)

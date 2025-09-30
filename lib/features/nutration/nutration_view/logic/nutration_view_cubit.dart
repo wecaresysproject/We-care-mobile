@@ -15,8 +15,6 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       : super(NutrationViewState.initial());
   final NutrationViewRepo nutrationViewRepo;
   Future<void> getAvailableYearsForWeeklyPlan() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-
     final response = await nutrationViewRepo.getAvailableYearsForWeeklyPlan(
       language: AppStrings.arabicLang,
     );
@@ -24,24 +22,19 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       success: (data) {
         emit(
           state.copyWith(
-            requestStatus: RequestStatus.success,
             weaklyPlanYearsFilter: data,
           ),
         );
       },
       failure: (error) {
         emit(
-          state.copyWith(
-            requestStatus: RequestStatus.failure,
-          ),
+          state.copyWith(),
         );
       },
     );
   }
 
   Future<void> getAvailableYearsForMonthlyPlan() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-
     final response = await nutrationViewRepo.getAvailableYearsForMonthlyPlan(
       language: AppStrings.arabicLang,
     );
@@ -49,70 +42,55 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       success: (data) {
         emit(
           state.copyWith(
-            requestStatus: RequestStatus.success,
             monthlyPlanYearsFilter: data,
           ),
         );
       },
       failure: (error) {
         emit(
-          state.copyWith(
-            requestStatus: RequestStatus.failure,
-          ),
+          state.copyWith(),
         );
       },
     );
   }
 
-  Future<void> getAvailableDateRangesForWeeklyPlan() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-
+  Future<void> getAvailableDateRangesForWeeklyPlan(String selectedYear) async {
     final response =
         await nutrationViewRepo.getAvailableDateRangesForWeeklyPlan(
       language: AppStrings.arabicLang,
+      year: selectedYear,
     );
     response.when(
       success: (data) {
         emit(
           state.copyWith(
-            requestStatus: RequestStatus.success,
             weeklyPlanDateRangesFilter: data,
           ),
         );
       },
       failure: (error) {
         emit(
-          state.copyWith(
-            requestStatus: RequestStatus.failure,
-          ),
+          state.copyWith(),
         );
       },
     );
   }
 
-  Future<void> getAvailableDateRangesForMonthlyPlan() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-
+  Future<void> getAvailableDateRangesForMonthlyPlan(String selectedYear) async {
     final response =
         await nutrationViewRepo.getAvailableDateRangesForMonthlyPlan(
       language: AppStrings.arabicLang,
+      year: selectedYear,
     );
     response.when(
       success: (data) {
         emit(
           state.copyWith(
-            requestStatus: RequestStatus.success,
             monthlyPlanDateRangesFilter: data,
           ),
         );
       },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            requestStatus: RequestStatus.failure,
-          ),
-        );
-      },
+      failure: (error) {},
     );
   }
 
@@ -120,8 +98,6 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
     await Future.wait([
       getNutrationDocuments(),
       getAvailableYearsForWeeklyPlan(),
-      getAvailableDateRangesForWeeklyPlan(),
-      getAvailableDateRangesForMonthlyPlan(),
       getAvailableYearsForMonthlyPlan(),
     ]);
   }

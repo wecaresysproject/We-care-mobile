@@ -69,6 +69,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
+import 'package:we_care/features/nutration/nutration_view/Presention/views/food_recomendation_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
@@ -554,6 +555,12 @@ class AppRouter {
       case Routes.foodAlternativesView:
         return MaterialPageRoute(
           builder: (_) => FoodAlternativesView(),
+        );
+      case Routes.foodRecomendationView:
+        return MaterialPageRoute(
+          builder: (_) => FoodRecomendationView(
+            elementName: arguments as String,
+          ),
         );
       case Routes.allergyDataView:
         return MaterialPageRoute(
