@@ -203,7 +203,16 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                     options: state.monthlyPlanDateRangesFilter,
                   ),
                 ],
-                onApply: (selectedOption) {
+                onApply: (selectedOption) async {
+                  AppLogger.info(
+                    'xxx: ${selectedOption["السنة"]} , xxx: ${selectedOption["التاريخ"]}',
+                  );
+                  await context
+                      .read<NutrationViewCubit>()
+                      .getFilterdNutritionDocuments(
+                        year: selectedOption["السنة"].toString(),
+                        rangeDate: selectedOption["التاريخ"],
+                      );
                   // Apply filters here
                 },
               ),
@@ -318,8 +327,17 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                     options: state.weeklyPlanDateRangesFilter,
                   ),
                 ],
-                onApply: (selectedOption) {
+                onApply: (selectedOption) async {
+                  AppLogger.info(
+                    'xxx: ${selectedOption["السنة"].toString()} , xxx: ${selectedOption["التاريخ"]}',
+                  );
                   // Apply filters for weekly plan here if needed
+                  await context
+                      .read<NutrationViewCubit>()
+                      .getFilterdNutritionDocuments(
+                        rangeDate: selectedOption["التاريخ"],
+                        year: selectedOption["السنة"].toString(),
+                      );
                 },
               ),
             ),

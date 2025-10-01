@@ -156,6 +156,51 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
     );
   }
 
+  Future<void> getFilterdNutritionDocuments(
+      {required String year, required String rangeDate}) async {
+    final currentPlanType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await nutrationViewRepo.getFilterdNutritionDocuments(
+      language: AppStrings.arabicLang,
+      planType: currentPlanType,
+      year: year,
+      rangeDate: rangeDate,
+    );
+    response.when(
+      success: (data) {
+        if (currentPlanType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              requestStatus: RequestStatus.success,
+              weeklyNutrationDocuments: data,
+            ),
+          );
+          AppLogger.info(
+            'Weekly Nutration Documents: ${state.weeklyNutrationDocuments.length}',
+          );
+        } else {
+          emit(
+            state.copyWith(
+              requestStatus: RequestStatus.success,
+              monthlyNutrationDocuments: data,
+            ),
+          );
+          AppLogger.info(
+            'Monthly Nutration Documents: ${state.monthlyNutrationDocuments.length}',
+          );
+        }
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   // Future<void> getFilteredBiometrics({
   //   int? year,
   //   int? month,

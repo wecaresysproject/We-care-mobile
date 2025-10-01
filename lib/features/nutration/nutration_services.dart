@@ -66,6 +66,13 @@ abstract class NutrationServices {
     @Query('Language') String language,
     @Query('year') String year,
   );
+  @GET(NutrationApiConstants.getFilterdNutritionDocuments)
+  Future<dynamic> getFilterdNutritionDocuments(
+    @Query('language') String language,
+    @Query('year') String year,
+    @Query('rangeDate') String rangeDate,
+    @Query('planType') String planType,
+  );
 
   @GET(NutrationApiConstants.getNutrationDocuments)
   Future<dynamic> getNutrationDocuments(

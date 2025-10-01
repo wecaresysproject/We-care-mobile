@@ -91,6 +91,29 @@ class NutrationViewRepo {
     }
   }
 
+  Future<ApiResult<List<NutrationDocument>>> getFilterdNutritionDocuments({
+    required String language,
+    required String year,
+    required String planType,
+    required String rangeDate,
+  }) async {
+    try {
+      final response = await nutrationServices.getFilterdNutritionDocuments(
+        language,
+        year,
+        rangeDate,
+        planType,
+      );
+      final documents = (response['data'] as List)
+          .map<NutrationDocument>((e) => NutrationDocument.fromJson(e))
+          .toList();
+
+      return ApiResult.success(documents);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   // Future<ApiResult<BiometricFiltersModel>> getAllFilters({
   //   required String language,
   //   required String userType,

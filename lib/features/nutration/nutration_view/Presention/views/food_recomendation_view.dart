@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -24,7 +25,7 @@ class FoodRecomendationView extends StatelessWidget {
             AppBarWithCenteredTitle(
               title: elementName,
               titleColor: AppColorsManager.mainDarkBlue,
-              shareFunction: () {},
+              shareFunction: () => shareFoodRecommendation(elementName),
               showShareButtonOnly: true,
             ),
             HeaderSectionWithIcon(
@@ -44,14 +45,29 @@ class FoodRecomendationView extends StatelessWidget {
               iconPath: 'assets/images/check_right.png',
               isHightRisk: false,
             ),
-            // HeaderSectionWithIcon(
-            //   iconPath: 'assets/images/person.png',
-            //   text: "الأعضاء الأكثر تأثراً مع الوقت",
-            // ),
-            // CustomInfoSection(
-            //   headerTitle: 'المستوى الإجمالى',
-            //   content: "تتأثر خلال أشهر بزيادة ضغط الدم وتصلب الشرايين",
-            // ),
+            CustomInfoSection(
+              headerTitle: 'التأثير قصير المدى',
+              content:
+                  "خلال أسابيع إلى أشهر: قد لا تظهر أعراض واضحة، لكنه يضع عبئًا إضافيًا على الكلى ويساهم في احتباس السوائل.",
+            ),
+            CustomInfoSection(
+              headerTitle: 'التأثير طويل المدى',
+              content:
+                  "عدة سنوات: يزيد بشكل مؤكد من خطر الإصابة بـ ارتفاع ضغط الدم، وأمراض القلب، والسكتة الدماغية، وهشاشة العظام، وسرطان المعدة.",
+            ),
+            CustomInfoSection(
+              headerTitle: 'الاجراء',
+              content:
+                  "مراجعة مصادر الصوديوم الخفية في النظام الغذائي (مثل: الخبز، الجبن، الصلصات، الوجبات السريعة) والعمل على تقليلها تدريجيًا.",
+            ),
+            HeaderSectionWithIcon(
+              iconPath: 'assets/images/person.png',
+              text: "الأعضاء الأكثر تأثراً مع الوقت",
+            ),
+            CustomInfoSection(
+              headerTitle: 'القلب والأوعية الدموية',
+              content: "تتأثر خلال أشهر بزيادة ضغط الدم وتصلب الشرايين.",
+            ),
             CustomInfoSection(
               headerTitle: 'الكلي',
               content:
@@ -113,6 +129,68 @@ class FoodRecomendationView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void shareFoodRecommendation(String elementName) {
+    final contentBuffer = StringBuffer();
+
+    // العنوان الرئيسي
+    contentBuffer.writeln("🔹 $elementName\n");
+
+    // تعريف
+    contentBuffer.writeln("📘 تعريف/ مرجعية سريعة:");
+    contentBuffer
+        .writeln("معدن أساسي وواحد من الشوارد الكهربائية (Electrolytes) ...\n");
+
+    // المستوى الآمن
+    contentBuffer.writeln("✅ المستوى الآمن: 1500 - 2000\n");
+
+    // التأثيرات
+    contentBuffer.writeln("⚡ التأثير قصير المدى:");
+    contentBuffer.writeln(
+        "خلال أسابيع إلى أشهر: قد لا تظهر أعراض واضحة، لكنه يضع عبئًا إضافيًا على الكلى ويساهم في احتباس السوائل.\n");
+
+    contentBuffer.writeln("⚡ التأثير طويل المدى:");
+    contentBuffer.writeln(
+        "عدة سنوات: يزيد بشكل مؤكد من خطر الإصابة بـ ارتفاع ضغط الدم وأمراض القلب...\n");
+
+    contentBuffer.writeln("⚡ الإجراء:");
+    contentBuffer.writeln(
+        "مراجعة مصادر الصوديوم الخفية في النظام الغذائي والعمل على تقليلها تدريجياً.\n");
+
+    // الأعضاء الأكثر تأثراً
+    contentBuffer.writeln("🧍 الأعضاء الأكثر تأثراً:");
+    contentBuffer
+        .writeln("القلب والأوعية الدموية: تتأثر خلال أشهر بزيادة ضغط الدم.\n");
+    contentBuffer.writeln("الكلى: تتأثر في المدى المتوسط (أشهر–سنوات).\n");
+    contentBuffer.writeln("الدماغ: تتأثر في المدى المتوسط.\n");
+    contentBuffer.writeln("العظام: تتأثر في المدى المتوسط.\n");
+
+    // معلومات إضافية
+    contentBuffer.writeln("ℹ️ معلومات إضافية:");
+    contentBuffer
+        .writeln("الجنس: الإفراط في تناول الصوديوم يزيد من فقدان الكالسيوم.\n");
+    contentBuffer.writeln(
+        "العمر: كبار السن أكثر حساسية لتأثيرات الصوديوم على ضغط الدم.\n");
+    contentBuffer
+        .writeln("النشاط: الرياضيون قد يحتاجون لمستويات أعلى قليلاً.\n");
+
+    // المراجع
+    contentBuffer.writeln("📚 المراجع الأساسية:");
+    contentBuffer
+        .writeln("• WHO — Guideline: Sodium intake for adults and children");
+    contentBuffer.writeln(
+        "• EFSA — Scientific Opinion on Dietary Reference Values for sodium");
+    contentBuffer.writeln(
+        "• NASEM — Dietary Reference Intakes for Sodium and Potassium");
+    contentBuffer.writeln(
+        "• He FJ, MacGregor GA, Salt, blood pressure and cardiovascular disease");
+    contentBuffer.writeln(
+        "• Graudal NA et al., Effects of low-sodium diet vs. high-sodium diet\n");
+
+    // عمل شير
+    Share.share(contentBuffer.toString(),
+        subject: "توصية غذائية: $elementName");
   }
 
   /// Builds the content after successful API response
