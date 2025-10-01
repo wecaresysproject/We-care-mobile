@@ -1,5 +1,6 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
@@ -106,6 +107,26 @@ class NutrationViewRepo {
       );
       final documents = (response['data'] as List)
           .map<NutrationDocument>((e) => NutrationDocument.fromJson(e))
+          .toList();
+
+      return ApiResult.success(documents);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<AlternativeFoodCategoryModel>>> getFoodAlternatives({
+    required String language,
+    required String elementName,
+  }) async {
+    try {
+      final response = await nutrationServices.getFoodAlternatives(
+        language,
+        elementName,
+      );
+      final documents = (response['data'] as List)
+          .map<AlternativeFoodCategoryModel>(
+              (e) => AlternativeFoodCategoryModel.fromJson(e))
           .toList();
 
       return ApiResult.success(documents);

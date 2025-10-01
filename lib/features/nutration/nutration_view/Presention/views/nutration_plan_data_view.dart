@@ -204,9 +204,6 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ),
                 ],
                 onApply: (selectedOption) async {
-                  AppLogger.info(
-                    'xxx: ${selectedOption["السنة"]} , xxx: ${selectedOption["التاريخ"]}',
-                  );
                   await context
                       .read<NutrationViewCubit>()
                       .getFilterdNutritionDocuments(
@@ -328,9 +325,6 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ),
                 ],
                 onApply: (selectedOption) async {
-                  AppLogger.info(
-                    'xxx: ${selectedOption["السنة"].toString()} , xxx: ${selectedOption["التاريخ"]}',
-                  );
                   // Apply filters for weekly plan here if needed
                   await context
                       .read<NutrationViewCubit>()
@@ -402,7 +396,10 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
               _buildActionButton(
                 text: 'بدائل غذائية',
                 onTap: () async {
-                  await context.pushNamed(Routes.foodAlternativesView);
+                  await context.pushNamed(
+                    Routes.foodAlternativesView,
+                    arguments: doc.nutrient,
+                  );
                 },
               ),
               _buildActionButton(

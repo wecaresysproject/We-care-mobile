@@ -22,9 +22,6 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/doc-data-filtered";
   static const getNutrationDocuments = "/SmartNutritionAnalyzer/doc-data";
   static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
-  static const getAllFilters = "VitalActivity/GetFilterOptions";
-  static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
-  static const getCurrentBiometricData = "VitalActivity/currentbiometrics";
 
   //filters
 }

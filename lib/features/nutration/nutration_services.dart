@@ -79,23 +79,4 @@ abstract class NutrationServices {
     @Query('language') String language,
     @Query('planType') String planType,
   );
-
-  // @GET(NutrationApiConstants.getAllFilters)
-  // Future<dynamic> getAllFilters(
-  //     @Query('Language') String language, @Query('userType') String userType);
-
-  // @GET(NutrationApiConstants.getFilteredBiometrics)
-  // Future<dynamic> getFilteredBiometrics(
-  //   @Query('Language') String language,
-  //   @Query('userType') String userType,
-  //   @Query('year') String? year,
-  //   @Query('month') String? month,
-  //   @Query('day') String? day,
-  //   @Query('category') List<String> biometricCategories,
-  // );
-  // @GET(NutrationApiConstants.getCurrentBiometricData)
-  // Future<dynamic> getCurrentBiometricData(
-  //   @Query('Language') String language,
-  //   @Query('userType') String userType,
-  // );
 }

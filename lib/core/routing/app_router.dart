@@ -554,7 +554,9 @@ class AppRouter {
         );
       case Routes.foodAlternativesView:
         return MaterialPageRoute(
-          builder: (_) => FoodAlternativesView(),
+          builder: (_) => FoodAlternativesView(
+            elementName: arguments as String,
+          ),
         );
       case Routes.foodRecomendationView:
         return MaterialPageRoute(

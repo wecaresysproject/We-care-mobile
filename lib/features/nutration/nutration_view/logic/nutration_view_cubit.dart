@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
-import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
+import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 
@@ -201,33 +200,29 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
     );
   }
 
-  // Future<void> getFilteredBiometrics({
-  //   int? year,
-  //   int? month,
-  //   int? day,
-  //   required List<String> biometricCategories,
-  // }) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
+  Future<void> getFoodAlternatives({
+    required String elementName,
+  }) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-  //   final response = await nutrationViewRepo.getFilteredBiometrics(
-  //       language: 'ar',
-  //       userType: 'Patient',
-  //       year: year,
-  //       month: month,
-  //       day: day,
-  //       biometricCategories: biometricCategories);
-  //   response.when(
-  //     success: (data) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.success,
-  //         biometricsData: data,
-  //       ));
-  //     },
-  //     failure: (error) {
-  //       emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //       ));
-  //     },
-  //   );
-  // }
+    final response = await nutrationViewRepo.getFoodAlternatives(
+      language: AppStrings.arabicLang,
+      elementName: elementName,
+    );
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            foodAlternatives: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+        ));
+      },
+    );
+  }
 }

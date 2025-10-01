@@ -11,8 +11,7 @@ class NutrationViewState extends Equatable {
   final List<String> monthlyPlanDateRangesFilter;
   final List<String> weeklyPlanDateRangesFilter;
 
-  final List<BiometricsDatasetModel> biometricsData;
-  final CurrentBioMetricsData? currentBiometricsData;
+  final List<AlternativeFoodCategoryModel> foodAlternatives;
 
   const NutrationViewState({
     this.responseMessage = '',
@@ -23,9 +22,8 @@ class NutrationViewState extends Equatable {
     this.monthlyPlanYearsFilter = const [],
     this.monthlyPlanDateRangesFilter = const [],
     this.weeklyPlanDateRangesFilter = const [],
-    this.biometricsData = const [],
+    this.foodAlternatives = const [],
     this.followUpNutrationViewCurrentTabIndex = 0,
-    this.currentBiometricsData,
   });
 
   factory NutrationViewState.initial() {
@@ -38,9 +36,8 @@ class NutrationViewState extends Equatable {
       monthlyPlanYearsFilter: const [],
       monthlyPlanDateRangesFilter: const [],
       weeklyPlanDateRangesFilter: const [],
-      biometricsData: const [],
+      foodAlternatives: const [],
       followUpNutrationViewCurrentTabIndex: 0,
-      currentBiometricsData: null,
     );
   }
 
@@ -53,9 +50,8 @@ class NutrationViewState extends Equatable {
     List<int>? monthlyPlanYearsFilter,
     List<String>? monthlyPlanDateRangesFilter,
     List<String>? weeklyPlanDateRangesFilter,
-    List<BiometricsDatasetModel>? biometricsData,
+    List<AlternativeFoodCategoryModel>? foodAlternatives,
     int? followUpNutrationViewCurrentTabIndex,
-    CurrentBioMetricsData? currentBiometricsData,
   }) {
     return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -72,12 +68,10 @@ class NutrationViewState extends Equatable {
           monthlyPlanDateRangesFilter ?? this.monthlyPlanDateRangesFilter,
       weeklyPlanDateRangesFilter:
           weeklyPlanDateRangesFilter ?? this.weeklyPlanDateRangesFilter,
-      biometricsData: biometricsData ?? this.biometricsData,
+      foodAlternatives: foodAlternatives ?? this.foodAlternatives,
       followUpNutrationViewCurrentTabIndex:
           followUpNutrationViewCurrentTabIndex ??
               this.followUpNutrationViewCurrentTabIndex,
-      currentBiometricsData:
-          currentBiometricsData ?? this.currentBiometricsData,
     );
   }
 
@@ -92,7 +86,6 @@ class NutrationViewState extends Equatable {
         monthlyPlanDateRangesFilter,
         weeklyPlanDateRangesFilter,
         followUpNutrationViewCurrentTabIndex,
-        biometricsData,
-        currentBiometricsData,
+        foodAlternatives,
       ];
 }
