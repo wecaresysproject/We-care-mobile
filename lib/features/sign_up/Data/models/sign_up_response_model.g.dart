@@ -26,6 +26,7 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
       firstName: json['firstname'] as String,
       lastName: json['lastname'] as String,
       phoneNumber: json['phone'] as String,
+      token: json['token'] as String,
     );
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
@@ -33,4 +34,5 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
       'firstname': instance.firstName,
       'lastname': instance.lastName,
       'phone': instance.phoneNumber,
+      'token': instance.token,
     };

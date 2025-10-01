@@ -1,3 +1,22 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Android Gradle Plugin compatible with Gradle 8.6 + Java 17
+        classpath 'com.android.tools.build:gradle:8.4.0'
+
+        // Uncomment if you use Firebase/Google services
+        // classpath 'com.google.gms:google-services:4.4.2'
+
+        // Uncomment if you use Kotlin in your Android code
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0"
+
+        // classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25"
+    }
+}
+
 allprojects {
     repositories {
         google()

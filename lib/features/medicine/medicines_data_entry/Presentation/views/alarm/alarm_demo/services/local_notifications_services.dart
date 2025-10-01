@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math' show Random;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// ignore: depend_on_referenced_packages
-import 'package:logging/logging.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 
 class LocalNotificationService {
   static const _iosCategoryId = 'sample_category';
-  static final _log = Logger('Notifications');
   static final _plugin = FlutterLocalNotificationsPlugin();
   static final _initCompleter = Completer<void>();
   static bool _isInitialized = false;
@@ -29,11 +26,11 @@ class LocalNotificationService {
 
   static Future<void> init() async {
     if (_isInitialized) {
-      log('⚠️ Already initialized, skipping...');
+      AppLogger.debug('⚠️ Already initialized, skipping...');
       return;
     }
 
-    log('🚀 === INITIALIZING UNIFIED NOTIFICATIONS ===');
+    AppLogger.debug('🚀 === INITIALIZING UNIFIED NOTIFICATIONS ===');
 
     // Initialize timezone for alarm functionality
     tz.initializeTimeZones();
@@ -75,9 +72,9 @@ class LocalNotificationService {
 
     _isInitialized = success ?? false;
     if (_isInitialized) {
-      _log.info('✅ Unified notifications initialized successfully');
+      AppLogger.info('✅ Unified notifications initialized successfully');
     } else {
-      _log.severe('❌ Failed to initialize notifications');
+      AppLogger.error('❌ Failed to initialize unified notifications');
     }
     _initCompleter.complete();
   }
@@ -85,11 +82,12 @@ class LocalNotificationService {
   @pragma('vm:entry-point')
   static void notificationTapForeground(
       NotificationResponse notificationResponse) {
-    _log.info('🎯 notificationTapForeground: $notificationResponse');
-    log('🎯 === UNIFIED NOTIFICATION TAP DETECTED ===');
-    log('🎯 ID: ${notificationResponse.id}');
-    log('🎯 Payload: ${notificationResponse.payload}');
-    log('🎯 Response Type: ${notificationResponse.notificationResponseType}');
+    AppLogger.info('🎯 notificationTapForeground: $notificationResponse');
+    AppLogger.debug('🎯 === UNIFIED NOTIFICATION TAP DETECTED ===');
+    AppLogger.debug('🎯 ID: ${notificationResponse.id}');
+    AppLogger.debug('🎯 Payload: ${notificationResponse.payload}');
+    AppLogger.debug(
+        '🎯 Response Type: ${notificationResponse.notificationResponseType}');
 
     _handleNotificationTap(notificationResponse);
   }
@@ -97,8 +95,8 @@ class LocalNotificationService {
   @pragma('vm:entry-point')
   static void notificationTapBackground(
       NotificationResponse notificationResponse) {
-    _log.info('🔄 notificationTapBackground: $notificationResponse');
-    log('🔄 Background notification tap detected');
+    AppLogger.info('🔄 notificationTapBackground: $notificationResponse');
+    AppLogger.debug('🔄 Background notification tap detected');
     _handleNotificationTap(notificationResponse);
   }
 
@@ -107,21 +105,21 @@ class LocalNotificationService {
     try {
       final payload = notificationResponse.payload;
       if (payload == null || payload.isEmpty) {
-        log("❌ No payload found in notification");
+        AppLogger.error("❌ No payload found in notification");
         return;
       }
 
       // Check if it's an FCM notification with navigation data
       if (_isFcmNotification(payload)) {
-        log("📱 Handling FCM notification");
+        AppLogger.debug("📱 Handling FCM notification");
         _handleFcmNotification(payload);
       } else {
-        log("⏰ Handling alarm notification");
+        AppLogger.debug("⏰ Handling alarm notification");
         _handleAlarmNotification(payload);
       }
     } catch (e, stack) {
-      log("❌ Error handling notification tap: $e");
-      log("❌ Stack trace: $stack");
+      AppLogger.error("❌ Error handling notification tap: $e");
+      AppLogger.error("❌ Stack trace: $stack");
     }
   }
 
@@ -139,34 +137,35 @@ class LocalNotificationService {
       final pageRoute = bodyJson['pageRoute'] as String?;
 
       if (pageRoute == null) {
-        log("❌ No pageRoute found in FCM payload");
+        AppLogger.error("❌ No pageRoute found in FCM payload");
         return;
       }
 
-      log("✅ FCM PageRoute: $pageRoute");
+      AppLogger.debug("✅ FCM PageRoute: $pageRoute");
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _navigateBasedOnFcmPayload(bodyJson, pageRoute);
       });
     } catch (e, stack) {
-      log("❌ Error handling FCM notification: $e");
-      log("❌ Stack trace: $stack");
+      AppLogger.error("❌ Error handling FCM notification: $e");
+      AppLogger.error("❌ Stack trace: $stack");
     }
   }
 
   static void _handleAlarmNotification(String payload) {
-    log("⏰ Handling alarm notification with payload: $payload");
+    AppLogger.debug("⏰ Handling alarm notification with payload: $payload");
     // Add your alarm-specific logic here
     // This could be showing alarm UI, stopping alarm sound, etc.
   }
 
   static void _navigateBasedOnFcmPayload(
       Map<String, dynamic> bodyJson, String pageRoute) {
-    log('🚀 === FCM NAVIGATION ATTEMPT ===');
-    log('🚀 Navigator key available: ${_navigatorKey?.currentState != null}');
+    AppLogger.debug('🚀 === FCM NAVIGATION ATTEMPT ===');
+    AppLogger.debug(
+        '🚀 Navigator key available: ${_navigatorKey?.currentState != null}');
 
     if (_navigatorKey?.currentState == null) {
-      log("❌ Navigator key is null, cannot navigate");
+      AppLogger.error("❌ Navigator key is null, cannot navigate");
       return;
     }
 
@@ -174,28 +173,29 @@ class LocalNotificationService {
       switch (pageRoute) {
         case Routes.mentalUmbrellaHealthQuestionnairePage:
           final fcmMessage = FcmMessageModel.fromJson(bodyJson);
-          log('✅ FCM Message parsed, questions: ${fcmMessage.questions.length}');
+          AppLogger.debug(
+              '✅ FCM Message parsed, questions: ${fcmMessage.questions.length}');
 
           _navigatorKey!.currentState!.pushNamed(
             Routes.mentalUmbrellaHealthQuestionnairePage,
             arguments: {'questions': fcmMessage.questions},
           );
-          log('✅ Navigation to questionnaire completed');
+          AppLogger.debug('✅ Navigation to questionnaire completed');
           break;
 
         case Routes.mentalIllnessFollowUpReports:
           _navigatorKey!.currentState!
               .pushNamed(Routes.mentalIllnessFollowUpReports);
-          log('✅ Navigation to follow-up reports completed');
+          AppLogger.debug('✅ Navigation to follow-up reports completed');
           break;
 
         default:
-          log("❌ Unknown FCM pageRoute: $pageRoute");
+          AppLogger.error("❌ Unknown FCM pageRoute: $pageRoute");
           break;
       }
     } catch (e, stack) {
-      log('❌ FCM Navigation error: $e');
-      log('❌ Stack trace: $stack');
+      AppLogger.error('❌ FCM Navigation error: $e');
+      AppLogger.error('❌ Stack trace: $stack');
     }
   }
 
@@ -207,7 +207,7 @@ class LocalNotificationService {
     if (androidImplementation != null) {
       final bool? granted =
           await androidImplementation.requestNotificationsPermission();
-      log('✅ Android permission granted: $granted');
+      AppLogger.info('✅ Android permission granted: $granted');
     }
   }
 
@@ -241,7 +241,7 @@ class LocalNotificationService {
         ),
       );
 
-      log('✅ All notification channels created');
+      AppLogger.debug('✅ All notification channels created');
     }
   }
 
@@ -250,11 +250,11 @@ class LocalNotificationService {
       RemoteMessage message) async {
     await _initCompleter.future;
 
-    log('📱 === SHOWING FCM NOTIFICATION ===');
+    AppLogger.debug('📱 === SHOWING FCM NOTIFICATION ===');
 
     final payload = message.data['payload'] as String?;
     if (payload == null || payload.isEmpty) {
-      log('❌ No FCM payload available');
+      AppLogger.error('❌ No FCM payload available');
       return;
     }
 
@@ -282,10 +282,10 @@ class LocalNotificationService {
         details,
         payload: payload,
       );
-      log('✅ FCM notification displayed with ID: $notificationId');
+      AppLogger.debug('✅ FCM notification displayed with ID: $notificationId');
     } catch (e, stack) {
-      log('❌ Error showing FCM notification: $e');
-      log('❌ Stack trace: $stack');
+      AppLogger.error('❌ Error showing FCM notification: $e');
+      AppLogger.error('❌ Stack trace: $stack');
     }
   }
 
@@ -307,7 +307,7 @@ class LocalNotificationService {
       ),
       payload: 'alarm_payload',
     );
-    _log.info('Alarm notification shown.');
+    AppLogger.info('Alarm notification shown.');
   }
 
   // Future<void> scheduleNotification() async {

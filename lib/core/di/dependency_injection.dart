@@ -10,7 +10,9 @@ import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_rep
 import 'package:we_care/features/Biometrics/data/repos/biometrics_view_repo.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/logic/cubit/allergy_data_entry_cubit.dart';
 import 'package:we_care/features/allergy/allergy_services.dart';
+import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
+import 'package:we_care/features/allergy/data/repos/allergy_view_repo.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/logic/cubit/chronic_disease_data_entry_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
@@ -52,6 +54,10 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
+import 'package:we_care/features/nutration/nutration_services.dart';
+import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
@@ -301,6 +307,16 @@ void setupAppCubits() {
       getIt<AllergyDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory<AllergyViewCubit>(
+    () => AllergyViewCubit(
+      getIt<AllergyViewRepo>(),
+    ),
+  );
+  getIt.registerFactory<NutrationViewCubit>(
+    () => NutrationViewCubit(
+      getIt<NutrationViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -484,6 +500,21 @@ void setupAppRepos() {
       allergyServices: getIt<AllergyServices>(),
     ),
   );
+  getIt.registerLazySingleton<AllergyViewRepo>(
+    () => AllergyViewRepo(
+      allergyServices: getIt<AllergyServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<NutrationDataEntryRepo>(
+    () => NutrationDataEntryRepo(
+      getIt<NutrationServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<NutrationViewRepo>(
+    () => NutrationViewRepo(
+      nutrationServices: getIt<NutrationServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -547,6 +578,11 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<AllergyServices>(
     () => AllergyServices(
+      dio,
+    ),
+  );
+  getIt.registerLazySingleton<NutrationServices>(
+    () => NutrationServices(
       dio,
     ),
   );

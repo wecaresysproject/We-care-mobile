@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -48,7 +49,7 @@ class SurgeriesView extends StatelessWidget {
                       ),
                     ],
                     onApply: (selectedFilters) {
-                      print("Selected Filters: $selectedFilters");
+                      AppLogger.debug("Selected Filters: $selectedFilters");
                       if (selectedFilters['السنة'] == null) {
                         BlocProvider.of<SurgeriesViewCubit>(context)
                             .getFilteredSurgeryList(

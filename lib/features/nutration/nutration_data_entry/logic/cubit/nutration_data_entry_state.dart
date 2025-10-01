@@ -1,51 +1,149 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
+part of 'nutration_data_entry_cubit.dart';
 
 @immutable
-class BiometricsDataEntryState extends Equatable {
-  final RequestStatus submitBiometricDataStatus;
+class NutrationDataEntryState extends Equatable {
+  final RequestStatus submitNutrationDataStatus;
 
   final bool isFormValidated;
 
   final bool isEditMode;
+  final bool isListening;
   final String message; // error or success message
+  final String recognizedText;
+  final int followUpNutrationViewCurrentTabIndex;
+  final String selectedPlanDate;
+  final String? genderType;
+  final String? selectedPhysicalActivity;
+  final List<String> selectedChronicDiseases;
+  final List<NutritionElement> nutrationElementsRows;
+  final RequestStatus dataTableStatus;
 
-  const BiometricsDataEntryState({
-    this.submitBiometricDataStatus = RequestStatus.initial,
+  final List<String> chronicDiseases;
+  final List<Day> days;
+
+  final NutrationFactsModel? nutrationFactsModel; // NEW: Add nutrition data
+  final bool monthlyActivationStatus;
+  final bool weeklyActivationStatus;
+  final bool isFoodAnalysisSuccess;
+
+  const NutrationDataEntryState({
+    this.submitNutrationDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.message = '',
     this.isEditMode = false,
+    this.isListening = false,
+    this.recognizedText = '',
+    this.followUpNutrationViewCurrentTabIndex = 0,
+    this.nutrationFactsModel,
+    this.selectedPlanDate = '',
+    this.genderType = 'ذكر',
+    this.selectedPhysicalActivity = 'متوسط',
+    this.chronicDiseases = const [],
+    this.selectedChronicDiseases = const [],
+    this.monthlyActivationStatus = false,
+    this.weeklyActivationStatus = false,
+    this.days = const [],
+    this.isFoodAnalysisSuccess = false,
+    this.nutrationElementsRows = const [],
+    this.dataTableStatus = RequestStatus.initial,
   }) : super();
 
-  const BiometricsDataEntryState.initialState()
+  const NutrationDataEntryState.initialState()
       : this(
-          submitBiometricDataStatus: RequestStatus.initial,
+          submitNutrationDataStatus: RequestStatus.initial,
           isFormValidated: false,
           message: '',
           isEditMode: false,
+          isListening: false,
+          recognizedText: '',
+          followUpNutrationViewCurrentTabIndex: 0,
+          nutrationFactsModel: null,
+          selectedPlanDate: '',
+          genderType: 'ذكر',
+          selectedPhysicalActivity: 'متوسط',
+          chronicDiseases: const [],
+          selectedChronicDiseases: const [],
+          monthlyActivationStatus: false,
+          weeklyActivationStatus: false,
+          days: const [],
+          isFoodAnalysisSuccess: false,
+          nutrationElementsRows: const [],
+          dataTableStatus: RequestStatus.initial,
         );
 
-  BiometricsDataEntryState copyWith({
-    RequestStatus? submitBiometricDataStatus,
+  NutrationDataEntryState copyWith({
+    RequestStatus? submitNutrationDataStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
+    bool? isListening,
+    String? recognizedText,
+    int? followUpNutrationViewCurrentTabIndex,
+    NutrationFactsModel? nutrationFactsModel,
+    String? selectedPlanDate,
+    String? genderType,
+    String? selectedPhysicalActivity,
+    List<String>? chronicDiseases,
+    List<String>? selectedChronicDiseases,
+    bool? monthlyActivationStatus,
+    bool? weeklyActivationStatus,
+    List<Day>? days,
+    bool? isFoodAnalysisSuccess,
+    List<NutritionElement>? nutrationElementsRows,
+    RequestStatus? dataTableStatus,
   }) {
-    return BiometricsDataEntryState(
-      submitBiometricDataStatus:
-          submitBiometricDataStatus ?? this.submitBiometricDataStatus,
+    return NutrationDataEntryState(
+      submitNutrationDataStatus:
+          submitNutrationDataStatus ?? this.submitNutrationDataStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
+      isListening: isListening ?? this.isListening,
+      recognizedText: recognizedText ?? this.recognizedText,
+      followUpNutrationViewCurrentTabIndex:
+          followUpNutrationViewCurrentTabIndex ??
+              this.followUpNutrationViewCurrentTabIndex,
+      nutrationFactsModel: nutrationFactsModel ?? this.nutrationFactsModel,
+      selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
+      genderType: genderType ?? this.genderType,
+      selectedPhysicalActivity:
+          selectedPhysicalActivity ?? this.selectedPhysicalActivity,
+      chronicDiseases: chronicDiseases ?? this.chronicDiseases,
+      selectedChronicDiseases:
+          selectedChronicDiseases ?? this.selectedChronicDiseases,
+      monthlyActivationStatus:
+          monthlyActivationStatus ?? this.monthlyActivationStatus,
+      weeklyActivationStatus:
+          weeklyActivationStatus ?? this.weeklyActivationStatus,
+      days: days ?? this.days,
+      isFoodAnalysisSuccess:
+          isFoodAnalysisSuccess ?? this.isFoodAnalysisSuccess,
+      nutrationElementsRows:
+          nutrationElementsRows ?? this.nutrationElementsRows,
+      dataTableStatus: dataTableStatus ?? this.dataTableStatus,
     );
   }
 
   @override
   List<Object?> get props => [
-        submitBiometricDataStatus,
+        submitNutrationDataStatus,
         isFormValidated,
         isEditMode,
         message,
+        isListening,
+        recognizedText,
+        followUpNutrationViewCurrentTabIndex,
+        nutrationFactsModel,
+        selectedPlanDate,
+        genderType,
+        selectedPhysicalActivity,
+        chronicDiseases,
+        selectedChronicDiseases,
+        monthlyActivationStatus,
+        weeklyActivationStatus,
+        days,
+        isFoodAnalysisSuccess,
+        nutrationElementsRows,
+        dataTableStatus,
       ];
 }

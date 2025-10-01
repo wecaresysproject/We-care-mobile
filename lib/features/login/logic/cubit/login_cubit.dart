@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:we_care/features/login/Data/models/login_response_model.dart';
 
 import '../../../../core/Database/cach_helper.dart';
 import '../../../../core/global/Helpers/app_enums.dart';
+import '../../../../core/global/Helpers/app_logger.dart';
 import '../../../../core/global/app_strings.dart';
 import '../../../../core/networking/auth_api_constants.dart';
 import '../../Data/Repostory/login_repo.dart';
@@ -29,8 +28,8 @@ class LoginCubit extends Cubit<LoginState> {
     final response = await _loginRepo.login(
       LoginRequestBodyModel(
         password: passwordController.text,
-        phoneNumber:
-            "${phoneController.text}", //! handle app regex to be started from 1022647417
+        phoneNumber: phoneController
+            .text, //! handle app regex to be started from 1022647417
         language: AppStrings.arabicLang, //TOD to change this later
       ),
     );
@@ -64,7 +63,7 @@ class LoginCubit extends Cubit<LoginState> {
         dialCode: country.dialCode,
       ),
     );
-    log("xxx: new dialCode ${country.dialCode}");
+    AppLogger.debug("xxx: new dialCode ${country.dialCode}");
   }
 
   @override

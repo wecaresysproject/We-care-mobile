@@ -4,8 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/allergy/allergy_api_constants.dart';
+import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 
 part 'allergy_services.g.dart';
 
@@ -19,7 +19,7 @@ abstract class AllergyServices {
   @MultiPart()
   @POST(AllergyApiConstants.uploadReportEndpoint)
   Future<UploadReportResponseModel> uploadReportImage(
-    @Part() File report,
+    @Part() File image,
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
@@ -27,10 +27,10 @@ abstract class AllergyServices {
   Future<dynamic> getAllSurgeriesRegions(
     @Query("language") String language,
   );
-  @GET(AllergyApiConstants.getSubSurgeriesRegions)
-  Future<dynamic> getAllSubSurgeriesRegions(
-    @Query("surgeryRegion") String region,
+  @GET(AllergyApiConstants.getAllAllergyTypes)
+  Future<dynamic> getAllAllergyTypes(
     @Query("language") String language,
+    @Query("userType") String userType,
   );
   @GET(AllergyApiConstants.getAllTechUsed)
   Future<dynamic> getAllTechUsed(
@@ -40,9 +40,11 @@ abstract class AllergyServices {
     @Query("language") String language,
   );
 
-  @GET(AllergyApiConstants.getSurgeryStatus)
-  Future<dynamic> getSurgeryStatus(
+  @GET(AllergyApiConstants.getAllergyTriggers)
+  Future<dynamic> getAllergyTriggers(
     @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("allergyType") String allergyType,
   );
   @GET(AllergyApiConstants.getSurgeryName)
   Future<dynamic> getSurgeryNameBasedOnRegion(
@@ -51,8 +53,8 @@ abstract class AllergyServices {
     @Query("language") String language,
   );
 
-  @GET(AllergyApiConstants.getAllSurgeries)
-  Future<GetUserSurgeriesResponseModal> getSurgeries(
+  @GET(AllergyApiConstants.getAllergyDiseases)
+  Future<dynamic> getAllergyDiseases(
     @Query("language") String language,
     @Query("userType") String userType,
     @Query("page") int page,
@@ -66,15 +68,19 @@ abstract class AllergyServices {
     @Query("usedTechniqueName") String techUsed,
     @Query("language") String language,
   );
-  @POST(AllergyApiConstants.postSurgeryEndpoint)
-  Future<dynamic> postSurgeryData(
+  @POST(AllergyApiConstants.postAllergyModuleData)
+  Future<dynamic> postAllergyModuleData(
     @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Body() PostAllergyModuleDataModel requestBody,
+    @Query("userType") String userType,
   );
 
-  @GET(AllergyApiConstants.getSingleSurgery)
-  Future<dynamic> getSurgeryById(
-      @Query("id") String id, @Query("language") String language);
+  @GET(AllergyApiConstants.getSingleAllergyDetailsById)
+  Future<dynamic> getSingleAllergyDetailsById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+  );
 
   @GET(AllergyApiConstants.getSurgeriesFilters)
   Future<dynamic> getFilters(@Query("language") String language);
@@ -85,13 +91,18 @@ abstract class AllergyServices {
       @Query("surgeryName") String? surgeryName,
       @Query("year") int? year);
 
-  @DELETE(AllergyApiConstants.deleteSurgeryById)
-  Future<dynamic> deleteSurgeryById(@Query("id") String id);
-
-  @PUT(AllergyApiConstants.editSurgeryEndpoint)
-  Future<dynamic> updateSurgeryDocumentById(
+  @DELETE(AllergyApiConstants.deleteAllergyById)
+  Future<dynamic> deleteAllergyById(
     @Query("id") String id,
     @Query("language") String language,
-    @Body() SurgeryRequestBodyModel requestBody,
+    @Query("userType") String userType,
+  );
+
+  @PUT(AllergyApiConstants.updateAllergyDocumentById)
+  Future<dynamic> updateAllergyDocumentById(
+    @Query("id") String id,
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Body() PostAllergyModuleDataModel requestBody,
   );
 }

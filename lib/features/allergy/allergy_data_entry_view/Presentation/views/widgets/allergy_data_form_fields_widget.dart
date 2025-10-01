@@ -68,7 +68,7 @@ class _AllergyDataFormFieldsWidgetState
               categoryLabel: "النوع",
               containerHintText:
                   state.alleryTypeSelection ?? "اختر نوع الحساسية",
-              options: [], //! get from backend
+              options: state.allergyTypes, //! get from backend
               onOptionSelected: (value) {
                 context.read<AllergyDataEntryCubit>().updateAllergyType(value);
               },
@@ -85,15 +85,9 @@ class _AllergyDataFormFieldsWidgetState
               containerHintText: state.selectedAllergyCauses.isEmpty
                   ? 'اختر الأشياء المسببة للحساسية'
                   : '${state.selectedAllergyCauses.length} مسببات محددة',
-              options: [
-                'test',
-                'test2',
-                'test3',
-                'test4',
-                'test5',
-              ], //! get from backend
-              onOptionSelected: (value) async {
-                await context
+              options: state.allergyTriggers, //! get from backend
+              onOptionSelected: (value) {
+                context
                     .read<AllergyDataEntryCubit>()
                     .updateSelectedAllergyCauses(value);
               },
@@ -159,7 +153,10 @@ class _AllergyDataFormFieldsWidgetState
                   "الأعراض الجانبية المتوقعة", // Another Dropdown Example
               containerHintText: state.expectedSideEffectSelection ??
                   "اختر الأعراض الجانبية المتوقعة",
-              options: [],
+              options: [
+                "test1",
+                "test2",
+              ],
               onOptionSelected: (value) {
                 context
                     .read<AllergyDataEntryCubit>()
@@ -367,13 +364,13 @@ class _AllergyDataFormFieldsWidgetState
   Widget submitAllergyEntryButtonBlocConsumer() {
     return BlocConsumer<AllergyDataEntryCubit, AllergyDataEntryState>(
       listenWhen: (prev, curr) =>
-          curr.surgeriesDataEntryStatus == RequestStatus.failure ||
-          curr.surgeriesDataEntryStatus == RequestStatus.success,
+          curr.allergyDataEntryStatus == RequestStatus.failure ||
+          curr.allergyDataEntryStatus == RequestStatus.success,
       buildWhen: (prev, curr) =>
           prev.isFormValidated != curr.isFormValidated ||
-          prev.surgeriesDataEntryStatus != curr.surgeriesDataEntryStatus,
+          prev.allergyDataEntryStatus != curr.allergyDataEntryStatus,
       listener: (context, state) async {
-        if (state.surgeriesDataEntryStatus == RequestStatus.success) {
+        if (state.allergyDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
           context.pop(
@@ -386,19 +383,18 @@ class _AllergyDataFormFieldsWidgetState
       },
       builder: (context, state) {
         return AppCustomButton(
-          isLoading: state.surgeriesDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          isLoading: state.allergyDataEntryStatus == RequestStatus.loading,
+          title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
           onPressed: () async {
-            // if (state.isFormValidated) {
-            //   state.isEditMode
-            //       ? await context
-            //           .read<AllergyDataEntryCubit>()
-            //           .submitUpdatedSurgery()
-            //       : await context.read<AllergyDataEntryCubit>().postModuleData(
-            //             context.translate,
-            //           );
-            //   log("xxx:Save Data Entry");
-            // }
+            if (state.isFormValidated) {
+              state.isEditMode
+                  ? await context
+                      .read<AllergyDataEntryCubit>()
+                      .updateAllergyDocumentById()
+                  : await context.read<AllergyDataEntryCubit>().postModuleData(
+                        context.translate,
+                      );
+            }
           },
           isEnabled: state.isFormValidated ? true : false,
         );

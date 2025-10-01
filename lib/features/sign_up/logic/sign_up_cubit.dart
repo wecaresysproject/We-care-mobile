@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
+import 'package:we_care/core/networking/dio_serices.dart';
+import 'package:we_care/features/sign_up/Data/models/sign_up_response_model.dart';
 
 import '../../../core/global/Helpers/app_enums.dart';
 import '../../../core/global/Helpers/extensions.dart';
@@ -38,7 +42,8 @@ class SignUpCubit extends Cubit<SignUpState> {
             passwordConfirmationController.text, //! remove it later
       ),
     );
-    response.when(success: (response) {
+    response.when(success: (response) async {
+      await saveUserToken(response);
       emit(
         state.copyWith(
           signupStatus: RequestStatus.success,
@@ -53,6 +58,12 @@ class SignUpCubit extends Cubit<SignUpState> {
         ),
       );
     });
+  }
+
+  Future<void> saveUserToken(SignUpResponseModel response) async {
+    await CacheHelper.setSecuredString(
+        AuthApiConstants.userTokenKey, response.userData.token);
+    DioServices.setTokenIntoHeaderAfterLogin(response.userData.token);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -16,8 +17,7 @@ class MedicinesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MedicineViewCubit>(
-      create: (context) => getIt<MedicineViewCubit>()
-        ..init(),
+      create: (context) => getIt<MedicineViewCubit>()..init(),
       child: RefreshIndicator(
         onRefresh: () async {
           BlocProvider.of<MedicineViewCubit>(context).init();
@@ -44,10 +44,12 @@ class MedicinesView extends StatelessWidget {
                             options: state.yearsFilter,
                             isYearFilter: true),
                         FilterConfig(
-                            title: 'اسم الدواء', options:state.medicineNameFilter,isMedicineFilter: true),
+                            title: 'اسم الدواء',
+                            options: state.medicineNameFilter,
+                            isMedicineFilter: true),
                       ],
                       onApply: (selectedFilters) {
-                        print("Selected Filters: $selectedFilters");
+                        AppLogger.debug("Selected Filters: $selectedFilters");
                         BlocProvider.of<MedicineViewCubit>(context)
                             .getFilteredMedicinesList(
                                 year: selectedFilters['السنة'],

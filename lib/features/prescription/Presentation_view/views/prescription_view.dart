@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -125,7 +126,7 @@ class PrescriptionsViewFilersRow extends StatelessWidget {
             ),
           ],
           onApply: (selectedFilters) async {
-            print("Selected Filters: $selectedFilters");
+            AppLogger.debug("Selected Filters: $selectedFilters");
             await context
                 .read<PrescriptionViewCubit>()
                 .getFilteredPrescriptionList(

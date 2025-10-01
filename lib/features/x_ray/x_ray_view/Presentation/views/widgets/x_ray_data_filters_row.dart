@@ -7,11 +7,13 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/sea
 class DataViewFiltersRow extends StatefulWidget {
   final List<FilterConfig> filters;
   final Function(dynamic) onApply;
+  final Function(String, String)? onFilterSelected;
 
   const DataViewFiltersRow({
     super.key,
     required this.filters,
     required this.onApply,
+    this.onFilterSelected,
   });
 
   @override
@@ -25,6 +27,9 @@ class DataViewFiltersRowState extends State<DataViewFiltersRow> {
     setState(() {
       selectedFilters[filterTitle] = selectedValue;
     });
+    if (widget.onFilterSelected != null) {
+      widget.onFilterSelected!(filterTitle, selectedValue.toString());
+    }
   }
 
   @override

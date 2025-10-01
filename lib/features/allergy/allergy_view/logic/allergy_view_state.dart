@@ -1,59 +1,57 @@
-import 'package:equatable/equatable.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
-import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
+part of 'allergy_view_cubit.dart';
 
-class SurgeriesViewState extends Equatable {
+class AllergyViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
-  final List<SurgeryModel> userSurgeries;
-  final SurgeryModel? selectedSurgeryDetails;
+  final List<AllergyDiseaseModel> userAllergies;
+  final AllergyDetailsData? selectedAllergyDetails;
   final List<int> yearsFilter;
   final List<String> surgeryNameFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
 
-  const SurgeriesViewState({
+  const AllergyViewState({
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
     this.surgeryNameFilter = const ['الكل'],
-    this.userSurgeries = const [],
-    this.selectedSurgeryDetails,
+    this.userAllergies = const [],
+    this.selectedAllergyDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
   });
 
-  factory SurgeriesViewState.initial() {
-    return SurgeriesViewState(
+  factory AllergyViewState.initial() {
+    return AllergyViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
       yearsFilter: const [],
       surgeryNameFilter: const ['الكل'],
-      userSurgeries: const [],
-      selectedSurgeryDetails: null,
+      userAllergies: const [],
+      selectedAllergyDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
     );
   }
 
-  SurgeriesViewState copyWith({
+  AllergyViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
     List<int>? yearsFilter,
     List<String>? surgeryNameFilter,
-    List<SurgeryModel>? userSurgeries,
-    SurgeryModel? selectedSurgeryDetails,
+    List<AllergyDiseaseModel>? userAllergies,
+    AllergyDetailsData? selectedAllergyDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
   }) {
-    return SurgeriesViewState(
+    return AllergyViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
       yearsFilter: yearsFilter ?? this.yearsFilter,
       surgeryNameFilter: surgeryNameFilter ?? this.surgeryNameFilter,
-      userSurgeries: userSurgeries ?? this.userSurgeries,
-      selectedSurgeryDetails: selectedSurgeryDetails,
+      userAllergies: userAllergies ?? this.userAllergies,
+      selectedAllergyDetails:
+          selectedAllergyDetails ?? this.selectedAllergyDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
@@ -65,8 +63,8 @@ class SurgeriesViewState extends Equatable {
         requestStatus,
         yearsFilter,
         surgeryNameFilter,
-        userSurgeries,
-        selectedSurgeryDetails,
+        userAllergies,
+        selectedAllergyDetails,
         isDeleteRequest,
         isLoadingMore,
       ];

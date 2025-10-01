@@ -39,3 +39,8 @@ enum FamilyCodes {
   MotherSideUncle,
   MotherSideAunt,
 }
+
+enum PlanType {
+  weekly,
+  monthly,
+}

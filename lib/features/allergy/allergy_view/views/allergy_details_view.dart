@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -12,37 +13,37 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
-import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
+import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
 
-class SurgeryDetailsView extends StatelessWidget {
-  const SurgeryDetailsView({super.key, required this.documentId});
+class AllergyDetailsView extends StatelessWidget {
+  const AllergyDetailsView({super.key, required this.documentId});
   final String documentId;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: getIt<SurgeriesViewCubit>()..getSurgeryDetailsById(documentId),
+      value: getIt<AllergyViewCubit>()..getSingleAllergyDetailsById(documentId),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
-        body: BlocConsumer<SurgeriesViewCubit, SurgeriesViewState>(
-          listener: (context, state) async {
-            if (state.requestStatus == RequestStatus.success &&
-                state.isDeleteRequest) {
-              Navigator.pop(context);
-              await showSuccess(state.responseMessage);
-            } else if (state.requestStatus == RequestStatus.failure &&
-                state.isDeleteRequest) {
-              await showError(state.responseMessage);
+        body: BlocConsumer<AllergyViewCubit, AllergyViewState>(
+          listenWhen: (previous, current) =>
+              previous.isDeleteRequest != current.isDeleteRequest,
+          listener: (context, state) {
+            if (state.requestStatus == RequestStatus.failure) {
+              showError(state.responseMessage);
+            }
+            if (state.requestStatus == RequestStatus.success) {
+              showSuccess(state.responseMessage);
+              Navigator.pop(context, true);
             }
           },
           buildWhen: (previous, current) =>
-              previous.selectedSurgeryDetails != current.selectedSurgeryDetails,
+              previous.selectedAllergyDetails != current.selectedAllergyDetails,
           builder: (context, state) {
             if (state.requestStatus == RequestStatus.loading ||
-                state.selectedSurgeryDetails == null) {
+                state.selectedAllergyDetails == null) {
               return Center(
                 child: CircularProgressIndicator(),
               );
@@ -54,122 +55,160 @@ class SurgeryDetailsView extends StatelessWidget {
                 spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
-                    title: 'العمليات',
+                    title: 'الحساسية',
                     deleteFunction: () async => await context
-                        .read<SurgeriesViewCubit>()
-                        .deleteSurgeryById(documentId),
-                    shareFunction: () => _shareSurgeryDetails(context, state),
+                        .read<AllergyViewCubit>()
+                        .deleteAllergyById(documentId),
+                    shareFunction: () => _shareAllergyDetails(context, state),
                     editFunction: () async {
+                      AppLogger.debug('test');
                       final result = await context.pushNamed(
-                        Routes.surgeriesDataEntryView,
-                        arguments: state.selectedSurgeryDetails,
+                        Routes.allergyDataEntry,
+                        arguments: {
+                          'editModel': state.selectedAllergyDetails,
+                        },
                       );
                       if (result != null && result) {
                         if (!context.mounted) return;
                         await context
-                            .read<SurgeriesViewCubit>()
-                            .getSurgeryDetailsById(documentId);
+                            .read<AllergyViewCubit>()
+                            .getSingleAllergyDetailsById(documentId);
                       }
                     },
                   ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "كود ICHI",
-                      value: state.selectedSurgeryDetails!.ichiCode ?? "-",
-                      icon: 'assets/images/data_search_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: state.selectedSurgeryDetails!.surgeryDate,
-                        icon: 'assets/images/date_icon.png'),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "العضو",
-                      value: state.selectedSurgeryDetails!.surgeryRegion,
-                      icon: 'assets/images/body_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "المنطقة الفرعية ",
-                        value: state.selectedSurgeryDetails!.subSurgeryRegion,
-                        icon: 'assets/images/body_icon.png'),
-                  ]),
                   DetailsViewInfoTile(
-                    title: 'اسم العملية',
-                    value: state.selectedSurgeryDetails!.surgeryName,
-                    icon: 'assets/images/doctor_name.png',
+                    title: "التاريخ",
+                    value: state.selectedAllergyDetails!.allergyOccurrenceDate,
+                    icon: 'assets/images/date_icon.png',
+                    isExpanded: true,
+                  ),
+                  Row(
+                    children: [
+                      DetailsViewInfoTile(
+                        title: "النوع",
+                        value: state.selectedAllergyDetails!.allergyType,
+                        icon: 'assets/images/qr_code_icon.png',
+                      ),
+                      Spacer(),
+                      DetailsViewInfoTile(
+                          //!joint t later with 1/
+                          title: "مسببات الحساسية",
+                          value: state.selectedAllergyDetails!.allergyTriggers
+                              .join(', '),
+                          icon: 'assets/images/chat_question.png'),
+                    ],
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الأعراض الجانبية المتوقعة",
+                    value: state.selectedAllergyDetails!.expectedSideEffects!,
+                    icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
-                    title: ' الهدف من الاجراء',
-                    value: state.selectedSurgeryDetails!.purpose ??
-                        "لم يتم تحديده",
-                    icon: 'assets/images/chat_question_icon.png',
+                    title: "حدة الأعراض",
+                    value: state.selectedAllergyDetails!.symptomSeverity!,
+                    icon: 'assets/images/thunder_image.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "زمن بدء الأعراض بعد التعرض للمسبب",
+                    value: state.selectedAllergyDetails!.timeToSymptomOnset!,
+                    icon: 'assets/images/time_icon.png',
                     isExpanded: true,
                   ),
                   Row(children: [
                     DetailsViewInfoTile(
-                      title: "التقنية المستخدمة",
-                      value: state.selectedSurgeryDetails!.usedTechnique,
-                      icon: 'assets/images/data_search_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "حالة العملية",
-                        value: state.selectedSurgeryDetails!.surgeryStatus,
-                        icon: 'assets/images/ratio.png'),
-                  ]),
-                  DetailsViewInfoTile(
-                      title: "وصف اضافي للعملية",
-                      value: state.selectedSurgeryDetails!.surgeryDescription,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "الجراح ",
-                      value: state.selectedSurgeryDetails!.surgeonName,
-                      icon: 'assets/images/surgery_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "طبيب الباطنة ",
-                      value: state.selectedSurgeryDetails!.anesthesiologistName,
+                      title: "استشارة طبيب",
+                      value: state.selectedAllergyDetails?.isDoctorConsulted ==
+                              null
+                          ? context.translate.no_data_entered
+                          : state.selectedAllergyDetails!.isDoctorConsulted!
+                              ? 'نعم'
+                              : 'لا',
                       icon: 'assets/images/doctor_icon.png',
                     ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: state.selectedSurgeryDetails!.country,
-                        icon: 'assets/images/country_icon.png'),
                     Spacer(),
                     DetailsViewInfoTile(
-                        title: "المستشفي",
-                        value: state.selectedSurgeryDetails!.hospitalCenter,
-                        icon: 'assets/images/hospital_icon.png'),
+                      title: "اختبار حساسية",
+                      value: state.selectedAllergyDetails!
+                                  .isAllergyTestPerformed ==
+                              null
+                          ? context.translate.no_data_entered
+                          : state.selectedAllergyDetails!
+                                  .isAllergyTestPerformed!
+                              ? 'نعم'
+                              : 'لا',
+                      icon: 'assets/images/data_search_icon.png',
+                    ),
                   ]),
                   DetailsViewInfoTile(
-                      title: " تعليمات بعد العملية",
-                      value:
-                          state.selectedSurgeryDetails!.postSurgeryInstructions,
-                      icon: 'assets/images/symptoms_icon.png',
-                      isExpanded: true),
-                  DetailsViewInfoTile(
-                      title: " توصيف العملية",
-                      value: state.selectedSurgeryDetails!.description ??
-                          "لم يتم تحديده",
-                      icon: 'assets/images/file_date_icon.png',
-                      isExpanded: true),
-                  DetailsViewInfoTile(
-                      title: " ملاحظات شخصية",
-                      value: state.selectedSurgeryDetails!.additionalNotes,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true),
+                    title: "الأدوية",
+                    value: state.selectedAllergyDetails!.medicationName!,
+                    icon: 'assets/images/medicine_icon.png',
+                    isExpanded: true,
+                  ),
+                  Row(
+                    children: [
+                      DetailsViewInfoTile(
+                        title: "هل العلاجات فعالة",
+                        value: state.selectedAllergyDetails!
+                                    .isTreatmentsEffective ==
+                                null
+                            ? context.translate.no_data_entered
+                            : state.selectedAllergyDetails!
+                                    .isTreatmentsEffective!
+                                ? 'نعم'
+                                : 'لا',
+                        icon: 'assets/images/surgery_icon.png',
+                      ),
+                      Spacer(),
+                      DetailsViewInfoTile(
+                        title: "وجود صدمة تحسسية",
+                        value: state.selectedAllergyDetails!.proneToAllergies ??
+                            context.translate.no_data_entered,
+                        icon: 'assets/images/chat_question.png',
+                      ),
+                    ],
+                  ),
                   DetailsViewImageWithTitleTile(
-                    image: state.selectedSurgeryDetails!.medicalReportImage,
-                    title: "التقرير الطبي",
+                    isShareEnabled: true,
+                    image: state.selectedAllergyDetails!
+                        .medicalReportImage!, // Replace with actual image URL or asset
+                    title: "التقرير الطبى/اختبار الحساسية",
+                  ),
+                  DetailsViewInfoTile(
+                    title: "التاريخ العائلى",
+                    value: state.selectedAllergyDetails!.familyHistory!,
+                    icon: 'assets/images/icon_family.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الاحتياطات",
+                    value: state.selectedAllergyDetails!.precautions!,
+                    icon: 'assets/images/file_icon.png',
+                    isExpanded: true,
+                  ),
+                  Row(
+                    children: [
+                      DetailsViewInfoTile(
+                        title: "تحذير طبى للمسببات",
+                        value: state.selectedAllergyDetails!
+                                .isMedicalWarningReceived ??
+                            context.translate.no_data_entered,
+                        icon: 'assets/images/circular_warning.png',
+                      ),
+                      Spacer(),
+                      DetailsViewInfoTile(
+                        title: "حمل حقنة الإبينفرين",
+                        value: state
+                                .selectedAllergyDetails!.carryEpinephrine.isNull
+                            ? context.translate.no_data_entered
+                            : state.selectedAllergyDetails!.carryEpinephrine!
+                                ? 'نعم'
+                                : 'لا',
+                        icon: 'assets/images/Injection.png',
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -181,37 +220,47 @@ class SurgeryDetailsView extends StatelessWidget {
   }
 }
 
-Future<void> _shareSurgeryDetails(
-    BuildContext context, SurgeriesViewState state) async {
+Future<void> _shareAllergyDetails(
+    BuildContext context, AllergyViewState state) async {
   try {
-    final surgeryDetails = state.selectedSurgeryDetails!;
+    final allergy = state.selectedAllergyDetails!;
 
-    // 📝 Extract text details
+    // 📝 Extract text details (re-mapped to allergy fields)
     final text = '''
-    ⚕️ *تفاصيل العملية* ⚕️
+⚕️ *تفاصيل الحساسية* ⚕️
 
-    📅 *التاريخ*: ${surgeryDetails.surgeryDate}
-    🏥 *المستشفى*: ${surgeryDetails.hospitalCenter}
-    🌍 *الدولة*: ${surgeryDetails.country}
-    🧑‍⚕️ *الجراح*: ${surgeryDetails.surgeonName}
-    ⚕️ *طبيب الباطنة*: ${surgeryDetails.anesthesiologistName}
-    🌤 *الحالة*: ${surgeryDetails.surgeryStatus}
-    💪 *التقنية المستخدمة*: ${surgeryDetails.usedTechnique}
-    📃 *التوصيف*: ${surgeryDetails.surgeryDescription}
-    📕 *التعليمات بعد العملية*: ${surgeryDetails.postSurgeryInstructions}
+📅 *التاريخ*: ${allergy.allergyOccurrenceDate}
+🦠 *مسببات الحساسية*: ${allergy.allergyTriggers}
+🤧 *الأعراض الجانبية (رد الفعل التحسسي)*: ${allergy.expectedSideEffects}
+⚡ *حدة الأعراض*: ${allergy.symptomSeverity ?? "لم يتم تحديده"}
+⏱ *زمن بدء الأعراض*: ${allergy.timeToSymptomOnset}
+👨‍⚕️ *استشارة طبيب*: ${allergy.isDoctorConsulted}
+🧪 *اختبار حساسية*: ${allergy.isAllergyTestPerformed}
+💊 *الأدوية*: ${allergy.medicationName}
+💉 *هل العلاجات فعالة*: ${allergy.isTreatmentsEffective}
+🚨 *وجود صدمة تحسسية*: ${allergy.proneToAllergies}
+📷 *التقرير الطبي/اختبار الحساسية*: مرفق بالأسفل (إن وجد)
+👪 *التاريخ العائلي*: ${allergy.familyHistory}
+📘 *الاحتياطات*: ${allergy.precautions ?? "لم يتم تحديده"}
+⚠️ *تحذير طبي للمسببات*: ${allergy.isMedicalWarningReceived}
+💉 *حمل حقنة الإبينفرين*: ${allergy.carryEpinephrine}
     ''';
 
-    // 📥 Download images
+    // 📥 Download medical report image if available
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    if (surgeryDetails.medicalReportImage.startsWith("http")) {
+    if (allergy.medicalReportImage != null &&
+        allergy.medicalReportImage!.startsWith("http")) {
       final imagePath = await downloadImage(
-          surgeryDetails.medicalReportImage, tempDir, 'medical_report.png');
+        allergy.medicalReportImage!,
+        tempDir,
+        'allergy_report.png',
+      );
       if (imagePath != null) imagePaths.add(imagePath);
     }
 
-    // 📤 Share text & images
+    // 📤 Share text & image
     if (imagePaths.isNotEmpty) {
       await Share.shareXFiles(imagePaths.map((path) => XFile(path)).toList(),
           text: text);
@@ -219,6 +268,6 @@ Future<void> _shareSurgeryDetails(
       await Share.share(text);
     }
   } catch (e) {
-    await showError("❌ حدث خطأ أثناء المشاركة");
+    await showError("❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية");
   }
 }

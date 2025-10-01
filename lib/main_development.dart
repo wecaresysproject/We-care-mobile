@@ -3,6 +3,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -10,6 +11,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -30,6 +32,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await dotenv.load(fileName: ".env");
+
   await LocalNotificationService.init();
   await PushNotificationsService.init(navigatorKey);
   tz.initializeTimeZones();
@@ -109,11 +113,11 @@ Future<void> checkIfLoggedInUser() async {
 
 Future<void> checkAndroidScheduleExactAlarmPermission() async {
   final status = await Permission.scheduleExactAlarm.status;
-  print('Schedule exact alarm permission: $status.');
+  AppLogger.info('Schedule exact alarm permission: $status.');
   if (status.isDenied) {
-    print('Requesting schedule exact alarm permission...');
+    AppLogger.info('Requesting schedule exact alarm permission...');
     final res = await Permission.scheduleExactAlarm.request();
-    print(
+    AppLogger.info(
         'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
   }
 }

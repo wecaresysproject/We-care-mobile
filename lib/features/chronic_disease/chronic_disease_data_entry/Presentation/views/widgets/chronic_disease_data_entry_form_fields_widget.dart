@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -59,7 +58,8 @@ class _ChronicDiseaseDataEntryFormFieldsState
                   context
                       .read<ChronicDiseaseDataEntryCubit>()
                       .updateDiagnosisStartDate(pickedDate);
-                  log("xxx: pickedDate: $pickedDate"); //! 2024-02-14
+                  AppLogger.debug(
+                      "xxx: pickedDate: $pickedDate"); //! 2024-02-14
                 },
               ),
 
@@ -93,7 +93,7 @@ class _ChronicDiseaseDataEntryFormFieldsState
                     state.doctorNameSelection ?? "اختر اسم الطبيب المتابع",
                 options: doctorsList,
                 onOptionSelected: (value) {
-                  log("xxx:Selected: $value");
+                  AppLogger.debug("xxx:Selected: $value");
                   context
                       .read<ChronicDiseaseDataEntryCubit>()
                       .updateDoctorName(value);

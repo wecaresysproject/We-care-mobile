@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import 'package:we_care/features/allergy/allergy_data_entry_view/logic/cubit/allergy_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -26,6 +27,10 @@ class MedicineNameSelectorSection extends StatelessWidget {
                 onOptionSelected: (value) async {
                   await context
                       .read<MedicinesDataEntryCubit>()
+                      .updateSelectedMedicineName(value);
+                  if (!context.mounted) return;
+                  context
+                      .read<AllergyDataEntryCubit>()
                       .updateSelectedMedicineName(value);
                 },
                 bottomSheetTitle: "اختر اسم الدواء",

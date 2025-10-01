@@ -36,6 +36,10 @@ migrate_working_dir/
 # Symbolication related
 app.*.symbols
 
+# Environment files
+*.env
+
+
 # Obfuscation related
 app.*.map.json
 # Ignore generated plugin files for Linux, macOS, and Windows

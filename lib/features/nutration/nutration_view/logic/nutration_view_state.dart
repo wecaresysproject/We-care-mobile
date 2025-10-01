@@ -1,78 +1,91 @@
-import 'package:equatable/equatable.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
-import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
+part of 'nutration_view_cubit.dart';
 
-class BiometricsViewState extends Equatable {
+class NutrationViewState extends Equatable {
   final RequestStatus requestStatus;
   final String responseMessage;
-  final List<String> availableBiometricNames;
-  final List<int> yearsFilter;
-  final List<int> daysFilter;
-  final List<int> monthFilter;
-  final List<BiometricsDatasetModel> biometricsData;
- final CurrentBioMetricsData? currentBiometricsData;
+  final List<NutrationDocument> weeklyNutrationDocuments;
+  final List<NutrationDocument> monthlyNutrationDocuments;
+  final int followUpNutrationViewCurrentTabIndex;
+  final List<int> weaklyPlanYearsFilter;
+  final List<int> monthlyPlanYearsFilter;
+  final List<String> monthlyPlanDateRangesFilter;
+  final List<String> weeklyPlanDateRangesFilter;
 
-  const BiometricsViewState({
+  final List<AlternativeFoodCategoryModel> foodAlternatives;
+
+  const NutrationViewState({
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
-    this.yearsFilter = const [],
-    this.availableBiometricNames = const [],
-    this.daysFilter = const [],
-    this.monthFilter = const [],
-    this.biometricsData = const [],
-    this.currentBiometricsData,
+    this.weaklyPlanYearsFilter = const [],
+    this.weeklyNutrationDocuments = const [],
+    this.monthlyNutrationDocuments = const [],
+    this.monthlyPlanYearsFilter = const [],
+    this.monthlyPlanDateRangesFilter = const [],
+    this.weeklyPlanDateRangesFilter = const [],
+    this.foodAlternatives = const [],
+    this.followUpNutrationViewCurrentTabIndex = 0,
   });
 
-  factory BiometricsViewState.initial() {
-    return BiometricsViewState(
+  factory NutrationViewState.initial() {
+    return NutrationViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
-      yearsFilter: const [
-      ],
-      availableBiometricNames: const [
-  ],
-      daysFilter: const [
-      ],
-      monthFilter: const [
-      ],
-      biometricsData: const [],
-      currentBiometricsData: null,
+      weaklyPlanYearsFilter: const [],
+      weeklyNutrationDocuments: const [],
+      monthlyNutrationDocuments: const [],
+      monthlyPlanYearsFilter: const [],
+      monthlyPlanDateRangesFilter: const [],
+      weeklyPlanDateRangesFilter: const [],
+      foodAlternatives: const [],
+      followUpNutrationViewCurrentTabIndex: 0,
     );
   }
 
-  BiometricsViewState copyWith({
+  NutrationViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
-    List<int>? yearsFilter,
-    List<String>? availableBiometricNames,
-    List<int>? daysFilter,
-    List<int>? monthFilter,
-    List<BiometricsDatasetModel>? biometricsData,
-    CurrentBioMetricsData? currentBiometricsData,
+    List<int>? weaklyPlanYearsFilter,
+    List<NutrationDocument>? weeklyNutrationDocuments,
+    List<NutrationDocument>? monthlyNutrationDocuments,
+    List<int>? monthlyPlanYearsFilter,
+    List<String>? monthlyPlanDateRangesFilter,
+    List<String>? weeklyPlanDateRangesFilter,
+    List<AlternativeFoodCategoryModel>? foodAlternatives,
+    int? followUpNutrationViewCurrentTabIndex,
   }) {
-    return BiometricsViewState(
+    return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
-      yearsFilter: yearsFilter ?? this.yearsFilter,
-      availableBiometricNames: availableBiometricNames ?? this.availableBiometricNames,
-      daysFilter: daysFilter ?? this.daysFilter,
-      monthFilter: monthFilter ?? this.monthFilter,
-      biometricsData: biometricsData ?? this.biometricsData,
-      currentBiometricsData: currentBiometricsData ?? this.currentBiometricsData,
+      weaklyPlanYearsFilter:
+          weaklyPlanYearsFilter ?? this.weaklyPlanYearsFilter,
+      weeklyNutrationDocuments:
+          weeklyNutrationDocuments ?? this.weeklyNutrationDocuments,
+      monthlyNutrationDocuments:
+          monthlyNutrationDocuments ?? this.monthlyNutrationDocuments,
+      monthlyPlanYearsFilter:
+          monthlyPlanYearsFilter ?? this.monthlyPlanYearsFilter,
+      monthlyPlanDateRangesFilter:
+          monthlyPlanDateRangesFilter ?? this.monthlyPlanDateRangesFilter,
+      weeklyPlanDateRangesFilter:
+          weeklyPlanDateRangesFilter ?? this.weeklyPlanDateRangesFilter,
+      foodAlternatives: foodAlternatives ?? this.foodAlternatives,
+      followUpNutrationViewCurrentTabIndex:
+          followUpNutrationViewCurrentTabIndex ??
+              this.followUpNutrationViewCurrentTabIndex,
     );
   }
-
 
   @override
   List<Object?> get props => [
-    requestStatus,
-    responseMessage,
-    availableBiometricNames,
-    yearsFilter,
-    daysFilter,
-    monthFilter,  
-    biometricsData,
-    currentBiometricsData,
+        requestStatus,
+        responseMessage,
+        weeklyNutrationDocuments,
+        monthlyNutrationDocuments,
+        weaklyPlanYearsFilter,
+        monthlyPlanYearsFilter,
+        monthlyPlanDateRangesFilter,
+        weeklyPlanDateRangesFilter,
+        followUpNutrationViewCurrentTabIndex,
+        foodAlternatives,
       ];
 }

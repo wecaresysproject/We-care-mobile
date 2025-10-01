@@ -7,23 +7,32 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/smart_assistant_button_shared_widget.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/widgets/allergy_data_form_fields_widget.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/logic/cubit/allergy_data_entry_cubit.dart';
+import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class AllergyDataEntryView extends StatelessWidget {
   const AllergyDataEntryView({
     super.key,
-  }); //this.existingSurgeryModel});
-  // final SurgeryModel? existingSurgeryModel;
+    this.existingAllergyModel,
+  });
+  final AllergyDetailsData? existingAllergyModel;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AllergyDataEntryCubit>(
       create: (context) {
         var cubit = getIt<AllergyDataEntryCubit>();
-        // if (existingSurgeryModel != null) {
-        //   cubit.loadPastSurgeryDataForEditing(existingSurgeryModel!);
-        // } else {
-        //   cubit.intialRequestsForDataEntry();
-        // }
-        return cubit;
+        if (existingAllergyModel != null) {
+          /// ✅ Ensures `context` is fully mounted before calling `S.of(context)`
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) {
+              cubit.loadpastAllergyDataForEditing(
+                existingAllergyModel!,
+                S.of(context),
+              );
+            },
+          );
+        }
+        return cubit..intialRequestsForDataEntry();
       },
       child: Scaffold(
         appBar: AppBar(),
