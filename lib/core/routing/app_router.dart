@@ -65,6 +65,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/Presentation/view
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/effect_on_body_organs_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
@@ -579,6 +580,10 @@ class AppRouter {
       case Routes.nutritionPlanDataView:
         return MaterialPageRoute(
           builder: (_) => NutrationPlanDataView(),
+        );
+      case Routes.effectOnBodyOrgans:
+        return MaterialPageRoute(
+          builder: (_) => EffectOnBodyOrgansView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

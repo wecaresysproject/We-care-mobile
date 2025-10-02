@@ -17,6 +17,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     this.showShareButtonOnly = false,
     this.showActionButtons = true,
     this.titleColor,
+    this.fontSize,
   });
   final String title;
   final Function()? editFunction;
@@ -25,6 +26,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
   final bool showActionButtons;
   final bool showShareButtonOnly;
   final Color? titleColor;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,10 @@ class AppBarWithCenteredTitle extends StatelessWidget
                 title,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.font20blackWeight600.copyWith(
-                    fontSize: 21.sp, color: titleColor ?? Colors.black),
+                  fontSize: fontSize?.sp ?? 21.sp,
+                  color: titleColor ?? Colors.black,
+                  fontFamily: "Cairo",
+                ),
               ),
             ),
           ],
