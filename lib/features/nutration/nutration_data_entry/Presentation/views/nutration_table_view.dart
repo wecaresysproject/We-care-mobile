@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class NutritionFollowUpReportView extends StatelessWidget {
@@ -33,7 +35,14 @@ class NutritionFollowUpReportView extends StatelessWidget {
                 title: "تقرير المتابعة",
                 showActionButtons: false,
               ),
-              verticalSpacing(24),
+
+              GradientButton(
+                onPressed: () {
+                  context.pushNamed(Routes.effectOnBodyOrgans);
+                },
+                text: "التأثير على أعضاء الجسم",
+                icon: Icons.person,
+              ).paddingFrom(right: 140, bottom: 5),
               // 🔥 BlocBuilder to handle different states
               BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
                 builder: (context, state) {
