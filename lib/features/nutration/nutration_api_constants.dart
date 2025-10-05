@@ -20,8 +20,10 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/all-monthly-plans";
   static const getFilterdNutritionDocuments =
       "SmartNutritionAnalyzer/doc-data-filtered";
-  static const getNutrationDocuments = "/SmartNutritionAnalyzer/doc-data";
+  static const getNutrationDocuments = "SmartNutritionAnalyzer/doc-data";
   static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
+  static const updateNutrientStandard =
+      "SmartNutritionAnalyzer/update-standard";
 
   //filters
 }

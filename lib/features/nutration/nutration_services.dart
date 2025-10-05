@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/nutration_api_constants.dart';
 
 part 'nutration_services.g.dart';
@@ -78,5 +79,11 @@ abstract class NutrationServices {
   Future<dynamic> getNutrationDocuments(
     @Query('language') String language,
     @Query('planType') String planType,
+  );
+  @PUT(NutrationApiConstants.updateNutrientStandard)
+  Future<dynamic> updateNutrientStandard(
+    @Query('language') String language,
+    @Body() UpdateNutritionValueModel requestBody,
+    @Query('nutrientName') String nutrientName,
   );
 }

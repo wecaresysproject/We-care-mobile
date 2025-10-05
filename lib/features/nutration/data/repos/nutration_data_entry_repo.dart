@@ -4,6 +4,7 @@ import 'package:we_care/features/nutration/data/models/get_all_created_plans_mod
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationDataEntryRepo {
@@ -104,6 +105,24 @@ class NutrationDataEntryRepo {
           .map((e) => NutritionElement.fromJson(e))
           .toList();
       return ApiResult.success(nutrationTableRows);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> updateNutrientStandard({
+    required String language,
+    required UpdateNutritionValueModel requestBody,
+    required String nutrientName,
+  }) async {
+    try {
+      final response = await _nutrationServices.updateNutrientStandard(
+        language,
+        requestBody,
+        nutrientName,
+      );
+
+      return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
