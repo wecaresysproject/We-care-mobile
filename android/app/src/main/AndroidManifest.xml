@@ -28,7 +28,8 @@
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         <service android:name="com.gdelataillade.alarm.services.NotificationOnKillService" />
          <!-- ADD THESE RECEIVERS FOR FLUTTER LOCAL NOTIFICATIONS -->
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />

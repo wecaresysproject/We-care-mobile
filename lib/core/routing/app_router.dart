@@ -68,6 +68,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/effect_on_body_organs_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/oragan_affected_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_recomendation_view.dart';
@@ -584,6 +585,12 @@ class AppRouter {
       case Routes.effectOnBodyOrgans:
         return MaterialPageRoute(
           builder: (_) => EffectOnBodyOrgansView(),
+        );
+      case Routes.selectedOrganAffectedDetailsView:
+        return MaterialPageRoute(
+          builder: (_) => OrganAffectedDetailsView(
+            title: arguments as String,
+          ),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

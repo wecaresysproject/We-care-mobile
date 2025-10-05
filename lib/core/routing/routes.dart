@@ -110,6 +110,8 @@ class Routes {
   static const allergyDocDetailsView = '/allergyDocDetailsView';
   static const foodRecomendationView = '/foodRecomendationView';
   static const effectOnBodyOrgans = '/effectOnBodyOrgans';
+  static const selectedOrganAffectedDetailsView =
+      '/selectedOrganAffectedDetailsView';
 
   static const eyeProceduresAndSyptomsDataEntry =
       '/eyeProceduresAndSyptomsDataEntry';

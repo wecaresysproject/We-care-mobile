@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class EffectOnBodyOrgansView extends StatelessWidget {
   const EffectOnBodyOrgansView({super.key});
@@ -104,8 +105,12 @@ class EffectOnBodyOrgansView extends StatelessWidget {
                 final organ = organsList[index];
                 return GestureDetector(
                   onTap: organ.isActive
-                      ? () {
+                      ? () async {
                           AppLogger.info("Clicked: ${organ.name}");
+                          await context.pushNamed(
+                            Routes.selectedOrganAffectedDetailsView,
+                            arguments: organ.name,
+                          );
                         }
                       : null,
                   child: Opacity(

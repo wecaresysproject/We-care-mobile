@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -204,13 +205,20 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ),
                 ],
                 onApply: (selectedOption) async {
-                  await context
-                      .read<NutrationViewCubit>()
-                      .getFilterdNutritionDocuments(
-                        year: selectedOption["السنة"].toString(),
-                        rangeDate: selectedOption["التاريخ"],
-                      );
-                  // Apply filters here
+                  if (selectedOption.isNotEmpty &&
+                      selectedOption.containsKey("التاريخ") &&
+                      selectedOption.containsKey("السنة") &&
+                      selectedOption["التاريخ"].toString().isNotEmpty &&
+                      selectedOption["السنة"].toString().isNotEmpty) {
+                    await context
+                        .read<NutrationViewCubit>()
+                        .getFilterdNutritionDocuments(
+                          rangeDate: selectedOption["التاريخ"],
+                          year: selectedOption["السنة"].toString(),
+                        );
+                  } else {
+                    await showError("اختر السنة والتاريخ اولا من فضلك");
+                  }
                 },
               ),
             ),
@@ -325,13 +333,20 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ),
                 ],
                 onApply: (selectedOption) async {
-                  // Apply filters for weekly plan here if needed
-                  await context
-                      .read<NutrationViewCubit>()
-                      .getFilterdNutritionDocuments(
-                        rangeDate: selectedOption["التاريخ"],
-                        year: selectedOption["السنة"].toString(),
-                      );
+                  if (selectedOption.isNotEmpty &&
+                      selectedOption.containsKey("التاريخ") &&
+                      selectedOption.containsKey("السنة") &&
+                      selectedOption["التاريخ"].toString().isNotEmpty &&
+                      selectedOption["السنة"].toString().isNotEmpty) {
+                    await context
+                        .read<NutrationViewCubit>()
+                        .getFilterdNutritionDocuments(
+                          rangeDate: selectedOption["التاريخ"],
+                          year: selectedOption["السنة"].toString(),
+                        );
+                  } else {
+                    await showError("اختر السنة والتاريخ اولا من فضلك");
+                  }
                 },
               ),
             ),
