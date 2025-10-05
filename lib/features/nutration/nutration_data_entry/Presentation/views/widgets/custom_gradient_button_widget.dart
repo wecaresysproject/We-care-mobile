@@ -6,12 +6,14 @@ class GradientButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final VoidCallback onPressed;
+  final Color textColor;
 
   const GradientButton({
     super.key,
     required this.text,
     required this.icon,
     required this.onPressed,
+    this.textColor = Colors.white,
   });
 
   @override
@@ -41,7 +43,8 @@ class GradientButton extends StatelessWidget {
         child: Container(
           height: 38.h, // from Figma
           constraints: const BoxConstraints(minWidth: 186),
-          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          alignment: Alignment.centerRight,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -49,7 +52,9 @@ class GradientButton extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 text,
-                style: AppTextStyles.font14whiteWeight600,
+                style: AppTextStyles.font14whiteWeight600.copyWith(
+                  color: textColor,
+                ),
               ),
             ],
           ),

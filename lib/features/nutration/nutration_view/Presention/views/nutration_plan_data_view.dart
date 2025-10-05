@@ -13,6 +13,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
@@ -43,41 +44,72 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   Widget build(BuildContext context) {
     return BlocProvider<NutrationViewCubit>(
       create: (context) => getIt<NutrationViewCubit>()..getIntialRequests(),
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-        ),
-        body: Column(
-          children: [
-            // Tab Bar Section
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  AppBarWithCenteredTitle(
-                    title: 'خطة المتابعة',
-                    showActionButtons: false,
-                  ).paddingSymmetricHorizontal(16),
-                  verticalSpacing(5),
-                  _buildTabBar().paddingSymmetricHorizontal(16),
-                  verticalSpacing(24),
-                ],
-              ),
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              elevation: 0,
             ),
-            // Tab View Content
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  // Weekly Plan
-                  _buildWeeklyMealPlanGrid(),
-                  // Monthly Plan
-                  _buildMonthlyMealPlanGrid(),
-                ],
-              ),
+            body: Column(
+              children: [
+                // Tab Bar Section
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      AppBarWithCenteredTitle(
+                        title: 'خطة المتابعة',
+                        showActionButtons: false,
+                      ).paddingSymmetricHorizontal(16),
+                      verticalSpacing(5),
+                      _buildTabBar().paddingSymmetricHorizontal(16),
+                      verticalSpacing(24),
+                    ],
+                  ),
+                ),
+                // Tab View Content
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      // Weekly Plan
+                      _buildWeeklyMealPlanGrid(),
+                      // Monthly Plan
+                      _buildMonthlyMealPlanGrid(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // --- الزرين في أسفل اليمين ---
+          Positioned(
+            bottom: 20.h,
+            right: 16.w,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              spacing: 24,
+              children: [
+                GradientButton(
+                  text: "تقرير المتابعة",
+                  icon: Icons.insert_chart_outlined,
+                  onPressed: () async {
+                    // TODO: Add your logic here
+                    // await context.pushNamed(Routes.followUpReportView);
+                  },
+                ),
+                GradientButton(
+                  text: "التأثير على الأعضاء",
+                  icon: Icons.person,
+                  onPressed: () async {
+                    await context.pushNamed(Routes.effectOnBodyOrgans);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

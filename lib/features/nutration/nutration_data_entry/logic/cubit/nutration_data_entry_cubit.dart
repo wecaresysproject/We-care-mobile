@@ -9,6 +9,7 @@ import 'package:we_care/features/nutration/data/models/get_all_created_plans_mod
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
@@ -442,6 +443,41 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       failure: (failure) {
         AppLogger.error(
             'Error in getAllChronicDiseases: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateNutrientStandard({
+    required String standardNutrientName,
+    required double newStandard,
+    required String date,
+  }) async {
+    final result = await _nutrationDataEntryRepo.updateNutrientStandard(
+      language: AppStrings.arabicLang,
+      requestBody: UpdateNutritionValueModel(
+        newStandard: newStandard,
+      ),
+      nutrientName: standardNutrientName,
+    );
+    AppLogger.debug(" updateNutrientStandard : $standardNutrientName , $date");
+    result.when(
+      success: (successMessage) async {
+        await getAllNutrationTableData(date: date);
+        emit(
+          state.copyWith(
+            message: successMessage,
+            isEditMode: true,
+          ),
+        );
+      },
+      failure: (failure) {
+        AppLogger.error(
+            'Error in updateNutrientStandard: ${failure.errors.first}');
         safeEmit(
           state.copyWith(
             message: failure.errors.first,

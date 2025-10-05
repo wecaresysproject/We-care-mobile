@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -63,7 +62,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
         return _buildLoadingState();
 
       case RequestStatus.success:
-        return _buildSuccessState(state.nutrationElementsRows);
+        return _buildSuccessState(state.nutrationElementsRows, context);
 
       case RequestStatus.failure:
         return _buildErrorState(state.message, context);
@@ -158,7 +157,8 @@ class NutritionFollowUpReportView extends StatelessWidget {
   }
 
   // 📊 Success State Widget (Main Data Table)
-  Widget _buildSuccessState(List<NutritionElement> nutritionData) {
+  Widget _buildSuccessState(
+      List<NutritionElement> nutritionData, BuildContext context) {
     if (nutritionData.isEmpty) {
       return _buildEmptyState();
     }
@@ -179,7 +179,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
         width: 0.19,
       ),
       columns: _buildColumns(),
-      rows: _buildRowsFromData(nutritionData),
+      rows: _buildRowsFromData(nutritionData, context),
     );
   }
 
@@ -237,7 +237,8 @@ class NutritionFollowUpReportView extends StatelessWidget {
   }
 
   // 🎯 Build table rows from actual API data
-  List<DataRow> _buildRowsFromData(List<NutritionElement> nutritionData) {
+  List<DataRow> _buildRowsFromData(
+      List<NutritionElement> nutritionData, BuildContext context) {
     return nutritionData.map((element) {
       // 🔥 Determine difference color based on the value
       Color diffColor = _getDifferenceColor(
@@ -282,9 +283,103 @@ class NutritionFollowUpReportView extends StatelessWidget {
                       ), // 👈 تحكم في درجة الاستدارة
                     ),
                   ),
-                  onPressed: () {
-                    AppLogger.debug("تعديل pressed for ${element.elementName}");
-                    // ✨ هنا تحط Dialog أو أي أكشن للتعديل
+                  onPressed: () async {
+                    final newValue = await showDialog<double>(
+                      context: context,
+                      builder: (context) {
+                        final TextEditingController controller =
+                            TextEditingController();
+
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          title: Text(
+                            "تعديل القيمة",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                              fontFamily: 'Cairo',
+                            ),
+                          ),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "أدخل القيمة الجديدة لـ ${(element.elementName)}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14.sp),
+                              ),
+                              SizedBox(height: 16.h),
+                              TextField(
+                                controller: controller,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: "القيمة الجديدة",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          actionsAlignment: MainAxisAlignment.center,
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                "إلغاء",
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                final enteredValue =
+                                    double.tryParse(controller.text);
+                                if (enteredValue != null) {
+                                  Navigator.pop(context, enteredValue);
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text("من فضلك أدخل رقمًا صحيحًا")),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColorsManager.mainDarkBlue,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                              ),
+                              child: Text(
+                                "حفظ",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    // ✅ Handle the result after dialog closes
+                    if (newValue != null && context.mounted) {
+                      // Update the backend or cubit with the new value here
+                      context
+                          .read<NutrationDataEntryCubit>()
+                          .updateNutrientStandard(
+                            standardNutrientName: element.elementName,
+                            newStandard: newValue,
+                            date: date,
+                          );
+                    }
                   },
                   icon: const Icon(
                     Icons.edit,
