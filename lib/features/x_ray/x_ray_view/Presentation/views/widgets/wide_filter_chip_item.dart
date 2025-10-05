@@ -3,12 +3,12 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class FilterChipItem extends StatelessWidget {
+class WideFilterChipItem extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FilterChipItem({
+  const WideFilterChipItem({
     super.key,
     required this.label,
     required this.isSelected,
@@ -20,9 +20,8 @@ class FilterChipItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        constraints:
-            const BoxConstraints(minWidth: 50), // Prevents extreme shrinking
-        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+        constraints: const BoxConstraints(minWidth: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
@@ -36,13 +35,12 @@ class FilterChipItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-              if (isSelected)
-                Image.asset('assets/images/check_icon.png',
-                    width: 10, height: 10),
-              if (isSelected) horizontalSpacing(2), // Avoid spacing issues
+            if (isSelected)
+              Image.asset('assets/images/check_icon.png', width: 10, height: 10),
+            if (isSelected) horizontalSpacing(3),
             Text(
               label,
-              maxLines: 1,
+              maxLines: 2,
               softWrap: false,
               overflow: TextOverflow.visible,
               style: AppTextStyles.font12blackWeight400.copyWith(
@@ -53,9 +51,11 @@ class FilterChipItem extends StatelessWidget {
               ),
               textAlign: TextAlign.start,
             ),
-            ],
+          ],
         ),
       ),
     );
   }
 }
+
+
