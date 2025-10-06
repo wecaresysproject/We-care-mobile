@@ -589,7 +589,7 @@ class AppRouter {
       case Routes.selectedOrganAffectedDetailsView:
         return MaterialPageRoute(
           builder: (_) => OrganAffectedDetailsView(
-            title: arguments as String,
+            organName: arguments as String,
           ),
         );
       default:

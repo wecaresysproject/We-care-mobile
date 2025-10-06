@@ -10,6 +10,9 @@ class NutrationViewState extends Equatable {
   final List<int> monthlyPlanYearsFilter;
   final List<String> monthlyPlanDateRangesFilter;
   final List<String> weeklyPlanDateRangesFilter;
+  final ElementData? elementRecommendation;
+  final List<String> affectedOrgansList ;
+  final OrganNutritionalEffectsData? organNutritionalEffectsData;
 
   final List<AlternativeFoodCategoryModel> foodAlternatives;
 
@@ -24,6 +27,9 @@ class NutrationViewState extends Equatable {
     this.weeklyPlanDateRangesFilter = const [],
     this.foodAlternatives = const [],
     this.followUpNutrationViewCurrentTabIndex = 0,
+    this.elementRecommendation,
+     this.affectedOrgansList = const [],
+     this.organNutritionalEffectsData
   });
 
   factory NutrationViewState.initial() {
@@ -38,6 +44,9 @@ class NutrationViewState extends Equatable {
       weeklyPlanDateRangesFilter: const [],
       foodAlternatives: const [],
       followUpNutrationViewCurrentTabIndex: 0,
+      elementRecommendation: null,
+      affectedOrgansList: const [],
+      organNutritionalEffectsData: null
     );
   }
 
@@ -52,6 +61,9 @@ class NutrationViewState extends Equatable {
     List<String>? weeklyPlanDateRangesFilter,
     List<AlternativeFoodCategoryModel>? foodAlternatives,
     int? followUpNutrationViewCurrentTabIndex,
+    ElementData? elementRecommendation,
+    List<String>? affectedOrgansList,
+    OrganNutritionalEffectsData? organNutritionalEffectsData
   }) {
     return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -72,6 +84,9 @@ class NutrationViewState extends Equatable {
       followUpNutrationViewCurrentTabIndex:
           followUpNutrationViewCurrentTabIndex ??
               this.followUpNutrationViewCurrentTabIndex,
+      elementRecommendation: elementRecommendation ?? this.elementRecommendation, 
+      affectedOrgansList: affectedOrgansList ?? this.affectedOrgansList  ,
+      organNutritionalEffectsData: organNutritionalEffectsData ?? this.organNutritionalEffectsData       
     );
   }
 
@@ -86,6 +101,9 @@ class NutrationViewState extends Equatable {
         monthlyPlanDateRangesFilter,
         weeklyPlanDateRangesFilter,
         followUpNutrationViewCurrentTabIndex,
+        elementRecommendation,
         foodAlternatives,
+        affectedOrgansList,
+        organNutritionalEffectsData
       ];
 }

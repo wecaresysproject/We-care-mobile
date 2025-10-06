@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
 import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
+import 'package:we_care/features/nutration/data/models/organ_nutritional_effects_response_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 
 part 'nutration_view_state.dart';
@@ -223,6 +225,81 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
           requestStatus: RequestStatus.failure,
         ));
       },
+    );
+  }
+
+  Future<void> getElementRecommendations({required String elementName}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await nutrationViewRepo.getElementRecommendation(
+      language: AppStrings.arabicLang,
+      elementName: elementName,
+    );
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            elementRecommendation: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+        ));
+      },
+    );
+  }
+
+
+//get affected organs
+  Future<void> getAffectedOrgans() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await nutrationViewRepo.getAffectedOrgansList(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            affectedOrgansList: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+        ));
+      },
+    );
+  }
+
+
+  //getOrganNutritionalEffects
+  Future<void> getOrganNutritionalEffects({required String organName}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading)); 
+
+    final response = await nutrationViewRepo.getOrganNutritionalEffects(
+      language: AppStrings.arabicLang,
+      organName: organName,
+    );
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            organNutritionalEffectsData: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+        ));
+      },  
     );
   }
 }
