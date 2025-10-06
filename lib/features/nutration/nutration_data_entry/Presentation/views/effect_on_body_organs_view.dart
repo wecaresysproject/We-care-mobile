@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 
 class EffectOnBodyOrgansView extends StatelessWidget {
   const EffectOnBodyOrgansView({super.key});
@@ -13,117 +17,98 @@ class EffectOnBodyOrgansView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<OrganItem> organsList = [
+      OrganItem(name: "الكبد", imagePath: "assets/images/liver_icon.png"),
+      OrganItem(name: "الكلى", imagePath: "assets/images/kidney_icon.png"),
       OrganItem(
-          name: "الكبد",
-          imagePath: "assets/images/liver_icon.png",
-          isActive: false),
+          name: "القلب والأوعية",
+          imagePath: "assets/images/heart_organ_icon.png"),
       OrganItem(
-          name: "الكلى",
-          imagePath: "assets/images/kidney_icon.png",
-          isActive: true),
+          name: "العظام والمفاصل", imagePath: "assets/images/bones_icon.png"),
+      OrganItem(name: "الغدد", imagePath: "assets/images/glands_icon.png"),
       OrganItem(
-        name: "القلب والأوعية",
-        imagePath: "assets/images/heart_organ_icon.png",
-        isActive: true,
-      ),
+          name: "البنكرياس", imagePath: "assets/images/pancreas_icon.png"),
+      OrganItem(name: "العضلات", imagePath: "assets/images/muscles_icon.png"),
+      OrganItem(name: "العيون", imagePath: "assets/images/eye_module_pic.png"),
       OrganItem(
-          name: "العظام والمفاصل",
-          imagePath: "assets/images/bones_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "الغدد",
-          imagePath: "assets/images/glands_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "البنكرياس",
-          imagePath: "assets/images/pancreas_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "العضلات",
-          imagePath: "assets/images/muscles_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "العيون",
-          imagePath: "assets/images/eye_module_pic.png",
-          isActive: true),
-      OrganItem(
-          name: "الأسنان",
-          imagePath: "assets/images/teeth_image_icon.png",
-          isActive: false), // example inactive
+          name: "الأسنان", imagePath: "assets/images/teeth_image_icon.png"),
       OrganItem(
           name: "الأعضاء التناسلية",
-          imagePath: "assets/images/reproductive_icon.png",
-          isActive: true),
+          imagePath: "assets/images/reproductive_icon.png"),
       OrganItem(
-        name: "الجهاز الهضمى",
-        imagePath: "assets/images/digestive_icon.png",
-        isActive: true,
-      ),
+          name: "الجهاز الهضمى", imagePath: "assets/images/digestive_icon.png"),
       OrganItem(
           name: "الدماغ والجهاز العصبى",
-          imagePath: "assets/images/brain_icon.png",
-          isActive: true),
+          imagePath: "assets/images/brain_icon.png"),
       OrganItem(
-          name: "الجهاز المناعى",
-          imagePath: "assets/images/immune_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "الدم",
-          imagePath: "assets/images/blood_icon.png",
-          isActive: true),
-      OrganItem(
-          name: "الجنين",
-          imagePath: "assets/images/fetus_icon.png",
-          isActive: true),
+          name: "الجهاز المناعى", imagePath: "assets/images/immune_icon.png"),
+      OrganItem(name: "الدم", imagePath: "assets/images/blood_icon.png"),
+      OrganItem(name: "الجنين", imagePath: "assets/images/fetus_icon.png"),
       OrganItem(
           name: "الجلد / الشعر / الأظافر",
-          imagePath: "assets/images/skin_icon.png",
-          isActive: false),
+          imagePath: "assets/images/skin_icon.png"),
     ];
 
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: SingleChildScrollView(
-        physics: ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            AppBarWithCenteredTitle(
-              title: "تأثير النمط الغذائى المتناول على أعضائك",
-              showActionButtons: false,
-              fontSize: 14,
-              titleColor: AppColorsManager.textColor,
-            ).paddingSymmetricHorizontal(16),
-            GridView.builder(
-              itemCount: organsList.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisExtent: 130.h,
-                childAspectRatio: .85,
-                crossAxisSpacing: 10.w,
-              ),
-              itemBuilder: (context, index) {
-                final organ = organsList[index];
-                return GestureDetector(
-                  onTap: organ.isActive
-                      ? () async {
-                          AppLogger.info("Clicked: ${organ.name}");
-                          await context.pushNamed(
-                            Routes.selectedOrganAffectedDetailsView,
-                            arguments: organ.name,
-                          );
-                        }
-                      : null,
-                  child: Opacity(
-                    opacity: organ.isActive ? 1.0 : 0.4, // dim inactive
-                    child: _buildItem(context, organ.imagePath, organ.name),
+    return BlocProvider.value(
+      value:  getIt<NutrationViewCubit>()..getAffectedOrgans(),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: BlocBuilder<NutrationViewCubit, NutrationViewState>(
+          builder: (context, state) {
+
+            if (state.requestStatus == RequestStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
+              );
+            }
+            final affectedOrgans = state.affectedOrgansList;
+
+            return SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  AppBarWithCenteredTitle(
+                    title: "تأثير النمط الغذائى المتناول على أعضائك",
+                    showActionButtons: false,
+                    fontSize: 14,
+                    titleColor: AppColorsManager.textColor,
+                  ).paddingSymmetricHorizontal(16),
+                  GridView.builder(
+                    itemCount: organsList.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisExtent: 130.h,
+                      childAspectRatio: .85,
+                      crossAxisSpacing: 10.w,
+                    ),
+                    itemBuilder: (context, index) {
+                      final organ = organsList[index];
+                      final isActive = affectedOrgans.contains(organ.name);
+
+                      return GestureDetector(
+                        onTap: isActive
+                            ? () async {
+                                AppLogger.info("Clicked: ${organ.name}");
+                                await context.pushNamed(
+                                  Routes.selectedOrganAffectedDetailsView,
+                                  arguments: organ.name,
+                                );
+                              }
+                            : null,
+                        child: Opacity(
+                          opacity: isActive ? 1.0 : 0.4, // dim inactive
+                          child:
+                              _buildItem(context, organ.imagePath, organ.name),
+                        ),
+                      );
+                    },
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(16),
                   ),
-                );
-              },
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(16),
-            ),
-          ],
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -178,11 +163,8 @@ class EffectOnBodyOrgansView extends StatelessWidget {
 class OrganItem {
   final String name;
   final String imagePath;
-  final bool isActive;
-
   OrganItem({
     required this.name,
     required this.imagePath,
-    this.isActive = true,
   });
 }

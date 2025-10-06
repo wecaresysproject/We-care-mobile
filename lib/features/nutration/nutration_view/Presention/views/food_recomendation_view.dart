@@ -1,13 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medical_illnesses/data/models/get_follow_up_report_section_model.dart';
+import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 
 class FoodRecomendationView extends StatelessWidget {
   const FoodRecomendationView({super.key, required this.elementName});
@@ -15,118 +19,108 @@ class FoodRecomendationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0.h),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        child: Column(
-          spacing: 16,
-          children: [
-            AppBarWithCenteredTitle(
-              title: elementName,
-              titleColor: AppColorsManager.mainDarkBlue,
-              shareFunction: () => shareFoodRecommendation(elementName),
-              showShareButtonOnly: true,
-            ),
-            HeaderSectionWithIcon(
-              iconPath: 'assets/images/file_icon.png',
-              text: "تعريف/ مرجعية سريعة",
-            ),
-            Text(
-              "معدن أساسي وواحد من الشوارد الكهربائية (Electrolytes) الرئيسية في الجسم، ويُستهلك في الغالب على شكل ملح الطعام (كلوريد الصوديوم). يعمل الصوديوم على الحفاظ على توازن السوائل في الجسم، ويساعد في نقل الإشارات العصبية وانقباض العضلات، بما في ذلك عضلة القلب. يتواجد بشكل طبيعي في بعض الأطعمة، لكن المصدر الرئيسي لاستهلاكه في النمط الغذائي الحديث هو الأطعمة المصنعة والوجبات الجاهزة حيث يُستخدم بكثرة كمادة حافظة ومحسّن للنكهة، مثل الخبز، الجبن، اللحوم المصنعة، والصلصات. يُعد الحفاظ على مدخول متوازن منه أمراً حيوياً للصحة، حيث أن الإفراط في تناوله على المدى الطويل يرتبط بشكل مباشر بارتفاع ضغط الدم وأمراض القلب والكلى.",
-              textAlign: TextAlign.justify,
-              style: AppTextStyles.font14blackWeight400,
-            ),
-            HeaderSectionWithIcon(
-              iconPath: 'assets/images/check_right.png',
-              text: "المستوى الامن :1500 - 2000",
-            ),
-            ElevationStatusWidget(
-              iconPath: 'assets/images/check_right.png',
-              isHightRisk: false,
-            ),
-            CustomInfoSection(
-              headerTitle: 'التأثير قصير المدى',
-              content:
-                  "خلال أسابيع إلى أشهر: قد لا تظهر أعراض واضحة، لكنه يضع عبئًا إضافيًا على الكلى ويساهم في احتباس السوائل.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'التأثير طويل المدى',
-              content:
-                  "عدة سنوات: يزيد بشكل مؤكد من خطر الإصابة بـ ارتفاع ضغط الدم، وأمراض القلب، والسكتة الدماغية، وهشاشة العظام، وسرطان المعدة.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'الاجراء',
-              content:
-                  "مراجعة مصادر الصوديوم الخفية في النظام الغذائي (مثل: الخبز، الجبن، الصلصات، الوجبات السريعة) والعمل على تقليلها تدريجيًا.",
-            ),
-            HeaderSectionWithIcon(
-              iconPath: 'assets/images/person.png',
-              text: "الأعضاء الأكثر تأثراً مع الوقت",
-            ),
-            CustomInfoSection(
-              headerTitle: 'القلب والأوعية الدموية',
-              content: "تتأثر خلال أشهر بزيادة ضغط الدم وتصلب الشرايين.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'الكلي',
-              content:
-                  "تتأثر في المدى المتوسط (أشهر–سنوات) بزيادة العبء الترشيحي.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'الدماغ',
-              content:
-                  "تتأثر في المدى المتوسط (أشهر–سنوات) بزيادة العبء الترشيحي.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'العظام',
-              content:
-                  "تتأثر في المدى المتوسط (أشهر–سنوات) بزيادة العبء الترشيحي.",
-            ),
-            HeaderSectionWithIcon(
-              iconPath: 'assets/images/file_search_icon.png',
-              text: "معلومات اضافية",
-            ),
-            CustomInfoSection(
-              headerTitle: 'الجنس',
-              content:
-                  "الإفراط في تناول الصوديوم (الاستهلاك المرتفع) يزيد من فقدان الكالسيوم عبر البول، مما قد يساهم في زيادة خطر الإصابة بهشاشة العظام، خاصة لدى النساء بعد انقطاع الطمث.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'العمر',
-              content:
-                  "كبار السن أكثر حساسية لتأثيرات الصوديوم على ضغط الدم ونقص تناول الكالسيوم يزيد بشكل كبير من خطر هشاشة العظام وكسورها لدى كبار السن من كلا الجنسين, الأطفال والمراهقين يحتاجون كميات أقل من البالغين.",
-            ),
-            CustomInfoSection(
-              headerTitle: 'النشاط',
-              content:
-                  "الرياضيون الذين يفقدون كميات كبيرة من الصوديوم عبر العرق قد يحتاجون إلى مدخول أعلى قليلاً لتعويض الفاقد، ولكن ضمن إطار صحي.",
-            ),
-            HeaderSectionWithIcon(
-              iconPath: 'assets/images/custom_note.png',
-              text: "المراجع الأساسية",
-            ),
-            BulletText(
-              text: "WHO — Guideline: Sodium intake for adults and children",
-            ),
-            BulletText(
-              text:
-                  "EFSA — Scientific Opinion on Dietary Reference Values for sodium",
-            ),
-            BulletText(
-              text:
-                  "NASEM — Dietary Reference Intakes for Sodium and Potassium",
-            ),
-            BulletText(
-              text:
-                  "He FJ, MacGregor GA, Salt, blood pressure and cardiovascular disease",
-            ),
-            BulletText(
-              text:
-                  "Graudal NA et al., Effects of low-sodium diet vs. high-sodium diet on blood pressure and health outcomes",
-            ),
-          ],
-        ),
+    return BlocProvider.value(
+      value: getIt<NutrationViewCubit>()
+        ..getElementRecommendations(elementName: elementName),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0.h),
+        body: BlocBuilder<NutrationViewCubit, NutrationViewState>(
+  builder: (context, state) {
+    if (state.requestStatus == RequestStatus.loading) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
+      );
+    }
+
+    final elementRecommendation = state.elementRecommendation;
+
+    if (elementRecommendation == null) {
+      return const Center(
+        child: Text('لم يتم العثور على بيانات لهذا العنصر'),
+      );
+    }
+
+    final riskLevels = elementRecommendation.riskLevels;
+    final organEffects = elementRecommendation.organEffectsOverTime;
+    final supplementaryInfo = elementRecommendation.supplementaryInformation;
+    final references = elementRecommendation.references;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: Column(
+        spacing: 16,
+        children: [
+          /// Header with title and share button
+          AppBarWithCenteredTitle(
+            title: elementName,
+            titleColor: AppColorsManager.mainDarkBlue,
+            shareFunction: () => shareFoodRecommendation(elementName),
+            showShareButtonOnly: true,
+          ),
+
+          /// تعريف / مرجعية سريعة
+          HeaderSectionWithIcon(
+            iconPath: 'assets/images/file_icon.png',
+            text: "تعريف/ مرجعية سريعة",
+          ),
+          Text(
+            elementRecommendation.quickOverview,
+            textAlign: TextAlign.justify,
+            style: AppTextStyles.font14blackWeight400,
+          ),
+
+          /// المستوى الآمن
+          HeaderSectionWithIcon(
+            iconPath: 'assets/images/check_right.png',
+            text: elementRecommendation.safeLevel,
+          ),
+
+          /// مستوى الخطورة
+          ElevationStatusWidget(
+            iconPath: 'assets/images/check_right.png',
+            isHightRisk: riskLevels.isHighRiskLevel,
+          ),
+
+          /// تفاصيل المخاطر
+          ...riskLevels.risks.map((risk) => CustomInfoSection(
+                headerTitle: risk.title,
+                content: risk.description,
+              )),
+
+          /// الأعضاء الأكثر تأثراً مع الوقت
+          HeaderSectionWithIcon(
+            iconPath: 'assets/images/person.png',
+            text: "الأعضاء الأكثر تأثراً مع الوقت",
+          ),
+          ...organEffects.map((effect) => CustomInfoSection(
+                headerTitle: effect.title,
+                content: effect.description,
+              )),
+
+          /// معلومات إضافية
+          HeaderSectionWithIcon(
+            iconPath: 'assets/images/file_search_icon.png',
+            text: "معلومات إضافية",
+          ),
+          ...supplementaryInfo.map((info) => CustomInfoSection(
+                headerTitle: info.title,
+                content: info.description,
+              )),
+
+          /// المراجع الأساسية
+          HeaderSectionWithIcon(
+            iconPath: 'assets/images/custom_note.png',
+            text: "المراجع الأساسية",
+          ),
+          ...references.map(
+            (ref) => BulletText(text: ref),
+          ),
+        ],
+      ),
+    );
+  },
+),
+
       ),
     );
   }
@@ -192,81 +186,7 @@ class FoodRecomendationView extends StatelessWidget {
     Share.share(contentBuffer.toString(),
         subject: "توصية غذائية: $elementName");
   }
-
-  /// Builds the content after successful API response
-  Widget _buildDetailsContent(List<GetFollowUpReportSectionModel> data) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      child: Column(
-        spacing: 16,
-        children: [
-          AppBarWithCenteredTitle(
-            title: 'تفاصيل التقرير',
-            titleColor: AppColorsManager.mainDarkBlue,
-            shareFunction: () {},
-            showShareButtonOnly: true,
-          ),
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/file_icon.png',
-            text: "تعريف/ مرجعية سريعة",
-          ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.trending_down,
-          //   headerTitle: 'المستوى الإجمالى',
-          //   content: data[0].sectionContent,
-          // ),
-
-          // CustomInfoSection(
-          //   headerIcon: Icons.check_circle,
-          //   headerTitle: 'عدد الإجابات الإيجابية',
-          //   content: data[1].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.question_mark,
-          //   headerTitle: 'ملاحظة',
-          //   content: data[2].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.psychology,
-          //   headerTitle: 'ملخص الحالة',
-          //   content: data[3].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.edit_square,
-          //   headerTitle: 'ما الذي نلاحظه في إجابتك ؟',
-          //   content: data[4].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.psychology,
-          //   headerTitle: 'ما الذي قد يحدث داخلك؟',
-          //   content: data[5].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.favorite,
-          //   headerTitle: 'رسالة لك من القلب',
-          //   content: data[6].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.edit_square,
-          //   headerTitle: 'الخطوات المقترحة (قصيرة المدى)',
-          //   content: data[7].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.self_improvement,
-          //   headerTitle: 'خطة دعم نفسي تدريجى  ( متوسط  وطويل المدى )',
-          //   content: data[8].sectionContent,
-          // ),
-          // CustomInfoSection(
-          //   headerIcon: Icons.flag,
-          //   headerTitle: 'ختامًا',
-          //   content: data[9].sectionContent,
-          // ),
-        ],
-      ),
-    );
-  }
 }
-
 class HeaderSectionWithIcon extends StatelessWidget {
   final String iconPath;
   final String text;

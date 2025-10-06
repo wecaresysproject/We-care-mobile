@@ -4,6 +4,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 import 'filter_chip_item.dart';
+import 'wide_filter_chip_item.dart';
 
 class SearchFilterWidget extends StatefulWidget {
   final String filterTitle;
@@ -74,6 +75,45 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     Offset offset = renderBox.localToGlobal(Offset.zero);
+    final Size screenSize = MediaQuery.of(context).size;
+    final double screenPadding = 8.w;
+    final double maxWidth = screenSize.width - (screenPadding * 2);
+
+    // Determine the required width based on the longest chip label
+    final TextStyle chipTextStyle = AppTextStyles.font12blackWeight400.copyWith(
+      fontWeight: FontWeight.w500,
+    );
+    double longestLabelWidth = 0;
+    for (final item in widget.filterList) {
+      final String label = item == 0
+          ? "الكل"
+          : (widget.isMedicineFilter
+              ? item.toString().split(' ').first
+              : item.toString());
+      final TextPainter painter = TextPainter(
+        text: TextSpan(text: label, style: chipTextStyle),
+        maxLines: 1,
+        textDirection: TextDirection.rtl,
+      )..layout();
+      if (painter.width > longestLabelWidth) {
+        longestLabelWidth = painter.width;
+      }
+    }
+    // Add chip paddings and potential check icon spacing
+    const double chipHorizontalPadding = 20; // approximate (left+right)
+    const double containerHorizontalPadding = 16; // overlay container padding
+    const double checkIconAndGap = 14; // when selected
+    final double desiredOverlayWidth = longestLabelWidth + chipHorizontalPadding + containerHorizontalPadding + checkIconAndGap;
+    final double overlayWidth = desiredOverlayWidth.clamp(renderBox.size.width, maxWidth);
+
+    double left = widget.filterTitle == "اسم العملية" ? offset.dx - 150 : offset.dx;
+    // Clamp overlay horizontally to stay on screen
+    if (left + overlayWidth > screenSize.width - screenPadding) {
+      left = screenSize.width - screenPadding - overlayWidth;
+    }
+    if (left < screenPadding) {
+      left = screenPadding;
+    }
 
     return OverlayEntry(
       builder: (context) => GestureDetector(
@@ -82,9 +122,9 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
         child: Stack(
           children: [
             Positioned(
-              left:widget.filterTitle=="اسم العملية"? offset.dx-150: offset.dx,
+              left: left,
               top: offset.dy + renderBox.size.height + 5.h,
-              width: !widget.isYearFilter? widget.filterTitle=="اسم العملية"?renderBox.size.width*3.5:renderBox.size.width*1.45:renderBox.size.width,
+              width: overlayWidth,
               child: Material(
                 elevation: 4.0,
                 borderRadius: BorderRadius.circular(12.0),
@@ -100,22 +140,44 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
                   ),
                   child: GestureDetector(
                     onTap: () {}, // Prevent taps inside from bubbling up
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: widget.filterList.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                          child: FilterChipItem(
-                            label: widget.filterList[index] == 0
-                                ? "الكل"
-                                : widget.isMedicineFilter? widget.filterList[index].toString().split(' ').first: widget.filterList[index].toString(),
-                            isSelected: index == _selectedIndex,
-                            onTap: () => _onChipSelected(index),
-                          ),
-                        );
-                      },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // Limit height to avoid vertical overflow
+                        maxHeight: screenSize.height * 0.5,
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemCount: widget.filterList.length,
+                        itemBuilder: (context, index) {
+                          final String label = widget.filterList[index] == 0
+                              ? "الكل"
+                              : widget.isMedicineFilter
+                                  ? widget.filterList[index]
+                                      .toString()
+                                      .split(' ')
+                                      .first
+                                  : widget.filterList[index].toString();
+
+                          // Use wider chip only for long labels to avoid affecting original component
+                          final bool useWide = label.length > 18 || label.contains('/');
+                          final Widget chip = useWide
+                              ? WideFilterChipItem(
+                                  label: label,
+                                  isSelected: index == _selectedIndex,
+                                  onTap: () => _onChipSelected(index),
+                                )
+                              : FilterChipItem(
+                                  label: label,
+                                  isSelected: index == _selectedIndex,
+                                  onTap: () => _onChipSelected(index),
+                                );
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6.0),
+                            child: chip,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

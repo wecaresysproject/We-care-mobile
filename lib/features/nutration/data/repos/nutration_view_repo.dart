@@ -1,7 +1,9 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
 import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
+import 'package:we_care/features/nutration/data/models/organ_nutritional_effects_response_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationViewRepo {
@@ -134,6 +136,55 @@ class NutrationViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+//recommendation
+Future<ApiResult<ElementData>> getElementRecommendation({
+  required String language,
+  required String elementName,
+}) async {
+  try {
+    final response = await nutrationServices.getElementRecommendations(
+      language,
+      elementName,
+    );
+
+    return ApiResult.success(ElementData.fromJson(response['data']));
+  } catch (error) {
+    return ApiResult.failure(ApiErrorHandler.handle(error));
+  } 
+}
+
+//affected organs
+Future<ApiResult<List<String>>> getAffectedOrgansList({
+  required String language,
+}) async {
+  try {
+    final response = await nutrationServices.getAffectedOrgansList(
+      language,
+    );
+    final affectedOrgans = (response['data'] as List)
+        .map<String>((e) => e as String)
+        .toList();
+    return ApiResult.success(affectedOrgans);
+  } catch (error) {
+    return ApiResult.failure(ApiErrorHandler.handle(error));
+  }
+}
+
+Future<ApiResult<OrganNutritionalEffectsData>> getOrganNutritionalEffects({
+  required String language,
+  required String organName,
+}) async {
+  try {
+    final response = await nutrationServices.getOrganNutritionalEffects(
+      language,
+      organName,
+    );
+    return ApiResult.success(OrganNutritionalEffectsData.fromJson(response['data']));
+  } catch (error) {
+    return ApiResult.failure(ApiErrorHandler.handle(error));
+  }
+}
 
   // Future<ApiResult<BiometricFiltersModel>> getAllFilters({
   //   required String language,

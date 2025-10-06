@@ -49,6 +49,23 @@ abstract class NutrationServices {
     @Query('language') String language,
     @Query('elementName') String elementName,
   );
+  
+  @GET(NutrationApiConstants.getElementRecommendations)
+  Future<dynamic> getElementRecommendations(
+    @Query('language') String language,
+    @Query('elementName') String elementName,
+  );
+
+  @GET(NutrationApiConstants.getAffectedOrgansList)
+  Future<dynamic> getAffectedOrgansList(
+    @Query('language') String language,
+  );
+@GET(NutrationApiConstants.getOrganNutritionalEffects)
+  Future<dynamic> getOrganNutritionalEffects(
+    @Query('language') String language,
+    @Query('organName') String organName,
+  );
+
   @GET(NutrationApiConstants.getAvailableYearsForWeeklyPlan)
   Future<dynamic> getAvailableYearsForWeeklyPlan(
     @Query('Language') String language,
