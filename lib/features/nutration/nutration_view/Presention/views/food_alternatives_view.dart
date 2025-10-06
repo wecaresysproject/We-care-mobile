@@ -349,7 +349,7 @@ class FoodCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      Text(
+                      AutoSizeText(
                         'من الاحتياج\nاليومي',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font18blackWight500.copyWith(
@@ -358,6 +358,7 @@ class FoodCard extends StatelessWidget {
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                        minFontSize: 5,
                       ),
                     ],
                   ),
