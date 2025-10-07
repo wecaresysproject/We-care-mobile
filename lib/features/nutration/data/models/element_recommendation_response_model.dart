@@ -12,7 +12,8 @@ class ElementRecommendationResponseModel {
     required this.data,
   });
 
-  factory ElementRecommendationResponseModel.fromJson(Map<String, dynamic> json) =>
+  factory ElementRecommendationResponseModel.fromJson(
+          Map<String, dynamic> json) =>
       _$ElementRecommendationResponseModelFromJson(json);
 
   Map<String, dynamic> toJson() =>

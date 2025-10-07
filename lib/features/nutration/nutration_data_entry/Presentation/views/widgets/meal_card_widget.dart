@@ -65,6 +65,8 @@ class MealCard extends StatelessWidget {
             context,
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
             confirmText: "الذهاب لمراجعة تقرير اليوم",
+            hasDelete: true,
+            onDelete: () {},
           );
           if (!context.mounted) return;
           await context.pushNamed(
