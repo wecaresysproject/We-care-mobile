@@ -138,53 +138,53 @@ class NutrationViewRepo {
   }
 
 //recommendation
-Future<ApiResult<ElementData>> getElementRecommendation({
-  required String language,
-  required String elementName,
-}) async {
-  try {
-    final response = await nutrationServices.getElementRecommendations(
-      language,
-      elementName,
-    );
+  Future<ApiResult<ElementData>> getElementRecommendation({
+    required String language,
+    required String elementName,
+  }) async {
+    try {
+      final response = await nutrationServices.getElementRecommendations(
+        language,
+        elementName,
+      );
 
-    return ApiResult.success(ElementData.fromJson(response['data']));
-  } catch (error) {
-    return ApiResult.failure(ApiErrorHandler.handle(error));
-  } 
-}
+      return ApiResult.success(ElementData.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
 //affected organs
-Future<ApiResult<List<String>>> getAffectedOrgansList({
-  required String language,
-}) async {
-  try {
-    final response = await nutrationServices.getAffectedOrgansList(
-      language,
-    );
-    final affectedOrgans = (response['data'] as List)
-        .map<String>((e) => e as String)
-        .toList();
-    return ApiResult.success(affectedOrgans);
-  } catch (error) {
-    return ApiResult.failure(ApiErrorHandler.handle(error));
+  Future<ApiResult<List<String>>> getAffectedOrgansList({
+    required String language,
+  }) async {
+    try {
+      final response = await nutrationServices.getAffectedOrgansList(
+        language,
+      );
+      final affectedOrgans =
+          (response['data'] as List).map<String>((e) => e as String).toList();
+      return ApiResult.success(affectedOrgans);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
   }
-}
 
-Future<ApiResult<OrganNutritionalEffectsData>> getOrganNutritionalEffects({
-  required String language,
-  required String organName,
-}) async {
-  try {
-    final response = await nutrationServices.getOrganNutritionalEffects(
-      language,
-      organName,
-    );
-    return ApiResult.success(OrganNutritionalEffectsData.fromJson(response['data']));
-  } catch (error) {
-    return ApiResult.failure(ApiErrorHandler.handle(error));
+  Future<ApiResult<OrganNutritionalEffectsData>> getOrganNutritionalEffects({
+    required String language,
+    required String organName,
+  }) async {
+    try {
+      final response = await nutrationServices.getOrganNutritionalEffects(
+        language,
+        organName,
+      );
+      return ApiResult.success(
+          OrganNutritionalEffectsData.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
   }
-}
 
   // Future<ApiResult<BiometricFiltersModel>> getAllFilters({
   //   required String language,

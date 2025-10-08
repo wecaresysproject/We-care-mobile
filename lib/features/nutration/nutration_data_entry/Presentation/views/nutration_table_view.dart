@@ -167,10 +167,9 @@ class NutritionFollowUpReportView extends StatelessWidget {
     return DataTable(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       headingRowColor: WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
-      columnSpacing: 10,
-      dataRowMinHeight: 40,
-      dataRowMaxHeight: 60,
-      horizontalMargin: 8,
+      columnSpacing: MediaQuery.of(context).size.width < 400 ? 6.h : 14.h,
+      dataRowMaxHeight: 80,
+      horizontalMargin: 2.w,
       headingTextStyle: _getHeadingTextStyle(),
       showBottomBorder: true,
       border: TableBorder.all(
@@ -248,7 +247,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
       return DataRow(
         cells: [
           _buildCell(
-            getRelativeNeededName(element.elementName),
+            (element.elementName),
             isBold: true,
             isElement: true,
             isNarrow: true,
@@ -534,8 +533,8 @@ class NutritionFollowUpReportView extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            maxLines: 3,
+            // overflow: TextOverflow.ellipsis,
             style: style,
           ),
         ),

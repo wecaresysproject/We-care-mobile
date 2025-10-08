@@ -26,7 +26,7 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/update-standard";
 
   static const getElementRecommendations =
-      "SmartNutritionAnalyzer/recommendations";
+      "SmartNutritionAnalyzer/nutrient-status";
   static const getAffectedOrgansList = "SmartNutritionAnalyzer/affected-organs";
   static const getOrganNutritionalEffects =
       "SmartNutritionAnalyzer/organ-nutritional-effects";

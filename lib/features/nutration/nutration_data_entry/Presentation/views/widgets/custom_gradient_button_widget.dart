@@ -46,10 +46,9 @@ class GradientButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           alignment: Alignment.centerRight,
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            spacing: 6,
             children: [
               Icon(icon, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
               Text(
                 text,
                 style: AppTextStyles.font14whiteWeight600.copyWith(
