@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 Future<void> showWarningDialog(
@@ -13,80 +14,96 @@ Future<void> showWarningDialog(
 }) {
   return showDialog<void>(
     context: context,
+    fullscreenDialog: true,
     builder: (context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+          borderRadius: BorderRadius.circular(16.r),
         ),
         backgroundColor: Colors.white,
-        title: Row(
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        titlePadding: EdgeInsets.only(top: 12.h),
+        title: Column(
           children: [
-            const Icon(Icons.warning_amber_rounded,
-                color: Colors.orange, size: 28),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColorsManager.mainDarkBlue,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.warning_amber_rounded,
+                    color: Colors.orange, size: 22),
+                SizedBox(width: 6.w),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColorsManager.mainDarkBlue,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        content: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 16.sp, color: Colors.black87),
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: AppColorsManager.mainDarkBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (onConfirm != null) onConfirm();
-                },
-                child: Text(
-                  confirmText,
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font20blackWeight600.copyWith(
+                // fontSize: 16.sp,
+                fontWeight: FontWeight.w400,
               ),
-              if (hasDelete)
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.w),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1), // soft red background
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                      size: 26,
+            ),
+            SizedBox(height: 20.h),
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColorsManager.mainDarkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
                     ),
-                    tooltip: 'حذف',
-                    splashColor: Colors.redAccent.withOpacity(0.2),
-                    highlightColor: Colors.redAccent.withOpacity(0.1),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      if (onDelete != null) onDelete();
+                      if (onConfirm != null) onConfirm();
                     },
+                    child: Text(
+                      confirmText,
+                      style: TextStyle(color: Colors.white, fontSize: 15.sp),
+                    ),
                   ),
                 ),
-            ],
-          ),
-        ],
+                if (hasDelete) SizedBox(width: 30.w),
+                if (hasDelete)
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade700,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        if (onDelete != null) onDelete();
+                      },
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      label: Text(
+                        "حذف",
+                        style: TextStyle(color: Colors.white, fontSize: 15.sp),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
       );
     },
   );

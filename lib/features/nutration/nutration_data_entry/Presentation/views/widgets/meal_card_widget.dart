@@ -64,15 +64,17 @@ class MealCard extends StatelessWidget {
           await showWarningDialog(
             context,
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
-            confirmText: "الذهاب لمراجعة تقرير اليوم",
+            confirmText: 'مراجعة تقرير اليوم',
+            onConfirm: () async {
+              await context.pushNamed(
+                Routes.nutritionFollowUpReportTableView,
+                arguments: date,
+              );
+            },
             hasDelete: true,
             onDelete: () {},
           );
-          if (!context.mounted) return;
-          await context.pushNamed(
-            Routes.nutritionFollowUpReportTableView,
-            arguments: date,
-          );
+
           return;
         }
 
