@@ -396,7 +396,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   }
 
   Widget _buildNutrationCard(NutrationDocument doc) {
-    String shortenedName = doc.nutrient.split(" ").take(2).join(" ");
+    // String shortenedName = doc.nutrient.split(" ").take(2).join(" ");
     final int consumed = doc.accumulativeActual.toInt();
     final int standard = doc.accumulativeStandard.toInt();
     final int difference = doc.difference.toInt();
@@ -424,7 +424,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
         !isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
 
     return Container(
-      padding: EdgeInsets.fromLTRB(2.w, 8.h, 2.w, 0),
+      padding: EdgeInsets.fromLTRB(2.w, 8.h, 5.w, 0),
       decoration: BoxDecoration(
         color: const Color(0xffF1F3F6),
         borderRadius: BorderRadius.circular(16.r),
@@ -468,14 +468,14 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             children: [
               Expanded(
                 child: AutoSizeText(
-                  shortenedName,
+                  doc.nutrient,
                   textAlign: TextAlign.end,
                   style: AppTextStyles.font18blackWight500.copyWith(
                     color: AppColorsManager.mainDarkBlue,
                     fontSize: 16.sp,
                   ),
-                  maxLines: 1, // يخليه سطر واحد
-                  minFontSize: 12, // أقل حجم خط ممكن يوصل له
+                  maxLines: 2, // يخليه سطر واحد
+                  minFontSize: 10, // أقل حجم خط ممكن يوصل له
                   overflow:
                       TextOverflow.ellipsis, // يحط ... لو الاسم أطول من كده
                 ),
@@ -512,14 +512,6 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   ),
                 ),
             ],
-          ),
-          Text(
-            "(جم)",
-            style: AppTextStyles.font18blackWight500.copyWith(
-              color: AppColorsManager.mainDarkBlue,
-              fontSize: 16.sp,
-            ),
-            textAlign: TextAlign.center,
           ),
 
           isConsumedEqual ? verticalSpacing(40) : verticalSpacing(20),
@@ -595,24 +587,28 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   }) {
     return Container(
       height: 22.h,
-      padding: EdgeInsets.fromLTRB(8, 2, 0, 2),
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(
             icon,
             color: Colors.white,
-            size: 14,
+            size: 15.sp,
           ),
-          Spacer(),
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
             style: AppTextStyles.font14BlueWeight700.copyWith(
               color: Colors.white,
-              fontSize: 13.sp,
+              fontSize: 10.sp,
             ),
           ),
         ],
@@ -628,14 +624,14 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
       onTap: () => onTap?.call(),
       child: Container(
         height: 28.h,
-        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
-        margin: EdgeInsets.only(left: 3.w, right: 0.w),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+        // margin: EdgeInsets.only(left: 3.w, right: 0.w),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 4,
           children: [
             Text(
               text,
@@ -643,14 +639,13 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
               style: AppTextStyles.font12blackWeight400.copyWith(
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
-                fontSize: 11.sp,
+                fontSize: 9.sp,
               ),
             ),
-            horizontalSpacing(4),
             Icon(
               Icons.arrow_forward,
               color: Colors.white,
-              size: 14,
+              size: 13.sp,
             ),
           ],
         ),
@@ -662,19 +657,21 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
+        AutoSizeText(
           label,
           style: AppTextStyles.font14whiteWeight600.copyWith(
             color: AppColorsManager.mainDarkBlue,
             fontSize: 13.sp,
           ),
+          maxFontSize: 12,
         ),
-        Text(
+        AutoSizeText(
           value,
           style: AppTextStyles.font14whiteWeight600.copyWith(
             color: AppColorsManager.mainDarkBlue,
             fontSize: 13.sp,
           ),
+          maxFontSize: 12,
         ),
       ],
     );

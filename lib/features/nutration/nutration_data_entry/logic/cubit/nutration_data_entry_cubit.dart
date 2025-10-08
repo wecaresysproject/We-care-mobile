@@ -452,6 +452,28 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     );
   }
 
+  Future<void> getAnyActivePlanStatus() async {
+    final result = await _nutrationDataEntryRepo.getAnyActivePlanStatus();
+    result.when(
+      success: (diseases) {
+        emit(
+          state.copyWith(
+            isAnyPlanActivated: diseases,
+          ),
+        );
+      },
+      failure: (failure) {
+        AppLogger.error(
+            'Error in getAnyActivePlanStatus: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> updateNutrientStandard({
     required String standardNutrientName,
     required double newStandard,

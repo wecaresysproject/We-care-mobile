@@ -12,7 +12,8 @@ class ElementRecommendationResponseModel {
     required this.data,
   });
 
-  factory ElementRecommendationResponseModel.fromJson(Map<String, dynamic> json) =>
+  factory ElementRecommendationResponseModel.fromJson(
+          Map<String, dynamic> json) =>
       _$ElementRecommendationResponseModelFromJson(json);
 
   Map<String, dynamic> toJson() =>
@@ -28,10 +29,10 @@ class ElementData {
   final String safeLevel;
 
   @JsonKey(name: 'risk_levels')
-  final RiskLevels riskLevels;
+  final RiskLevels? riskLevels;
 
   @JsonKey(name: 'organ_effects_over_time')
-  final List<EffectItem> organEffectsOverTime;
+  final List<EffectItem>? organEffectsOverTime;
 
   @JsonKey(name: 'supplementary_information')
   final List<EffectItem> supplementaryInformation;

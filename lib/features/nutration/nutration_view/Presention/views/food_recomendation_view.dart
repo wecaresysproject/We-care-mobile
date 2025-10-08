@@ -10,7 +10,6 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/medical_illnesses/data/models/get_follow_up_report_section_model.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 
 class FoodRecomendationView extends StatelessWidget {
@@ -25,102 +24,121 @@ class FoodRecomendationView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0.h),
         body: BlocBuilder<NutrationViewCubit, NutrationViewState>(
-  builder: (context, state) {
-    if (state.requestStatus == RequestStatus.loading) {
-      return const Center(
-        child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
-      );
-    }
+          builder: (context, state) {
+            if (state.requestStatus == RequestStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                    color: AppColorsManager.mainDarkBlue),
+              );
+            }
 
-    final elementRecommendation = state.elementRecommendation;
+            final elementRecommendation = state.elementRecommendation;
 
-    if (elementRecommendation == null) {
-      return const Center(
-        child: Text('لم يتم العثور على بيانات لهذا العنصر'),
-      );
-    }
+            if (elementRecommendation == null) {
+              return const Center(
+                child: Text('لم يتم العثور على بيانات لهذا العنصر'),
+              );
+            }
 
-    final riskLevels = elementRecommendation.riskLevels;
-    final organEffects = elementRecommendation.organEffectsOverTime;
-    final supplementaryInfo = elementRecommendation.supplementaryInformation;
-    final references = elementRecommendation.references;
+            final riskLevels = elementRecommendation.riskLevels;
+            final organEffects = elementRecommendation.organEffectsOverTime;
+            final supplementaryInfo =
+                elementRecommendation.supplementaryInformation;
+            final references = elementRecommendation.references;
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-      child: Column(
-        spacing: 16,
-        children: [
-          /// Header with title and share button
-          AppBarWithCenteredTitle(
-            title: elementName,
-            titleColor: AppColorsManager.mainDarkBlue,
-            shareFunction: () => shareFoodRecommendation(elementName),
-            showShareButtonOnly: true,
-          ),
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              child: Column(
+                spacing: 16,
+                children: [
+                  /// Header with title and share button
+                  AppBarWithCenteredTitle(
+                    title: elementName,
+                    titleColor: AppColorsManager.mainDarkBlue,
+                    shareFunction: () => shareFoodRecommendation(elementName),
+                    showShareButtonOnly: true,
+                  ),
 
-          /// تعريف / مرجعية سريعة
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/file_icon.png',
-            text: "تعريف/ مرجعية سريعة",
-          ),
-          Text(
-            elementRecommendation.quickOverview,
-            textAlign: TextAlign.justify,
-            style: AppTextStyles.font14blackWeight400,
-          ),
+                  /// تعريف / مرجعية سريعة
+                  HeaderSectionWithIcon(
+                    iconPath: 'assets/images/file_icon.png',
+                    text: "تعريف/ مرجعية سريعة",
+                  ),
+                  Text(
+                    elementRecommendation.quickOverview,
+                    textAlign: TextAlign.justify,
+                    style: AppTextStyles.font14blackWeight400,
+                  ),
 
-          /// المستوى الآمن
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/check_right.png',
-            text: elementRecommendation.safeLevel,
-          ),
+                  /// المستوى الآمن
+                  HeaderSectionWithIcon(
+                    iconPath: 'assets/images/check_right.png',
+                    text: "المستوى الامن : ${elementRecommendation.safeLevel}",
+                  ),
 
-          /// مستوى الخطورة
-          ElevationStatusWidget(
-            iconPath: 'assets/images/check_right.png',
-            isHightRisk: riskLevels.isHighRiskLevel,
-          ),
+                  riskLevels == null
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            ElevationStatusWidget(
+                              iconPath: 'assets/images/check_right.png',
+                              isHightRisk: riskLevels.isHighRiskLevel,
+                            ),
 
-          /// تفاصيل المخاطر
-          ...riskLevels.risks.map((risk) => CustomInfoSection(
-                headerTitle: risk.title,
-                content: risk.description,
-              )),
+                            /// تفاصيل المخاطر
+                            // if (riskLevels?.risks != null)
+                            ...riskLevels.risks.map(
+                              (risk) => CustomInfoSection(
+                                headerTitle: risk.title,
+                                content: risk.description,
+                              ),
+                            ),
+                          ],
+                        ),
 
-          /// الأعضاء الأكثر تأثراً مع الوقت
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/person.png',
-            text: "الأعضاء الأكثر تأثراً مع الوقت",
-          ),
-          ...organEffects.map((effect) => CustomInfoSection(
-                headerTitle: effect.title,
-                content: effect.description,
-              )),
+                  /// مستوى الخطورة
+                  organEffects == null
+                      ? const SizedBox()
+                      : Column(
+                          children: [
+                            HeaderSectionWithIcon(
+                              iconPath: 'assets/images/person.png',
+                              text: "الأعضاء الأكثر تأثراً مع الوقت",
+                            ),
+                            ...organEffects.map(
+                              (effect) => CustomInfoSection(
+                                headerTitle: effect.title,
+                                content: effect.description,
+                              ),
+                            ),
+                          ],
+                        ),
 
-          /// معلومات إضافية
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/file_search_icon.png',
-            text: "معلومات إضافية",
-          ),
-          ...supplementaryInfo.map((info) => CustomInfoSection(
-                headerTitle: info.title,
-                content: info.description,
-              )),
+                  /// الأعضاء الأكثر تأثراً مع الوقت
 
-          /// المراجع الأساسية
-          HeaderSectionWithIcon(
-            iconPath: 'assets/images/custom_note.png',
-            text: "المراجع الأساسية",
-          ),
-          ...references.map(
-            (ref) => BulletText(text: ref),
-          ),
-        ],
-      ),
-    );
-  },
-),
+                  /// معلومات إضافية
+                  HeaderSectionWithIcon(
+                    iconPath: 'assets/images/file_search_icon.png',
+                    text: "معلومات إضافية",
+                  ),
+                  ...supplementaryInfo.map((info) => CustomInfoSection(
+                        headerTitle: info.title,
+                        content: info.description,
+                      )),
 
+                  /// المراجع الأساسية
+                  HeaderSectionWithIcon(
+                    iconPath: 'assets/images/custom_note.png',
+                    text: "المراجع الأساسية",
+                  ),
+                  ...references.map(
+                    (ref) => BulletText(text: ref),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -187,6 +205,7 @@ class FoodRecomendationView extends StatelessWidget {
         subject: "توصية غذائية: $elementName");
   }
 }
+
 class HeaderSectionWithIcon extends StatelessWidget {
   final String iconPath;
   final String text;

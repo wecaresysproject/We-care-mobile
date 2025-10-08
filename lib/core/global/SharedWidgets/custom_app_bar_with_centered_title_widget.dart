@@ -14,6 +14,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     this.editFunction,
     this.deleteFunction,
     this.shareFunction,
+    this.onbackArrowPress,
     this.showShareButtonOnly = false,
     this.showActionButtons = true,
     this.titleColor,
@@ -27,6 +28,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
   final bool showShareButtonOnly;
   final Color? titleColor;
   final double? fontSize;
+  final void Function()? onbackArrowPress;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,9 @@ class AppBarWithCenteredTitle extends StatelessWidget
           children: [
             Align(
               alignment: isArabic() ? Alignment.topRight : Alignment.topLeft,
-              child: CustomBackArrow(),
+              child: CustomBackArrow(
+                onTap: (onbackArrowPress != null) ? onbackArrowPress : null,
+              ),
             ),
             Expanded(
               child: Text(
