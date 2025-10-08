@@ -406,8 +406,8 @@ class NutritionFollowUpReportView extends StatelessWidget {
           _buildCell(
             element.accumulativeStandard?.toString() ?? "N/A",
           ), //! check it later
-          _buildColoredDiff(element.difference?.toString() ?? "N/A",
-              diffColor, element, context), //! check it later
+          _buildColoredDiff(element.difference?.toString() ?? "N/A", diffColor,
+              element, context), //! check it later
         ],
       );
     }).toList();
@@ -543,34 +543,40 @@ class NutritionFollowUpReportView extends StatelessWidget {
   }
 
 // 🎨 Build colored difference cell with dialog
-DataCell _buildColoredDiff(String text, Color color, NutritionElement element, BuildContext context) {
-  return DataCell(
-    Center(
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: _getCellTextStyle(false).copyWith(
-          color: color,
-          decoration: color == Colors.black
-              ? TextDecoration.none
-              : TextDecoration.underline,
-          decorationColor: color,
-          fontWeight: FontWeight.w600,
+  DataCell _buildColoredDiff(
+    String text,
+    Color color,
+    NutritionElement element,
+    BuildContext context,
+  ) {
+    return DataCell(
+      Center(
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: _getCellTextStyle(false).copyWith(
+            color: color,
+            decoration: color == Colors.black
+                ? TextDecoration.none
+                : TextDecoration.underline,
+            decorationColor: color,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
-    ),
-    onTap: () {
-      NutritionDifferenceDialog.show(
-        context,
-        elementName: getRelativeNeededName(element.elementName),
-        consumedAmount: "${element.accumulativeActual ?? 0} جم",
-        standardAmount: "${element.accumulativeStandard ?? 0} جم",
-        difference: "${element.difference?.abs() ?? 0} جم",
-        isDeficit: (element.accumulativeActual ?? 0) < (element.accumulativeStandard ?? 0),
-      );
-    },
-  );
-}
+      onTap: () {
+        NutritionDifferenceDialog.show(
+          context,
+          elementName: (element.elementName),
+          consumedAmount: "${element.accumulativeActual ?? 0} جم",
+          standardAmount: "${element.accumulativeStandard ?? 0} جم",
+          difference: "${element.difference?.abs() ?? 0} جم",
+          isDeficit: (element.accumulativeActual ?? 0) <
+              (element.accumulativeStandard ?? 0),
+        );
+      },
+    );
+  }
 
   // 📝 Header text style
   TextStyle _getHeadingTextStyle() {

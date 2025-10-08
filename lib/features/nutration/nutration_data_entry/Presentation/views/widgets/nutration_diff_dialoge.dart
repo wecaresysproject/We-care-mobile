@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 
@@ -23,10 +25,17 @@ class NutritionDifferenceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: EdgeInsets.symmetric(
+          horizontal: 12.w), // يتحكم في المسافة من أطراف الشاشة
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width, // ياخد العرض كله
+        ),
+        width: double.infinity,
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: Color(0xFFF1F3F6),
@@ -41,7 +50,7 @@ class NutritionDifferenceDialog extends StatelessWidget {
           children: [
             // Title
             Text(
-             elementName,
+              elementName,
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w500,
@@ -49,7 +58,7 @@ class NutritionDifferenceDialog extends StatelessWidget {
                 fontFamily: 'Cairo',
               ),
             ),
-            SizedBox(height: 20.h),
+            verticalSpacing(20),
 
             // Consumed and Standard amounts row
             Row(
@@ -57,6 +66,7 @@ class NutritionDifferenceDialog extends StatelessWidget {
                 // Standard Amount (Right)
                 Expanded(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         "الكمية المعيارية",
@@ -75,10 +85,16 @@ class NutritionDifferenceDialog extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.white,
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xffFBFDFF),
+                              Color(0xffECF5FF),
+                            ],
+                          ),
                           borderRadius: BorderRadius.circular(14.r),
                           border: Border.all(
                             color: AppColorsManager.mainDarkBlue,
-                            width: 1.5,
+                            width: .3,
                           ),
                         ),
                         child: Text(
@@ -94,11 +110,12 @@ class NutritionDifferenceDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.w),
+                horizontalSpacing(16),
 
                 // Consumed Amount (Left)
                 Expanded(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         "الكمية المستهلكة",
@@ -109,18 +126,24 @@ class NutritionDifferenceDialog extends StatelessWidget {
                           fontFamily: 'Cairo',
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      verticalSpacing(8),
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 20.w,
                           vertical: 12.h,
                         ),
                         decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xffFBFDFF),
+                              Color(0xffECF5FF),
+                            ],
+                          ),
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12.r),
                           border: Border.all(
                             color: AppColorsManager.mainDarkBlue,
-                            width: 1.5,
+                            width: .3,
                           ),
                         ),
                         child: Text(
@@ -138,18 +161,16 @@ class NutritionDifferenceDialog extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20.h),
+            verticalSpacing(20),
 
             // Difference section
             Column(
               children: [
                 Text(
                   "الفرق",
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
+                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    fontWeight: FontWeight.w700,
                     color: AppColorsManager.mainDarkBlue,
-                    fontFamily: 'Cairo',
                   ),
                 ),
                 SizedBox(height: 8.h),
@@ -157,13 +178,19 @@ class NutritionDifferenceDialog extends StatelessWidget {
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.w,
-                    vertical: 12.h,
+                    vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xffFBFDFF),
+                        Color(0xffECF5FF),
+                      ],
+                    ),
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12.r),
                     border: Border.all(
-                      color: const Color(0xFF00BCD4),
+                      color: AppColorsManager.doneColor,
                       width: 1.5,
                     ),
                   ),
@@ -186,14 +213,16 @@ class NutritionDifferenceDialog extends StatelessWidget {
                           vertical: 4.h,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF4CAF50),
+                          color: AppColorsManager.doneColor,
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isDeficit ? "أقل من المستهدف" : "أكثر من المستهدف",
+                              isDeficit
+                                  ? "أقل من المستهدف"
+                                  : "أكثر من المستهدف",
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
@@ -203,7 +232,9 @@ class NutritionDifferenceDialog extends StatelessWidget {
                             ),
                             SizedBox(width: 4.w),
                             Icon(
-                              isDeficit ? Icons.arrow_downward : Icons.arrow_upward,
+                              isDeficit
+                                  ? Icons.arrow_downward
+                                  : Icons.arrow_upward,
                               color: Colors.white,
                               size: 14.sp,
                             ),
@@ -220,50 +251,14 @@ class NutritionDifferenceDialog extends StatelessWidget {
             // Action Buttons
             Row(
               children: [
-                // Recommendations Button
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                    context.pushNamed(Routes.foodRecomendationView,
-                      arguments: elementName,);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColorsManager.mainDarkBlue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 12.h),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "توصيات",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                        SizedBox(width: 6.w),
-                        Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 18.sp,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-
                 // Food Alternatives Button
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.pushNamed(Routes.foodAlternativesView,
-                        arguments: elementName,);
+                    onPressed: () async {
+                      await context.pushNamed(
+                        Routes.foodAlternativesView,
+                        arguments: elementName,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColorsManager.mainDarkBlue,
@@ -277,16 +272,52 @@ class NutritionDifferenceDialog extends StatelessWidget {
                       children: [
                         Text(
                           "بدائل غذائية",
-                          style: TextStyle(
-                            fontSize: 14.sp,
+                          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
-                            fontFamily: 'Cairo',
                           ),
                         ),
                         SizedBox(width: 6.w),
                         Icon(
-                          Icons.arrow_back,
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 18.sp,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                horizontalSpacing(12),
+
+                // Recommendations Button
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await context.pushNamed(
+                        Routes.foodRecomendationView,
+                        arguments: elementName,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColorsManager.mainDarkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12.h),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "توصيات",
+                          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        Icon(
+                          Icons.arrow_forward,
                           color: Colors.white,
                           size: 18.sp,
                         ),

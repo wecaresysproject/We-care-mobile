@@ -16,7 +16,11 @@ Future<void> showWarningDialog(
     context: context,
     fullscreenDialog: true,
     builder: (context) {
+      final screenWidth = MediaQuery.of(context).size.width;
+
       return AlertDialog(
+        insetPadding: EdgeInsets.zero, // مفيش مسافة من الأطراف
+
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.r),
         ),
@@ -43,66 +47,70 @@ Future<void> showWarningDialog(
             ),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font20blackWeight600.copyWith(
-                // fontSize: 16.sp,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 20.h),
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColorsManager.mainDarkBlue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      padding: EdgeInsets.symmetric(vertical: 10.h),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      if (onConfirm != null) onConfirm();
-                    },
-                    child: Text(
-                      confirmText,
-                      style: TextStyle(color: Colors.white, fontSize: 15.sp),
-                    ),
-                  ),
+        content: SizedBox(
+          width: screenWidth * 0.825,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font20blackWeight600.copyWith(
+                  // fontSize: 16.sp,
+                  fontWeight: FontWeight.w400,
                 ),
-                if (hasDelete) SizedBox(width: 30.w),
-                if (hasDelete)
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                children: [
                   Expanded(
-                    flex: 1,
-                    child: ElevatedButton.icon(
+                    flex: 2,
+                    child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red.shade700,
+                        backgroundColor: AppColorsManager.mainDarkBlue,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 8.h),
+                        padding: EdgeInsets.symmetric(vertical: 10.h),
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        if (onDelete != null) onDelete();
+                        if (onConfirm != null) onConfirm();
                       },
-                      icon: const Icon(Icons.delete, color: Colors.white),
-                      label: Text(
-                        "حذف",
+                      child: Text(
+                        confirmText,
                         style: TextStyle(color: Colors.white, fontSize: 15.sp),
                       ),
                     ),
                   ),
-              ],
-            ),
-          ],
+                  if (hasDelete) SizedBox(width: 30.w),
+                  if (hasDelete)
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.shade700,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          if (onDelete != null) onDelete();
+                        },
+                        icon: const Icon(Icons.delete, color: Colors.white),
+                        label: Text(
+                          "حذف",
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 15.sp),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     },
