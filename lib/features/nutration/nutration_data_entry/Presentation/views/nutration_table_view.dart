@@ -11,6 +11,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/nutration_diff_dialoge.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class NutritionFollowUpReportView extends StatelessWidget {
@@ -407,7 +408,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
             element.accumulativeStandard?.toString() ?? "N/A",
           ), //! check it later
           _buildColoredDiff(element.difference?.toString() ?? "N/A",
-              diffColor), //! check it later
+              diffColor, element, context), //! check it later
         ],
       );
     }).toList();
@@ -542,25 +543,35 @@ class NutritionFollowUpReportView extends StatelessWidget {
     );
   }
 
-  // 🎨 Build colored difference cell
-  DataCell _buildColoredDiff(String text, Color color) {
-    return DataCell(
-      Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: _getCellTextStyle(false).copyWith(
-            color: color,
-            decoration: color == Colors.black
-                ? TextDecoration.none
-                : TextDecoration.underline,
-            decorationColor: color,
-            fontWeight: FontWeight.w600,
-          ),
+// 🎨 Build colored difference cell with dialog
+DataCell _buildColoredDiff(String text, Color color, NutritionElement element, BuildContext context) {
+  return DataCell(
+    Center(
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        style: _getCellTextStyle(false).copyWith(
+          color: color,
+          decoration: color == Colors.black
+              ? TextDecoration.none
+              : TextDecoration.underline,
+          decorationColor: color,
+          fontWeight: FontWeight.w600,
         ),
       ),
-    );
-  }
+    ),
+    onTap: () {
+      NutritionDifferenceDialog.show(
+        context,
+        elementName: getRelativeNeededName(element.elementName),
+        consumedAmount: "${element.accumulativeActual ?? 0} جم",
+        standardAmount: "${element.accumulativeStandard ?? 0} جم",
+        difference: "${element.difference?.abs() ?? 0} جم",
+        isDeficit: (element.accumulativeActual ?? 0) < (element.accumulativeStandard ?? 0),
+      );
+    },
+  );
+}
 
   // 📝 Header text style
   TextStyle _getHeadingTextStyle() {
