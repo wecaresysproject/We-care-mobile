@@ -455,10 +455,11 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   Future<void> getAnyActivePlanStatus() async {
     final result = await _nutrationDataEntryRepo.getAnyActivePlanStatus();
     result.when(
-      success: (diseases) {
+      success: (response) {
         emit(
           state.copyWith(
-            isAnyPlanActivated: diseases,
+            isAnyPlanActivated: response.$1,
+            followUpNutrationViewCurrentTabIndex: response.$2,
           ),
         );
       },
@@ -527,13 +528,19 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       success: (status) {
         if (planType == PlanType.weekly.name) {
           emit(
-            state.copyWith(weeklyActivationStatus: status),
+            state.copyWith(
+              weeklyActivationStatus: status,
+            ),
           );
+          AppLogger.debug("ana ray7 afta7l plan activation status weekly");
           status ? loadExistingPlans() : null;
         } else {
           emit(
-            state.copyWith(monthlyActivationStatus: status),
+            state.copyWith(
+              monthlyActivationStatus: status,
+            ),
           );
+          AppLogger.debug("ana ray7 afta7l plan activation status Monthly");
         }
         AppLogger.debug(
             ' getPlanActivationStatus called and => Plan activation status for $planType: $status');

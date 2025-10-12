@@ -50,12 +50,31 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NutrationDataEntryCubit>(
-      create: (context) =>
-          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context)
-            ..getPlanActivationStatus()
-            ..loadExistingPlans(),
-      child: Builder(
-        builder: (BuildContext context) {
+      create: (context) {
+        final cubit =
+            NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context);
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await cubit.getAnyActivePlanStatus();
+          await cubit.getPlanActivationStatus();
+          await cubit.loadExistingPlans();
+        });
+        return cubit;
+      },
+      child: BlocListener<NutrationDataEntryCubit, NutrationDataEntryState>(
+        listenWhen: (prev, curr) =>
+            prev.followUpNutrationViewCurrentTabIndex !=
+            curr.followUpNutrationViewCurrentTabIndex,
+        listener: (context, state) {
+          if (_tabController.index !=
+              state.followUpNutrationViewCurrentTabIndex) {
+            _tabController.animateTo(
+              state.followUpNutrationViewCurrentTabIndex,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        },
+        child: Builder(builder: (context) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -138,7 +157,7 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
               ],
             ),
           );
-        },
+        }),
       ),
     );
   }

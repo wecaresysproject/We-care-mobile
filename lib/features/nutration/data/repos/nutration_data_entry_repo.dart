@@ -128,11 +128,16 @@ class NutrationDataEntryRepo {
     }
   }
 
-  Future<ApiResult<bool>> getAnyActivePlanStatus() async {
+  Future<ApiResult<(bool, int)>> getAnyActivePlanStatus() async {
     try {
       final response = await _nutrationServices.getAnyActivePlanStatus();
 
-      return ApiResult.success(response["isActivatedPlans"]);
+      return ApiResult.success(
+        (
+          response["isActivatedPlans"],
+          response["currentActivatedPlan"],
+        ),
+      );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

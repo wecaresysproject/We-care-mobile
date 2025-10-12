@@ -50,7 +50,6 @@ class FoodRecomendationView extends StatelessWidget {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
-                // spacing: 16,
                 children: [
                   /// Header with title and share button
                   AppBarWithCenteredTitle(
