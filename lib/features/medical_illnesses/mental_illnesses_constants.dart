@@ -30,8 +30,8 @@ class MentalIllnessesConstants {
 
   static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
   static const getMedicalIllnessUmbrellaDocs =
-      "/api/getMedicalIllnessUmbrellaDocs";
-  static const getAllAnsweredQuestions = "/v1/lookup/getAllAnsweredQuestions";
+      "/psych/umbrella-docs";
+  static const getAllAnsweredQuestions = "/psych/questions/answered";
   static const getFollowUpReportsAvailableYears =
       "/psych/available-years";
   static const getAllFollowUpReportsRecords =
