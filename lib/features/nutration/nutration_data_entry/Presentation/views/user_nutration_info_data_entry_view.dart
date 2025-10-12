@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
@@ -180,10 +180,10 @@ class _UserNutrationInfoDataEntryViewState
                         containerHintText: 'اختر معدل النشاط البدنى لديك',
                         options: [
                           'خامل',
-                          'بسيط',
+                          'خفيف',
                           'متوسط',
-                          'قوي',
-                          'مجهد',
+                          'عالي',
+                          'شاق جدا',
                         ],
                         initialValue: 'متوسط',
                         onOptionSelected: (value) {
@@ -202,27 +202,6 @@ class _UserNutrationInfoDataEntryViewState
                   ChronicDiseasesSelector(),
                   verticalSpacing(50),
 
-                  // BlocConsumer<NutrationDataEntryCubit,
-                  //     NutrationDataEntryState>(
-                  //   listener: (context, state) {},
-                  //   builder: (context, state) {
-                  //     return AppCustomButton(
-                  //       isLoading: false,
-                  //       title: 'اكمل',
-                  //       onPressed: () {
-                  //         // context.pushNamed(Routes.followUpNutrationPlansView);
-                  //         // ✅ هنا بعمل validate للفورم كله
-                  //         if (_formKey.currentState!.validate()) {
-                  //           // لو كل حاجة صح
-                  //           log("✅ البيانات صحيحة - ابعت للسيرفر أو روح للخطوة التالية");
-                  //         } else {
-                  //           log("❌ فيه أخطاء - خلى اليوزر يعدلها");
-                  //         }
-                  //       },
-                  //       isEnabled: true,
-                  //     );
-                  //   },
-                  // ),
                   submitUserInfoEnteredButtonBlocConsumer(_formKey),
                 ],
               ),
@@ -361,7 +340,6 @@ class ChronicDiseasesSelector extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserSelectionContainer(
-              allowManualEntry: true,
               categoryLabel: 'الأمراض المزمنة',
               containerHintText: state.selectedChronicDiseases.isEmpty
                   ? 'اختر الأمراض المزمنة لديك'
