@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
@@ -15,37 +18,6 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<QuestionData> mockQuestions = [
-      QuestionData(
-        date: '22/10/2024',
-        sensitivity: 'متوسطة',
-        domain: 'التفكير السلبي والمرض',
-        question: 'هل تنتابك أفكار بأن حياتك بلا جدوى أو هدف واضح؟',
-        category: 'الأفكار السلبية والانتحارية',
-      ),
-      QuestionData(
-        date: '5/7/2025',
-        sensitivity: 'مرتفع جداً',
-        domain: 'الميول الانتحارية',
-        question: 'هل تؤذي نفسك باستمرار على أمور قديمة؟',
-        category: 'السلوك القهري والمدمّر',
-      ),
-      QuestionData(
-        date: '5/7/2025',
-        sensitivity: 'مرتفعة',
-        domain: 'التفكير السلبي والمرض',
-        question: 'هل تنتابك أفكار بأن حياتك بلا جدوى أو هدف واضح؟',
-        category: 'الأفكار السلبية والانتحارية',
-      ),
-      QuestionData(
-        date: '5/7/2025',
-        sensitivity: 'مرتفعة',
-        domain: 'التفكير السلبي والمرض',
-        question: 'هل تشعر بالقلق أو التوتر بشكل مستمر؟',
-        category: 'القلق والتوتر',
-      ),
-    ];
-
     return BlocProvider<MentalIllnessDataViewCubit>(
       create: (context) =>
           getIt<MentalIllnessDataViewCubit>()..getAllAnsweredQuestions(),
@@ -55,14 +27,30 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              AppBarWithCenteredTitle(
-                title: 'الأسئلة المجاب عليها بنعم',
-                titleColor: AppColorsManager.mainDarkBlue,
-                showShareButtonOnly: true,
-                shareFunction: () {},
+              BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
+                builder: (context, state) {
+                  return AppBarWithCenteredTitle(
+                    title: 'الأسئلة المجاب عليها بنعم',
+                    titleColor: AppColorsManager.mainDarkBlue,
+                    showShareButtonOnly: true,
+                    shareFunction: () {
+                      final hasYesAnswers = state.mentalIllnessAnsweredQuestions != null &&
+                          state.mentalIllnessAnsweredQuestions!.isNotEmpty;
+                      if (!hasYesAnswers) {
+                        showError("لا توجد أسئلة مجاب عليها بنعم للمشاركة");
+                        return;
+                      }
+                      final questionsText = state.mentalIllnessAnsweredQuestions!
+                          .map((q) =>
+                              "المحور: ${q.category}\nالسؤال: ${q.questionText}\nالنطاق: ${q.scope}\nالتاريخ: ${q.answeredDate}\n")
+                          .join("\n\n");
+                      Share.share('🧠📄 الأسئلة المجاب عليها بنعم 🧠📄\n\n$questionsText');
+                    },
+                  );
+                },
               ),
               verticalSpacing(16),
-              Expanded(child: buildQuestionTable(context, mockQuestions)),
+              Expanded(child: buildQuestionTable(context)),
             ],
           ),
         ),
@@ -70,8 +58,7 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
     );
   }
 
-  Widget buildQuestionTable(
-      BuildContext context, List<QuestionData> questions) {
+  Widget buildQuestionTable(BuildContext context) {
     return BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
       builder: (context, state) {
         if (state.requestStatus == RequestStatus.loading) {
@@ -123,13 +110,13 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
               _buildDataColumn("النطاق"),
               _buildDataColumn("التاريخ"),
             ],
-            rows: questions.map((q) {
+            rows: answeredQuestions!.map((q) {
               return DataRow(cells: [
                 _buildDataCellCenter(q.category),
-                _buildDataCellCenter(q.question, maxLines: 6),
-                _buildDataCellCenter(q.domain),
+                _buildDataCellCenter(q.questionText, maxLines: 6),
+                _buildDataCellCenter(q.scope),
                 _buildDataCellCenter(
-                  q.date,
+                  q.answeredDate,
                   maxLines: 2,
                 ),
               ]);

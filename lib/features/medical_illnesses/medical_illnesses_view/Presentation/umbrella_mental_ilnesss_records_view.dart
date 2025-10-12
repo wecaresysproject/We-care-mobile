@@ -108,7 +108,7 @@ class _MentalIllnessesUmbrellRecordsViewState
   Widget build(BuildContext context) {
     return BlocProvider<MentalIllnessDataViewCubit>(
       create: (context) => getIt<
-          MentalIllnessDataViewCubit>(), //..getMedicalIllnessUmbrellaDocs(),
+          MentalIllnessDataViewCubit>()..getMedicalIllnessUmbrellaDocs(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: Stack(
@@ -155,11 +155,11 @@ class _MentalIllnessesUmbrellRecordsViewState
                           ),
                         );
                       }
-
+              
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: dummyMentalIllnessCategories.length,
+                        itemCount: records.length,
                         reverse: true, // This ensures proper z-index layering
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -168,7 +168,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                           mainAxisSpacing: 0,
                         ),
                         itemBuilder: (context, index) {
-                          final category = dummyMentalIllnessCategories[index];
+                          final category = records[index];
                           final isOpen = openedIndex == index;
 
                           return OverflowBox(
@@ -405,7 +405,7 @@ class _MentalIllnessesUmbrellRecordsViewState
               fontSize: 14.sp,
             ),
           ),
-          horizontalSpacing(4),
+          const Spacer(),
           Image.asset(iconPath, height: 26, width: 26),
         ],
       ),

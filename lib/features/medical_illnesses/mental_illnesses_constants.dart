@@ -30,15 +30,15 @@ class MentalIllnessesConstants {
 
   static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
   static const getMedicalIllnessUmbrellaDocs =
-      "/api/getMedicalIllnessUmbrellaDocs";
-  static const getAllAnsweredQuestions = "/v1/lookup/getAllAnsweredQuestions";
+      "/psych/umbrella-docs";
+  static const getAllAnsweredQuestions = "/psych/questions/answered";
   static const getFollowUpReportsAvailableYears =
-      "/v1/lookup/getFollowUpReportsAvailableYears";
+      "/psych/available-years";
   static const getAllFollowUpReportsRecords =
-      "/v1/lookup/getAllFollowUpReportsRecords";
+     "/psych/follow-up-reports";
   static const getFilteredFollowUpReports =
-      "/v1/lookup/getFilteredFollowUpReports";
+      "/psych/reports/filter";
   static const editSurgeryEndpoint = "/api/EnterSectionSurgery";
   static const getFollowUpDocumentDetailsById =
-      "/v1/lookup/mental-getFollowUpDocumentDetailsById";
+      "/psych/follow-up-report";
 }

@@ -6,10 +6,10 @@ part 'answered_question_model.g.dart';
 class AnsweredQuestionModel {
   final String id;
   final String category; // المحور
-  @JsonKey(name: 'Question_text')
+  @JsonKey(name: 'question_text')
   final String questionText; // السؤال
   final String scope; // النطاق
-  @JsonKey(name: 'Answered_date')
+  @JsonKey(name: 'answered_date')
   final String answeredDate; // التاريخ
 
   AnsweredQuestionModel({

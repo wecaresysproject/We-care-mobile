@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -70,7 +71,9 @@ class MentalIllnessFollowUpReportDetailsView extends StatelessWidget {
           AppBarWithCenteredTitle(
             title: 'تفاصيل التقرير',
             titleColor: AppColorsManager.mainDarkBlue,
-            shareFunction: () {},
+            shareFunction: () {
+              Share.share('🧠📄 تفاصيل التقرير النفسي 🧠📄\n\n${data.map((section) => '${section.sectionTitle}\n${section.sectionContent}\n').join('\n')}');
+            },
             showShareButtonOnly: true,
           ),
           CustomInfoSection(
@@ -79,49 +82,44 @@ class MentalIllnessFollowUpReportDetailsView extends StatelessWidget {
             content: data[0].sectionContent,
           ),
           CustomInfoSection(
-            headerIcon: Icons.check_circle,
-            headerTitle: 'عدد الإجابات الإيجابية',
-            content: data[1].sectionContent,
-          ),
-          CustomInfoSection(
             headerIcon: Icons.question_mark,
             headerTitle: 'ملاحظة',
-            content: data[2].sectionContent,
+            content: data[1].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.psychology,
             headerTitle: 'ملخص الحالة',
-            content: data[3].sectionContent,
+            content: data[2].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.edit_square,
             headerTitle: 'ما الذي نلاحظه في إجابتك ؟',
-            content: data[4].sectionContent,
+            content: data[3].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.psychology,
             headerTitle: 'ما الذي قد يحدث داخلك؟',
-            content: data[5].sectionContent,
+            content: data[4].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.favorite,
             headerTitle: 'رسالة لك من القلب',
-            content: data[6].sectionContent,
+            content: data[5].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.edit_square,
             headerTitle: 'الخطوات المقترحة (قصيرة المدى)',
-            content: data[7].sectionContent,
+            content: data[6].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.self_improvement,
             headerTitle: 'خطة دعم نفسي تدريجى  ( متوسط  وطويل المدى )',
-            content: data[8].sectionContent,
+            content: data[7].sectionContent,
           ),
           CustomInfoSection(
             headerIcon: Icons.flag,
             headerTitle: 'ختامًا',
-            content: data[9].sectionContent,
+            content: data[8].sectionContent,
           ),
         ],
       ),

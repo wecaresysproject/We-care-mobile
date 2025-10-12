@@ -193,12 +193,12 @@ class MedicalItemCard extends StatelessWidget {
         radius: 8,
         backgroundColor: AppColorsManager.criticalRisk,
       ).paddingSymmetricHorizontal(4);
-    } else if (value == 'خطر جزئى') {
+    } else if (value == 'خطر جزئي') {
       return CircleAvatar(
         radius: 8,
         backgroundColor: AppColorsManager.elevatedRisk,
       ).paddingSymmetricHorizontal(4);
-    } else if (value == 'طبيعى') {
+    } else if (value == 'طبيعي') {
       return CircleAvatar(
         radius: 8,
         backgroundColor: AppColorsManager.safe,
@@ -208,3 +208,4 @@ class MedicalItemCard extends StatelessWidget {
     }
   }
 }
+

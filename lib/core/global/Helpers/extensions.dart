@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 
 import '../../../generated/l10n.dart';
 
@@ -233,5 +234,20 @@ extension ArabicTimeFormat on DateTime {
         .replaceAll('PM', 'م')
         .replaceAll('ص', 'ص')
         .replaceAll('م', 'م'); // extra safety
+  }
+}
+
+extension RiskLevelExtension on RiskLevel {
+  String get displayName {
+    switch (this) {
+      case RiskLevel.normal:
+        return 'طبيعي';
+      case RiskLevel.underObservation:
+        return 'مراقبة';
+      case RiskLevel.partialRisk:
+        return 'خطر جزئي';
+      case RiskLevel.confirmedRisk:
+        return 'خطر مؤكد';
+    }
   }
 }
