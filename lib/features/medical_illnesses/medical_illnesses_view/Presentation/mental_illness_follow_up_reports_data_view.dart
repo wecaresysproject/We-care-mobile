@@ -9,38 +9,38 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_follow_up_report_model.dart';
+import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
-//! looks like PrescriptionView file
 class MentalIllnessFollowUpReports extends StatelessWidget {
   MentalIllnessFollowUpReports({super.key});
   final dummyPrescriptions = [
     MentalIllnessFollowUpReportModel(
       title: 'الأفكار السلبية والانتحارية',
       date: '22 /10 / 2024',
-      reportType: 'مراقبة',
+      riskLevel: 'مراقبة',
       id: '1',
     ),
     MentalIllnessFollowUpReportModel(
       title: 'الأفكار السلبية والانتحارية',
       date: '22 /10 / 2024',
-      reportType: 'خطر جزئى',
+      riskLevel: 'خطر جزئى',
       id: '2',
     ),
     MentalIllnessFollowUpReportModel(
       title: 'الأفكار السلبية والانتحارية',
       date: '22 /10 / 2024',
-      reportType: 'طبيعى',
+      riskLevel: 'طبيعى',
       id: '3',
     ),
     MentalIllnessFollowUpReportModel(
       date: '22 /10 / 2024',
       title: 'الأفكار السلبية والانتحارية',
-      reportType: 'خطر مؤكد',
+      riskLevel: 'خطر مؤكد',
       id: '5',
     ),
   ];
@@ -57,6 +57,13 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
         body:
             BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
           builder: (context, state) {
+            if (state.requestStatus == RequestStatus.loading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+              );
+            }
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
@@ -78,51 +85,29 @@ class MentalIllnessFollowUpReports extends StatelessWidget {
                     },
                   ),
                   verticalSpacing(16),
+                     MedicalItemGridView(
+                      items: state.followUpRecords,
+                      onTap: (id) async {
+                        final result = await context.pushNamed(
+                          Routes.mentalIllnessFollowUpReportDetailsView,
+                          arguments: {'docId': id},
+                        );
+                        if (result != null && result as bool && context.mounted) {
+                          await context
+                              .read<MentalIllnessDataViewCubit>()
+                              .getAllFollowUpReportsRecords();
+                          await context
+                              .read<MentalIllnessDataViewCubit>()
+                              .getFollowUpReportsAvailableYears();
+                        }
+                      },
+                      titleBuilder: (item) => item.title,
+                      infoRowBuilder: (item) => [
+                        {'title': 'التاريخ:', 'value': item.date},
+                        {'title': 'نوع التقرير:', 'value': (item.riskLevel as RiskLevel).displayName},
+                      ],
+                    ),
 
-                  // Expanded علشان المحتوى ياخد المساحة الباقية
-                  Expanded(
-                    child: state.requestStatus == RequestStatus.loading
-                        ? const Center(child: CircularProgressIndicator())
-                        : state.followUpRecords.isEmpty
-                            ? Center(
-                                child: Text(
-                                  "لا يوجد بيانات",
-                                  style: AppTextStyles.font22MainBlueWeight700,
-                                ),
-                              )
-                            : ListView(
-                                children: [
-                                  MedicalItemGridView(
-                                    items: state.followUpRecords,
-                                    onTap: (id) async {
-                                      final result = await context.pushNamed(
-                                        Routes
-                                            .mentalIllnessFollowUpReportDetailsView,
-                                        arguments: {'docId': id},
-                                      );
-                                      if (result != null &&
-                                          result as bool &&
-                                          context.mounted) {
-                                        await context
-                                            .read<MentalIllnessDataViewCubit>()
-                                            .getAllFollowUpReportsRecords();
-                                        await context
-                                            .read<MentalIllnessDataViewCubit>()
-                                            .getFollowUpReportsAvailableYears();
-                                      }
-                                    },
-                                    titleBuilder: (item) => item.title,
-                                    infoRowBuilder: (item) => [
-                                      {'title': 'التاريخ:', 'value': item.date},
-                                      {
-                                        'title': 'نوع التقرير:',
-                                        'value': item.reportType
-                                      },
-                                    ],
-                                  ),
-                                ],
-                              ),
-                  ),
                   verticalSpacing(16),
 
                   MentalIlnessFollowUpFooterRow(),

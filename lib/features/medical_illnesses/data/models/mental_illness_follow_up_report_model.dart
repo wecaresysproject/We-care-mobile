@@ -6,13 +6,13 @@ part 'mental_illness_follow_up_report_model.g.dart';
 class MentalIllnessFollowUpReportModel {
   final String title;
   final String date;
-  final String reportType;
+  final String riskLevel;
   final String id;
 
   MentalIllnessFollowUpReportModel({
     required this.title,
     required this.date,
-    required this.reportType,
+    required this.riskLevel,
     required this.id,
   });
 

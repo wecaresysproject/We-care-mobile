@@ -223,7 +223,7 @@ class MentalIllnessesViewRepo {
         'ar',
         UserTypes.patient.name.firstLetterToUpperCase,
       );
-      final List<dynamic>? rawList = response['data'];
+      final List<dynamic>? rawList = response['data']['sections'];
 
       return ApiResult.success(
         rawList
