@@ -122,7 +122,7 @@ class FoodAlternativesView extends StatelessWidget {
                                 physics: NeverScrollableScrollPhysics(),
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
+                                  crossAxisCount: 3,
                                   childAspectRatio: 1,
                                   crossAxisSpacing: 7,
                                   mainAxisSpacing: 10,
@@ -245,70 +245,16 @@ class FoodCard extends StatelessWidget {
             name,
             style: AppTextStyles.font14blackWeight400.copyWith(
               color: AppColorsManager.mainDarkBlue,
-              fontSize: 13,
+              fontSize: 15.sp,
             ),
             textAlign: TextAlign.center,
-            maxLines: 1,
+            maxLines: 2,
             minFontSize: 10,
             overflow: TextOverflow.ellipsis,
           ),
 
           verticalSpacing(4),
 
-          // Protein percentage and quantity in same row
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: [
-          //     // Quantity column
-          //     Column(
-          //       mainAxisAlignment: MainAxisAlignment.start,
-          //       children: [
-          //         Text(
-          //           quantity,
-          //           style: AppTextStyles.font12blackWeight400.copyWith(
-          //             fontWeight: FontWeight.w700,
-          //           ),
-          //           textAlign: TextAlign.center,
-          //           maxLines: 1,
-          //           overflow: TextOverflow.ellipsis,
-          //         ),
-          //         Text(
-          //           'جم',
-          //           style: AppTextStyles.font12blackWeight400.copyWith(
-          //             fontWeight: FontWeight.w700,
-          //             fontSize: 10.sp,
-          //           ),
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ],
-          //     ),
-
-          //     // horizontalSpacing(2),
-
-          //     // Percentage column
-          //     Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text(
-          //           percent,
-          //           style: AppTextStyles.font14BlueWeight700.copyWith(
-          //             color: Colors.black,
-          //             fontSize: 12.sp,
-          //           ),
-          //         ),
-          //         Text(
-          //           'من الاحتياج\nاليومي',
-          //           textAlign: TextAlign.center,
-          //           style: AppTextStyles.font18blackWight500.copyWith(
-          //             fontSize: 8.sp,
-          //             fontWeight: FontWeight.w600,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
           // Protein percentage and quantity in same row
           Flexible(
             child: Row(
@@ -324,6 +270,7 @@ class FoodCard extends StatelessWidget {
                         quantity,
                         style: AppTextStyles.font12blackWeight400.copyWith(
                           fontWeight: FontWeight.w700,
+                          fontSize: 13.sp,
                         ),
                         textAlign: TextAlign.center,
                         maxLines: 2,
@@ -335,13 +282,19 @@ class FoodCard extends StatelessWidget {
                 ),
 
                 horizontalSpacing(2),
+                VerticalDivider(
+                  color: Colors.black,
+                  thickness: .7,
+                  indent: 12,
+                  endIndent: 12,
+                ),
                 // Percentage column
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        percent,
+                        _formatPercent(percent),
                         style: AppTextStyles.font14BlueWeight700.copyWith(
                           color: Colors.black,
                           fontSize: 12.sp,
@@ -354,7 +307,7 @@ class FoodCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font18blackWight500.copyWith(
                           fontSize: 8.sp,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -369,5 +322,20 @@ class FoodCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatPercent(String percent) {
+    try {
+      // Remove % if it exists
+      final clean = percent.replaceAll('%', '').trim();
+
+      // Parse and round
+      final value = double.parse(clean);
+      final intValue = value.round(); // أو use .toInt() لو عايز تقطع مش تقرب
+
+      return '$intValue%';
+    } catch (e) {
+      return percent; // fallback في حالة الخطأ
+    }
   }
 }

@@ -20,44 +20,45 @@ class EffectOnBodyOrgansView extends StatelessWidget {
       OrganItem(name: "الكبد", imagePath: "assets/images/liver_icon.png"),
       OrganItem(name: "الكلى", imagePath: "assets/images/kidney_icon.png"),
       OrganItem(
-          name: "القلب والأوعية",
+          name: "القلب و الاوعية الدموية",
           imagePath: "assets/images/heart_organ_icon.png"),
       OrganItem(
-          name: "العظام والمفاصل", imagePath: "assets/images/bones_icon.png"),
+          name: "العظام و المفاصل", imagePath: "assets/images/bones_icon.png"),
       OrganItem(name: "الغدد", imagePath: "assets/images/glands_icon.png"),
       OrganItem(
           name: "البنكرياس", imagePath: "assets/images/pancreas_icon.png"),
       OrganItem(name: "العضلات", imagePath: "assets/images/muscles_icon.png"),
       OrganItem(name: "العيون", imagePath: "assets/images/eye_module_pic.png"),
       OrganItem(
-          name: "الأسنان", imagePath: "assets/images/teeth_image_icon.png"),
+          name: "الاسنان", imagePath: "assets/images/teeth_image_icon.png"),
       OrganItem(
           name: "الأعضاء التناسلية",
           imagePath: "assets/images/reproductive_icon.png"),
       OrganItem(
-          name: "الجهاز الهضمى", imagePath: "assets/images/digestive_icon.png"),
+          name: "الجهاز الهضمي", imagePath: "assets/images/digestive_icon.png"),
       OrganItem(
-          name: "الدماغ والجهاز العصبى",
+          name: "الدماغ والجهاز العصبي",
           imagePath: "assets/images/brain_icon.png"),
       OrganItem(
-          name: "الجهاز المناعى", imagePath: "assets/images/immune_icon.png"),
+          name: "الجهاز المناعي و الهرموني",
+          imagePath: "assets/images/immune_icon.png"),
       OrganItem(name: "الدم", imagePath: "assets/images/blood_icon.png"),
       OrganItem(name: "الجنين", imagePath: "assets/images/fetus_icon.png"),
       OrganItem(
-          name: "الجلد / الشعر / الأظافر",
+          name: "الجلد/الشعر/الاظافر",
           imagePath: "assets/images/skin_icon.png"),
     ];
 
     return BlocProvider.value(
-      value:  getIt<NutrationViewCubit>()..getAffectedOrgans(),
+      value: getIt<NutrationViewCubit>()..getAffectedOrgans(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: BlocBuilder<NutrationViewCubit, NutrationViewState>(
           builder: (context, state) {
-
             if (state.requestStatus == RequestStatus.loading) {
               return const Center(
-                child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
+                child: CircularProgressIndicator(
+                    color: AppColorsManager.mainDarkBlue),
               );
             }
             final affectedOrgans = state.affectedOrgansList;

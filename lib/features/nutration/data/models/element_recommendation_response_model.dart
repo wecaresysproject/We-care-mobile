@@ -28,7 +28,6 @@ class ElementData {
   @JsonKey(name: 'safe_level')
   final String safeLevel;
 
-  @JsonKey(name: 'risk_levels')
   final RiskLevels? riskLevels;
 
   @JsonKey(name: 'organ_effects_over_time')
@@ -60,12 +59,14 @@ class RiskLevels {
 
   @JsonKey(name: 'indicator_value')
   final String indicatorValue;
+  final double actualValue;
 
   final List<Risk> risks;
 
   RiskLevels({
     required this.isHighRiskLevel,
     required this.indicatorValue,
+    required this.actualValue,
     required this.risks,
   });
 
