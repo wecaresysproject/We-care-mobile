@@ -474,6 +474,7 @@ class AppRouter {
             create: (context) => getIt<MedicalIllnessesDataEntryCubit>(),
             child: MentalHealthQuestionnaireView(
               questions: argumentsMap?['questions'] as List<FcmQuestionModel>,
+              patchNumber: argumentsMap?['patchNumber'],
             ),
           ),
         );

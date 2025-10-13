@@ -178,7 +178,10 @@ class LocalNotificationService {
 
           _navigatorKey!.currentState!.pushNamed(
             Routes.mentalUmbrellaHealthQuestionnairePage,
-            arguments: {'questions': fcmMessage.questions},
+            arguments: {
+              'questions': fcmMessage.questions,
+              'patchNumber': fcmMessage.patchNumber,
+            },
           );
           AppLogger.debug('✅ Navigation to questionnaire completed');
           break;
