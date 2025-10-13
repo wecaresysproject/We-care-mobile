@@ -129,7 +129,7 @@ class _MentalHealthQuestionnairePageState
               titleColor: AppColorsManager.mainDarkBlue,
             ),
             Text(
-              'باتش رقم ${widget.patchNumber}',
+              'تقرير رقم (${widget.patchNumber}/15)',
               style: AppTextStyles.font22WhiteWeight600.copyWith(
                 color: AppColorsManager.mainDarkBlue,
               ),
