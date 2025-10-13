@@ -143,4 +143,18 @@ class NutrationDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> deleteDayDietPlan({
+    required String date,
+  }) async {
+    try {
+      final response = await _nutrationServices.deleteDayDietPlan(
+        date,
+      );
+
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

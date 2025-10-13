@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -72,14 +73,20 @@ class MealCard extends StatelessWidget {
               );
             },
             hasDelete: true,
-            onDelete: () {},
+            onDelete: () {
+              context.read<NutrationDataEntryCubit>().deleteDayDietPlan().then(
+                (result) {
+                  showSuccess("تم حذف الخطة بنجاح");
+                  if (!context.mounted) return;
+                  context.read<NutrationDataEntryCubit>().loadExistingPlans();
+                },
+              );
+            },
           );
 
           return;
         }
 
-        // التعامل العادي للأيام القابلة للاختيار
-        AppLogger.debug('Card tapped: $date');
         onTap();
         context.read<NutrationDataEntryCubit>().updateSelectedPlanDate(date);
       },

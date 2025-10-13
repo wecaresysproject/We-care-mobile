@@ -475,6 +475,28 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     );
   }
 
+  Future<void> deleteDayDietPlan() async {
+    final result = await _nutrationDataEntryRepo.deleteDayDietPlan(
+      date: state.selectedPlanDate,
+    );
+    result.when(
+      success: (response) async {
+        emit(
+          state.copyWith(
+            message: response,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> updateNutrientStandard({
     required String standardNutrientName,
     required double newStandard,

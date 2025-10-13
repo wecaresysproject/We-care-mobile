@@ -31,6 +31,5 @@ class NutrationApiConstants {
   static const getOrganNutritionalEffects =
       "SmartNutritionAnalyzer/organ-effects";
   static const getAnyActivePlanStatus = "SmartNutritionAnalyzer/check-active";
-
-  //filters
+  static const deleteDayDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
 }

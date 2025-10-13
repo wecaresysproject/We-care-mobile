@@ -105,4 +105,9 @@ abstract class NutrationServices {
   );
   @GET(NutrationApiConstants.getAnyActivePlanStatus)
   Future<dynamic> getAnyActivePlanStatus();
+
+  @DELETE(NutrationApiConstants.deleteDayDietPlan)
+  Future<dynamic> deleteDayDietPlan(
+    @Query("date") String date,
+  );
 }
