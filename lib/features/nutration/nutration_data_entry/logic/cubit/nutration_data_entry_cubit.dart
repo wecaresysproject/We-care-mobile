@@ -452,8 +452,11 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     );
   }
 
-  Future<void> getAnyActivePlanStatus() async {
+  Future<bool?> getAnyActivePlanStatus() async {
     final result = await _nutrationDataEntryRepo.getAnyActivePlanStatus();
+
+    bool? finalResult;
+
     result.when(
       success: (response) {
         emit(
@@ -462,17 +465,19 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
             followUpNutrationViewCurrentTabIndex: response.$2,
           ),
         );
+        finalResult = response.$1;
       },
       failure: (failure) {
         AppLogger.error(
             'Error in getAnyActivePlanStatus: ${failure.errors.first}');
         safeEmit(
-          state.copyWith(
-            message: failure.errors.first,
-          ),
+          state.copyWith(message: failure.errors.first),
         );
+        finalResult = null;
       },
     );
+
+    return finalResult;
   }
 
   Future<void> deleteDayDietPlan() async {

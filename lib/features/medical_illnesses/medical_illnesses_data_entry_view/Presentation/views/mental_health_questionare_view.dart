@@ -129,7 +129,7 @@ class _MentalHealthQuestionnairePageState
               titleColor: AppColorsManager.mainDarkBlue,
             ),
             Text(
-              'تقرير رقم (${widget.patchNumber}/15)',
+              'تقرير رقم (15/${widget.patchNumber})',
               style: AppTextStyles.font22WhiteWeight600.copyWith(
                 color: AppColorsManager.mainDarkBlue,
               ),
