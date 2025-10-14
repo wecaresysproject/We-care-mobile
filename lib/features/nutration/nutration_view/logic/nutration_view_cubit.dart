@@ -196,6 +196,7 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
         emit(
           state.copyWith(
             requestStatus: RequestStatus.failure,
+            // responseMessage: error.errors.first,
           ),
         );
       },
@@ -223,6 +224,7 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       failure: (error) {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
         ));
       },
     );
@@ -247,11 +249,11 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       failure: (error) {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
         ));
       },
     );
   }
-
 
 //get affected organs
   Future<void> getAffectedOrgans() async {
@@ -272,15 +274,15 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       failure: (error) {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
         ));
       },
     );
   }
 
-
   //getOrganNutritionalEffects
   Future<void> getOrganNutritionalEffects({required String organName}) async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading)); 
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await nutrationViewRepo.getOrganNutritionalEffects(
       language: AppStrings.arabicLang,
@@ -298,8 +300,9 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       failure: (error) {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
         ));
-      },  
+      },
     );
   }
 }
