@@ -32,12 +32,17 @@ class FoodRecomendationView extends StatelessWidget {
                     color: AppColorsManager.mainDarkBlue),
               );
             }
+            if (state.requestStatus == RequestStatus.failure) {
+              return Center(
+                child: Text(state.responseMessage),
+              );
+            }
 
             final elementRecommendation = state.elementRecommendation;
 
             if (elementRecommendation == null) {
               return const Center(
-                child: Text('لم يتم العثور على بيانات لهذا العنصر'),
+                child: Text('لم يتم العثور على توصيات لهذا العنصر'),
               );
             }
 
@@ -557,6 +562,7 @@ class ElevationStatusWidget extends StatelessWidget {
                   fontSize: 13.sp,
                   color: Colors.white,
                 ),
+                minFontSize: 10,
               ),
               Spacer(),
               riskLevels.isHighRiskLevel

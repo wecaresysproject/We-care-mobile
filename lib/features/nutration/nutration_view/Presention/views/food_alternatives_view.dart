@@ -59,7 +59,7 @@ class FoodAlternativesView extends StatelessWidget {
                           ),
                           verticalSpacing(16),
                           Text(
-                            'حدث خطأ أثناء تحميل البيانات',
+                            state.responseMessage,
                             style: AppTextStyles.font16DarkGreyWeight400,
                           ),
                           verticalSpacing(8),
@@ -71,7 +71,12 @@ class FoodAlternativesView extends StatelessWidget {
                                     elementName: elementName,
                                   );
                             },
-                            child: Text('إعادة المحاولة'),
+                            child: Text(
+                              'إعادة المحاولة',
+                              style: AppTextStyles.font14BlueWeight700.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ],
                       ),
