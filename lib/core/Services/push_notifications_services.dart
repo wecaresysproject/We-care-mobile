@@ -117,9 +117,13 @@ class PushNotificationsService {
             AppLogger.info(
               'FCM Questions:\n${fcmMessage.questions.map((q) => q.toJson().toString()).join('\n')}',
             );
+            AppLogger.info("FCM Patch Number: ${fcmMessage.patchNumber}");
             navigatorKey.currentState?.pushNamed(
               Routes.mentalUmbrellaHealthQuestionnairePage,
-              arguments: {'questions': fcmMessage.questions},
+              arguments: {
+                'questions': fcmMessage.questions,
+                'patchNumber': fcmMessage.patchNumber,
+              },
             );
 
             break;

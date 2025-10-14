@@ -10,6 +10,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 
 class FoodRecomendationView extends StatelessWidget {
@@ -49,7 +50,6 @@ class FoodRecomendationView extends StatelessWidget {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
-                spacing: 16,
                 children: [
                   /// Header with title and share button
                   AppBarWithCenteredTitle(
@@ -58,12 +58,15 @@ class FoodRecomendationView extends StatelessWidget {
                     shareFunction: () => shareFoodRecommendation(elementName),
                     showShareButtonOnly: true,
                   ),
+                  verticalSpacing(12),
 
                   /// تعريف / مرجعية سريعة
                   HeaderSectionWithIcon(
                     iconPath: 'assets/images/file_icon.png',
                     text: "تعريف/ مرجعية سريعة",
                   ),
+                  verticalSpacing(8),
+
                   Text(
                     elementRecommendation.quickOverview,
                     textAlign: TextAlign.justify,
@@ -75,6 +78,7 @@ class FoodRecomendationView extends StatelessWidget {
                     iconPath: 'assets/images/check_right.png',
                     text: "المستوى الامن : ${elementRecommendation.safeLevel}",
                   ),
+                  verticalSpacing(16),
 
                   riskLevels == null
                       ? const SizedBox()
@@ -82,16 +86,18 @@ class FoodRecomendationView extends StatelessWidget {
                           children: [
                             ElevationStatusWidget(
                               iconPath: 'assets/images/check_right.png',
-                              isHightRisk: riskLevels.isHighRiskLevel,
+                              riskLevels: riskLevels,
                             ),
+                            verticalSpacing(10),
 
                             /// تفاصيل المخاطر
-                            // if (riskLevels?.risks != null)
                             ...riskLevels.risks.map(
-                              (risk) => CustomInfoSection(
-                                headerTitle: risk.title,
-                                content: risk.description,
-                              ),
+                              (risk) => risk.description.isEmptyOrNull
+                                  ? const SizedBox.shrink()
+                                  : CustomInfoSection(
+                                      headerTitle: risk.title,
+                                      content: risk.description,
+                                    ),
                             ),
                           ],
                         ),
@@ -105,11 +111,17 @@ class FoodRecomendationView extends StatelessWidget {
                               iconPath: 'assets/images/person.png',
                               text: "الأعضاء الأكثر تأثراً مع الوقت",
                             ),
+                            verticalSpacing(10),
                             ...organEffects.map(
-                              (effect) => CustomInfoSection(
-                                headerTitle: effect.title,
-                                content: effect.description,
-                              ),
+                              (effect) {
+                                if (effect.description.isEmptyOrNull) {
+                                  return const SizedBox.shrink();
+                                }
+                                return CustomInfoSection(
+                                  headerTitle: effect.title,
+                                  content: effect.description,
+                                ).paddingBottom(10);
+                              },
                             ),
                           ],
                         ),
@@ -121,16 +133,28 @@ class FoodRecomendationView extends StatelessWidget {
                     iconPath: 'assets/images/file_search_icon.png',
                     text: "معلومات إضافية",
                   ),
-                  ...supplementaryInfo.map((info) => CustomInfoSection(
+                  verticalSpacing(10),
+
+                  ...supplementaryInfo.map(
+                    (info) {
+                      if (info.description.isEmptyOrNull) {
+                        return const SizedBox.shrink();
+                      }
+                      return CustomInfoSection(
                         headerTitle: info.title,
                         content: info.description,
-                      )),
+                      );
+                    },
+                  ),
+
+                  verticalSpacing(16),
 
                   /// المراجع الأساسية
                   HeaderSectionWithIcon(
                     iconPath: 'assets/images/custom_note.png',
                     text: "المراجع الأساسية",
                   ),
+                  verticalSpacing(10),
                   ...references.map(
                     (ref) => BulletText(text: ref),
                   ),
@@ -424,12 +448,12 @@ class BulletText extends StatelessWidget {
 
 class ElevationStatusWidget extends StatelessWidget {
   final String iconPath;
-  final bool isHightRisk;
 
+  final RiskLevels riskLevels;
   const ElevationStatusWidget({
     super.key,
     required this.iconPath,
-    required this.isHightRisk,
+    required this.riskLevels,
   });
 
   @override
@@ -451,19 +475,23 @@ class ElevationStatusWidget extends StatelessWidget {
                     12.r,
                   ),
                 ), // اختياري، لتدوير الحواف
-                color: isHightRisk
+                color: riskLevels.isHighRiskLevel
                     ? Color(0xffE02E2E)
                     : AppColorsManager.doneColor,
               ),
               child: Row(
                 children: [
                   Icon(
-                    isHightRisk ? Icons.arrow_upward : Icons.arrow_downward,
+                    riskLevels.isHighRiskLevel
+                        ? Icons.arrow_upward
+                        : Icons.arrow_downward,
                     size: 20,
                     color: Colors.white,
                   ),
                   Text(
-                    isHightRisk ? "مستويات الارتفاع" : "مستويات الانخفاض",
+                    riskLevels.isHighRiskLevel
+                        ? "مستويات الارتفاع"
+                        : "مستويات الانخفاض",
                     textAlign: TextAlign.center,
                     style: AppTextStyles.font18blackWight500.copyWith(
                       fontSize: 12.sp,
@@ -478,7 +506,7 @@ class ElevationStatusWidget extends StatelessWidget {
               padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: isHightRisk
+                  color: riskLevels.isHighRiskLevel
                       ? const Color(0xffE02E2E)
                       : AppColorsManager.doneColor,
                   width: 2.0, // سمك الحدود
@@ -488,7 +516,7 @@ class ElevationStatusWidget extends StatelessWidget {
                 color: Colors.transparent, // خليه شفاف لو عايز بس الحدود
               ),
               child: Text(
-                "النتيجة الحالية 2200",
+                "النتيجة الحالية ${riskLevels.actualValue}",
                 style: AppTextStyles.font18blackWight500.copyWith(
                   fontSize: 12.sp,
                   color: AppColorsManager.mainDarkBlue,
@@ -515,23 +543,23 @@ class ElevationStatusWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                backgroundColor:
-                    isHightRisk ? Colors.redAccent : Colors.amberAccent,
+                backgroundColor: riskLevels.isHighRiskLevel
+                    ? Colors.redAccent
+                    : Colors.amberAccent,
                 radius: 12.r,
               ).paddingRight(10),
               horizontalSpacing(8),
               AutoSizeText(
-                isHightRisk
+                riskLevels.isHighRiskLevel
                     ? "أنت فى مستوى الخطر العالى"
                     : "أنت فى مستوى المراقبة والتنبيه",
                 style: AppTextStyles.font18blackWight500.copyWith(
-                  fontSize: 16.sp,
+                  fontSize: 13.sp,
                   color: Colors.white,
                 ),
-                maxFontSize: 14,
               ),
               Spacer(),
-              isHightRisk
+              riskLevels.isHighRiskLevel
                   ? Container(
                       padding: EdgeInsets.all(2),
                       decoration: BoxDecoration(
@@ -539,18 +567,18 @@ class ElevationStatusWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
-                        "(< 4000)",
+                        "(${riskLevels.indicatorValue})",
                         style: AppTextStyles.font14whiteWeight600.copyWith(
                           color: Colors.redAccent,
                         ),
                       ),
                     ).paddingLeft(10)
                   : Text(
-                      "(2001 - 3000)",
+                      "(${riskLevels.indicatorValue})",
                       style: AppTextStyles.font14BlueWeight700.copyWith(
                         color: Colors.yellowAccent,
                       ),
-                    )
+                    ).paddingLeft(4),
             ],
           ),
         ),

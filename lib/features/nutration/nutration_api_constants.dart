@@ -27,10 +27,9 @@ class NutrationApiConstants {
 
   static const getElementRecommendations =
       "SmartNutritionAnalyzer/nutrient-status";
-  static const getAffectedOrgansList = "SmartNutritionAnalyzer/affected-organs";
+  static const getAffectedOrgansList = "SmartNutritionAnalyzer/organ-names";
   static const getOrganNutritionalEffects =
-      "SmartNutritionAnalyzer/organ-nutritional-effects";
+      "SmartNutritionAnalyzer/organ-effects";
   static const getAnyActivePlanStatus = "SmartNutritionAnalyzer/check-active";
-
-  //filters
+  static const deleteDayDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
 }

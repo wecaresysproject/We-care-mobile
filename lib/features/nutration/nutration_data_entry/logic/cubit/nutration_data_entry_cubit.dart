@@ -452,19 +452,47 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     );
   }
 
-  Future<void> getAnyActivePlanStatus() async {
+  Future<bool?> getAnyActivePlanStatus() async {
     final result = await _nutrationDataEntryRepo.getAnyActivePlanStatus();
+
+    bool? finalResult;
+
     result.when(
-      success: (diseases) {
+      success: (response) {
         emit(
           state.copyWith(
-            isAnyPlanActivated: diseases,
+            isAnyPlanActivated: response.$1,
+            followUpNutrationViewCurrentTabIndex: response.$2,
           ),
         );
+        finalResult = response.$1;
       },
       failure: (failure) {
         AppLogger.error(
             'Error in getAnyActivePlanStatus: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(message: failure.errors.first),
+        );
+        finalResult = null;
+      },
+    );
+
+    return finalResult;
+  }
+
+  Future<void> deleteDayDietPlan() async {
+    final result = await _nutrationDataEntryRepo.deleteDayDietPlan(
+      date: state.selectedPlanDate,
+    );
+    result.when(
+      success: (response) async {
+        emit(
+          state.copyWith(
+            message: response,
+          ),
+        );
+      },
+      failure: (failure) {
         safeEmit(
           state.copyWith(
             message: failure.errors.first,
@@ -527,13 +555,19 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       success: (status) {
         if (planType == PlanType.weekly.name) {
           emit(
-            state.copyWith(weeklyActivationStatus: status),
+            state.copyWith(
+              weeklyActivationStatus: status,
+            ),
           );
+          AppLogger.debug("ana ray7 afta7l plan activation status weekly");
           status ? loadExistingPlans() : null;
         } else {
           emit(
-            state.copyWith(monthlyActivationStatus: status),
+            state.copyWith(
+              monthlyActivationStatus: status,
+            ),
           );
+          AppLogger.debug("ana ray7 afta7l plan activation status Monthly");
         }
         AppLogger.debug(
             ' getPlanActivationStatus called and => Plan activation status for $planType: $status');

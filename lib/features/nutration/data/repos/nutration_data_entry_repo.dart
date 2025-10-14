@@ -128,11 +128,31 @@ class NutrationDataEntryRepo {
     }
   }
 
-  Future<ApiResult<bool>> getAnyActivePlanStatus() async {
+  Future<ApiResult<(bool isAnyActivatedPlans, int currentActivatedPlanIndex)>>
+      getAnyActivePlanStatus() async {
     try {
       final response = await _nutrationServices.getAnyActivePlanStatus();
 
-      return ApiResult.success(response["isActivatedPlans"]);
+      return ApiResult.success(
+        (
+          response["isActivatedPlans"],
+          response["currentActivatedPlan"],
+        ),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> deleteDayDietPlan({
+    required String date,
+  }) async {
+    try {
+      final response = await _nutrationServices.deleteDayDietPlan(
+        date,
+      );
+
+      return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

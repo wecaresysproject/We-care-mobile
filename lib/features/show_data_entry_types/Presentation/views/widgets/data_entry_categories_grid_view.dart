@@ -1,12 +1,16 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class DataEntryCategoriesGridView extends StatelessWidget {
   const DataEntryCategoriesGridView({
@@ -97,121 +101,155 @@ class _CategoryItemState extends State<CategoryItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: widget.isActive
-              ? () async {
-                  await stopSound();
-                  if (mounted) {
-                    setState(() => isPlaying = false); // قبل الانتقال
-                  }
-
-                  if (!context.mounted) return;
-
-                  await context.pushNamed(widget.routeName);
-                }
-              : null,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Stack(
+    return BlocProvider<NutrationDataEntryCubit>(
+      create: (context) =>
+          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
+      child: Builder(builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: widget.isActive ? () => _handleCategoryTap(context) : null,
+              child: Stack(
+                clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: 99.w - 99.w * 0.09,
-                    height: 88.h - 88.h * 0.09,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40.r),
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFCDE1F8),
-                          Color(0xFFE7E9EB),
-                        ],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(75),
-                          offset: const Offset(3, 4),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      vertical: 18.h,
-                      horizontal: 24.w,
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        widget.imagePath,
-                        fit: BoxFit.contain,
-                        height: 51.h,
-                        width: 52.w,
-                      ),
-                    ),
-                  ),
-                  if (!widget.isActive)
-                    Positioned.fill(
-                      child: Container(
+                  Stack(
+                    children: [
+                      Container(
+                        width: 99.w - 99.w * 0.09,
+                        height: 88.h - 88.h * 0.09,
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.35),
                           borderRadius: BorderRadius.circular(40.r),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFFCDE1F8),
+                              Color(0xFFE7E9EB),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(75),
+                              offset: const Offset(3, 4),
+                              blurRadius: 4,
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 18.h,
+                          horizontal: 24.w,
                         ),
                         child: Center(
-                          child: Icon(
-                            Icons.hourglass_empty,
-                            color: Colors.white,
-                            size: 32.sp,
+                          child: Image.asset(
+                            widget.imagePath,
+                            fit: BoxFit.contain,
+                            height: 51.h,
+                            width: 52.w,
                           ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-              Positioned(
-                top: -23,
-                left: -1,
-                child: GestureDetector(
-                  onTap: _toggleAudio,
-                  child: ColorFiltered(
-                    colorFilter: isPlaying
-                        ? ColorFilter.matrix(<double>[
-                            1, 0, 0, 0, 60, // Red
-                            0, 1, 0, 0, 60, // Green
-                            0, 0, 1, 0, 60, // Blue
-                            0, 0, 0, 1, 0, // Alpha
-                          ])
-                        : const ColorFilter.mode(
-                            Colors.transparent, BlendMode.dst),
-                    child: Image.asset(
-                      widget.cornerImagePath,
-                      width: 35.w,
-                      height: 35.h,
+                      if (!widget.isActive)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.35),
+                              borderRadius: BorderRadius.circular(40.r),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.hourglass_empty,
+                                color: Colors.white,
+                                size: 32.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  Positioned(
+                    top: -23,
+                    left: -1,
+                    child: GestureDetector(
+                      onTap: _toggleAudio,
+                      child: ColorFiltered(
+                        colorFilter: isPlaying
+                            ? ColorFilter.matrix(<double>[
+                                1, 0, 0, 0, 60, // Red
+                                0, 1, 0, 0, 60, // Green
+                                0, 0, 1, 0, 60, // Blue
+                                0, 0, 0, 1, 0, // Alpha
+                              ])
+                            : const ColorFilter.mode(
+                                Colors.transparent, BlendMode.dst),
+                        child: Image.asset(
+                          widget.cornerImagePath,
+                          width: 35.w,
+                          height: 35.h,
+                        ),
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ),
+            verticalSpacing(8.h),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                widget.title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
                 ),
               ),
-            ],
-          ),
-        ),
-        verticalSpacing(8.h),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            widget.title,
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.font18blackWight500.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 16.sp,
-            ),
-          ),
-        )
-      ],
+            )
+          ],
+        );
+      }),
     );
+  }
+
+  Future<void> _handleCategoryTap(BuildContext context) async {
+    await stopSound();
+
+    if (!mounted) return;
+    setState(() => isPlaying = false);
+
+    if (!context.mounted) return;
+
+    if (widget.title == "المتابعه الغذائية") {
+      await _handleNutritionFollowUpTap(context);
+    } else {
+      await _navigateTo(context, widget.routeName);
+    }
+  }
+
+  Future<void> _handleNutritionFollowUpTap(BuildContext context) async {
+    final nutrationCubit = context.read<NutrationDataEntryCubit>();
+
+    final result = await nutrationCubit.getAnyActivePlanStatus();
+
+    if (!context.mounted) return;
+
+    switch (result) {
+      case true:
+        await _navigateTo(context, Routes.followUpNutrationPlansView);
+        break;
+      case false:
+        await _navigateTo(context, widget.routeName);
+        break;
+      default:
+        await showError("من فضلك حاول مرة اخري");
+    }
+  }
+
+  Future<void> _navigateTo(BuildContext context, String routeName) async {
+    if (!context.mounted) return;
+    await context.pushNamed(routeName);
   }
 }
 

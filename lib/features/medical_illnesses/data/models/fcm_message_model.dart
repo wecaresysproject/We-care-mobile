@@ -5,6 +5,7 @@ part 'fcm_message_model.g.dart';
 @JsonSerializable()
 class FcmMessageModel {
   final String pageRoute;
+  final int patchNumber;
   final String deviceToken;
   final List<FcmQuestionModel> questions;
 
@@ -12,6 +13,7 @@ class FcmMessageModel {
     required this.pageRoute,
     required this.deviceToken,
     required this.questions,
+    required this.patchNumber,
   });
 
   factory FcmMessageModel.fromJson(Map<String, dynamic> json) =>

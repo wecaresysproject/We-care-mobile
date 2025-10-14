@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,9 +21,10 @@ class OrganAffectedDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: getIt<NutrationViewCubit>()..getOrganNutritionalEffects(
-        organName: organName,
-      ),
+      value: getIt<NutrationViewCubit>()
+        ..getOrganNutritionalEffects(
+          organName: organName,
+        ),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0.h),
         body: BlocBuilder<NutrationViewCubit, NutrationViewState>(
@@ -84,6 +86,7 @@ class HeaderSectionWithContent extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: double.infinity,
@@ -127,9 +130,10 @@ class HeaderSectionWithContent extends StatelessWidget {
                         isHighRisk ? Icons.arrow_upward : Icons.arrow_downward,
                         color: Colors.white,
                       ),
-                      Text(
+                      AutoSizeText(
                         isHighRisk ? "التأثير بالارتفاع" : "التأثير بالانخفاض",
                         style: AppTextStyles.font14whiteWeight600,
+                        minFontSize: 12,
                       ),
                     ],
                   ),
