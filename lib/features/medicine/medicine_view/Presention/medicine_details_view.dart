@@ -93,23 +93,32 @@ class MedicineDetailsView extends StatelessWidget {
                         }
                       },
                     ),
-                    Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      DetailsViewInfoTile(
-                          title: "اسم الدواء",
-                          isPartiallyExpanded: true,
-                          value: state.selectestMedicineDetails!.medicineName,
-                          icon: 'assets/images/doctor_name.png'),
-                      Spacer(),
-                      Text(
-                        "معلومات عن الدواء",
-                        style: TextStyle(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: DetailsViewInfoTile(
+                            title: "اسم الدواء",
+                            isExpanded: true,
+                            value: state.selectestMedicineDetails!.medicineName,
+                            icon: 'assets/images/doctor_name.png',
+                          ),
+                        ),
+                        Text(
+                          "معلومات عن الدواء",
+                          style: TextStyle(
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w700,
                             color: AppColorsManager.mainDarkBlue,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ]),
-                    Row(children: [
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
+                      children: [
                       DetailsViewInfoTile(
                         title: "الشكل الدوائي",
                         value: " اقراص",

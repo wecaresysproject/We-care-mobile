@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_history_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_cubit.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/logic/biometrics_view_state.dart';
 
@@ -194,60 +195,74 @@ class BiometricMeasurementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
-      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
-      height: 120.h,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18.r), color: Color(0xffF1F3F6)),
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 30.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(22.r),
-              border: Border.all(
+    return GestureDetector(
+      onTap: () {
+        // Navigate to BiometricHistoryView
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BiometricHistoryView(
+              metricName: label,
+              metricImage: image,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 6.h),
+        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
+        height: 120.h,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18.r), color: Color(0xffF1F3F6)),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 30.w),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(22.r),
+                border: Border.all(
+                  color: AppColorsManager.mainDarkBlue,
+                  width: 1.3.w,
+                ),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFCDE1F8), Color(0xFFE7E9EB)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Image.asset(
+                image,
+                width: 30.w,
+                height: 30.h,
+              ),
+            ),
+            verticalSpacing(6),
+            Text(
+              label,
+              style: AppTextStyles.font12blackWeight400.copyWith(
+                fontWeight: FontWeight.w600,
                 color: AppColorsManager.mainDarkBlue,
-                width: 1.3.w,
               ),
-              gradient: const LinearGradient(
-                colors: [Color(0xFFCDE1F8), Color(0xFFE7E9EB)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              value,
+              style: AppTextStyles.font14blackWeight400.copyWith(
+                color: AppColorsManager.mainDarkBlue,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            child: Image.asset(
-              image,
-              width: 30.w,
-              height: 30.h,
+            verticalSpacing(3),
+            Text(
+              date,
+              style: AppTextStyles.font12blackWeight400.copyWith(
+                fontWeight: FontWeight.w300,
+                color: AppColorsManager.mainDarkBlue,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          verticalSpacing(6),
-          Text(
-            label,
-            style: AppTextStyles.font12blackWeight400.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColorsManager.mainDarkBlue,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            value,
-            style: AppTextStyles.font14blackWeight400.copyWith(
-              color: AppColorsManager.mainDarkBlue,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          verticalSpacing(3),
-          Text(
-            date,
-            style: AppTextStyles.font12blackWeight400.copyWith(
-              fontWeight: FontWeight.w300,
-              color: AppColorsManager.mainDarkBlue,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

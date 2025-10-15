@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -344,7 +343,11 @@ class _BiometricsViewState extends State<BiometricsView>
             itemCount: state.availableBiometricNames.length,
             itemBuilder: (context, index) {
               final biometric = biometricTypes.firstWhere(
-                (b) => b.name == state.availableBiometricNames[index],
+                (b) =>
+                    b.name.replaceAll(RegExp(r'\s+'), '').trim() ==
+                    state.availableBiometricNames[index]
+                        .replaceAll(RegExp(r'\s+'), '')
+                        .trim(),
                 orElse: () => BiometricType(
                   id: '',
                   name: 'غير معروف',
@@ -352,6 +355,7 @@ class _BiometricsViewState extends State<BiometricsView>
                   color: Colors.grey,
                 ),
               );
+
               final isSelected = selectedMetrics.contains(biometric.id);
 
               return buildMetricGridItem(isSelected, biometric, context);
@@ -480,8 +484,7 @@ class _BiometricsViewState extends State<BiometricsView>
       },
     );
   }
-
-  Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
+Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
     if (selectedMetrics.isEmpty) return const SizedBox();
 
     final currentMetricId = selectedMetrics.elementAt(currentGraphIndex);
@@ -495,7 +498,7 @@ class _BiometricsViewState extends State<BiometricsView>
 
     final double minY = 0; // Force starting from 0
     final double maxDataY = data
-        .map((d) => d.value.toInt.toDouble())
+        .map((d) => double.tryParse(d.value.toString()) ?? 0.0)
         .reduce((a, b) => a > b ? a : b);
 
     // Consider all relevant values for determining the chart's max Y
@@ -614,14 +617,14 @@ class _BiometricsViewState extends State<BiometricsView>
           minX: 0,
           maxX: (data.length - 1).toDouble(),
           minY: minY,
-          maxY: data.map((e) => e.value.toInt).reduce((a, b) => a > b ? a : b) +
+          maxY: data.map((e) => double.tryParse(e.value.toString()) ?? 0.0).reduce((a, b) => a > b ? a : b) +
               10,
           lineBarsData: [
             // Primary line
             LineChartBarData(
               spots: data.asMap().entries.map((entry) {
                 return FlSpot(
-                    entry.key.toDouble(), entry.value.value.toInt.toDouble());
+                    entry.key.toDouble(), double.tryParse(entry.value.value.toString()) ?? 0.0);
               }).toList(),
               isCurved: true,
               curveSmoothness: 0.3,
@@ -665,7 +668,7 @@ class _BiometricsViewState extends State<BiometricsView>
                 color: primaryColor,
                 spots: data.asMap().entries.map((entry) {
                   return FlSpot(entry.key.toDouble(),
-                      entry.value.secondaryValue.toInt.toDouble() ?? 0);
+                      double.tryParse(entry.value.secondaryValue.toString()) ?? 0.0);
                 }).toList(),
                 isCurved: true,
                 curveSmoothness: 0.3,
@@ -744,12 +747,12 @@ class _BiometricsViewState extends State<BiometricsView>
                               .asMap()
                               .entries
                               .map((e) => FlSpot(e.key.toDouble(),
-                                  e.value.value.toInt.toDouble()))
+                                  double.tryParse(e.value.value.toString()) ?? 0.0))
                               .toList()),
                       0,
                       FlSpot(
                         spot.key.toDouble(),
-                        spot.value.value.toInt.toDouble(),
+                        double.tryParse(spot.value.value.toString()) ?? 0.0,
                       ),
                     ),
                   ]))
