@@ -73,10 +73,11 @@ class FoodRecomendationView extends StatelessWidget {
                   verticalSpacing(8),
 
                   Text(
-                    elementRecommendation.quickOverview,
+                    elementRecommendation.quickOverview.trim(),
                     textAlign: TextAlign.justify,
                     style: AppTextStyles.font14blackWeight400,
                   ),
+                  verticalSpacing(16),
 
                   /// المستوى الآمن
                   HeaderSectionWithIcon(
@@ -101,11 +102,12 @@ class FoodRecomendationView extends StatelessWidget {
                                   ? const SizedBox.shrink()
                                   : CustomInfoSection(
                                       headerTitle: risk.title,
-                                      content: risk.description,
+                                      content: risk.description.trim(),
                                     ),
                             ),
                           ],
                         ),
+                  verticalSpacing(16),
 
                   /// مستوى الخطورة
                   organEffects == null
@@ -124,12 +126,13 @@ class FoodRecomendationView extends StatelessWidget {
                                 }
                                 return CustomInfoSection(
                                   headerTitle: effect.title,
-                                  content: effect.description,
-                                ).paddingBottom(10);
+                                  content: effect.description.trim(),
+                                );
                               },
                             ),
                           ],
                         ),
+                  verticalSpacing(16),
 
                   /// الأعضاء الأكثر تأثراً مع الوقت
 
@@ -147,7 +150,7 @@ class FoodRecomendationView extends StatelessWidget {
                       }
                       return CustomInfoSection(
                         headerTitle: info.title,
-                        content: info.description,
+                        content: info.description.trim(),
                       );
                     },
                   ),
@@ -161,7 +164,7 @@ class FoodRecomendationView extends StatelessWidget {
                   ),
                   verticalSpacing(10),
                   ...references.map(
-                    (ref) => BulletText(text: ref),
+                    (ref) => BulletText(text: ref).paddingBottom(4),
                   ),
                 ],
               ),
@@ -249,6 +252,7 @@ class HeaderSectionWithIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      margin: EdgeInsets.zero,
       padding: EdgeInsets.symmetric(vertical: 5.h),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
@@ -302,10 +306,9 @@ class CustomInfoSection extends StatelessWidget {
         SectionHeader(
           title: headerTitle,
         ),
-        verticalSpacing(10),
         ContentSection(content: content),
       ],
-    );
+    ).paddingBottom(10);
   }
 }
 
@@ -320,7 +323,7 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
+      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           end: Alignment.centerLeft,
@@ -340,16 +343,13 @@ class SectionHeader extends StatelessWidget {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.only(bottom: 6), // space for underline
+                      const EdgeInsets.only(bottom: 4), // space for underline
                   child: Text(
                     title,
                     textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontFamily: 'Cairo',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      height: 20 / 16,
-                      letterSpacing: 0.16,
+                    style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14.sp,
                       color: AppColorsManager.mainDarkBlue,
                     ),
                   ),
@@ -360,6 +360,8 @@ class SectionHeader extends StatelessWidget {
                   child: Container(
                     width: _calculateTextWidth(title, context),
                     height: 1,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
                     color: AppColorsManager.mainDarkBlue,
                   ),
                 ),
@@ -428,7 +430,9 @@ class BulletText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic, // 👈 ده مهم جداً
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
           margin: const EdgeInsets.only(top: 6), // لضبط المحاذاة مع النص
@@ -439,11 +443,11 @@ class BulletText extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        SizedBox(width: spacing),
+        horizontalSpacing(spacing),
         Expanded(
           child: Text(
             text,
-            style: style ?? const TextStyle(fontSize: 16),
+            style: style ?? AppTextStyles.font14blackWeight400,
           ),
         ),
       ],
@@ -521,7 +525,7 @@ class ElevationStatusWidget extends StatelessWidget {
                 color: Colors.transparent, // خليه شفاف لو عايز بس الحدود
               ),
               child: Text(
-                "النتيجة الحالية ${riskLevels.actualValue}",
+                "النتيجة الحالية ${riskLevels.actualValue.toStringAsFixed(1)}",
                 style: AppTextStyles.font18blackWight500.copyWith(
                   fontSize: 12.sp,
                   color: AppColorsManager.mainDarkBlue,
@@ -532,7 +536,7 @@ class ElevationStatusWidget extends StatelessWidget {
         ),
         Container(
           width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 5.h),
+          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 10),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [
@@ -544,51 +548,47 @@ class ElevationStatusWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12.r),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
             children: [
               CircleAvatar(
-                backgroundColor: riskLevels.isHighRiskLevel
-                    ? Colors.redAccent
-                    : Colors.amberAccent,
-                radius: 12.r,
-              ).paddingRight(10),
-              horizontalSpacing(8),
+                backgroundColor: getRiskLevelColor(riskLevels.levelArabic),
+                radius: 10.r,
+              ),
+              horizontalSpacing(4),
               AutoSizeText(
-                riskLevels.isHighRiskLevel
-                    ? "أنت فى مستوى الخطر العالى"
-                    : "أنت فى مستوى المراقبة والتنبيه",
+                "أنت فى ${riskLevels.levelArabic}",
+                textAlign: TextAlign.right,
                 style: AppTextStyles.font18blackWight500.copyWith(
-                  fontSize: 13.sp,
+                  fontSize: 10.5.sp,
                   color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
                 minFontSize: 10,
+                maxFontSize: 12,
               ),
               Spacer(),
-              riskLevels.isHighRiskLevel
-                  ? Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Text(
-                        "(${riskLevels.indicatorValue})",
-                        style: AppTextStyles.font14whiteWeight600.copyWith(
-                          color: Colors.redAccent,
-                        ),
-                      ),
-                    ).paddingLeft(10)
-                  : Text(
-                      "(${riskLevels.indicatorValue})",
-                      style: AppTextStyles.font14BlueWeight700.copyWith(
-                        color: Colors.yellowAccent,
-                      ),
-                    ).paddingLeft(4),
+              Text(
+                "(${riskLevels.indicatorValue})",
+                style: AppTextStyles.font14BlueWeight700.copyWith(
+                  color: getRiskLevelColor(riskLevels.levelArabic),
+                ),
+              ),
             ],
           ),
         ),
       ],
     );
+  }
+
+  Color getRiskLevelColor(String riskLevel) {
+    switch (riskLevel.trim()) {
+      case 'مستوى المراقبة والتنبيه':
+        return const Color(0xFFFFD00B); // Yellow
+      case 'مستوى الخطر المتوسط':
+        return const Color(0xffEA6515); // Orange
+      case 'مستوى الخطر العالي':
+        return const Color(0xFFB21B18); // Red
+      default:
+        return Colors.grey; // Fallback color
+    }
   }
 }

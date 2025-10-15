@@ -460,7 +460,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
               ),
             ],
           ),
-          !isConsumedEqual ? verticalSpacing(9) : verticalSpacing(20),
+          !isConsumedEqual ? verticalSpacing(2) : verticalSpacing(20),
 
           // Title
           Row(
@@ -469,13 +469,12 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
               Expanded(
                 child: AutoSizeText(
                   doc.nutrient,
-                  textAlign: TextAlign.end,
                   style: AppTextStyles.font18blackWight500.copyWith(
                     color: AppColorsManager.mainDarkBlue,
-                    fontSize: 16.sp,
+                    fontSize: 15.sp,
                   ),
                   maxLines: 2, // يخليه سطر واحد
-                  minFontSize: 10, // أقل حجم خط ممكن يوصل له
+                  minFontSize: 7, // أقل حجم خط ممكن يوصل له
                   overflow:
                       TextOverflow.ellipsis, // يحط ... لو الاسم أطول من كده
                 ),
@@ -514,15 +513,15 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             ],
           ),
 
-          isConsumedEqual ? verticalSpacing(40) : verticalSpacing(20),
+          isConsumedEqual ? verticalSpacing(40) : verticalSpacing(15),
 
           // Nutrition Info
           Column(
             children: [
               _buildNutritionRow('الكمية المستهلكة:', '$consumed'),
-              verticalSpacing(8),
+              verticalSpacing(7),
               _buildNutritionRow('الكمية المعيارية:', '$standard'),
-              verticalSpacing(8),
+              verticalSpacing(7),
               if (!isConsumedEqual) ...[
                 _buildDifferenceIndicator(
                   label: 'الفرق',
@@ -552,7 +551,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
   }) {
     return Container(
       height: 22.h,
-      padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
       margin: EdgeInsets.zero,
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -560,19 +559,22 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic, // 👈 ده مهم جداً
+
         children: [
           Text(
             label,
             style: AppTextStyles.font14BlueWeight700.copyWith(
               color: Colors.white,
-              fontSize: 13.sp,
+              fontSize: 12.sp,
             ),
           ),
           Text(
             value,
             style: AppTextStyles.font14BlueWeight700.copyWith(
               color: Colors.white,
-              fontSize: 13.sp,
+              fontSize: 12.sp,
             ),
           ),
         ],
@@ -666,12 +668,12 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
           maxFontSize: 12,
         ),
         AutoSizeText(
-          value,
+          value.formattedWithCommas,
           style: AppTextStyles.font14whiteWeight600.copyWith(
             color: AppColorsManager.mainDarkBlue,
             fontSize: 13.sp,
           ),
-          maxFontSize: 12,
+          minFontSize: 8,
         ),
       ],
     );

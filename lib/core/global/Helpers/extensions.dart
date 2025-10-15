@@ -251,3 +251,13 @@ extension RiskLevelExtension on RiskLevel {
     }
   }
 }
+
+extension NumberFormattingExtension on String {
+  /// Converts numeric strings like "18000" → "18,000"
+  /// If the string isn't a valid number, returns it unchanged.
+  String get formattedWithCommas {
+    final num? number = num.tryParse(replaceAll(',', '').trim());
+    if (number == null) return this;
+    return NumberFormat.decimalPattern('en').format(number);
+  }
+}

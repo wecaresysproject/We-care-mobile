@@ -56,6 +56,7 @@ class ElementData {
 @JsonSerializable()
 class RiskLevels {
   final bool isHighRiskLevel;
+  final String levelArabic;
 
   @JsonKey(name: 'indicator_value')
   final String indicatorValue;
@@ -67,6 +68,7 @@ class RiskLevels {
     required this.isHighRiskLevel,
     required this.indicatorValue,
     required this.actualValue,
+    required this.levelArabic,
     required this.risks,
   });
 
