@@ -74,7 +74,10 @@ class MealCard extends StatelessWidget {
             },
             hasDelete: true,
             onDelete: () {
-              context.read<NutrationDataEntryCubit>().deleteDayDietPlan().then(
+              context
+                  .read<NutrationDataEntryCubit>()
+                  .deleteDayDietPlan(date)
+                  .then(
                 (result) {
                   showSuccess("تم حذف الخطة بنجاح");
                   if (!context.mounted) return;
