@@ -486,9 +486,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     return finalResult;
   }
 
-  Future<void> deleteDayDietPlan() async {
+  Future<void> deleteDayDietPlan(String date) async {
     final result = await _nutrationDataEntryRepo.deleteDayDietPlan(
-      date: state.selectedPlanDate,
+      date: date,
     );
     result.when(
       success: (response) async {
