@@ -57,7 +57,7 @@ class OrganAffectedDetailsView extends StatelessWidget {
                   ...effects.map((effect) => HeaderSectionWithContent(
                         text: effect.elementName,
                         isHighRisk: effect.impactType.toLowerCase() == "high",
-                        content: effect.description,
+                        content: effect.description.trim(),
                       )),
                 ],
               ),
