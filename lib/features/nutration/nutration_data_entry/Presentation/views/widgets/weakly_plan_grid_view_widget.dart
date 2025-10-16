@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/meal_card_widget.dart';
@@ -21,7 +22,26 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
     return BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
       builder: (context, state) {
         if (state.submitNutrationDataStatus == RequestStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return Skeletonizer(
+            enabled: true,
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 1,
+              ),
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                return MealCard(
+                  day: 'اليوم',
+                  date: '--/--/----',
+                  onTap: () {},
+                );
+              },
+            ),
+          );
         }
 
         final days = state.days; // دي اللي راجعة من API

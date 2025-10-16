@@ -204,7 +204,10 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
 
       // You can now use nutritionData to send to your backend
-      await postDailyDietPlan(nutritionData!);
+      await postDailyDietPlan(
+        nutritionData: nutritionData!,
+        userDietplan: dietInput,
+      );
     } catch (e) {
       AppLogger.error('Error in analyzeDietPlan: $e');
       emit(
@@ -226,7 +229,10 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   }
 
   // Optional: Method to send nutrition data to your backend
-  Future<void> postDailyDietPlan(NutrationFactsModel nutritionData) async {
+  Future<void> postDailyDietPlan({
+    required NutrationFactsModel nutritionData,
+    required String userDietplan,
+  }) async {
     final result = await _nutrationDataEntryRepo.postDailyDietPlan(
       requestBody: nutritionData,
       lanugage: AppStrings.arabicLang,
