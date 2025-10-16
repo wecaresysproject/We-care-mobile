@@ -268,18 +268,18 @@ class FoodCard extends StatelessWidget {
               children: [
                 // Quantity column
                 Flexible(
+                  fit: FlexFit.loose,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AutoSizeText(
+                      Text(
                         quantity,
                         style: AppTextStyles.font12blackWeight400.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13.sp,
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w900,
                         ),
-                        textAlign: TextAlign.center,
                         maxLines: 2,
-                        minFontSize: 10,
+                        // minFontSize: 10,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -301,8 +301,9 @@ class FoodCard extends StatelessWidget {
                       Text(
                         _formatPercent(percent),
                         style: AppTextStyles.font14BlueWeight700.copyWith(
-                          color: Colors.black,
-                          fontSize: 12.sp,
+                          color: AppColorsManager.elevatedRisk,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w900,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -312,11 +313,11 @@ class FoodCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font18blackWight500.copyWith(
                           fontSize: 8.sp,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w900,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        minFontSize: 5,
+                        minFontSize: 7,
                       ),
                     ],
                   ),

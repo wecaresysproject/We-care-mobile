@@ -63,51 +63,51 @@ class EffectOnBodyOrgansView extends StatelessWidget {
             }
             final affectedOrgans = state.affectedOrgansList;
 
-            return SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
-              child: Column(
-                children: [
-                  AppBarWithCenteredTitle(
+            return CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: AppBarWithCenteredTitle(
                     title: "تأثير النمط الغذائى المتناول على أعضائك",
                     showActionButtons: false,
                     fontSize: 14,
                     titleColor: AppColorsManager.textColor,
                   ).paddingSymmetricHorizontal(16),
-                  GridView.builder(
-                    itemCount: organsList.length,
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final organ = organsList[index];
+                        final isActive = affectedOrgans.contains(organ.name);
+                        return GestureDetector(
+                          onTap: isActive
+                              ? () async {
+                                  AppLogger.info("Clicked: ${organ.name}");
+                                  await context.pushNamed(
+                                    Routes.selectedOrganAffectedDetailsView,
+                                    arguments: organ.name,
+                                  );
+                                }
+                              : null,
+                          child: Opacity(
+                            opacity: isActive ? 1.0 : 0.4,
+                            child: _buildItem(
+                                context, organ.imagePath, organ.name),
+                          ),
+                        );
+                      },
+                      childCount: organsList.length,
+                    ),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisExtent: 130.h,
                       childAspectRatio: .85,
                       crossAxisSpacing: 10.w,
                     ),
-                    itemBuilder: (context, index) {
-                      final organ = organsList[index];
-                      final isActive = affectedOrgans.contains(organ.name);
-
-                      return GestureDetector(
-                        onTap: isActive
-                            ? () async {
-                                AppLogger.info("Clicked: ${organ.name}");
-                                await context.pushNamed(
-                                  Routes.selectedOrganAffectedDetailsView,
-                                  arguments: organ.name,
-                                );
-                              }
-                            : null,
-                        child: Opacity(
-                          opacity: isActive ? 1.0 : 0.4, // dim inactive
-                          child:
-                              _buildItem(context, organ.imagePath, organ.name),
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.all(16),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),
