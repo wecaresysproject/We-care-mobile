@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:accordion/accordion.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -107,8 +108,8 @@ class _MentalIllnessesUmbrellRecordsViewState
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MentalIllnessDataViewCubit>(
-      create: (context) => getIt<
-          MentalIllnessDataViewCubit>()..getMedicalIllnessUmbrellaDocs(),
+      create: (context) =>
+          getIt<MentalIllnessDataViewCubit>()..getMedicalIllnessUmbrellaDocs(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: Stack(
@@ -155,7 +156,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                           ),
                         );
                       }
-              
+
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -333,29 +334,27 @@ class _MentalIllnessesUmbrellRecordsViewState
   }
 
   Widget _buildExpandedContent(MentalIllnessUmbrellaModel category) {
+    final riskLevel = category.riskLevel;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (category.riskLevel == RiskLevel.confirmedRisk)
-          Column(
-            children: [
-              _buildContactItem(
-                  'تواصل مع مختص', 'assets/images/support_team_member.png'),
-              const Divider(height: 1),
-            ],
+        // ✅ لو الحالة خطر جزئي أو خطر كلي → أظهر غرف الدعم والتواصل
+        if (riskLevel == RiskLevel.partialRisk ||
+            riskLevel == RiskLevel.confirmedRisk) ...[
+          _buildContactItem(
+            'تواصل مع مختص',
+            'assets/images/support_team_member.png',
           ),
-        if (category.riskLevel == RiskLevel.partialRisk) ...[
-          Column(
-            children: [
-              _buildContactItem(
-                  'تواصل مع مختص', 'assets/images/support_team_member.png'),
-              const Divider(height: 1),
-              _buildContactItem(
-                  'غرف الدعم', 'assets/images/support_rooms_icon.png'),
-              const Divider(height: 1),
-            ],
+          const Divider(height: 1),
+          _buildContactItem(
+            'غرف الدعم',
+            'assets/images/support_rooms_icon.png',
           ),
+          const Divider(height: 1),
         ],
+
+        // ✅ باقي المعلومات العامة (تظهر في كل الحالات)
         _buildStatRow('عدد أشهر المتابعة:', category.followUpMonths.toString()),
         const Divider(height: 1),
         _buildStatRow(
@@ -374,19 +373,23 @@ class _MentalIllnessesUmbrellRecordsViewState
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Flexible(
-            child: Text(label,
-                style: TextStyle(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87)),
+            child: Text(
+              label,
+              style: AppTextStyles.font14whiteWeight600
+                  .copyWith(color: AppColorsManager.textColor, fontSize: 13.sp),
+            ),
           ),
-          Text(value,
-              style: TextStyle(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87)),
+          Text(
+            value,
+            style: AppTextStyles.font14whiteWeight600.copyWith(
+              color: AppColorsManager.textColor,
+              fontSize: 14.sp,
+            ),
+          ),
         ],
       ),
     );
@@ -396,17 +399,23 @@ class _MentalIllnessesUmbrellRecordsViewState
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-              fontSize: 14.sp,
-            ),
+          Image.asset(
+            iconPath,
+            height: 26.h,
+            width: 26.w,
           ),
           const Spacer(),
-          Image.asset(iconPath, height: 26, width: 26),
+          AutoSizeText(
+            title,
+            style: AppTextStyles.font14whiteWeight600.copyWith(
+              color: AppColorsManager.textColor,
+              fontSize: 11.sp,
+            ),
+            maxFontSize: 13,
+          ),
         ],
       ),
     );
@@ -417,7 +426,7 @@ class _MentalIllnessesUmbrellRecordsViewState
       children: [
         Expanded(
           child: _buildActionButton(
-            title: 'الأسئلة المجاب عليها يعم',
+            title: 'الأسئلة المجابة بنعم',
             iconPath: "assets/images/question_mark.png",
             onTap: () async {
               log('nnaaavigatttte');
@@ -450,7 +459,6 @@ class _MentalIllnessesUmbrellRecordsViewState
       onTap: onTap,
       child: Container(
         height: 52.h,
-        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 14.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(

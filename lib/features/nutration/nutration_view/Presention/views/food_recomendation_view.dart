@@ -569,7 +569,7 @@ class ElevationStatusWidget extends StatelessWidget {
               Text(
                 "(${riskLevels.indicatorValue})",
                 style: AppTextStyles.font14BlueWeight700.copyWith(
-                  color: getRiskLevelColor(riskLevels.levelArabic),
+                  color: Colors.white,
                 ),
               ),
             ],

@@ -465,6 +465,8 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
           // Title
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            textBaseline: TextBaseline.alphabetic,
             children: [
               Expanded(
                 child: AutoSizeText(

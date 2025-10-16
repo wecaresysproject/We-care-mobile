@@ -301,7 +301,7 @@ class FoodCard extends StatelessWidget {
                       Text(
                         _formatPercent(percent),
                         style: AppTextStyles.font14BlueWeight700.copyWith(
-                          color: Colors.black,
+                          color: AppColorsManager.elevatedRisk,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
                         ),
@@ -313,11 +313,11 @@ class FoodCard extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font18blackWight500.copyWith(
                           fontSize: 8.sp,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w900,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        minFontSize: 5,
+                        minFontSize: 7,
                       ),
                     ],
                   ),
