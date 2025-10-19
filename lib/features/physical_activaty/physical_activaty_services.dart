@@ -6,11 +6,12 @@ import 'package:we_care/features/nutration/data/models/post_personal_nutrition_d
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/nutration_api_constants.dart';
 
-part 'nutration_services.g.dart';
+part 'physical_activaty_services.g.dart';
 
 @RestApi(baseUrl: PhysicalActivatyApiConstants.baseUrl)
-abstract class NutrationServices {
-  factory NutrationServices(Dio dio, {String? baseUrl}) = _NutrationServices;
+abstract class PhysicalActivityServices {
+  factory PhysicalActivityServices(Dio dio, {String? baseUrl}) =
+      _PhysicalActivityServices;
 
   @POST(PhysicalActivatyApiConstants.postPersonalUserInfoData)
   Future<dynamic> postPersonalUserInfoData(
@@ -37,33 +38,6 @@ abstract class NutrationServices {
   Future<dynamic> getPlanActivationStatus(
     @Query('language') String language,
     @Query('planType') String planType,
-  );
-
-  @GET(PhysicalActivatyApiConstants.getAllNutrationTableData)
-  Future<dynamic> getAllNutrationTableData(
-    @Query('Language') String language,
-    @Query('date') String date,
-  );
-  @GET(PhysicalActivatyApiConstants.getFoodAlternatives)
-  Future<dynamic> getFoodAlternatives(
-    @Query('language') String language,
-    @Query('elementName') String elementName,
-  );
-
-  @GET(PhysicalActivatyApiConstants.getElementRecommendations)
-  Future<dynamic> getElementRecommendations(
-    @Query('language') String language,
-    @Query('elementName') String elementName,
-  );
-
-  @GET(PhysicalActivatyApiConstants.getAffectedOrgansList)
-  Future<dynamic> getAffectedOrgansList(
-    @Query('language') String language,
-  );
-  @GET(PhysicalActivatyApiConstants.getOrganNutritionalEffects)
-  Future<dynamic> getOrganNutritionalEffects(
-    @Query('language') String language,
-    @Query('organName') String organName,
   );
 
   @GET(PhysicalActivatyApiConstants.getAvailableYearsForWeeklyPlan)

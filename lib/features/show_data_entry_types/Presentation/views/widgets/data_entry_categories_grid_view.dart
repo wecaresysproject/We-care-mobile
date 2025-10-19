@@ -435,6 +435,12 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "route": Routes.userInfoNutrationDataEntry,
     "isActive": true,
   },
+  {
+    "title": "النشاط الرياضي",
+    "image": "assets/images/physical_exercise.png",
+    "route": Routes.userPhysicalActivatyInfoDataEntry,
+    "isActive": true,
+  },
   // {
   //   "title": "المكملات\nالغذائية",
   //   "image": "assets/images/chemical_medicine.png",

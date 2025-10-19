@@ -58,6 +58,11 @@ import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
+import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_data_entry_repo.dart';
+import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_services.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/logic/physical_activaty_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
@@ -317,6 +322,16 @@ void setupAppCubits() {
       getIt<NutrationViewRepo>(),
     ),
   );
+  getIt.registerFactory<PhysicalActivatyDataEntryCubit>(
+    () => PhysicalActivatyDataEntryCubit(
+      getIt<PhysicalActivatyDataEntryRepo>(),
+    ),
+  );
+  getIt.registerFactory<PhysicalActivityViewCubit>(
+    () => PhysicalActivityViewCubit(
+      getIt<PhysicalActivatyViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -515,6 +530,16 @@ void setupAppRepos() {
       nutrationServices: getIt<NutrationServices>(),
     ),
   );
+  getIt.registerLazySingleton<PhysicalActivatyDataEntryRepo>(
+    () => PhysicalActivatyDataEntryRepo(
+      getIt<PhysicalActivityServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<PhysicalActivatyViewRepo>(
+    () => PhysicalActivatyViewRepo(
+      physicalActivityServices: getIt<PhysicalActivityServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -583,6 +608,11 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<NutrationServices>(
     () => NutrationServices(
+      dio,
+    ),
+  );
+  getIt.registerLazySingleton<PhysicalActivityServices>(
+    () => PhysicalActivityServices(
       dio,
     ),
   );
