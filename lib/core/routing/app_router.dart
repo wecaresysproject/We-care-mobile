@@ -68,11 +68,13 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/effect_on_body_organs_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/oragan_affected_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/organ_affected_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_recomendation_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/physical_activaty_plans_data_entry_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/user_physical_activaty_info_data_entry_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -592,6 +594,14 @@ class AppRouter {
           builder: (_) => OrganAffectedDetailsView(
             organName: arguments as String,
           ),
+        );
+      case Routes.physicalActivatyPlansDataEntry:
+        return MaterialPageRoute(
+          builder: (_) => PhysicalActivatyPlansDataEntryView(),
+        );
+      case Routes.userPhysicalActivatyInfoDataEntry:
+        return MaterialPageRoute(
+          builder: (_) => UserPhysicalActivatyInfoDataEntryView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

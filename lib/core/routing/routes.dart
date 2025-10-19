@@ -115,4 +115,8 @@ class Routes {
 
   static const eyeProceduresAndSyptomsDataEntry =
       '/eyeProceduresAndSyptomsDataEntry';
+  static const physicalActivatyPlansDataEntry =
+      '/physicalActivatyPlanDataEntry';
+  static const userPhysicalActivatyInfoDataEntry =
+      '/userPhysicalActivatyInfoDataEntry';
 }
