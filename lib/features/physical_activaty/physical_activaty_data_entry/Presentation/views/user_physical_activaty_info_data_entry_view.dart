@@ -248,33 +248,36 @@ Widget buildInputField({
   required String hintText,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Row(
+  return Column(
     children: [
       // Icon
-      Image.asset(
-        imagePath,
-        color: AppColorsManager.mainDarkBlue,
-        height: 23,
-        width: 23,
-      ),
-      horizontalSpacing(8),
-      // Label text
-      Text(
-        title,
-        style: AppTextStyles.font18blackWight500,
-        textDirection: TextDirection.rtl,
+      Row(
+        children: [
+          Image.asset(
+            imagePath,
+            color: AppColorsManager.mainDarkBlue,
+            height: 23,
+            width: 23,
+          ),
+
+          horizontalSpacing(8),
+          // Label text
+          Text(
+            title,
+            style: AppTextStyles.font18blackWight500,
+            textDirection: TextDirection.rtl,
+          ),
+        ],
       ),
 
-      horizontalSpacing(12),
+      verticalSpacing(12),
 
       // Text field
-      Expanded(
-        child: CustomTextField(
-          hintText: hintText,
-          validator: validator,
-          controller: controller,
-          keyboardType: keyboardType,
-        ),
+      CustomTextField(
+        hintText: hintText,
+        validator: validator,
+        controller: controller,
+        keyboardType: keyboardType,
       ),
     ],
   );
@@ -287,31 +290,33 @@ Widget buildGenderInputField({
   required dynamic Function(bool?)? onAnswerChanged,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Row(
+  return Column(
     children: [
       // Icon
-      Image.asset(
-        imagePath,
-        color: AppColorsManager.mainDarkBlue,
-        height: 35,
-        width: 35,
-        fit: BoxFit.contain,
-      ),
-      horizontalSpacing(8),
-      // Label text
-      Text(
-        title,
-        style: AppTextStyles.font18blackWight500,
+      Row(
+        children: [
+          Image.asset(
+            imagePath,
+            color: AppColorsManager.mainDarkBlue,
+            height: 35,
+            width: 35,
+            fit: BoxFit.contain,
+          ),
+          horizontalSpacing(8),
+          // Label text
+          Text(
+            title,
+            style: AppTextStyles.font18blackWight500,
+          ),
+        ],
       ),
 
-      horizontalSpacing(12),
+      verticalSpacing(12),
 
       // Text field
-      Expanded(
-        child: GenderQuestionWidget(
-          onAnswerChanged: onAnswerChanged,
-          initialValue: true,
-        ),
+      GenderQuestionWidget(
+        onAnswerChanged: onAnswerChanged,
+        initialValue: true,
       ),
     ],
   );
