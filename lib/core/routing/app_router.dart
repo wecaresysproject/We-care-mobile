@@ -75,6 +75,7 @@ import 'package:we_care/features/nutration/nutration_view/Presention/views/food_
 import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/physical_activaty_plans_data_entry_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/user_physical_activaty_info_data_entry_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/Presention/views/physical_activity_data_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
@@ -602,6 +603,10 @@ class AppRouter {
       case Routes.userPhysicalActivatyInfoDataEntry:
         return MaterialPageRoute(
           builder: (_) => UserPhysicalActivatyInfoDataEntryView(),
+        );
+        case Routes.physicalActivityDataView:
+        return MaterialPageRoute(
+          builder: (_) => const PhysicalActivityDataView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -401,6 +401,12 @@ final List<Map<String, dynamic>> categoriesView = [
     "route": Routes.nutritionPlanDataView,
     "isActive": true,
   },
+  {
+    "title": "النشاط الرياضي",
+    "image": "assets/images/physical_exercise.png",
+    "route": Routes.physicalActivityDataView,
+    "isActive": true,
+  },
 ];
 
 const Map<String, String> _arabicTitleToField = {
