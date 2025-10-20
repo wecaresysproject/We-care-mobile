@@ -168,23 +168,21 @@ class _UserPhysicalActivatyInfoDataEntryViewState
                   verticalSpacing(32),
                   // النشاط البدني
                   UserSelectionContainer(
-                    categoryLabel: 'النشاط البدنى',
+                    categoryLabel: "كثافة الكتلة العضلية",
                     containerHintText: 'اختر معدل النشاط البدنى لديك',
                     options: [
-                      'خامل',
-                      'خفيف',
-                      'متوسط',
-                      'عالي',
-                      'شاق جدا',
+                      'شخص قليل الكتلة العضلية',
+                      'شخص متوسط الكتلة العضلية (عادي)',
+                      'شخص رياضي ذو كتلة عضلية عالية',
                     ],
-                    initialValue: 'متوسط',
+                    initialValue: 'شخص متوسط الكتلة العضلية (عادي)',
                     onOptionSelected: (value) {
                       context
                           .read<PhysicalActivatyDataEntryCubit>()
-                          .updateSelectedPhysicalActivity(value);
+                          .updateSelectedMuscleDesity(value);
                     },
-                    bottomSheetTitle: 'اختر معدل النشاط البدنى لديك',
-                    searchHintText: "اختر معدل النشاط البدنى لديك",
+                    bottomSheetTitle: 'اختر كثافة الكتلة العضلية',
+                    searchHintText: "ابحث عن الكثافة العضلية المناسبة",
                   ),
 
                   verticalSpacing(32),
