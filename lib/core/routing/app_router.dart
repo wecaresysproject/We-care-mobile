@@ -73,6 +73,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_recomendation_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/daily_activity_logger_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/physical_activaty_plans_data_entry_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/user_physical_activaty_info_data_entry_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/Presention/views/physical_activity_data_view.dart';
@@ -604,9 +605,13 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => UserPhysicalActivatyInfoDataEntryView(),
         );
-        case Routes.physicalActivityDataView:
+      case Routes.physicalActivityDataView:
         return MaterialPageRoute(
           builder: (_) => const PhysicalActivityDataView(),
+        );
+      case Routes.dailyActivityLogger:
+        return MaterialPageRoute(
+          builder: (_) => const DailyActivityLogger(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

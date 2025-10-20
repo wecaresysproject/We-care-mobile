@@ -226,6 +226,11 @@ Widget submitUserInfoEnteredButtonBlocConsumer(GlobalKey<FormState> formKey) {
           if (formKey.currentState!.validate()) {
             await context
                 .pushReplacementNamed(Routes.physicalActivatyPlansDataEntry);
+            // await Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const DailyActivityLogger(),
+            //   ),
+            // );
             // لو كل حاجة صح
             // await context
             //     .read<PhysicalActivatyDataEntryCubit>()

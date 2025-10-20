@@ -4,7 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/meal_card_widget.dart';
-import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class WeeklyMealGridBLocBuilder extends StatefulWidget {
   const WeeklyMealGridBLocBuilder({super.key});
@@ -19,10 +19,9 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PhysicalActivatyDataEntryCubit,
-        PhysicalActivatyDataEntryState>(
+    return BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
       builder: (context, state) {
-        if (state.submitPhysicalActivityDataStatus == RequestStatus.loading) {
+        if (state.submitNutrationDataStatus == RequestStatus.loading) {
           return Skeletonizer(
             enabled: true,
             child: GridView.builder(

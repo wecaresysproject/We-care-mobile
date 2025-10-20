@@ -10,8 +10,9 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
-class MealCard extends StatelessWidget {
+class DayCardWidget extends StatelessWidget {
   final String day;
   final String date;
   final bool haveAdocument;
@@ -19,7 +20,7 @@ class MealCard extends StatelessWidget {
   final VoidCallback onTap;
   final bool isSelectable; // خاصية جديدة للتحكم في إمكانية الاختيار
 
-  const MealCard({
+  const DayCardWidget({
     super.key,
     required this.day,
     required this.date,
@@ -29,7 +30,7 @@ class MealCard extends StatelessWidget {
     this.isSelectable = true, // افتراضي قابل للاختيار
   });
 
-  const MealCard.planNotActivated({
+  const DayCardWidget.planNotActivated({
     super.key,
     this.day = 'اليوم',
     this.date = '--/--/----',
@@ -38,7 +39,7 @@ class MealCard extends StatelessWidget {
   })  : haveAdocument = false,
         isSelectable = true;
 
-  const MealCard.planActivatedandHaveDocument({
+  const DayCardWidget.planActivatedandHaveDocument({
     super.key,
     required this.day,
     required this.date,
@@ -47,7 +48,7 @@ class MealCard extends StatelessWidget {
   })  : haveAdocument = true,
         isSelectable = false; // غير قابل للاختيار
 
-  const MealCard.planActivatedandHaveNoDocument({
+  const DayCardWidget.planActivatedandHaveNoDocument({
     super.key,
     required this.day,
     required this.date,
@@ -91,7 +92,9 @@ class MealCard extends StatelessWidget {
         }
 
         onTap();
-        context.read<NutrationDataEntryCubit>().updateSelectedPlanDate(date);
+        context
+            .read<PhysicalActivatyDataEntryCubit>()
+            .updateSelectedPlanDate(date);
       },
       child: Container(
         height: 70,
