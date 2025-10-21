@@ -7,9 +7,9 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/instruction_text_widget.dart';
-import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/phyical_activity_monthly_plan_grid_view_widget.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/physical_activity_weakly_plan_grid_view_widget.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/plan_activation_toggle_switch_widget.dart';
-import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/weakly_plan_grid_view_widget.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
 class PhysicalActivatyPlansDataEntryView extends StatefulWidget {

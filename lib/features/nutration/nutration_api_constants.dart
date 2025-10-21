@@ -1,4 +1,4 @@
-class PhysicalActivatyApiConstants {
+class NutrationApiConstants {
   static const baseUrl = "http://147.93.57.70/api/";
   //Data Entry
   static const postPersonalUserInfoData = "SmartNutritionAnalyzer/calculate";

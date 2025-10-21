@@ -120,4 +120,5 @@ class Routes {
   static const userPhysicalActivatyInfoDataEntry =
       '/userPhysicalActivatyInfoDataEntry';
   static const physicalActivityDataView = '/physicalActivityDataView';
+  static const dailyActivityLogger = '/dailyActivityLogger';
 }

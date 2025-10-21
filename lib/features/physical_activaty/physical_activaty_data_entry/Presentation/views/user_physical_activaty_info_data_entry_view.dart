@@ -168,23 +168,21 @@ class _UserPhysicalActivatyInfoDataEntryViewState
                   verticalSpacing(32),
                   // النشاط البدني
                   UserSelectionContainer(
-                    categoryLabel: 'النشاط البدنى',
+                    categoryLabel: "كثافة الكتلة العضلية",
                     containerHintText: 'اختر معدل النشاط البدنى لديك',
                     options: [
-                      'خامل',
-                      'خفيف',
-                      'متوسط',
-                      'عالي',
-                      'شاق جدا',
+                      'شخص قليل الكتلة العضلية',
+                      'شخص متوسط الكتلة العضلية (عادي)',
+                      'شخص رياضي ذو كتلة عضلية عالية',
                     ],
-                    initialValue: 'متوسط',
+                    initialValue: 'شخص متوسط الكتلة العضلية (عادي)',
                     onOptionSelected: (value) {
                       context
                           .read<PhysicalActivatyDataEntryCubit>()
-                          .updateSelectedPhysicalActivity(value);
+                          .updateSelectedMuscleDesity(value);
                     },
-                    bottomSheetTitle: 'اختر معدل النشاط البدنى لديك',
-                    searchHintText: "اختر معدل النشاط البدنى لديك",
+                    bottomSheetTitle: 'اختر كثافة الكتلة العضلية',
+                    searchHintText: "ابحث عن الكثافة العضلية المناسبة",
                   ),
 
                   verticalSpacing(32),
@@ -228,6 +226,11 @@ Widget submitUserInfoEnteredButtonBlocConsumer(GlobalKey<FormState> formKey) {
           if (formKey.currentState!.validate()) {
             await context
                 .pushReplacementNamed(Routes.physicalActivatyPlansDataEntry);
+            // await Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => const DailyActivityLogger(),
+            //   ),
+            // );
             // لو كل حاجة صح
             // await context
             //     .read<PhysicalActivatyDataEntryCubit>()
@@ -250,33 +253,36 @@ Widget buildInputField({
   required String hintText,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Row(
+  return Column(
     children: [
       // Icon
-      Image.asset(
-        imagePath,
-        color: AppColorsManager.mainDarkBlue,
-        height: 23,
-        width: 23,
-      ),
-      horizontalSpacing(8),
-      // Label text
-      Text(
-        title,
-        style: AppTextStyles.font18blackWight500,
-        textDirection: TextDirection.rtl,
+      Row(
+        children: [
+          Image.asset(
+            imagePath,
+            color: AppColorsManager.mainDarkBlue,
+            height: 23,
+            width: 23,
+          ),
+
+          horizontalSpacing(8),
+          // Label text
+          Text(
+            title,
+            style: AppTextStyles.font18blackWight500,
+            textDirection: TextDirection.rtl,
+          ),
+        ],
       ),
 
-      horizontalSpacing(12),
+      verticalSpacing(12),
 
       // Text field
-      Expanded(
-        child: CustomTextField(
-          hintText: hintText,
-          validator: validator,
-          controller: controller,
-          keyboardType: keyboardType,
-        ),
+      CustomTextField(
+        hintText: hintText,
+        validator: validator,
+        controller: controller,
+        keyboardType: keyboardType,
       ),
     ],
   );
@@ -289,31 +295,33 @@ Widget buildGenderInputField({
   required dynamic Function(bool?)? onAnswerChanged,
   TextInputType keyboardType = TextInputType.text,
 }) {
-  return Row(
+  return Column(
     children: [
       // Icon
-      Image.asset(
-        imagePath,
-        color: AppColorsManager.mainDarkBlue,
-        height: 35,
-        width: 35,
-        fit: BoxFit.contain,
-      ),
-      horizontalSpacing(8),
-      // Label text
-      Text(
-        title,
-        style: AppTextStyles.font18blackWight500,
+      Row(
+        children: [
+          Image.asset(
+            imagePath,
+            color: AppColorsManager.mainDarkBlue,
+            height: 35,
+            width: 35,
+            fit: BoxFit.contain,
+          ),
+          horizontalSpacing(8),
+          // Label text
+          Text(
+            title,
+            style: AppTextStyles.font18blackWight500,
+          ),
+        ],
       ),
 
-      horizontalSpacing(12),
+      verticalSpacing(12),
 
       // Text field
-      Expanded(
-        child: GenderQuestionWidget(
-          onAnswerChanged: onAnswerChanged,
-          initialValue: true,
-        ),
+      GenderQuestionWidget(
+        onAnswerChanged: onAnswerChanged,
+        initialValue: true,
       ),
     ],
   );

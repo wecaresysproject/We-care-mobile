@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/meal_card_widget.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/day_card_widget.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
 class WeeklyMealGridBLocBuilder extends StatefulWidget {
@@ -35,7 +38,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
               ),
               itemCount: 7,
               itemBuilder: (context, index) {
-                return MealCard(
+                return DayCardWidget(
                   day: 'اليوم',
                   date: '--/--/----',
                   onTap: () {},
@@ -80,7 +83,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
             // اختر الـ constructor المناسب
             if (state.weeklyActivationStatus == false) {
               // لو الخطة مش مفعلة خالص
-              return MealCard.planNotActivated(
+              return DayCardWidget.planNotActivated(
                 day: day.dayOfWeek,
                 date: day.date,
                 onTap: () async {
@@ -96,20 +99,31 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
               );
             } else if (state.weeklyActivationStatus && day.hasDocument) {
               // لو اليوم له تقرير
-              return MealCard.planActivatedandHaveDocument(
+              return DayCardWidget.planActivatedandHaveDocument(
                 day: day.dayOfWeek,
                 date: day.date,
-                onTap: () {},
+                onTap: () async {
+                  await context.pushNamed(Routes.dailyActivityLogger);
+                },
               );
             } else {
               // لو اليوم مفعل بس مفيش تقرير
-              return MealCard.planActivatedandHaveNoDocument(
+              return DayCardWidget.planActivatedandHaveNoDocument(
                 day: day.dayOfWeek,
                 date: day.date,
-                onTap: () {
+                onTap: () async {
                   setState(() {
                     selectedDay = day.date;
                   });
+
+                  // await Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const DailyActivityLogger(),
+                  //   ),
+                  // );
+                  await context.pushNamed(Routes.dailyActivityLogger);
+
+                  AppLogger.debug("DailyActivityLogger view");
                 },
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)

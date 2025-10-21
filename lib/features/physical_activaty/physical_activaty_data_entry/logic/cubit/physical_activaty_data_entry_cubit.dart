@@ -43,8 +43,8 @@ class PhysicalActivatyDataEntryCubit
     emit(state.copyWith(genderType: type));
   }
 
-  void updateSelectedPhysicalActivity(String physicalActivity) {
-    emit(state.copyWith(selectedPhysicalActivity: physicalActivity));
+  void updateSelectedMuscleDesity(String val) {
+    emit(state.copyWith(selectedMuscleDesity: val));
   }
 
   void updateSelectedChronicDiseases(String? value) {
@@ -82,7 +82,7 @@ class PhysicalActivatyDataEntryCubit
         height: int.parse(heightController.text),
         age: int.parse(ageController.text),
         gender: state.genderType!,
-        physicalActivity: state.selectedPhysicalActivity!,
+        physicalActivity: state.selectedMuscleDesity!,
         chronicDisease: state.selectedChronicDiseases,
       ),
       lanugage: AppStrings.arabicLang,

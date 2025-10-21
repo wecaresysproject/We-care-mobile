@@ -11,7 +11,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
   final int followUpNutrationViewCurrentTabIndex;
   final String selectedPlanDate;
   final String? genderType;
-  final String? selectedPhysicalActivity;
+  final String? selectedMuscleDesity;
   final List<String> selectedChronicDiseases;
 
   final List<String> chronicDiseases;
@@ -29,7 +29,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
     this.followUpNutrationViewCurrentTabIndex = 0,
     this.selectedPlanDate = '',
     this.genderType = 'ذكر',
-    this.selectedPhysicalActivity = 'متوسط',
+    this.selectedMuscleDesity = 'شخص متوسط الكتلة العضلية (عادي)',
     this.chronicDiseases = const [],
     this.selectedChronicDiseases = const [],
     this.monthlyActivationStatus = false,
@@ -47,7 +47,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
           followUpNutrationViewCurrentTabIndex: 0,
           selectedPlanDate: '',
           genderType: 'ذكر',
-          selectedPhysicalActivity: 'متوسط',
+          selectedMuscleDesity: 'شخص متوسط الكتلة العضلية (عادي)',
           chronicDiseases: const [],
           selectedChronicDiseases: const [],
           monthlyActivationStatus: false,
@@ -64,7 +64,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
     int? followUpNutrationViewCurrentTabIndex,
     String? selectedPlanDate,
     String? genderType,
-    String? selectedPhysicalActivity,
+    String? selectedMuscleDesity,
     List<String>? chronicDiseases,
     List<String>? selectedChronicDiseases,
     bool? monthlyActivationStatus,
@@ -83,8 +83,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
               this.followUpNutrationViewCurrentTabIndex,
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
       genderType: genderType ?? this.genderType,
-      selectedPhysicalActivity:
-          selectedPhysicalActivity ?? this.selectedPhysicalActivity,
+      selectedMuscleDesity: selectedMuscleDesity ?? this.selectedMuscleDesity,
       chronicDiseases: chronicDiseases ?? this.chronicDiseases,
       selectedChronicDiseases:
           selectedChronicDiseases ?? this.selectedChronicDiseases,
@@ -106,7 +105,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
         followUpNutrationViewCurrentTabIndex,
         selectedPlanDate,
         genderType,
-        selectedPhysicalActivity,
+        selectedMuscleDesity,
         chronicDiseases,
         selectedChronicDiseases,
         monthlyActivationStatus,
