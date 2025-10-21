@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -171,8 +172,6 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
       'subtitle': '(ملاكمة في حلبة قوية)',
       'image': 'assets/images/boxing.png',
     },
-
-    // ⬇️ الأنشطة الجديدة من الصورة
     {
       'title': 'جودو / كاراتيه',
       'subtitle': '',
@@ -279,6 +278,7 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
         backgroundColor: Colors.green,
       ),
     );
+    context.pop(result: true);
   }
 
   @override
@@ -379,7 +379,7 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
                     );
                   },
                 ),
-                SizedBox(height: 100.h), // عشان تدي مساحة للزر ما يغطي آخر عنصر
+                SizedBox(height: 50.h), // عشان تدي مساحة للزر ما يغطي آخر عنصر
               ],
             ),
           ),

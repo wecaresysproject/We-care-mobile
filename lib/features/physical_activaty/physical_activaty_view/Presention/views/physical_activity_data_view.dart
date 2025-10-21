@@ -11,11 +11,10 @@ class PhysicalActivityDataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        appBar: AppBar(toolbarHeight: 0),
-        body: Stack(children: [
+    return Scaffold(
+      appBar: AppBar(toolbarHeight: 0),
+      body: Stack(
+        children: [
           Center(
             child: Image.asset(
               'assets/images/blue_gradiant.png',
@@ -42,7 +41,7 @@ class PhysicalActivityDataView extends StatelessWidget {
             ),
           ),
           const PhysicalActivityDataViewBody(),
-        ]),
+        ],
       ),
     );
   }
@@ -65,7 +64,8 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
             DataViewFiltersRow(
               filters: [
                 FilterConfig(title: 'السنة', options: [], isYearFilter: true),
-                FilterConfig(title: 'التاريخ', options: [], isMedicineFilter: true),
+                FilterConfig(
+                    title: 'التاريخ', options: [], isMedicineFilter: true),
               ],
               onApply: (selectedFilters) {},
             ),
@@ -77,7 +77,10 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
               title: 'عدد دقائق ممارسة الرياضة لليوم',
             ),
             verticalSpacing(8),
-            _MetricRow(todayValue: '200', cumulativeValue: '1500'),
+            _MetricRow(
+              todayValue: '200',
+              cumulativeValue: '1500',
+            ),
 
             verticalSpacing(28),
 
@@ -95,7 +98,8 @@ class _SectionTitle extends StatelessWidget {
   final String title;
   final String? iconPath;
   final bool hasGradientBackground;
-  const _SectionTitle({required this.title,  this.iconPath, this.hasGradientBackground = false});
+  const _SectionTitle(
+      {required this.title, this.iconPath, this.hasGradientBackground = false});
 
   @override
   Widget build(BuildContext context) {
@@ -116,18 +120,22 @@ class _SectionTitle extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-        iconPath != null ?  Row(
-          children: [
-            Image.asset(iconPath!, height: 20.h, width: 20.w),
-            horizontalSpacing(8),
-          ],
-        ) : SizedBox.shrink(),
+          iconPath != null
+              ? Row(
+                  children: [
+                    Image.asset(iconPath!, height: 20.h, width: 20.w),
+                    horizontalSpacing(8),
+                  ],
+                )
+              : SizedBox.shrink(),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               title,
               style: AppTextStyles.font18blackWight500.copyWith(
-                color: hasGradientBackground ? Colors.white : AppColorsManager.mainDarkBlue,
+                color: hasGradientBackground
+                    ? Colors.white
+                    : AppColorsManager.mainDarkBlue,
               ),
             ),
           ),
@@ -151,7 +159,11 @@ class _MetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _MetricColumn(label: 'اليوم (فعلي)', value: todayValue, isHighlight: true),
+        _MetricColumn(
+          label: 'اليوم (فعلي)',
+          value: todayValue,
+          isHighlight: true,
+        ),
         _MetricColumn(label: 'تراكمي (فعلي)', value: cumulativeValue),
       ],
     );
@@ -181,15 +193,26 @@ class _MetricRow3 extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _MetricColumn(label: 'اليوم (فعلي)', value: todayValue, isHighlight: true, hasGradientBackground: hasGradientBackground),
-            _MetricColumn(label: 'تراكمي (فعلي)', value: cumulativeValue, hasGradientBackground: hasGradientBackground),
-            _MetricColumn(label: 'تراكمي (معياري)', value: standardValue, hasGradientBackground: hasGradientBackground),
+            _MetricColumn(
+                label: 'اليوم (فعلي)',
+                value: todayValue,
+                isHighlight: true,
+                hasGradientBackground: hasGradientBackground),
+            _MetricColumn(
+                label: 'تراكمي (فعلي)',
+                value: cumulativeValue,
+                hasGradientBackground: hasGradientBackground),
+            _MetricColumn(
+                label: 'تراكمي (معياري)',
+                value: standardValue,
+                hasGradientBackground: hasGradientBackground),
           ],
         ),
         verticalSpacing(8),
         Text(
           subtitle,
-          style: AppTextStyles.font14blackWeight400.copyWith(color: Colors.white),
+          style:
+              AppTextStyles.font14blackWeight400.copyWith(color: Colors.white),
           textAlign: TextAlign.center,
         ),
       ],
@@ -214,21 +237,24 @@ class _MetricColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-     Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-       decoration:hasGradientBackground? BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [
-            Color(0xFF5998CD),
-            Color(0xFF03508F),
-            Color(0xff2B2B2B),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12.r),
-      ): null,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: hasGradientBackground
+              ? BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF5998CD),
+                      Color(0xFF03508F),
+                      Color(0xff2B2B2B),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12.r),
+                )
+              : null,
           child: Text(
             label,
-            style: AppTextStyles.font14blackWeight400.copyWith(color:Colors.white),
+            style: AppTextStyles.font14blackWeight400
+                .copyWith(color: Colors.white),
           ),
         ),
         verticalSpacing(6),
@@ -259,60 +285,106 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
   final PageController _pageController = PageController();
   int currentPage = 0;
 
- final List<Widget> _pages = [
-  /// Page 1: السعرات المكتسبة
-  _SectionPage(
-    title: 'السعرات المكتسبة من الغذاء (الطاقة)',
-    iconPath: 'assets/images/food_icon.png',
-    todayValue: '200',
-    cumulativeValue: '800',
-    standardValue: '1200',
-    subtitle: 'وفقاً لخطة التغذية المفعلة',
-  ),
+  final List<Widget> _pages = [
+    /// Page 1: السعرات المكتسبة
+    _SectionPage(
+      title: 'السعرات المكتسبة من الغذاء (الطاقة)',
+      iconPath: 'assets/images/food_icon.png',
+      todayValue: '200',
+      cumulativeValue: '800',
+      standardValue: '1200',
+      subtitle: 'وفقاً لخطة التغذية المفعلة',
+    ),
 
-/// Page 2: الصيانة العضلية والبناء العضلي (صف واحد - مطابق للتصميم)
-Column(
-  children: [
-    verticalSpacing(12),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    /// Page 2: الصيانة العضلية والبناء العضلي (صف واحد - مطابق للتصميم)
+    Column(
       children: [
-        /// البناء العضلي
-        Column(
+        verticalSpacing(12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(
-              'البناء العضلي',
-              style: AppTextStyles.font22WhiteWeight600,
-            ),
-            verticalSpacing(6),
-            Row(
+            /// البناء العضلي
+            Column(
               children: [
-                Column(
+                Text(
+                  'البناء العضلي',
+                  style: AppTextStyles.font22WhiteWeight600,
+                ),
+                verticalSpacing(6),
+                Row(
                   children: [
-                    Text(
-                      '50%',
-                      style: AppTextStyles.font22WhiteWeight600,
+                    Column(
+                      children: [
+                        Text(
+                          '50%',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                        verticalSpacing(4),
+                        Text(
+                          'معياري',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                      ],
                     ),
-                    verticalSpacing(4),
-                    Text(
-                      'معياري',
-                      style: AppTextStyles.font22WhiteWeight600,
+                    horizontalSpacing(12),
+                    Column(
+                      children: [
+                        Text(
+                          '40%',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            color: Colors.cyanAccent,
+                          ),
+                        ),
+                        verticalSpacing(4),
+                        Text(
+                          'فعلي',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                horizontalSpacing(12),
-                Column(
+              ],
+            ),
+
+            /// الصيانة العضلية
+            Column(
+              children: [
+                Text(
+                  'الصيانة العضلية',
+                  style: AppTextStyles.font22WhiteWeight600,
+                ),
+                verticalSpacing(6),
+                Row(
                   children: [
-                    Text(
-                      '40%',
-                      style: AppTextStyles.font22WhiteWeight600.copyWith(
-                        color: Colors.cyanAccent,
-                      ),
+                    Column(
+                      children: [
+                        Text(
+                          '50%',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                        verticalSpacing(4),
+                        Text(
+                          'معياري',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                      ],
                     ),
-                    verticalSpacing(4),
-                    Text(
-                      'فعلي',
-                      style: AppTextStyles.font22WhiteWeight600,
+                    horizontalSpacing(12),
+                    Column(
+                      children: [
+                        Text(
+                          '40%',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            color: Colors.cyanAccent,
+                          ),
+                        ),
+                        verticalSpacing(4),
+                        Text(
+                          'فعلي',
+                          style: AppTextStyles.font22WhiteWeight600,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -321,117 +393,70 @@ Column(
           ],
         ),
 
-        /// الصيانة العضلية
-        Column(
-          children: [
-            Text(
-              'الصيانة العضلية',
-              style: AppTextStyles.font22WhiteWeight600,
-            ),
-            verticalSpacing(6),
-            Row(
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      '50%',
-                      style: AppTextStyles.font22WhiteWeight600,
-                    ),
-                    verticalSpacing(4),
-                    Text(
-                      'معياري',
-                      style: AppTextStyles.font22WhiteWeight600,
-                    ),
-                  ],
-                ),
-                horizontalSpacing(12),
-                Column(
-                  children: [
-                    Text(
-                      '40%',
-                      style: AppTextStyles.font22WhiteWeight600.copyWith(
-                        color: Colors.cyanAccent,
-                      ),
-                    ),
-                    verticalSpacing(4),
-                    Text(
-                      'فعلي',
-                      style: AppTextStyles.font22WhiteWeight600,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+        verticalSpacing(24),
+
+        // ⬇️ باقي الصفحة كما هي (الجهد العضلي للبناء والصيانة)
+        _SectionTitle(
+          title: 'إجمالي الجهد العضلي للبناء عالي التحمل',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _MetricRow3(
+          todayValue: '200',
+          cumulativeValue: '800',
+          standardValue: '1200',
+          subtitle: '',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _SectionTitle(
+          title: 'إجمالي الجهد العضلي لصيانة الصحة والبناء',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _MetricRow3(
+          todayValue: '200',
+          cumulativeValue: '800',
+          standardValue: '1200',
+          subtitle: '',
+          hasGradientBackground: true,
         ),
       ],
     ),
 
-    verticalSpacing(24),
-
-    // ⬇️ باقي الصفحة كما هي (الجهد العضلي للبناء والصيانة)
-    _SectionTitle(
-      title: 'إجمالي الجهد العضلي للبناء عالي التحمل',
-      hasGradientBackground: true,
+    /// Page 3: الوزن المستهدف + BMI
+    Column(
+      children: [
+        _SectionTitle(
+          iconPath: 'assets/images/weight_icon.png',
+          title: 'وزن الجسم المستهدف',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _MetricRow3(
+          todayValue: '80',
+          cumulativeValue: '40',
+          standardValue: '90',
+          subtitle: '',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(4),
+        _SectionTitle(
+          iconPath: 'assets/images/pmi_icon.png',
+          title: 'مؤشر كتلة الجسم BMI',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _MetricRow3(
+          todayValue: '19',
+          cumulativeValue: '25',
+          standardValue: '35',
+          subtitle: '',
+          hasGradientBackground: true,
+        ),
+      ],
     ),
-    verticalSpacing(8),
-    _MetricRow3(
-      todayValue: '200',
-      cumulativeValue: '800',
-      standardValue: '1200',
-      subtitle: '',
-      hasGradientBackground: true,
-    ),
-    verticalSpacing(8),
-    _SectionTitle(
-      title: 'إجمالي الجهد العضلي لصيانة الصحة والبناء',
-      hasGradientBackground: true,
-    ),
-    verticalSpacing(8),
-    _MetricRow3(
-      todayValue: '200',
-      cumulativeValue: '800',
-      standardValue: '1200',
-      subtitle: '',
-      hasGradientBackground: true,
-    ),
-  ],
-),
-
-  /// Page 3: الوزن المستهدف + BMI
-  Column(
-    children: [
-      _SectionTitle(
-        iconPath: 'assets/images/weight_icon.png',
-        title: 'وزن الجسم المستهدف',
-        hasGradientBackground: true,
-      ),
-      verticalSpacing(8),
-      _MetricRow3(
-        todayValue: '80',
-        cumulativeValue: '40',
-        standardValue: '90',
-        subtitle: '',
-        hasGradientBackground: true,
-      ),
-      verticalSpacing(4),
-      _SectionTitle(
-        iconPath: 'assets/images/pmi_icon.png',
-        title: 'مؤشر كتلة الجسم BMI',
-        hasGradientBackground: true,
-      ),
-      verticalSpacing(8),
-      _MetricRow3(
-        todayValue: '19',
-        cumulativeValue: '25',
-        standardValue: '35',
-        subtitle: '',
-        hasGradientBackground: true,
-      ),
-    ],
-  ),
-];
-
+  ];
 
   void _nextPage() {
     if (currentPage < _pages.length - 1) {
@@ -464,30 +489,55 @@ Column(
                 children: _pages,
               ),
             ),
-        
+
             /// ⬅️⬅️ السهم الشمال
+
             Positioned(
               left: 0,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: IconButton(
-                  onPressed: _previousPage,
-                  icon: const Icon(Icons.arrow_back_ios, color: AppColorsManager.mainDarkBlue, size: 22),
+              top: 275.h,
+              child: ClipOval(
+                child: Material(
+                  color: Colors.white, // لون الخلفية
+                  child: InkWell(
+                    splashColor: AppColorsManager.mainDarkBlue.withOpacity(0.2),
+                    onTap: _nextPage,
+                    child: const SizedBox(
+                      width: 38,
+                      height: 38,
+                      child: Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: AppColorsManager.mainDarkBlue,
+                        size: 28,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-        
+
             /// ➡️➡️ السهم اليمين
             Positioned(
               right: 0,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: IconButton(
-                  onPressed: _nextPage,
-                  icon: const Icon(Icons.arrow_forward_ios, color: AppColorsManager.mainDarkBlue, size: 22),
+              top: 275.h,
+              child: ClipOval(
+                child: Material(
+                  color: Colors.white, // لون الخلفية
+                  child: InkWell(
+                    splashColor: AppColorsManager.mainDarkBlue.withOpacity(0.2),
+                    onTap: _previousPage,
+                    child: const SizedBox(
+                      width: 38,
+                      height: 38,
+                      child: Icon(
+                        Icons.arrow_back_ios_outlined,
+                        color: AppColorsManager.mainDarkBlue,
+                        size: 28,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),     
+            ),
           ],
         ),
       ],
@@ -533,16 +583,17 @@ class _SectionPage extends StatelessWidget {
           hasGradientBackground: true,
         ),
         verticalSpacing(16),
-          /// 🔹 Section 3: السعرات المحروقة بالنشاط الرياضي
-            _SectionTitle(
-              iconPath: 'assets/images/fire_icon.png',
-              title: 'السعرات المحروقة بالنشاط الرياضي',
-              hasGradientBackground: true,
-            ),
-            verticalSpacing(8),
-            _MetricRow(todayValue: '200', cumulativeValue: '1500'),
 
-            verticalSpacing(40),
+        /// 🔹 Section 3: السعرات المحروقة بالنشاط الرياضي
+        _SectionTitle(
+          iconPath: 'assets/images/fire_icon.png',
+          title: 'السعرات المحروقة بالنشاط الرياضي',
+          hasGradientBackground: true,
+        ),
+        verticalSpacing(8),
+        _MetricRow(todayValue: '200', cumulativeValue: '1500'),
+
+        verticalSpacing(40),
       ],
     );
   }
