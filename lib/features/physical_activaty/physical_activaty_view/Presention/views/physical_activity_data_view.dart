@@ -490,54 +490,61 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
               ),
             ),
 
-            /// ⬅️⬅️ السهم الشمال
-
-            Positioned(
-              left: 0,
-              top: 275.h,
-              child: ClipOval(
-                child: Material(
-                  color: Colors.white, // لون الخلفية
-                  child: InkWell(
-                    splashColor: AppColorsManager.mainDarkBlue.withOpacity(0.2),
-                    onTap: _nextPage,
-                    child: const SizedBox(
-                      width: 38,
-                      height: 38,
-                      child: Icon(
-                        Icons.arrow_forward_ios_outlined,
-                        color: AppColorsManager.mainDarkBlue,
-                        size: 28,
+            /// =====================
+            /// ➡️ السهم اليمين (للصفحة السابقة)
+            /// =====================
+            if (currentPage > 0)
+              Positioned(
+                right: 0,
+                top: 275.h,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      splashColor:
+                          AppColorsManager.mainDarkBlue.withOpacity(0.2),
+                      onTap: _previousPage,
+                      child: const SizedBox(
+                        width: 38,
+                        height: 38,
+                        child: Icon(
+                          Icons.arrow_back_ios_outlined,
+                          color: AppColorsManager.mainDarkBlue,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-            /// ➡️➡️ السهم اليمين
-            Positioned(
-              right: 0,
-              top: 275.h,
-              child: ClipOval(
-                child: Material(
-                  color: Colors.white, // لون الخلفية
-                  child: InkWell(
-                    splashColor: AppColorsManager.mainDarkBlue.withOpacity(0.2),
-                    onTap: _previousPage,
-                    child: const SizedBox(
-                      width: 38,
-                      height: 38,
-                      child: Icon(
-                        Icons.arrow_back_ios_outlined,
-                        color: AppColorsManager.mainDarkBlue,
-                        size: 28,
+            /// =====================
+            /// ⬅️ السهم الشمال (للصفحة التالية)
+            /// =====================
+            if (currentPage < _pages.length - 1)
+              Positioned(
+                left: 0,
+                top: 275.h,
+                child: ClipOval(
+                  child: Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      splashColor:
+                          AppColorsManager.mainDarkBlue.withOpacity(0.2),
+                      onTap: _nextPage,
+                      child: const SizedBox(
+                        width: 38,
+                        height: 38,
+                        child: Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          color: AppColorsManager.mainDarkBlue,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ],
