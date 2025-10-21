@@ -284,102 +284,118 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            const AppBarWithCenteredTitle(
-              title: 'النشاط البدنى لليوم',
-              showActionButtons: false,
-            ),
-            ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: activityList.length,
-              itemBuilder: (context, index) {
-                final activity = activityList[index];
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  textBaseline: TextBaseline.alphabetic,
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  children: [
-                    Image.asset(
-                      activity['image']!,
-                      width: 44.w,
-                      height: 50.h,
-                    ),
-                    horizontalSpacing(2),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: AppColorsManager.mainDarkBlue, width: 1),
-                            borderRadius: BorderRadius.circular(14.r),
-                          ),
+      appBar: AppBar(toolbarHeight: 0),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                const AppBarWithCenteredTitle(
+                  title: 'النشاط البدنى لليوم',
+                  showActionButtons: false,
+                ),
+                ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: activityList.length,
+                  itemBuilder: (context, index) {
+                    final activity = activityList[index];
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      textBaseline: TextBaseline.alphabetic,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      children: [
+                        Image.asset(
+                          activity['image']!,
+                          width: 44.w,
+                          height: 50.h,
+                        ),
+                        horizontalSpacing(2),
+                        Expanded(
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4.w,
-                              vertical: 4.h,
-                            ),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColorsManager.mainDarkBlue,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4.w,
+                                  vertical: 4.h,
+                                ),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      activity['title']!,
-                                      style: AppTextStyles.font18blackWight500
-                                          .copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColorsManager.mainDarkBlue,
-                                      ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          activity['title']!,
+                                          style: AppTextStyles
+                                              .font18blackWight500
+                                              .copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                AppColorsManager.mainDarkBlue,
+                                          ),
+                                        ),
+                                        Text(
+                                          activity['subtitle']!,
+                                          style: AppTextStyles
+                                              .font18blackWight500
+                                              .copyWith(
+                                            fontSize: 12.sp,
+                                            color:
+                                                AppColorsManager.mainDarkBlue,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Text(
-                                      activity['subtitle']!,
-                                      style: AppTextStyles.font18blackWight500
-                                          .copyWith(
-                                        fontSize: 12.sp,
-                                        color: AppColorsManager.mainDarkBlue,
+                                    const Spacer(),
+                                    SizedBox(
+                                      width: 90,
+                                      height: 50,
+                                      child: CustomTextField(
+                                        hintText: 'دقيقة',
+                                        validator: (value) {},
+                                        controller: TextEditingController(),
+                                        keyboardType: TextInputType.number,
+                                        onChanged: (value) {},
                                       ),
                                     ),
                                   ],
                                 ),
-                                Spacer(),
-                                SizedBox(
-                                  width: 90,
-                                  height: 50,
-                                  child: CustomTextField(
-                                    hintText: 'دقيقة',
-                                    validator: (value) {},
-                                    controller: TextEditingController(),
-                                    keyboardType: TextInputType.number,
-                                    onChanged: (value) {},
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                      ],
+                    );
+                  },
+                ),
+                SizedBox(height: 100.h), // عشان تدي مساحة للزر ما يغطي آخر عنصر
+              ],
             ),
-            AppCustomButton(
+          ),
+
+          /// الزر ثابت في الأسفل
+          Positioned(
+            bottom: 16,
+            left: 16,
+            right: 16,
+            child: AppCustomButton(
               title: "حفظ",
               onPressed: _submitActivities,
               isEnabled: true,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
