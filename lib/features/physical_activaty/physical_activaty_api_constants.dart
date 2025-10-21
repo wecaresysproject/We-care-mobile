@@ -10,17 +10,14 @@ class PhysicalActivatyApiConstants {
 
   //View Entry
   static const getAllNutrationTableData = "SmartNutritionAnalyzer/result-data";
-  static const getAvailableYearsForWeeklyPlan =
-      "SmartNutritionAnalyzer/weekly-plans-years";
+  static const getAvailableYears = "SmartNutritionAnalyzer/weekly-plans-years";
   static const getAvailableYearsForMonthlyPlan =
       "SmartNutritionAnalyzer/monthly-plans-years";
-  static const getAvailableDateRangesForWeeklyPlan =
-      "SmartNutritionAnalyzer/all-weekly-plans";
-  static const getAvailableDateRangesForMonthlyPlan =
-      "SmartNutritionAnalyzer/all-monthly-plans";
-  static const getFilterdNutritionDocuments =
-      "SmartNutritionAnalyzer/doc-data-filtered";
-  static const getNutrationDocuments = "SmartNutritionAnalyzer/doc-data";
+  static const getAvailableDatesBasedOnYear =
+      "SmartNutritionAnalyzer/weekly-plans-dates";
+  static const getFilterdDocuments = "SmartNutritionAnalyzer/doc-data-filtered";
+  static const getPhysicalActivitySlides =
+      "SmartNutritionAnalyzer/getPhysicalActivitySlides";
   static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
   static const updateNutrientStandard =
       "SmartNutritionAnalyzer/update-standard";

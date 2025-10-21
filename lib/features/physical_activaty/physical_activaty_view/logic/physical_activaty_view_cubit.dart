@@ -1,12 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
-import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
-import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
-import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
-import 'package:we_care/features/nutration/data/models/organ_nutritional_effects_response_model.dart';
+import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
 
 part 'physical_activaty_view_state.dart';
@@ -15,51 +11,31 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
   PhysicalActivityViewCubit(this.physicalActivatyViewRepo)
       : super(PhysicalActivatyViewState.initial());
   final PhysicalActivatyViewRepo physicalActivatyViewRepo;
-  Future<void> getAvailableYearsForWeeklyPlan() async {
-    final response =
-        await physicalActivatyViewRepo.getAvailableYearsForWeeklyPlan(
+  Future<void> getAvailableYears() async {
+    final response = await physicalActivatyViewRepo.getAvailableYears(
       language: AppStrings.arabicLang,
     );
     response.when(
       success: (data) {
         emit(
           state.copyWith(
-            weaklyPlanYearsFilter: data,
+            availableYears: data,
           ),
         );
       },
       failure: (error) {
-        emit(
-          state.copyWith(),
-        );
-      },
-    );
-  }
-
-  Future<void> getAvailableYearsForMonthlyPlan() async {
-    final response =
-        await physicalActivatyViewRepo.getAvailableYearsForMonthlyPlan(
-      language: AppStrings.arabicLang,
-    );
-    response.when(
-      success: (data) {
         emit(
           state.copyWith(
-            monthlyPlanYearsFilter: data,
+            responseMessage: error.errors.first,
           ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(),
         );
       },
     );
   }
 
-  Future<void> getAvailableDateRangesForWeeklyPlan(String selectedYear) async {
+  Future<void> getAvailableDatesBasedOnYear(String selectedYear) async {
     final response =
-        await physicalActivatyViewRepo.getAvailableDateRangesForWeeklyPlan(
+        await physicalActivatyViewRepo.getAvailableDatesBasedOnYear(
       language: AppStrings.arabicLang,
       year: selectedYear,
     );
@@ -67,87 +43,41 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
       success: (data) {
         emit(
           state.copyWith(
-            weeklyPlanDateRangesFilter: data,
+            availableDates: data,
           ),
         );
       },
       failure: (error) {
         emit(
-          state.copyWith(),
-        );
-      },
-    );
-  }
-
-  Future<void> getAvailableDateRangesForMonthlyPlan(String selectedYear) async {
-    final response =
-        await physicalActivatyViewRepo.getAvailableDateRangesForMonthlyPlan(
-      language: AppStrings.arabicLang,
-      year: selectedYear,
-    );
-    response.when(
-      success: (data) {
-        emit(
           state.copyWith(
-            monthlyPlanDateRangesFilter: data,
+            responseMessage: error.errors.first,
           ),
         );
       },
-      failure: (error) {},
     );
   }
 
   Future<void> getIntialRequests() async {
     await Future.wait([
-      getNutrationDocuments(),
-      getAvailableYearsForWeeklyPlan(),
-      getAvailableYearsForMonthlyPlan(),
+      getPhysicalActivitySlides(),
+      getAvailableYears(),
     ]);
   }
 
-  String _getPlanTypeNameRelativeToCurrentActiveTab() {
-    return state.followUpNutrationViewCurrentTabIndex == 0
-        ? PlanType.weekly.name
-        : PlanType.monthly.name;
-  }
-
-  // New method to update the current tab index
-  Future<void> updateCurrentTab(int index) async {
-    emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
-    await getNutrationDocuments();
-  }
-
-  Future<void> getNutrationDocuments() async {
-    final currentPlanType = _getPlanTypeNameRelativeToCurrentActiveTab();
+  Future<void> getPhysicalActivitySlides() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await physicalActivatyViewRepo.getNutrationDocuments(
+    final response = await physicalActivatyViewRepo.getPhysicalActivitySlides(
       language: AppStrings.arabicLang,
-      planType: currentPlanType,
     );
     response.when(
       success: (data) {
-        if (currentPlanType == PlanType.weekly.name) {
-          emit(
-            state.copyWith(
-              requestStatus: RequestStatus.success,
-              weeklyNutrationDocuments: data,
-            ),
-          );
-          AppLogger.info(
-            'Weekly Nutration Documents: ${state.weeklyNutrationDocuments.length}',
-          );
-        } else {
-          emit(
-            state.copyWith(
-              requestStatus: RequestStatus.success,
-              monthlyNutrationDocuments: data,
-            ),
-          );
-          AppLogger.info(
-            'Monthly Nutration Documents: ${state.monthlyNutrationDocuments.length}',
-          );
-        }
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            physicalActivitySLides: data,
+          ),
+        );
       },
       failure: (error) {
         emit(
@@ -159,47 +89,29 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
     );
   }
 
-  Future<void> getFilterdNutritionDocuments(
-      {required String year, required String rangeDate}) async {
-    final currentPlanType = _getPlanTypeNameRelativeToCurrentActiveTab();
+  Future<void> getFilterdDocuments(
+      {required String year, required String date}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response =
-        await physicalActivatyViewRepo.getFilterdNutritionDocuments(
+    final response = await physicalActivatyViewRepo.getFilterdDocuments(
       language: AppStrings.arabicLang,
-      planType: currentPlanType,
       year: year,
-      rangeDate: rangeDate,
+      date: date,
     );
     response.when(
       success: (data) {
-        if (currentPlanType == PlanType.weekly.name) {
-          emit(
-            state.copyWith(
-              requestStatus: RequestStatus.success,
-              weeklyNutrationDocuments: data,
-            ),
-          );
-          AppLogger.info(
-            'Weekly Nutration Documents: ${state.weeklyNutrationDocuments.length}',
-          );
-        } else {
-          emit(
-            state.copyWith(
-              requestStatus: RequestStatus.success,
-              monthlyNutrationDocuments: data,
-            ),
-          );
-          AppLogger.info(
-            'Monthly Nutration Documents: ${state.monthlyNutrationDocuments.length}',
-          );
-        }
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            physicalActivitySLides: data,
+          ),
+        );
       },
       failure: (error) {
         emit(
           state.copyWith(
             requestStatus: RequestStatus.failure,
-            // responseMessage: error.errors.first,
+            responseMessage: error.errors.first,
           ),
         );
       },

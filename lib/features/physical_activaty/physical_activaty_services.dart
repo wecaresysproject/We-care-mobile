@@ -4,7 +4,7 @@ import 'package:we_care/features/nutration/data/models/get_all_created_plans_mod
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
-import 'package:we_care/features/nutration/nutration_api_constants.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_api_constants.dart';
 
 part 'physical_activaty_services.g.dart';
 
@@ -40,36 +40,26 @@ abstract class PhysicalActivityServices {
     @Query('planType') String planType,
   );
 
-  @GET(PhysicalActivatyApiConstants.getAvailableYearsForWeeklyPlan)
-  Future<dynamic> getAvailableYearsForWeeklyPlan(
+  @GET(PhysicalActivatyApiConstants.getAvailableYears)
+  Future<dynamic> getAvailableYears(
     @Query('Language') String language,
-  );
-  @GET(PhysicalActivatyApiConstants.getAvailableYearsForMonthlyPlan)
-  Future<dynamic> getAvailableYearsForMonthlyPlan(
-    @Query('Language') String language,
-  );
-  @GET(PhysicalActivatyApiConstants.getAvailableDateRangesForWeeklyPlan)
-  Future<dynamic> getAvailableDateRangesForWeeklyPlan(
-    @Query('Language') String language,
-    @Query('year') String year,
-  );
-  @GET(PhysicalActivatyApiConstants.getAvailableDateRangesForMonthlyPlan)
-  Future<dynamic> getAvailableDateRangesForMonthlyPlan(
-    @Query('Language') String language,
-    @Query('year') String year,
-  );
-  @GET(PhysicalActivatyApiConstants.getFilterdNutritionDocuments)
-  Future<dynamic> getFilterdNutritionDocuments(
-    @Query('language') String language,
-    @Query('year') String year,
-    @Query('rangeDate') String rangeDate,
-    @Query('planType') String planType,
   );
 
-  @GET(PhysicalActivatyApiConstants.getNutrationDocuments)
-  Future<dynamic> getNutrationDocuments(
+  @GET(PhysicalActivatyApiConstants.getAvailableDatesBasedOnYear)
+  Future<dynamic> getAvailableDatesBasedOnYear(
+    @Query('Language') String language,
+    @Query('year') String year,
+  );
+  @GET(PhysicalActivatyApiConstants.getFilterdDocuments)
+  Future<dynamic> getFilterdDocuments(
     @Query('language') String language,
-    @Query('planType') String planType,
+    @Query('year') String year,
+    @Query('date') String date,
+  );
+
+  @GET(PhysicalActivatyApiConstants.getPhysicalActivitySlides)
+  Future<dynamic> getPhysicalActivitySlides(
+    @Query('language') String language,
   );
   @PUT(PhysicalActivatyApiConstants.updateNutrientStandard)
   Future<dynamic> updateNutrientStandard(

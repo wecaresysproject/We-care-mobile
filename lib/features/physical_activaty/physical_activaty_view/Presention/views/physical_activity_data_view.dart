@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/logic/physical_activaty_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
@@ -11,37 +14,41 @@ class PhysicalActivityDataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Stack(
-        children: [
-          Center(
-            child: Image.asset(
-              'assets/images/blue_gradiant.png',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
+    return BlocProvider<PhysicalActivityViewCubit>(
+      create: (context) => getIt<PhysicalActivityViewCubit>(),
+      //..getIntialRequests(),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: Stack(
+          children: [
+            Center(
+              child: Image.asset(
+                'assets/images/blue_gradiant.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Image.asset(
-              'assets/images/physical_activity_view_background_1.png',
-              fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width * 0.85,
-              height: MediaQuery.of(context).size.height * 0.6,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Image.asset(
+                'assets/images/physical_activity_view_background_1.png',
+                fit: BoxFit.cover,
+                width: MediaQuery.of(context).size.width * 0.85,
+                height: MediaQuery.of(context).size.height * 0.6,
+              ),
             ),
-          ),
-          Center(
-            child: Image.asset(
-              'assets/images/shadow.png',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
+            Center(
+              child: Image.asset(
+                'assets/images/shadow.png',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
-          ),
-          const PhysicalActivityDataViewBody(),
-        ],
+            const PhysicalActivityDataViewBody(),
+          ],
+        ),
       ),
     );
   }
@@ -61,14 +68,8 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
         child: Column(
           children: [
             ViewAppBar(),
-            DataViewFiltersRow(
-              filters: [
-                FilterConfig(title: 'السنة', options: [], isYearFilter: true),
-                FilterConfig(
-                    title: 'التاريخ', options: [], isMedicineFilter: true),
-              ],
-              onApply: (selectedFilters) {},
-            ),
+
+            FiltersRowBlocBuilder(),
             verticalSpacing(24),
 
             /// 🔹 Section 1: عدد دقائق ممارسة الرياضة لليوم
@@ -88,6 +89,43 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FiltersRowBlocBuilder extends StatelessWidget {
+  const FiltersRowBlocBuilder({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PhysicalActivityViewCubit, PhysicalActivatyViewState>(
+      buildWhen: (previous, current) =>
+          previous.availableYears != current.availableYears ||
+          previous.availableDates != current.availableDates,
+      builder: (context, state) {
+        return DataViewFiltersRow(
+          filters: [
+            FilterConfig(
+              title: 'السنة',
+              options: state.availableYears,
+              isYearFilter: true,
+            ),
+            FilterConfig(
+              title: 'التاريخ',
+              options: state.availableDates,
+              isYearFilter: true,
+            ),
+          ],
+          onApply: (selectedFilters) {
+            // AppLogger.debug("Selected Filters: $selectedFilters");
+            BlocProvider.of<PhysicalActivityViewCubit>(context)
+                .getFilterdDocuments(
+              year: selectedFilters['السنة'].toString(),
+              date: selectedFilters['التاريخ'].toString(),
+            );
+          },
+        );
+      },
     );
   }
 }
