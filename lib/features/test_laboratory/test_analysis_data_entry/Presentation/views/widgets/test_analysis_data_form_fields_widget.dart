@@ -632,7 +632,7 @@ List<DataRow> _buildRows(
     (data) {
       return DataRow(
         cells: [
-          _buildCell(data.testName, isBold: true),
+          _buildCell(data.testName, isBold: true, isNameColumn: true),
           _buildCell(data.testCode),
           _buildCell(data.standardRate),
           DataCell(
@@ -658,18 +658,24 @@ DataColumn _buildColumn(String label, {bool isNumeric = false}) {
   );
 }
 
-DataCell _buildCell(String text, {bool isBold = false}) {
+DataCell _buildCell(String text,
+    {bool isBold = false, bool isNameColumn = false}) {
   return DataCell(
     Container(
       alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      constraints: BoxConstraints(
+        // عمود الاسم ياخد عرض أكبر شوية
+        maxWidth: isNameColumn ? 120.w : 70.w,
+        minWidth: isNameColumn ? 100.w : 50.w,
+      ),
       child: Text(
         text,
         textAlign: TextAlign.center,
-        overflow: TextOverflow.ellipsis,
+        // overflow: TextOverflow.ellipsis,
+        maxLines: isNameColumn ? 2 : 1,
         style: AppTextStyles.font12blackWeight400.copyWith(
-          fontWeight: isBold ? FontWeight.w700 : FontWeight.w600,
-          fontSize: 12.sp,
+          fontWeight: isBold ? FontWeight.w700 : FontWeight.w700,
+          fontSize: isNameColumn ? 14.sp : 12.sp,
         ),
       ),
     ),
