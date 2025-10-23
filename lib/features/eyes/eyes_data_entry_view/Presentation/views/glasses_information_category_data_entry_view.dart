@@ -103,13 +103,13 @@ class _GlassesInformationCategoryDataEntryViewState
                       ],
                       controller: _tabController,
                       labelStyle: AppTextStyles.font18blackWight500.copyWith(
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontFamily: "Cairo",
                         color: AppColorsManager.mainDarkBlue,
                       ),
                       unselectedLabelStyle:
                           AppTextStyles.font18blackWight500.copyWith(
-                        fontSize: 16.sp,
+                        fontSize: 14.sp,
                         fontFamily: "Cairo",
                         color: Color(0xff555555),
                       ),

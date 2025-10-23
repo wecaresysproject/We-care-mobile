@@ -94,7 +94,7 @@ class MedicineSyptomsDetailsView extends StatelessWidget {
 
                           options: [
                             "مستمرة",
-                            "منقطعة",
+                            "متقطعة",
                             "تزايد مع الوقت",
                             "تتناقص مع الوقت",
                           ],
