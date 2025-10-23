@@ -163,7 +163,7 @@ Widget _bodyRegionSearchTab(
                         : AppColorsManager.textfieldOutsideBorderColor,
                     options: [
                       "مستمرة",
-                      "منقطعة",
+                      "متقطعة",
                       "تزايد مع الوقت",
                       "تتناقص مع الوقت",
                     ],
@@ -296,7 +296,7 @@ Widget _symptomSearchTab(
                       : AppColorsManager.textfieldOutsideBorderColor,
                   options: [
                     "مستمرة",
-                    "منقطعة",
+                    "متقطعة",
                     "تزايد مع الوقت",
                     "تتناقص مع الوقت",
                   ],
