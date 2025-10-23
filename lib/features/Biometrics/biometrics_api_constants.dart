@@ -9,6 +9,10 @@ class BiometricsApiConstants {
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
   static const getCurrentBiometricData =
       "VitalActivity/currentbiometrics";
+  static const editBiometricDataOfSpecifcCategory =
+      "VitalActivity/biometrics";    
+      static const deleteBiometricDataOfSpecifcCategory =
+      "VitalActivity/biometrics";
 
   //filters
 }

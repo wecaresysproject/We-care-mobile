@@ -70,19 +70,18 @@ class PrescriptionDetailsView extends StatelessWidget {
                           .deletePrescriptionById(documentId);
                     },
                   ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: state
-                            .selectedPrescriptionDetails!.preDescriptionDate,
-                        icon: 'assets/images/date_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
+                  DetailsViewInfoTile(
+                      title: "التاريخ",
+                      value: state
+                          .selectedPrescriptionDetails!.preDescriptionDate,
+                          isExpanded: true,
+                      icon: 'assets/images/date_icon.png'),
+                          DetailsViewInfoTile(
                       title: "التشخيص",
+                      isExpanded: true,
                       value: state.selectedPrescriptionDetails!.disease,
                       icon: 'assets/images/symptoms_icon.png',
                     ),
-                  ]),
                   Row(children: [
                     DetailsViewInfoTile(
                       title: "اسم الطبيب",

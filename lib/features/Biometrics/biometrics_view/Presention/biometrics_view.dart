@@ -192,6 +192,7 @@ class _BiometricsViewState extends State<BiometricsView>
                     // Chart
                     BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
                       builder: (context, state) {
+                        
                         if (state.requestStatus == RequestStatus.loading) {
                           return const Center(
                             child: CircularProgressIndicator(
@@ -287,10 +288,10 @@ class _BiometricsViewState extends State<BiometricsView>
     return TabBar(
       tabs: const [
         Tab(
-          text: 'المقاييس الحيوية',
+          text: 'القياسات الحيوية',
         ),
         Tab(
-          text: 'المقاييس الحيوية الحالية',
+          text: 'احدث قياسات',
         ),
       ],
       controller: _tabController,
@@ -486,7 +487,6 @@ class _BiometricsViewState extends State<BiometricsView>
   }
 Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
     if (selectedMetrics.isEmpty) return const SizedBox();
-
     final currentMetricId = selectedMetrics.elementAt(currentGraphIndex);
     final currentMetric =
         biometricTypes.firstWhere((b) => b.id == currentMetricId);
@@ -496,8 +496,16 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 BiometricsDatasetModel(type: currentMetricId, data: []))
         .data;
 
+    final formattedData = data
+    .map((d) => BiometricData(
+          originalDate: formatDateTime(d.originalDate),
+          value: d.value,
+          secondaryValue: d.secondaryValue,
+        ))
+    .toList();
+
     final double minY = 0; // Force starting from 0
-    final double maxDataY = data
+    final double maxDataY = formattedData
         .map((d) => double.tryParse(d.value.toString()) ?? 0.0)
         .reduce((a, b) => a > b ? a : b);
 
@@ -512,7 +520,7 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
     final double yRange = dynamicMaxY - minY;
     final int niceInterval = _calculateNiceInterval(yRange);
 
-    if (data.isEmpty) return const SizedBox();
+    if (formattedData.isEmpty) return const SizedBox();
 
     return Container(
       height: 330,
@@ -567,17 +575,17 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 reservedSize: 50,
                 interval: 1,
                 getTitlesWidget: (double value, TitleMeta meta) {
-                  if (value.toInt() >= 0 && value.toInt() < data.length) {
+                  if (value.toInt() >= 0 && value.toInt() < formattedData.length) {
                     return SideTitleWidget(
                       meta: meta,
                       child: Container(
-                          padding: const EdgeInsets.only(top: 12, bottom: 4),
+                          padding: const EdgeInsets.only(top: 12, bottom: 4, left: 4, right: 4),
                           child: Transform.rotate(
                             angle: -90 * (pi / 180),
                             child: Text(
-                              data[value.toInt()].date,
+                              formattedData[value.toInt()].originalDate,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 11),
+                              style: const TextStyle(fontSize: 9),
                             ),
                           )),
                     );
@@ -615,14 +623,14 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
             ),
           ),
           minX: 0,
-          maxX: (data.length - 1).toDouble(),
+          maxX: (formattedData.length - 1).toDouble(),
           minY: minY,
-          maxY: data.map((e) => double.tryParse(e.value.toString()) ?? 0.0).reduce((a, b) => a > b ? a : b) +
+          maxY: formattedData.map((e) => double.tryParse(e.value.toString()) ?? 0.0).reduce((a, b) => a > b ? a : b) +
               10,
           lineBarsData: [
             // Primary line
             LineChartBarData(
-              spots: data.asMap().entries.map((entry) {
+              spots: formattedData.asMap().entries.map((entry) {
                 return FlSpot(
                     entry.key.toDouble(), double.tryParse(entry.value.value.toString()) ?? 0.0);
               }).toList(),
@@ -637,7 +645,7 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 end: Alignment.centerRight,
               ),
               barWidth: 2,
-              showingIndicators: List.generate(data.length, (index) => index),
+              showingIndicators: List.generate(formattedData.length, (index) => index),
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) {
@@ -666,7 +674,7 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
             if (currentMetric.hasSecondaryValue)
               LineChartBarData(
                 color: primaryColor,
-                spots: data.asMap().entries.map((entry) {
+                spots: formattedData.asMap().entries.map((entry) {
                   return FlSpot(entry.key.toDouble(),
                       double.tryParse(entry.value.secondaryValue.toString()) ?? 0.0);
                 }).toList(),
@@ -674,7 +682,7 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 curveSmoothness: 0.3,
                 barWidth: 2,
                 isStrokeCapRound: true,
-                showingIndicators: List.generate(data.length, (index) => index),
+                showingIndicators: List.generate(formattedData.length, (index) => index),
                 dotData: FlDotData(
                   show: true,
                   getDotPainter: (spot, percent, barData, index) {
@@ -717,8 +725,8 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 final index = spot.x.toInt();
                 final primary = spot.y;
                 final secondary =
-                    currentMetric.hasSecondaryValue && data.length > index
-                        ? data[index].secondaryValue
+                    currentMetric.hasSecondaryValue && formattedData.length > index
+                        ? formattedData[index].secondaryValue
                         : null;
 
                 final tooltipText = secondary != null
@@ -737,13 +745,13 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
               }).toList(),
             ),
           ),
-          showingTooltipIndicators: data
+          showingTooltipIndicators: formattedData
               .asMap()
               .entries
               .map((spot) => ShowingTooltipIndicators([
                     LineBarSpot(
                       LineChartBarData(
-                          spots: data
+                          spots: formattedData
                               .asMap()
                               .entries
                               .map((e) => FlSpot(e.key.toDouble(),
@@ -782,6 +790,20 @@ int _calculateNiceInterval(double yRange) {
   if (normalized < 7.5) return (5 * magnitude).toInt();
   return (10 * magnitude).toInt();
 }
+String formatDateTime(String isoString) {
+  final dateTime = DateTime.tryParse(isoString);
+  if (dateTime == null) return isoString; // fallback if parse fails
+
+  final day = dateTime.day.toString().padLeft(2, '0');
+  final month = dateTime.month.toString().padLeft(2, '0');
+  int hour = dateTime.hour;
+  final minute = dateTime.minute.toString().padLeft(2, '0');
+  final period = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12 == 0 ? 12 : hour % 12;
+
+  return '$day/$month \n $hour:$minute $period';
+}
+
 
 class BiometricType {
   final String id;

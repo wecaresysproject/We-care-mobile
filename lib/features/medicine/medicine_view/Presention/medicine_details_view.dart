@@ -11,7 +11,6 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -64,6 +63,7 @@ class MedicineDetailsView extends StatelessWidget {
                   spacing: 16.h,
                   children: [
                     AppBarWithCenteredTitle(
+                      isMedicineModule: true,
                       title: 'الدواء',
                       deleteFunction: () async {
                         await BlocProvider.of<MedicineViewCubit>(context)
@@ -93,28 +93,11 @@ class MedicineDetailsView extends StatelessWidget {
                         }
                       },
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: DetailsViewInfoTile(
-                            title: "اسم الدواء",
-                            isExpanded: true,
-                            value: state.selectestMedicineDetails!.medicineName,
-                            icon: 'assets/images/doctor_name.png',
-                          ),
-                        ),
-                        Text(
-                          "معلومات عن الدواء",
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColorsManager.mainDarkBlue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
+                    DetailsViewInfoTile(
+                      title: "اسم الدواء",
+                      isExpanded: true,
+                      value: state.selectestMedicineDetails!.medicineName,
+                      icon: 'assets/images/doctor_name.png',
                     ),
 
                     Row(
@@ -202,6 +185,7 @@ class MedicineDetailsView extends StatelessWidget {
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         DetailsViewInfoTile(
                             title: "التنبيهات",

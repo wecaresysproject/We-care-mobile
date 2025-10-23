@@ -83,4 +83,42 @@ class BiometricsViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+    Future<ApiResult<String>> deleteBiometricDataOfSpecifcCategory({
+    required String language,
+    required String userType,
+    required String date,
+    required String biometricName,
+  }) async {
+    try {
+      final response = await _biometricsServices.deleteBiometricDataOfSpecifcCategory(
+         userType,
+         language,
+         date,
+         biometricName);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> editBiometricDataOfSpecifcCategory({
+    required dynamic requestBody,
+    required String language,
+    required String userType,
+    required String date,
+    required String biometricName,
+  }) async {
+    try {
+      final response = await _biometricsServices.editBiometricDataOfSpecifcCategory(
+         requestBody,
+         userType,
+         language,
+         date,
+         biometricName);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
