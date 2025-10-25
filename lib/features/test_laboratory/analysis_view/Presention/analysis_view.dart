@@ -139,7 +139,7 @@ class MedicalAnalysisView extends StatelessWidget {
             color: Colors.white, fontWeight: FontWeight.bold), // Header Text
         columnSpacing: 9.5.w,
         dataRowHeight: 70.h,
-        horizontalMargin: 10,
+        horizontalMargin: 6.w,
         showBottomBorder: true,
         border: TableBorder.all(
           borderRadius: BorderRadius.circular(16.r),
@@ -165,14 +165,14 @@ class MedicalAnalysisView extends StatelessWidget {
                       style: TextStyle(
                         color: AppColorsManager.mainDarkBlue,
                         decoration: TextDecoration.underline,
-                        fontSize: 15.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600,
                       )),
                 ),
               ),
               onTap: () => _navigateToDetailsView(context, data),
             ),
-            _buildDataCellCenter(data.testName, maxLines: 2),
+            _buildDataCellCenter(data.testName, maxLines: 3),
             _buildDataCellCenter(data.code),
             _buildDataCellCenter(data.standardRate ?? '-', color: Colors.black),
             DataCell(
@@ -183,7 +183,7 @@ class MedicalAnalysisView extends StatelessWidget {
                     style: TextStyle(
                         color: AppColorsManager.mainDarkBlue,
                         decoration: TextDecoration.underline,
-                        fontSize: 15.sp,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w600)),
               ),
               onTap: () => _navigateToSimilarAnalysisView(context, data),
@@ -219,7 +219,7 @@ class MedicalAnalysisView extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: color ?? Colors.black87,
-            fontSize: 14.sp,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
           ),
         ),

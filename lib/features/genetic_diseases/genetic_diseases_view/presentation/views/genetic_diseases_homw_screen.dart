@@ -80,6 +80,7 @@ class CustomButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Spacer(),
                 Text(
                   title,
                   style: TextStyle(
@@ -89,7 +90,9 @@ class CustomButton extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                horizontalSpacing(40),
+                const Spacer(
+                  flex: 2,
+                ),
                 SizedBox(
                   width: 100,
                   height: 100,

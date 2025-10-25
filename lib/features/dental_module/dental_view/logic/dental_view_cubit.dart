@@ -138,7 +138,7 @@ class DentalViewCubit extends Cubit<DentalViewState> {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
           message: error.errors.first,
-          filteredDefectedToothList: null,
+          filteredDefectedToothList: [],
         ));
       },
     );

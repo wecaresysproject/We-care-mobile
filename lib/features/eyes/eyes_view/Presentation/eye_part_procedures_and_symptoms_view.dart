@@ -29,6 +29,19 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
             builder: (context, state) {
               final cubit = context.read<EyeViewCubit>();
 
+              if (state.requestStatus == RequestStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state.eyePartDocuments.isEmpty) {
+                return Center(
+                  child: Text(
+                    'لا يوجد بيانات',
+                    style: AppTextStyles.font22MainBlueWeight700,
+                  ),
+                );
+              }
+
               return Column(
                 children: [
                   Expanded(
@@ -60,16 +73,6 @@ class EyePartProceduresAndSymptomsView extends StatelessWidget {
                               );
                             },
                           ),
-                          if (state.requestStatus == RequestStatus.loading)
-                            const Center(child: CircularProgressIndicator())
-                          else if (state.eyePartDocuments.isEmpty)
-                            Center(
-                              child: Text(
-                                "لا يوجد بيانات",
-                                style: AppTextStyles.font22MainBlueWeight700,
-                              ),
-                            )
-                          else
                             ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),

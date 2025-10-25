@@ -15,6 +15,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class MedicineDetailsView extends StatelessWidget {
   const MedicineDetailsView({
@@ -144,21 +145,18 @@ class MedicineDetailsView extends StatelessWidget {
                         icon: 'assets/images/doctor_name.png',
                       ),
                     ]),
-                    Row(
-                      children: [
-                        DetailsViewInfoTile(
-                          title: "اسم الطبيب ",
-                          value: state.selectestMedicineDetails!.doctorName,
-                          icon: 'assets/images/doctor_icon.png',
-                        ),
-                        Spacer(),
-                        DetailsViewInfoTile(
+                    DetailsViewInfoTile(
+                      title: "اسم الطبيب ",
+                      isExpanded: true,
+                      value: state.selectestMedicineDetails!.doctorName,
+                      icon: 'assets/images/doctor_icon.png',
+                    ),
+                    DetailsViewInfoTile(
                           title: " دواء مرض مزمن",
+                          isExpanded: true,
                           value: state
                               .selectestMedicineDetails!.chronicDiseaseMedicine,
                           icon: 'assets/images/medicine_icon.png',
-                        ),
-                      ],
                     ),
 
                     // Display the main symptoms using SymptomContainer
@@ -194,7 +192,7 @@ class MedicineDetailsView extends StatelessWidget {
                                     ? 'مفعل'
                                     : 'غير مفعل',
                             icon: 'assets/images/date_icon.png'),
-                        Spacer(),
+                     12.horizontalSpace,
                         CustomContainer(
                             value: state.selectestMedicineDetails!.reminder),
                       ],

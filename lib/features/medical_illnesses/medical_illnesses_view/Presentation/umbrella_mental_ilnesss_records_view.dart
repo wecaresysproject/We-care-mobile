@@ -147,16 +147,18 @@ class _MentalIllnessesUmbrellRecordsViewState
                         );
                       }
 
-                      final records = state.mentalIllnessUmbrellaRecords;
-                      if (records.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'لا توجد بيانات',
-                            style: AppTextStyles.font22MainBlueWeight700,
-                          ),
-                        );
+                      if (state.requestStatus == RequestStatus.success) {
+                        if (state.mentalIllnessUmbrellaRecords.isEmpty) {
+                          return Center(
+                            child: Text(
+                              'لا توجد بيانات',
+                              style: AppTextStyles.font22MainBlueWeight700,
+                            ),
+                          );
+                        }
                       }
 
+                      final records = state.mentalIllnessUmbrellaRecords;
                       return GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -174,7 +176,7 @@ class _MentalIllnessesUmbrellRecordsViewState
 
                           return OverflowBox(
                             maxHeight:
-                                400, // Adjust this value based on your content height
+                                500, // Adjust this value based on your content height
                             alignment: Alignment.topCenter,
                             child: Accordion(
                               disableScrolling: false,
@@ -202,7 +204,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                               headerBorderColor: Colors.transparent,
                               headerBorderRadius: 16.r,
                               headerPadding:
-                                  EdgeInsets.symmetric(horizontal: 12.w),
+                                  EdgeInsets.symmetric(horizontal: 8.w),
                               flipRightIconIfOpen: false,
                               scaleWhenAnimating: true,
                               rightIcon: Icon(
@@ -225,40 +227,37 @@ class _MentalIllnessesUmbrellRecordsViewState
                                     category.riskLevel,
                                   ).withOpacity(0.3),
                                   header: Container(
-                                    height: 70.h,
-                                    padding: const EdgeInsets.all(8),
+                                    height: MediaQuery.of(context).size.height *
+                                        0.1,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 4),
                                     decoration: BoxDecoration(
                                       color:
                                           getCategoryColorRelativeToRiskLevel(
-                                        category.riskLevel,
-                                      ),
+                                              category.riskLevel),
                                       borderRadius: BorderRadius.circular(12.r),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            category.title,
-                                            style: AppTextStyles
-                                                .font14whiteWeight600
-                                                .copyWith(
-                                              fontSize: 13.2.sp,
-                                              color:
-                                                  _getCategoryTitleDesiredColor(
-                                                      category),
-                                              fontWeight: category.riskLevel ==
-                                                      RiskLevel.confirmedRisk
-                                                  ? FontWeight.bold
-                                                  : FontWeight.w600,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
+                                    child: Center(
+                                      child: AutoSizeText(
+                                        category.title,
+                                        maxLines: 3, // يلف على سطر تاني لو طويل
+                                        minFontSize: 10, // أقل حجم ممكن
+                                        maxFontSize: 13, // أكبر حجم ممكن
+                                        textAlign: TextAlign.center,
+                                        style: AppTextStyles
+                                            .font14whiteWeight600
+                                            .copyWith(
+                                          color: _getCategoryTitleDesiredColor(
+                                              category),
+                                          fontWeight: category.riskLevel ==
+                                                  RiskLevel.confirmedRisk
+                                              ? FontWeight.bold
+                                              : FontWeight.w600,
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
+
                                   content: _buildExpandedContent(category),
                                 ),
                               ],
