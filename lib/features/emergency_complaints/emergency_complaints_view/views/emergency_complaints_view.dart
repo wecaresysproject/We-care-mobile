@@ -126,6 +126,12 @@ class EmergencyComplaintsFiltersRow extends StatelessWidget {
           ],
           onApply: (selectedFilters) async {
             AppLogger.debug("Selected Filters: $selectedFilters");
+            if(selectedFilters['مكان الشكوى'] ==null&& selectedFilters['السنة']==null){
+              await context
+                  .read<EmergencyComplaintsViewCubit>()
+                  .getUserEmergencyComplaintsList();
+              return;
+            }
             await context
                 .read<EmergencyComplaintsViewCubit>()
                 .getFilteredEmergencyComplaintList(

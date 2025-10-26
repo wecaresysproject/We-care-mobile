@@ -16,7 +16,7 @@ class XRayViewRepo {
       final response =
           await xRayApiServices.getUserRadiologyData(language, userType,
               page: page ?? 1, pageSize: pageSize ?? 10);
-      return ApiResult.success(response);
+      return ApiResult.success(UserRadiologyDataResponse.fromJson(response));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
