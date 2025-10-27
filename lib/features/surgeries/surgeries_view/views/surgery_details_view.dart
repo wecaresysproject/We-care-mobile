@@ -126,30 +126,28 @@ class SurgeryDetailsView extends StatelessWidget {
                       value: state.selectedSurgeryDetails!.surgeryDescription,
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "الجراح ",
-                      value: state.selectedSurgeryDetails!.surgeonName,
-                      icon: 'assets/images/surgery_icon.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "طبيب الباطنة ",
-                      value: state.selectedSurgeryDetails!.anesthesiologistName,
-                      icon: 'assets/images/doctor_icon.png',
-                    ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: state.selectedSurgeryDetails!.country,
-                        icon: 'assets/images/country_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "المستشفي",
-                        value: state.selectedSurgeryDetails!.hospitalCenter,
-                        icon: 'assets/images/hospital_icon.png'),
-                  ]),
+                  DetailsViewInfoTile(
+                    title: "الجراح ",
+                    value: state.selectedSurgeryDetails!.surgeonName,
+                    icon: 'assets/images/surgery_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "طبيب الباطنة ",
+                    value: state.selectedSurgeryDetails!.anesthesiologistName,
+                    icon: 'assets/images/doctor_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                      title: "الدولة",
+                      value: state.selectedSurgeryDetails!.country,
+                      isExpanded: true,
+                      icon: 'assets/images/country_icon.png'),
+                  DetailsViewInfoTile(
+                      title: "المستشفي",
+                      value: state.selectedSurgeryDetails!.hospitalCenter,
+                      icon: 'assets/images/hospital_icon.png',
+                      isExpanded: true),
                   DetailsViewInfoTile(
                       title: " تعليمات بعد العملية",
                       value:
