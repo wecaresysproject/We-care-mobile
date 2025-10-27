@@ -49,9 +49,9 @@ class MedicineTable extends StatelessWidget {
             headingRowColor: WidgetStateProperty.all(
                 AppColorsManager.mainDarkBlue), // Header Background Color
 
-            columnSpacing: 3.2.w,
+            columnSpacing: 6.w,
             dataRowHeight: 60.h,
-            horizontalMargin: 5.5.w,
+            horizontalMargin: 5.w,
             showBottomBorder: true,
             border: TableBorder.all(
               borderRadius: BorderRadius.circular(16.r),
@@ -93,7 +93,7 @@ class MedicineTable extends StatelessWidget {
                   headingRowAlignment: MainAxisAlignment.center,
                   label: Center(
                       child: Text(
-                    "امراض مزمنة",
+                    "امراض\n مزمنة",
                     textAlign: TextAlign.center,
                     style: AppTextStyles.font14whiteWeight600.copyWith(fontSize: 13.sp),
                   ))),
@@ -129,6 +129,7 @@ class MedicineTable extends StatelessWidget {
                         style: AppTextStyles.font14whiteWeight600.copyWith(
                             color: AppColorsManager.mainDarkBlue,
                             decoration: TextDecoration.underline),
+                        maxLines: 2,
                       ),
                     ), onTap: () async {
                   await Navigator.push(context,
@@ -152,7 +153,7 @@ class MedicineTable extends StatelessWidget {
                       maxLines: 3,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.font14whiteWeight600
-                          .copyWith(color: AppColorsManager.textColor,fontSize: 13.sp)),
+                          .copyWith(color: AppColorsManager.textColor,fontSize: 12.sp)),
                 )),
                 DataCell(Center(
                   child: Text(
@@ -161,6 +162,7 @@ class MedicineTable extends StatelessWidget {
                         : data.chronicDiseaseMedicine,
                     style: AppTextStyles.font14whiteWeight600
                         .copyWith(color: AppColorsManager.textColor),
+                    maxLines: 2,
                   ),
                 )),
               ]);
