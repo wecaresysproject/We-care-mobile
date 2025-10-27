@@ -216,31 +216,6 @@ class ChronicDiseaseViewFooterRow extends StatelessWidget {
                           ],
                         ),
                 ),
-
-                // Items Count Badge
-                !cubit.hasMore
-                    ? SizedBox.shrink()
-                    : Container(
-                        width: 47.w,
-                        height: 28.h,
-                        padding: EdgeInsets.symmetric(horizontal: 6.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(11.r),
-                          border: Border.all(
-                            color: Color(0xFF014C8A),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "+${cubit.pageSize}",
-                            style:
-                                AppTextStyles.font16DarkGreyWeight400.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            ),
-                          ),
-                        ),
-                      ),
               ],
             ),
           ],
