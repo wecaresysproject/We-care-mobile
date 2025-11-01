@@ -4,20 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/Database/dummy_data.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
-import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_reports_section_widget.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_test_images_section_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
 
 class TestAnalysisDataEntryFormFields extends StatefulWidget {
@@ -62,102 +60,11 @@ class _TestAnalysisDataEntryFormFieldsState
               TypeOfTestAndAnnotationWidget(),
               verticalSpacing(16),
             ],
-            Text(
-              "الصورة",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            BlocListener<TestAnalysisDataEntryCubit,
-                TestAnalysisDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.testImageRequestStatus !=
-                  current.testImageRequestStatus,
-              listener: (context, state) async {
-                if (state.testImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.testImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                containerBorderColor: (state.isTestPictureSelected == null) ||
-                        (state.isTestPictureSelected == false)
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        context
-                            .read<TestAnalysisDataEntryCubit>()
-                            .updateTestPicture(isImagePicked);
-                        await context
-                            .read<TestAnalysisDataEntryCubit>()
-                            .uploadLaboratoryTestImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
+            UploadedTestImagesSection(),
 
             verticalSpacing(16),
-            Text(
-              "التقرير الطبي",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            SelectImageContainer(
-              imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
-            ),
+            UploadedReportsSection(),
 
-            verticalSpacing(8),
-            BlocListener<TestAnalysisDataEntryCubit,
-                TestAnalysisDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.testReportRequestStatus !=
-                  current.testReportRequestStatus,
-              listener: (context, state) async {
-                if (state.testReportRequestStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.testReportRequestStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة للتقرير",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<TestAnalysisDataEntryCubit>()
-                            .uploadLaboratoryTestReportPicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
             verticalSpacing(16),
 
             UserSelectionContainer(
@@ -207,6 +114,19 @@ class _TestAnalysisDataEntryFormFieldsState
 
             verticalSpacing(16),
 
+            UserSelectionContainer(
+              allowManualEntry: true,
+              categoryLabel: "مركز التحاليل",
+              containerHintText: "اختر اسم المركز",
+              options: [],
+              onOptionSelected: (value) {
+                log("xxx:Selected: $value");
+              },
+              bottomSheetTitle: 'اختر اسم المركز',
+              searchHintText: "ابحث عن اسم المركز",
+            ),
+            verticalSpacing(16),
+
             /// المركز / المستشفى
             //   //! write by ur hand
             UserSelectionContainer(
@@ -231,7 +151,7 @@ class _TestAnalysisDataEntryFormFieldsState
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "الطبيب المعالج",
               bottomSheetTitle: "اختر اسم الطبيب المعالج ",
               onOptionSelected: (value) {

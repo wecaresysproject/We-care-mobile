@@ -82,22 +82,18 @@ class AllergyDetailsView extends StatelessWidget {
                     icon: 'assets/images/date_icon.png',
                     isExpanded: true,
                   ),
-                  Row(
-                    children: [
-                      DetailsViewInfoTile(
-                        title: "النوع",
-                        value: state.selectedAllergyDetails!.allergyType,
-                        icon: 'assets/images/qr_code_icon.png',
-                      ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                          //!joint t later with 1/
-                          title: "مسببات الحساسية",
-                          value: state.selectedAllergyDetails!.allergyTriggers
-                              .join(', '),
-                          icon: 'assets/images/chat_question.png'),
-                    ],
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                    title: "النوع",
+                    value: state.selectedAllergyDetails!.allergyType,
+                    icon: 'assets/images/qr_code_icon.png',
                   ),
+                  DetailsViewInfoTile(
+                      isExpanded: true,
+                      title: "مسببات الحساسية",
+                      value: state.selectedAllergyDetails!.allergyTriggers
+                          .join(', '),
+                      icon: 'assets/images/chat_question.png'),
                   DetailsViewInfoTile(
                     title: "الأعراض الجانبية المتوقعة",
                     value: state.selectedAllergyDetails!.expectedSideEffects!,

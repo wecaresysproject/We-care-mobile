@@ -35,14 +35,18 @@ abstract class PrescriptionServices {
     @Query("language") String language,
   );
 
+  @GET(PrescriptionApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
   @GET(PrescriptionApiConstants.getPrescriptionFilters)
   Future<dynamic> getPrescriptionFilters(
       @Query("language") String language, @Query("UserType") String userType);
 
   @GET(PrescriptionApiConstants.getUserPrescriptionList)
   Future<GetUserPrescriptionsResponseModel> getUserPrescriptionList(
-      @Query("language") String language,
-      @Query("UserType") String userType,
+      @Query("language") String language, @Query("UserType") String userType,
       {@Query("page") int? page, @Query("pageSize") int? pageSize});
 
   @GET(PrescriptionApiConstants.getUserPrescriptionDetailsById)

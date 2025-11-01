@@ -73,6 +73,30 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  Future<void> emitDoctorNames() async {
+    final response = await _xRayDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   void updateSelectedCountry(String? selectedCountry) {
     emit(
       state.copyWith(
@@ -81,10 +105,27 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  void updateSelectedRadiologistDoctor(String? val) {
+    emit(
+      state.copyWith(
+        selectedRadiologistDoctorName: val,
+      ),
+    );
+  }
+
+  void updateSelectedTreatedDoctor(String? val) {
+    emit(
+      state.copyWith(
+        selectedTreatedDoctor: val,
+      ),
+    );
+  }
+
   Future<void> intialRequestsForXRayDataEntry() async {
     if (isClosed) return;
     await emitBodyPartsData();
     await emitCountriesData();
+    await emitDoctorNames();
   }
 
   Future<void> _getRadiologyTypeByBodyPartId(String id) async {
@@ -345,9 +386,11 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
             ? state.xRayReportUploadedUrl
             : localozation.no_data_entered,
         cause: localozation.no_data_entered,
-        radiologyDoctor: localozation.no_data_entered,
+        radiologyDoctor:
+            state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
         hospital: localozation.no_data_entered,
-        curedDoctor: localozation.no_data_entered,
+        curedDoctor:
+            state.selectedTreatedDoctor ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
         radiologyNote: personalNotesController.text.isEmpty
             ? localozation.no_data_entered

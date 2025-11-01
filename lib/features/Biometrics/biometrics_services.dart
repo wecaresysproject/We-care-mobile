@@ -40,22 +40,4 @@ abstract class BiometricsServices {
   Future<dynamic> getCurrentBiometricData(
       @Query('Language') String language, 
       @Query('userType') String userType,);
-
-  @PUT(BiometricsApiConstants.editBiometricDataOfSpecifcCategory)
-  Future<dynamic> editBiometricDataOfSpecifcCategory(
-    @Body() dynamic requestBody,
-    @Query('userType') String userType,
-    @Query('Language') String language,
-    @Query('createdAt') String date,
-    @Query('biometricName') String biometricName
-    ); 
-
-
-  @DELETE(BiometricsApiConstants.deleteBiometricDataOfSpecifcCategory)
-  Future<dynamic> deleteBiometricDataOfSpecifcCategory(
-    @Query('userType') String userType,
-    @Query('Language') String language,
-    @Query('createdAt') String date,
-    @Query('biometricName') String biometricName
-    );
 }

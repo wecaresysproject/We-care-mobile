@@ -12,6 +12,7 @@ class SurgeryDataEntryState extends Equatable {
   final String? reportImageUploadedUrl;
   final UploadReportRequestStatus surgeryUploadReportStatus;
   final List<String> countriesNames;
+  final List<String> doctorNames;
   final String? selectedCountryName;
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
@@ -54,6 +55,7 @@ class SurgeryDataEntryState extends Equatable {
     this.surgeonName,
     this.selectedHospitalCenter,
     this.internistName,
+    this.doctorNames = const [],
   }) : super();
 
   const SurgeryDataEntryState.initialState()
@@ -82,6 +84,7 @@ class SurgeryDataEntryState extends Equatable {
           surgeonName: null,
           selectedHospitalCenter: null,
           internistName: null,
+          doctorNames: const [],
         );
 
   SurgeryDataEntryState copyWith({
@@ -110,6 +113,7 @@ class SurgeryDataEntryState extends Equatable {
     String? surgeonName,
     String? selectedHospitalCenter,
     String? internistName,
+    List<String>? doctorNames,
   }) {
     return SurgeryDataEntryState(
       surgeriesDataEntryStatus:
@@ -143,6 +147,7 @@ class SurgeryDataEntryState extends Equatable {
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
       internistName: internistName ?? this.internistName,
+      doctorNames: doctorNames ?? this.doctorNames,
     );
   }
 
@@ -173,5 +178,6 @@ class SurgeryDataEntryState extends Equatable {
         surgeonName,
         selectedHospitalCenter,
         internistName,
+        doctorNames,
       ];
 }

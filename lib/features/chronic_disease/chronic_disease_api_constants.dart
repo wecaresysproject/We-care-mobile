@@ -18,6 +18,7 @@ class ChronicDiseaseApiConstants {
 
   static const getFilteredPrescriptionList =
       "/PreDescriptionUserEntryPage/PreDescriptionSearchUserDocuments";
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
 
   //filters
   static const getPrescriptionFilters =

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
@@ -71,6 +72,30 @@ class MedicalIllnessesDataEntryCubit
     emit(state.copyWith(symptoms: updatedSymptoms));
   }
 
+  Future<void> emitDoctorNames() async {
+    final response = await _medicalIllnessesDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   // Future<void> loadPastEyeDataEnteredForEditing({
   //   required EyeProceduresAndSymptomsDetailsModel pastEyeData,
   //   required String id,
@@ -111,6 +136,7 @@ class MedicalIllnessesDataEntryCubit
       getPsychologicalEmergencies(),
       getMedicationImpactOnDailyLife(),
       getPreferredActivitiesForPsychologicalImprovement(),
+      emitDoctorNames(),
     ]);
   }
 

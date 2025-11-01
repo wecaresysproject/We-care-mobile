@@ -326,23 +326,32 @@ class MentalIllnessDetailsView extends StatelessWidget {
                             isExpanded: true,
                           ),
                           verticalSpacing(16),
-                          DetailsViewInfoTile(
-                            title: "المستشفى/المركز",
-                            value: docDetails
-                                    .isReceivingPsychologicalTreatment
-                                    .hospitalOrCenter ??
-                                "غير محدد",
-                            icon: 'assets/images/hospital_icon.png',
-                            isExpanded: true,
-                          ),
-                          DetailsViewInfoTile(
-                            title: "الدولة",
-                            value: docDetails
-                                    .isReceivingPsychologicalTreatment
-                                    .country ??
-                                "غير محدد",
-                            icon: 'assets/images/country_icon.png',
-                            isExpanded: true,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: DetailsViewInfoTile(
+                                  title: "المستشفى/المركز",
+                                  value: docDetails
+                                          .isReceivingPsychologicalTreatment
+                                          .hospitalOrCenter ??
+                                      "غير محدد",
+                                  icon: 'assets/images/hospital_icon.png',
+                                  isExpanded: true,
+                                ),
+                              ),
+                              horizontalSpacing(16),
+                              Expanded(
+                                child: DetailsViewInfoTile(
+                                  title: "الدولة",
+                                  value: docDetails
+                                          .isReceivingPsychologicalTreatment
+                                          .country ??
+                                      "غير محدد",
+                                  icon: 'assets/images/country_icon.png',
+                                  isExpanded: true,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ],

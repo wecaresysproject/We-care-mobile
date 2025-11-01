@@ -240,38 +240,45 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "طبيب الأشعة",
-              containerHintText: "اختر اسم طبيب الأشعة",
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
+              containerHintText:
+                  state.selectedRadiologistDoctorName ?? "اختر اسم طبيب الأشعة",
+              options: state.doctorNames,
               onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedRadiologistDoctor(value);
               },
               bottomSheetTitle: 'اختر اسم طبيب الأشعة',
               searchHintText: "ابحث عن اسم طبيب الأشعة",
             ),
 
             verticalSpacing(16),
-
-            /// المركز / المستشفى
-            //   //! write by ur hand
             UserSelectionContainer(
               allowManualEntry: true,
-              categoryLabel: "المركز / المستشفى",
-              containerHintText: "اختر اسم المستشفى/المركز",
-              options: [
-                "مستشفى القلب",
-                "مستشفى العين الدولى",
-                "مستشفى 57357",
-              ],
+              categoryLabel: "مركز الأشعة",
+              containerHintText: "اختر اسم المركز",
+              options: [],
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
               },
-              bottomSheetTitle: 'اختر اسم المستشفى/المركز',
-              searchHintText: "ابحث عن اسم المستشفى/المركز",
+              bottomSheetTitle: 'اختر اسم المركز',
+              searchHintText: "ابحث عن اسم المركز",
+            ),
+
+            verticalSpacing(16),
+
+            ///المستشفى
+            //   //! write by ur hand
+            UserSelectionContainer(
+              allowManualEntry: true,
+              categoryLabel: "المستشفى",
+              containerHintText: "اختر اسم المستشفى",
+              options: [],
+              onOptionSelected: (value) {
+                log("xxx:Selected: $value");
+              },
+              bottomSheetTitle: 'اختر اسم المستشفى',
+              searchHintText: "ابحث عن اسم المستشفى",
             ),
 
             verticalSpacing(16),
@@ -280,16 +287,16 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: [
-                "د / محمد محمد",
-                "د / كريم محمد",
-                "د / رشا محمد",
-                "د / رشا مصطفى",
-              ],
+              options: state.doctorNames,
               categoryLabel: "الطبيب المعالج",
               bottomSheetTitle: "اختر اسم الطبيب المعالج ",
-              onOptionSelected: (value) {},
-              containerHintText: "اختر اسم الطبيب المعالج (جراح/باطنة)",
+              onOptionSelected: (value) {
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedTreatedDoctor(value);
+              },
+              containerHintText: state.selectedTreatedDoctor ??
+                  "اختر اسم الطبيب المعالج (جراح/باطنة)",
               searchHintText: "ابحث عن اسم الطبيب المعالج",
             ),
 

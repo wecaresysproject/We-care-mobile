@@ -22,6 +22,7 @@ class XrayApiConstants {
 
   static const updateXrayDocumentDetails =
       '/RadiologyUserEntryPage/UpdateRadiologyDocument';
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
 
   //filters
   static const getFilters = '/RadiologyUserEntryPage/RadiologyGetUserFilters';

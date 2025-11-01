@@ -258,7 +258,7 @@ class _SuergeriesDataEntryFormFieldsState
               allowManualEntry: true,
               categoryLabel: "اسم الجراح",
               containerHintText: state.surgeonName ?? "اختر اسم الطبيب الجراح",
-              options: doctorsList,
+              options: state.doctorNames,
               onOptionSelected: (value) {
                 context
                     .read<SurgeryDataEntryCubit>()
@@ -274,7 +274,7 @@ class _SuergeriesDataEntryFormFieldsState
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: doctorsList,
+              options: state.doctorNames,
               categoryLabel: "اسم طبيب الباطنة",
               bottomSheetTitle: "اختر اسم طبيب الباطنة",
               onOptionSelected: (value) {

@@ -10,8 +10,8 @@ class TestAnalysisDataEnteryRequestBodyModel {
     required this.testTableEnteredResults,
     required this.timesTestPerformed,
     required this.symptomsForProcedure,
-    required this.testImage,
-    required this.reportImage,
+    required this.testImages,
+    required this.reportImages,
     required this.hospital,
     required this.doctor,
     required this.country,
@@ -23,9 +23,9 @@ class TestAnalysisDataEnteryRequestBodyModel {
   final String timesTestPerformed;
   final String symptomsForProcedure;
   @JsonKey(name: "imageBase64")
-  final String testImage;
+  final List<String> testImages;
   @JsonKey(name: "reportBase64")
-  final String reportImage;
+  final List<String> reportImages;
   final String hospital;
   final String doctor;
   final String country;
@@ -40,8 +40,8 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
     required this.testDate,
     required this.timesTestPerformed,
     required this.symptomsForProcedure,
-    required this.testImage,
-    required this.reportImage,
+    required this.testImages,
+    required this.reportImages,
     required this.hospital,
     required this.doctor,
     required this.country,
@@ -51,9 +51,9 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
   final String timesTestPerformed;
   final String symptomsForProcedure;
   @JsonKey(name: "imageBase64")
-  final String testImage;
+  final List<String> testImages;
   @JsonKey(name: "reportBase64")
-  final String reportImage;
+  final List<String> reportImages;
   final String hospital;
   final String doctor;
   final String country;

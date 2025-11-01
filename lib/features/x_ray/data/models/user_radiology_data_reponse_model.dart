@@ -26,7 +26,7 @@ class RadiologyData {
   String radioType;
   String? periodicUsage;
   @JsonKey(name: 'photoPath')
-  String? radiologyPhoto;
+  String radiologyPhoto;
   @JsonKey(name: 'reportPath')
   String? report;
   @JsonKey(name: 'cause')
@@ -47,7 +47,7 @@ class RadiologyData {
     required this.bodyPart,
     required this.radioType,
     this.periodicUsage,
-    this.radiologyPhoto,
+    required this.radiologyPhoto,
     this.report,
     this.symptoms,
     this.hospital,

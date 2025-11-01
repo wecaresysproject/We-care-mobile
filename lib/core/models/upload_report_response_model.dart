@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'upload_report_response_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class UploadReportResponseModel {
   final String reportUrl;
   @JsonKey(name: 'success')

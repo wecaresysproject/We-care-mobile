@@ -17,6 +17,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final String? selectedMedicationSideEffects;
   final String? selectedPreferredMentalWellnessActivities;
   final List<String> symptoms;
+  final List<String> doctorNames;
   final List<TextEditingController> symptomControllers;
 
   //حادث له آثر
@@ -95,6 +96,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.preferredActivitiesForPsychologicalImprovement = const [],
     this.countriesNames = const [],
     this.symptomControllers = const [],
+    this.doctorNames = const [],
   }) : super();
 
   MedicalIllnessesDataEntryState.initialState()
@@ -138,6 +140,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
           preferredActivitiesForPsychologicalImprovement: const [],
           countriesNames: const [],
           symptomControllers: [TextEditingController()],
+          doctorNames: const [],
         );
 
   MedicalIllnessesDataEntryState copyWith({
@@ -180,6 +183,8 @@ class MedicalIllnessesDataEntryState extends Equatable {
     List<String>? countriesNames,
     List<String>? symptoms,
     List<TextEditingController>? symptomControllers,
+    List<String>? doctorNames,
+    List<String>? medicalSyptoms,
   }) {
     return MedicalIllnessesDataEntryState(
       mentalIllnessesDataEntryStatus:
@@ -229,7 +234,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
       selectedMentalIllnessesType:
           selectedMentalIllnessesType ?? this.selectedMentalIllnessesType,
       mentalIllnessTypes: mentalIllnessTypes ?? this.mentalIllnessTypes,
-      medicalSyptoms: medicalSyptoms ?? medicalSyptoms,
+      medicalSyptoms: medicalSyptoms ?? this.medicalSyptoms,
       incidentTypes: incidentTypes ?? this.incidentTypes,
       medicationImpactOnDailyLife:
           medicationImpactOnDailyLife ?? this.medicationImpactOnDailyLife,
@@ -243,6 +248,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
       countriesNames: countriesNames ?? this.countriesNames,
       symptoms: symptoms ?? this.symptoms,
       symptomControllers: symptomControllers ?? this.symptomControllers,
+      doctorNames: doctorNames ?? this.doctorNames,
     );
   }
 
@@ -288,5 +294,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
         countriesNames,
         symptoms,
         symptomControllers,
+        doctorNames,
       ];
 }

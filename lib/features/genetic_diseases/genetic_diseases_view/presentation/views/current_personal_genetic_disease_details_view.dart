@@ -131,18 +131,21 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
                 isExpanded: true,
               ),
               verticalSpacing(16),
-              DetailsViewInfoTile(
-                title: 'الطبيب المعالج',
-                value: state.currentPersonalGeneticDiseaseDetails!.doctor!,
-                icon: 'assets/images/doctor_icon.png',
-                isExpanded: true,
-              ),
-              DetailsViewInfoTile(
-                title: 'المستشفي',
-                value:
-                    state.currentPersonalGeneticDiseaseDetails!.hospital!,
-                icon: 'assets/images/hospital_icon.png',
-                isExpanded: true,
+              Row(
+                children: [
+                  DetailsViewInfoTile(
+                    title: 'الطبيب المعالج',
+                    value: state.currentPersonalGeneticDiseaseDetails!.doctor!,
+                    icon: 'assets/images/doctor_icon.png',
+                  ),
+                  Spacer(),
+                  DetailsViewInfoTile(
+                    title: 'المستشفي',
+                    value:
+                        state.currentPersonalGeneticDiseaseDetails!.hospital!,
+                    icon: 'assets/images/hospital_icon.png',
+                  ),
+                ],
               ),
               SizedBox(height: 16.h),
               DetailsViewInfoTile(

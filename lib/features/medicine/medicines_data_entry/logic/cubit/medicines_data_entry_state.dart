@@ -24,6 +24,7 @@ class MedicinesDataEntryState extends Equatable {
   final List<String> medicinesNames;
   final List<String> medicineForms;
   final List<String> medicalDoses;
+  final List<String> doctorNames;
   final String medicineId;
   final String updatedDocumentId;
   final List<MedicineBasicInfoModel>? medicinesBasicInfo;
@@ -85,6 +86,7 @@ class MedicinesDataEntryState extends Equatable {
     this.allUsageCategoriesOptionsLoadingState = OptionsLoadingState.loading,
     this.allDurationsBasedOnCategoryOptionsLoadingState =
         OptionsLoadingState.loading,
+    this.doctorNames = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -126,6 +128,7 @@ class MedicinesDataEntryState extends Equatable {
           allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
           allDurationsBasedOnCategoryOptionsLoadingState:
               OptionsLoadingState.loading,
+          doctorNames: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -166,6 +169,7 @@ class MedicinesDataEntryState extends Equatable {
     OptionsLoadingState? dosageFrequenciesOptionsLoadingState,
     OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
     OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
+    List<String>? doctorNames,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -220,6 +224,7 @@ class MedicinesDataEntryState extends Equatable {
       allDurationsBasedOnCategoryOptionsLoadingState:
           allDurationsBasedOnCategoryOptionsLoadingState ??
               this.allDurationsBasedOnCategoryOptionsLoadingState,
+      doctorNames: doctorNames ?? this.doctorNames,
     );
   }
 
@@ -261,5 +266,6 @@ class MedicinesDataEntryState extends Equatable {
         dosageFrequenciesOptionsLoadingState,
         allUsageCategoriesOptionsLoadingState,
         allDurationsBasedOnCategoryOptionsLoadingState,
+        doctorNames,
       ];
 }

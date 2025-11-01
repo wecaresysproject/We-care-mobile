@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
@@ -39,6 +40,30 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
         ),
       );
     }
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await dataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   /// Update Field Values
@@ -138,6 +163,7 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequests() async {
     await getChronicDiseasesNames();
+    await emitDoctorNames();
   }
 
   Future<void> postChronicDiseaseData(S locale) async {

@@ -17,19 +17,17 @@ part 'biometrics_dataset_model.g.dart';
 
 @JsonSerializable()
 class BiometricData {
-  final String? formattedDate;
   @JsonKey(name: 'time')
-  final String originalDate;
+  final String date;
   @JsonKey(name: 'minValue')
   final String value;
   @JsonKey(name: 'maxValue')
   final String? secondaryValue; // For blood pressure (diastolic)
 
   BiometricData({
-    required this.originalDate,
+    required this.date,
     required this.value,
     this.secondaryValue,
-    this.formattedDate,
   });
   factory BiometricData.fromJson(Map<String, dynamic> json) =>
       _$BiometricDataFromJson(json);

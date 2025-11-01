@@ -44,6 +44,11 @@ abstract class TestAnalysisSerices {
     @Query('id') String id,
     @Query('language') String language,
   );
+  @GET(TestAnalysisApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 
   @DELETE(TestAnalysisApiConstants.deleteAnalysisById)
   Future<DeleteAnalysisDocumentResponse> deleteAnalysisById(

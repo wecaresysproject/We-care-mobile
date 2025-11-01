@@ -23,7 +23,7 @@ class AnalysisSummarizedData {
   String? standardRate;
   String testDate;
   @JsonKey(name: 'writtenPercent')
-  double result;
+  double? result;
 
   AnalysisSummarizedData(
       {required this.id,

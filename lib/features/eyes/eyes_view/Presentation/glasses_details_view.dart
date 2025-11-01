@@ -72,32 +72,30 @@ class EyesGlassesDetailsView extends StatelessWidget {
                     },
                   ),
                   Image.asset('assets/images/glass.png'),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "تاريخ الفحص",
-                      value: data.date,
-                      icon: 'assets/images/data_search_icon.png',
-                    ),
-                    const Spacer(),
-                    DetailsViewInfoTile(
-                      title: "المركز/المستشفى",
-                      value: data.hospitalName,
-                      icon: 'assets/images/date_icon.png',
-                    ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "الطبيب",
-                      value: data.doctorName,
-                      icon: 'assets/images/doctor_name.png',
-                    ),
-                    const Spacer(),
-                    DetailsViewInfoTile(
-                      title: "محل النظارات",
-                      value: data.storeName,
-                      icon: 'assets/images/hospital_icon.png',
-                    ),
-                  ]),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                    title: "تاريخ الفحص",
+                    value: data.date,
+                    icon: 'assets/images/data_search_icon.png',
+                  ),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                    title: "المعمل/المستشفى",
+                    value: data.hospitalName,
+                    icon: 'assets/images/date_icon.png',
+                  ),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                    title: "الطبيب",
+                    value: data.doctorName,
+                    icon: 'assets/images/doctor_name.png',
+                  ),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                    title: "محل النظارات",
+                    value: data.storeName,
+                    icon: 'assets/images/hospital_icon.png',
+                  ),
                   Row(
                     children: [
                       DetailsViewInfoTile(
@@ -172,6 +170,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       LensDetailsCard(
                         lensSide: "العدسة اليمنى",

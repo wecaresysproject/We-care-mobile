@@ -1,5 +1,6 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
@@ -59,6 +60,25 @@ class MedicinesDataEntryRepo {
       final complaints =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(complaints);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllDoctors({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllDoctors(
+        userType,
+        language,
+      );
+      final doctors = (response['data'] as List)
+          .map<Doctor>((e) => Doctor.fromJson(e))
+          .toList();
+      final doctorNames = doctors.map((e) => e.fullName).toList();
+      return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
