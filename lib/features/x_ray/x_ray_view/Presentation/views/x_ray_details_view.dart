@@ -83,17 +83,16 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/body_icon.png',
                     ),
                   ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "النوع",
-                        value: radiologyData.radioType,
-                        icon: 'assets/images/type_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "نوعية الاحتياج",
-                        value: radiologyData.periodicUsage ?? 'لم يتم ادخاله',
-                        icon: 'assets/images/need_icon.png'),
-                  ]),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "النوع",
+                      value: radiologyData.radioType,
+                      icon: 'assets/images/type_icon.png'),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "نوعية الاحتياج",
+                      value: radiologyData.periodicUsage ?? 'لم يتم ادخاله',
+                      icon: 'assets/images/need_icon.png'),
                   DetailsViewInfoTile(
                       title: "الأعراض",
                       value: radiologyData.symptoms ?? 'لم يتم ادخاله',
@@ -103,37 +102,36 @@ class XRayDetailsView extends StatelessWidget {
                       image: radiologyData.radiologyPhoto,
                       isShareEnabled: true,
                       title: "صورة الأشعة"),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "الطبيب المعالج",
-                        value: radiologyData.doctor ?? 'لم يتم ادخاله',
-                        icon: 'assets/images/doctor_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "طبيب الأشعة",
-                        value: radiologyData.radiologyDoctor ?? 'لم يتم ادخاله',
-                        icon: 'assets/images/doctor_icon.png'),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "المستشفى",
-                        value: radiologyData.hospital ?? 'لم يتم ادخاله',
-                        icon: 'assets/images/hospital_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: radiologyData.country ?? 'لم يتم ادخاله',
-                        icon: 'assets/images/country_icon.png'),
-                  ]),
+                      DetailsViewImageWithTitleTile(
+                    isShareEnabled: true,
+                    image: radiologyData.report,
+                    title: "صورة التقرير",
+                  ),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "الطبيب المعالج",
+                      value: radiologyData.doctor ?? 'لم يتم ادخاله',
+                      icon: 'assets/images/doctor_icon.png'),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "طبيب الأشعة",
+                      value: radiologyData.radiologyDoctor ?? 'لم يتم ادخاله',
+                      icon: 'assets/images/doctor_icon.png'),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "المستشفى",
+                      value: radiologyData.hospital ?? 'لم يتم ادخاله',
+                      icon: 'assets/images/hospital_icon.png'),
+                  DetailsViewInfoTile(
+                    isExpanded: true,
+                      title: "الدولة",
+                      value: radiologyData.country ?? 'لم يتم ادخاله',
+                      icon: 'assets/images/country_icon.png'),
                   DetailsViewInfoTile(
                       title: "ملاحظات",
                       value: radiologyData.radiologyNote ?? 'لم يتم ادخاله',
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
-                  DetailsViewImageWithTitleTile(
-                    image: radiologyData.report,
-                    title: "صورة التقرير",
-                  ),
                 ],
               ),
             ),
