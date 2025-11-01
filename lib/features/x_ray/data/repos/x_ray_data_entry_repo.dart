@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_response_model.dart';
@@ -32,6 +33,25 @@ class XRayDataEntryRepo {
       return ApiResult.success(
         BodyPartsResponseModel.fromJson(response['data']),
       );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAllDoctors({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _xRayApiServices.getAllDoctors(
+        userType,
+        language,
+      );
+      final doctors = (response['data'] as List)
+          .map<Doctor>((e) => Doctor.fromJson(e))
+          .toList();
+      final doctorNames = doctors.map((e) => e.fullName).toList();
+      return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

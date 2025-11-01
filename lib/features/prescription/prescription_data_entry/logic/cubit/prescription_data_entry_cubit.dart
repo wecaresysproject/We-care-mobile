@@ -141,6 +141,31 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
     await emitCountriesData();
+    await emitDoctorNames();
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await _prescriptionDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> emitCitiesData() async {

@@ -7,6 +7,7 @@ class SurgeriesApiConstants {
       "/EnterSectionSurgery/surgery-regions";
   static const getSubSurgeriesRegions =
       "/EnterSectionSurgery/sub-surgery-regions-connected";
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
 
   static const getSurgeryName = "/EnterSectionSurgery/surgery-names-connected";
   static const getAllTechUsed =

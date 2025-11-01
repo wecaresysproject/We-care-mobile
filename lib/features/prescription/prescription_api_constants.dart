@@ -1,11 +1,13 @@
 class PrescriptionApiConstants {
   static const baseUrl = "http://147.93.57.70/api";
+
   //Data Entry
   static const postPrescriptionDataEntry =
       "/PreDescriptionUserEntryPage/AddPreDescriptionUserEntry";
   static const getCountries = "/countries";
   static const getCitiesByCountryName = "/countries/cities";
   static const uploadPrescriptionImageEndpoint = "/FileUpload/upload-image";
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
 
   //View Entry
   static const updatePrescriptionDocumentDetails =

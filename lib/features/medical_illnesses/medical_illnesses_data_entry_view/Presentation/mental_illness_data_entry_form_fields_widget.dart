@@ -726,12 +726,7 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                             categoryLabel: "الطبيب/الاخصائي النفسي",
                             containerHintText: state.psychologistName ??
                                 "اختر اسم الطبيب النفسي/الاخصائي",
-                            options: const [
-                              "د. أحمد محمد",
-                              "د. سارة علي",
-                              "د. خالد حسن",
-                              "د. نورة عبدالله",
-                            ],
+                            options: state.doctorNames,
                             onOptionSelected: (value) {
                               context
                                   .read<MedicalIllnessesDataEntryCubit>()

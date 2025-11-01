@@ -94,7 +94,7 @@ class MedicalItemCard extends StatelessWidget {
               verticalSpacing(4),
               ...infoRows.map((row) => _infoRow(row["title"]!, row["value"]!)),
               const Spacer(
-                flex: 3,
+                flex: 4,
               ),
               InkWell(
                 borderRadius: BorderRadius.circular(16.r),

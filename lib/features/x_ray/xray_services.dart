@@ -17,7 +17,7 @@ abstract class XRayApiServices {
   factory XRayApiServices(Dio dio, {String? baseUrl}) = _XRayApiServices;
 
   @GET(XrayApiConstants.getUserRadiologysData)
-  Future<dynamic> getUserRadiologyData(
+  Future<UserRadiologyDataResponse> getUserRadiologyData(
       @Query("language") String language, @Query("UserType") String userType,
       {@Query("page") int? page, @Query("pageSize") int? pageSize});
 
@@ -31,6 +31,11 @@ abstract class XRayApiServices {
   @GET(XrayApiConstants.getFilters)
   Future<dynamic> gettFilters(@Query("language") String language);
 
+  @GET(XrayApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
   @GET(XrayApiConstants.getFilteredDataEndpoint)
   Future<UserRadiologyDataResponse> getFilteredData(
     @Query("language") String language,

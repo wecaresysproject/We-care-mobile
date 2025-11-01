@@ -9,10 +9,10 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 
@@ -79,47 +79,70 @@ class AnalysisDetailsView extends StatelessWidget {
                       shareFunction: () {
                         _shareDetails(context, state);
                       }),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: state.selectedAnalysisDetails!.testDate,
-                        icon: 'assets/images/date_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "نوع التحليل",
-                      value: state.selectedAnalysisDetails!.groupName ?? "jkn",
-                      icon: 'assets/images/analysis_type.png',
-                    ),
-                  ]),
-                  DetailsViewImageWithTitleTile(
-                      image: state.selectedAnalysisDetails!.imageBase64,
-                      title: "صورة التحليل"),
-                  DetailsViewImageWithTitleTile(
-                      image: state.selectedAnalysisDetails!.reportBase64,
-                      title: "التقرير الطبي",
-                      isShareEnabled: true),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "نوعية الاحتياج",
-                        value: "دورية",
-                        icon: 'assets/images/need_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "الطبيب المعالج",
-                        value: state.selectedAnalysisDetails!.doctor,
-                        icon: 'assets/images/doctor_icon.png'),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "المستشفى/المعمل",
-                        value: state.selectedAnalysisDetails!.hospital,
-                        icon: 'assets/images/hospital_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "الدولة",
-                        value: state.selectedAnalysisDetails!.country,
-                        icon: 'assets/images/country_icon.png'),
-                  ]),
+                  DetailsViewInfoTile(
+                    title: "التاريخ",
+                    value: state.selectedAnalysisDetails!.testDate,
+                    icon: 'assets/images/date_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "نوع التحليل",
+                    value: state.selectedAnalysisDetails!.groupName ?? "jkn",
+                    icon: 'assets/images/analysis_type.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedAnalysisDetails!.imageBase64,
+                    title: "صورة التحليل",
+                  ),
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedAnalysisDetails!.reportBase64,
+                    title: "التقرير الطبي",
+                    isShareEnabled: true,
+                  ),
+                  DetailsViewInfoTile(
+                    value: "still dummy",
+                    title: "توصيف التقرير الطبي",
+                    icon: 'assets/images/need_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "نوعية الاحتياج",
+                    value: state.selectedAnalysisDetails!.testNeedType ?? '-',
+                    icon: 'assets/images/need_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الأعراض المستدعية للإجراء",
+                    value: state.selectedAnalysisDetails!.symptomsForProcedure!,
+                    icon: 'assets/images/need_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الطبيب المعالج",
+                    value: state.selectedAnalysisDetails!.doctor,
+                    icon: 'assets/images/doctor_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "المستشفى",
+                    value: state.selectedAnalysisDetails!.hospital,
+                    icon: 'assets/images/hospital_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "المعمل",
+                    value: "dummy",
+                    icon: 'assets/images/hospital_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "الدولة",
+                    value: state.selectedAnalysisDetails!.country,
+                    icon: 'assets/images/country_icon.png',
+                    isExpanded: true,
+                  ),
+                  SizedBox(height: 24.h),
                 ],
               ),
             ),
@@ -131,45 +154,53 @@ class AnalysisDetailsView extends StatelessWidget {
 }
 
 Future<void> _shareDetails(
-    BuildContext context, TestAnalysisViewState state) async {
+  BuildContext context,
+  TestAnalysisViewState state,
+) async {
   try {
     final analysisDetails = state.selectedAnalysisDetails!;
-
-    // 📝 Extract text details
-    final text = '''
-    🩺 *تفاصيل التحليل* 🩺
-
-    📅 *التاريخ*: ${analysisDetails.testDate}
-    🔬 *نوع التحليل*: ${analysisDetails.groupName ?? 'jjnj'}
-    👨‍⚕️ *الطبيب المعالج*: ${analysisDetails.doctor}
-    🏥 *المستشفى/المعمل*: ${analysisDetails.hospital}
-    🌍 *الدولة*: ${analysisDetails.country}
-    🏷 *نوعية الاحتياج*: دورية
-    ''';
-
-    // 📥 Download images
     final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
+    final List<String> imagePaths = [];
 
-    if (analysisDetails.imageBase64.startsWith("http")) {
-      final imagePath = await downloadImage(
-          analysisDetails.imageBase64, tempDir, 'analysis_image.png');
-      if (imagePath != null) imagePaths.add(imagePath);
+    // 📝 نص تفاصيل التحليل
+    final textBuffer = StringBuffer('''
+🩺 *تفاصيل التحليل* 🩺
+
+📅 *التاريخ*: ${analysisDetails.testDate ?? 'غير محدد'}
+🔬 *نوع التحليل*: ${analysisDetails.groupName ?? 'غير محدد'}
+👨‍⚕️ *الطبيب المعالج*: ${analysisDetails.doctor ?? 'غير محدد'}
+🏥 *المستشفى/المعمل*: ${analysisDetails.hospital ?? 'غير محدد'}
+🌍 *الدولة*: ${analysisDetails.country ?? 'غير محددة'}
+🏷 *نوعية الاحتياج*: دورية
+''');
+
+    // 🧾 صور وتقارير التحاليل
+    final List<String> analysisImages = analysisDetails.imageBase64 ?? [];
+    final List<String> reportImages = analysisDetails.reportBase64 ?? [];
+    final allImages = [...analysisImages, ...reportImages];
+
+    if (allImages.isNotEmpty) {
+      textBuffer.writeln('\n🧾 *صور وتقارير التحليل:*');
+      for (final url in allImages) {
+        if (url.startsWith('http')) {
+          final path = await downloadImage(
+            url,
+            tempDir,
+            'attachment_${DateTime.now().millisecondsSinceEpoch}.png',
+          );
+          if (path != null) imagePaths.add(path);
+        }
+      }
     }
 
-    if (analysisDetails.reportBase64.startsWith("http")) {
-      final reportPath = await downloadImage(
-          analysisDetails.reportBase64, tempDir, 'medical_report.png');
-      if (reportPath != null) imagePaths.add(reportPath);
-    }
-
-//!TODO: to be removed after adding real data
-    // 📤 Share text & images
+    // 📤 المشاركة
     if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles([XFile(imagePaths.first), XFile(imagePaths.last)],
-          text: text);
+      await Share.shareXFiles(
+        imagePaths.map((p) => XFile(p)).toList(),
+        text: textBuffer.toString(),
+      );
     } else {
-      await Share.share(text);
+      await Share.share(textBuffer.toString());
     }
   } catch (e) {
     await showError("❌ حدث خطأ أثناء المشاركة");

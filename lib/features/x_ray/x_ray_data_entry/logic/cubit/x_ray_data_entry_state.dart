@@ -11,12 +11,15 @@ class XRayDataEntryState extends Equatable {
   final List<RadiologyTypeOfBodyPartModel>?
       selectedRadiologyTypesOfBodyPartModel;
   final List<String> countriesNames;
+  final List<String> doctorNames;
   final String message; // error or success message
   final bool isFormValidated;
   final String? xRayDateSelection;
   final String? xRayBodyPartSelection;
   final String? xRayTypeSelection;
   final String? selectedCountryName;
+  final String? selectedTreatedDoctor;
+  final String? selectedRadiologistDoctorName;
   final bool? isXRayPictureSelected;
   final String xRayPictureUploadedUrl;
 
@@ -48,6 +51,9 @@ class XRayDataEntryState extends Equatable {
     this.xRayReportRequestStatus = UploadReportRequestStatus.initial,
     this.xRayEditedModel,
     this.isEditMode = false,
+    this.doctorNames = const [],
+    this.selectedTreatedDoctor,
+    this.selectedRadiologistDoctorName,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -65,6 +71,9 @@ class XRayDataEntryState extends Equatable {
           xRayImageRequestStatus: UploadImageRequestStatus.initial,
           xRayReportRequestStatus: UploadReportRequestStatus.initial,
           isEditMode: false,
+          doctorNames: const [],
+          selectedTreatedDoctor: null,
+          selectedRadiologistDoctorName: null,
         );
 
   XRayDataEntryState copyWith({
@@ -89,6 +98,9 @@ class XRayDataEntryState extends Equatable {
     UploadReportRequestStatus? xRayReportRequestStatus,
     RadiologyData? xRayEditedModel,
     bool? isEditMode,
+    List<String>? doctorNames,
+    String? selectedTreatedDoctor,
+    String? selectedRadiologistDoctorName,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -123,6 +135,11 @@ class XRayDataEntryState extends Equatable {
           xRayReportRequestStatus ?? this.xRayReportRequestStatus,
       xRayEditedModel: xRayEditedModel ?? this.xRayEditedModel,
       isEditMode: isEditMode ?? this.isEditMode,
+      doctorNames: doctorNames ?? this.doctorNames,
+      selectedTreatedDoctor:
+          selectedTreatedDoctor ?? this.selectedTreatedDoctor,
+      selectedRadiologistDoctorName:
+          selectedRadiologistDoctorName ?? this.selectedRadiologistDoctorName,
     );
   }
 
@@ -149,5 +166,8 @@ class XRayDataEntryState extends Equatable {
         xRayReportRequestStatus,
         xRayEditedModel,
         isEditMode,
+        doctorNames,
+        selectedTreatedDoctor,
+        selectedRadiologistDoctorName,
       ];
 }

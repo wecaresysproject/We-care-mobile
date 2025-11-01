@@ -185,6 +185,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     await emitAllMedicinesNames();
     await emitAllDosageFrequencies();
     await getAllUsageCategories();
+    await emitDoctorNames();
   }
 
   Future<void> emitAllMedicinesNames() async {
@@ -290,6 +291,30 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           state.copyWith(
             message: error.errors.first,
             medicalDosesOptionsLoadingState: OptionsLoadingState.error,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await _medicinesDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
           ),
         );
       },

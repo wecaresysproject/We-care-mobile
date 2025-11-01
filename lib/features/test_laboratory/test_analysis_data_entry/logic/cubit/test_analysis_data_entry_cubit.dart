@@ -23,7 +23,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   final TestAnalysisDataEntryRepo _testAnalysisDataEntryRepo;
   Future<void> intialRequestsForTestAnalysisDataEntry() async {
-    await emitCountriesData();
     await emitListOfTestAnnotations(
       testType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
@@ -36,6 +35,9 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
+    await emitCountriesData();
+
+    await emitDoctorNames();
   }
 
   void loadAnalysisDataForEditing(
@@ -43,10 +45,10 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     emit(
       state.copyWith(
         selectedDate: editingAnalysisDetailsData.testDate,
-        isTestPictureSelected:
-            editingAnalysisDetailsData.imageBase64.isNotEmpty,
-        testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
-        testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
+        // isTestPictureSelected:
+        //     editingAnalysisDetailsData.imageBase64.isNotEmpty,
+        // testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
+        // testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
         selectedCountryName: editingAnalysisDetailsData.country,
         selectedHospitalName: editingAnalysisDetailsData.hospital,
         selectedDoctorName: editingAnalysisDetailsData.doctor,
@@ -114,15 +116,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateTestPicture(bool? isImagePicked) {
-    emit(
-      state.copyWith(
-        isTestPictureSelected: isImagePicked,
-      ),
-    );
-    validateRequiredFields();
-  }
-
   Future<void> updateTestName(String? type) async {
     emit(
       state.copyWith(
@@ -151,27 +144,72 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  Future<void> uploadLaboratoryTestImagePicked(
-      {required String imagePath}) async {
+  void removeUploadedImage(String url) {
+    final updated = List<String>.from(state.uploadedTestImages)..remove(url);
+
+    emit(
+      state.copyWith(
+        uploadedTestImages: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+    validateRequiredFields();
+  }
+
+  void removeUploadedTestReport(String path) {
+    final updated = List<String>.from(state.uploadedTestReports)..remove(path);
+    emit(
+      state.copyWith(
+        uploadedTestReports: updated,
+        message: "تم حذف التقرير",
+      ),
+    );
+  }
+
+  Future<void> uploadLaboratoryTestImagePicked({
+    required String imagePath,
+  }) async {
+    // 1) Check limit
+    if (state.uploadedTestImages.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          testImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
+
+    // 2) Emit loading state
     emit(
       state.copyWith(
         testImageRequestStatus: UploadImageRequestStatus.initial,
       ),
     );
+
+    // 3) Call API
     final response = await _testAnalysisDataEntryRepo.uploadLaboratoryTestImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
       image: File(imagePath),
     );
+
+    // 4) Handle response
     response.when(
-      success: (response) {
+      success: (res) {
+        // add URL to existing list
+        final updatedImages = List<String>.from(state.uploadedTestImages)
+          ..add(res.imageUrl);
+
         emit(
           state.copyWith(
-            message: response.message,
-            testPictureUploadedUrl: response.imageUrl,
+            uploadedTestImages: updatedImages,
+            message: res.message,
             testImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
+
+        validateRequiredFields();
       },
       failure: (error) {
         emit(
@@ -257,6 +295,16 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   Future<void> uploadLaboratoryTestReportPicked(
       {required String imagePath}) async {
+    // 1) Check limit
+    if (state.uploadedTestReports.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          testReportRequestStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         testReportRequestStatus: UploadReportRequestStatus.initial,
@@ -270,10 +318,13 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedTestReports = List<String>.from(state.uploadedTestReports)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
+            uploadedTestReports: updatedTestReports,
             message: response.message,
-            testReportUploadedUrl: response.reportUrl,
             testReportRequestStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -350,6 +401,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> postLaboratoryTestDataEntrered(S localozation) async {
+    log("xxx uploaded image length: ${state.uploadedTestImages.length} , uploaded picture urls: ${state.uploadedTestImages.map((e) => e).toList()}");
     emit(
       state.copyWith(
         testAnalysisDataEntryStatus: RequestStatus.loading,
@@ -361,8 +413,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         country: state.selectedCountryName ?? localozation.no_data_entered,
         testDate: state.selectedDate!,
         testTableEnteredResults: state.enteredTableRows,
-        testImage: state.testPictureUploadedUrl,
-        reportImage: state.testReportUploadedUrl,
+        testImages: state.uploadedTestImages,
+        reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
         symptomsForProcedure:
@@ -403,8 +455,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       requestBodyModel: EditTestAnalysisDataEnteryRequestBodyModel(
         country: state.selectedCountryName!,
         testDate: state.selectedDate!,
-        testImage: state.testPictureUploadedUrl,
-        reportImage: state.testReportUploadedUrl,
+        testImages: state.uploadedTestImages,
+        reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName!,
         doctor: state.selectedDoctorName!,
         symptomsForProcedure: state.selectedSymptomsForProcedure!,
@@ -434,10 +486,33 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  Future<void> emitDoctorNames() async {
+    final response = await _testAnalysisDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   void validateRequiredFields() {
     if (state.selectedDate == null ||
-        state.isTestPictureSelected == null ||
-        state.isTestPictureSelected == false ||
+        state.uploadedTestImages.isEmpty ||
         (state.isTestNameSelected == null &&
             state.isTestCodeSelected == null &&
             state.isTestGroupNameSelected == null)) {

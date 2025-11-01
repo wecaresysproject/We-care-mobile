@@ -176,18 +176,19 @@ class DentalOperationDetailsView extends StatelessWidget {
                     icon: 'assets/images/doctor_icon.png',
                     isExpanded: true,
                   ),
-                  DetailsViewInfoTile(
-                    title: "الدولة",
-                    value: state.selectedToothOperationDetails!.country,
-                    icon: 'assets/images/country_icon.png',
-                    isExpanded: true,
-                  ),
-                  DetailsViewInfoTile(
-                    title: "المستشفي",
-                    value: state.selectedToothOperationDetails!.hospital,
-                    icon: 'assets/images/hospital_icon.png',
-                    isExpanded: true,
-                  ),
+                  Row(children: [
+                    DetailsViewInfoTile(
+                      title: "الدولة",
+                      value: state.selectedToothOperationDetails!.country,
+                      icon: 'assets/images/country_icon.png',
+                    ),
+                    Spacer(),
+                    DetailsViewInfoTile(
+                      title: "المستشفي",
+                      value: state.selectedToothOperationDetails!.hospital,
+                      icon: 'assets/images/hospital_icon.png',
+                    ),
+                  ]),
                   DetailsViewInfoTile(
                     title: " ملاحظات شخصية",
                     value: state.selectedToothOperationDetails!.additionalNotes,

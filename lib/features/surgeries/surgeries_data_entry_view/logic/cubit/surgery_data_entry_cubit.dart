@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
@@ -67,6 +68,30 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     emit(state.copyWith(surgeonName: surgeonName));
   }
 
+  Future<void> emitDoctorNames() async {
+    final response = await _surgeriesDataEntryRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   void updateSelectedCountry(String? selectedCountry) {
     emit(state.copyWith(selectedCountryName: selectedCountry));
   }
@@ -106,6 +131,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     await emitGetAllSurgeriesRegions();
     await emitCountriesData();
     await emitGetSurgeryStatus();
+    await emitDoctorNames();
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {

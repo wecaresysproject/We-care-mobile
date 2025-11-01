@@ -189,17 +189,9 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
     );
   }
 
-@override
-Widget build(BuildContext context) {
-  return WillPopScope(
-    onWillPop: () async {
-      if (_isDropdownOpen) {
-        _closeOverlay();
-        return true;
-      }
-      return true; 
-    },
-    child: GestureDetector(
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
       onTap: _toggleOverlay,
       child: CompositedTransformTarget(
         link: _layerLink,
@@ -232,7 +224,6 @@ Widget build(BuildContext context) {
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

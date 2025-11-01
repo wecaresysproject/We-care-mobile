@@ -32,6 +32,11 @@ abstract class ChronicDiseaseServices {
     @Query("page") int? page,
     @Query("limit") int? pageSize,
   });
+  @GET(ChronicDiseaseApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 
   @GET(ChronicDiseaseApiConstants.getUserChronicDiseaseDetailsById)
   Future<dynamic> getUserChronicDiseaseDetailsById(

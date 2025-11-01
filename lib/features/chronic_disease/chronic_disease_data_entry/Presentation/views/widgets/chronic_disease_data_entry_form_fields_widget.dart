@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -91,7 +90,7 @@ class _ChronicDiseaseDataEntryFormFieldsState
                 categoryLabel: 'الطبيب المتابع',
                 containerHintText:
                     state.doctorNameSelection ?? "اختر اسم الطبيب المتابع",
-                options: doctorsList,
+                options: state.doctorNames,
                 onOptionSelected: (value) {
                   AppLogger.debug("xxx:Selected: $value");
                   context

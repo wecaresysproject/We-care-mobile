@@ -21,8 +21,8 @@ class AnalysisDetailedData {
   String? groupName;
   String? testNeedType;
   String? symptomsForProcedure;
-  String imageBase64;
-  String reportBase64;
+  List<String> imageBase64;
+  List<String> reportBase64;
   String hospital;
   String doctor;
   String country;

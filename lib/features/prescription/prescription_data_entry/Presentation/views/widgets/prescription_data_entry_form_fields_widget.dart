@@ -72,7 +72,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "اسم الطبيب",
                 containerHintText:
                     state.doctorNameSelection ?? "اختر اسم الطبيب",
-                options: doctorsList,
+                options: state.doctorNames,
                 onOptionSelected: (value) {
                   log("xxx:Selected: $value");
                   context

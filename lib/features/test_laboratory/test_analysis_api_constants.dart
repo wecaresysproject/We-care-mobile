@@ -22,6 +22,7 @@ class TestAnalysisApiConstants {
   static const getSimilarTests = "/lab-tests/search";
 
   static const editTestResultByIdAndName = '/lab-tests/updateWrittenPercent';
+  static const getAllDoctors = "/Doctor/GetAllDcotors";
 
   static const getTestByGroupNamesEndpoint =
       "/flutter/SortsAnalysis/group-names";

@@ -19,7 +19,6 @@ class AppBarWithCenteredTitle extends StatelessWidget
     this.showActionButtons = true,
     this.titleColor,
     this.fontSize,
-    this.isMedicineModule=false,
   });
   final String title;
   final Function()? editFunction;
@@ -30,14 +29,12 @@ class AppBarWithCenteredTitle extends StatelessWidget
   final Color? titleColor;
   final double? fontSize;
   final void Function()? onbackArrowPress;
-  final bool isMedicineModule;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Align(
               alignment: isArabic() ? Alignment.topRight : Alignment.topLeft,
@@ -56,17 +53,6 @@ class AppBarWithCenteredTitle extends StatelessWidget
                 ),
               ),
             ),
-            isMedicineModule
-                ? Text(
-                    "معلومات عن الدواء",
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w700,
-                      color: AppColorsManager.mainDarkBlue,
-                      decoration: TextDecoration.underline,
-                    ),
-                  )
-                : SizedBox.shrink()
           ],
         ),
         verticalSpacing(12),

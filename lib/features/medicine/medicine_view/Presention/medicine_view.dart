@@ -28,7 +28,7 @@ class MedicinesView extends StatelessWidget {
             toolbarHeight: 0,
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
                 ViewAppBar(),
@@ -62,12 +62,6 @@ class MedicinesView extends StatelessWidget {
                 verticalSpacing(24),
                 Text(
                   "“اضغط على اسم الدواء لعرض تفاصيله”",
-                  style: AppTextStyles.customTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalSpacing(16),
-                Text(
-              "“اضغط على التاريخ لعرض جميع الادوية في ذلك التاريخ”",
                   style: AppTextStyles.customTextStyle,
                   textAlign: TextAlign.center,
                 ),

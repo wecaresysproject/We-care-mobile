@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -26,7 +25,7 @@ class BiometricHistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<BiometricsViewCubit>(
       create: (context) => getIt<BiometricsViewCubit>()
-        ..getFilteredBiometrics(biometricCategories: [metricName]),
+        ..getFilteredBiometrics( biometricCategories: [metricName]),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: SingleChildScrollView(
@@ -39,17 +38,7 @@ class BiometricHistoryView extends StatelessWidget {
                 showActionButtons: false,
               ),
               verticalSpacing(16),
-              BlocConsumer<BiometricsViewCubit, BiometricsViewState>(
-                listener: (context, state) async {
-                  if (state.deleteRequestStatus == RequestStatus.success ||
-                      state.editRequestStatus == RequestStatus.success) {
-                    showSuccess(state.responseMessage);
-                  }
-                  if (state.deleteRequestStatus == RequestStatus.failure ||
-                      state.editRequestStatus == RequestStatus.failure) {
-                    showError(state.responseMessage);
-                  }
-                },
+              BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
                 builder: (context, state) {
                   return _buildDataTableByState(state, context);
                 },
@@ -61,14 +50,16 @@ class BiometricHistoryView extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTableByState(
-      BiometricsViewState state, BuildContext context) {
+  Widget _buildDataTableByState(BiometricsViewState state, BuildContext context) {
     switch (state.requestStatus) {
       case RequestStatus.loading:
         return _buildLoadingState();
 
       case RequestStatus.success:
-        return _buildSuccessState(state.biometricsData, context);
+        return _buildSuccessState( state.biometricsData, context);
+
+      case RequestStatus.failure:
+        return _buildErrorState(state.responseMessage ?? "حدث خطأ", context);
 
       default:
         return _buildInitialState();
@@ -138,7 +129,7 @@ class BiometricHistoryView extends StatelessWidget {
               onPressed: () {
                 context
                     .read<BiometricsViewCubit>()
-                    .getFilteredBiometrics(biometricCategories: [metricName]);
+                    .getFilteredBiometrics( biometricCategories: [metricName]);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsManager.mainDarkBlue,
@@ -161,15 +152,6 @@ class BiometricHistoryView extends StatelessWidget {
     if (historyData.isEmpty) {
       return _buildEmptyState();
     }
-    final formattedData = historyData.first.data.map((d) {
-      final formattedDate = formatDateTime(d.originalDate);
-      return BiometricData(
-        formattedDate: formattedDate, // المعروضة في الجدول
-        originalDate: d.originalDate, // الأصلية تُستخدم للإرسال للـ API
-        value: d.value,
-        secondaryValue: d.secondaryValue,
-      );
-    }).toList();
 
     return DataTable(
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -187,7 +169,7 @@ class BiometricHistoryView extends StatelessWidget {
         width: 0.19,
       ),
       columns: _buildColumns(),
-      rows: _buildRowsFromData(formattedData, context),
+      rows: _buildRowsFromData(historyData.first.data, context),
     );
   }
 
@@ -230,7 +212,7 @@ class BiometricHistoryView extends StatelessWidget {
     return [
       _buildColumn("التاريخ"),
       _buildColumn("القياس القديم"),
-      _buildColumn("تعديل"),
+       _buildColumn("تعديل"),
       _buildColumn("حذف"),
     ];
   }
@@ -240,12 +222,10 @@ class BiometricHistoryView extends StatelessWidget {
     return historyData.map((item) {
       return DataRow(
         cells: [
-          _buildCell(item.formattedDate ?? item.originalDate),
-          _buildCell(item.secondaryValue == null
-              ? item.value
-              : "${item.secondaryValue}/ ${item.value}"),
+          _buildCell(item.date),
+          _buildCell(item.value),
           _buildEditCell(context, item),
-          _buildDeleteCell(context, item.originalDate),
+          _buildDeleteCell(context),
         ],
       );
     }).toList();
@@ -284,12 +264,12 @@ class BiometricHistoryView extends StatelessWidget {
     );
   }
 
-  DataCell _buildDeleteCell(BuildContext context, String date) {
+  DataCell _buildDeleteCell(BuildContext context, ) {
     return DataCell(
       Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColorsManager.warningColor,
+            backgroundColor:AppColorsManager.warningColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
             minimumSize: const Size(0, 0),
@@ -300,15 +280,10 @@ class BiometricHistoryView extends StatelessWidget {
           onPressed: () async {
             final confirm = await _showDeleteConfirmationDialog(context);
             if (confirm == true && context.mounted) {
-              await context
-                  .read<BiometricsViewCubit>()
-                  .deleteBiometricDataOfSpecificCategory(
-                    date: date, // Pass the appropriate date here
-                    biometricName: metricName,
-                  );
-              context
-                  .read<BiometricsViewCubit>()
-                  .getFilteredBiometrics(biometricCategories: [metricName]);
+              // context.read<BiometricsViewCubit>().deleteBiometricEntry(
+              //       metricName: metricName,
+              //       entryId: item.id,
+              //     );
             }
           },
           child: Row(
@@ -346,39 +321,14 @@ class BiometricHistoryView extends StatelessWidget {
             ),
           ),
           onPressed: () async {
-            final result = await _showEditDialog(context, item, metricName);
-
-            if (result != null) {
-              if (metricName.contains("ضغط")) {
-                final systolic = result['systolic'];
-                final diastolic = result['diastolic'];
-                await context
-                    .read<BiometricsViewCubit>()
-                    .editBiometricDataOfSpecificCategory(
-                      minValue: diastolic!,
-                      maxValue: systolic,
-                      date: item.originalDate,
-                      biometricName: metricName,
-                    );
-                context
-                    .read<BiometricsViewCubit>()
-                    .getFilteredBiometrics(biometricCategories: [metricName]);
-                print('الضغط الانقباضي: $systolic / الانبساطي: $diastolic');
-              } else {
-                final value = result['value'];
-                await context
-                    .read<BiometricsViewCubit>()
-                    .editBiometricDataOfSpecificCategory(
-                      minValue: value!,
-                      maxValue: null,
-                      date: item.originalDate,
-                      biometricName: metricName,
-                    );
-                context
-                    .read<BiometricsViewCubit>()
-                    .getFilteredBiometrics(biometricCategories: [metricName]);
-              }
-            }
+            final newValue = await _showEditDialog(context, item);
+            // if (newValue != null && context.mounted) {
+            //   context.read<BiometricsViewCubit>().updateBiometricEntry(
+            //         metricName: metricName,
+            //         entryId: item.id,
+            //         newValue: newValue,
+            //       );
+            // }
           },
           icon: Icon(Icons.edit, size: 12.sp),
           label: Text(
@@ -392,6 +342,8 @@ class BiometricHistoryView extends StatelessWidget {
       ),
     );
   }
+
+
 
   Future<bool?> _showDeleteConfirmationDialog(BuildContext context) {
     return showDialog<bool>(
@@ -454,7 +406,7 @@ class BiometricHistoryView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12.r),
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 12.h),
-                          decoration: BoxDecoration(
+                     decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
                               color: AppColorsManager.unselectedNavIconColor,
@@ -484,15 +436,11 @@ class BiometricHistoryView extends StatelessWidget {
     );
   }
 
-  Future<Map<String, String>?> _showEditDialog(
-      BuildContext context, BiometricData item, String metricName) {
-    final TextEditingController singleValueController = TextEditingController();
-    final TextEditingController systolicController = TextEditingController();
-    final TextEditingController diastolicController = TextEditingController();
+  Future<String?> _showEditDialog(
+      BuildContext context, BiometricData item) {
+    final TextEditingController controller = TextEditingController();
 
-    final bool isBloodPressure = metricName.contains("الضغط");
-
-    return showDialog<Map<String, String>>(
+    return showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -512,47 +460,21 @@ class BiometricHistoryView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                isBloodPressure
-                    ? "أدخل القيم الجديدة للضغط (الانقباضي والانبساطي)"
-                    : "أدخل القيمة الجديدة لـ $metricName",
+                "أدخل القيمة الجديدة لـ $metricName",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14.sp),
               ),
               SizedBox(height: 16.h),
-              if (isBloodPressure) ...[
-                TextField(
-                  controller: systolicController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "الضغط الانقباضي (Systolic)",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: "القيمة الجديدة",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                 ),
-                SizedBox(height: 12.h),
-                TextField(
-                  controller: diastolicController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "الضغط الانبساطي (Diastolic)",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                  ),
-                ),
-              ] else ...[
-                TextField(
-                  controller: singleValueController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "القيمة الجديدة",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ],
           ),
           actionsAlignment: MainAxisAlignment.center,
@@ -569,33 +491,15 @@ class BiometricHistoryView extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                if (isBloodPressure) {
-                  final systolic = systolicController.text.trim();
-                  final diastolic = diastolicController.text.trim();
-
-                  if (systolic.isEmpty || diastolic.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("من فضلك أدخل القيمتين")),
-                    );
-                    return;
-                  }
-
-                  Navigator.pop(context, {
-                    'systolic': systolic,
-                    'diastolic': diastolic,
-                  });
+                final enteredValue = controller.text.trim();
+                if (enteredValue.isNotEmpty) {
+                  Navigator.pop(context, enteredValue);
                 } else {
-                  final value = singleValueController.text.trim();
-                  if (value.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("من فضلك أدخل قيمة صحيحة")),
-                    );
-                    return;
-                  }
-
-                  Navigator.pop(context, {
-                    'value': value,
-                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("من فضلك أدخل قيمة صحيحة"),
+                    ),
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -627,16 +531,3 @@ class BiometricHistoryView extends StatelessWidget {
   }
 }
 
-String formatDateTime(String isoString) {
-  final dateTime = DateTime.tryParse(isoString);
-  if (dateTime == null) return isoString;
-
-  final day = dateTime.day.toString().padLeft(2, '0');
-  final month = dateTime.month.toString().padLeft(2, '0');
-  int hour = dateTime.hour;
-  final minute = dateTime.minute.toString().padLeft(2, '0');
-  final period = hour >= 12 ? 'PM' : 'AM';
-  hour = hour % 12 == 0 ? 12 : hour % 12;
-
-  return '$day/$month \n $hour:$minute $period';
-}

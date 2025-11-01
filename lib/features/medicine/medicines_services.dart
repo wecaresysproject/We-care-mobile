@@ -31,6 +31,11 @@ abstract class MedicinesServices {
     @Query('language') String language,
     @Query('userType') String userType,
   );
+  @GET(MedicinesApiConstants.getAllDoctors)
+  Future<dynamic> getAllDoctors(
+    @Query("usertype") String userType,
+    @Query("Language") String language,
+  );
 
   @DELETE(MedicinesApiConstants.deletemedicineById)
   Future<dynamic> deleteMedicineById(
