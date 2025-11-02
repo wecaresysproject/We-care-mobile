@@ -28,6 +28,9 @@ class TableRowReponseModel {
     required this.groupName,
     required this.standardRate,
     required this.testWrittenPercent,
+    required this.selectedChoice,
+    required this.testChoices,
+    required this.hasApercentage,
   });
 
   String testName;
@@ -37,6 +40,9 @@ class TableRowReponseModel {
   String standardRate;
   @JsonKey(name: "writtenPercent")
   double? testWrittenPercent;
+  String? selectedChoice;
+  List<String>? testChoices;
+  bool? hasApercentage;
 
   factory TableRowReponseModel.fromJson(Map<String, dynamic> json) =>
       _$TableRowReponseModelFromJson(json);

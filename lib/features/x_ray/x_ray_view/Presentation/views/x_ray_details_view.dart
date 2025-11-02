@@ -165,9 +165,9 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    if (radiologyData.radiologyPhoto.startsWith("http")) {
+    if (radiologyData.radiologyPhoto?.startsWith("http") ?? false) {
       final imagePath = await downloadImage(
-          radiologyData.radiologyPhoto, tempDir, 'x_ray_image.png');
+          radiologyData.radiologyPhoto!, tempDir, 'x_ray_image.png');
       if (imagePath != null) imagePaths.add(imagePath);
     }
     if (radiologyData.report != null) {

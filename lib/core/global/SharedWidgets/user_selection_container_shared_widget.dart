@@ -425,7 +425,7 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
                 final option = _filteredOptions[index];
                 final isSelected = _selectedItem == option;
 
-                return _OptionItem(
+                return OptionItem(
                   option: option,
                   isSelected: isSelected,
                   onTap: () => _selectItem(option),
@@ -469,12 +469,13 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
   }
 }
 
-class _OptionItem extends StatelessWidget {
+class OptionItem extends StatelessWidget {
   final String option;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _OptionItem({
+  const OptionItem({
+    super.key,
     required this.option,
     required this.isSelected,
     required this.onTap,

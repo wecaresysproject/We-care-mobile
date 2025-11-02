@@ -9,7 +9,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operation_details_view.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
+import 'package:we_care/features/dental_module/dental_view/views/widgets/tooth_card_item_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class ToothOperationsView extends StatelessWidget {
@@ -61,38 +61,37 @@ class ToothOperationsView extends StatelessWidget {
                       ),
                     );
                   }
-                  return MedicalItemGridView(
-                    items: state.selectedToothList!,
-                    onTap: (id) async {
-                      final result = Navigator.push<bool>(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DentalOperationDetailsView(
-                              documentId: id,
-                              toothNumber: selectedTooth.toString(),
-                            ),
-                          )).then(
-                        (value) async {
-                          await context
-                              .read<DentalViewCubit>()
-                              .getDocumentsByToothNumber(
-                                  toothNumber: selectedTooth.toString());
-                        },
-                      );
-                    },
-                    titleBuilder: (item) => 'السن ${item.teethNumber}',
-                    infoRowBuilder: (item) => [
-                      {"title": "السن:", "value": item.teethNumber!},
-                      {
-                        "title": "تاريخ الأعراض:",
-                        "value": item.symptomStartDate!
+
+                  return Expanded(
+                    child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: state.selectedToothList!.length,
+                      itemBuilder: (context, index) {
+                        final doc = state.selectedToothList![index];
+                        return ToothCardItemWidget(
+                          item: doc,
+                          onArrowTap: () async {
+                            Navigator.push<bool>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DentalOperationDetailsView(
+                                    documentId: doc.id!,
+                                    toothNumber: selectedTooth.toString(),
+                                  ),
+                                )).then(
+                              (value) async {
+                                if (!context.mounted) return;
+                                await context
+                                    .read<DentalViewCubit>()
+                                    .getDocumentsByToothNumber(
+                                        toothNumber: selectedTooth.toString());
+                              },
+                            );
+                          },
+                        );
                       },
-                      {
-                        "title": "الإجراء الطبي:",
-                        "value": item.primaryProcedure!
-                      },
-                      {"title": "نوع الألم:", "value": item.painNature!},
-                    ],
+                    ),
                   );
                 },
               ),
@@ -188,42 +187,3 @@ class DentalRecord {
     required this.id,
   });
 }
-
-// Example mock list of dental records:
-List<DentalRecord> mockDentalRecords = [
-  DentalRecord(
-    tooth: 'السن 12',
-    date: DateTime(2025, 1, 25),
-    procedure: 'علاج العصب',
-    painLevel: 'متوسط',
-    id: '1',
-  ),
-  DentalRecord(
-    tooth: 'السن 14',
-    date: DateTime(2025, 2, 10),
-    procedure: 'خلع',
-    painLevel: 'شديد',
-    id: '2',
-  ),
-  DentalRecord(
-    tooth: 'السن 11',
-    date: DateTime(2025, 3, 5),
-    procedure: 'تنظيف',
-    painLevel: 'خفيف',
-    id: '3',
-  ),
-  DentalRecord(
-    tooth: 'السن 18',
-    date: DateTime(2025, 4, 1),
-    procedure: 'حشو تجميلي',
-    painLevel: 'متوسط',
-    id: '4',
-  ),
-  DentalRecord(
-    tooth: 'السن 13',
-    date: DateTime(2025, 5, 15),
-    procedure: 'تثبيت تاج',
-    painLevel: 'خفيف',
-    id: '5',
-  ),
-];

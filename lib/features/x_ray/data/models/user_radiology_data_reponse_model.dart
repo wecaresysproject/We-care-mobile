@@ -26,7 +26,7 @@ class RadiologyData {
   String radioType;
   String? periodicUsage;
   @JsonKey(name: 'photoPath')
-  String radiologyPhoto;
+  String? radiologyPhoto;
   @JsonKey(name: 'reportPath')
   String? report;
   @JsonKey(name: 'cause')

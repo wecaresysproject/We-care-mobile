@@ -58,6 +58,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
         isEditMode: true,
         updatedTestId: editingAnalysisDetailsData.id,
+        uploadedTestImages: editingAnalysisDetailsData.imageBase64,
+        uploadedTestReports: editingAnalysisDetailsData.reportBase64,
       ),
     );
     validateRequiredFields();
@@ -105,6 +107,15 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         enteredTableRows: tableRows,
       ),
     );
+  }
+
+  String? getSelectedChoiceAccordingToTestName(String testName) {
+    for (var element in state.testTableRowsData) {
+      if (element.testName == testName) {
+        return element.selectedChoice;
+      }
+    }
+    return null;
   }
 
   void updateTestDate(String? date) {
