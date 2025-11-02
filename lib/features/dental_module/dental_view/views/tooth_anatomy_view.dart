@@ -67,7 +67,7 @@ class ToothAnatomyView extends StatelessWidget {
                   ToothOverlay(
                     toothWithDataList: state.defectedToothList ?? [],
                     overlayTitle: "من فضلك اختر السن لعرض التفاصيل",
-                    selectedActionsList: state.defectedToothList!,
+                    selectedActionsList: state.defectedToothList ?? [],
                     onTap: (toothNumber) {
                       // Handle tap event
                       AppLogger.debug('Tooth $toothNumber tapped');
