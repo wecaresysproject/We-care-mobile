@@ -49,14 +49,13 @@ class DentalAnatomyDiagramEntryView extends StatelessWidget {
         return ToothOverlay(
           isComingFromDataEntry: true,
           toothWithDataList: state.defectedToothList ?? [],
-          selectedActionsList: [55],
+          selectedActionsList: state.defectedToothList!,
           overlayTitle: "“من فضلك اختر السن المصاب لادخال البيانات الخاصة به”",
           onTap: (tappedTooth) async {
             await context.pushNamed(
               Routes.dentalDataEntryView,
               arguments: {
                 "toothNumber": tappedTooth.toString(),
-                // "toothId": tappedTooth.id,
               },
             );
           },

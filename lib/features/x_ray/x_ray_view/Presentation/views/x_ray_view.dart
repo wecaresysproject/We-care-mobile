@@ -11,7 +11,6 @@ import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/xra
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
 
-
 class XRayView extends StatelessWidget {
   const XRayView({super.key});
   @override
@@ -33,7 +32,9 @@ class XRayView extends StatelessWidget {
               children: [
                 ViewAppBar(),
                 XrayFiltersBlocBuilder(),
-                XrayListBlocBuilder(),
+                Expanded(
+                  child: XrayListBlocBuilder(),
+                ),
                 XRayDataViewFooterRow(),
               ],
             ),
@@ -43,7 +44,6 @@ class XRayView extends StatelessWidget {
     );
   }
 }
-
 
 class XRayDataViewFooterRow extends StatelessWidget {
   const XRayDataViewFooterRow({super.key});

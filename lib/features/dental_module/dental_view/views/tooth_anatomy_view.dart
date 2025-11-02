@@ -37,7 +37,6 @@ class ToothAnatomyView extends StatelessWidget {
                   CustomAppBarWidget(
                     haveBackArrow: true,
                   ),
-                  verticalSpacing(8),
                   // TabBar
                   Material(
                     color: Colors.white,
@@ -67,8 +66,8 @@ class ToothAnatomyView extends StatelessWidget {
                 children: [
                   ToothOverlay(
                     toothWithDataList: state.defectedToothList ?? [],
-                    overlayTitle: "“من فضلك اختر السن لعرض التفاصيل ”",
-                    selectedActionsList: [],
+                    overlayTitle: "من فضلك اختر السن لعرض التفاصيل",
+                    selectedActionsList: state.defectedToothList!,
                     onTap: (toothNumber) {
                       // Handle tap event
                       AppLogger.debug('Tooth $toothNumber tapped');
@@ -211,7 +210,10 @@ class ToothOverlay extends StatelessWidget {
               if (overlayTitle.isNotEmpty)
                 Text(
                   overlayTitle,
-                  style: AppTextStyles.font20blackWeight600,
+                  style: AppTextStyles.font20blackWeight600.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp,
+                  ),
                   textAlign: TextAlign.center,
                 ).paddingSymmetricHorizontal(16),
               Stack(
@@ -220,9 +222,16 @@ class ToothOverlay extends StatelessWidget {
                     'assets/images/teeth_diagram.png',
                     width: double.infinity,
                     height: imageHeight,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Text(
+                        "لا يمكن تحميل صورة الفك",
+                        style: AppTextStyles.font18blackWight500,
+                        textAlign: TextAlign.center,
+                      );
+                    },
                   ),
                   Positioned(
-                    top: 100.h + imageHeight - 60.h,
+                    top: 50.h + imageHeight - 60.h,
                     left: 20.h,
                     child: GuidanceInformationItemWidget(),
                   ),
@@ -254,7 +263,7 @@ class ToothOverlay extends StatelessWidget {
                     isComingFromDataEntry: isComingFromDataEntry,
                   ),
                   CustomToothActionButton(
-                    title: "للثة العلوية \n يمين",
+                    title: "اللثة العلوية \n يمين",
                     horizontalPosition: 0.516 * width,
                     verticalPosition: 0.15 * height,
                     hasDataPreviously: selectedActionsList.contains(66),
@@ -288,7 +297,7 @@ class ToothOverlay extends StatelessWidget {
                   CustomToothActionButton(
                     title: "الفك السفلي",
                     horizontalPosition: 0.06 * width,
-                    verticalPosition: 0.55 * height,
+                    verticalPosition: 0.5 * height,
                     hasDataPreviously: selectedActionsList.contains(100),
                     isComingFromDataEntry: isComingFromDataEntry,
                     onTap: () => onTap(100),
@@ -304,7 +313,7 @@ class ToothOverlay extends StatelessWidget {
                   CustomToothActionButton(
                     title: "اللثة السفلية",
                     horizontalPosition: 0.80 * width,
-                    verticalPosition: 0.55 * height,
+                    verticalPosition: 0.5 * height,
                     hasDataPreviously: selectedActionsList.contains(122),
                     isComingFromDataEntry: isComingFromDataEntry,
                     onTap: () => onTap(122),
