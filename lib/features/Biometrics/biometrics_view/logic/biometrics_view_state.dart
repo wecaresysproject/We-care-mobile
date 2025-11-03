@@ -5,6 +5,8 @@ import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.
 
 class BiometricsViewState extends Equatable {
   final RequestStatus requestStatus;
+  final RequestStatus deleteRequestStatus;
+  final RequestStatus editRequestStatus;
   final String responseMessage;
   final List<String> availableBiometricNames;
   final List<int> yearsFilter;
@@ -22,6 +24,8 @@ class BiometricsViewState extends Equatable {
     this.monthFilter = const [],
     this.biometricsData = const [],
     this.currentBiometricsData,
+    this.deleteRequestStatus = RequestStatus.initial,
+    this.editRequestStatus = RequestStatus.initial,
   });
 
   factory BiometricsViewState.initial() {
@@ -38,6 +42,8 @@ class BiometricsViewState extends Equatable {
       ],
       biometricsData: const [],
       currentBiometricsData: null,
+      deleteRequestStatus: RequestStatus.initial,
+      editRequestStatus: RequestStatus.initial,
     );
   }
 
@@ -50,6 +56,8 @@ class BiometricsViewState extends Equatable {
     List<int>? monthFilter,
     List<BiometricsDatasetModel>? biometricsData,
     CurrentBioMetricsData? currentBiometricsData,
+    RequestStatus? deleteRequestStatus,
+    RequestStatus? editRequestStatus,
   }) {
     return BiometricsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -60,6 +68,8 @@ class BiometricsViewState extends Equatable {
       monthFilter: monthFilter ?? this.monthFilter,
       biometricsData: biometricsData ?? this.biometricsData,
       currentBiometricsData: currentBiometricsData ?? this.currentBiometricsData,
+      deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
+      editRequestStatus: editRequestStatus ?? this.editRequestStatus,
     );
   }
 

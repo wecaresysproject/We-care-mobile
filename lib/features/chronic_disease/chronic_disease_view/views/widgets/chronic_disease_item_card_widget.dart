@@ -24,10 +24,10 @@ class ChronicDiseaseItemCardHorizontalWidget extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18.r),
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: const [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+            colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
           ),
           boxShadow: [
             BoxShadow(
@@ -46,14 +46,17 @@ class ChronicDiseaseItemCardHorizontalWidget extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
               decoration: BoxDecoration(
                 border: Border.all(
-                    color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
-                    width: 1),
+                  color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                  width: 1,
+                ),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
                 item.title,
-                style: AppTextStyles.font14BlueWeight700
-                    .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                style: AppTextStyles.font14BlueWeight700.copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -61,64 +64,94 @@ class ChronicDiseaseItemCardHorizontalWidget extends StatelessWidget {
             SizedBox(height: 12.h),
 
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// Content Column - Right side
                 Expanded(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       /// Date
                       Row(
                         children: [
-                          Text(
-                            'تاريخ بداية التشخيص : ',
-                            style: AppTextStyles.font14BlueWeight700
-                                .copyWith(fontSize: 14.sp),
+                          Flexible(
+                            flex: 3,
+                            child: Text(
+                              'تاريخ بداية التشخيص : ',
+                              style: AppTextStyles.font14BlueWeight700
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            item.diagnosisStartDate,
-                            style: AppTextStyles.font14blackWeight400
-                                .copyWith(fontSize: 14.sp),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 8.h),
-
-                      /// Duration
-                      Row(
-                        children: [
-                          Text(
-                            'الطبيب المتابع :',
-                            style: AppTextStyles.font14BlueWeight700
-                                .copyWith(fontSize: 14.sp),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            item.treatingDoctorName,
-                            style: AppTextStyles.font14blackWeight400
-                                .copyWith(fontSize: 14.sp),
-                            overflow: TextOverflow.ellipsis,
+                          SizedBox(width: 4.w),
+                          Flexible(
+                            flex: 2,
+                            child: Text(
+                              item.diagnosisStartDate,
+                              style: AppTextStyles.font14blackWeight400
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
                         ],
                       ),
 
                       SizedBox(height: 8.h),
 
-                      /// Severity
+                      /// Doctor name
                       Row(
                         children: [
-                          Text(
-                            'حالة المرض :',
-                            style: AppTextStyles.font14BlueWeight700
-                                .copyWith(fontSize: 14.sp),
+                          Flexible(
+                            flex: 3,
+                            child: Text(
+                              'الطبيب المتابع :',
+                              style: AppTextStyles.font14BlueWeight700
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
-                          SizedBox(width: 8.w),
-                          Text(
-                            item.diseaseStatus,
-                            style: AppTextStyles.font14blackWeight400
-                                .copyWith(fontSize: 14.sp),
+                          SizedBox(width: 4.w),
+                          Flexible(
+                            flex: 2,
+                            child: Text(
+                              item.treatingDoctorName,
+                              style: AppTextStyles.font14blackWeight400
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      /// Disease status
+                      Row(
+                        children: [
+                          Flexible(
+                            flex: 3,
+                            child: Text(
+                              'حالة المرض :',
+                              style: AppTextStyles.font14BlueWeight700
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          Flexible(
+                            flex: 2,
+                            child: Text(
+                              item.diseaseStatus,
+                              style: AppTextStyles.font14blackWeight400
+                                  .copyWith(fontSize: 14.sp),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ),
                         ],
                       ),
