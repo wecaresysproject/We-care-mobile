@@ -82,20 +82,18 @@ class PrescriptionDetailsView extends StatelessWidget {
                       value: state.selectedPrescriptionDetails!.disease,
                       icon: 'assets/images/symptoms_icon.png',
                     ),
-                  ]),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                      title: "اسم الطبيب",
-                      value: state.selectedPrescriptionDetails!.doctorName,
-                      icon: 'assets/images/doctor_name.png',
-                    ),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                        title: "التخصص ",
-                        value:
-                            state.selectedPrescriptionDetails!.doctorSpecialty,
-                        icon: 'assets/images/doctor_icon.png'),
-                  ]),
+                  DetailsViewInfoTile(
+                    title: "اسم الطبيب",
+                    value: state.selectedPrescriptionDetails!.doctorName,
+                    icon: 'assets/images/doctor_name.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                      title: "التخصص ",
+                      isExpanded: true,
+                      value:
+                          state.selectedPrescriptionDetails!.doctorSpecialty,
+                      icon: 'assets/images/doctor_icon.png'),
                   DetailsViewImageWithTitleTile(
                     image:
                         state.selectedPrescriptionDetails!.preDescriptionPhoto,
@@ -126,6 +124,7 @@ class PrescriptionDetailsView extends StatelessWidget {
                   ]),
                 ],
               ),
+           ]),
             );
           },
         ),

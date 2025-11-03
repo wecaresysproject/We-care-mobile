@@ -91,73 +91,82 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                       severityOfComplaint: symptom.severityOfComplaint,
                     );
                   }),
-                  SectionTitleContainer(
-                    title: 'شكاوي مشابهه سابقا',
-                    iconPath: 'assets/images/symptoms_icon.png',
-                  ),
-                  Row(
-                    children: [
-                      DetailsViewInfoTile(
-                        title: "التشخيص",
-                        value: complaint.similarComplaint.diagnosis,
-                        icon: 'assets/images/doctor_stethoscope_icon.png',
-                      ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: "تاريخ الشكوى",
-                        value: complaint.similarComplaint.dateOfComplaint,
-                        icon: 'assets/images/date_icon.png',
-                      ),
-                    ],
-                  ),
-                  SectionTitleContainer(
-                    title: "ادوية حالية",
-                    iconPath: 'assets/images/medicines.png',
-                  ),
-                  Row(
-                    children: [
-                      DetailsViewInfoTile(
-                        title: "اسم الدواء",
-                        value: complaint.medications.medicationName,
-                        icon: 'assets/images/doctor_name.png',
-                      ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: "الجرعة",
-                        value: complaint.medications.dosage,
-                        icon: 'assets/images/hugeicons_medicine-01.png',
-                      ),
-                    ],
-                  ),
-                  SectionTitleContainer(
-                    title: "تدخل طبي طارئ للشكوى",
-                    iconPath: 'assets/images/medical_kit_icon.png',
-                  ),
-                  Row(
-                    children: [
-                      DetailsViewInfoTile(
-                        title: "نوع التدخل",
-                        value: complaint.emergencyIntervention.interventionType,
-                        icon: 'assets/images/qr_code_icon.png',
-                      ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: complaint.emergencyIntervention.interventionDate,
-                        icon: 'assets/images/date_icon.png',
-                      ),
-                    ],
-                  ),
-                  SectionTitleContainer(
-                    title: "ملاحظات شخصية",
-                    iconPath: 'assets/images/notes_icon.png',
-                  ),
-                  DetailsViewInfoTile(
-                    title: "ملاحظات شخصية",
-                    value: complaint.personalNote,
-                    icon: 'assets/images/notes_icon.png',
-                    isExpanded: true,
-                  ),
+               // شكاوى مشابهه سابقا
+if (complaint.similarComplaint.dateOfComplaint.isFilled ||
+    complaint.similarComplaint.diagnosis.isFilled) ...[
+  SectionTitleContainer(
+    title: 'شكاوى مشابهه سابقا',
+    iconPath: 'assets/images/symptoms_icon.png',
+  ),
+    DetailsViewInfoTile(
+      title: "تاريخ الشكوى",
+      value: complaint.similarComplaint.dateOfComplaint,
+      icon: 'assets/images/date_icon.png',
+      isExpanded: true,),
+
+    DetailsViewInfoTile(
+      title: "التشخيص",
+      value: complaint.similarComplaint.diagnosis,
+      icon: 'assets/images/doctor_stethoscope_icon.png',
+      isExpanded: true,
+    ),
+],
+
+// أدوية حالية
+if (complaint.medications.dosage.isFilled ||
+    complaint.medications.medicationName.isFilled) ...[
+  SectionTitleContainer(
+    title: "أدوية حالية",
+    iconPath: 'assets/images/medicines.png',
+  ),
+    DetailsViewInfoTile(
+      title: "تاريخ الاستخدام / الجرعة",
+      value: complaint.medications.dosage,
+      icon: 'assets/images/hugeicons_medicine-01.png',
+      isExpanded: true,
+    ),
+    DetailsViewInfoTile(
+      title: "اسم الدواء",
+      value: complaint.medications.medicationName,
+      icon: 'assets/images/doctor_name.png',
+      isExpanded: true,
+    ),
+],
+
+// تدخل طبي طارئ للشكوى
+if (complaint.emergencyIntervention.interventionDate.isFilled ||
+    complaint.emergencyIntervention.interventionType.isFilled) ...[
+  SectionTitleContainer(
+    title: "تدخل طبي طارئ للشكوى",
+    iconPath: 'assets/images/medical_kit_icon.png',
+  ),
+    DetailsViewInfoTile(
+      title: "تاريخ التدخل",
+      value: complaint.emergencyIntervention.interventionDate,
+      icon: 'assets/images/date_icon.png',
+      isExpanded: true,
+    ),
+    DetailsViewInfoTile(
+      title: "نوع التدخل",
+      value: complaint.emergencyIntervention.interventionType,
+      icon: 'assets/images/qr_code_icon.png',
+      isExpanded: true,
+    ),
+],
+
+
+                  if (complaint.personalNote.isFilled) ...[
+                    SectionTitleContainer(
+                      title: "ملاحظات شخصية",
+                      iconPath: 'assets/images/notes_icon.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: "ملاحظات شخصية",
+                      value: complaint.personalNote,
+                      icon: 'assets/images/notes_icon.png',
+                      isExpanded: true,
+                    ),
+                  ],
                 ],
               ),
             );
