@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/analysis_line_cart.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/custom_analysis_container.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/similar_analysis_card.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
@@ -42,20 +40,6 @@ class SimilarAnalysisView extends StatelessWidget {
             );
           }
           final similarTestsResponse = state.getSimilarTestsResponseModel!.data;
-          // Generate dynamic chart data from API response
-          final List<AnalysisData> dynamicChartData =
-              similarTestsResponse.similarTests
-                  .asMap()
-                  .entries
-                  .map((entry) => AnalysisData(
-                        x: entry.key + 1, // Assuming x-axis is the index + 1
-                        y: entry.value.writtenPercent
-                            .toDouble(), // Ensure valid double
-                        label: entry.value.testDate, // Use test date as label
-                      ))
-                  .toList();
-          String standardRateStr =
-              similarTestsResponse.similarTests[0].standardRate;
 
           return Scaffold(
             appBar: AppBar(
@@ -109,13 +93,6 @@ class SimilarAnalysisView extends StatelessWidget {
                               recommendation: similarTestsResponse
                                   .similarTests[index].recommendation);
                         }),
-                    verticalSpacing(12),
-                    AnalysisLineChart(
-                      data: dynamicChartData,
-                      title: 'راقب نسب التغيرات',
-                      normalMax: standardRateStr.maxValue ?? 400,
-                      normalMin: standardRateStr.minValue ?? 0,
-                    )
                   ],
                 ),
               ),

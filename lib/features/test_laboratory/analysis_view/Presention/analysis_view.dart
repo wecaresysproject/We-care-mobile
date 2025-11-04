@@ -192,21 +192,23 @@ class MedicalAnalysisView extends StatelessWidget {
                   DataCell(
                     Center(
                       child: Text(
-                        data.result?.toString() ?? '-',
+                        data.result?.toString() ?? data.selectedChoice ?? '-',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColorsManager.mainDarkBlue,
-                          decoration: data.result == null
-                              ? TextDecoration.none
-                              : TextDecoration.underline,
+                          decoration:
+                              data.result == null && data.selectedChoice == null
+                                  ? TextDecoration.none
+                                  : TextDecoration.underline,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    onTap: () => data.result != null
-                        ? _navigateToSimilarAnalysisView(context, data)
-                        : null,
+                    onTap: () =>
+                        (data.result != null || data.selectedChoice != null)
+                            ? _navigateToSimilarAnalysisView(context, data)
+                            : null,
                   ),
                 ]);
               }).toList(),

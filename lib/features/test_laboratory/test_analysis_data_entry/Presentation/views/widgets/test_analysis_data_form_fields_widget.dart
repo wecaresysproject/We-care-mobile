@@ -14,6 +14,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
+import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/test_selection_bottom_sheet.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_reports_section_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_test_images_section_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
@@ -549,16 +550,10 @@ List<DataColumn> _buildColumns() {
 
 List<DataRow> _buildRows(
     List<TableRowReponseModel> tableRows, BuildContext context) {
-  bool hasPercentage = true;
   return tableRows.map(
     (data) {
-      final int index = tableRows.indexOf(data);
-      if (data.testWrittenPercent == null) {
-        hasPercentage = false;
-      } else {
-        hasPercentage = true;
-      }
-      final bool showTextField = index % 2 == 0; // ✅ بالتبادل
+      final bool hasPercentage = data.hasApercentage ?? false;
+      final bool isSelected = (data.selectedChoice?.isNotEmpty ?? false);
 
       return DataRow(
         cells: [
@@ -566,34 +561,36 @@ List<DataRow> _buildRows(
           _buildCell(data.testCode),
           _buildCell(data.standardRate),
           DataCell(
-            showTextField
+            data.hasApercentage!
                 ? buildStyledTextField(tableRows, data.testName, context)
-                : Text(
-                    "اختر من النتيجة الوصفية ⬅︎",
-                    style: AppTextStyles.font12blackWeight400.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 12.sp,
-                    ),
+                : Row(
+                    children: [
+                      Text(
+                        "اختر من النتيجة الوصفية",
+                        style: AppTextStyles.font12blackWeight400.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: AppColorsManager.mainDarkBlue,
+                        size: 32,
+                      ),
+                    ],
                   ),
           ),
           // 👇 العمود الجديد - زرار "اختر"
           DataCell(
             Center(
               child: ElevatedButton(
-                onPressed: showTextField
+                onPressed: hasPercentage
                     ? null // 👈 Disabled لو التحليل له نسبة
                     : () {
                         _showSelectionBottomSheet(
                           context: context,
                           title: "اختر النتيجة لـ ${data.testName}",
-                          options: [
-                            "سليم",
-                            "إيجابي",
-                            "سلبي",
-                            "إعادة التحليل",
-                            "تحت المراجعة",
-                            "غير محدد",
-                          ],
+                          options: data.testChoices ?? [],
                           searchHintText: "ابحث عن النتيجة...",
                           userEntryLabelText: "أدخل نتيجة يدوياً",
                           initialSelectedItem: context
@@ -617,9 +614,11 @@ List<DataRow> _buildRows(
                         );
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: showTextField
+                  backgroundColor: hasPercentage
                       ? Colors.grey.shade400
-                      : AppColorsManager.mainDarkBlue,
+                      : isSelected
+                          ? Colors.green
+                          : AppColorsManager.mainDarkBlue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
                   ),
@@ -627,7 +626,7 @@ List<DataRow> _buildRows(
                       EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                 ),
                 child: Text(
-                  "اختر",
+                  isSelected ? "تم الاختيار" : "اختر",
                   style: AppTextStyles.font12blackWeight400.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -660,7 +659,7 @@ void _showSelectionBottomSheet({
         top: Radius.circular(18.r),
       ),
     ),
-    builder: (context) => _SelectionBottomSheet(
+    builder: (context) => TestSelectionBottomSheet(
       title: title,
       options: options,
       onItemSelected: onItemSelected,
@@ -712,167 +711,3 @@ DataCell _buildCell(String text,
 // store all objects in a list to use it later, and if user try to choose one of drop down  again
 // it will be removed from the list
 // validate that as minumum one field is not empty to submit the form
-
-class _SelectionBottomSheet extends StatefulWidget {
-  final String title;
-  final List<String> options;
-  final Function(String) onItemSelected;
-  final String userEntryLabelText;
-  final String? initialSelectedItem;
-  final String searchHintText;
-
-  const _SelectionBottomSheet({
-    required this.title,
-    required this.options,
-    required this.onItemSelected,
-    required this.userEntryLabelText,
-    required this.searchHintText,
-    this.initialSelectedItem,
-  });
-
-  @override
-  State<_SelectionBottomSheet> createState() => _SelectionBottomSheetState();
-}
-
-class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
-  late TextEditingController _searchController;
-  late List<String> _filteredOptions;
-  String? _selectedItem;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedItem = widget.initialSelectedItem;
-    _filteredOptions = List.from(widget.options);
-    _searchController = TextEditingController();
-
-    _searchController.addListener(_filterOptions);
-  }
-
-  @override
-  void dispose() {
-    _searchController.removeListener(_filterOptions);
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _filterOptions() {
-    final query = normalizeArabic(_searchController.text);
-
-    if (query.isEmpty) {
-      setState(() {
-        _filteredOptions = List.from(widget.options);
-      });
-    } else {
-      setState(() {
-        _filteredOptions = widget.options
-            .where((item) => normalizeArabic(item).contains(query))
-            .toList();
-      });
-    }
-  }
-
-  void _selectItem(String option) {
-    setState(() {
-      _selectedItem = option;
-    });
-    widget.onItemSelected(option);
-
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.85,
-      minChildSize: 0.5, // Allow smaller size for better UX
-      maxChildSize: 0.95, // Allow slightly larger for more content
-      builder: (context, scrollController) => Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          // vertical: widget.allowManualEntry ? 24.h : 8.h,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            verticalSpacing(12),
-            _buildHeader(),
-            verticalSpacing(12),
-            _buildSearchField(),
-            verticalSpacing(16),
-            _buildOptionsList(scrollController),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: Text(
-            widget.title,
-            style: AppTextStyles.font18blackWight500.copyWith(
-              color: AppColorsManager.textfieldOutsideBorderColor,
-              fontSize: 16.sp,
-            ),
-            // textAlign: TextAlign.center,
-            maxLines: 3,
-          ),
-        ),
-        const Spacer(),
-        GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Image.asset(
-            "assets/images/close_icon.png",
-            height: 20,
-            width: 20,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSearchField() {
-    return TextField(
-      controller: _searchController,
-      decoration: InputDecoration(
-        prefixIcon: Icon(Icons.search, color: Colors.grey),
-        hintText: widget.searchHintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 12.w),
-      ),
-    );
-  }
-
-  Widget _buildOptionsList(ScrollController scrollController) {
-    return Expanded(
-      child: _filteredOptions.isEmpty
-          ? Center(
-              child: Text(
-                "لا توجد نتائج",
-                style: AppTextStyles.font16DarkGreyWeight400,
-              ),
-            )
-          : ListView.builder(
-              controller: scrollController,
-              itemCount: _filteredOptions.length,
-              itemBuilder: (context, index) {
-                final option = _filteredOptions[index];
-                final isSelected = _selectedItem == option;
-
-                return OptionItem(
-                  option: option,
-                  isSelected: isSelected,
-                  onTap: () => _selectItem(option),
-                );
-              },
-            ),
-    );
-  }
-}

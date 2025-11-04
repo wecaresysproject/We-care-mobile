@@ -47,7 +47,7 @@ class SimilarTests {
   String testName;
   String code;
   String standardRate;
-  double writtenPercent;
+  double? writtenPercent;
   String interpretation;
   String recommendation;
 

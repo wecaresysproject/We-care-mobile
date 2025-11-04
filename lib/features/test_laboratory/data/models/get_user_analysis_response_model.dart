@@ -24,14 +24,17 @@ class AnalysisSummarizedData {
   String testDate;
   @JsonKey(name: 'writtenPercent')
   double? result;
+  String? selectedChoice;
 
-  AnalysisSummarizedData(
-      {required this.id,
-      required this.testName,
-      required this.code,
-      required this.standardRate,
-      required this.testDate,
-      required this.result});
+  AnalysisSummarizedData({
+    required this.id,
+    required this.testName,
+    required this.code,
+    required this.standardRate,
+    required this.testDate,
+    required this.result,
+    required this.selectedChoice,
+  });
 
   factory AnalysisSummarizedData.fromJson(Map<String, dynamic> json) =>
       _$AnalysisSummarizedDataFromJson(json);

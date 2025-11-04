@@ -23,32 +23,29 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   final TestAnalysisDataEntryRepo _testAnalysisDataEntryRepo;
   Future<void> intialRequestsForTestAnalysisDataEntry() async {
-    await emitListOfTestAnnotations(
-      testType: UserTypes.patient.name.firstLetterToUpperCase,
-      language: AppStrings.arabicLang,
-    );
-    await emitListOfTestGroupNames(
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-    );
-    await emitListOfTestNames(
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-    );
-    await emitCountriesData();
-
-    await emitDoctorNames();
+    await Future.wait([
+      emitListOfTestAnnotations(
+        testType: UserTypes.patient.name.firstLetterToUpperCase,
+        language: AppStrings.arabicLang,
+      ),
+      emitListOfTestGroupNames(
+        language: AppStrings.arabicLang,
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+      ),
+      emitListOfTestNames(
+        language: AppStrings.arabicLang,
+        userType: UserTypes.patient.name.firstLetterToUpperCase,
+      ),
+      emitCountriesData(),
+      emitDoctorNames(),
+    ]);
   }
 
   void loadAnalysisDataForEditing(
       AnalysisDetailedData editingAnalysisDetailsData) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedDate: editingAnalysisDetailsData.testDate,
-        // isTestPictureSelected:
-        //     editingAnalysisDetailsData.imageBase64.isNotEmpty,
-        // testReportUploadedUrl: editingAnalysisDetailsData.reportBase64,
-        // testPictureUploadedUrl: editingAnalysisDetailsData.imageBase64,
         selectedCountryName: editingAnalysisDetailsData.country,
         selectedHospitalName: editingAnalysisDetailsData.hospital,
         selectedDoctorName: editingAnalysisDetailsData.doctor,
@@ -67,7 +64,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateTimesTestPerformed(String? timesTestPerformed) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedNoOftimesTestPerformed: timesTestPerformed,
       ),
@@ -75,7 +72,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateSelectedSymptom(String? newSymptoms) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedSymptomsForProcedure: newSymptoms,
       ),
@@ -83,7 +80,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateSelectedHospital(String? hospitalName) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedHospitalName: hospitalName,
       ),
@@ -91,7 +88,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateSelectedDoctorName(String? doctorName) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedDoctorName: doctorName,
       ),
@@ -102,7 +99,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     for (var element in tableRows) {
       log("xxx: sent table rows : ${element.testName} ${element.testWrittenPercent}");
     }
-    emit(
+    safeEmit(
       state.copyWith(
         enteredTableRows: tableRows,
       ),
@@ -119,7 +116,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateTestDate(String? date) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedDate: date,
       ),
@@ -128,7 +125,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> updateTestName(String? type) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isTestNameSelected: type,
       ),
@@ -138,7 +135,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> updateGroupNameSelection(String? selectedGroupName) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isTestGroupNameSelected: selectedGroupName,
       ),
@@ -148,7 +145,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateSelectedCountry(String? selectedCountry) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedCountryName: selectedCountry,
       ),
@@ -158,7 +155,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   void removeUploadedImage(String url) {
     final updated = List<String>.from(state.uploadedTestImages)..remove(url);
 
-    emit(
+    safeEmit(
       state.copyWith(
         uploadedTestImages: updated,
         message: "تم حذف الصورة",
@@ -169,7 +166,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   void removeUploadedTestReport(String path) {
     final updated = List<String>.from(state.uploadedTestReports)..remove(path);
-    emit(
+    safeEmit(
       state.copyWith(
         uploadedTestReports: updated,
         message: "تم حذف التقرير",
@@ -182,7 +179,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }) async {
     // 1) Check limit
     if (state.uploadedTestImages.length >= 8) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
           testImageRequestStatus: UploadImageRequestStatus.failure,
@@ -191,8 +188,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       return;
     }
 
-    // 2) Emit loading state
-    emit(
+    // 2) safeEmit loading state
+    safeEmit(
       state.copyWith(
         testImageRequestStatus: UploadImageRequestStatus.initial,
       ),
@@ -212,7 +209,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         final updatedImages = List<String>.from(state.uploadedTestImages)
           ..add(res.imageUrl);
 
-        emit(
+        safeEmit(
           state.copyWith(
             uploadedTestImages: updatedImages,
             message: res.message,
@@ -223,7 +220,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         validateRequiredFields();
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             testImageRequestStatus: UploadImageRequestStatus.failure,
@@ -241,14 +238,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
     response.when(
       success: (testCodes) {
-        emit(
+        safeEmit(
           state.copyWith(
             testCodes: testCodes,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -266,14 +263,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             testGroupNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -290,14 +287,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
     response.when(
       success: (listOfTestNames) {
-        emit(
+        safeEmit(
           state.copyWith(
             testNames: listOfTestNames,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(),
         );
       },
@@ -308,7 +305,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       {required String imagePath}) async {
     // 1) Check limit
     if (state.uploadedTestReports.length >= 8) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
           testReportRequestStatus: UploadReportRequestStatus.failure,
@@ -316,7 +313,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       );
       return;
     }
-    emit(
+    safeEmit(
       state.copyWith(
         testReportRequestStatus: UploadReportRequestStatus.initial,
       ),
@@ -332,7 +329,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         // add URL to existing list
         final updatedTestReports = List<String>.from(state.uploadedTestReports)
           ..add(response.reportUrl);
-        emit(
+        safeEmit(
           state.copyWith(
             uploadedTestReports: updatedTestReports,
             message: response.message,
@@ -341,7 +338,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             testReportRequestStatus: UploadReportRequestStatus.failure,
@@ -352,7 +349,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> updateTestCodeSelection(String? testCode) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isTestCodeSelected: testCode,
       ),
@@ -368,14 +365,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             countriesNames: response.map((e) => e.name).toList(),
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -395,14 +392,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             testTableRowsData: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -413,7 +410,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
   Future<void> postLaboratoryTestDataEntrered(S localozation) async {
     log("xxx uploaded image length: ${state.uploadedTestImages.length} , uploaded picture urls: ${state.uploadedTestImages.map((e) => e).toList()}");
-    emit(
+    safeEmit(
       state.copyWith(
         testAnalysisDataEntryStatus: RequestStatus.loading,
       ),
@@ -437,7 +434,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             testAnalysisDataEntryStatus: RequestStatus.success,
             message: response,
@@ -445,7 +442,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             testAnalysisDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -455,8 +452,17 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  /// this method is used to safeEmit state only if cubit is not closed
+  void safeEmit(TestAnalysisDataEntryState newState) {
+    if (!isClosed) {
+      emit(newState);
+    } else {
+      log("⚠️ Tried to emit after cubit was closed. Ignored safely.");
+    }
+  }
+
   Future<void> submitEditsOnTest() async {
-    emit(
+    safeEmit(
       state.copyWith(
         testAnalysisDataEntryStatus: RequestStatus.loading,
       ),
@@ -479,7 +485,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             testAnalysisDataEntryStatus: RequestStatus.success,
             message: response,
@@ -487,7 +493,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             testAnalysisDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -505,14 +511,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             doctorNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -527,13 +533,13 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         (state.isTestNameSelected == null &&
             state.isTestCodeSelected == null &&
             state.isTestGroupNameSelected == null)) {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: true,
         ),
