@@ -5,7 +5,6 @@ class TestAnalysisDataEntryState extends Equatable {
   final RequestStatus testAnalysisDataEntryStatus;
 
   final String? selectedDate;
-  final bool? isTestPictureSelected;
   final String? isTestNameSelected;
   final String? isTestGroupNameSelected;
   final String? isTestCodeSelected;
@@ -40,7 +39,6 @@ class TestAnalysisDataEntryState extends Equatable {
     this.selectedDate,
     this.isFormValidated = false,
     this.isEditMode = false,
-    this.isTestPictureSelected,
     this.isTestNameSelected,
     this.isTestGroupNameSelected,
     this.selectedCountryName,
@@ -68,7 +66,6 @@ class TestAnalysisDataEntryState extends Equatable {
           selectedDate: null,
           testAnalysisDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
-          isTestPictureSelected: null,
           isTestNameSelected: null,
           isTestGroupNameSelected: null,
           isTestCodeSelected: null,
@@ -98,7 +95,6 @@ class TestAnalysisDataEntryState extends Equatable {
     String? selectedDate,
     RequestStatus? testAnalysisDataEntryStatus,
     bool? isFormValidated,
-    bool? isTestPictureSelected,
     String? isTestNameSelected,
     String? isTestGroupNameSelected,
     String? isTestCodeSelected,
@@ -128,8 +124,6 @@ class TestAnalysisDataEntryState extends Equatable {
         testAnalysisDataEntryStatus:
             testAnalysisDataEntryStatus ?? this.testAnalysisDataEntryStatus,
         isFormValidated: isFormValidated ?? this.isFormValidated,
-        isTestPictureSelected:
-            isTestPictureSelected ?? this.isTestPictureSelected,
         isTestNameSelected: isTestNameSelected ?? this.isTestNameSelected,
         isTestCodeSelected: isTestCodeSelected ?? this.isTestCodeSelected,
         countriesNames: countriesNames ?? this.countriesNames,
@@ -166,7 +160,6 @@ class TestAnalysisDataEntryState extends Equatable {
         selectedDate,
         testAnalysisDataEntryStatus,
         isFormValidated,
-        isTestPictureSelected,
         isTestNameSelected,
         isTestCodeSelected,
         isTestGroupNameSelected,
