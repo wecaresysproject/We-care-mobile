@@ -32,24 +32,31 @@ class EssentialDataView extends StatelessWidget {
               },
             ),
 
+            DetailsViewInfoTile(
+              title: "الاسم الرباعي",
+              value: "علي احمد احمد محمد",
+              icon: 'assets/images/notes_icon.png',
+              isExpanded: true,
+            ),
+
             // National ID and Birth Date Row
             Row(
               children: [
-                Expanded(
-                  child: DetailsViewInfoTile(
-                    title: "الرقم الوطني",
-                    value: "31207185401843",
-                    icon: 'assets/images/id_icon.png',
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
+                    Expanded(
                   child: DetailsViewInfoTile(
                     title: "تاريخ الميلاد",
                     value: "3/5/2000",
                     icon: 'assets/images/date_icon.png',
                   ),
                 ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: DetailsViewInfoTile(
+                    title: "الرقم الوطني",
+                    value: "31207185401843",
+                    icon: 'assets/images/id_icon.png',
+                  ),
+                ),            
               ],
             ),
 
@@ -82,7 +89,7 @@ class EssentialDataView extends StatelessWidget {
                 Expanded(
                   child: DetailsViewInfoTile(
                     title: "مدينة",
-                    value: "اللتش حق مثال",
+                    value: "نص مثال",
                     icon: 'assets/images/city_icon.png',
                   ),
                 ),
@@ -92,7 +99,7 @@ class EssentialDataView extends StatelessWidget {
             // Region/City
             DetailsViewInfoTile(
               title: "المنطقة/مدينة",
-              value: "اللتش حق مثال",
+              value: "نص مثال",
               icon: 'assets/images/city_icon.png',
               isExpanded: true,
             ),
@@ -102,17 +109,17 @@ class EssentialDataView extends StatelessWidget {
               children: [
                 Expanded(
                   child: DetailsViewInfoTile(
-                    title: "ساعات العمل ",
-                    value: "8",
-                    icon: 'assets/images/clock_icon.png',
+                    title: "فصيلة الدم",
+                    value: "نص مثال",
+                    icon: 'assets/images/blood_icon.png',
                   ),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: DetailsViewInfoTile(
-                    title: "فصيلة الدم",
-                    value: "اللتش حق مثال",
-                    icon: 'assets/images/blood_icon.png',
+                    title: "ساعات العمل",
+                    value: "نص مثال",
+                    icon: 'assets/images/times_icon.png',
                   ),
                 ),
               ],
@@ -123,26 +130,27 @@ class EssentialDataView extends StatelessWidget {
               children: [
                 Expanded(
                   child: DetailsViewInfoTile(
-                    title: "انتهاء التغطية",
-                    value: "25/10/2026",
-                    icon: 'assets/images/date_icon.png',
+                    title: "شركة التأمين",
+                    value: "نص مثال",
+                    icon: 'assets/images/doctor_name.png',
                   ),
                 ),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: DetailsViewInfoTile(
-                    title: "شركة التأمين",
-                    value: "اللتش حق مثال",
-                    icon: 'assets/images/doctor_name.png',
+                    title: "انتهاء التغطية",
+                    value: "25/10/2026",
+                    icon: 'assets/images/date_icon.png',
                   ),
                 ),
+    
               ],
             ),
 
             // Additional Conditions
             DetailsViewInfoTile(
               title: "شروط إضافية",
-              value: "اللتش حق مثال",
+              value: "نص مثال",
               icon: 'assets/images/notes_icon.png',
               isExpanded: true,
             ),
@@ -157,22 +165,20 @@ class EssentialDataView extends StatelessWidget {
             // Blood Type Section
             DetailsViewInfoTile(
               title: "نوع العجز",
-              value: "اللتش حق مثال",
+              value: "نص مثال",
               icon: 'assets/images/disability_icon.png',
               isExpanded: true,
             ),
 
-            // Disability Details Row
+                        DetailsViewInfoTile(
+                          title: "العجز إن وجد",
+                          value: "نص مثال",
+                          icon: 'assets/images/disability_icon.png',
+                          isExpanded: true,
+                        ),
+
             Row(
               children: [
-                Expanded(
-                  child: DetailsViewInfoTile(
-                    title: "العجز إن وجد",
-                    value: "اللتش حق مثال",
-                    icon: 'assets/images/disability_icon.png',
-                  ),
-                ),
-                SizedBox(width: 8.w),
                 Expanded(
                   child: DetailsViewInfoTile(
                     title: "عدد الأطفال",
@@ -180,6 +186,13 @@ class EssentialDataView extends StatelessWidget {
                     icon: 'assets/images/family_icon.png',
                   ),
                 ),
+            Expanded(
+              child: DetailsViewInfoTile(
+                title: "الحالة الاجتماعية",
+                value: "نص مثال",
+                icon: 'assets/images/social_icon.png',
+              ),
+            ),
               ],
             ),
 
@@ -189,7 +202,7 @@ class EssentialDataView extends StatelessWidget {
                 Expanded(
                   child: DetailsViewInfoTile(
                     title: "هاتف الطوارئ 1",
-                    value: "اللتش حق مثال",
+                    value: "نص مثال",
                     icon: 'assets/images/phone_icon.png',
                   ),
                 ),
@@ -197,25 +210,18 @@ class EssentialDataView extends StatelessWidget {
                 Expanded(
                   child: DetailsViewInfoTile(
                     title: "هاتف الطوارئ 2",
-                    value: "اللتش حق مثال",
+                    value: "نص مثال",
                     icon: 'assets/images/phone_icon.png',
                   ),
                 ),
               ],
             ),
 
-            // Social Status and Children Count
-            DetailsViewInfoTile(
-              title: "الحالة الاجتماعية",
-              value: "اللتش حق مثال",
-              icon: 'assets/images/social_icon.png',
-              isExpanded: true,
-            ),
 
             // Address
             DetailsViewInfoTile(
               title: "طبيب الاسرة",
-              value: "اللتش حق مثال",
+              value: "نص مثال",
               icon: 'assets/images/doctor_icon.png',
               isExpanded: true,
             ),

@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/essential_info/essential_info_view/views/essential_data_view.dart';
 
 import 'core/global/Helpers/functions.dart';
 import 'core/global/app_strings.dart';
