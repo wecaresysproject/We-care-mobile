@@ -1,4 +1,3 @@
-import 'package:we_care/generated/l10n.dart';
 
 class Routes {
   static const bottomNavBar = '/bottomNavBar'; //'/bottomNavBar'
@@ -124,4 +123,5 @@ class Routes {
   static const physicalActivityDataView = '/physicalActivityDataView';
   static const dailyActivityLogger = '/dailyActivityLogger';
   static const essentialInfoView = '/essentialInfoView';
+  static const essentialInfoDataEntry = '/essentialInfoDataEntry';
 }
