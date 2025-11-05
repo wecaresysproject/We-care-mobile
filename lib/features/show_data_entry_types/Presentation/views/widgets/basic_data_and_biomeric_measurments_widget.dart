@@ -22,7 +22,7 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
         CategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
-          routeName: "basicDataEntry",
+          routeName: Routes.essentialInfoDataEntry,
           isActive: true,
           cornerImagePath: "assets/images/basic_data.png",
         ),
