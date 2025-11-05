@@ -94,7 +94,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
       },

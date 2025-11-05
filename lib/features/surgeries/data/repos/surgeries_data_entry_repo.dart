@@ -1,6 +1,8 @@
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
@@ -10,16 +12,22 @@ import 'package:we_care/features/surgeries/surgeries_services.dart';
 
 class SurgeriesDataEntryRepo {
   final SurgeriesService _surgeriesService;
+  final SharedServices _sharedServices;
 
-  SurgeriesDataEntryRepo({required SurgeriesService surgeriesService})
-      : _surgeriesService = surgeriesService;
+  SurgeriesDataEntryRepo(
+    this._surgeriesService,
+    this._sharedServices,
+  );
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
+  Future<ApiResult<List<String>>> getCountriesData(
       {required String language}) async {
     try {
-      final response = await _surgeriesService.getCountries(language);
+      final response = await _sharedServices.getCountriesNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .map((country) => country as String)
           .toList();
       return ApiResult.success(countries);
     } catch (error) {
@@ -64,7 +72,7 @@ class SurgeriesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _surgeriesService.getAllDoctors(
+      final response = await _sharedServices.getDoctorNames(
         userType,
         language,
       );

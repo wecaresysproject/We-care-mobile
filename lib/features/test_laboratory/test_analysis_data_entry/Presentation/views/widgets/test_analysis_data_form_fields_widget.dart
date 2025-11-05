@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -119,7 +118,7 @@ class _TestAnalysisDataEntryFormFieldsState
               allowManualEntry: true,
               categoryLabel: "مركز التحاليل",
               containerHintText: "اختر اسم المركز",
-              options: [],
+              options: state.labCenters,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
               },
@@ -135,7 +134,7 @@ class _TestAnalysisDataEntryFormFieldsState
               categoryLabel: "المعمل / المستشفى",
               containerHintText:
                   state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
-              options: hosptitalsNames,
+              options: state.hospitalNames,
               onOptionSelected: (value) {
                 context
                     .read<TestAnalysisDataEntryCubit>()

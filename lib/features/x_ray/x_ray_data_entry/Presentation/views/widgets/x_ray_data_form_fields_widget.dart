@@ -256,10 +256,13 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "مركز الأشعة",
-              containerHintText: "اختر اسم المركز",
-              options: [],
+              containerHintText: state.selectedLabCenter ?? "اختر اسم المركز",
+              options: state.labCenters,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedLabCenter(value);
               },
               bottomSheetTitle: 'اختر اسم المركز',
               searchHintText: "ابحث عن اسم المركز",
@@ -272,10 +275,14 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "المستشفى",
-              containerHintText: "اختر اسم المستشفى",
-              options: [],
+              containerHintText:
+                  state.selectedHospitalName ?? "اختر اسم المستشفى",
+              options: state.hospitalNames,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedHospitalName(value);
               },
               bottomSheetTitle: 'اختر اسم المستشفى',
               searchHintText: "ابحث عن اسم المستشفى",

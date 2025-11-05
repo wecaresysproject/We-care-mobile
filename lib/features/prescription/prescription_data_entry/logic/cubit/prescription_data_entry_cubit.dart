@@ -41,12 +41,13 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateSelectedCountry(String? selectedCountry) {
+  Future<void> updateSelectedCountry(String? selectedCountry) async {
     emit(
       state.copyWith(
         selectedCountryName: selectedCountry,
       ),
     );
+    await emitCitiesData();
   }
 
   void updateSelectedCityName(String? selectedCity) {
@@ -140,8 +141,10 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
-    await emitCountriesData();
     await emitDoctorNames();
+    await emitDiseasesData();
+    await emitCountriesData();
+    await emitCitiesData();
   }
 
   Future<void> emitDoctorNames() async {
@@ -172,7 +175,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     final response =
         await _prescriptionDataEntryRepo.getCitiesBasedOnCountryName(
       language: AppStrings.arabicLang,
-      cityName: state.selectedCountryName ?? "egypt",
+      countryName: state.selectedCountryName ?? "Egypt",
     );
 
     response.when(
@@ -285,10 +288,32 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
-        emitCitiesData();
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDiseasesData() async {
+    final response = await _prescriptionDataEntryRepo.getDiseasesNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            diseasesNames: response,
+          ),
+        );
       },
       failure: (error) {
         emit(

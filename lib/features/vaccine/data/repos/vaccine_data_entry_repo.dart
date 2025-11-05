@@ -1,4 +1,6 @@
-import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/vaccine_services.dart';
@@ -8,16 +10,24 @@ import '../../../../core/networking/api_result.dart';
 
 class VaccineDataEntryRepo {
   final VaccineApiServices _vaccineApiServices;
+  final SharedServices _sharedServices;
 
-  VaccineDataEntryRepo({required VaccineApiServices vaccineApiServices})
-      : _vaccineApiServices = vaccineApiServices;
+  VaccineDataEntryRepo(
+      {required VaccineApiServices vaccineApiServices,
+      required SharedServices sharedServices})
+      : _vaccineApiServices = vaccineApiServices,
+        _sharedServices = sharedServices;
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
+  Future<ApiResult<List<String>>> getCountriesData({
+    required String language,
+  }) async {
     try {
-      final response = await _vaccineApiServices.getCountries(language);
+      final response = await _sharedServices.getCountriesNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .map((country) => country as String)
           .toList();
       return ApiResult.success(countries);
     } catch (error) {

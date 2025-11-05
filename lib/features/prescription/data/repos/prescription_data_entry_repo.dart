@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
@@ -12,18 +14,21 @@ import '../../../../core/networking/api_result.dart';
 
 class PrescriptionDataEntryRepo {
   final PrescriptionServices _prescriptionServices;
+  final SharedServices _sharedServices;
 
-  PrescriptionDataEntryRepo(this._prescriptionServices);
+  PrescriptionDataEntryRepo(this._prescriptionServices, this._sharedServices);
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
+  Future<ApiResult<List<String>>> getCountriesData(
       {required String language}) async {
     try {
-      final response = await _prescriptionServices.getCountries(
+      final response = await _sharedServices.getCountriesNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
         language,
       );
       final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .map((country) => country as String)
           .toList();
+      log("xxx: countries from repo: $countries");
       return ApiResult.success(countries);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -31,17 +36,34 @@ class PrescriptionDataEntryRepo {
   }
 
   Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
-      {required String language, required String cityName}) async {
+      {required String language, required String countryName}) async {
     try {
-      final response = await _prescriptionServices.getCitiesByCountryName(
+      final response = await _sharedServices.getCitiesBasedOnCountryName(
+        UserTypes.patient.name.firstLetterToUpperCase,
         language,
-        cityName,
+        countryName,
       );
-      final cityNames = (response['data'] as List)
-          .map((city) => city['name'] as String)
-          .toList();
+      final cityNames =
+          (response['data'] as List).map((city) => city as String).toList();
       log("xxx: cityNames from repo: $cityNames");
       return ApiResult.success(cityNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getDiseasesNames({
+    required String language,
+  }) async {
+    try {
+      final response = await _sharedServices.getDiseasesNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final diseases = (response['data'] as List)
+          .map((disease) => disease as String)
+          .toList();
+      return ApiResult.success(diseases);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -52,7 +74,7 @@ class PrescriptionDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _prescriptionServices.getAllDoctors(
+      final response = await _sharedServices.getDoctorNames(
         userType,
         language,
       );

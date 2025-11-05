@@ -8,9 +8,13 @@ class XRayDataEntryState extends Equatable {
   final List<BodyPartsResponseModel> bodyPartsDataModels;
   final List<String> puposesOfSelectedXRayType; // نوعية الاحتياج للاشعه
   final String? selectedPupose;
+  final String? selectedHospitalName;
+  final String? selectedLabCenter;
   final List<RadiologyTypeOfBodyPartModel>?
       selectedRadiologyTypesOfBodyPartModel;
   final List<String> countriesNames;
+  final List<String> hospitalNames;
+  final List<String> labCenters;
   final List<String> doctorNames;
   final String message; // error or success message
   final bool isFormValidated;
@@ -54,6 +58,10 @@ class XRayDataEntryState extends Equatable {
     this.doctorNames = const [],
     this.selectedTreatedDoctor,
     this.selectedRadiologistDoctorName,
+    this.hospitalNames = const [],
+    this.labCenters = const [],
+    this.selectedLabCenter,
+    this.selectedHospitalName,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -74,6 +82,10 @@ class XRayDataEntryState extends Equatable {
           doctorNames: const [],
           selectedTreatedDoctor: null,
           selectedRadiologistDoctorName: null,
+          hospitalNames: const [],
+          labCenters: const [],
+          selectedLabCenter: null,
+          selectedHospitalName: null,
         );
 
   XRayDataEntryState copyWith({
@@ -101,6 +113,10 @@ class XRayDataEntryState extends Equatable {
     List<String>? doctorNames,
     String? selectedTreatedDoctor,
     String? selectedRadiologistDoctorName,
+    List<String>? hospitalNames,
+    List<String>? labCenters,
+    String? selectedLabCenter,
+    String? selectedHospitalName,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -140,6 +156,10 @@ class XRayDataEntryState extends Equatable {
           selectedTreatedDoctor ?? this.selectedTreatedDoctor,
       selectedRadiologistDoctorName:
           selectedRadiologistDoctorName ?? this.selectedRadiologistDoctorName,
+      hospitalNames: hospitalNames ?? this.hospitalNames,
+      labCenters: labCenters ?? this.labCenters,
+      selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
+      selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
     );
   }
 
@@ -169,5 +189,9 @@ class XRayDataEntryState extends Equatable {
         doctorNames,
         selectedTreatedDoctor,
         selectedRadiologistDoctorName,
+        hospitalNames,
+        labCenters,
+        selectedLabCenter,
+        selectedHospitalName,
       ];
 }

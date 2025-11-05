@@ -1,3 +1,4 @@
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -9,8 +10,9 @@ import 'package:we_care/features/medicine/medicines_services.dart';
 
 class MedicinesDataEntryRepo {
   final MedicinesServices _medicinesServices;
+  final SharedServices _sharedServices;
 
-  MedicinesDataEntryRepo(this._medicinesServices);
+  MedicinesDataEntryRepo(this._medicinesServices, this._sharedServices);
 
   Future<ApiResult<List<String>>> getAllPlacesOfComplaints(
       {required String language}) async {
@@ -70,7 +72,7 @@ class MedicinesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _medicinesServices.getAllDoctors(
+      final response = await _sharedServices.getDoctorNames(
         userType,
         language,
       );

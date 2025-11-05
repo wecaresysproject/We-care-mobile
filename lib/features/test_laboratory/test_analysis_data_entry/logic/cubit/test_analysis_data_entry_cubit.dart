@@ -38,6 +38,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       ),
       emitCountriesData(),
       emitDoctorNames(),
+      emitLabCenters(),
+      emitHospitalNames(),
     ]);
   }
 
@@ -367,7 +369,53 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       success: (response) {
         safeEmit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitLabCenters() async {
+    final response = await _testAnalysisDataEntryRepo.getLabCenters(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            labCenters: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _testAnalysisDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            hospitalNames: response,
           ),
         );
       },

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -284,7 +283,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
 
             UserSelectionContainer(
               allowManualEntry: true,
-              options: hosptitalsNames,
+              options: state.hospitalNames,
               categoryLabel: "المستشفى / المركز",
               bottomSheetTitle: "اختر اسم المستشفى/المركز",
               onOptionSelected: (value) {

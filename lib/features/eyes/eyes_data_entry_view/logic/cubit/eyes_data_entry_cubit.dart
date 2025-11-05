@@ -71,8 +71,11 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     emit(state.copyWith(selectedHospitalCenter: val));
   }
 
-  getInitialRequests() {
-    emitCountriesData();
+  Future<void> getInitialRequests() async {
+    Future.wait([
+      emitCountriesData(),
+      emitHospitalNames(),
+    ]);
   }
 
   void updateSelectedCountry(String? selectedCountry) {
@@ -307,6 +310,29 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
         emit(
           state.copyWith(
             countriesNames: countries,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _eyesDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (hospitals) {
+        emit(
+          state.copyWith(
+            hospitalNames: hospitals,
           ),
         );
       },

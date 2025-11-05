@@ -105,6 +105,22 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  void updateSelectedLabCenter(String? val) {
+    emit(
+      state.copyWith(
+        selectedLabCenter: val,
+      ),
+    );
+  }
+
+  void updateSelectedHospitalName(String? val) {
+    emit(
+      state.copyWith(
+        selectedHospitalName: val,
+      ),
+    );
+  }
+
   void updateSelectedRadiologistDoctor(String? val) {
     emit(
       state.copyWith(
@@ -126,6 +142,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     await emitBodyPartsData();
     await emitCountriesData();
     await emitDoctorNames();
+    await emitLabCenters();
+    await emitHospitalNames();
   }
 
   Future<void> _getRadiologyTypeByBodyPartId(String id) async {
@@ -211,6 +229,11 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         xRayPictureUploadedUrl: editingRadiologyDetailsData.radiologyPhoto,
         xRayReportUploadedUrl: editingRadiologyDetailsData.report,
         xRayEditedModel: editingRadiologyDetailsData,
+        selectedTreatedDoctor: editingRadiologyDetailsData.doctor,
+        selectedRadiologistDoctorName:
+            editingRadiologyDetailsData.radiologyDoctor,
+        selectedHospitalName: editingRadiologyDetailsData.hospital,
+        // selectedLabCenter: editingRadiologyDetailsData.,//!TODO: check it later
         isXRayPictureSelected: true,
       ),
     );
@@ -367,6 +390,52 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  Future<void> emitLabCenters() async {
+    final response = await _xRayDataEntryRepo.getLabCenters(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            labCenters: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _xRayDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            hospitalNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> postRadiologyDataEntry(S localozation) async {
     emit(
       state.copyWith(
@@ -388,7 +457,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         cause: localozation.no_data_entered,
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
-        hospital: localozation.no_data_entered,
+        hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         curedDoctor:
             state.selectedTreatedDoctor ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
@@ -396,6 +465,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
             ? localozation.no_data_entered
             : personalNotesController.text,
         userType: UserTypes.patient.name.firstLetterToUpperCase,
+
         language: AppStrings.arabicLang, // TODO: handle it later
       ),
     );

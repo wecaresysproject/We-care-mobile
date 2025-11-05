@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
@@ -13,17 +15,58 @@ import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
 
 class TestAnalysisDataEntryRepo {
   final TestAnalysisSerices _testAnalysisSerices;
+  final SharedServices _sharedServices;
 
-  TestAnalysisDataEntryRepo(this._testAnalysisSerices);
+  TestAnalysisDataEntryRepo(this._testAnalysisSerices, this._sharedServices);
 
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
+  Future<ApiResult<List<String>>> getCountriesData({
+    required String language,
+  }) async {
     try {
-      final response = await _testAnalysisSerices.getCountries(language);
+      final response = await _sharedServices.getCountriesNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
       final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
+          .map((country) => country as String)
           .toList();
+      log("xxx: countries from repo: $countries");
       return ApiResult.success(countries);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getLabCenters({
+    required String language,
+  }) async {
+    try {
+      final response = await _sharedServices.getLabCenters(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final labs =
+          (response['data'] as List).map((lab) => lab as String).toList();
+      log("xxx: labs from repo: $labs");
+      return ApiResult.success(labs);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getHospitalNames({
+    required String language,
+  }) async {
+    try {
+      final response = await _sharedServices.getHospitalNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final hospitals = (response['data'] as List)
+          .map((hospital) => hospital as String)
+          .toList();
+      log("xxx: hospitals from repo: $hospitals");
+      return ApiResult.success(hospitals);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -51,7 +94,7 @@ class TestAnalysisDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _testAnalysisSerices.getAllDoctors(
+      final response = await _sharedServices.getDoctorNames(
         userType,
         language,
       );

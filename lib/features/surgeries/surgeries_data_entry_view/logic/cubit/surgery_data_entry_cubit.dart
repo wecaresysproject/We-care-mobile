@@ -340,7 +340,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
       },

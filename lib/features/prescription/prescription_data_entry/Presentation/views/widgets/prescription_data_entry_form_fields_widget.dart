@@ -124,12 +124,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "المرض", // Another Dropdown Example
                 containerHintText:
                     state.selectedDisease ?? "اختر المرض الذى تم تشخيصه",
-                options: [
-                  "مرض القلب",
-                  "مرض البول",
-                  "مرض الدم",
-                  "مرض القلب",
-                ],
+                options: state.diseasesNames,
                 onOptionSelected: (value) {
                   context
                       .read<PrescriptionDataEntryCubit>()
@@ -206,12 +201,9 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "الدولة",
                 bottomSheetTitle: "اختر اسم الدولة",
                 onOptionSelected: (value) async {
-                  context
-                      .read<PrescriptionDataEntryCubit>()
-                      .updateSelectedCountry(value);
                   await context
                       .read<PrescriptionDataEntryCubit>()
-                      .emitCountriesData();
+                      .updateSelectedCountry(value);
                 },
                 containerHintText:
                     state.selectedCountryName ?? "اختر اسم الدولة",
@@ -228,9 +220,6 @@ class _PrescriptionDataEntryFormFieldsState
                   context
                       .read<PrescriptionDataEntryCubit>()
                       .updateSelectedCityName(value);
-                  await context
-                      .read<PrescriptionDataEntryCubit>()
-                      .emitCitiesData();
                 },
                 containerHintText: state.selectedCityName ?? "اختر المدينة",
                 searchHintText: "ابحث عن المدينة",

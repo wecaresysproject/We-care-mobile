@@ -162,6 +162,29 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  Future<void> emitHospitalNames() async {
+    final response = await _geneticDiseasesDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitalNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<bool> deleteFamilyMemberbyNameAndCode({
     required String name,
     required String code,
@@ -495,6 +518,7 @@ class GeneticDiseasesDataEntryCubit
     await getAllGeneticDiseasesClassfications();
     await emitCountriesData();
     await emitDoctorNames();
+    await emitHospitalNames();
   }
 
   Future<void> submitPersonalGeneticDiseaseDataEntry(S locale) async {

@@ -129,6 +129,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emitAllGumsconditions(),
         emitAllOralMedicalTests(),
         emitCountriesData(),
+        emitHospitalNames(),
       ],
     );
   }
@@ -335,6 +336,29 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _dentalDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitals: response,
           ),
         );
       },

@@ -16,6 +16,7 @@ class DentalDataEntryState extends Equatable {
   final List<String> complainDurations;
   final List<String> complainTypes;
   final List<String> complainNatures;
+  final List<String> hospitals;
   final List<String> allGumsConditions; //حالة اللثة
   final List<String> allOralMedicalTests; //التحاليل الطبية الفموية
 
@@ -77,6 +78,7 @@ class DentalDataEntryState extends Equatable {
     this.updatedTeethId = '',
     this.selectedHospitalCenter,
     this.treatingDoctor,
+    this.hospitals = const [],
   }) : super();
 
   const DentalDataEntryState.initialState()
@@ -116,6 +118,7 @@ class DentalDataEntryState extends Equatable {
           updatedTeethId: '',
           selectedHospitalCenter: null,
           treatingDoctor: null,
+          hospitals: const [],
         );
 
   DentalDataEntryState copyWith({
@@ -154,6 +157,7 @@ class DentalDataEntryState extends Equatable {
     String? updatedTeethId,
     String? selectedHospitalCenter,
     String? treatingDoctor,
+    List<String>? hospitals,
   }) {
     return DentalDataEntryState(
       dentalDataEntryStatus:
@@ -206,6 +210,7 @@ class DentalDataEntryState extends Equatable {
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
       treatingDoctor: treatingDoctor ?? this.treatingDoctor,
+      hospitals: hospitals ?? this.hospitals,
     );
   }
 
@@ -246,5 +251,6 @@ class DentalDataEntryState extends Equatable {
         updatedTeethId,
         selectedHospitalCenter,
         treatingDoctor,
+        hospitals,
       ];
 }
