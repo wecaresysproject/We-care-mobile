@@ -35,6 +35,23 @@ class SurgeriesDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getHospitalNames({
+    required String language,
+  }) async {
+    try {
+      final response = await _sharedServices.getHospitalNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final hospitals = (response['data'] as List)
+          .map((hospital) => hospital as String)
+          .toList();
+      return ApiResult.success(hospitals);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
     required String language,
     required String contentType,

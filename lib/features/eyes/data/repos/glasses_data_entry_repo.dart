@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -10,9 +11,13 @@ import 'package:we_care/features/eyes/eyes_services.dart';
 
 class GlassesDataEntryRepo {
   final EyesModuleServices _eyesModuleServices;
+  final SharedServices _sharedServices;
 
-  GlassesDataEntryRepo({required EyesModuleServices eyesModuleServices})
-      : _eyesModuleServices = eyesModuleServices;
+  GlassesDataEntryRepo(
+      {required EyesModuleServices eyesModuleServices,
+      required SharedServices sharedServices})
+      : _eyesModuleServices = eyesModuleServices,
+        _sharedServices = sharedServices;
 
   Future<ApiResult<String>> postGlassesLensDataEntry({
     required String language,
@@ -71,7 +76,7 @@ class GlassesDataEntryRepo {
     required String userType,
   }) async {
     try {
-      final response = await _eyesModuleServices.getAllDoctors(
+      final response = await _sharedServices.getDoctorNames(
         userType,
         language,
       );
@@ -80,6 +85,23 @@ class GlassesDataEntryRepo {
           .toList();
       final doctorNames = doctors.map((e) => e.fullName).toList();
       return ApiResult.success(doctorNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getHospitalNames({
+    required String language,
+  }) async {
+    try {
+      final response = await _sharedServices.getHospitalNames(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final hospitals = (response['data'] as List)
+          .map((hospital) => hospital as String)
+          .toList();
+      return ApiResult.success(hospitals);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

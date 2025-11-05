@@ -132,6 +132,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     await emitCountriesData();
     await emitGetSurgeryStatus();
     await emitDoctorNames();
+    await emitHospitalNames();
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
@@ -246,6 +247,28 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         emit(
           state.copyWith(
             allSurgeryStatuses: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _surgeriesDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitals: response,
           ),
         );
       },

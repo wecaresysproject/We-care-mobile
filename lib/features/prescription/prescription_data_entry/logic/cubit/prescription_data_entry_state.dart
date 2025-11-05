@@ -11,6 +11,7 @@ class PrescriptionDataEntryState extends Equatable {
   final List<String> countriesNames;
   final List<String> citiesNames;
   final List<String> doctorNames;
+  final List<String> doctorSpecialities;
   final List<String> diseasesNames;
   final String? selectedCountryName;
   final String? selectedCityName;
@@ -42,6 +43,7 @@ class PrescriptionDataEntryState extends Equatable {
     this.isEditMode = false,
     this.prescribtionEditedModel,
     this.diseasesNames = const [],
+    this.doctorSpecialities = const [],
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -64,6 +66,7 @@ class PrescriptionDataEntryState extends Equatable {
           citiesNames: const [],
           doctorNames: const [],
           diseasesNames: const [],
+          doctorSpecialities: const [],
         );
 
   PrescriptionDataEntryState copyWith({
@@ -85,6 +88,7 @@ class PrescriptionDataEntryState extends Equatable {
     PrescriptionModel? prescribtionEditedModel,
     List<String>? doctorNames,
     List<String>? diseasesNames,
+    List<String>? doctorSpecialities,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -112,6 +116,7 @@ class PrescriptionDataEntryState extends Equatable {
           prescribtionEditedModel ?? this.prescribtionEditedModel,
       doctorNames: doctorNames ?? this.doctorNames,
       diseasesNames: diseasesNames ?? this.diseasesNames,
+      doctorSpecialities: doctorSpecialities ?? this.doctorSpecialities,
     );
   }
 
@@ -135,5 +140,6 @@ class PrescriptionDataEntryState extends Equatable {
         prescribtionEditedModel,
         doctorNames,
         diseasesNames,
+        doctorSpecialities,
       ];
 }

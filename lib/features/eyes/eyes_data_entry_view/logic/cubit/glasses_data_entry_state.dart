@@ -11,6 +11,7 @@ class GlassesDataEntryState extends Equatable {
   final List<String> doctorNames;
   final List<String> lensTypes;
   final List<String> lensSurfcacesTypes;
+  final List<String> hosptitalsNames;
   final bool isEditMode;
   final String decoumentId;
   final String? selectedHospitalCenter;
@@ -53,6 +54,7 @@ class GlassesDataEntryState extends Equatable {
     this.rightlensSurfaceType,
     this.leftLensType,
     this.leftLensSurfaceType,
+    this.hosptitalsNames = const [],
   }) : super();
 
   const GlassesDataEntryState.initialState()
@@ -80,6 +82,7 @@ class GlassesDataEntryState extends Equatable {
           rightlensSurfaceType: null,
           leftLensType: null,
           leftLensSurfaceType: null,
+          hosptitalsNames: const [],
         );
 
   GlassesDataEntryState copyWith({
@@ -107,6 +110,7 @@ class GlassesDataEntryState extends Equatable {
     String? rightlensSurfaceType,
     String? leftLensType,
     String? leftLensSurfaceType,
+    List<String>? hosptitalsNames,
   }) {
     return GlassesDataEntryState(
       glassesEssentialDataEntryStatus: glassesEssentialDataEntryStatus ??
@@ -138,6 +142,7 @@ class GlassesDataEntryState extends Equatable {
       rightlensSurfaceType: rightlensSurfaceType ?? this.rightlensSurfaceType,
       leftLensType: leftLensType ?? this.leftLensType,
       leftLensSurfaceType: leftLensSurfaceType ?? this.leftLensSurfaceType,
+      hosptitalsNames: hosptitalsNames ?? this.hosptitalsNames,
     );
   }
 
@@ -167,5 +172,6 @@ class GlassesDataEntryState extends Equatable {
         rightlensSurfaceType,
         leftLensType,
         leftLensSurfaceType,
+        hosptitalsNames,
       ];
 }

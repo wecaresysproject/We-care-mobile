@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -92,7 +91,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "التخصص",
                 containerHintText:
                     state.doctorSpecialitySelection ?? "اختر تخصص",
-                options: medicalSpecialties,
+                options: state.doctorSpecialities,
                 onOptionSelected: (value) {
                   context
                       .read<PrescriptionDataEntryCubit>()

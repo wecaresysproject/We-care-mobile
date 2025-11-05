@@ -268,9 +268,12 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   }
 
   Future<void> getInitialRequests() async {
-    emitDoctorNames();
-    emitGetAllLensTypes();
-    emitGetAllLensSurfacesTypes();
+    Future.wait([
+      emitDoctorNames(),
+      emitGetAllLensTypes(),
+      emitGetAllLensSurfacesTypes(),
+      getHospitalNames(),
+    ]);
   }
 
   Future<void> submitGlassesLensDataEntered({required S locale}) async {
@@ -439,6 +442,29 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         emit(
           state.copyWith(
             doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getHospitalNames() async {
+    final response = await _glassesDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hosptitalsNames: response,
           ),
         );
       },

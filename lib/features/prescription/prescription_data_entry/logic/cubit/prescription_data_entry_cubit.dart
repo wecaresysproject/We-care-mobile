@@ -145,6 +145,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     await emitDiseasesData();
     await emitCountriesData();
     await emitCitiesData();
+    await emitDoctorsSpecializations();
   }
 
   Future<void> emitDoctorNames() async {
@@ -183,6 +184,30 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         emit(
           state.copyWith(
             citiesNames: citiesList,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorsSpecializations() async {
+    final response = await _prescriptionDataEntryRepo.getDoctorsSpecializations(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorSpecialities: response,
           ),
         );
       },

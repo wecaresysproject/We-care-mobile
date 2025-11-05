@@ -494,6 +494,7 @@ void setupAppRepos() {
   getIt.registerLazySingleton<GlassesDataEntryRepo>(
     () => GlassesDataEntryRepo(
       eyesModuleServices: getIt<EyesModuleServices>(),
+      sharedServices: getIt<SharedServices>(),
     ),
   );
 

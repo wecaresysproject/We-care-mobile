@@ -88,6 +88,23 @@ class PrescriptionDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getDoctorsSpecializations({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _sharedServices.getDoctorsSpecializations(
+        userType,
+        language,
+      );
+      final specializations =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(specializations);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<UploadImageResponseModel>> uploadPrescriptionImage({
     required String language,
     required String contentType,

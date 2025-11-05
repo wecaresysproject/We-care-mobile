@@ -18,6 +18,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
   final String? selectedPreferredMentalWellnessActivities;
   final List<String> symptoms;
   final List<String> doctorNames;
+  final List<String> hospitalsNames;
   final List<TextEditingController> symptomControllers;
 
   //حادث له آثر
@@ -97,6 +98,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
     this.countriesNames = const [],
     this.symptomControllers = const [],
     this.doctorNames = const [],
+    this.hospitalsNames = const [],
   }) : super();
 
   MedicalIllnessesDataEntryState.initialState()
@@ -141,6 +143,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
           countriesNames: const [],
           symptomControllers: [TextEditingController()],
           doctorNames: const [],
+          hospitalsNames: const [],
         );
 
   MedicalIllnessesDataEntryState copyWith({
@@ -185,6 +188,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
     List<TextEditingController>? symptomControllers,
     List<String>? doctorNames,
     List<String>? medicalSyptoms,
+    List<String>? hospitalsNames,
   }) {
     return MedicalIllnessesDataEntryState(
       mentalIllnessesDataEntryStatus:
@@ -249,6 +253,7 @@ class MedicalIllnessesDataEntryState extends Equatable {
       symptoms: symptoms ?? this.symptoms,
       symptomControllers: symptomControllers ?? this.symptomControllers,
       doctorNames: doctorNames ?? this.doctorNames,
+      hospitalsNames: hospitalsNames ?? this.hospitalsNames,
     );
   }
 
@@ -295,5 +300,6 @@ class MedicalIllnessesDataEntryState extends Equatable {
         symptoms,
         symptomControllers,
         doctorNames,
+        hospitalsNames,
       ];
 }

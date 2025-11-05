@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
@@ -72,7 +71,7 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               UserSelectionContainer(
                 allowManualEntry: true,
                 categoryLabel: "المعمل / المستشفى",
-                options: hosptitalsNames,
+                options: state.hosptitalsNames,
                 onOptionSelected: (value) {
                   context
                       .read<GlassesDataEntryCubit>()

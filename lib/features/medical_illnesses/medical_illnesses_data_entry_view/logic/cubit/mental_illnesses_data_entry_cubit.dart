@@ -137,6 +137,7 @@ class MedicalIllnessesDataEntryCubit
       getMedicationImpactOnDailyLife(),
       getPreferredActivitiesForPsychologicalImprovement(),
       emitDoctorNames(),
+      emitHospitalNames(),
     ]);
   }
 
@@ -246,6 +247,29 @@ class MedicalIllnessesDataEntryCubit
         emit(
           state.copyWith(
             incidentTypes: incidentTypes,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await _medicalIllnessesDataEntryRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitalsNames: response,
           ),
         );
       },
