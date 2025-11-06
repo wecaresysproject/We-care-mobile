@@ -9,6 +9,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
@@ -27,8 +28,6 @@ class XRayReportSection extends StatelessWidget {
               style: AppTextStyles.font18blackWight500,
             ),
 
-            // verticalSpacing(8),
-
             // preview
             if (state.uploadedTestReports.isNotEmpty)
               Wrap(
@@ -43,9 +42,30 @@ class XRayReportSection extends StatelessWidget {
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {
-                // TODO: navigate to report writing screen
+              label: context
+                      .read<XRayDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                // ✅ اقرا الـ cubit من الـ context الحالي
+                final cubit = context.read<XRayDataEntryCubit>();
+                final isFirstTime =
+                    cubit.reportTextController.text.isEmpty == true;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
               },
             ),
             verticalSpacing(8),

@@ -40,6 +40,7 @@ class RadiologyData {
   String? radiologyNote;
   String? userType;
   String? language;
+  String? writtenReport;
 
   RadiologyData({
     required this.id,
@@ -58,6 +59,7 @@ class RadiologyData {
     this.radiologyNote,
     this.userType,
     this.language,
+    this.writtenReport,
   });
 
   factory RadiologyData.fromJson(Map<String, dynamic> json) =>

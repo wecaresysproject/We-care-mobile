@@ -99,13 +99,20 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
                   DetailsViewImagesWithTitleTile(
-                      images: radiologyData.radiologyPhotos,
-                      isShareEnabled: true,
-                      title: "صورة الأشعة"),
+                    images: radiologyData.radiologyPhotos,
+                    isShareEnabled: true,
+                    title: "صورة الأشعة",
+                  ),
                   DetailsViewImagesWithTitleTile(
                     isShareEnabled: true,
                     title: "صورة التقرير",
                     images: radiologyData.reports,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "التقرير الطبي",
+                    value: radiologyData.writtenReport ?? 'لم يتم ادخاله',
+                    icon: 'assets/images/notes_icon.png',
+                    isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                       isExpanded: true,

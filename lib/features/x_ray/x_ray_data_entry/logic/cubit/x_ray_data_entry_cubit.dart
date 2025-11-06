@@ -27,6 +27,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   final AppSharedRepo sharedRepo;
 
   final personalNotesController = TextEditingController();
+  final reportTextController = TextEditingController(); // ✅ أضف ده
 
   Future<void> emitBodyPartsData() async {
     final response = await _xRayDataEntryRepo.getBodyPartsData();
@@ -204,21 +205,20 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     final response = await _xRayDataEntryRepo.updateXRayDocumentDetails(
       requestBody: XrayDataEntryRequestBodyModel(
         userType: UserTypes.patient.name.firstLetterToUpperCase,
-        language: AppStrings.arabicLang, //TODO: to change later
+        language: AppStrings.arabicLang,
         radiologyDate: state.xRayDateSelection!,
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
         radiologyTypePurposes: state.selectedPupose,
-        // photo: state.xRayPictureUploadedUrl,
-        // report: state.xRayReportUploadedUrl,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
         cause: localozation.no_data_entered,
-        radiologyDoctor: localozation.no_data_entered,
-        hospital: localozation.no_data_entered,
-        curedDoctor: localozation.no_data_entered,
+        radiologyDoctor: state.selectedRadiologistDoctorName,
+        hospital: state.selectedHospitalName,
+        curedDoctor: state.selectedTreatedDoctor,
         country: state.selectedCountryName,
         radiologyNote: personalNotesController.text,
+        writtenReport: reportTextController.text,
       ),
       documentId: state.xRayEditedModel!.id!,
     );
@@ -263,6 +263,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
       ),
     );
     personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;
+    reportTextController.text = editingRadiologyDetailsData.writtenReport!;
     validateRequiredFields();
     await intialRequestsForXRayDataEntry();
   }
@@ -488,6 +489,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         xRayDataEntryStatus: RequestStatus.loading,
       ),
     );
+    log("xxx: report text : ${reportTextController.text}");
     final response = await _xRayDataEntryRepo.postRadiologyDataEntry(
       XrayDataEntryRequestBodyModel(
         radiologyDate: state.xRayDateSelection!,
@@ -500,6 +502,9 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
+        writtenReport: reportTextController.text.isEmpty
+            ? localozation.no_data_entered
+            : reportTextController.text,
         curedDoctor:
             state.selectedTreatedDoctor ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
@@ -536,6 +541,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     DioServices.cancelRequests(
       "Iam closing all requests of xRayDataEntryCubit",
     );
+    reportTextController.dispose(); // ✅ متنساش تعمل dispose
+
     log('xxx: xray');
     return super.close();
   }
