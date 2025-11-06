@@ -1,31 +1,17 @@
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_services.dart';
 
 class SurgeriesDataEntryRepo {
   final SurgeriesService _surgeriesService;
 
-  SurgeriesDataEntryRepo({required SurgeriesService surgeriesService})
-      : _surgeriesService = surgeriesService;
-
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _surgeriesService.getCountries(language);
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  SurgeriesDataEntryRepo(
+    this._surgeriesService,
+  );
 
   Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
     required String language,
@@ -54,25 +40,6 @@ class SurgeriesDataEntryRepo {
       final partRegions =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(partRegions);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _surgeriesService.getAllDoctors(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

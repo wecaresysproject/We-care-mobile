@@ -1,12 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_services.dart';
@@ -15,19 +13,6 @@ class TestAnalysisDataEntryRepo {
   final TestAnalysisSerices _testAnalysisSerices;
 
   TestAnalysisDataEntryRepo(this._testAnalysisSerices);
-
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _testAnalysisSerices.getCountries(language);
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
 
   Future<ApiResult<UploadImageResponseModel>> uploadLaboratoryTestImage({
     required String language,
@@ -41,25 +26,6 @@ class TestAnalysisDataEntryRepo {
         language,
       );
       return ApiResult.success(response);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _testAnalysisSerices.getAllDoctors(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

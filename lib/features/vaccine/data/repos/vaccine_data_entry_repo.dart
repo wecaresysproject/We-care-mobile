@@ -1,4 +1,3 @@
-import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/vaccine_services.dart';
@@ -11,19 +10,6 @@ class VaccineDataEntryRepo {
 
   VaccineDataEntryRepo({required VaccineApiServices vaccineApiServices})
       : _vaccineApiServices = vaccineApiServices;
-
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _vaccineApiServices.getCountries(language);
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
 
   Future<ApiResult<List<String>>> getVaccineCategories({
     required String language,

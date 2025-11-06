@@ -11,6 +11,8 @@ class TestAnalysisDataEntryState extends Equatable {
   final bool isFormValidated;
   final List<String> countriesNames;
   final List<String> doctorNames;
+  final List<String> labCenters;
+  final List<String> hospitalNames;
   final String? selectedCountryName;
   final String? selectedHospitalName;
   final String? selectedDoctorName;
@@ -60,6 +62,8 @@ class TestAnalysisDataEntryState extends Equatable {
     this.selectedTestAnnotation,
     this.updatedTestId = '',
     this.doctorNames = const [],
+    this.labCenters = const [],
+    this.hospitalNames = const [],
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -89,6 +93,8 @@ class TestAnalysisDataEntryState extends Equatable {
           selectedTestAnnotation: null,
           uploadedTestReports: const [],
           doctorNames: const [],
+          labCenters: const [],
+          hospitalNames: const [],
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -118,41 +124,46 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? uploadedTestImages,
     List<String>? uploadedTestReports,
     List<String>? doctorNames,
+    List<String>? labCenters,
+    List<String>? hospitalNames,
   }) {
     return TestAnalysisDataEntryState(
-        selectedDate: selectedDate ?? this.selectedDate,
-        testAnalysisDataEntryStatus:
-            testAnalysisDataEntryStatus ?? this.testAnalysisDataEntryStatus,
-        isFormValidated: isFormValidated ?? this.isFormValidated,
-        isTestNameSelected: isTestNameSelected ?? this.isTestNameSelected,
-        isTestCodeSelected: isTestCodeSelected ?? this.isTestCodeSelected,
-        countriesNames: countriesNames ?? this.countriesNames,
-        message: message ?? this.message,
-        selectedCountryName: selectedCountryName ?? this.selectedCountryName,
-        testImageRequestStatus:
-            testImageRequestStatus ?? this.testImageRequestStatus,
-        testReportRequestStatus:
-            testReportRequestStatus ?? this.testReportRequestStatus,
-        testCodes: testCodes ?? this.testCodes,
-        selectedTestAnnotation:
-            selectedTestAnnotation ?? this.selectedTestAnnotation,
-        isTestGroupNameSelected:
-            isTestGroupNameSelected ?? this.isTestGroupNameSelected,
-        testGroupNames: testGroupNames ?? this.testGroupNames,
-        testNames: testNames ?? this.testNames,
-        testTableRowsData: testTableRowsData ?? this.testTableRowsData,
-        enteredTableRows: enteredTableRows ?? this.enteredTableRows,
-        selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
-        selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
-        selectedSymptomsForProcedure:
-            selectedSymptomsForProcedure ?? this.selectedSymptomsForProcedure,
-        selectedNoOftimesTestPerformed: selectedNoOftimesTestPerformed ??
-            this.selectedNoOftimesTestPerformed,
-        isEditMode: isEditMode ?? this.isEditMode,
-        updatedTestId: updatedTestId ?? this.updatedTestId,
-        uploadedTestImages: uploadedTestImages ?? this.uploadedTestImages,
-        uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
-        doctorNames: doctorNames ?? this.doctorNames);
+      selectedDate: selectedDate ?? this.selectedDate,
+      testAnalysisDataEntryStatus:
+          testAnalysisDataEntryStatus ?? this.testAnalysisDataEntryStatus,
+      isFormValidated: isFormValidated ?? this.isFormValidated,
+      isTestNameSelected: isTestNameSelected ?? this.isTestNameSelected,
+      isTestCodeSelected: isTestCodeSelected ?? this.isTestCodeSelected,
+      countriesNames: countriesNames ?? this.countriesNames,
+      message: message ?? this.message,
+      selectedCountryName: selectedCountryName ?? this.selectedCountryName,
+      testImageRequestStatus:
+          testImageRequestStatus ?? this.testImageRequestStatus,
+      testReportRequestStatus:
+          testReportRequestStatus ?? this.testReportRequestStatus,
+      testCodes: testCodes ?? this.testCodes,
+      selectedTestAnnotation:
+          selectedTestAnnotation ?? this.selectedTestAnnotation,
+      isTestGroupNameSelected:
+          isTestGroupNameSelected ?? this.isTestGroupNameSelected,
+      testGroupNames: testGroupNames ?? this.testGroupNames,
+      testNames: testNames ?? this.testNames,
+      testTableRowsData: testTableRowsData ?? this.testTableRowsData,
+      enteredTableRows: enteredTableRows ?? this.enteredTableRows,
+      selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
+      selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
+      selectedSymptomsForProcedure:
+          selectedSymptomsForProcedure ?? this.selectedSymptomsForProcedure,
+      selectedNoOftimesTestPerformed:
+          selectedNoOftimesTestPerformed ?? this.selectedNoOftimesTestPerformed,
+      isEditMode: isEditMode ?? this.isEditMode,
+      updatedTestId: updatedTestId ?? this.updatedTestId,
+      uploadedTestImages: uploadedTestImages ?? this.uploadedTestImages,
+      uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
+      doctorNames: doctorNames ?? this.doctorNames,
+      labCenters: labCenters ?? this.labCenters,
+      hospitalNames: hospitalNames ?? this.hospitalNames,
+    );
   }
 
   @override
@@ -183,5 +194,7 @@ class TestAnalysisDataEntryState extends Equatable {
         uploadedTestImages,
         uploadedTestReports,
         doctorNames,
+        labCenters,
+        hospitalNames,
       ];
 }

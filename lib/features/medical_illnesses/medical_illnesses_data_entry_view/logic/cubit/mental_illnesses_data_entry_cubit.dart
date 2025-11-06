@@ -6,6 +6,7 @@ import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
@@ -17,12 +18,14 @@ part 'mental_illnesses_data_entry_state.dart';
 
 class MedicalIllnessesDataEntryCubit
     extends Cubit<MedicalIllnessesDataEntryState> {
-  MedicalIllnessesDataEntryCubit(
-      this._medicalIllnessesDataEntryRepo, this.pushNotificationsService)
+  MedicalIllnessesDataEntryCubit(this._medicalIllnessesDataEntryRepo,
+      this.pushNotificationsService, this.sharedRepo)
       : super(
           MedicalIllnessesDataEntryState.initialState(),
         );
   final MentalIllnessesDataEntryRepo _medicalIllnessesDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   final noOfSessionsController = TextEditingController(); // عدد الجلسات
 
   final PushNotificationsService pushNotificationsService;
@@ -73,7 +76,7 @@ class MedicalIllnessesDataEntryCubit
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _medicalIllnessesDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -137,6 +140,7 @@ class MedicalIllnessesDataEntryCubit
       getMedicationImpactOnDailyLife(),
       getPreferredActivitiesForPsychologicalImprovement(),
       emitDoctorNames(),
+      emitHospitalNames(),
     ]);
   }
 
@@ -246,6 +250,29 @@ class MedicalIllnessesDataEntryCubit
         emit(
           state.copyWith(
             incidentTypes: incidentTypes,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await sharedRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitalsNames: response,
           ),
         );
       },
@@ -652,7 +679,7 @@ class MedicalIllnessesDataEntryCubit
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _medicalIllnessesDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 

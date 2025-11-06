@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
@@ -12,11 +13,12 @@ import 'package:we_care/generated/l10n.dart';
 part 'glasses_data_entry_state.dart';
 
 class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
-  GlassesDataEntryCubit(this._glassesDataEntryRepo)
+  GlassesDataEntryCubit(this._glassesDataEntryRepo, this.sharedRepo)
       : super(
           GlassesDataEntryState.initialState(),
         );
   final GlassesDataEntryRepo _glassesDataEntryRepo;
+  final AppSharedRepo sharedRepo;
 
   final formKey = GlobalKey<FormState>();
   final TextEditingController storNameController = TextEditingController();
@@ -268,9 +270,12 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   }
 
   Future<void> getInitialRequests() async {
-    emitDoctorNames();
-    emitGetAllLensTypes();
-    emitGetAllLensSurfacesTypes();
+    Future.wait([
+      emitDoctorNames(),
+      emitGetAllLensTypes(),
+      emitGetAllLensSurfacesTypes(),
+      getHospitalNames(),
+    ]);
   }
 
   Future<void> submitGlassesLensDataEntered({required S locale}) async {
@@ -429,7 +434,7 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _glassesDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -439,6 +444,29 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
         emit(
           state.copyWith(
             doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getHospitalNames() async {
+    final response = await sharedRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hosptitalsNames: response,
           ),
         );
       },

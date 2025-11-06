@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
@@ -16,12 +17,14 @@ import 'package:we_care/generated/l10n.dart';
 part 'test_analysis_data_entry_state.dart';
 
 class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
-  TestAnalysisDataEntryCubit(this._testAnalysisDataEntryRepo)
+  TestAnalysisDataEntryCubit(this._testAnalysisDataEntryRepo, this.sharedRepo)
       : super(
           TestAnalysisDataEntryState.initial(),
         );
 
   final TestAnalysisDataEntryRepo _testAnalysisDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   Future<void> intialRequestsForTestAnalysisDataEntry() async {
     await Future.wait([
       emitListOfTestAnnotations(
@@ -38,6 +41,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       ),
       emitCountriesData(),
       emitDoctorNames(),
+      emitLabCenters(),
+      emitHospitalNames(),
     ]);
   }
 
@@ -359,7 +364,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _testAnalysisDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -367,7 +372,53 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       success: (response) {
         safeEmit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitLabCenters() async {
+    final response = await sharedRepo.getLabCenters(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            labCenters: response,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await sharedRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        safeEmit(
+          state.copyWith(
+            hospitalNames: response,
           ),
         );
       },
@@ -504,7 +555,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _testAnalysisDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );

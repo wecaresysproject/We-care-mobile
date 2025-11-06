@@ -12,8 +12,10 @@ class XrayDataEntryRequestBodyModel {
   final String radiologyType;
   @JsonKey(name: "PeriodicUsage")
   final String? radiologyTypePurposes;
-  final String photo;
-  final String? report;
+  @JsonKey(name: "xrayImages")
+  final List<String> xrayImages;
+  @JsonKey(name: "reportImages")
+  final List<String> reportImages;
   final String? cause;
   final String? hospital;
   @JsonKey(name: "RadiologyDoctor")
@@ -27,14 +29,15 @@ class XrayDataEntryRequestBodyModel {
   final String userType;
   @JsonKey(name: "Language")
   final String language;
+  final String writtenReport;
 
   XrayDataEntryRequestBodyModel({
     required this.radiologyDate,
     required this.bodyPartName,
     required this.radiologyType,
     required this.radiologyTypePurposes,
-    required this.photo,
-    required this.report,
+    required this.xrayImages,
+    required this.reportImages,
     required this.cause,
     required this.hospital,
     required this.radiologyDoctor,
@@ -43,6 +46,7 @@ class XrayDataEntryRequestBodyModel {
     required this.radiologyNote,
     required this.userType,
     required this.language,
+    required this.writtenReport,
   });
 
   Map<String, dynamic> toJson() => _$XrayDataEntryRequestBodyModelToJson(this);

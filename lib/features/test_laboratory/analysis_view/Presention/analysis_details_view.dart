@@ -9,10 +9,10 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 

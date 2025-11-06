@@ -17,6 +17,7 @@ class EyesDataEntryState extends Equatable {
   final EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures;
 
   final List<String> countriesNames;
+  final List<String> hospitalNames;
   final String? selectedCountryName;
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
@@ -66,6 +67,7 @@ class EyesDataEntryState extends Equatable {
     this.doctorName,
     this.eyePartSyptomsAndProcedures,
     this.affectedEyePart = '',
+    this.hospitalNames = const [],
   }) : super();
 
   const EyesDataEntryState.initialState()
@@ -100,6 +102,7 @@ class EyesDataEntryState extends Equatable {
           doctorName: null,
           eyePartSyptomsAndProcedures: null,
           affectedEyePart: null,
+          hospitalNames: const [],
         );
 
   EyesDataEntryState copyWith({
@@ -134,6 +137,7 @@ class EyesDataEntryState extends Equatable {
     String? doctorName,
     EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
     String? affectedEyePart,
+    List<String>? hospitalNames,
   }) {
     return EyesDataEntryState(
       eyeDataEntryStatus: eyeDataEntryStatus ?? this.eyeDataEntryStatus,
@@ -175,6 +179,7 @@ class EyesDataEntryState extends Equatable {
       eyePartSyptomsAndProcedures:
           eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
       affectedEyePart: affectedEyePart ?? this.affectedEyePart,
+      hospitalNames: hospitalNames ?? this.hospitalNames,
     );
   }
 
@@ -211,5 +216,6 @@ class EyesDataEntryState extends Equatable {
         doctorName,
         eyePartSyptomsAndProcedures,
         affectedEyePart,
+        hospitalNames,
       ];
 }

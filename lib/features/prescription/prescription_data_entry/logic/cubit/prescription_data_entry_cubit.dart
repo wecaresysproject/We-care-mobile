@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
@@ -14,11 +15,13 @@ import 'package:we_care/generated/l10n.dart';
 part 'prescription_data_entry_state.dart';
 
 class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
-  PrescriptionDataEntryCubit(this._prescriptionDataEntryRepo)
+  PrescriptionDataEntryCubit(this._prescriptionDataEntryRepo, this.sharedRepo)
       : super(
           PrescriptionDataEntryState.initialState(),
         );
   final PrescriptionDataEntryRepo _prescriptionDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   final personalNotesController = TextEditingController();
   final symptomsAccompanyingComplaintController =
       TextEditingController(); // الاعراض المصاحبة للشكوى
@@ -41,12 +44,13 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     validateRequiredFields();
   }
 
-  void updateSelectedCountry(String? selectedCountry) {
+  Future<void> updateSelectedCountry(String? selectedCountry) async {
     emit(
       state.copyWith(
         selectedCountryName: selectedCountry,
       ),
     );
+    await emitCitiesData();
   }
 
   void updateSelectedCityName(String? selectedCity) {
@@ -140,12 +144,15 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
-    await emitCountriesData();
     await emitDoctorNames();
+    await emitDiseasesData();
+    await emitCountriesData();
+    await emitCitiesData();
+    await emitDoctorsSpecializations();
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _prescriptionDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -169,10 +176,9 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   }
 
   Future<void> emitCitiesData() async {
-    final response =
-        await _prescriptionDataEntryRepo.getCitiesBasedOnCountryName(
+    final response = await sharedRepo.getCitiesBasedOnCountryName(
       language: AppStrings.arabicLang,
-      cityName: state.selectedCountryName ?? "egypt",
+      countryName: state.selectedCountryName ?? "Egypt",
     );
 
     response.when(
@@ -180,6 +186,30 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         emit(
           state.copyWith(
             citiesNames: citiesList,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorsSpecializations() async {
+    final response = await sharedRepo.getDoctorsSpecializations(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorSpecialities: response,
           ),
         );
       },
@@ -277,7 +307,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _prescriptionDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -285,10 +315,32 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
-        emitCitiesData();
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDiseasesData() async {
+    final response = await sharedRepo.getDiseasesNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            diseasesNames: response,
+          ),
+        );
       },
       failure: (error) {
         emit(

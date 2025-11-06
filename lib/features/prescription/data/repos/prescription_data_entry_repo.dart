@@ -1,9 +1,6 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:we_care/core/models/country_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
 
@@ -14,57 +11,6 @@ class PrescriptionDataEntryRepo {
   final PrescriptionServices _prescriptionServices;
 
   PrescriptionDataEntryRepo(this._prescriptionServices);
-
-  Future<ApiResult<List<CountryModel>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _prescriptionServices.getCountries(
-        language,
-      );
-      final countries = (response['data'] as List)
-          .map<CountryModel>((e) => CountryModel.fromJson(e))
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
-      {required String language, required String cityName}) async {
-    try {
-      final response = await _prescriptionServices.getCitiesByCountryName(
-        language,
-        cityName,
-      );
-      final cityNames = (response['data'] as List)
-          .map((city) => city['name'] as String)
-          .toList();
-      log("xxx: cityNames from repo: $cityNames");
-      return ApiResult.success(cityNames);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _prescriptionServices.getAllDoctors(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
 
   Future<ApiResult<UploadImageResponseModel>> uploadPrescriptionImage({
     required String language,

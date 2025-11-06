@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
@@ -14,11 +15,13 @@ import 'package:we_care/generated/l10n.dart';
 part 'surgery_data_entry_state.dart';
 
 class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
-  SurgeryDataEntryCubit(this._surgeriesDataEntryRepo)
+  SurgeryDataEntryCubit(this._surgeriesDataEntryRepo, this.sharedRepo)
       : super(
           SurgeryDataEntryState.initialState(),
         );
   final SurgeriesDataEntryRepo _surgeriesDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   final personalNotesController = TextEditingController();
   final suergeryDescriptionController = TextEditingController(); // وصف اضافي
   final postSurgeryInstructions = TextEditingController();
@@ -69,7 +72,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _surgeriesDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -132,6 +135,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     await emitCountriesData();
     await emitGetSurgeryStatus();
     await emitDoctorNames();
+    await emitHospitalNames();
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
@@ -258,6 +262,28 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       },
     );
   }
+
+  Future<void> emitHospitalNames() async {
+    final response = await sharedRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            hospitals: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
   // المناطق العمليه الفرعيه
 
   Future<void> emitGetAllSubSurgeriesRegions(
@@ -332,7 +358,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _surgeriesDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -340,7 +366,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
       },

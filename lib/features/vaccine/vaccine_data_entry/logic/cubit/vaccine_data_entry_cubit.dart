@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_data_entry_repo.dart';
@@ -10,12 +11,14 @@ import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_
 import 'package:we_care/generated/l10n.dart';
 
 class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
-  VaccineDataEntryCubit(this._vaccineDataEntryRepo)
+  VaccineDataEntryCubit(this._vaccineDataEntryRepo, this.sharedRepo)
       : super(
           VaccineDataEntryState.initialState(),
         );
 
   final VaccineDataEntryRepo _vaccineDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
 // جهة تلقي التطعيم
   final vaccinationLocationController = TextEditingController();
   final personalNotesController = TextEditingController();
@@ -86,7 +89,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _vaccineDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -94,7 +97,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            countriesNames: response.map((e) => e.name).toList(),
+            countriesNames: response,
           ),
         );
       },

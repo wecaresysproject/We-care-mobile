@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/Database/dummy_data.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -92,7 +91,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "التخصص",
                 containerHintText:
                     state.doctorSpecialitySelection ?? "اختر تخصص",
-                options: medicalSpecialties,
+                options: state.doctorSpecialities,
                 onOptionSelected: (value) {
                   context
                       .read<PrescriptionDataEntryCubit>()
@@ -124,12 +123,7 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "المرض", // Another Dropdown Example
                 containerHintText:
                     state.selectedDisease ?? "اختر المرض الذى تم تشخيصه",
-                options: [
-                  "مرض القلب",
-                  "مرض البول",
-                  "مرض الدم",
-                  "مرض القلب",
-                ],
+                options: state.diseasesNames,
                 onOptionSelected: (value) {
                   context
                       .read<PrescriptionDataEntryCubit>()
@@ -206,12 +200,9 @@ class _PrescriptionDataEntryFormFieldsState
                 categoryLabel: "الدولة",
                 bottomSheetTitle: "اختر اسم الدولة",
                 onOptionSelected: (value) async {
-                  context
-                      .read<PrescriptionDataEntryCubit>()
-                      .updateSelectedCountry(value);
                   await context
                       .read<PrescriptionDataEntryCubit>()
-                      .emitCountriesData();
+                      .updateSelectedCountry(value);
                 },
                 containerHintText:
                     state.selectedCountryName ?? "اختر اسم الدولة",
@@ -228,9 +219,6 @@ class _PrescriptionDataEntryFormFieldsState
                   context
                       .read<PrescriptionDataEntryCubit>()
                       .updateSelectedCityName(value);
-                  await context
-                      .read<PrescriptionDataEntryCubit>()
-                      .emitCitiesData();
                 },
                 containerHintText: state.selectedCityName ?? "اختر المدينة",
                 searchHintText: "ابحث عن المدينة",
