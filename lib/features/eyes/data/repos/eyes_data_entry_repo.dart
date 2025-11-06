@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
@@ -13,46 +12,9 @@ import 'package:we_care/features/eyes/eyes_services.dart';
 
 class EyesDataEntryRepo {
   final EyesModuleServices _eyesService;
-  final SharedServices _sharedServices;
 
-  EyesDataEntryRepo({
-    required EyesModuleServices eyesService,
-    required SharedServices sharedServices,
-  })  : _eyesService = eyesService,
-        _sharedServices = sharedServices;
-
-  Future<ApiResult<List<String>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _sharedServices.getCountriesNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final countries = (response['data'] as List)
-          .map((country) => country as String)
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getHospitalNames({
-    required String language,
-  }) async {
-    try {
-      final response = await _sharedServices.getHospitalNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final hospitals = (response['data'] as List)
-          .map((hospital) => hospital as String)
-          .toList();
-      return ApiResult.success(hospitals);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  EyesDataEntryRepo({required EyesModuleServices eyesService})
+      : _eyesService = eyesService;
 
   Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
     required String language,

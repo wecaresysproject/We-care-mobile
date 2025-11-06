@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_data_entry_repo.dart';
@@ -13,11 +14,12 @@ import 'package:we_care/generated/l10n.dart';
 part 'chronic_disease_data_entry_state.dart';
 
 class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
-  ChronicDiseaseDataEntryCubit(this.dataEntryRepo)
+  ChronicDiseaseDataEntryCubit(this.dataEntryRepo, this.sharedRepo)
       : super(
           ChronicDiseaseDataEntryState.initialState(),
         );
   final ChronicDiseaseDataEntryRepo dataEntryRepo;
+  final AppSharedRepo sharedRepo;
   final personalNotesController = TextEditingController();
   final sideEffectsController = TextEditingController();
 
@@ -43,7 +45,7 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await dataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );

@@ -1,13 +1,9 @@
 import 'dart:io';
 
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/add_new_user_to_family_tree_request_body.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_count_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
@@ -18,61 +14,8 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart
 
 class GeneticDiseasesDataEntryRepo {
   final GeneticDiseasesServices _geneticDiseasesServices;
-  final SharedServices _sharedServices;
 
-  GeneticDiseasesDataEntryRepo(
-      this._geneticDiseasesServices, this._sharedServices);
-  Future<ApiResult<List<String>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _sharedServices.getCountriesNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final countries = (response['data'] as List)
-          .map((country) => country as String)
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _sharedServices.getDoctorNames(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getHospitalNames({
-    required String language,
-  }) async {
-    try {
-      final response = await _sharedServices.getHospitalNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final hospitals = (response['data'] as List)
-          .map((hospital) => hospital as String)
-          .toList();
-      return ApiResult.success(hospitals);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  GeneticDiseasesDataEntryRepo(this._geneticDiseasesServices);
 
   Future<ApiResult<List<String>>> getAllGeneticDiseasesClassfications({
     required String language,

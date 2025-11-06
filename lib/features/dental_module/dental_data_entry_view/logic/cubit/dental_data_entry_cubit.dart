@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
@@ -14,11 +15,13 @@ import 'package:we_care/generated/l10n.dart';
 part 'dental_data_entry_state.dart';
 
 class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
-  DentalDataEntryCubit(this._dentalDataEntryRepo)
+  DentalDataEntryCubit(this._dentalDataEntryRepo, this.sharedRepo)
       : super(
           DentalDataEntryState.initialState(),
         );
   final DentalDataEntryRepo _dentalDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   final additionalNotesController = TextEditingController();
 
   Future<void> loadPastToothDataForEditing(
@@ -231,7 +234,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _dentalDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -326,7 +329,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _dentalDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -350,7 +353,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }
 
   Future<void> emitHospitalNames() async {
-    final response = await _dentalDataEntryRepo.getHospitalNames(
+    final response = await sharedRepo.getHospitalNames(
       language: AppStrings.arabicLang,
     );
 

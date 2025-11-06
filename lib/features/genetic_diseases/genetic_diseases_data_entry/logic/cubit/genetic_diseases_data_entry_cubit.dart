@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/genetic_diseases/data/models/add_new_user_to_family_tree_request_body.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genetic_diseases_request_body_model.dart';
@@ -20,10 +21,13 @@ import 'package:we_care/generated/l10n.dart';
 
 class GeneticDiseasesDataEntryCubit
     extends Cubit<GeneticDiseasesDataEntryState> {
-  GeneticDiseasesDataEntryCubit(this._geneticDiseasesDataEntryRepo)
+  GeneticDiseasesDataEntryCubit(
+      this._geneticDiseasesDataEntryRepo, this.sharedRepo)
       : super(
           GeneticDiseasesDataEntryState.initialState(),
         );
+  final AppSharedRepo sharedRepo;
+
   final TextEditingController noOfBrothers =
       TextEditingController(); // عدد الإخوة
   final TextEditingController noOfSisters =
@@ -163,7 +167,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> emitHospitalNames() async {
-    final response = await _geneticDiseasesDataEntryRepo.getHospitalNames(
+    final response = await sharedRepo.getHospitalNames(
       language: AppStrings.arabicLang,
     );
 
@@ -592,7 +596,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _geneticDiseasesDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -711,7 +715,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _geneticDiseasesDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );

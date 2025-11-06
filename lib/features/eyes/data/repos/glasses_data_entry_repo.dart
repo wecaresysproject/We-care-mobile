@@ -2,22 +2,16 @@ import 'dart:developer';
 
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_lens_data_request_body_model.dart';
 import 'package:we_care/features/eyes/eyes_services.dart';
 
 class GlassesDataEntryRepo {
   final EyesModuleServices _eyesModuleServices;
-  final SharedServices _sharedServices;
 
-  GlassesDataEntryRepo(
-      {required EyesModuleServices eyesModuleServices,
-      required SharedServices sharedServices})
-      : _eyesModuleServices = eyesModuleServices,
-        _sharedServices = sharedServices;
+  GlassesDataEntryRepo({required EyesModuleServices eyesModuleServices})
+      : _eyesModuleServices = eyesModuleServices;
 
   Future<ApiResult<String>> postGlassesLensDataEntry({
     required String language,
@@ -66,42 +60,6 @@ class GlassesDataEntryRepo {
       final lensTypes =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(lensTypes);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _sharedServices.getDoctorNames(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getHospitalNames({
-    required String language,
-  }) async {
-    try {
-      final response = await _sharedServices.getHospitalNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final hospitals = (response['data'] as List)
-          .map((hospital) => hospital as String)
-          .toList();
-      return ApiResult.success(hospitals);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

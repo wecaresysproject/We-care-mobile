@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -19,7 +20,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/generated/l10n.dart';
 
 class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
-  MedicinesDataEntryCubit(this._medicinesDataEntryRepo)
+  MedicinesDataEntryCubit(this._medicinesDataEntryRepo, this.sharedRepo)
       : super(
           MedicinesDataEntryState.initialState(),
         ) {
@@ -35,6 +36,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     );
     notifications = LocalNotificationService();
   }
+  final AppSharedRepo sharedRepo;
+
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
     updatedAlarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
@@ -298,7 +301,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _medicinesDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );

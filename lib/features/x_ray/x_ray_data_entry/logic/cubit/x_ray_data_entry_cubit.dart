@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
@@ -17,12 +18,13 @@ import 'package:we_care/generated/l10n.dart';
 part 'x_ray_data_entry_state.dart';
 
 class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
-  XRayDataEntryCubit(this._xRayDataEntryRepo)
+  XRayDataEntryCubit(this._xRayDataEntryRepo, this.sharedRepo)
       : super(
           XRayDataEntryState.initialState(),
         );
 
   final XRayDataEntryRepo _xRayDataEntryRepo;
+  final AppSharedRepo sharedRepo;
 
   final personalNotesController = TextEditingController();
 
@@ -50,7 +52,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _xRayDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
     if (isClosed) return;
@@ -74,7 +76,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> emitDoctorNames() async {
-    final response = await _xRayDataEntryRepo.getAllDoctors(
+    final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
     );
@@ -391,7 +393,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> emitLabCenters() async {
-    final response = await _xRayDataEntryRepo.getLabCenters(
+    final response = await sharedRepo.getLabCenters(
       language: AppStrings.arabicLang,
     );
 
@@ -414,7 +416,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> emitHospitalNames() async {
-    final response = await _xRayDataEntryRepo.getHospitalNames(
+    final response = await sharedRepo.getHospitalNames(
       language: AppStrings.arabicLang,
     );
 

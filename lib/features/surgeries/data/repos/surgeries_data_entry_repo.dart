@@ -1,56 +1,17 @@
 import 'dart:io';
 
-import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/surgeries_services.dart';
 
 class SurgeriesDataEntryRepo {
   final SurgeriesService _surgeriesService;
-  final SharedServices _sharedServices;
 
   SurgeriesDataEntryRepo(
     this._surgeriesService,
-    this._sharedServices,
   );
-
-  Future<ApiResult<List<String>>> getCountriesData(
-      {required String language}) async {
-    try {
-      final response = await _sharedServices.getCountriesNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final countries = (response['data'] as List)
-          .map((country) => country as String)
-          .toList();
-      return ApiResult.success(countries);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getHospitalNames({
-    required String language,
-  }) async {
-    try {
-      final response = await _sharedServices.getHospitalNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
-        language,
-      );
-      final hospitals = (response['data'] as List)
-          .map((hospital) => hospital as String)
-          .toList();
-      return ApiResult.success(hospitals);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
 
   Future<ApiResult<UploadReportResponseModel>> uploadReportImage({
     required String language,
@@ -79,25 +40,6 @@ class SurgeriesDataEntryRepo {
       final partRegions =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(partRegions);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllDoctors({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _sharedServices.getDoctorNames(
-        userType,
-        language,
-      );
-      final doctors = (response['data'] as List)
-          .map<Doctor>((e) => Doctor.fromJson(e))
-          .toList();
-      final doctorNames = doctors.map((e) => e.fullName).toList();
-      return ApiResult.success(doctorNames);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

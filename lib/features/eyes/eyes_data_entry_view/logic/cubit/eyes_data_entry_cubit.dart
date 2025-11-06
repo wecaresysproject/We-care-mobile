@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/eyes/data/models/eye_data_entry_request_body_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_part_syptoms_and_procedures_response_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
@@ -16,11 +17,13 @@ import 'package:we_care/generated/l10n.dart';
 part 'eyes_data_entry_state.dart';
 
 class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
-  EyesDataEntryCubit(this._eyesDataEntryRepo)
+  EyesDataEntryCubit(this._eyesDataEntryRepo, this.sharedRepo)
       : super(
           EyesDataEntryState.initialState(),
         );
   final EyesDataEntryRepo _eyesDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
   final personalNotesController = TextEditingController();
 
   Future<void> loadPastEyeDataEnteredForEditing({
@@ -301,7 +304,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   }
 
   Future<void> emitCountriesData() async {
-    final response = await _eyesDataEntryRepo.getCountriesData(
+    final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
 
@@ -324,7 +327,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   }
 
   Future<void> emitHospitalNames() async {
-    final response = await _eyesDataEntryRepo.getHospitalNames(
+    final response = await sharedRepo.getHospitalNames(
       language: AppStrings.arabicLang,
     );
 

@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_cubit.dart';
 import 'package:we_care/features/Biometrics/biometrics_services.dart';
@@ -141,6 +142,7 @@ void setupAppCubits() {
   getIt.registerFactory<XRayDataEntryCubit>(
     () => XRayDataEntryCubit(
       getIt<XRayDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -153,6 +155,7 @@ void setupAppCubits() {
   getIt.registerFactory<PrescriptionDataEntryCubit>(
     () => PrescriptionDataEntryCubit(
       getIt<PrescriptionDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -162,11 +165,13 @@ void setupAppCubits() {
   getIt.registerFactory<SurgeryDataEntryCubit>(
     () => SurgeryDataEntryCubit(
       getIt<SurgeriesDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<TestAnalysisDataEntryCubit>(
     () => TestAnalysisDataEntryCubit(
       getIt<TestAnalysisDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -179,6 +184,7 @@ void setupAppCubits() {
   getIt.registerFactory<VaccineDataEntryCubit>(
     () => VaccineDataEntryCubit(
       getIt<VaccineDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -212,6 +218,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicinesDataEntryCubit>(
     () => MedicinesDataEntryCubit(
       getIt<MedicinesDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory(
@@ -238,6 +245,7 @@ void setupAppCubits() {
   getIt.registerFactory<DentalDataEntryCubit>(
     () => DentalDataEntryCubit(
       getIt<DentalDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -249,6 +257,7 @@ void setupAppCubits() {
   getIt.registerFactory<GeneticDiseasesDataEntryCubit>(
     () => GeneticDiseasesDataEntryCubit(
       getIt<GeneticDiseasesDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<CreateNewGenticDiseaseCubit>(
@@ -276,10 +285,12 @@ void setupAppCubits() {
   getIt.registerFactory<EyesDataEntryCubit>(
     () => EyesDataEntryCubit(
       getIt<EyesDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<GlassesDataEntryCubit>(() => GlassesDataEntryCubit(
         getIt<GlassesDataEntryRepo>(),
+        getIt<AppSharedRepo>(),
       ));
 
   getIt.registerFactory<EyeViewCubit>(
@@ -291,6 +302,7 @@ void setupAppCubits() {
     () => MedicalIllnessesDataEntryCubit(
       getIt<MentalIllnessesDataEntryRepo>(),
       getIt<PushNotificationsService>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MentalIllnessDataViewCubit>(
@@ -301,6 +313,7 @@ void setupAppCubits() {
   getIt.registerFactory<ChronicDiseaseDataEntryCubit>(
     () => ChronicDiseaseDataEntryCubit(
       getIt<ChronicDiseaseDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<ChronicDiseaseViewCubit>(
@@ -341,6 +354,11 @@ void setupAppRepos() {
       getIt<AuthApiServices>(),
     ),
   );
+  getIt.registerLazySingleton<AppSharedRepo>(
+    () => AppSharedRepo(
+      getIt<SharedServices>(),
+    ),
+  );
 
   getIt.registerLazySingleton<OtpRepository>(
     () => OtpRepository(
@@ -372,13 +390,11 @@ void setupAppRepos() {
   getIt.registerLazySingleton<XRayDataEntryRepo>(
     () => XRayDataEntryRepo(
       getIt<XRayApiServices>(),
-      getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<TestAnalysisDataEntryRepo>(
     () => TestAnalysisDataEntryRepo(
       getIt<TestAnalysisSerices>(),
-      getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<TestAnalysisViewRepo>(
@@ -390,13 +406,11 @@ void setupAppRepos() {
   getIt.registerLazySingleton<PrescriptionDataEntryRepo>(
     () => PrescriptionDataEntryRepo(
       getIt<PrescriptionServices>(),
-      getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<VaccineDataEntryRepo>(
     () => VaccineDataEntryRepo(
       vaccineApiServices: getIt<VaccineApiServices>(),
-      sharedServices: getIt<SharedServices>(),
     ),
   );
 
@@ -425,7 +439,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton<MedicinesDataEntryRepo>(
     () => MedicinesDataEntryRepo(
       getIt<MedicinesServices>(),
-      getIt<SharedServices>(),
     ),
   );
 
@@ -437,7 +450,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton<SurgeriesDataEntryRepo>(
       () => SurgeriesDataEntryRepo(
             getIt<SurgeriesService>(),
-            getIt<SharedServices>(),
           ));
 
   getIt.registerLazySingleton<MedicinesViewRepo>(
@@ -454,7 +466,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton(
     () => DentalDataEntryRepo(
       dentalService: getIt<DentalService>(),
-      sharedServices: getIt<SharedServices>(),
     ),
   );
 
@@ -466,7 +477,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton<GeneticDiseasesDataEntryRepo>(
     () => GeneticDiseasesDataEntryRepo(
       getIt<GeneticDiseasesServices>(),
-      getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<GeneticDiseasesViewRepo>(
@@ -488,13 +498,11 @@ void setupAppRepos() {
   getIt.registerLazySingleton<EyesDataEntryRepo>(
     () => EyesDataEntryRepo(
       eyesService: getIt<EyesModuleServices>(),
-      sharedServices: getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<GlassesDataEntryRepo>(
     () => GlassesDataEntryRepo(
       eyesModuleServices: getIt<EyesModuleServices>(),
-      sharedServices: getIt<SharedServices>(),
     ),
   );
 
@@ -504,7 +512,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton<MentalIllnessesDataEntryRepo>(
     () => MentalIllnessesDataEntryRepo(
       illnessesServices: getIt<MentalIllnessesServices>(),
-      sharedServices: getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<MentalIllnessesViewRepo>(
@@ -515,7 +522,6 @@ void setupAppRepos() {
   getIt.registerLazySingleton<ChronicDiseaseDataEntryRepo>(
     () => ChronicDiseaseDataEntryRepo(
       getIt<ChronicDiseaseServices>(),
-      getIt<SharedServices>(),
     ),
   );
   getIt.registerLazySingleton<ChronicDiseaseViewRepo>(
