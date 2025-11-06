@@ -4,7 +4,6 @@ import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/xray_data_entry_request_body_model.dart';
-import 'package:we_care/features/x_ray/data/models/xray_data_entry_response_model.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 
 import '../../../../core/networking/api_error_handler.dart';
@@ -36,15 +35,13 @@ class XRayDataEntryRepo {
     }
   }
 
-  Future<ApiResult<XrayDataEntryResponseBodyModel>> postRadiologyDataEntry(
+  Future<ApiResult<String>> postRadiologyDataEntry(
       XrayDataEntryRequestBodyModel requestBody) async {
     try {
       final response =
           await _xRayApiServices.postRadiologyDataEntry(requestBody);
       return ApiResult.success(
-        XrayDataEntryResponseBodyModel.fromJson(
-          response['data'],
-        ),
+        response['message'],
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

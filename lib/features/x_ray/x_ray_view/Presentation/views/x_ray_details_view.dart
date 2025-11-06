@@ -9,7 +9,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
@@ -84,12 +84,12 @@ class XRayDetailsView extends StatelessWidget {
                     ),
                   ]),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "النوع",
                       value: radiologyData.radioType,
                       icon: 'assets/images/type_icon.png'),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "نوعية الاحتياج",
                       value: radiologyData.periodicUsage ?? 'لم يتم ادخاله',
                       icon: 'assets/images/need_icon.png'),
@@ -98,32 +98,32 @@ class XRayDetailsView extends StatelessWidget {
                       value: radiologyData.symptoms ?? 'لم يتم ادخاله',
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
-                  DetailsViewImageWithTitleTile(
-                      image: radiologyData.radiologyPhoto,
+                  DetailsViewImagesWithTitleTile(
+                      images: radiologyData.radiologyPhotos,
                       isShareEnabled: true,
                       title: "صورة الأشعة"),
-                      DetailsViewImageWithTitleTile(
+                  DetailsViewImagesWithTitleTile(
                     isShareEnabled: true,
-                    image: radiologyData.report,
                     title: "صورة التقرير",
+                    images: radiologyData.reports,
                   ),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "الطبيب المعالج",
                       value: radiologyData.doctor ?? 'لم يتم ادخاله',
                       icon: 'assets/images/doctor_icon.png'),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "طبيب الأشعة",
                       value: radiologyData.radiologyDoctor ?? 'لم يتم ادخاله',
                       icon: 'assets/images/doctor_icon.png'),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "المستشفى",
                       value: radiologyData.hospital ?? 'لم يتم ادخاله',
                       icon: 'assets/images/hospital_icon.png'),
                   DetailsViewInfoTile(
-                    isExpanded: true,
+                      isExpanded: true,
                       title: "الدولة",
                       value: radiologyData.country ?? 'لم يتم ادخاله',
                       icon: 'assets/images/country_icon.png'),
@@ -146,9 +146,15 @@ class XRayDetailsView extends StatelessWidget {
 
 Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
   final radiologyData = state.selectedRadiologyDocument;
-  if (radiologyData != null) {
-    final shareContent = '''
-🩺 تفاصيل الاشعة    
+
+  if (radiologyData == null) {
+    showError("لا توجد بيانات أشعة للمشاركة.");
+    return;
+  }
+
+  // 🧾 نص المشاركة
+  final shareContent = '''
+🩺 تفاصيل الأشعة
 التاريخ: ${radiologyData.radiologyDate}
 المنطقة: ${radiologyData.bodyPart}
 النوع: ${radiologyData.radioType}
@@ -159,32 +165,45 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
 المستشفى: ${radiologyData.hospital ?? 'لم يتم ادخاله'}
 الدولة: ${radiologyData.country ?? 'لم يتم ادخاله'}
 ملاحظات: ${radiologyData.radiologyNote ?? 'لم يتم ادخاله'}
-    ''';
+''';
 
-    // 📥 Download images
-    final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
+  // 📥 تحميل الصور والتقارير
+  final tempDir = await getTemporaryDirectory();
+  List<XFile> filesToShare = [];
 
-    if (radiologyData.radiologyPhoto?.startsWith("http") ?? false) {
-      final imagePath = await downloadImage(
-          radiologyData.radiologyPhoto!, tempDir, 'x_ray_image.png');
-      if (imagePath != null) imagePaths.add(imagePath);
+  // 🖼️ تحميل صور الأشعة (لو عندك list)
+  if (radiologyData.radiologyPhotos != null &&
+      radiologyData.radiologyPhotos!.isNotEmpty) {
+    for (int i = 0; i < radiologyData.radiologyPhotos!.length; i++) {
+      final url = radiologyData.radiologyPhotos![i];
+      if (url.startsWith("http")) {
+        final imagePath =
+            await downloadImage(url, tempDir, 'x_ray_image_$i.png');
+        if (imagePath != null) {
+          filesToShare.add(XFile(imagePath));
+        }
+      }
     }
-    if (radiologyData.report != null) {
-      final imagePath = await downloadImage(
-          radiologyData.report!, tempDir, 'x_ray_report.png');
-      if (imagePath != null) imagePaths.add(imagePath);
-    }
+  }
 
-//!TODO: to be removed after adding real data
-    // 📤 Share text & images
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles([XFile(imagePaths.first)], text: shareContent);
-    } else {
-      await Share.share(shareContent);
+  // 📄 تحميل التقارير (لو عندك list)
+  if (radiologyData.reports != null && radiologyData.reports!.isNotEmpty) {
+    for (int i = 0; i < radiologyData.reports!.length; i++) {
+      final url = radiologyData.reports![i];
+      if (url.startsWith("http")) {
+        final reportPath =
+            await downloadImage(url, tempDir, 'x_ray_report_$i.png');
+        if (reportPath != null) {
+          filesToShare.add(XFile(reportPath));
+        }
+      }
     }
-    await Share.share(shareContent);
+  }
+
+  // 📤 المشاركة
+  if (filesToShare.isNotEmpty) {
+    await Share.shareXFiles(filesToShare, text: shareContent);
   } else {
-    showError("No X-Ray data available to share.");
+    await Share.share(shareContent);
   }
 }

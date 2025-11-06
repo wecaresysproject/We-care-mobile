@@ -2,19 +2,17 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/x_ray_image_upload_section_widget.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/xray_report_section_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -110,108 +108,13 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
 
             verticalSpacing(16),
-            Text(
-              "الصورة",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
-              listener: (context, state) async {
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                containerBorderColor: ((state.isXRayPictureSelected == null) ||
-                            (state.isXRayPictureSelected == false)) &&
-                        state.xRayPictureUploadedUrl.isEmpty
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        context
-                            .read<XRayDataEntryCubit>()
-                            .updateXRayPicture(isImagePicked);
 
-                        await context
-                            .read<XRayDataEntryCubit>()
-                            .uploadXrayImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
-
-            // verticalSpacing(8),
-            // if (state.xRayPictureUploadedUrl.isNotEmpty)
-            //   imageWithMenuItem(
-            //     state.xRayPictureUploadedUrl,
-            //     context,
-            //   ),
+            XRayImageUploadSection(),
 
             verticalSpacing(16),
-            Text(
-              "التقرير الطبي",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            SelectImageContainer(
-              imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
-            ),
 
-            verticalSpacing(8),
-            BlocListener<XRayDataEntryCubit, XRayDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.xRayReportRequestStatus !=
-                  current.xRayReportRequestStatus,
-              listener: (context, state) async {
-                if (state.xRayReportRequestStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.xRayReportRequestStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة للتقرير",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<XRayDataEntryCubit>()
-                            .uploadXrayReportPicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
+            XRayReportSection(),
+
             verticalSpacing(16),
 
             // //! الأعراض المستدعية للاجراء"
@@ -390,67 +293,3 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
     );
   }
 }
-
-// Widget imageWithMenuItem(String imageUrl, BuildContext context) {
-//   return Container(
-//     height: 100.h,
-//     padding: EdgeInsets.all(8.r),
-//     decoration: BoxDecoration(
-//       color: Colors.grey[200],
-//       borderRadius: BorderRadius.circular(12.r),
-//     ),
-//     child: Row(
-//       children: [
-//         IconButton(
-//           onPressed: () {},
-//           padding: EdgeInsets.zero,
-//           alignment: Alignment.topCenter,
-//           icon: Icon(
-//             Icons.delete,
-//             size: 28.sp,
-//             color: AppColorsManager.warningColor,
-//           ),
-//         ),
-//         Spacer(),
-//         // Image on the left with tap action
-//         GestureDetector(
-//           onTap: () {
-//             showImagePreview(context, imageUrl);
-//           },
-//           child: ClipRRect(
-//             borderRadius: BorderRadius.circular(8.r),
-//             child: CachedNetworkImage(
-//               imageUrl: imageUrl,
-//               width: 80.w,
-//               height: 80.w,
-//               fit: BoxFit.cover,
-//             ),
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
-
-// // Preview Dialog Function
-// void showImagePreview(BuildContext context, String imageUrl) {
-//   showDialog(
-//     context: context,
-//     barrierDismissible: false,
-//     builder: (context) {
-//       Future.delayed(Duration(seconds: 1), () {
-//         if (!context.mounted) return;
-
-//         Navigator.of(context).pop();
-//       });
-
-//       return Dialog(
-//         backgroundColor: Colors.transparent,
-//         child: CachedNetworkImage(
-//           imageUrl: imageUrl,
-//           fit: BoxFit.contain,
-//         ),
-//       );
-//     },
-//   );
-// }

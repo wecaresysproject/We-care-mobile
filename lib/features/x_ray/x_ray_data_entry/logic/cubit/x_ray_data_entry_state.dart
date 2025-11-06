@@ -24,14 +24,13 @@ class XRayDataEntryState extends Equatable {
   final String? selectedCountryName;
   final String? selectedTreatedDoctor;
   final String? selectedRadiologistDoctorName;
-  final bool? isXRayPictureSelected;
-  final String xRayPictureUploadedUrl;
 
-  final String xRayReportUploadedUrl;
   final UploadImageRequestStatus xRayImageRequestStatus;
   final UploadReportRequestStatus xRayReportRequestStatus;
   final RadiologyData? xRayEditedModel;
   final bool isEditMode;
+  final List<String> uploadedTestImages; // URLs returned from API
+  final List<String> uploadedTestReports;
 
   const XRayDataEntryState({
     this.selectedPupose,
@@ -47,10 +46,7 @@ class XRayDataEntryState extends Equatable {
     this.xRayBodyPartSelection,
     this.selectedCountryName,
     this.xRayTypeSelection,
-    this.isXRayPictureSelected,
     this.selectedRadiologyTypesOfBodyPartModel,
-    this.xRayPictureUploadedUrl = '',
-    this.xRayReportUploadedUrl = '',
     this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
     this.xRayReportRequestStatus = UploadReportRequestStatus.initial,
     this.xRayEditedModel,
@@ -62,6 +58,8 @@ class XRayDataEntryState extends Equatable {
     this.labCenters = const [],
     this.selectedLabCenter,
     this.selectedHospitalName,
+    this.uploadedTestImages = const [],
+    this.uploadedTestReports = const [],
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -71,7 +69,6 @@ class XRayDataEntryState extends Equatable {
           xRayDateSelection: null,
           xRayBodyPartSelection: null,
           xRayTypeSelection: null,
-          isXRayPictureSelected: null,
           selectedRadiologyTypesOfBodyPartModel: null,
           selectedPupose: null,
           message: '',
@@ -86,6 +83,8 @@ class XRayDataEntryState extends Equatable {
           labCenters: const [],
           selectedLabCenter: null,
           selectedHospitalName: null,
+          uploadedTestImages: const [],
+          uploadedTestReports: const [],
         );
 
   XRayDataEntryState copyWith({
@@ -94,7 +93,6 @@ class XRayDataEntryState extends Equatable {
     String? xRayDateSelection,
     String? xRayBodyPartSelection,
     String? xRayTypeSelection,
-    bool? isXRayPictureSelected,
     List<String>? bodyPartNames,
     List<String>? radiologyTypesBasedOnBodyPartNameSelected,
     List<BodyPartsResponseModel>? bodyPartsDataModels,
@@ -104,8 +102,6 @@ class XRayDataEntryState extends Equatable {
     String? selectedCountryName,
     String? selectedPupose,
     String? message,
-    String? xRayPictureUploadedUrl,
-    String? xRayReportUploadedUrl,
     UploadImageRequestStatus? xRayImageRequestStatus,
     UploadReportRequestStatus? xRayReportRequestStatus,
     RadiologyData? xRayEditedModel,
@@ -117,6 +113,8 @@ class XRayDataEntryState extends Equatable {
     List<String>? labCenters,
     String? selectedLabCenter,
     String? selectedHospitalName,
+    List<String>? uploadedTestImages,
+    List<String>? uploadedTestReports,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -126,8 +124,6 @@ class XRayDataEntryState extends Equatable {
       xRayBodyPartSelection:
           xRayBodyPartSelection ?? this.xRayBodyPartSelection,
       xRayTypeSelection: xRayTypeSelection ?? this.xRayTypeSelection,
-      isXRayPictureSelected:
-          isXRayPictureSelected ?? this.isXRayPictureSelected,
       bodyPartNames: bodyPartNames ?? this.bodyPartNames,
       radiologyTypesBasedOnBodyPartNameSelected:
           radiologyTypesBasedOnBodyPartNameSelected ??
@@ -141,10 +137,6 @@ class XRayDataEntryState extends Equatable {
       countriesNames: countriesNames ?? this.countriesNames,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       selectedPupose: selectedPupose ?? this.selectedPupose,
-      xRayPictureUploadedUrl:
-          xRayPictureUploadedUrl ?? this.xRayPictureUploadedUrl,
-      xRayReportUploadedUrl:
-          xRayReportUploadedUrl ?? this.xRayReportUploadedUrl,
       xRayImageRequestStatus:
           xRayImageRequestStatus ?? this.xRayImageRequestStatus,
       xRayReportRequestStatus:
@@ -160,6 +152,8 @@ class XRayDataEntryState extends Equatable {
       labCenters: labCenters ?? this.labCenters,
       selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
       selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
+      uploadedTestImages: uploadedTestImages ?? this.uploadedTestImages,
+      uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
     );
   }
 
@@ -171,7 +165,6 @@ class XRayDataEntryState extends Equatable {
         xRayDateSelection,
         xRayBodyPartSelection,
         xRayTypeSelection,
-        isXRayPictureSelected,
         bodyPartNames,
         radiologyTypesBasedOnBodyPartNameSelected,
         bodyPartsDataModels,
@@ -180,8 +173,6 @@ class XRayDataEntryState extends Equatable {
         countriesNames,
         selectedCountryName,
         selectedPupose,
-        xRayPictureUploadedUrl,
-        xRayReportUploadedUrl,
         xRayImageRequestStatus,
         xRayReportRequestStatus,
         xRayEditedModel,
@@ -193,5 +184,7 @@ class XRayDataEntryState extends Equatable {
         labCenters,
         selectedLabCenter,
         selectedHospitalName,
+        uploadedTestImages,
+        uploadedTestReports,
       ];
 }

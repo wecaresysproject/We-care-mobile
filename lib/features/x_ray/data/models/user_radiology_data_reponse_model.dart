@@ -25,10 +25,10 @@ class RadiologyData {
   String bodyPart;
   String radioType;
   String? periodicUsage;
-  @JsonKey(name: 'photoPath')
-  String? radiologyPhoto;
-  @JsonKey(name: 'reportPath')
-  String? report;
+  @JsonKey(name: 'xrayImages')
+  List<String>? radiologyPhotos;
+  @JsonKey(name: 'reportImages')
+  List<String>? reports;
   @JsonKey(name: 'cause')
   String? symptoms;
   String? hospital;
@@ -47,8 +47,8 @@ class RadiologyData {
     required this.bodyPart,
     required this.radioType,
     this.periodicUsage,
-    required this.radiologyPhoto,
-    this.report,
+    required this.radiologyPhotos,
+    this.reports,
     this.symptoms,
     this.hospital,
     this.radiologyDoctor,

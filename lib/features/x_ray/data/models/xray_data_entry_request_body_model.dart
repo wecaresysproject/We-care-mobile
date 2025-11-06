@@ -12,8 +12,10 @@ class XrayDataEntryRequestBodyModel {
   final String radiologyType;
   @JsonKey(name: "PeriodicUsage")
   final String? radiologyTypePurposes;
-  final String photo;
-  final String? report;
+  @JsonKey(name: "xrayImages")
+  final List<String> xrayImages;
+  @JsonKey(name: "reportImages")
+  final List<String> reportImages;
   final String? cause;
   final String? hospital;
   @JsonKey(name: "RadiologyDoctor")
@@ -33,8 +35,8 @@ class XrayDataEntryRequestBodyModel {
     required this.bodyPartName,
     required this.radiologyType,
     required this.radiologyTypePurposes,
-    required this.photo,
-    required this.report,
+    required this.xrayImages,
+    required this.reportImages,
     required this.cause,
     required this.hospital,
     required this.radiologyDoctor,

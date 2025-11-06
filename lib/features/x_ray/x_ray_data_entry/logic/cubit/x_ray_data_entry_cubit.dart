@@ -51,6 +51,28 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
+  void removeUploadedImage(String url) {
+    final updated = List<String>.from(state.uploadedTestImages)..remove(url);
+
+    safeEmit(
+      state.copyWith(
+        uploadedTestImages: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+    validateRequiredFields();
+  }
+
+  void removeUploadedTestReport(String path) {
+    final updated = List<String>.from(state.uploadedTestReports)..remove(path);
+    safeEmit(
+      state.copyWith(
+        uploadedTestReports: updated,
+        message: "تم حذف التقرير",
+      ),
+    );
+  }
+
   Future<void> emitCountriesData() async {
     final response = await sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
@@ -187,8 +209,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
         radiologyTypePurposes: state.selectedPupose,
-        photo: state.xRayPictureUploadedUrl,
-        report: state.xRayReportUploadedUrl,
+        // photo: state.xRayPictureUploadedUrl,
+        // report: state.xRayReportUploadedUrl,
+        xrayImages: state.uploadedTestImages,
+        reportImages: state.uploadedTestReports,
         cause: localozation.no_data_entered,
         radiologyDoctor: localozation.no_data_entered,
         hospital: localozation.no_data_entered,
@@ -228,15 +252,14 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         xRayBodyPartSelection: editingRadiologyDetailsData.bodyPart,
         xRayTypeSelection: editingRadiologyDetailsData.radioType,
         selectedPupose: editingRadiologyDetailsData.periodicUsage,
-        xRayPictureUploadedUrl: editingRadiologyDetailsData.radiologyPhoto,
-        xRayReportUploadedUrl: editingRadiologyDetailsData.report,
         xRayEditedModel: editingRadiologyDetailsData,
         selectedTreatedDoctor: editingRadiologyDetailsData.doctor,
         selectedRadiologistDoctorName:
             editingRadiologyDetailsData.radiologyDoctor,
         selectedHospitalName: editingRadiologyDetailsData.hospital,
-        // selectedLabCenter: editingRadiologyDetailsData.,//!TODO: check it later
-        isXRayPictureSelected: true,
+        // selectedLabCenter: editingRadiologyDetailsData.labCenter, //! add to model later in data view screen
+        uploadedTestImages: editingRadiologyDetailsData.radiologyPhotos,
+        uploadedTestReports: editingRadiologyDetailsData.reports,
       ),
     );
     personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;
@@ -302,18 +325,12 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     _getRadiologySpecifcTypePurposes(slectedXRayType);
   }
 
-  void updateXRayPicture(bool? isImagePicked) {
-    emit(state.copyWith(isXRayPictureSelected: isImagePicked));
-    validateRequiredFields();
-  }
-
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.xRayDateSelection == null ||
         state.xRayBodyPartSelection == null ||
         state.xRayTypeSelection == null ||
-        state.isXRayPictureSelected == null ||
-        state.isXRayPictureSelected == false) {
+        state.uploadedTestImages.isEmpty) {
       emit(
         state.copyWith(
           isFormValidated: false,
@@ -329,6 +346,16 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> uploadXrayImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.uploadedTestImages.length >= 8) {
+      safeEmit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          xRayImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         xRayImageRequestStatus: UploadImageRequestStatus.initial,
@@ -341,13 +368,17 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedImages = List<String>.from(state.uploadedTestImages)
+          ..add(response.imageUrl);
         emit(
           state.copyWith(
             message: response.message,
-            xRayPictureUploadedUrl: response.imageUrl,
+            uploadedTestImages: updatedImages,
             xRayImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
+        validateRequiredFields();
       },
       failure: (error) {
         emit(
@@ -361,6 +392,16 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   }
 
   Future<void> uploadXrayReportPicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.uploadedTestImages.length >= 8) {
+      safeEmit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          xRayReportRequestStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         xRayReportRequestStatus: UploadReportRequestStatus.initial,
@@ -373,11 +414,14 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.uploadedTestReports)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
             message: response.message,
             xRayReportRequestStatus: UploadReportRequestStatus.success,
-            xRayReportUploadedUrl: response.reportUrl,
+            uploadedTestReports: updatedReports,
           ),
         );
       },
@@ -450,12 +494,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
         radiologyTypePurposes: state.selectedPupose,
-        photo: state.xRayPictureUploadedUrl.isNotEmpty
-            ? state.xRayPictureUploadedUrl
-            : localozation.no_data_entered,
-        report: state.xRayReportUploadedUrl.isNotEmpty
-            ? state.xRayReportUploadedUrl
-            : localozation.no_data_entered,
+        xrayImages: state.uploadedTestImages,
+        reportImages: state.uploadedTestReports,
         cause: localozation.no_data_entered,
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
@@ -467,15 +507,14 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
             ? localozation.no_data_entered
             : personalNotesController.text,
         userType: UserTypes.patient.name.firstLetterToUpperCase,
-
-        language: AppStrings.arabicLang, // TODO: handle it later
+        language: AppStrings.arabicLang,
       ),
     );
     response.when(
       success: (response) {
         emit(
           state.copyWith(
-            message: "تم تسجيل البيانات بنجاح",
+            message: response,
             xRayDataEntryStatus: RequestStatus.success,
           ),
         );
