@@ -31,6 +31,9 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
+import 'package:we_care/features/essential_info/data/repos/essential_info_view_repo.dart';
+import 'package:we_care/features/essential_info/essential_info_services.dart';
+import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_data_entry_repo.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_view_repo.dart';
 import 'package:we_care/features/eyes/data/repos/glasses_data_entry_repo.dart';
@@ -346,6 +349,11 @@ void setupAppCubits() {
       getIt<PhysicalActivatyViewRepo>(),
     ),
   );
+  getIt.registerFactory<EssentialInfoViewCubit>(
+    () => EssentialInfoViewCubit(
+      getIt<EssentialInfoViewRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -559,6 +567,12 @@ void setupAppRepos() {
       physicalActivityServices: getIt<PhysicalActivityServices>(),
     ),
   );
+
+  getIt.registerLazySingleton<EssentialInfoViewRepo>(
+    () => EssentialInfoViewRepo(
+      essentialInfoServices: getIt<EssentialInfoServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -637,6 +651,12 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<PhysicalActivityServices>(
     () => PhysicalActivityServices(
+      dio,
+    ),
+  );
+
+  getIt.registerLazySingleton<EssentialInfoServices>(
+    () => EssentialInfoServices(
       dio,
     ),
   );
