@@ -13,30 +13,25 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
   // Controllers (managed by Cubit)
   final TextEditingController fullNameController = TextEditingController();
-  final TextEditingController arabicNameController = TextEditingController();
-  final TextEditingController birthPlaceController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
-  final TextEditingController passportController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController mobileController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
-  final TextEditingController insuranceNumberController =
-      TextEditingController();
-  final TextEditingController chronicDiseasesController =
-      TextEditingController();
-  final TextEditingController disabilityDetailsController =
+  final TextEditingController disabilityTypeDetailsController =
       TextEditingController();
 
-  final TextEditingController guardianNameController = TextEditingController();
-  final TextEditingController guardianRelationController =
+  final TextEditingController additionalInsuranceConditionsController =
       TextEditingController();
-  final TextEditingController guardianPhoneController = TextEditingController();
 
-  final TextEditingController jobController = TextEditingController();
-  final TextEditingController employerController = TextEditingController();
-  final TextEditingController educationController = TextEditingController();
+  final TextEditingController familyDoctorNameController =
+      TextEditingController();
+  final TextEditingController numberOfChildrenController =
+      TextEditingController();
+
+  final TextEditingController mainEmergencyPhoneController =
+      TextEditingController();
+
+  final TextEditingController anotherEmergencyPhoneController =
+      TextEditingController();
 
   // Option lists (logical options)
   final List<String> genders = ['ذكر', 'أنثى', 'غير ثنائي'];
@@ -80,40 +75,40 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   ];
 
   // Update functions
-  void updateGender(String? val) =>
-      emit(state.copyWith(selectedGender: val));
+  void updateGender(String? val) => emit(state.copyWith(selectedGender: val));
+  void updateIsMarriedOrNot(bool? val) => emit(state.copyWith(isMarried: val));
 
   void updateReligion(String? val) =>
       emit(state.copyWith(selectedReligion: val));
 
   void updateNationality(String? val) =>
       emit(state.copyWith(selectedNationality: val));
-    void updateCity(String? val) =>
-      emit(state.copyWith(selectedCity: val));
+  void updateCity(String? val) => emit(state.copyWith(selectedCity: val));
 
-    void updateArea(String? val) =>
-      emit(state.copyWith(selectedArea: val));
+  void updateArea(String? val) => emit(state.copyWith(selectedArea: val));
 
-    void updateNeighborhood(String? val) =>
+  void updateNeighborhood(String? val) =>
       emit(state.copyWith(selectedNeighborhood: val));
 
   void updateMaritalStatus(String? val) =>
       emit(state.copyWith(selectedMaritalStatus: val));
 
+  void updateInsuranceEndDate(String? val) =>
+      emit(state.copyWith(insuranceEndDate: val));
+
   void updateBloodType(String? val) =>
       emit(state.copyWith(selectedBloodType: val));
+
+  void updateWeeklyWorkingHours(String? val) =>
+      emit(state.copyWith(weeklyWorkingHours: val));
 
   void updateEmploymentStatus(String? val) =>
       emit(state.copyWith(selectedEmploymentStatus: val));
 
-  void updateInsuranceType(String? val) =>
-      emit(state.copyWith(selectedInsuranceType: val));
-
   void updateDisabilityType(String? val) =>
       emit(state.copyWith(selectedDisabilityType: val));
 
-  void updateBirthDate(String? val) =>
-      emit(state.copyWith(birthDate: val));
+  void updateBirthDate(String? val) => emit(state.copyWith(birthDate: val));
 
   void updateNationalIdIssueDate(String? val) =>
       emit(state.copyWith(nationalIdIssueDate: val));
@@ -123,17 +118,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     emit(state.copyWith(hasMedicalInsurance: val));
     if (val == false) {
       // Clear insurance-specific fields
-      emit(state.copyWith(
-        selectedInsuranceType: null,
-      ));
-      insuranceNumberController.text = '';
-    }
-  }
-
-  void updateHasChronicConditions(bool? val) {
-    emit(state.copyWith(hasChronicConditions: val));
-    if (val == false) {
-      chronicDiseasesController.text = '';
+      emit(
+        state.copyWith(
+          insuranceCompany: null,
+          insuranceEndDate: null,
+          insuranceAdditionalConditions: null,
+          insuranceCardImagePath: null,
+        ),
+      );
     }
   }
 
@@ -141,17 +133,15 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     emit(state.copyWith(hasDisability: val));
     if (val == false) {
       emit(state.copyWith(selectedDisabilityType: null));
-      disabilityDetailsController.text = '';
+      disabilityTypeDetailsController.text = '';
     }
   }
 
   // Validation (simple: require name, birth date, national id, mobile)
   void validateRequiredFields() {
     final bool isValid = fullNameController.text.trim().isNotEmpty &&
-        arabicNameController.text.trim().isNotEmpty &&
         state.birthDate != null &&
-        nationalIdController.text.trim().isNotEmpty &&
-        mobileController.text.trim().isNotEmpty;
+        nationalIdController.text.trim().isNotEmpty;
 
     emit(state.copyWith(isFormValidated: isValid));
   }
@@ -181,28 +171,18 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       // assemble payload (for debugging / future integration)
       final payload = {
         'fullName': fullNameController.text.trim(),
-        'arabicName': arabicNameController.text.trim(),
         'birthDate': state.birthDate,
         'gender': state.selectedGender,
         'nationalId': nationalIdController.text.trim(),
         'nationality': state.selectedNationality,
         'maritalStatus': state.selectedMaritalStatus,
-        'address': addressController.text.trim(),
-        'mobile': mobileController.text.trim(),
         'email': emailController.text.trim(),
         'hasInsurance': state.hasMedicalInsurance,
-        'insuranceType': state.selectedInsuranceType,
-        'insuranceNumber': insuranceNumberController.text.trim(),
         'hasDisability': state.hasDisability,
         'disabilityType': state.selectedDisabilityType,
-        'disabilityDetails': disabilityDetailsController.text.trim(),
+        'disabilityDetails': disabilityTypeDetailsController.text.trim(),
         'hasChronicConditions': state.hasChronicConditions,
-        'chronicDiseases': chronicDiseasesController.text.trim(),
-        'job': jobController.text.trim(),
         'employmentStatus': state.selectedEmploymentStatus,
-        'guardianName': guardianNameController.text.trim(),
-        'guardianRelation': guardianRelationController.text.trim(),
-        'guardianPhone': guardianPhoneController.text.trim(),
       };
 
       // For now: print payload and emit success
@@ -229,26 +209,15 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   Future<void> close() async {
     // dispose controllers
     fullNameController.dispose();
-    arabicNameController.dispose();
-    birthPlaceController.dispose();
     nationalIdController.dispose();
-    passportController.dispose();
-    addressController.dispose();
-    mobileController.dispose();
-    phoneController.dispose();
     emailController.dispose();
 
-    insuranceNumberController.dispose();
-    chronicDiseasesController.dispose();
-    disabilityDetailsController.dispose();
-
-    guardianNameController.dispose();
-    guardianRelationController.dispose();
-    guardianPhoneController.dispose();
-
-    jobController.dispose();
-    employerController.dispose();
-    educationController.dispose();
+    disabilityTypeDetailsController.dispose();
+    additionalInsuranceConditionsController.dispose();
+    familyDoctorNameController.dispose();
+    numberOfChildrenController.dispose();
+    mainEmergencyPhoneController.dispose();
+    anotherEmergencyPhoneController.dispose();
 
     return super.close();
   }

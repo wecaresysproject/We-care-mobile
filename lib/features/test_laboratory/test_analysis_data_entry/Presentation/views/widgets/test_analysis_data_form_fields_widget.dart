@@ -510,7 +510,7 @@ Widget buildTable(List<TableRowReponseModel> tableRows) {
                 AppColorsManager.mainDarkBlue,
               ),
               columnSpacing: columnSpacing,
-              dataRowMaxHeight: 44.5.h,
+              dataRowMaxHeight: 60.h,
               horizontalMargin: 7,
               dividerThickness: 0.83,
               headingTextStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
@@ -556,9 +556,14 @@ List<DataRow> _buildRows(
 
       return DataRow(
         cells: [
-          _buildCell(data.testName, isBold: true, isNameColumn: true),
-          _buildCell(data.testCode),
-          _buildCell(data.standardRate),
+          _buildCell(
+            data.testName,
+            isBold: true,
+            isNameColumn: true,
+            fontSize: 14,
+          ),
+          _buildCell(data.testCode, fontSize: 16),
+          _buildCell(data.standardRate, fontSize: 16),
           DataCell(
             data.hasApercentage!
                 ? buildStyledTextField(tableRows, data.testName, context)
@@ -669,7 +674,10 @@ void _showSelectionBottomSheet({
   );
 }
 
-DataColumn _buildColumn(String label, {bool isNumeric = false}) {
+DataColumn _buildColumn(
+  String label, {
+  bool isNumeric = false,
+}) {
   return DataColumn(
     label: Expanded(
       child: Center(
@@ -684,7 +692,7 @@ DataColumn _buildColumn(String label, {bool isNumeric = false}) {
 }
 
 DataCell _buildCell(String text,
-    {bool isBold = false, bool isNameColumn = false}) {
+    {bool isBold = false, bool isNameColumn = false, double fontSize = 14}) {
   return DataCell(
     Container(
       alignment: Alignment.center,
@@ -696,11 +704,10 @@ DataCell _buildCell(String text,
       child: Text(
         text,
         textAlign: TextAlign.center,
-        // overflow: TextOverflow.ellipsis,
-        maxLines: isNameColumn ? 2 : 1,
+        maxLines: isNameColumn ? 4 : 1,
         style: AppTextStyles.font12blackWeight400.copyWith(
-          fontWeight: isBold ? FontWeight.w700 : FontWeight.w700,
-          fontSize: isNameColumn ? 14.sp : 12.sp,
+          fontWeight: FontWeight.w700,
+          fontSize: fontSize.sp,
         ),
       ),
     ),

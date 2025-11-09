@@ -130,10 +130,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  void updateSelectedLabCenter(String? val) {
+  void updateSelectedRadiologyCenter(String? val) {
     emit(
       state.copyWith(
-        selectedLabCenter: val,
+        selectedRadiologyCenter: val,
       ),
     );
   }
@@ -167,7 +167,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     await emitBodyPartsData();
     await emitCountriesData();
     await emitDoctorNames();
-    await emitLabCenters();
+    await emitRadiologyCenters();
     await emitHospitalNames();
   }
 
@@ -437,8 +437,8 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  Future<void> emitLabCenters() async {
-    final response = await sharedRepo.getLabCenters(
+  Future<void> emitRadiologyCenters() async {
+    final response = await sharedRepo.getRadiologyCenters(
       language: AppStrings.arabicLang,
     );
 
@@ -446,7 +446,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
       success: (response) {
         safeEmit(
           state.copyWith(
-            labCenters: response,
+            radilogyCenters: response,
           ),
         );
       },

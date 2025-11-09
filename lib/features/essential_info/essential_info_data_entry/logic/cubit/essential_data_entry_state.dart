@@ -12,21 +12,28 @@ class EssentialDataEntryState extends Equatable {
   final String? selectedMaritalStatus;
   final String? selectedBloodType;
   final String? selectedEmploymentStatus;
-  final String? selectedInsuranceType;
   final String? selectedDisabilityType;
- final String? selectedCity;
- final String? selectedArea;
- final String? selectedNeighborhood;
+  final String? selectedCity;
+  final String? selectedArea;
+  final String? selectedNeighborhood;
+  final String? weeklyWorkingHours;
+  final bool? isMarried;
 
   // yes/no
   final bool? hasMedicalInsurance;
   final bool? hasChronicConditions;
   final bool? hasDisability;
+// Medical insurance section
+  final String? insuranceCompany;
+  final String? insuranceEndDate;
+  final String? insuranceAdditionalConditions;
+  final String? insuranceCardImagePath;
 
   // validation + submission
   final bool isFormValidated;
   final RequestStatus submissionStatus;
   final String? message;
+  final bool isEditMode;
 
   const EssentialDataEntryState({
     required this.birthDate,
@@ -37,7 +44,6 @@ class EssentialDataEntryState extends Equatable {
     required this.selectedMaritalStatus,
     required this.selectedBloodType,
     required this.selectedEmploymentStatus,
-    required this.selectedInsuranceType,
     required this.selectedDisabilityType,
     required this.hasMedicalInsurance,
     required this.hasChronicConditions,
@@ -48,6 +54,13 @@ class EssentialDataEntryState extends Equatable {
     required this.selectedCity,
     required this.selectedArea,
     required this.selectedNeighborhood,
+    required this.insuranceCompany,
+    required this.insuranceEndDate,
+    required this.insuranceAdditionalConditions,
+    required this.insuranceCardImagePath,
+    required this.weeklyWorkingHours,
+    this.isMarried,
+    this.isEditMode = false,
   });
 
   factory EssentialDataEntryState.initial() {
@@ -60,7 +73,6 @@ class EssentialDataEntryState extends Equatable {
       selectedMaritalStatus: null,
       selectedBloodType: null,
       selectedEmploymentStatus: null,
-      selectedInsuranceType: null,
       selectedDisabilityType: null,
       hasMedicalInsurance: null,
       hasChronicConditions: null,
@@ -71,6 +83,13 @@ class EssentialDataEntryState extends Equatable {
       selectedCity: null,
       selectedArea: null,
       selectedNeighborhood: null,
+      insuranceCompany: null,
+      insuranceEndDate: null,
+      insuranceAdditionalConditions: null,
+      insuranceCardImagePath: null,
+      weeklyWorkingHours: null,
+      isMarried: null,
+      isEditMode: false,
     );
   }
 
@@ -86,7 +105,6 @@ class EssentialDataEntryState extends Equatable {
     String? selectedMaritalStatus,
     String? selectedBloodType,
     String? selectedEmploymentStatus,
-    String? selectedInsuranceType,
     String? selectedDisabilityType,
     bool? hasMedicalInsurance,
     bool? hasChronicConditions,
@@ -94,6 +112,13 @@ class EssentialDataEntryState extends Equatable {
     bool? isFormValidated,
     RequestStatus? submissionStatus,
     String? message,
+    String? insuranceCompany,
+    String? insuranceEndDate,
+    String? insuranceAdditionalConditions,
+    String? insuranceCardImagePath,
+    String? weeklyWorkingHours,
+    bool? isMarried,
+    bool isEditMode = false,
   }) {
     return EssentialDataEntryState(
       birthDate: birthDate ?? this.birthDate,
@@ -101,11 +126,11 @@ class EssentialDataEntryState extends Equatable {
       selectedGender: selectedGender ?? this.selectedGender,
       selectedReligion: selectedReligion ?? this.selectedReligion,
       selectedNationality: selectedNationality ?? this.selectedNationality,
-      selectedMaritalStatus: selectedMaritalStatus ?? this.selectedMaritalStatus,
+      selectedMaritalStatus:
+          selectedMaritalStatus ?? this.selectedMaritalStatus,
       selectedBloodType: selectedBloodType ?? this.selectedBloodType,
       selectedEmploymentStatus:
           selectedEmploymentStatus ?? this.selectedEmploymentStatus,
-      selectedInsuranceType: selectedInsuranceType ?? this.selectedInsuranceType,
       selectedDisabilityType:
           selectedDisabilityType ?? this.selectedDisabilityType,
       hasMedicalInsurance: hasMedicalInsurance ?? this.hasMedicalInsurance,
@@ -117,6 +142,15 @@ class EssentialDataEntryState extends Equatable {
       selectedCity: selectedCity ?? this.selectedCity,
       selectedArea: selectedArea ?? this.selectedArea,
       selectedNeighborhood: selectedNeighborhood ?? this.selectedNeighborhood,
+      insuranceCompany: insuranceCompany ?? this.insuranceCompany,
+      insuranceEndDate: insuranceEndDate ?? this.insuranceEndDate,
+      insuranceAdditionalConditions:
+          insuranceAdditionalConditions ?? this.insuranceAdditionalConditions,
+      insuranceCardImagePath:
+          insuranceCardImagePath ?? this.insuranceCardImagePath,
+      weeklyWorkingHours: weeklyWorkingHours ?? this.weeklyWorkingHours,
+      isMarried: isMarried ?? this.isMarried,
+      isEditMode: isEditMode,
     );
   }
 
@@ -130,7 +164,6 @@ class EssentialDataEntryState extends Equatable {
         selectedMaritalStatus,
         selectedBloodType,
         selectedEmploymentStatus,
-        selectedInsuranceType,
         selectedDisabilityType,
         hasMedicalInsurance,
         hasChronicConditions,
@@ -140,6 +173,13 @@ class EssentialDataEntryState extends Equatable {
         message,
         selectedCity,
         selectedArea,
-        selectedNeighborhood
+        selectedNeighborhood,
+        insuranceCompany,
+        insuranceEndDate,
+        insuranceAdditionalConditions,
+        insuranceCardImagePath,
+        weeklyWorkingHours,
+        isMarried,
+        isEditMode,
       ];
 }

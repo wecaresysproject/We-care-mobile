@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:blur_detection/blur_detection.dart';
+import 'package:blur_detection/blur_detect/blur_algorithm.dart';
+import 'package:blur_detection/blur_detect/compression.dart';
+import 'package:image/image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -23,12 +26,12 @@ class ImagePickerService {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.camera,
       requestFullMetadata: false,
-      imageQuality: 100, //no compression
+      imageQuality: 50, //no compression
     ); //TODO: check  imageQuality: 100 later
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
-      if (await _isImageBlurred(imageFile)) {
+      if (await isImageShaky(imageFile)) {
         await showError(localozation.image_not_clear);
         isImagePickedAccepted = false;
         _pickedImage = null; // Clear picked image if blurred
@@ -50,13 +53,14 @@ class ImagePickerService {
     final XFile? pickedFile = await _picker.pickImage(
       source: ImageSource.gallery,
       requestFullMetadata: false,
-      imageQuality: 100, //no compression
+      imageQuality: 50,
+      //no compression
     ); //TODO: check  imageQuality: 100 later
 
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path); // Convert XFile to File
 
-      if (await _isImageBlurred(imageFile)) {
+      if (await isImageShaky(imageFile)) {
         await showError(localozation.image_not_clear);
         isImagePickedAccepted = false;
         _pickedImage = null; // Clear picked image if blurred
@@ -74,7 +78,30 @@ class ImagePickerService {
   }
 
   /// Checks if the image is blurred
-  Future<bool> _isImageBlurred(File file) async {
-    return await BlurDetectionService.isImageBlurred(file);
+  // Future<bool> _isImageBlurred(File file) async {
+  //   return await BlurDetectionService.isImageBlurred(file);
+  // }
+
+  Future<bool> isImageShaky(File file) async {
+    // Step 1: Copy the file
+    String copiedFilePath = '${file.path}_copy.jpg';
+    File copiedFile = await file.copy(copiedFilePath);
+
+    // Step 2: Compress the copied image
+    File compressedFile =
+        await ImgCompression.imageCompression(picture: copiedFile);
+    final imageBytes = await compressedFile.readAsBytes();
+    final image = decodeImage(Uint8List.fromList(imageBytes));
+    if (image == null) return false;
+
+    final varianceOfLaplacian = VarianceOfLaplacian().compute(image);
+    final tenengrad = TenengradFocusMeasureMetric().compute(image);
+    final brenner = EnhancedBrennerFocusMeasureMetric().compute(image);
+
+    // These thresholds are motion-blur specific
+    bool isShaky =
+        varianceOfLaplacian < 150 && tenengrad < 0.3 && brenner < 0.03;
+
+    return isShaky;
   }
 }

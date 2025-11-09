@@ -34,6 +34,7 @@ class ApiErrorHandler {
           return ApiErrorModel(
             errors: ["Send timeout in connection with the server"],
           );
+
         default:
           return ApiErrorModel(
             errors: ["Something went wrong"],
@@ -41,7 +42,7 @@ class ApiErrorHandler {
       }
     } else {
       return ApiErrorModel(
-        errors: ["Unknown error occurred"],
+        errors: ["Unknown error occurred , please try again later"],
       );
     }
   }
@@ -52,7 +53,9 @@ class ApiErrorHandler {
       return ApiErrorModel.fromJson(data);
     } else {
       return ApiErrorModel(
-        errors: ["Unknown error occurred"],
+        errors: [
+          "Unexpected server response format. Please try again later.",
+        ],
       );
     }
   }

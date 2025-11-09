@@ -159,13 +159,14 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             UserSelectionContainer(
               allowManualEntry: true,
               categoryLabel: "مركز الأشعة",
-              containerHintText: state.selectedLabCenter ?? "اختر اسم المركز",
-              options: state.labCenters,
+              containerHintText:
+                  state.selectedRadiologyCenter ?? "اختر اسم المركز",
+              options: state.radilogyCenters,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context
                     .read<XRayDataEntryCubit>()
-                    .updateSelectedLabCenter(value);
+                    .updateSelectedRadiologyCenter(value);
               },
               bottomSheetTitle: 'اختر اسم المركز',
               searchHintText: "ابحث عن اسم المركز",
