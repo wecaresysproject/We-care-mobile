@@ -5,11 +5,16 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 
 part 'essential_data_entry_state.dart';
 
 class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
-  EssentialDataEntryCubit() : super(EssentialDataEntryState.initial());
+  final AppSharedRepo _sharedRepo;
+  EssentialDataEntryCubit(
+    this._sharedRepo,
+  ) : super(EssentialDataEntryState.initial());
 
   // Controllers (managed by Cubit)
   final TextEditingController fullNameController = TextEditingController();
@@ -33,16 +38,6 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController anotherEmergencyPhoneController =
       TextEditingController();
 
-  // Option lists (logical options)
-  final List<String> genders = ['ذكر', 'أنثى', 'غير ثنائي'];
-  final List<String> religions = ['مسلم', 'مسيحي', 'يهودي', 'أخرى'];
-  final List<String> nationalities = ['مصري', 'سعودي', 'أمريكي', 'أخرى'];
-  final List<String> maritalStatus = [
-    'أعزب/غير متزوج',
-    'متزوج',
-    'مطلق',
-    'أرمل'
-  ];
   final List<String> bloodTypes = [
     'A+',
     'A-',
@@ -53,33 +48,57 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'AB+',
     'AB-'
   ];
-  final List<String> employmentStatus = [
-    'طالب',
-    'موظف',
-    'عامل حر',
-    'متقاعد',
-    'لا يعمل'
-  ];
-  final List<String> insuranceTypes = [
-    'تأمين حكومي',
-    'تأمين خاص',
-    'تأمين شركات',
-    'لا يوجد'
-  ];
-  final List<String> disabilityTypes = [
-    'إعاقة حركية',
-    'إعاقة سمعية',
-    'إعاقة بصرية',
-    'إعاقة ذهنية',
-    'غير ذلك'
-  ];
+Future<void> emitCountriesData() async {
+    final response = await _sharedRepo.getCountriesData(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            countriesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  //emit cities data
+  Future<void> emitCitiesData() async {
+    final response = await _sharedRepo.getCitiesBasedOnCountryName(
+      language: AppStrings.arabicLang,
+      countryName: state.selectedNationality ?? "Egypt",
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            citiesNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
 
   // Update functions
-  void updateGender(String? val) => emit(state.copyWith(selectedGender: val));
   void updateIsMarriedOrNot(bool? val) => emit(state.copyWith(isMarried: val));
-
-  void updateReligion(String? val) =>
-      emit(state.copyWith(selectedReligion: val));
 
   void updateNationality(String? val) =>
       emit(state.copyWith(selectedNationality: val));
@@ -102,16 +121,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   void updateWeeklyWorkingHours(String? val) =>
       emit(state.copyWith(weeklyWorkingHours: val));
 
-  void updateEmploymentStatus(String? val) =>
-      emit(state.copyWith(selectedEmploymentStatus: val));
-
-  void updateDisabilityType(String? val) =>
-      emit(state.copyWith(selectedDisabilityType: val));
-
   void updateBirthDate(String? val) => emit(state.copyWith(birthDate: val));
-
-  void updateNationalIdIssueDate(String? val) =>
-      emit(state.copyWith(nationalIdIssueDate: val));
 
   // Yes/No updates
   void updateHasMedicalInsurance(bool? val) {
@@ -181,8 +191,6 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         'hasDisability': state.hasDisability,
         'disabilityType': state.selectedDisabilityType,
         'disabilityDetails': disabilityTypeDetailsController.text.trim(),
-        'hasChronicConditions': state.hasChronicConditions,
-        'employmentStatus': state.selectedEmploymentStatus,
       };
 
       // For now: print payload and emit success

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/essential_info_data_entry_form_feild.dart';
@@ -13,7 +14,7 @@ class EssentialDataEntryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<EssentialDataEntryCubit>(
-      create: (context) => EssentialDataEntryCubit(),
+      create: (context) => getIt<EssentialDataEntryCubit>()..emitCountriesData(),
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

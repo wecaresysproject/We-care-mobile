@@ -80,9 +80,8 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 Text('الايميل', style: AppTextStyles.font18blackWight500),
                 verticalSpacing(10),
                 CustomTextField(
-                  controller: cubit.nationalIdController,
+                  controller: cubit.emailController,
                   hintText: "example@domain.com",
-                  keyboardType: TextInputType.number,
                   validator: (val) {
                     if (val == null || val.trim().isEmpty) {
                       return 'الايميل مطلوب';
@@ -113,9 +112,10 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 UserSelectionContainer(
                   categoryLabel: 'الدولة',
                   containerHintText: state.selectedNationality ?? 'اختر دولتك',
-                  options: ['الدولة 1', 'الدولة 2', 'الدولة 3'],
-                  onOptionSelected: (val) {
+                  options: state.countriesNames,
+                  onOptionSelected: (val) async{
                     cubit.updateNationality(val);
+                    await cubit.emitCitiesData();
                   },
                   bottomSheetTitle: 'اختر دولتك',
                   searchHintText: 'ابحث عن دولتك',
@@ -124,7 +124,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 UserSelectionContainer(
                   categoryLabel: 'المدينة',
                   containerHintText: state.selectedCity ?? 'اختر مدينتك',
-                  options: ['المدينة 1', 'المدينة 2', 'المدينة 3'],
+                  options: state.citiesNames,
                   onOptionSelected: (val) {
                     cubit.updateCity(val);
                   },
