@@ -27,10 +27,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController disabilityTypeDetailsController =
       TextEditingController();
 
+  final TextEditingController noOfWoringHours = TextEditingController();
+
   final TextEditingController additionalInsuranceConditionsController =
       TextEditingController();
 
   final TextEditingController familyDoctorNameController =
+      TextEditingController();
+  final TextEditingController familyDoctorPhoneNumberController =
       TextEditingController();
   final TextEditingController numberOfChildrenController =
       TextEditingController();
@@ -49,8 +53,13 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'O+',
     'O-',
     'AB+',
-    'AB-'
+    'AB-',
+    'A',
+    'B',
+    'AB',
+    'O',
   ];
+
   Future<void> emitCountriesData() async {
     final response = await _sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
@@ -220,6 +229,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     emailController.dispose();
     exactLocation.dispose();
     userAddress.dispose();
+    noOfWoringHours.dispose();
+    familyDoctorPhoneNumberController.dispose();
 
     disabilityTypeDetailsController.dispose();
     additionalInsuranceConditionsController.dispose();

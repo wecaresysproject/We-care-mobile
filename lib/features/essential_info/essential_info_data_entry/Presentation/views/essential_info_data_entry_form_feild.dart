@@ -169,20 +169,21 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
                 Text(
-                  'اكتب نوع العجز',
+                  'نوع العجز (إن وجد)',
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
 
                 CustomTextField(
                   controller: cubit.disabilityTypeDetailsController,
-                  hintText: "اكتب نوع العجز",
+                  hintText: "اكتب نوع العجز (إن وجد)",
                   validator: (val) {},
                   onChanged: (_) {},
                 ),
+
                 verticalSpacing(16),
                 GenericQuestionWidget(
-                  questionTitle: "الحالة الإجتماعية",
+                  questionTitle: "الحالة الإجتماعية (متزوج)",
                   initialValue: state.isMarried,
                   onAnswerChanged: (p0) {
                     context
@@ -214,22 +215,49 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 CustomTextField(
                   controller: cubit.familyDoctorNameController,
                   hintText: "اكتب اسم طبيب الأسرة ان وجد",
+                  validator: (val) {},
+                  onChanged: (_) {},
+                ),
+                verticalSpacing(16),
+                Text(
+                  "تليفون طبيب الأسرة",
+                  style: AppTextStyles.font18blackWight500,
+                ),
+                verticalSpacing(10),
+
+                CustomTextField(
+                  controller: cubit.familyDoctorPhoneNumberController,
+                  hintText: "اكتب تليفون طبيب الأسرة",
                   keyboardType: TextInputType.number,
                   validator: (val) {},
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-                UserSelectionContainer(
-                  categoryLabel: 'ساعات العمل الأسبوعى',
-                  containerHintText:
-                      state.weeklyWorkingHours ?? 'اختر ساعات العمل الأسبوعى',
-                  options: cubit.bloodTypes,
-                  onOptionSelected: (val) {
-                    cubit.updateWeeklyWorkingHours(val);
-                  },
-                  bottomSheetTitle: "اختر ساعات العمل الأسبوعى",
-                  searchHintText: 'ابحث عن ساعات العمل الأسبوعى',
+
+                Text(
+                  'ساعات العمل الأسبوعى',
+                  style: AppTextStyles.font18blackWight500,
                 ),
+                verticalSpacing(10),
+
+                CustomTextField(
+                  controller: cubit.noOfWoringHours,
+                  hintText: "اكتب ساعات العمل الأسبوعى",
+                  keyboardType: TextInputType.number,
+                  validator: (val) {},
+                  onChanged: (_) {},
+                ),
+                // UserSelectionContainer(
+                //   categoryLabel: 'ساعات العمل الأسبوعى',
+                //   containerHintText:
+                //       state.weeklyWorkingHours ?? 'اختر ساعات العمل الأسبوعى',
+                //   options: ,
+                //   onOptionSelected: (val) {
+                //     cubit.updateWeeklyWorkingHours(val);
+                //   },
+                //   bottomSheetTitle: "اختر ساعات العمل الأسبوعى",
+                //   searchHintText: 'ابحث عن ساعات العمل الأسبوعى',
+                // ),
                 verticalSpacing(16),
                 Text(
                   "تليفون للطوارئ",
