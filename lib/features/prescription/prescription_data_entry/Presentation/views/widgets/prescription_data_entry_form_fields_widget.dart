@@ -120,7 +120,7 @@ class _PrescriptionDataEntryFormFieldsState
               verticalSpacing(16),
               UserSelectionContainer(
                 allowManualEntry: true,
-                categoryLabel: "المرض", // Another Dropdown Example
+                categoryLabel: "التشخيص", // Another Dropdown Example
                 containerHintText:
                     state.selectedDisease ?? "اختر المرض الذى تم تشخيصه",
                 options: state.diseasesNames,
@@ -131,7 +131,7 @@ class _PrescriptionDataEntryFormFieldsState
                   log("xxx:Selected: $value");
                 },
                 bottomSheetTitle: "اختر المرض الذى تم تشخيصه",
-                searchHintText: "ابحث عن المرض",
+                searchHintText: "ابحث عن التشخيص المناسب",
               ),
 
               verticalSpacing(16),

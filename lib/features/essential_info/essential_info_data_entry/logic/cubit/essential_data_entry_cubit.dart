@@ -20,6 +20,9 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController exactLocation = TextEditingController(); // منطقت
+  final TextEditingController userAddress =
+      TextEditingController(); //                   'الحى /العزبة /الشياخة'
 
   final TextEditingController disabilityTypeDetailsController =
       TextEditingController();
@@ -48,7 +51,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'AB+',
     'AB-'
   ];
-Future<void> emitCountriesData() async {
+  Future<void> emitCountriesData() async {
     final response = await _sharedRepo.getCountriesData(
       language: AppStrings.arabicLang,
     );
@@ -96,18 +99,12 @@ Future<void> emitCountriesData() async {
     );
   }
 
-
   // Update functions
   void updateIsMarriedOrNot(bool? val) => emit(state.copyWith(isMarried: val));
 
   void updateNationality(String? val) =>
       emit(state.copyWith(selectedNationality: val));
   void updateCity(String? val) => emit(state.copyWith(selectedCity: val));
-
-  void updateArea(String? val) => emit(state.copyWith(selectedArea: val));
-
-  void updateNeighborhood(String? val) =>
-      emit(state.copyWith(selectedNeighborhood: val));
 
   void updateMaritalStatus(String? val) =>
       emit(state.copyWith(selectedMaritalStatus: val));
@@ -122,6 +119,8 @@ Future<void> emitCountriesData() async {
       emit(state.copyWith(weeklyWorkingHours: val));
 
   void updateBirthDate(String? val) => emit(state.copyWith(birthDate: val));
+  void updateInsuranceCompanyName(String? val) =>
+      emit(state.copyWith(insuranceCompany: val));
 
   // Yes/No updates
   void updateHasMedicalInsurance(bool? val) {
@@ -219,6 +218,8 @@ Future<void> emitCountriesData() async {
     fullNameController.dispose();
     nationalIdController.dispose();
     emailController.dispose();
+    exactLocation.dispose();
+    userAddress.dispose();
 
     disabilityTypeDetailsController.dispose();
     additionalInsuranceConditionsController.dispose();

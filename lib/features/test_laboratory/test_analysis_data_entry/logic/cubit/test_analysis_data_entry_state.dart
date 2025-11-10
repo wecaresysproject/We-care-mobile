@@ -18,6 +18,7 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final String? selectedSymptomsForProcedure;
   final String? selectedNoOftimesTestPerformed;
+  final String? selectedLabCenter;
   final bool isEditMode;
   final String updatedTestId;
 
@@ -64,6 +65,7 @@ class TestAnalysisDataEntryState extends Equatable {
     this.doctorNames = const [],
     this.labCenters = const [],
     this.hospitalNames = const [],
+    this.selectedLabCenter,
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -95,6 +97,7 @@ class TestAnalysisDataEntryState extends Equatable {
           doctorNames: const [],
           labCenters: const [],
           hospitalNames: const [],
+          selectedLabCenter: null,
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -126,6 +129,7 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? doctorNames,
     List<String>? labCenters,
     List<String>? hospitalNames,
+    String? selectedLabCenter,
   }) {
     return TestAnalysisDataEntryState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -163,6 +167,7 @@ class TestAnalysisDataEntryState extends Equatable {
       doctorNames: doctorNames ?? this.doctorNames,
       labCenters: labCenters ?? this.labCenters,
       hospitalNames: hospitalNames ?? this.hospitalNames,
+      selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
     );
   }
 
@@ -196,5 +201,6 @@ class TestAnalysisDataEntryState extends Equatable {
         doctorNames,
         labCenters,
         hospitalNames,
+        selectedLabCenter,
       ];
 }

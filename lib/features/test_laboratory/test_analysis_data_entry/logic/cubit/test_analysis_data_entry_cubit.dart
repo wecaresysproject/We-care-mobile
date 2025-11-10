@@ -84,6 +84,14 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  void updateSelectedLabCenter(String? val) {
+    safeEmit(
+      state.copyWith(
+        selectedLabCenter: val,
+      ),
+    );
+  }
+
   void updateSelectedHospital(String? hospitalName) {
     safeEmit(
       state.copyWith(

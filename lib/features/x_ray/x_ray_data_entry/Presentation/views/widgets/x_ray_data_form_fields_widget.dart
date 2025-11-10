@@ -157,10 +157,12 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             verticalSpacing(16),
             UserSelectionContainer(
+              isDisabled: state.selectedHospitalName.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "مركز الأشعة",
-              containerHintText:
-                  state.selectedRadiologyCenter ?? "اختر اسم المركز",
+              containerHintText: state.selectedHospitalName.isNotEmptyOrNull
+                  ? "المستشفى محددة، لا يمكن اختيار مركز"
+                  : (state.selectedRadiologyCenter ?? "اختر اسم المركز"),
               options: state.radilogyCenters,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
@@ -177,10 +179,12 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ///المستشفى
             //   //! write by ur hand
             UserSelectionContainer(
+              isDisabled: state.selectedRadiologyCenter.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "المستشفى",
-              containerHintText:
-                  state.selectedHospitalName ?? "اختر اسم المستشفى",
+              containerHintText: state.selectedRadiologyCenter.isNotEmptyOrNull
+                  ? "المركز محدد، لا يمكن اختيار المستشفى"
+                  : (state.selectedHospitalName ?? "اختر اسم المستشفى"),
               options: state.hospitalNames,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");

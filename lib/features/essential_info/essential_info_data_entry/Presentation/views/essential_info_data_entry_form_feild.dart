@@ -113,7 +113,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   categoryLabel: 'الدولة',
                   containerHintText: state.selectedNationality ?? 'اختر دولتك',
                   options: state.countriesNames,
-                  onOptionSelected: (val) async{
+                  onOptionSelected: (val) async {
                     cubit.updateNationality(val);
                     await cubit.emitCitiesData();
                   },
@@ -132,28 +132,27 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   searchHintText: 'ابحث عن مدينتك',
                 ),
                 verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: 'المنطقة',
-                  containerHintText: state.selectedArea ?? 'اختر منطقتك',
-                  options: ['المنطقة 1', 'المنطقة 2', 'المنطقة 3'],
-                  onOptionSelected: (val) {
-                    cubit.updateArea(val);
-                  },
-                  bottomSheetTitle: 'اختر منطقتك',
-                  searchHintText: 'ابحث عن منطقتك',
+                Text('المنطقة', style: AppTextStyles.font18blackWight500),
+                verticalSpacing(10),
+                CustomTextField(
+                  controller: cubit.exactLocation,
+                  hintText: "اكتب المنطقة",
+                  validator: (val) {},
+                  onChanged: (_) {},
                 ),
                 verticalSpacing(18),
-                UserSelectionContainer(
-                  categoryLabel: 'الحى /العزبة /الشياخة',
-                  containerHintText: state.selectedNeighborhood ??
-                      'اختر الحى /العزبة /الشياخة',
-                  options: ['الحي 1', 'الحي 2', 'الحي 3'],
-                  onOptionSelected: (val) {
-                    cubit.updateNeighborhood(val);
-                  },
-                  bottomSheetTitle: 'اختر حيك',
-                  searchHintText: 'ابحث عن حيك',
+                Text(
+                  'الحى /العزبة /الشياخة',
+                  style: AppTextStyles.font18blackWight500,
                 ),
+                verticalSpacing(10),
+                CustomTextField(
+                  controller: cubit.userAddress,
+                  hintText: "اكتب الحى /العزبة /الشياخة",
+                  validator: (val) {},
+                  onChanged: (_) {},
+                ),
+
                 verticalSpacing(18),
                 UserSelectionContainer(
                   categoryLabel: 'فصيلة الدم',
@@ -166,7 +165,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   bottomSheetTitle: 'اختر فصيلة الدم',
                   searchHintText: 'ابحث عن فصيلة الدم',
                 ),
-                verticalSpacing(12),
+                verticalSpacing(18),
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
                 Text(
@@ -338,11 +337,15 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                             categoryLabel: "شركة التأمين",
                             containerHintText: state.insuranceCompany ??
                                 "اختر اسم شركة التأمين",
-                            options: const [],
+                            options: const [
+                              "company1",
+                              "company2",
+                              "company3",
+                            ],
                             onOptionSelected: (value) {
-                              // context
-                              //     .read<MedicalIllnessesDataEntryCubit>()
-                              //     .updateFamilyRelationType(value);
+                              context
+                                  .read<EssentialDataEntryCubit>()
+                                  .updateInsuranceCompanyName(value);
                             },
                             bottomSheetTitle: "اختر اسم الشركة",
                             searchHintText: "اختر اسم الشركة",

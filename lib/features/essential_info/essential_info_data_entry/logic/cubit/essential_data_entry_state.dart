@@ -17,8 +17,6 @@ class EssentialDataEntryState extends Equatable {
   final String? selectedBloodType;
   final String? selectedDisabilityType;
   final String? selectedCity;
-  final String? selectedArea;
-  final String? selectedNeighborhood;
   final String? weeklyWorkingHours;
   final bool? isMarried;
 
@@ -52,8 +50,6 @@ class EssentialDataEntryState extends Equatable {
     required this.submissionStatus,
     required this.message,
     required this.selectedCity,
-    required this.selectedArea,
-    required this.selectedNeighborhood,
     required this.insuranceCompany,
     required this.insuranceEndDate,
     required this.insuranceAdditionalConditions,
@@ -83,8 +79,6 @@ class EssentialDataEntryState extends Equatable {
       submissionStatus: RequestStatus.initial,
       message: null,
       selectedCity: null,
-      selectedArea: null,
-      selectedNeighborhood: null,
       insuranceCompany: null,
       insuranceEndDate: null,
       insuranceAdditionalConditions: null,
@@ -106,8 +100,6 @@ class EssentialDataEntryState extends Equatable {
     String? selectedReligion,
     String? selectedNationality,
     String? selectedCity,
-    String? selectedArea,
-    String? selectedNeighborhood,
     String? selectedMaritalStatus,
     String? selectedBloodType,
     String? selectedDisabilityType,
@@ -145,8 +137,6 @@ class EssentialDataEntryState extends Equatable {
       submissionStatus: submissionStatus ?? this.submissionStatus,
       message: message ?? this.message,
       selectedCity: selectedCity ?? this.selectedCity,
-      selectedArea: selectedArea ?? this.selectedArea,
-      selectedNeighborhood: selectedNeighborhood ?? this.selectedNeighborhood,
       insuranceCompany: insuranceCompany ?? this.insuranceCompany,
       insuranceEndDate: insuranceEndDate ?? this.insuranceEndDate,
       insuranceAdditionalConditions:
@@ -179,8 +169,6 @@ class EssentialDataEntryState extends Equatable {
         submissionStatus,
         message,
         selectedCity,
-        selectedArea,
-        selectedNeighborhood,
         insuranceCompany,
         insuranceEndDate,
         insuranceAdditionalConditions,
