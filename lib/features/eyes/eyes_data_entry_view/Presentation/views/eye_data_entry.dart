@@ -41,21 +41,19 @@ class EyeDataEntry extends StatelessWidget {
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomAppBarWidget(
-                  haveBackArrow: true,
-                ),
-                verticalSpacing(24),
-                EyeDataEntryFormFields(
-                  selectedSyptoms: selectedSyptoms,
-                  selectedProcedures: selectedProcedures,
-                  affectedEyePart: affectedEyePart,
-                ),
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomAppBarWidget(
+                haveBackArrow: true,
+              ),
+              verticalSpacing(24),
+              EyeDataEntryFormFields(
+                selectedSyptoms: selectedSyptoms,
+                selectedProcedures: selectedProcedures,
+                affectedEyePart: affectedEyePart,
+              ),
+            ],
           ),
         ),
       ),

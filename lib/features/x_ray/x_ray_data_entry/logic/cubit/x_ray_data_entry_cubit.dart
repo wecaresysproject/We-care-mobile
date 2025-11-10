@@ -102,6 +102,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
+      specialization: "الأشعة التداخلية",
     );
 
     response.when(
@@ -204,6 +205,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
     final response = await _xRayDataEntryRepo.updateXRayDocumentDetails(
       requestBody: XrayDataEntryRequestBodyModel(
+        radiologyCenter: state.selectedRadiologyCenter,
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang,
         radiologyDate: state.xRayDateSelection!,
@@ -257,7 +259,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         selectedRadiologistDoctorName:
             editingRadiologyDetailsData.radiologyDoctor,
         selectedHospitalName: editingRadiologyDetailsData.hospital,
-        // selectedLabCenter: editingRadiologyDetailsData.labCenter, //! add to model later in data view screen
+        selectedRadiologyCenter: editingRadiologyDetailsData.radiologyCenter,
         uploadedTestImages: editingRadiologyDetailsData.radiologyPhotos,
         uploadedTestReports: editingRadiologyDetailsData.reports,
       ),
@@ -492,6 +494,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     log("xxx: report text : ${reportTextController.text}");
     final response = await _xRayDataEntryRepo.postRadiologyDataEntry(
       XrayDataEntryRequestBodyModel(
+        radiologyCenter: state.selectedRadiologyCenter,
         radiologyDate: state.xRayDateSelection!,
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
@@ -501,7 +504,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         cause: localozation.no_data_entered,
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
-        hospital: state.selectedHospitalName ?? localozation.no_data_entered,
+        hospital: state.selectedHospitalName,
         writtenReport: reportTextController.text.isEmpty
             ? localozation.no_data_entered
             : reportTextController.text,

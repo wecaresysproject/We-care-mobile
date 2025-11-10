@@ -126,11 +126,13 @@ class AppSharedRepo {
   Future<ApiResult<List<String>>> getAllDoctors({
     required String language,
     required String userType,
+    String? specialization,
   }) async {
     try {
       final response = await _sharedServices.getDoctorNames(
         userType,
         language,
+        specialization,
       );
       final doctors = (response['data'] as List)
           .map<Doctor>((e) => Doctor.fromJson(e))

@@ -50,6 +50,7 @@ abstract class SharedServices {
   Future<dynamic> getDoctorNames(
     @Query("userType") String userType,
     @Query('language') String language,
+    @Query('specialty') String? specialization,
   );
   // @MultiPart()
   // @POST(XrayApiConstants.uploadXrayImageEndpoint)

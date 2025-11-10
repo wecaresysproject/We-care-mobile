@@ -115,12 +115,17 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(16),
 
             UserSelectionContainer(
+              isDisabled: state.selectedHospitalName.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "مركز التحاليل",
-              containerHintText: "اختر اسم المركز",
+              containerHintText: state.selectedHospitalName.isNotEmptyOrNull
+                  ? "المستشفى محددة، لا يمكن الإختيار "
+                  : (state.selectedLabCenter ?? "اختر اسم المركز"),
               options: state.labCenters,
               onOptionSelected: (value) {
-                log("xxx:Selected: $value");
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedLabCenter(value);
               },
               bottomSheetTitle: 'اختر اسم المركز',
               searchHintText: "ابحث عن اسم المركز",
@@ -130,10 +135,15 @@ class _TestAnalysisDataEntryFormFieldsState
             /// المركز / المستشفى
             //   //! write by ur hand
             UserSelectionContainer(
+              isDisabled: state.selectedLabCenter.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "المعمل / المستشفى",
-              containerHintText:
-                  state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
+              containerHintText: state.selectedLabCenter.isNotEmptyOrNull
+                  ? "مركز التحاليل محدد، لا يمكن الإختيار "
+                  : (state.selectedHospitalName ??
+                      "اختر اسم المعمل / المستشفى"),
+              // containerHintText:
+              //     state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
               options: state.hospitalNames,
               onOptionSelected: (value) {
                 context
