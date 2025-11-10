@@ -29,7 +29,8 @@ class EssentialDataView extends StatelessWidget {
           }
 
           if (state.requestStatus == RequestStatus.loading) {
-            return Scaffold(body: const Center(child: CircularProgressIndicator()));
+            return Scaffold(
+                body: const Center(child: CircularProgressIndicator()));
           }
 
           if (state.requestStatus == RequestStatus.failure) {
@@ -37,7 +38,8 @@ class EssentialDataView extends StatelessWidget {
           }
 
           if (info == null) {
-            return Scaffold(body: const Center(child: Text("لا توجد بيانات حالياً")));
+            return Scaffold(
+                body: const Center(child: Text("لا توجد بيانات حالياً")));
           }
 
           return Scaffold(
@@ -216,7 +218,7 @@ class EssentialDataView extends StatelessWidget {
                       ),
                       Expanded(
                         child: DetailsViewInfoTile(
-                          title: "الحالة الاجتماعية",
+                          title: "(متزوج):الحالة الاجتماعية",
                           value: info.socialStatus ?? '',
                           icon: 'assets/images/social_icon.png',
                         ),
