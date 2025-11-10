@@ -9,6 +9,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/dynamic_question_with_dynamic_answer_list_option.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
@@ -168,6 +169,22 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 verticalSpacing(18),
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
+
+                DynamicQuestionWithDynamicAnswerListOption(
+                  options: [
+                    'كلي',
+                    'جزئي',
+                  ],
+                  questionTitle: "العجز الجسدى أو الوظيفى ان وجد",
+                  initialValue: state.disabilityLevel,
+                  onAnswerChanged: (val) {
+                    context
+                        .read<EssentialDataEntryCubit>()
+                        .updateDisabilityLevel(val);
+                  },
+                ),
+
+                verticalSpacing(16),
                 Text(
                   'نوع العجز (إن وجد)',
                   style: AppTextStyles.font18blackWight500,
@@ -182,15 +199,20 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 ),
 
                 verticalSpacing(16),
-                GenericQuestionWidget(
-                  questionTitle: "الحالة الإجتماعية (متزوج)",
-                  initialValue: state.isMarried,
-                  onAnswerChanged: (p0) {
+                DynamicQuestionWithDynamicAnswerListOption(
+                  options: [
+                    'متزوج',
+                    'أعزب',
+                  ],
+                  questionTitle: "الحالة الاجتماعية",
+                  initialValue: state.socialStatus,
+                  onAnswerChanged: (val) {
                     context
                         .read<EssentialDataEntryCubit>()
-                        .updateIsMarriedOrNot(p0);
+                        .updateIsMarriedOrNot(val);
                   },
                 ),
+
                 verticalSpacing(16),
                 Text(
                   "عدد الأبناء",
@@ -247,17 +269,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   validator: (val) {},
                   onChanged: (_) {},
                 ),
-                // UserSelectionContainer(
-                //   categoryLabel: 'ساعات العمل الأسبوعى',
-                //   containerHintText:
-                //       state.weeklyWorkingHours ?? 'اختر ساعات العمل الأسبوعى',
-                //   options: ,
-                //   onOptionSelected: (val) {
-                //     cubit.updateWeeklyWorkingHours(val);
-                //   },
-                //   bottomSheetTitle: "اختر ساعات العمل الأسبوعى",
-                //   searchHintText: 'ابحث عن ساعات العمل الأسبوعى',
-                // ),
                 verticalSpacing(16),
                 Text(
                   "تليفون للطوارئ",
@@ -403,7 +414,6 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                             controller:
                                 cubit.additionalInsuranceConditionsController,
                             hintText: "اكتب أى شروط اضافية للتأمين",
-                            keyboardType: TextInputType.number,
                             validator: (val) {},
                             onChanged: (_) {},
                           ),
@@ -466,10 +476,11 @@ Widget submitDataButtonBlocConsumer() {
             // state.isEditMode
             //     ? await context
             //         .read<EssentialDataEntryCubit>()
-            //         .updateAllergyDocumentById()
-            //     : await context.read<AllergyDataEntryCubit>().postModuleData(
-            //           context.translate,
-            //         );
+            //         .ع()
+            // :
+            await context.read<EssentialDataEntryCubit>().postUserBasicData(
+                  context.translate,
+                );
           }
         },
         isEnabled: state.isFormValidated ? true : false,

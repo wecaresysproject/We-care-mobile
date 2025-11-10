@@ -31,6 +31,7 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_data_
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaints_data_entry_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_services.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
+import 'package:we_care/features/essential_info/data/repos/essential_info_data_entry_repo.dart';
 import 'package:we_care/features/essential_info/data/repos/essential_info_view_repo.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/logic/cubit/essential_data_entry_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_services.dart';
@@ -359,9 +360,9 @@ void setupAppCubits() {
   getIt.registerFactory<EssentialDataEntryCubit>(
     () => EssentialDataEntryCubit(
       getIt<AppSharedRepo>(),
+      getIt<EssentialInfoDataEntryRepo>(),
     ),
   );
-
 }
 
 void setupAppRepos() {
@@ -579,6 +580,12 @@ void setupAppRepos() {
   getIt.registerLazySingleton<EssentialInfoViewRepo>(
     () => EssentialInfoViewRepo(
       essentialInfoServices: getIt<EssentialInfoServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<EssentialInfoDataEntryRepo>(
+    () => EssentialInfoDataEntryRepo(
+      getIt<EssentialInfoServices>(),
+      getIt<SharedServices>(),
     ),
   );
 }

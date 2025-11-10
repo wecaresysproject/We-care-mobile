@@ -18,7 +18,8 @@ class EssentialDataEntryState extends Equatable {
   final String? selectedDisabilityType;
   final String? selectedCity;
   final String? weeklyWorkingHours;
-  final bool? isMarried;
+  final String? disabilityLevel;
+  final String? socialStatus;
 
   // yes/no
   final bool? hasMedicalInsurance;
@@ -28,6 +29,7 @@ class EssentialDataEntryState extends Equatable {
   final String? insuranceEndDate;
   final String? insuranceAdditionalConditions;
   final String? insuranceCardImagePath;
+  final String? userPersonalImage;
 
   // validation + submission
   final bool isFormValidated;
@@ -55,12 +57,14 @@ class EssentialDataEntryState extends Equatable {
     required this.insuranceAdditionalConditions,
     required this.insuranceCardImagePath,
     required this.weeklyWorkingHours,
-    this.isMarried,
+    this.socialStatus,
     this.isEditMode = false,
     required this.countriesNames,
     required this.citiesNames,
     required this.areasNames,
     required this.neighborhoodsNames,
+    this.userPersonalImage,
+    this.disabilityLevel,
   });
 
   factory EssentialDataEntryState.initial() {
@@ -84,12 +88,14 @@ class EssentialDataEntryState extends Equatable {
       insuranceAdditionalConditions: null,
       insuranceCardImagePath: null,
       weeklyWorkingHours: null,
-      isMarried: null,
+      socialStatus: null,
       isEditMode: false,
       countriesNames: [],
       citiesNames: [],
       areasNames: [],
       neighborhoodsNames: [],
+      userPersonalImage: null,
+      disabilityLevel: null,
     );
   }
 
@@ -113,12 +119,14 @@ class EssentialDataEntryState extends Equatable {
     String? insuranceAdditionalConditions,
     String? insuranceCardImagePath,
     String? weeklyWorkingHours,
-    bool? isMarried,
+    String? socialStatus,
     bool isEditMode = false,
     List<String>? countriesNames,
     List<String>? citiesNames,
     List<String>? areasNames,
     List<String>? neighborhoodsNames,
+    String? userPersonalImage,
+    String? disabilityLevel,
   }) {
     return EssentialDataEntryState(
       birthDate: birthDate ?? this.birthDate,
@@ -144,12 +152,14 @@ class EssentialDataEntryState extends Equatable {
       insuranceCardImagePath:
           insuranceCardImagePath ?? this.insuranceCardImagePath,
       weeklyWorkingHours: weeklyWorkingHours ?? this.weeklyWorkingHours,
-      isMarried: isMarried ?? this.isMarried,
+      socialStatus: socialStatus ?? this.socialStatus,
       isEditMode: isEditMode,
       countriesNames: countriesNames ?? this.countriesNames,
       citiesNames: citiesNames ?? this.citiesNames,
       areasNames: areasNames ?? this.areasNames,
       neighborhoodsNames: neighborhoodsNames ?? this.neighborhoodsNames,
+      userPersonalImage: userPersonalImage ?? this.userPersonalImage,
+      disabilityLevel: disabilityLevel ?? this.disabilityLevel,
     );
   }
 
@@ -174,11 +184,13 @@ class EssentialDataEntryState extends Equatable {
         insuranceAdditionalConditions,
         insuranceCardImagePath,
         weeklyWorkingHours,
-        isMarried,
+        socialStatus,
         isEditMode,
         countriesNames,
         citiesNames,
         areasNames,
-        neighborhoodsNames
+        neighborhoodsNames,
+        userPersonalImage,
+        disabilityLevel,
       ];
 }
