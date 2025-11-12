@@ -34,8 +34,12 @@ class EssentialDataEntryState extends Equatable {
   // validation + submission
   final bool isFormValidated;
   final RequestStatus submissionStatus;
+  final UploadImageRequestStatus? uploadImageRequestStatus;
+  final String? profilePictureUploadedUrl;
+  final String? insuranceCardPhotoUrl;
   final String? message;
   final bool isEditMode;
+  final bool? isPictureSelected;
 
   const EssentialDataEntryState({
     required this.birthDate,
@@ -65,6 +69,10 @@ class EssentialDataEntryState extends Equatable {
     required this.neighborhoodsNames,
     this.userPersonalImage,
     this.disabilityLevel,
+    this.uploadImageRequestStatus,
+    this.profilePictureUploadedUrl,
+    this.isPictureSelected,
+    this.insuranceCardPhotoUrl,
   });
 
   factory EssentialDataEntryState.initial() {
@@ -96,6 +104,10 @@ class EssentialDataEntryState extends Equatable {
       neighborhoodsNames: [],
       userPersonalImage: null,
       disabilityLevel: null,
+      uploadImageRequestStatus: null,
+      profilePictureUploadedUrl: null,
+      isPictureSelected: null,
+      insuranceCardPhotoUrl: null,
     );
   }
 
@@ -127,6 +139,10 @@ class EssentialDataEntryState extends Equatable {
     List<String>? neighborhoodsNames,
     String? userPersonalImage,
     String? disabilityLevel,
+     UploadImageRequestStatus? uploadImageRequestStatus,
+      String? pictureUploadedUrl,
+    bool? isPictureSelected,
+    String? insuranceCardPhotoUrl,
   }) {
     return EssentialDataEntryState(
       birthDate: birthDate ?? this.birthDate,
@@ -160,6 +176,11 @@ class EssentialDataEntryState extends Equatable {
       neighborhoodsNames: neighborhoodsNames ?? this.neighborhoodsNames,
       userPersonalImage: userPersonalImage ?? this.userPersonalImage,
       disabilityLevel: disabilityLevel ?? this.disabilityLevel,
+      uploadImageRequestStatus:
+          uploadImageRequestStatus ?? this.uploadImageRequestStatus,
+      profilePictureUploadedUrl: pictureUploadedUrl ?? this.profilePictureUploadedUrl,
+      isPictureSelected: isPictureSelected ?? this.isPictureSelected,
+      insuranceCardPhotoUrl: insuranceCardPhotoUrl ?? this.insuranceCardPhotoUrl,
     );
   }
 
@@ -192,5 +213,8 @@ class EssentialDataEntryState extends Equatable {
         neighborhoodsNames,
         userPersonalImage,
         disabilityLevel,
+        uploadImageRequestStatus,
+        profilePictureUploadedUrl,
+        isPictureSelected,
       ];
 }

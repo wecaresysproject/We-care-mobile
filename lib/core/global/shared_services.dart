@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/global/shared_services_constants.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
+import 'package:we_care/features/x_ray/xray_api_constants.dart';
 
 part 'shared_services.g.dart';
 
@@ -52,13 +56,13 @@ abstract class SharedServices {
     @Query('language') String language,
     @Query('specialty') String? specialization,
   );
-  // @MultiPart()
-  // @POST(XrayApiConstants.uploadXrayImageEndpoint)
-  // Future<UploadImageResponseModel> uploadRadiologyImage(
-  //   @Part() File image,
-  //   @Header("Content-Type") String contentType,
-  //   @Query("language") String language,
-  // );
+  @MultiPart()
+  @POST(XrayApiConstants.uploadXrayImageEndpoint)
+  Future<UploadImageResponseModel> uploadRadiologyImage(
+    @Part() File image,
+    @Header("Content-Type") String contentType,
+    @Query("language") String language,
+  );
 
   // @MultiPart()
   // @POST(XrayApiConstants.uploadXrayReportEndpoint)

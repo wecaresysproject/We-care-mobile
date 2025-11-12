@@ -49,6 +49,7 @@ class UserEssentialInfoData {
   final String? socialStatus;
   final int? numberOfChildren;
   final String? familyDoctorName;
+  final String? familyDoctorPhoneNumber;
   final String? emergencyContact1;
   final String? emergencyContact2;
 
@@ -73,6 +74,7 @@ class UserEssentialInfoData {
     this.socialStatus,
     this.numberOfChildren,
     this.familyDoctorName,
+    this.familyDoctorPhoneNumber,
     this.emergencyContact1,
     this.emergencyContact2,
   });

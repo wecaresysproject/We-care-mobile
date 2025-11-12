@@ -58,7 +58,11 @@ class EssentialDataView extends StatelessWidget {
                           .read<EssentialInfoViewCubit>()
                           .shareEssentialInfoDetails();
                     },
-                    deleteFunction: () {},
+                    deleteFunction: () {
+                    context
+                        .read<EssentialInfoViewCubit>()
+                        .deleteEssentialInfo();
+                    },
                   ),
 
                   // Full Name
@@ -218,7 +222,7 @@ class EssentialDataView extends StatelessWidget {
                       ),
                       Expanded(
                         child: DetailsViewInfoTile(
-                          title: "(متزوج):الحالة الاجتماعية",
+                          title: "الحالة الاجتماعية",
                           value: info.socialStatus ?? '',
                           icon: 'assets/images/social_icon.png',
                         ),
@@ -252,6 +256,13 @@ class EssentialDataView extends StatelessWidget {
                     title: "طبيب الأسرة",
                     value: info.familyDoctorName ?? '',
                     icon: 'assets/images/doctor_icon.png',
+                    isExpanded: true,
+                  ),
+
+                  DetailsViewInfoTile(
+                    title: "هاتف طبيب الأسرة",
+                    value: info.familyDoctorPhoneNumber ?? '',
+                    icon: 'assets/images/phone_icon.png',
                     isExpanded: true,
                   ),
                 ],

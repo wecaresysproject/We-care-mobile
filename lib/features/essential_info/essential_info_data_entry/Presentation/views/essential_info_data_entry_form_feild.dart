@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
@@ -98,17 +100,27 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 ),
                 verticalSpacing(10),
                 SelectImageContainer(
-                  containerBorderColor: AppColorsManager.mainDarkBlue,
+                  containerBorderColor:
+                      AppColorsManager.textfieldOutsideBorderColor,
                   imagePath: "assets/images/photo_icon.png",
                   label: "ارفق صورة",
                   onTap: () async {
                     await showImagePicker(
                       context,
-                      onImagePicked: (isImagePicked) async {},
+                      onImagePicked: (isImagePicked) async {
+                        final picker = getIt.get<ImagePickerService>();
+                        if (isImagePicked && picker.isImagePickedAccepted) {
+                          await context
+                              .read<EssentialDataEntryCubit>()
+                              .uploadImage(
+                                imagePath: picker.pickedImage!.path,
+                                isProfileImage: true,
+                              );
+                        }
+                      },
                     );
                   },
                 ),
-                //
                 verticalSpacing(18),
                 UserSelectionContainer(
                   categoryLabel: 'الدولة',
@@ -153,7 +165,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   validator: (val) {},
                   onChanged: (_) {},
                 ),
-
                 verticalSpacing(18),
                 UserSelectionContainer(
                   categoryLabel: 'فصيلة الدم',
@@ -169,7 +180,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 verticalSpacing(18),
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
-
                 DynamicQuestionWithDynamicAnswerListOption(
                   options: [
                     'كلي',
@@ -183,21 +193,18 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                         .updateDisabilityLevel(val);
                   },
                 ),
-
                 verticalSpacing(16),
                 Text(
                   'نوع العجز (إن وجد)',
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.disabilityTypeDetailsController,
                   hintText: "اكتب نوع العجز (إن وجد)",
                   validator: (val) {},
                   onChanged: (_) {},
                 ),
-
                 verticalSpacing(16),
                 DynamicQuestionWithDynamicAnswerListOption(
                   options: [
@@ -212,14 +219,12 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                         .updateIsMarriedOrNot(val);
                   },
                 ),
-
                 verticalSpacing(16),
                 Text(
                   "عدد الأبناء",
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.numberOfChildrenController,
                   hintText: "اختر عدد أبنائك",
@@ -233,7 +238,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.familyDoctorNameController,
                   hintText: "اكتب اسم طبيب الأسرة ان وجد",
@@ -246,7 +250,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.familyDoctorPhoneNumberController,
                   hintText: "اكتب تليفون طبيب الأسرة",
@@ -255,13 +258,11 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-
                 Text(
                   'ساعات العمل الأسبوعى',
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.noOfWoringHours,
                   hintText: "اكتب ساعات العمل الأسبوعى",
@@ -275,7 +276,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.mainEmergencyPhoneController,
                   hintText: "تليفون اخر (الأم/الأب/الأخ/الأخت/الزوج/الزوجة)",
@@ -284,13 +284,11 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-
                 Text(
                   "تليفون للطوارئ اخر",
                   style: AppTextStyles.font18blackWight500,
                 ),
                 verticalSpacing(10),
-
                 CustomTextField(
                   controller: cubit.anotherEmergencyPhoneController,
                   hintText: "تليفون اخر (الأم/الأب/الأخ/الأخت/الزوج/الزوجة)",
@@ -372,22 +370,17 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                         key: const Key('familySimilarCasesForm'),
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          UserSelectionContainer(
-                            categoryLabel: "شركة التأمين",
-                            containerHintText: state.insuranceCompany ??
+                          Text(
+                            "شركة التأمين",
+                            style: AppTextStyles.font18blackWight500,
+                          ),
+                          verticalSpacing(10),
+                          CustomTextField(
+                            controller: cubit.insuranceCompanyController,
+                            hintText: state.insuranceCompany ??
                                 "اختر اسم شركة التأمين",
-                            options: const [
-                              "company1",
-                              "company2",
-                              "company3",
-                            ],
-                            onOptionSelected: (value) {
-                              context
-                                  .read<EssentialDataEntryCubit>()
-                                  .updateInsuranceCompanyName(value);
-                            },
-                            bottomSheetTitle: "اختر اسم الشركة",
-                            searchHintText: "اختر اسم الشركة",
+                            validator: (val) {},
+                            onChanged: (_) {},
                           ),
                           verticalSpacing(16),
                           Text(
@@ -424,13 +417,26 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                           ),
                           verticalSpacing(10),
                           SelectImageContainer(
-                            containerBorderColor: AppColorsManager.mainDarkBlue,
+                            containerBorderColor:
+                                AppColorsManager.textfieldOutsideBorderColor,
                             imagePath: "assets/images/photo_icon.png",
                             label: "ارفق صورة",
                             onTap: () async {
                               await showImagePicker(
                                 context,
-                                onImagePicked: (isImagePicked) async {},
+                                onImagePicked: (isImagePicked) async {
+                                  final picker =
+                                      getIt.get<ImagePickerService>();
+                                  if (isImagePicked &&
+                                      picker.isImagePickedAccepted) {
+                                    await context
+                                        .read<EssentialDataEntryCubit>()
+                                        .uploadImage(
+                                          imagePath: picker.pickedImage!.path,
+                                          isProfileImage: false,
+                                        );
+                                  }
+                                },
                               );
                             },
                           ),

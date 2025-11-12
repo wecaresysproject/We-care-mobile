@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/shared_services.dart';
+import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -139,6 +142,23 @@ class AppSharedRepo {
           .toList();
       final doctorNames = doctors.map((e) => e.fullName).toList();
       return ApiResult.success(doctorNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadImageResponseModel>> uploadImage({
+    required String language,
+    required String contentType,
+    required File image,
+  }) async {
+    try {
+      final response = await _sharedServices.uploadRadiologyImage(
+        image,
+        contentType,
+        language,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

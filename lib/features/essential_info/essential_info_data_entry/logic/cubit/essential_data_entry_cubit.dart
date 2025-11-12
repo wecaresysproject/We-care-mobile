@@ -1,5 +1,6 @@
 // essential_data_entry_cubit.dart
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ part 'essential_data_entry_state.dart';
 class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final AppSharedRepo _sharedRepo;
   final EssentialInfoDataEntryRepo essentialInfoDataEntryRepo;
+  
   EssentialDataEntryCubit(
     this._sharedRepo,
     this.essentialInfoDataEntryRepo,
@@ -27,7 +29,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController exactLocation = TextEditingController(); // منطقت
   final TextEditingController userAddress =
-      TextEditingController(); //                   'الحى /العزبة /الشياخة'
+      TextEditingController(); 
 
   final TextEditingController disabilityTypeDetailsController =
       TextEditingController();
@@ -50,21 +52,48 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController anotherEmergencyPhoneController =
       TextEditingController();
 
+  final TextEditingController insuranceCompanyController = TextEditingController();
+
   final List<String> bloodTypes = [
-    'A+',
-    'A-',
-    'B+',
-    'B-',
-    'O+',
-    'O-',
-    'AB+',
-    'AB-',
     'A',
     'B',
-    'AB',
     'O',
+    'AB',
   ];
-
+  Future<void> uploadImage(
+      {required String imagePath, required bool
+          isProfileImage}) async {
+    emit(
+      state.copyWith(
+        uploadImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _sharedRepo.uploadImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            pictureUploadedUrl:isProfileImage ? response.imageUrl : null,
+            insuranceCardPhotoUrl: !isProfileImage ? response.imageUrl : null,
+            uploadImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
   Future<void> postUserBasicData(S localization) async {
     emit(state.copyWith(submissionStatus: RequestStatus.loading));
 
@@ -81,7 +110,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
             ? emailController.text.trim()
             : localization.no_data_entered,
         personalPhotoUrl:
-            state.userPersonalImage ?? localization.no_data_entered,
+            state.profilePictureUploadedUrl ?? localization.no_data_entered,
         country: state.selectedNationality ?? localization.no_data_entered,
         city: state.selectedCity ?? localization.no_data_entered,
         areaOrDistrict: userAddress.text.trim().isNotEmpty
@@ -95,7 +124,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           insuranceCoverageExpiryDate:
               state.insuranceEndDate ?? localization.no_data_entered,
           insuranceCardPhotoUrl:
-              state.insuranceCardImagePath ?? localization.no_data_entered,
+              insuranceCompanyController.text ,
           additionalInsuranceTerms:
               additionalInsuranceConditionsController.text.trim().isNotEmpty
                   ? additionalInsuranceConditionsController.text.trim()
@@ -329,4 +358,11 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     return super.close();
   }
+
+
+  void updatePictureUploaded(bool? isImagePicked) {
+    emit(state.copyWith(isPictureSelected: isImagePicked));
+    validateRequiredFields();
+  }
+
 }
