@@ -98,11 +98,35 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  Future<void> emitDoctorNames() async {
+  Future<void> emitRadiologyDoctorNames() async {
     final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
       specialization: "الأشعة التداخلية",
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            radiologyDoctors: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitDoctorNames() async {
+    final response = await sharedRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
     );
 
     response.when(
@@ -121,6 +145,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         );
       },
     );
+  }
+
+  void updateSymptomsRequiringIntervention(String? issue) {
+    emit(state.copyWith(symptomsRequiringIntervention: issue));
   }
 
   void updateSelectedCountry(String? selectedCountry) {
@@ -168,6 +196,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     await emitBodyPartsData();
     await emitCountriesData();
     await emitDoctorNames();
+    await emitRadiologyDoctorNames();
     await emitRadiologyCenters();
     await emitHospitalNames();
   }
@@ -196,7 +225,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  Future<void> submitEditsOnXRayDocument(S localozation) async {
+  Future<void> submitEditsOnXRayDocument(S localize) async {
     emit(
       state.copyWith(
         xRayDataEntryStatus: RequestStatus.loading,
@@ -214,7 +243,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyTypePurposes: state.selectedPupose,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: localozation.no_data_entered,
+        cause: state.symptomsRequiringIntervention!,
         radiologyDoctor: state.selectedRadiologistDoctorName,
         hospital: state.selectedHospitalName,
         curedDoctor: state.selectedTreatedDoctor,
@@ -485,7 +514,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  Future<void> postRadiologyDataEntry(S localozation) async {
+  Future<void> postRadiologyDataEntry(S localize) async {
     emit(
       state.copyWith(
         xRayDataEntryStatus: RequestStatus.loading,
@@ -501,18 +530,17 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyTypePurposes: state.selectedPupose,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: localozation.no_data_entered,
+        cause: state.symptomsRequiringIntervention ?? localize.no_data_entered,
         radiologyDoctor:
-            state.selectedRadiologistDoctorName ?? localozation.no_data_entered,
+            state.selectedRadiologistDoctorName ?? localize.no_data_entered,
         hospital: state.selectedHospitalName,
         writtenReport: reportTextController.text.isEmpty
-            ? localozation.no_data_entered
+            ? localize.no_data_entered
             : reportTextController.text,
-        curedDoctor:
-            state.selectedTreatedDoctor ?? localozation.no_data_entered,
-        country: state.selectedCountryName ?? localozation.no_data_entered,
+        curedDoctor: state.selectedTreatedDoctor ?? localize.no_data_entered,
+        country: state.selectedCountryName ?? localize.no_data_entered,
         radiologyNote: personalNotesController.text.isEmpty
-            ? localozation.no_data_entered
+            ? localize.no_data_entered
             : personalNotesController.text,
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang,

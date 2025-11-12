@@ -25,6 +25,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   final TestAnalysisDataEntryRepo _testAnalysisDataEntryRepo;
   final AppSharedRepo sharedRepo;
 
+  final TextEditingController reportTextController = TextEditingController();
+
   Future<void> intialRequestsForTestAnalysisDataEntry() async {
     await Future.wait([
       emitListOfTestAnnotations(
@@ -54,8 +56,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         selectedCountryName: editingAnalysisDetailsData.country,
         selectedHospitalName: editingAnalysisDetailsData.hospital,
         selectedDoctorName: editingAnalysisDetailsData.doctor,
-        selectedSymptomsForProcedure:
-            editingAnalysisDetailsData.symptomsForProcedure,
+        symptomsRequiringIntervention:
+            editingAnalysisDetailsData.symptomsRequiringIntervention,
         isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
         selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
         isEditMode: true,
@@ -64,6 +66,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         uploadedTestReports: editingAnalysisDetailsData.reportBase64,
       ),
     );
+    reportTextController.text = editingAnalysisDetailsData.writtenReport!;
     validateRequiredFields();
     intialRequestsForTestAnalysisDataEntry();
   }
@@ -72,14 +75,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     safeEmit(
       state.copyWith(
         selectedNoOftimesTestPerformed: timesTestPerformed,
-      ),
-    );
-  }
-
-  void updateSelectedSymptom(String? newSymptoms) {
-    safeEmit(
-      state.copyWith(
-        selectedSymptomsForProcedure: newSymptoms,
       ),
     );
   }
@@ -292,6 +287,10 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
+  void updateSymptomsRequiringIntervention(String? issue) {
+    emit(state.copyWith(symptomsRequiringIntervention: issue));
+  }
+
   Future<void> emitListOfTestNames(
       {required String language, required String userType}) async {
     final response = await _testAnalysisDataEntryRepo.getListOfTestNames(
@@ -484,10 +483,13 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
-        symptomsForProcedure:
-            state.selectedSymptomsForProcedure ?? localozation.no_data_entered,
+        symptomsRequiringIntervention:
+            state.symptomsRequiringIntervention ?? localozation.no_data_entered,
         timesTestPerformed: state.selectedNoOftimesTestPerformed ??
             localozation.no_data_entered,
+        writtenReport: reportTextController.text.isEmpty
+            ? localozation.no_data_entered
+            : reportTextController.text,
       ),
     );
 
@@ -535,7 +537,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName!,
         doctor: state.selectedDoctorName!,
-        symptomsForProcedure: state.selectedSymptomsForProcedure!,
+        symptomsRequiringIntervention: state.symptomsRequiringIntervention!,
         timesTestPerformed: state.selectedNoOftimesTestPerformed!,
       ),
       testId: state.updatedTestId,
@@ -604,5 +606,11 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    reportTextController.dispose();
+    return super.close();
   }
 }

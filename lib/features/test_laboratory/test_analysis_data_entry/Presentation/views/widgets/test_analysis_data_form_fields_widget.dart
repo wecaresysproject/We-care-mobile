@@ -9,9 +9,11 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/test_selection_bottom_sheet.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_reports_section_widget.dart';
@@ -92,26 +94,7 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(16),
             // //! الأعراض المستدعية للاجراء"
 
-            UserSelectionContainer(
-              allowManualEntry: true,
-              options: [
-                "عرض واحد",
-                "عرض اتنين",
-                "عرض ثلاثة",
-              ],
-              categoryLabel: "الأعراض المستدعية للاجراء",
-              bottomSheetTitle: "اختر الأعراض المستدعية",
-              onOptionSelected: (value) {
-                context
-                    .read<TestAnalysisDataEntryCubit>()
-                    .updateSelectedSymptom(value);
-                log("xxx:Selected: $value");
-              },
-              containerHintText: state.selectedSymptomsForProcedure ??
-                  "اختر الأعراض المستدعية",
-              searchHintText: "ابحث عن الأعراض المستدعية",
-            ),
-
+            SymptomsRequiringInterventionSelector(),
             verticalSpacing(16),
 
             UserSelectionContainer(
@@ -453,7 +436,7 @@ Widget buildStyledTextField(List<TableRowReponseModel> tableRows,
         ),
         hintStyle: AppTextStyles.font12blackWeight400.copyWith(
           fontWeight: FontWeight.w700,
-          fontSize: 10.sp,
+          fontSize: 14.sp,
           color: AppColorsManager.placeHolderColor,
           overflow: TextOverflow.ellipsis,
         ),
@@ -520,8 +503,8 @@ Widget buildTable(List<TableRowReponseModel> tableRows) {
                 AppColorsManager.mainDarkBlue,
               ),
               columnSpacing: columnSpacing,
-              dataRowMaxHeight: 60.h,
-              horizontalMargin: 7,
+              dataRowMaxHeight: 100.h,
+              horizontalMargin: 2,
               dividerThickness: 0.83,
               headingTextStyle: AppTextStyles.font16DarkGreyWeight400.copyWith(
                 color: AppColorsManager.backGroundColor,
@@ -568,12 +551,18 @@ List<DataRow> _buildRows(
         cells: [
           _buildCell(
             data.testName,
-            isBold: true,
             isNameColumn: true,
-            fontSize: 14,
+            fontSize: 16.5,
           ),
-          _buildCell(data.testCode, fontSize: 16),
-          _buildCell(data.standardRate, fontSize: 16),
+          _buildCell(
+            data.testCode,
+            fontSize: 18,
+            isNameColumn: true,
+          ),
+          _buildCell(
+            data.standardRate,
+            fontSize: 16,
+          ),
           DataCell(
             data.hasApercentage!
                 ? buildStyledTextField(tableRows, data.testName, context)
@@ -701,8 +690,11 @@ DataColumn _buildColumn(
   );
 }
 
-DataCell _buildCell(String text,
-    {bool isBold = false, bool isNameColumn = false, double fontSize = 14}) {
+DataCell _buildCell(
+  String text, {
+  bool isNameColumn = false,
+  double fontSize = 14,
+}) {
   return DataCell(
     Container(
       alignment: Alignment.center,
@@ -722,6 +714,33 @@ DataCell _buildCell(String text,
       ),
     ),
   );
+}
+
+class SymptomsRequiringInterventionSelector extends StatelessWidget {
+  const SymptomsRequiringInterventionSelector({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
+        MedicalComplaintDataEntryDetailsState>(
+      buildWhen: (previous, current) =>
+          previous.medicalSymptomsIssue != current.medicalSymptomsIssue,
+      builder: (context, state) {
+        final xrayCubit = context.read<TestAnalysisDataEntryCubit>();
+
+        return SearchableUserSelectorContainer(
+          categoryLabel: "الأعراض المستدعية للاجراء",
+          bottomSheetTitle: "اختر الأعراض المستدعية",
+          containerHintText:
+              state.medicalSymptomsIssue ?? "اختر الأعراض المستدعية",
+          onOptionSelected: (value) {
+            xrayCubit.updateSymptomsRequiringIntervention(value);
+          },
+          searchHintText: "ابحث عن الأعراض المستدعية",
+        );
+      },
+    );
+  }
 }
 
 // store all objects in a list to use it later, and if user try to choose one of drop down  again

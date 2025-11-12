@@ -4,13 +4,13 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class DynamicQuestionWithDynamicAnswerListOption extends StatefulWidget {
+class QuestionWithDynamicAnswerListOption extends StatefulWidget {
   final String questionTitle;
   final Function(String?)? onAnswerChanged;
   final String? initialValue;
   final List<String> options; // ✅ dynamic options
 
-  const DynamicQuestionWithDynamicAnswerListOption({
+  const QuestionWithDynamicAnswerListOption({
     super.key,
     required this.questionTitle,
     this.onAnswerChanged,
@@ -19,12 +19,12 @@ class DynamicQuestionWithDynamicAnswerListOption extends StatefulWidget {
   });
 
   @override
-  State<DynamicQuestionWithDynamicAnswerListOption> createState() =>
-      _DynamicQuestionWithDynamicAnswerListOption();
+  State<QuestionWithDynamicAnswerListOption> createState() =>
+      _QuestionWithDynamicAnswerListOption();
 }
 
-class _DynamicQuestionWithDynamicAnswerListOption
-    extends State<DynamicQuestionWithDynamicAnswerListOption> {
+class _QuestionWithDynamicAnswerListOption
+    extends State<QuestionWithDynamicAnswerListOption> {
   String? selectedAnswer;
 
   @override

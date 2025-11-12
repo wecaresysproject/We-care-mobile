@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/select_image_container_widget.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/logic/cubit/test_analysis_data_entry_cubit.dart';
@@ -40,12 +41,32 @@ class UploadedReportsSection extends StatelessWidget {
 
             SizedBox(height: 10.h),
 
-            // Write report
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {
-                // TODO: open text dialog
+              label: context
+                      .read<TestAnalysisDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                // ✅ اقرا الـ cubit من الـ context الحالي
+                final cubit = context.read<TestAnalysisDataEntryCubit>();
+                final isFirstTime =
+                    cubit.reportTextController.text.isEmpty == true;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
               },
             ),
 

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 
@@ -15,15 +16,23 @@ class XrayCategoryDataEntryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<XRayDataEntryCubit>(
-      create: (context) {
-        final cubit = getIt<XRayDataEntryCubit>();
-        if (editingXRayDetailsData != null) {
-          return cubit..loadXrayDetailsDataForEditing(editingXRayDetailsData!);
-        } else {
-          return cubit..intialRequestsForXRayDataEntry();
-        }
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<XRayDataEntryCubit>(
+          create: (context) {
+            final cubit = getIt<XRayDataEntryCubit>();
+            if (editingXRayDetailsData != null) {
+              return cubit
+                ..loadXrayDetailsDataForEditing(editingXRayDetailsData!);
+            } else {
+              return cubit..intialRequestsForXRayDataEntry();
+            }
+          },
+        ),
+        BlocProvider<EmergencyComplaintDataEntryDetailsCubit>(
+          create: (context) => getIt<EmergencyComplaintDataEntryDetailsCubit>(),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

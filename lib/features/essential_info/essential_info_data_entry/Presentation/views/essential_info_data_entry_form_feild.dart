@@ -180,7 +180,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 verticalSpacing(18),
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
-                DynamicQuestionWithDynamicAnswerListOption(
+                QuestionWithDynamicAnswerListOption(
                   options: [
                     'كلي',
                     'جزئي',
@@ -206,7 +206,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-                DynamicQuestionWithDynamicAnswerListOption(
+                QuestionWithDynamicAnswerListOption(
                   options: [
                     'متزوج',
                     'أعزب',

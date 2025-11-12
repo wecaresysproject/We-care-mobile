@@ -311,7 +311,7 @@ class _AllergyDataFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            DynamicQuestionWithDynamicAnswerListOption(
+            QuestionWithDynamicAnswerListOption(
               options: [
                 'نعم',
                 'لا',
@@ -326,7 +326,7 @@ class _AllergyDataFormFieldsWidgetState
               },
             ),
             verticalSpacing(16),
-            DynamicQuestionWithDynamicAnswerListOption(
+            QuestionWithDynamicAnswerListOption(
               options: [
                 'نعم',
                 'لا',
