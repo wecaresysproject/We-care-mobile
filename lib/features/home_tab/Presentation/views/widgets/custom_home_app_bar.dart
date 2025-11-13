@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/custom_rich_text.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
@@ -7,6 +9,8 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
+import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
 
 class HomeCustomAppBarWidget extends StatelessWidget {
   const HomeCustomAppBarWidget({super.key});
@@ -16,24 +20,33 @@ class HomeCustomAppBarWidget extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            UserAvatarWidget(
-              height: 47,
-              width: 46,
-              borderRadius: 48,
-            ),
-            Text(
-              context.translate.dummyUserName,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                color: AppColorsManager.textColor,
-                fontWeight: FontWeightHelper.medium,
-                fontSize: 11.sp,
-              ),
-            ),
-          ],
+        BlocProvider<EssentialInfoViewCubit>(
+          create: (context) => getIt<EssentialInfoViewCubit>()..getUserEssentialInfo(),
+          child: BlocBuilder<EssentialInfoViewCubit, EssentialInfoViewState>(
+            builder: (context, state) {
+              final fullName = state.userEssentialInfo?.fullName ?? 'user name';
+            final firstTwoNames = fullName.split(' ').take(2).join(' ');
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  UserAvatarWidget(
+                    height: 47,
+                    width: 46,
+                    borderRadius: 48,
+                  ),
+                  Text(
+                   firstTwoNames,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                      color: AppColorsManager.textColor,
+                      fontWeight: FontWeightHelper.medium,
+                      fontSize: 11.sp,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
         horizontalSpacing(8),
         Expanded(
