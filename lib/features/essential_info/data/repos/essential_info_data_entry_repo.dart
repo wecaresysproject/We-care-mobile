@@ -33,14 +33,12 @@ class EssentialInfoDataEntryRepo {
   Future<ApiResult<String>> updateUserEssentialInfo(
     UserEssentialInfoRequestBodyModel requestBody,
     String language,
-    String documentId,
   ) async {
     try {
       final response = await essentialInfoServices.updateUserEssentialInfo(
         requestBody,
         language,
         UserTypes.patient.name.firstLetterToUpperCase,
-        documentId,
       );
       return ApiResult.success(
         response['message'],

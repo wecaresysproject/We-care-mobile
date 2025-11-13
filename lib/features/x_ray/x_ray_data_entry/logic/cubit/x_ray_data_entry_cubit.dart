@@ -291,6 +291,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         selectedRadiologyCenter: editingRadiologyDetailsData.radiologyCenter,
         uploadedTestImages: editingRadiologyDetailsData.radiologyPhotos,
         uploadedTestReports: editingRadiologyDetailsData.reports,
+        symptomsRequiringIntervention: editingRadiologyDetailsData.symptoms,
       ),
     );
     personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;

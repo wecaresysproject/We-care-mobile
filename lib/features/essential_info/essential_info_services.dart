@@ -15,8 +15,11 @@ abstract class EssentialInfoServices {
       @Query("language") String language, @Query("userType") String userType);
 
   @DELETE(EssentialInfoApiConstants.deleteUserEssentialInfo)
-  Future<dynamic> deleteEssentialInfo(@Query("language") String language,
-      @Query("userType") String userType, @Query("docId") String id);
+  Future<dynamic> deleteEssentialInfo(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("documentId") String id,
+  );
 
   @POST(EssentialInfoApiConstants.postUserEssentialInfo)
   Future<dynamic> postUserEssentialInfo(
@@ -29,6 +32,5 @@ abstract class EssentialInfoServices {
     @Body() UserEssentialInfoRequestBodyModel requestBody,
     @Query('language') String language,
     @Query('userType') String userType,
-    @Query('documentId') String documentId,
   );
 }
