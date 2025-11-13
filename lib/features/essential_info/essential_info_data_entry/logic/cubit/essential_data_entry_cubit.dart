@@ -144,8 +144,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         disabilityLevel:
             editingModel.disabilityDetails, //!TODO: check this later
         socialStatus: editingModel.socialStatus,
-        hasMedicalInsurance:
-            true, //! TODO: check this later , need to change it
+        hasMedicalInsurance: editingModel.insuranceStatus ??
+            false, //! TODO: check this later , need to change it
         insuranceEndDate: editingModel.insuranceCoverageExpiryDate ?? '',
         insuranceCardPhotoUrl: editingModel.insuranceCardPhotoUrl,
         isEditMode: true,

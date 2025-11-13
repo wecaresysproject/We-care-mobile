@@ -77,31 +77,32 @@ class AnalysisDetailsView extends StatelessWidget {
                       shareFunction: () async {
                         final analysis = state.selectedAnalysisDetails!;
 
-    // 🧩 نجهّز البيانات الأساسية
-    final detailsMap = {
-      '📅 *التاريخ*:': analysis.testDate,
-      '🔬 *نوع التحليل*:': analysis.groupName,
-      '👨‍⚕️ *الطبيب المعالج*:': analysis.doctor,
-      '🏥 *المستشفى/المعمل*:': analysis.hospital,
-      '🌍 *الدولة*:': analysis.country,
-      '🏷 *نوعية الاحتياج*:': "دورية",
-      '🤒 *الأعراض المستدعية للإجراء*:': analysis.symptomsRequiringIntervention,
-      
-      '📝 *توصيف التقرير الطبي*:': analysis.writtenReport ?? "لم يتم ادخال بيانات",
-             };
-    // 🧾 الصور (من analysis.imageBase64 + analysis.reportBase64)
-    final allImages = [
-      ...(analysis.imageBase64 ),
-      ...(analysis.reportBase64),
-    ];
+                        // 🧩 نجهّز البيانات الأساسية
+                        final detailsMap = {
+                          '📅 *التاريخ*:': analysis.testDate,
+                          '🔬 *نوع التحليل*:': analysis.groupName,
+                          '👨‍⚕️ *الطبيب المعالج*:': analysis.doctor,
+                          '🏥 *المستشفى/المعمل*:': analysis.hospital,
+                          '🌍 *الدولة*:': analysis.country,
+                          '🏷 *نوعية الاحتياج*:': "دورية",
+                          '🤒 *الأعراض المستدعية للإجراء*:':
+                              analysis.symptomsRequiringIntervention,
+                          '📝 *توصيف التقرير الطبي*:':
+                              analysis.writtenReport ?? "لم يتم ادخال بيانات",
+                        };
+                        // 🧾 الصور (من analysis.imageBase64 + analysis.reportBase64)
+                        final allImages = [
+                          ...(analysis.imageBase64),
+                          ...(analysis.reportBase64),
+                        ];
 
-    // 🩺 مشاركة باستخدام الميثود الـgeneric
-    await shareDetails(
-      title: '🩺 *تفاصيل التحليل* 🩺',
-      details: detailsMap,
-      imageUrls: allImages,
-      errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل التحليل",
-    );
+                        // 🩺 مشاركة باستخدام الميثود الـgeneric
+                        await shareDetails(
+                          title: '🩺 *تفاصيل التحليل* 🩺',
+                          details: detailsMap,
+                          imageUrls: allImages,
+                          errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل التحليل",
+                        );
                       }),
                   DetailsViewInfoTile(
                     title: "التاريخ",
@@ -125,14 +126,16 @@ class AnalysisDetailsView extends StatelessWidget {
                     isShareEnabled: true,
                   ),
                   DetailsViewInfoTile(
-                    value: state.selectedAnalysisDetails!.writtenReport??"لم يتم ادخال بيانات",
+                    value: state.selectedAnalysisDetails!.writtenReport ??
+                        "لم يتم ادخال بيانات",
                     title: "توصيف التقرير الطبي",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "نوعية الاحتياج",
-                    value: state.selectedAnalysisDetails!.testNeedType ??"لم يتم ادخال بيانات",
+                    value: state.selectedAnalysisDetails!.testNeedType ??
+                        "لم يتم ادخال بيانات",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),

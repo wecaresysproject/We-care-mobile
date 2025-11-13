@@ -104,12 +104,17 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   }
 
   void updateTestTableRowsData(List<TableRowReponseModel> tableRows) {
-    for (var element in tableRows) {
-      log("xxx: sent table rows : ${element.testName} ${element.testWrittenPercent}");
-    }
+    // فلترة العناصر اللي فيها بيانات كاملة فقط
+    final validRows = tableRows.where((row) {
+      final validRow =
+          (row.testWrittenPercent != null || row.selectedChoice != null);
+      return validRow;
+    }).toList();
+
+    // إرسال فقط العناصر الصالحة
     safeEmit(
       state.copyWith(
-        enteredTableRows: tableRows,
+        enteredTableRows: validRows,
       ),
     );
   }

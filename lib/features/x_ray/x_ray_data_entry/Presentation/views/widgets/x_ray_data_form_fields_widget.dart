@@ -121,22 +121,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             // //! الأعراض المستدعية للاجراء"
 
-            // UserSelectionContainer(
-            //   allowManualEntry: true,
-            //   options: [
-            //     "فحص الدم",
-            //     "فحص البول",
-            //     "فحص القلب",
-            //     "أشعة سينية",
-            //   ],
-            //   categoryLabel: "الأعراض المستدعية للاجراء",
-            //   bottomSheetTitle: "اختر الأعراض المستدعية",
-            //   onOptionSelected: (value) {
-            //     log("xxx:Selected: $value");
-            //   },
-            //   containerHintText: "اختر الأعراض المستدعية",
-            //   searchHintText: "ابحث عن الأعراض المستدعية",
-            // ),
             SymptomsRequiringInterventionSelector(),
 
             verticalSpacing(16),
@@ -160,13 +144,23 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
 
             verticalSpacing(16),
             UserSelectionContainer(
+              initialValue: state.selectedRadiologyCenter?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedRadiologyCenter,
               isDisabled: state.selectedHospitalName.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "مركز الأشعة",
               containerHintText: state.selectedHospitalName.isNotEmptyOrNull
                   ? "المستشفى محددة، لا يمكن اختيار مركز"
-                  : (state.selectedRadiologyCenter ?? "اختر اسم المركز"),
+                  : (state.selectedRadiologyCenter.isEmptyOrNull
+                      ? "اختر اسم المركز"
+                      : state.selectedRadiologyCenter!),
               options: state.radilogyCenters,
+              onDismiss: () {
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedRadiologyCenter("");
+              },
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
                 context
@@ -182,12 +176,22 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ///المستشفى
             //   //! write by ur hand
             UserSelectionContainer(
+              initialValue: state.selectedHospitalName?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedHospitalName,
               isDisabled: state.selectedRadiologyCenter.isNotEmptyOrNull,
               allowManualEntry: true,
+              onDismiss: () {
+                context
+                    .read<XRayDataEntryCubit>()
+                    .updateSelectedHospitalName("");
+              },
               categoryLabel: "المستشفى",
               containerHintText: state.selectedRadiologyCenter.isNotEmptyOrNull
                   ? "المركز محدد، لا يمكن اختيار المستشفى"
-                  : (state.selectedHospitalName ?? "اختر اسم المستشفى"),
+                  : (state.selectedHospitalName.isEmptyOrNull
+                      ? "اختر اسم المستشفى"
+                      : state.selectedHospitalName!),
               options: state.hospitalNames,
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
