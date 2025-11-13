@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/data/models/user_essential_info_request_body_model.dart';
 import 'package:we_care/features/essential_info/data/repos/essential_info_data_entry_repo.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -17,7 +18,7 @@ part 'essential_data_entry_state.dart';
 class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final AppSharedRepo _sharedRepo;
   final EssentialInfoDataEntryRepo essentialInfoDataEntryRepo;
-  
+
   EssentialDataEntryCubit(
     this._sharedRepo,
     this.essentialInfoDataEntryRepo,
@@ -29,7 +30,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController exactLocation = TextEditingController(); // منطقت
   final TextEditingController userAddress =
-      TextEditingController(); 
+      TextEditingController(); // الحي او الشياخة
 
   final TextEditingController disabilityTypeDetailsController =
       TextEditingController();
@@ -52,7 +53,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController anotherEmergencyPhoneController =
       TextEditingController();
 
-  final TextEditingController insuranceCompanyController = TextEditingController();
+  final TextEditingController insuranceCompanyController =
+      TextEditingController();
 
   final List<String> bloodTypes = [
     'A',
@@ -60,9 +62,125 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'O',
     'AB',
   ];
-  Future<void> uploadImage(
-      {required String imagePath, required bool
-          isProfileImage}) async {
+
+  Future<void> submitEditsOnUserEssentialInfo(S localization) async {
+    emit(state.copyWith(submissionStatus: RequestStatus.loading));
+
+    try {
+      final updatedModel = UserEssentialInfoRequestBodyModel(
+        familyDoctorPhoneNumber: familyDoctorPhoneNumberController.text.trim(),
+        fullName: fullNameController.text.trim(),
+        dateOfBirth: state.birthDate!,
+        nationalID: nationalIdController.text.trim(),
+        email: emailController.text.trim(),
+        personalPhotoUrl: state.userPersonalImage!,
+        country: state.selectedNationality!,
+        city: state.selectedCity!,
+        areaOrDistrict: exactLocation.text.trim(), //!check it later
+        bloodType: state.selectedBloodType!,
+        insuranceDetails: InsuranceDetails(
+          insuranceStatus: state.hasMedicalInsurance!,
+          insuranceCompany: insuranceCompanyController.text,
+          insuranceCoverageExpiryDate: state.insuranceEndDate!,
+          insuranceCardPhotoUrl: state.insuranceCardPhotoUrl,
+          additionalInsuranceTerms:
+              additionalInsuranceConditionsController.text.trim(),
+        ),
+        disabilityLevel: state.disabilityLevel!,
+        disabilityType: disabilityTypeDetailsController.text.trim(),
+        socialStatus: state.socialStatus!,
+        numberOfChildren: int.parse(numberOfChildrenController.text.isEmpty
+            ? '0'
+            : numberOfChildrenController.text),
+        familyDoctorName: familyDoctorNameController.text.trim(),
+        workHours: noOfWoringHours.text.trim(),
+        emergencyContact1: mainEmergencyPhoneController.text.trim(),
+        emergencyContact2: anotherEmergencyPhoneController.text.trim(),
+      );
+
+      final response = await essentialInfoDataEntryRepo.updateUserEssentialInfo(
+        updatedModel,
+        AppStrings.arabicLang,
+      );
+
+      response.when(
+        success: (message) {
+          emit(
+            state.copyWith(
+              message: message,
+              submissionStatus: RequestStatus.success,
+            ),
+          );
+        },
+        failure: (error) {
+          emit(
+            state.copyWith(
+              message: error.errors.first,
+              submissionStatus: RequestStatus.failure,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          message: e.toString(),
+          submissionStatus: RequestStatus.failure,
+        ),
+      );
+    }
+  }
+
+  Future<void> loadUserPersonalDetailsDataForEditing(
+      UserEssentialInfoData editingModel) async {
+    emit(
+      state.copyWith(
+        birthDate: editingModel.dateOfBirth,
+        selectedNationality: editingModel.country,
+        selectedCity: editingModel.city,
+        userPersonalImage: editingModel.personalPhotoUrl, //! check it later
+        selectedBloodType: editingModel.bloodType,
+        selectedDisabilityType: editingModel.disabilityType,
+        disabilityLevel:
+            editingModel.disabilityDetails, //!TODO: check this later
+        socialStatus: editingModel.socialStatus,
+        hasMedicalInsurance:
+            true, //! TODO: check this later , need to change it
+        insuranceEndDate: editingModel.insuranceCoverageExpiryDate ?? '',
+        insuranceCardPhotoUrl: editingModel.insuranceCardPhotoUrl,
+        isEditMode: true,
+      ),
+    );
+    fullNameController.text = editingModel.fullName!;
+    nationalIdController.text = editingModel.nationalID!;
+    emailController.text = editingModel.email!;
+    exactLocation.text = editingModel.areaOrDistrict!;
+    userAddress.text =
+        editingModel.areaOrDistrict!; //! الحي او الشياخة من العرض الاول
+
+    insuranceCompanyController.text = editingModel.insuranceCompany ?? '';
+    additionalInsuranceConditionsController.text =
+        editingModel.additionalTerms ?? '';
+
+    disabilityTypeDetailsController.text = "مش موجود في العرض";
+    noOfWoringHours.text = editingModel.workHours!;
+
+    familyDoctorNameController.text = editingModel.familyDoctorName!;
+    familyDoctorPhoneNumberController.text =
+        editingModel.familyDoctorPhoneNumber!;
+    numberOfChildrenController.text = editingModel.numberOfChildren.toString();
+
+    mainEmergencyPhoneController.text = editingModel.emergencyContact1!;
+    anotherEmergencyPhoneController.text = editingModel.emergencyContact2!;
+    validateRequiredFields();
+    await initialRequests();
+  }
+
+  initialRequests() async {
+    await emitCountriesData();
+  }
+
+  Future<void> uploadProfileImage({required String imagePath}) async {
     emit(
       state.copyWith(
         uploadImageRequestStatus: UploadImageRequestStatus.initial,
@@ -78,8 +196,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         emit(
           state.copyWith(
             message: response.message,
-            pictureUploadedUrl:isProfileImage ? response.imageUrl : null,
-            insuranceCardPhotoUrl: !isProfileImage ? response.imageUrl : null,
+            userPersonalImage: response.imageUrl,
             uploadImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
@@ -94,11 +211,48 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       },
     );
   }
+
+  Future<void> uploadInsuranceCardImage({required String imagePath}) async {
+    emit(
+      state.copyWith(
+        uploadImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _sharedRepo.uploadImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            message: response.message,
+            insuranceCardPhotoUrl: response.imageUrl,
+            uploadImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> postUserBasicData(S localization) async {
     emit(state.copyWith(submissionStatus: RequestStatus.loading));
 
     try {
       final model = UserEssentialInfoRequestBodyModel(
+        familyDoctorPhoneNumber:
+            familyDoctorPhoneNumberController.text.trim().isNotEmpty
+                ? familyDoctorPhoneNumberController.text.trim()
+                : localization.no_data_entered,
         fullName: fullNameController.text.trim().isNotEmpty
             ? fullNameController.text.trim()
             : localization.no_data_entered,
@@ -110,11 +264,11 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
             ? emailController.text.trim()
             : localization.no_data_entered,
         personalPhotoUrl:
-            state.profilePictureUploadedUrl ?? localization.no_data_entered,
+            state.userPersonalImage ?? localization.no_data_entered,
         country: state.selectedNationality ?? localization.no_data_entered,
         city: state.selectedCity ?? localization.no_data_entered,
-        areaOrDistrict: userAddress.text.trim().isNotEmpty
-            ? userAddress.text.trim()
+        areaOrDistrict: exactLocation.text.trim().isNotEmpty
+            ? exactLocation.text.trim()
             : localization.no_data_entered,
         bloodType: state.selectedBloodType ?? localization.no_data_entered,
         insuranceDetails: InsuranceDetails(
@@ -124,7 +278,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           insuranceCoverageExpiryDate:
               state.insuranceEndDate ?? localization.no_data_entered,
           insuranceCardPhotoUrl:
-              insuranceCompanyController.text ,
+              state.insuranceCardPhotoUrl ?? localization.no_data_entered,
           additionalInsuranceTerms:
               additionalInsuranceConditionsController.text.trim().isNotEmpty
                   ? additionalInsuranceConditionsController.text.trim()
@@ -134,7 +288,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         disabilityType: (disabilityTypeDetailsController.text.trim().isNotEmpty
             ? disabilityTypeDetailsController.text.trim()
             : localization.no_data_entered),
-        socialStatus: state.socialStatus,
+        socialStatus: state.socialStatus ?? localization.no_data_entered,
         numberOfChildren: int.tryParse(numberOfChildrenController.text) ?? 0,
         familyDoctorName: familyDoctorNameController.text.trim().isNotEmpty
             ? familyDoctorNameController.text.trim()
@@ -259,18 +413,20 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       emit(state.copyWith(insuranceCompany: val));
 
   // Yes/No updates
-  void updateHasMedicalInsurance(bool? val) {
-    emit(state.copyWith(hasMedicalInsurance: val));
-    if (val == false) {
-      // Clear insurance-specific fields
-      emit(
-        state.copyWith(
-          insuranceCompany: null,
-          insuranceEndDate: null,
-          insuranceAdditionalConditions: null,
-          insuranceCardImagePath: null,
-        ),
-      );
+  void updateHasMedicalInsurance(bool? val, S locale) {
+    {
+      emit(state.copyWith(hasMedicalInsurance: val));
+      if (val == false) {
+        // Clear insurance-specific fields
+        emit(
+          state.copyWith(
+            insuranceCompany: null,
+            insuranceEndDate: null,
+            insuranceAdditionalConditions: null,
+            insuranceCardImagePath: null,
+          ),
+        );
+      }
     }
   }
 
@@ -280,63 +436,6 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     emit(state.copyWith(isFormValidated: isValid));
   }
-
-  // Called by UI when fields change (you can call selectively too)
-  void onAnyFieldChanged() {
-    validateRequiredFields();
-  }
-
-  // Dummy submit (simulate network) — will set loading -> success (or failure)
-  // Future<void> submitEssentialData() async {
-  //   // Before submit validate one more time
-  //   validateRequiredFields();
-  //   if (!state.isFormValidated) {
-  //     emit(state.copyWith(
-  //         submissionStatus: RequestStatus.failure,
-  //         message: 'برجاء إكمال الحقول المطلوبة'));
-  //     return;
-  //   }
-
-  //   emit(state.copyWith(submissionStatus: RequestStatus.loading));
-
-  //   try {
-  //     // simulate network delay
-  //     await Future.delayed(const Duration(seconds: 1, milliseconds: 200));
-
-  //     // assemble payload (for debugging / future integration)
-  //     final payload = {
-  //       'fullName': fullNameController.text.trim(),
-  //       'birthDate': state.birthDate,
-  //       'gender': state.selectedGender,
-  //       'nationalId': nationalIdController.text.trim(),
-  //       'nationality': state.selectedNationality,
-  //       'maritalStatus': state.selectedMaritalStatus,
-  //       'email': emailController.text.trim(),
-  //       'hasInsurance': state.hasMedicalInsurance,
-  //       'hasDisability': state.hasDisability,
-  //       'disabilityType': state.selectedDisabilityType,
-  //       'disabilityDetails': disabilityTypeDetailsController.text.trim(),
-  //     };
-
-  //     // For now: print payload and emit success
-  //     // ignore: avoid_print
-  //     print('EssentialData payload: $payload');
-
-  //     emit(state.copyWith(
-  //       submissionStatus: RequestStatus.success,
-  //       message: 'تم حفظ البيانات بنجاح',
-  //     ));
-  //   } catch (e) {
-  //     emit(state.copyWith(
-  //       submissionStatus: RequestStatus.failure,
-  //       message: e.toString(),
-  //     ));
-  //   } finally {
-  //     // reset loading after short delay so UI can show status
-  //     await Future.delayed(const Duration(milliseconds: 300));
-  //     emit(state.copyWith(submissionStatus: RequestStatus.success));
-  //   }
-  // }
 
   @override
   Future<void> close() async {
@@ -358,11 +457,4 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     return super.close();
   }
-
-
-  void updatePictureUploaded(bool? isImagePicked) {
-    emit(state.copyWith(isPictureSelected: isImagePicked));
-    validateRequiredFields();
-  }
-
 }

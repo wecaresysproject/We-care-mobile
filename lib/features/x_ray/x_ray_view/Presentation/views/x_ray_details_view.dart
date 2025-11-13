@@ -50,7 +50,7 @@ class XRayDetailsView extends StatelessWidget {
                 spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
-                    title: 'الاشعة',
+                    title: 'الأشعة',
                     deleteFunction: () async {
                       await BlocProvider.of<XRayViewCubit>(context)
                           .deleteMedicineById(documentId);
@@ -71,18 +71,18 @@ class XRayDetailsView extends StatelessWidget {
                       await shareXRayDetails(context, state);
                     },
                   ),
-                  Row(children: [
-                    DetailsViewInfoTile(
-                        title: "التاريخ",
-                        value: radiologyData!.radiologyDate,
-                        icon: 'assets/images/date_icon.png'),
-                    Spacer(),
-                    DetailsViewInfoTile(
-                      title: "المنطقة",
-                      value: radiologyData.bodyPart,
-                      icon: 'assets/images/body_icon.png',
-                    ),
-                  ]),
+                  DetailsViewInfoTile(
+                    title: "التاريخ",
+                    value: radiologyData!.radiologyDate,
+                    icon: 'assets/images/date_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: "المنطقة",
+                    value: radiologyData.bodyPart,
+                    icon: 'assets/images/body_icon.png',
+                    isExpanded: true,
+                  ),
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "النوع",

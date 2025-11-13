@@ -22,6 +22,7 @@ class UserEssentialInfoRequestBodyModel {
   final String workHours;
   final String emergencyContact1;
   final String emergencyContact2;
+  final String familyDoctorPhoneNumber;
 
   UserEssentialInfoRequestBodyModel({
     required this.fullName,
@@ -42,6 +43,7 @@ class UserEssentialInfoRequestBodyModel {
     required this.workHours,
     required this.emergencyContact1,
     required this.emergencyContact2,
+    required this.familyDoctorPhoneNumber,
   });
 
   factory UserEssentialInfoRequestBodyModel.fromJson(

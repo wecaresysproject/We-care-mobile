@@ -16,6 +16,7 @@ class XRayDataEntryState extends Equatable {
   final List<String> hospitalNames;
   final List<String> radilogyCenters;
   final List<String> doctorNames;
+  final List<String> radiologyDoctors;
   final String message; // error or success message
   final bool isFormValidated;
   final String? xRayDateSelection;
@@ -24,7 +25,7 @@ class XRayDataEntryState extends Equatable {
   final String? selectedCountryName;
   final String? selectedTreatedDoctor;
   final String? selectedRadiologistDoctorName;
-
+  final String? symptomsRequiringIntervention; // الاعراض المستدعية للاعراض
   final UploadImageRequestStatus xRayImageRequestStatus;
   final UploadReportRequestStatus xRayReportRequestStatus;
   final RadiologyData? xRayEditedModel;
@@ -60,6 +61,8 @@ class XRayDataEntryState extends Equatable {
     this.selectedHospitalName,
     this.uploadedTestImages = const [],
     this.uploadedTestReports = const [],
+    this.radiologyDoctors = const [],
+    this.symptomsRequiringIntervention,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -85,6 +88,8 @@ class XRayDataEntryState extends Equatable {
           selectedHospitalName: null,
           uploadedTestImages: const [],
           uploadedTestReports: const [],
+          radiologyDoctors: const [],
+          symptomsRequiringIntervention: null,
         );
 
   XRayDataEntryState copyWith({
@@ -115,6 +120,8 @@ class XRayDataEntryState extends Equatable {
     String? selectedHospitalName,
     List<String>? uploadedTestImages,
     List<String>? uploadedTestReports,
+    List<String>? radiologyDoctors,
+    String? symptomsRequiringIntervention,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -155,6 +162,9 @@ class XRayDataEntryState extends Equatable {
       selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
       uploadedTestImages: uploadedTestImages ?? this.uploadedTestImages,
       uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
+      radiologyDoctors: radiologyDoctors ?? this.radiologyDoctors,
+      symptomsRequiringIntervention:
+          symptomsRequiringIntervention ?? this.symptomsRequiringIntervention,
     );
   }
 
@@ -187,5 +197,7 @@ class XRayDataEntryState extends Equatable {
         selectedHospitalName,
         uploadedTestImages,
         uploadedTestReports,
+        radiologyDoctors,
+        symptomsRequiringIntervention,
       ];
 }

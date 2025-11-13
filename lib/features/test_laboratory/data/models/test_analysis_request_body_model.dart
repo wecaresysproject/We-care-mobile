@@ -9,23 +9,26 @@ class TestAnalysisDataEnteryRequestBodyModel {
     required this.testDate,
     required this.testTableEnteredResults,
     required this.timesTestPerformed,
-    required this.symptomsForProcedure,
+    required this.symptomsRequiringIntervention,
     required this.testImages,
     required this.reportImages,
     required this.hospital,
     required this.doctor,
     required this.country,
+    required this.writtenReport,
   });
   final String testDate;
   @JsonKey(name: "result")
   final List<TableRowReponseModel> testTableEnteredResults;
   @JsonKey(name: "testNeedType")
   final String timesTestPerformed;
-  final String symptomsForProcedure;
+  @JsonKey(name: "symptomsForProcedure")
+  final String symptomsRequiringIntervention;
   @JsonKey(name: "imageBase64")
   final List<String> testImages;
   @JsonKey(name: "reportBase64")
   final List<String> reportImages;
+  final String writtenReport;
   final String hospital;
   final String doctor;
   final String country;
@@ -39,7 +42,7 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
   EditTestAnalysisDataEnteryRequestBodyModel({
     required this.testDate,
     required this.timesTestPerformed,
-    required this.symptomsForProcedure,
+    required this.symptomsRequiringIntervention,
     required this.testImages,
     required this.reportImages,
     required this.hospital,
@@ -49,7 +52,8 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
   final String testDate;
   @JsonKey(name: "testNeedType")
   final String timesTestPerformed;
-  final String symptomsForProcedure;
+  @JsonKey(name: "symptomsForProcedure")
+  final String symptomsRequiringIntervention;
   @JsonKey(name: "imageBase64")
   final List<String> testImages;
   @JsonKey(name: "reportBase64")

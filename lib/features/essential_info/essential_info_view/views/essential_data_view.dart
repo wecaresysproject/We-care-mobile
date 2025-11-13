@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
 
@@ -52,16 +53,26 @@ class EssentialDataView extends StatelessWidget {
                   // App bar
                   AppBarWithCenteredTitle(
                     title: 'البيانات الأساسية',
-                    editFunction: () {},
+                    editFunction: () async {
+                      await context.pushNamed(
+                        Routes.essentialInfoDataEntry,
+                        arguments: state.userEssentialInfo,
+                      );
+                      if (context.mounted) {
+                        await context
+                            .read<EssentialInfoViewCubit>()
+                            .getUserEssentialInfo();
+                      }
+                    },
                     shareFunction: () async {
                       await context
                           .read<EssentialInfoViewCubit>()
                           .shareEssentialInfoDetails();
                     },
                     deleteFunction: () {
-                    context
-                        .read<EssentialInfoViewCubit>()
-                        .deleteEssentialInfo();
+                      context
+                          .read<EssentialInfoViewCubit>()
+                          .deleteEssentialInfo();
                     },
                   ),
 

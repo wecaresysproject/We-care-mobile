@@ -20,6 +20,7 @@ import 'package:we_care/features/emergency_complaints/data/models/get_single_com
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_view.dart';
+import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/essential_info_data_entry_view.dart';
 import 'package:we_care/features/essential_info/essential_info_view/views/essential_data_view.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
@@ -620,8 +621,12 @@ class AppRouter {
           builder: (_) => const EssentialDataView(),
         );
       case Routes.essentialInfoDataEntry:
+        final argumentsMap = arguments as UserEssentialInfoData?;
+
         return MaterialPageRoute(
-          builder: (_) => const EssentialDataEntryView(),
+          builder: (_) => EssentialDataEntryView(
+            editingModel: argumentsMap,
+          ),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

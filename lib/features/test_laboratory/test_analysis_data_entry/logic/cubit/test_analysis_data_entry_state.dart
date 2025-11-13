@@ -16,9 +16,10 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedCountryName;
   final String? selectedHospitalName;
   final String? selectedDoctorName;
-  final String? selectedSymptomsForProcedure;
   final String? selectedNoOftimesTestPerformed;
   final String? selectedLabCenter;
+  final String? symptomsRequiringIntervention; // الاعراض المستدعية للاعراض
+
   final bool isEditMode;
   final String updatedTestId;
 
@@ -47,7 +48,6 @@ class TestAnalysisDataEntryState extends Equatable {
     this.selectedCountryName,
     this.selectedHospitalName,
     this.selectedDoctorName,
-    this.selectedSymptomsForProcedure,
     this.selectedNoOftimesTestPerformed,
     this.isTestCodeSelected,
     this.message = '',
@@ -66,6 +66,7 @@ class TestAnalysisDataEntryState extends Equatable {
     this.labCenters = const [],
     this.hospitalNames = const [],
     this.selectedLabCenter,
+    this.symptomsRequiringIntervention,
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -78,7 +79,6 @@ class TestAnalysisDataEntryState extends Equatable {
           selectedCountryName: null,
           selectedHospitalName: null,
           selectedDoctorName: null,
-          selectedSymptomsForProcedure: null,
           selectedNoOftimesTestPerformed: null,
           message: '',
           testImageRequestStatus: UploadImageRequestStatus.initial,
@@ -98,6 +98,7 @@ class TestAnalysisDataEntryState extends Equatable {
           labCenters: const [],
           hospitalNames: const [],
           selectedLabCenter: null,
+          symptomsRequiringIntervention: null,
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -120,7 +121,6 @@ class TestAnalysisDataEntryState extends Equatable {
     List<TableRowReponseModel>? enteredTableRows,
     String? selectedHospitalName,
     String? selectedDoctorName,
-    String? selectedSymptomsForProcedure,
     String? selectedNoOftimesTestPerformed,
     bool? isEditMode,
     String? updatedTestId,
@@ -130,6 +130,7 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? labCenters,
     List<String>? hospitalNames,
     String? selectedLabCenter,
+    String? symptomsRequiringIntervention,
   }) {
     return TestAnalysisDataEntryState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -156,8 +157,6 @@ class TestAnalysisDataEntryState extends Equatable {
       enteredTableRows: enteredTableRows ?? this.enteredTableRows,
       selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
-      selectedSymptomsForProcedure:
-          selectedSymptomsForProcedure ?? this.selectedSymptomsForProcedure,
       selectedNoOftimesTestPerformed:
           selectedNoOftimesTestPerformed ?? this.selectedNoOftimesTestPerformed,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -168,6 +167,8 @@ class TestAnalysisDataEntryState extends Equatable {
       labCenters: labCenters ?? this.labCenters,
       hospitalNames: hospitalNames ?? this.hospitalNames,
       selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
+      symptomsRequiringIntervention:
+          symptomsRequiringIntervention ?? this.symptomsRequiringIntervention,
     );
   }
 
@@ -192,7 +193,6 @@ class TestAnalysisDataEntryState extends Equatable {
         enteredTableRows,
         selectedHospitalName,
         selectedDoctorName,
-        selectedSymptomsForProcedure,
         selectedNoOftimesTestPerformed,
         isEditMode,
         updatedTestId,
@@ -202,5 +202,6 @@ class TestAnalysisDataEntryState extends Equatable {
         labCenters,
         hospitalNames,
         selectedLabCenter,
+        symptomsRequiringIntervention,
       ];
 }

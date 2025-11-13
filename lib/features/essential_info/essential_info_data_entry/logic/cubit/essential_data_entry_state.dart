@@ -23,7 +23,6 @@ class EssentialDataEntryState extends Equatable {
 
   // yes/no
   final bool? hasMedicalInsurance;
-  final bool? hasDisability;
 // Medical insurance section
   final String? insuranceCompany;
   final String? insuranceEndDate;
@@ -51,7 +50,6 @@ class EssentialDataEntryState extends Equatable {
     required this.selectedBloodType,
     required this.selectedDisabilityType,
     required this.hasMedicalInsurance,
-    required this.hasDisability,
     required this.isFormValidated,
     required this.submissionStatus,
     required this.message,
@@ -86,7 +84,6 @@ class EssentialDataEntryState extends Equatable {
       selectedBloodType: null,
       selectedDisabilityType: null,
       hasMedicalInsurance: null,
-      hasDisability: null,
       isFormValidated: false,
       submissionStatus: RequestStatus.initial,
       message: null,
@@ -122,7 +119,6 @@ class EssentialDataEntryState extends Equatable {
     String? selectedBloodType,
     String? selectedDisabilityType,
     bool? hasMedicalInsurance,
-    bool? hasDisability,
     bool? isFormValidated,
     RequestStatus? submissionStatus,
     String? message,
@@ -132,15 +128,14 @@ class EssentialDataEntryState extends Equatable {
     String? insuranceCardImagePath,
     String? weeklyWorkingHours,
     String? socialStatus,
-    bool isEditMode = false,
+    bool? isEditMode,
     List<String>? countriesNames,
     List<String>? citiesNames,
     List<String>? areasNames,
     List<String>? neighborhoodsNames,
     String? userPersonalImage,
     String? disabilityLevel,
-     UploadImageRequestStatus? uploadImageRequestStatus,
-      String? pictureUploadedUrl,
+    UploadImageRequestStatus? uploadImageRequestStatus,
     bool? isPictureSelected,
     String? insuranceCardPhotoUrl,
   }) {
@@ -156,7 +151,6 @@ class EssentialDataEntryState extends Equatable {
       selectedDisabilityType:
           selectedDisabilityType ?? this.selectedDisabilityType,
       hasMedicalInsurance: hasMedicalInsurance ?? this.hasMedicalInsurance,
-      hasDisability: hasDisability ?? this.hasDisability,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       message: message ?? this.message,
@@ -169,7 +163,7 @@ class EssentialDataEntryState extends Equatable {
           insuranceCardImagePath ?? this.insuranceCardImagePath,
       weeklyWorkingHours: weeklyWorkingHours ?? this.weeklyWorkingHours,
       socialStatus: socialStatus ?? this.socialStatus,
-      isEditMode: isEditMode,
+      isEditMode: isEditMode ?? this.isEditMode,
       countriesNames: countriesNames ?? this.countriesNames,
       citiesNames: citiesNames ?? this.citiesNames,
       areasNames: areasNames ?? this.areasNames,
@@ -178,9 +172,9 @@ class EssentialDataEntryState extends Equatable {
       disabilityLevel: disabilityLevel ?? this.disabilityLevel,
       uploadImageRequestStatus:
           uploadImageRequestStatus ?? this.uploadImageRequestStatus,
-      profilePictureUploadedUrl: pictureUploadedUrl ?? this.profilePictureUploadedUrl,
       isPictureSelected: isPictureSelected ?? this.isPictureSelected,
-      insuranceCardPhotoUrl: insuranceCardPhotoUrl ?? this.insuranceCardPhotoUrl,
+      insuranceCardPhotoUrl:
+          insuranceCardPhotoUrl ?? this.insuranceCardPhotoUrl,
     );
   }
 
@@ -195,7 +189,6 @@ class EssentialDataEntryState extends Equatable {
         selectedBloodType,
         selectedDisabilityType,
         hasMedicalInsurance,
-        hasDisability,
         isFormValidated,
         submissionStatus,
         message,

@@ -4,17 +4,28 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/essential_info_data_entry_form_feild.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/logic/cubit/essential_data_entry_cubit.dart';
 
 class EssentialDataEntryView extends StatelessWidget {
   const EssentialDataEntryView({
     super.key,
+    this.editingModel,
   });
+  final UserEssentialInfoData? editingModel;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<EssentialDataEntryCubit>(
-      create: (context) => getIt<EssentialDataEntryCubit>()..emitCountriesData(),
+      create: (context) {
+        final cubit = getIt<EssentialDataEntryCubit>();
+        if (editingModel != null) {
+          return cubit..loadUserPersonalDetailsDataForEditing(editingModel!);
+        } else {
+          return cubit..initialRequests();
+        }
+      },
       child: Scaffold(
         appBar: AppBar(),
         body: SingleChildScrollView(

@@ -101,7 +101,7 @@ class AnalysisDetailsView extends StatelessWidget {
                     isShareEnabled: true,
                   ),
                   DetailsViewInfoTile(
-                    value: "still dummy",
+                    value: state.selectedAnalysisDetails!.writtenReport!,
                     title: "توصيف التقرير الطبي",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
@@ -114,7 +114,8 @@ class AnalysisDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "الأعراض المستدعية للإجراء",
-                    value: state.selectedAnalysisDetails!.symptomsForProcedure!,
+                    value: state.selectedAnalysisDetails!
+                        .symptomsRequiringIntervention!,
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),

@@ -49,7 +49,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                     }
                     return null;
                   },
-                  onChanged: (_) => cubit.onAnyFieldChanged(),
+                  onChanged: (_) => cubit.validateRequiredFields(),
                 ),
                 verticalSpacing(12),
                 Text(
@@ -61,7 +61,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   placeholderText: state.birthDate ?? 'يوم / شهر / سنة',
                   onDateSelected: (pickedDate) {
                     cubit.updateBirthDate(pickedDate);
-                    cubit.onAnyFieldChanged();
+                    // cubit.onAnyFieldChanged();
                   },
                 ),
                 verticalSpacing(16),
@@ -77,7 +77,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                     }
                     return null;
                   },
-                  onChanged: (_) => cubit.onAnyFieldChanged(),
+                  onChanged: (_) {},
                 ),
                 verticalSpacing(18),
                 Text('الايميل', style: AppTextStyles.font18blackWight500),
@@ -91,7 +91,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                     }
                     return null;
                   },
-                  onChanged: (_) => cubit.onAnyFieldChanged(),
+                  onChanged: (_) {},
                 ),
                 verticalSpacing(18),
                 Text(
@@ -112,9 +112,8 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                         if (isImagePicked && picker.isImagePickedAccepted) {
                           await context
                               .read<EssentialDataEntryCubit>()
-                              .uploadImage(
+                              .uploadProfileImage(
                                 imagePath: picker.pickedImage!.path,
-                                isProfileImage: true,
                               );
                         }
                       },
@@ -180,7 +179,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                 verticalSpacing(18),
                 MedicalInsuranceYesOrNoWidget(),
                 verticalSpacing(16),
-                DynamicQuestionWithDynamicAnswerListOption(
+                QuestionWithDynamicAnswerListOption(
                   options: [
                     'كلي',
                     'جزئي',
@@ -206,7 +205,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-                DynamicQuestionWithDynamicAnswerListOption(
+                QuestionWithDynamicAnswerListOption(
                   options: [
                     'متزوج',
                     'أعزب',
@@ -346,7 +345,7 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                 onAnswerChanged: (value) {
                   context
                       .read<EssentialDataEntryCubit>()
-                      .updateHasMedicalInsurance(value);
+                      .updateHasMedicalInsurance(value, context.translate);
                 },
               ),
               verticalSpacing(10),
@@ -431,9 +430,8 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                                       picker.isImagePickedAccepted) {
                                     await context
                                         .read<EssentialDataEntryCubit>()
-                                        .uploadImage(
+                                        .uploadInsuranceCardImage(
                                           imagePath: picker.pickedImage!.path,
-                                          isProfileImage: false,
                                         );
                                   }
                                 },
@@ -466,9 +464,9 @@ Widget submitDataButtonBlocConsumer() {
         await showSuccess(state.message!);
         if (!context.mounted) return;
         context.pop(
-            result:
-                true //! send true back to test analysis details view inn order to check if its updated , then reload the view
-            );
+          result:
+              true, //! send true back to test analysis details view inn order to check if its updated , then reload the view
+        );
       } else {
         await showError(state.message!);
       }
@@ -479,17 +477,20 @@ Widget submitDataButtonBlocConsumer() {
         title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
         onPressed: () async {
           if (state.isFormValidated) {
-            // state.isEditMode
-            //     ? await context
-            //         .read<EssentialDataEntryCubit>()
-            //         .ع()
-            // :
-            await context.read<EssentialDataEntryCubit>().postUserBasicData(
-                  context.translate,
-                );
+            state.isEditMode
+                ? await context
+                    .read<EssentialDataEntryCubit>()
+                    .submitEditsOnUserEssentialInfo(
+                      context.translate,
+                    )
+                : await context
+                    .read<EssentialDataEntryCubit>()
+                    .postUserBasicData(
+                      context.translate,
+                    );
           }
         },
-        isEnabled: state.isFormValidated ? true : false,
+        isEnabled: state.isFormValidated || state.isEditMode ? true : false,
       );
     },
   );

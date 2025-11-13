@@ -14,7 +14,8 @@ class GetUserEssentialInfoResponseModel {
     this.data,
   });
 
-  factory GetUserEssentialInfoResponseModel.fromJson(Map<String, dynamic> json) =>
+  factory GetUserEssentialInfoResponseModel.fromJson(
+          Map<String, dynamic> json) =>
       _$GetUserEssentialInfoResponseModelFromJson(json);
 
   Map<String, dynamic> toJson() =>
