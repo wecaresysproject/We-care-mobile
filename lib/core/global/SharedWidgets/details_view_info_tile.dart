@@ -25,32 +25,38 @@ class DetailsViewInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-          icon != null?  Image.asset(icon!, height: 14.h, width: 14.w):SizedBox.shrink(),
-            horizontalSpacing(2),
-            Text(
-              title,
-              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.mainDarkBlue, fontSize: isSmallContainers? 14.sp: 16.5.sp),
-            ),
-          ],
-        ),
-        verticalSpacing(8),
-        SizedBox(
-          width: isExpanded
-              ? MediaQuery.of(context).size.width - 32.w
-              : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
-          child: CustomContainer(
-            value: value,
-            isExpanded: isExpanded,
-            isSmallContainers: isSmallContainers,
+    if(value.isEmpty||value=="لم يتم ادخال بيانات"||value=="") {
+      return SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+            icon != null?  Image.asset(icon!, height: 14.h, width: 14.w):SizedBox.shrink(),
+              horizontalSpacing(2),
+              Text(
+                title,
+                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    color: AppColorsManager.mainDarkBlue, fontSize: isSmallContainers? 14.sp: 16.5.sp),
+              ),
+            ],
           ),
-        ),
-      ],
+          verticalSpacing(8),
+          SizedBox(
+            width: isExpanded
+                ? MediaQuery.of(context).size.width - 32.w
+                : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
+            child: CustomContainer(
+              value: value,
+              isExpanded: isExpanded,
+              isSmallContainers: isSmallContainers,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

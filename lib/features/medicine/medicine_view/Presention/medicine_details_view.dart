@@ -16,6 +16,8 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_view/
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 
+import '../../../../core/global/Helpers/share_details_helper.dart';
+
 class MedicineDetailsView extends StatelessWidget {
   const MedicineDetailsView({
     super.key,
@@ -60,7 +62,6 @@ class MedicineDetailsView extends StatelessWidget {
               return SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 16.h, left: 16.w, right: 16.w),
                 child: Column(
-                  spacing: 16.h,
                   children: [
                     AppBarWithCenteredTitle(
                       isMedicineModule: true,
@@ -78,7 +79,7 @@ class MedicineDetailsView extends StatelessWidget {
                         );
                       },
                       shareFunction: () {
-                        _shareDetails(context);
+                        _shareMedicineDetails(context);
                       },
                       editFunction: () async {
                         final result = await context.pushNamed(
@@ -100,8 +101,7 @@ class MedicineDetailsView extends StatelessWidget {
                       icon: 'assets/images/doctor_name.png',
                     ),
 
-                    Row(
-                      children: [
+                    Row(children: [
                       DetailsViewInfoTile(
                         title: "الشكل الدوائي",
                         value: " اقراص",
@@ -195,8 +195,12 @@ class MedicineDetailsView extends StatelessWidget {
                                     : 'غير مفعل',
                             icon: 'assets/images/date_icon.png'),
                         Spacer(),
-                        CustomContainer(
-                            value: state.selectestMedicineDetails!.reminder),
+                        state.selectestMedicineDetails!.reminder ==
+                                "لم يتم ادخال بيانات"
+                            ? SizedBox()
+                            : CustomContainer(
+                                value:
+                                    state.selectestMedicineDetails!.reminder),
                       ],
                     ),
                   ],
@@ -270,32 +274,49 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
   }
 }
 
-void _shareDetails(BuildContext context) {
+Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =
       context.read<MedicineViewCubit>().state.selectestMedicineDetails;
   if (medicine == null) return;
 
-  final shareContent = '''
-🩺 *تفاصيل الدواء*
+  // 🧠 نحول القيم البوليان إلى نص عربي
+  String boolToText(bool? value) => value == true ? 'نعم' : 'لا';
 
-💊 اسم الدواء: ${medicine.medicineName}
-🧪 الشكل الدوائي: أقراص
-📏 الجرعة: ${medicine.dosage}
-🔁 عدد مرات الجرعة: ${medicine.dosageFrequency}
-⏳ المدد الزمنية: ${medicine.timeDuration}
-🔄 مستمر/متوقف: ${medicine.chronicDiseaseMedicine == 'نعم' ? 'مستمر' : 'متوقف'}
-📅 تاريخ بدء الدواء: ${medicine.startDate}
-🧬 دواء مرض مزمن: ${medicine.chronicDiseaseMedicine}
-👨‍⚕️ اسم الطبيب: ${medicine.doctorName}
+  // 🧾 تفاصيل الدواء الأساسية
+  final detailsMap = {
+    '💊 *اسم الدواء*:': medicine.medicineName,
+    '🧪 *الشكل الدوائي*:': 'أقراص',
+    '📏 *الجرعة*:': medicine.dosage,
+    '🔁 *عدد مرات الجرعة*:': medicine.dosageFrequency,
+    '⏳ *المدد الزمنية*:': medicine.timeDuration,
+    '🔄 *مستمر/متوقف*:':
+        (medicine.chronicDiseaseMedicine == 'نعم') ? 'مستمر' : 'متوقف',
+    '📅 *تاريخ بدء الدواء*:': medicine.startDate,
+    '🧬 *دواء مرض مزمن*:': medicine.chronicDiseaseMedicine,
+    '👨‍⚕️ *اسم الطبيب*:': medicine.doctorName,
+    '📝 *الملاحظات الشخصية*:':
+        (medicine.personalNotes?.isNotEmpty ?? false) ? medicine.personalNotes : 'لا توجد',
+    '⏰ *التنبيهات*:': boolToText(medicine.reminderStatus),
+    '🕒 *وقت التنبيه*:': medicine.reminder,
+  };
 
-🧠 *الأعراض المرضية:*
-${medicine.mainSymptoms.mapIndexed((i, s) => '- ${i == 0 ? '🌟 (رئيسي)' : '🔹'} منطقة: ${s.symptomsRegion}, الشكوى: ${s.sypmptomsComplaintIssue}, طبيعة الشكوى: ${s.natureOfComplaint}, الشدة: ${s.severityOfComplaint}').join('\n')}
+  // 🌟 الأعراض المرضية (قائمة فرعية)
+  final symptomsList = (medicine.mainSymptoms ?? []).map((s) {
+    final index = medicine.mainSymptoms.indexOf(s);
+    return {
+      '${index == 0 ? "🌟 (رئيسي)" : "🔹"} *منطقة:*': s.symptomsRegion,
+      '🩺 *الشكوى:*': s.sypmptomsComplaintIssue,
+      '⚙️ *طبيعة الشكوى:*': s.natureOfComplaint,
+      '📊 *الشدة:*': s.severityOfComplaint,
+    };
+  }).toList();
 
-📝 الملاحظات الشخصية: ${medicine.personalNotes.isNotEmpty == true ? medicine.personalNotes : "لا توجد"}
-
-⏰ التنبيهات: ${medicine.reminderStatus ? "مفعل ✅" : "غير مفعل ❌"}
-🕒 وقت التنبيه: ${medicine.reminder}
-''';
-
-  Share.share(shareContent, subject: '📄 تفاصيل دواء من تطبيق WeCare');
+  // 🚀 نستخدم الميثود الجينيريك
+  await shareDetails(
+    title: '🩺 *تفاصيل الدواء*',
+    details: detailsMap,
+    subLists: symptomsList,
+    subListTitle: '🧠 *الأعراض المرضية:*',
+    errorMessage: '❌ حدث خطأ أثناء مشاركة تفاصيل الدواء',
+  );
 }

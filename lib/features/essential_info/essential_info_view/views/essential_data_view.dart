@@ -48,7 +48,6 @@ class EssentialDataView extends StatelessWidget {
             body: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
               child: Column(
-                spacing: 16.h,
                 children: [
                   // App bar
                   AppBarWithCenteredTitle(

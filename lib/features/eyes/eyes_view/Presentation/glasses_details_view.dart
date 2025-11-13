@@ -47,7 +47,6 @@ class EyesGlassesDetailsView extends StatelessWidget {
             body: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'بيانات النظارات',

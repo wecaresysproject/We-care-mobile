@@ -33,6 +33,7 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                     height: 47,
                     width: 46,
                     borderRadius: 48,
+                    userImageUrl: state.userEssentialInfo?.personalPhotoUrl,
                   ),
                   Text(
                    firstTwoNames,

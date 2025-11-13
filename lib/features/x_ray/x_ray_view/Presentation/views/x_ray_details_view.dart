@@ -47,7 +47,6 @@ class XRayDetailsView extends StatelessWidget {
             body: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الأشعة',
@@ -91,11 +90,11 @@ class XRayDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "نوعية الاحتياج",
-                      value: radiologyData.periodicUsage ?? 'لم يتم ادخاله',
+                      value: radiologyData.periodicUsage ?? "",
                       icon: 'assets/images/need_icon.png'),
                   DetailsViewInfoTile(
                       title: "الأعراض",
-                      value: radiologyData.symptoms ?? 'لم يتم ادخاله',
+                      value: radiologyData.symptoms ?? "",
                       icon: 'assets/images/symptoms_icon.png',
                       isExpanded: true),
                   DetailsViewImagesWithTitleTile(
@@ -110,37 +109,37 @@ class XRayDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "التقرير الطبي",
-                    value: radiologyData.writtenReport ?? 'لم يتم ادخاله',
+                    value: radiologyData.writtenReport ?? "",
                     icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "الطبيب المعالج",
-                      value: radiologyData.doctor ?? 'لم يتم ادخاله',
+                      value: radiologyData.doctor ?? "",
                       icon: 'assets/images/doctor_icon.png'),
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "طبيب الأشعة",
-                      value: radiologyData.radiologyDoctor ?? 'لم يتم ادخاله',
+                      value: radiologyData.radiologyDoctor ?? "",
                       icon: 'assets/images/doctor_icon.png'),
                   DetailsViewInfoTile(
                     isExpanded: true,
                     title: "مركز الأشاعة  / المستشفي",
                     value: radiologyData.hospital ??
                         radiologyData.radiologyCenter ??
-                        'لم يتم ادخاله',
+                        "",
                     icon: 'assets/images/hospital_icon.png',
                   ),
                   DetailsViewInfoTile(
                     isExpanded: true,
                     title: "الدولة",
-                    value: radiologyData.country ?? 'لم يتم ادخاله',
+                    value: radiologyData.country ?? "",
                     icon: 'assets/images/country_icon.png',
                   ),
                   DetailsViewInfoTile(
                     title: "ملاحظات",
-                    value: radiologyData.radiologyNote ?? 'لم يتم ادخاله',
+                    value: radiologyData.radiologyNote ?? "",
                     icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),
@@ -170,13 +169,14 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
 التاريخ: ${radiologyData.radiologyDate}
 المنطقة: ${radiologyData.bodyPart}
 النوع: ${radiologyData.radioType}
-نوعية الاحتياج: ${radiologyData.periodicUsage ?? 'لم يتم ادخاله'}
-الأعراض: ${radiologyData.symptoms ?? 'لم يتم ادخاله'}
-الطبيب المعالج: ${radiologyData.doctor ?? 'لم يتم ادخاله'}
-طبيب الأشعة: ${radiologyData.radiologyDoctor ?? 'لم يتم ادخاله'}
-المستشفى: ${radiologyData.hospital ?? 'لم يتم ادخاله'}
-الدولة: ${radiologyData.country ?? 'لم يتم ادخاله'}
-ملاحظات: ${radiologyData.radiologyNote ?? 'لم يتم ادخاله'}
+نوعية الاحتياج: ${radiologyData.periodicUsage ?? ""}
+الأعراض: ${radiologyData.symptoms ?? ""}
+الطبيب المعالج: ${radiologyData.doctor ?? ""}
+طبيب الأشعة: ${radiologyData.radiologyDoctor ?? ""}
+المستشفى: ${radiologyData.hospital ?? ""}
+الدولة: ${radiologyData.country ?? ""}
+ملاحظات: ${radiologyData.radiologyNote ?? ""}
+التقرير الطبي: ${radiologyData.writtenReport ?? ""}
 ''';
 
   // 📥 تحميل الصور والتقارير

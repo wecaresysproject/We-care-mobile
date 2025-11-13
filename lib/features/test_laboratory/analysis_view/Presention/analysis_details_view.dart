@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -15,6 +12,8 @@ import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
+
+import '../../../../core/global/Helpers/share_details_helper.dart';
 
 class AnalysisDetailsView extends StatelessWidget {
   final String documentId;
@@ -49,7 +48,6 @@ class AnalysisDetailsView extends StatelessWidget {
             body: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                       title: 'التحليل',
@@ -76,8 +74,34 @@ class AnalysisDetailsView extends StatelessWidget {
                         if (!context.mounted) return;
                         Navigator.pop(context, true);
                       },
-                      shareFunction: () {
-                        _shareDetails(context, state);
+                      shareFunction: () async {
+                        final analysis = state.selectedAnalysisDetails!;
+
+    // 🧩 نجهّز البيانات الأساسية
+    final detailsMap = {
+      '📅 *التاريخ*:': analysis.testDate,
+      '🔬 *نوع التحليل*:': analysis.groupName,
+      '👨‍⚕️ *الطبيب المعالج*:': analysis.doctor,
+      '🏥 *المستشفى/المعمل*:': analysis.hospital,
+      '🌍 *الدولة*:': analysis.country,
+      '🏷 *نوعية الاحتياج*:': "دورية",
+      '🤒 *الأعراض المستدعية للإجراء*:': analysis.symptomsRequiringIntervention,
+      
+      '📝 *توصيف التقرير الطبي*:': analysis.writtenReport ?? "لم يتم ادخال بيانات",
+             };
+    // 🧾 الصور (من analysis.imageBase64 + analysis.reportBase64)
+    final allImages = [
+      ...(analysis.imageBase64 ),
+      ...(analysis.reportBase64),
+    ];
+
+    // 🩺 مشاركة باستخدام الميثود الـgeneric
+    await shareDetails(
+      title: '🩺 *تفاصيل التحليل* 🩺',
+      details: detailsMap,
+      imageUrls: allImages,
+      errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل التحليل",
+    );
                       }),
                   DetailsViewInfoTile(
                     title: "التاريخ",
@@ -101,14 +125,14 @@ class AnalysisDetailsView extends StatelessWidget {
                     isShareEnabled: true,
                   ),
                   DetailsViewInfoTile(
-                    value: state.selectedAnalysisDetails!.writtenReport!,
+                    value: state.selectedAnalysisDetails!.writtenReport??"لم يتم ادخال بيانات",
                     title: "توصيف التقرير الطبي",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: "نوعية الاحتياج",
-                    value: state.selectedAnalysisDetails!.testNeedType ?? '-',
+                    value: state.selectedAnalysisDetails!.testNeedType ??"لم يتم ادخال بيانات",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),
@@ -151,59 +175,5 @@ class AnalysisDetailsView extends StatelessWidget {
         },
       ),
     );
-  }
-}
-
-Future<void> _shareDetails(
-  BuildContext context,
-  TestAnalysisViewState state,
-) async {
-  try {
-    final analysisDetails = state.selectedAnalysisDetails!;
-    final tempDir = await getTemporaryDirectory();
-    final List<String> imagePaths = [];
-
-    // 📝 نص تفاصيل التحليل
-    final textBuffer = StringBuffer('''
-🩺 *تفاصيل التحليل* 🩺
-
-📅 *التاريخ*: ${analysisDetails.testDate ?? 'غير محدد'}
-🔬 *نوع التحليل*: ${analysisDetails.groupName ?? 'غير محدد'}
-👨‍⚕️ *الطبيب المعالج*: ${analysisDetails.doctor ?? 'غير محدد'}
-🏥 *المستشفى/المعمل*: ${analysisDetails.hospital ?? 'غير محدد'}
-🌍 *الدولة*: ${analysisDetails.country ?? 'غير محددة'}
-🏷 *نوعية الاحتياج*: دورية
-''');
-
-    // 🧾 صور وتقارير التحاليل
-    final List<String> analysisImages = analysisDetails.imageBase64 ?? [];
-    final List<String> reportImages = analysisDetails.reportBase64 ?? [];
-    final allImages = [...analysisImages, ...reportImages];
-
-    if (allImages.isNotEmpty) {
-      textBuffer.writeln('\n🧾 *صور وتقارير التحليل:*');
-      for (final url in allImages) {
-        if (url.startsWith('http')) {
-          final path = await downloadImage(
-            url,
-            tempDir,
-            'attachment_${DateTime.now().millisecondsSinceEpoch}.png',
-          );
-          if (path != null) imagePaths.add(path);
-        }
-      }
-    }
-
-    // 📤 المشاركة
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles(
-        imagePaths.map((p) => XFile(p)).toList(),
-        text: textBuffer.toString(),
-      );
-    } else {
-      await Share.share(textBuffer.toString());
-    }
-  } catch (e) {
-    await showError("❌ حدث خطأ أثناء المشاركة");
   }
 }

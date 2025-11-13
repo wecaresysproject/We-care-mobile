@@ -29,69 +29,72 @@ class DetailsViewImagesWithTitleTile extends StatelessWidget {
             .toList() ??
         [];
 
-    return Align(
-      alignment: Alignment.topRight,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text(
-                title,
-                style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                  color: AppColorsManager.mainDarkBlue,
-                  fontSize: 18.sp,
-                ),
-              ),
-              const Spacer(),
-              if (isShareEnabled && validImages.isNotEmpty)
-                CustomActionButton(
-                  onTap: () {
-                    shareImages(context, validImages, title);
-                  },
-                  title: 'ارسال',
-                  icon: 'assets/images/share.png',
-                ),
-            ],
-          ),
-          verticalSpacing(8),
-          validImages.isNotEmpty
-              ? SizedBox(
-                  height: 180.h,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: validImages.length,
-                    separatorBuilder: (_, __) => SizedBox(width: 8.w),
-                    itemBuilder: (context, index) {
-                      final img = validImages[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => FullScreenImageViewer(
-                                images: validImages,
-                                initialIndex: index,
-                              ),
-                            ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            img,
-                            width: 180.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                    fontSize: 18.sp,
                   ),
-                )
-              : const CustomContainer(
-                  value: 'لم يتم رفع صور',
-                  isExpanded: true,
                 ),
-        ],
+                const Spacer(),
+                if (isShareEnabled && validImages.isNotEmpty)
+                  CustomActionButton(
+                    onTap: () {
+                      shareImages(context, validImages, title);
+                    },
+                    title: 'ارسال',
+                    icon: 'assets/images/share.png',
+                  ),
+              ],
+            ),
+            verticalSpacing(8),
+            validImages.isNotEmpty
+                ? SizedBox(
+                    height: 180.h,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: validImages.length,
+                      separatorBuilder: (_, __) => SizedBox(width: 8.w),
+                      itemBuilder: (context, index) {
+                        final img = validImages[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => FullScreenImageViewer(
+                                  images: validImages,
+                                  initialIndex: index,
+                                ),
+                              ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.network(
+                              img,
+                              width: 180.w,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                : const CustomContainer(
+                    value: 'لم يتم رفع صور',
+                    isExpanded: true,
+                  ),
+          ],
+        ),
       ),
     );
   }

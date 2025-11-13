@@ -42,7 +42,6 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(vertical: 16.h),
         child: Column(
-          spacing: 16.h,
           children: [
             CustomAppBarWidget(haveBackArrow: true)
                 .paddingSymmetricHorizontal(16),
