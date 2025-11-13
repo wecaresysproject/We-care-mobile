@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -47,10 +48,12 @@ class UserAvatarWidget extends StatelessWidget {
     required this.width,
     required this.height,
     required this.borderRadius,
+     this.userImageUrl,
   });
   final double width;
   final double height;
   final double borderRadius;
+  final String? userImageUrl;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -58,10 +61,11 @@ class UserAvatarWidget extends StatelessWidget {
       height: height.h,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius.r),
-        child: Image.asset(
-          "assets/images/user_dummy_photo.png",
-          fit: BoxFit.cover,
-        ),
+        child: CachedNetworkImage(
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) =>
+                Image.asset('assets/images/user_avatar.png', fit: BoxFit.cover),
+          imageUrl: userImageUrl ?? "", fit: BoxFit.cover),
       ),
     );
   }
