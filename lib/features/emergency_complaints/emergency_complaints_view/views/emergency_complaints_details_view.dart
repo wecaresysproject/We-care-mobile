@@ -46,7 +46,6 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
               child: Column(
-                spacing: 16.h,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   AppBarWithCenteredTitle(

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/Helpers/share_details_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -52,14 +50,34 @@ class AllergyDetailsView extends StatelessWidget {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الحساسية',
                     deleteFunction: () async => await context
                         .read<AllergyViewCubit>()
                         .deleteAllergyById(documentId),
-                    shareFunction: () => _shareAllergyDetails(context, state),
+                    shareFunction: () async {
+                      final allergy = state.selectedAllergyDetails!;
+                      await shareDetails(
+                        title: '⚕️ *تفاصيل الحساسية* ⚕️',
+                        details: {
+                          '📅 *التاريخ*:': allergy.allergyOccurrenceDate,
+                          '🦠 *مسببات الحساسية*:': allergy.allergyTriggers,
+                          '🤧 *الأعراض الجانبية*:': allergy.expectedSideEffects,
+                          '⚡ *حدة الأعراض*:': allergy.symptomSeverity,
+                          '💊 *الأدوية*:': allergy.medicationName,
+                          '👪 *التاريخ العائلى*:': allergy.familyHistory
+                          ,
+                          '⚠️ *الاحتياطات*:': allergy.precautions,
+                          '📸 *التقارير الطبية*:': allergy.medicalReportImage,
+                        },
+                        imageUrls: [
+                          if (allergy.medicalReportImage != null)
+                            allergy.medicalReportImage!,
+                        ],
+                        errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية",
+                      );
+                    },
                     editFunction: () async {
                       AppLogger.debug('test');
                       final result = await context.pushNamed(
@@ -213,57 +231,5 @@ class AllergyDetailsView extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-Future<void> _shareAllergyDetails(
-    BuildContext context, AllergyViewState state) async {
-  try {
-    final allergy = state.selectedAllergyDetails!;
-
-    // 📝 Extract text details (re-mapped to allergy fields)
-    final text = '''
-⚕️ *تفاصيل الحساسية* ⚕️
-
-📅 *التاريخ*: ${allergy.allergyOccurrenceDate}
-🦠 *مسببات الحساسية*: ${allergy.allergyTriggers}
-🤧 *الأعراض الجانبية (رد الفعل التحسسي)*: ${allergy.expectedSideEffects}
-⚡ *حدة الأعراض*: ${allergy.symptomSeverity ?? "لم يتم تحديده"}
-⏱ *زمن بدء الأعراض*: ${allergy.timeToSymptomOnset}
-👨‍⚕️ *استشارة طبيب*: ${allergy.isDoctorConsulted}
-🧪 *اختبار حساسية*: ${allergy.isAllergyTestPerformed}
-💊 *الأدوية*: ${allergy.medicationName}
-💉 *هل العلاجات فعالة*: ${allergy.isTreatmentsEffective}
-🚨 *وجود صدمة تحسسية*: ${allergy.proneToAllergies}
-📷 *التقرير الطبي/اختبار الحساسية*: مرفق بالأسفل (إن وجد)
-👪 *التاريخ العائلي*: ${allergy.familyHistory}
-📘 *الاحتياطات*: ${allergy.precautions ?? "لم يتم تحديده"}
-⚠️ *تحذير طبي للمسببات*: ${allergy.isMedicalWarningReceived}
-💉 *حمل حقنة الإبينفرين*: ${allergy.carryEpinephrine}
-    ''';
-
-    // 📥 Download medical report image if available
-    final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
-
-    if (allergy.medicalReportImage != null &&
-        allergy.medicalReportImage!.startsWith("http")) {
-      final imagePath = await downloadImage(
-        allergy.medicalReportImage!,
-        tempDir,
-        'allergy_report.png',
-      );
-      if (imagePath != null) imagePaths.add(imagePath);
-    }
-
-    // 📤 Share text & image
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles(imagePaths.map((path) => XFile(path)).toList(),
-          text: text);
-    } else {
-      await Share.share(text);
-    }
-  } catch (e) {
-    await showError("❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية");
   }
 }

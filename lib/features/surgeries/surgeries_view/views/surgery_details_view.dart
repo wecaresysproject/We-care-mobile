@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
+
+import '../../../../core/global/Helpers/share_details_helper.dart';
 
 class SurgeryDetailsView extends StatelessWidget {
   const SurgeryDetailsView({super.key, required this.documentId});
@@ -51,7 +50,6 @@ class SurgeryDetailsView extends StatelessWidget {
             return SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'العمليات',
@@ -180,42 +178,39 @@ class SurgeryDetailsView extends StatelessWidget {
 }
 
 Future<void> _shareSurgeryDetails(
-    BuildContext context, SurgeriesViewState state) async {
+  BuildContext context,
+  SurgeriesViewState state,
+) async {
   try {
-    final surgeryDetails = state.selectedSurgeryDetails!;
+    final surgery = state.selectedSurgeryDetails!;
+    
+    // 🧾 نجهّز البيانات الأساسية
+    final detailsMap = {
+      '📅 *التاريخ*:': surgery.surgeryDate,
+      '🏥 *المستشفى*:': surgery.hospitalCenter,
+      '🌍 *الدولة*:': surgery.country,
+      '🧑‍⚕️ *الجراح*:': surgery.surgeonName,
+      '⚕️ *طبيب الباطنة*:': surgery.anesthesiologistName,
+      '🌤 *الحالة*:': surgery.surgeryStatus,
+      '💪 *التقنية المستخدمة*:': surgery.usedTechnique,
+      '📃 *التوصيف*:': surgery.surgeryDescription,
+      '📕 *التعليمات بعد العملية*:': surgery.postSurgeryInstructions,
+    };
 
-    // 📝 Extract text details
-    final text = '''
-    ⚕️ *تفاصيل العملية* ⚕️
-
-    📅 *التاريخ*: ${surgeryDetails.surgeryDate}
-    🏥 *المستشفى*: ${surgeryDetails.hospitalCenter}
-    🌍 *الدولة*: ${surgeryDetails.country}
-    🧑‍⚕️ *الجراح*: ${surgeryDetails.surgeonName}
-    ⚕️ *طبيب الباطنة*: ${surgeryDetails.anesthesiologistName}
-    🌤 *الحالة*: ${surgeryDetails.surgeryStatus}
-    💪 *التقنية المستخدمة*: ${surgeryDetails.usedTechnique}
-    📃 *التوصيف*: ${surgeryDetails.surgeryDescription}
-    📕 *التعليمات بعد العملية*: ${surgeryDetails.postSurgeryInstructions}
-    ''';
-
-    // 📥 Download images
-    final tempDir = await getTemporaryDirectory();
-    List<String> imagePaths = [];
-
-    if (surgeryDetails.medicalReportImage.startsWith("http")) {
-      final imagePath = await downloadImage(
-          surgeryDetails.medicalReportImage, tempDir, 'medical_report.png');
-      if (imagePath != null) imagePaths.add(imagePath);
+    // 📷 الصور (التقرير الطبي فقط إن وُجد)
+    final imageUrls = <String>[];
+    if (surgery.medicalReportImage != null &&
+        surgery.medicalReportImage.startsWith("http")) {
+      imageUrls.add(surgery.medicalReportImage);
     }
 
-    // 📤 Share text & images
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles(imagePaths.map((path) => XFile(path)).toList(),
-          text: text);
-    } else {
-      await Share.share(text);
-    }
+    // 🚀 استدعاء الميثود الجينيريك
+    await shareDetails(
+      title: '⚕️ *تفاصيل العملية* ⚕️',
+      details: detailsMap,
+      imageUrls: imageUrls,
+      errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل العملية",
+    );
   } catch (e) {
     await showError("❌ حدث خطأ أثناء المشاركة");
   }

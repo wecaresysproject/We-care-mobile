@@ -54,7 +54,6 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
-                spacing: 16.h,
                 children: [
                   AppBarWithCenteredTitle(
                     title: title,

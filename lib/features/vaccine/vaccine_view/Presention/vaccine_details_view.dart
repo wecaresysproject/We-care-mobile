@@ -47,7 +47,6 @@ class VaccineDetailsView extends StatelessWidget {
               return SingleChildScrollView(
                 padding: EdgeInsets.only(bottom: 16.h, left: 16.w, right: 16.w),
                 child: Column(
-                  spacing: 16.h,
                   children: [
                     AppBarWithCenteredTitle(
                         title: state.selectedVaccine!.vaccineName,
