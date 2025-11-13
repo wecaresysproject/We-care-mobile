@@ -73,8 +73,7 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                           rightController: cubit.rightShortSightController,
                           leftController: cubit.leftShortSightController,
                           hintText: "اختر الدرجة",
-                          validator:
-                              EyeModuleValidations.shortSightRangeValidator,
+                          validator: EyeModuleValidations.shortSightValidator,
                           keyboardType: TextInputType.number,
                         ),
                         LeftAndRightLensRowDataSection(
@@ -82,10 +81,10 @@ class RightAndLeftLensTabBarView extends StatelessWidget {
                           rightController: cubit.rightLongSightController,
                           leftController: cubit.leftLongSightController,
                           hintText: "اختر الدرجة",
-                          validator:
-                              EyeModuleValidations.longSightRangeValidator,
+                          validator: EyeModuleValidations.longSightValidator,
                           keyboardType: TextInputType.number,
                         ),
+
                         LeftAndRightLensRowDataSection(
                           title: "الاستجماتزم",
                           rightController: cubit.rightAstigmatismController,

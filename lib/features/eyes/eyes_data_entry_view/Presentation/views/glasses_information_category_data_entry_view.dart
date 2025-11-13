@@ -95,10 +95,10 @@ class _GlassesInformationCategoryDataEntryViewState
                       indicatorWeight: 2.5,
                       tabs: const [
                         Tab(
-                          text: 'بيانات لكل عدسة',
+                          text: 'البيانات الأساسية للنظارة',
                         ),
                         Tab(
-                          text: 'البيانات الأساسية للنظارة',
+                          text: 'بيانات لكل عدسة',
                         ),
                       ],
                       controller: _tabController,
@@ -124,17 +124,17 @@ class _GlassesInformationCategoryDataEntryViewState
                               horizontal: 16.w,
                               vertical: 16.h,
                             ),
-                            child: const RightAndLeftLensTabBarView(),
+                            child:
+                                EssenstialGlassesInformationsDataDataEntryTabBar(
+                              tabController: _tabController,
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16.w,
                               vertical: 16.h,
                             ),
-                            child:
-                                EssenstialGlassesInformationsDataDataEntryTabBar(
-                              tabController: _tabController,
-                            ),
+                            child: const RightAndLeftLensTabBarView(),
                           ),
                         ],
                       ),

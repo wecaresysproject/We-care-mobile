@@ -9,23 +9,38 @@ class EyeModuleValidations {
     return null;
   }
 
-  static String? shortSightRangeValidator(String? value) {
-    final numericError = numericValidator(value, "درجة قصر النظر");
-    if (numericError != null) return numericError;
-    final number = double.parse(value!);
-    if (number > 0 || number < -20) {
-      return 'من 0 إلى 20- فقط';
-    }
+  // static String? shortSightRangeValidator(String? value) {
+  //   final numericError = numericValidator(value, "درجة قصر النظر");
+  //   if (numericError != null) return numericError;
+  //   final number = double.parse(value!);
+  //   if (number > 0 || number < -20) {
+  //     return 'من 0 إلى 20- فقط';
+  //   }
+  //   return null;
+  // }
+
+  // static String? longSightRangeValidator(String? value) {
+  //   final numericError = numericValidator(value, "درجة طول النظر");
+  //   if (numericError != null) return numericError;
+  //   final number = double.parse(value!);
+  //   if (number < 0 || number > 20) {
+  //     return 'من 0 إلى 20 فقط';
+  //   }
+  //   return null;
+  // }
+  static String? shortSightValidator(String? value) {
+    if (value == null || value.isEmpty) return null; // يسمح بالفاضي
+    final number = double.tryParse(value);
+    if (number == null) return 'الرجاء إدخال قيمة رقمية صحيحة';
+    if (number > 0 || number < -20) return 'من 0 إلى 20- فقط';
     return null;
   }
 
-  static String? longSightRangeValidator(String? value) {
-    final numericError = numericValidator(value, "درجة طول النظر");
-    if (numericError != null) return numericError;
-    final number = double.parse(value!);
-    if (number < 0 || number > 20) {
-      return 'من 0 إلى 20 فقط';
-    }
+  static String? longSightValidator(String? value) {
+    if (value == null || value.isEmpty) return null; // يسمح بالفاضي
+    final number = double.tryParse(value);
+    if (number == null) return 'الرجاء إدخال قيمة رقمية صحيحة';
+    if (number < 0 || number > 20) return 'من 0 إلى 20 فقط';
     return null;
   }
 
