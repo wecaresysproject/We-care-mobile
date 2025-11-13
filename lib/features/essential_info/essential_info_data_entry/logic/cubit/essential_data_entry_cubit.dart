@@ -144,8 +144,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         disabilityLevel:
             editingModel.disabilityDetails, //!TODO: check this later
         socialStatus: editingModel.socialStatus,
-        hasMedicalInsurance:
-            true, //! TODO: check this later , need to change it
+        hasMedicalInsurance: editingModel.insuranceStatus ??
+            false, //! TODO: check this later , need to change it
         insuranceEndDate: editingModel.insuranceCoverageExpiryDate ?? '',
         insuranceCardPhotoUrl: editingModel.insuranceCardPhotoUrl,
         isEditMode: true,
@@ -183,7 +183,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   Future<void> uploadProfileImage({required String imagePath}) async {
     emit(
       state.copyWith(
-        uploadImageRequestStatus: UploadImageRequestStatus.initial,
+        profileImageUploadStatus: UploadImageRequestStatus.initial,
       ),
     );
     final response = await _sharedRepo.uploadImage(
@@ -197,7 +197,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           state.copyWith(
             message: response.message,
             userPersonalImage: response.imageUrl,
-            uploadImageRequestStatus: UploadImageRequestStatus.success,
+            profileImageUploadStatus: UploadImageRequestStatus.success,
           ),
         );
       },
@@ -205,7 +205,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
-            uploadImageRequestStatus: UploadImageRequestStatus.failure,
+            profileImageUploadStatus: UploadImageRequestStatus.failure,
           ),
         );
       },
@@ -215,7 +215,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   Future<void> uploadInsuranceCardImage({required String imagePath}) async {
     emit(
       state.copyWith(
-        uploadImageRequestStatus: UploadImageRequestStatus.initial,
+        insuranceImageUploadStatus: UploadImageRequestStatus.initial,
       ),
     );
     final response = await _sharedRepo.uploadImage(
@@ -229,7 +229,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           state.copyWith(
             message: response.message,
             insuranceCardPhotoUrl: response.imageUrl,
-            uploadImageRequestStatus: UploadImageRequestStatus.success,
+            insuranceImageUploadStatus: UploadImageRequestStatus.success,
           ),
         );
       },
@@ -237,7 +237,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         emit(
           state.copyWith(
             message: error.errors.first,
-            uploadImageRequestStatus: UploadImageRequestStatus.failure,
+            insuranceImageUploadStatus: UploadImageRequestStatus.failure,
           ),
         );
       },
@@ -436,6 +436,17 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     emit(state.copyWith(isFormValidated: isValid));
   }
+
+  void onRemoveProfileImage() => emit(
+        state.copyWith(
+          userPersonalImage: "",
+        ),
+      );
+  void onRemoveInsuranceCardImage() => emit(
+        state.copyWith(
+          insuranceCardPhotoUrl: "",
+        ),
+      );
 
   @override
   Future<void> close() async {

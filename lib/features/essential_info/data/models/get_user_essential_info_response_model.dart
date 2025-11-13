@@ -53,6 +53,7 @@ class UserEssentialInfoData {
   final String? familyDoctorPhoneNumber;
   final String? emergencyContact1;
   final String? emergencyContact2;
+  final bool? insuranceStatus;
 
   UserEssentialInfoData({
     this.docId,
@@ -78,6 +79,7 @@ class UserEssentialInfoData {
     this.familyDoctorPhoneNumber,
     this.emergencyContact1,
     this.emergencyContact2,
+    this.insuranceStatus,
   });
 
   factory UserEssentialInfoData.fromJson(Map<String, dynamic> json) =>

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +5,7 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
+import 'package:we_care/core/global/SharedWidgets/image_preview_item_with_cancel.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -34,7 +34,16 @@ class XRayImageUploadSection extends StatelessWidget {
                 runSpacing: 8,
                 spacing: 8,
                 children: state.uploadedTestImages
-                    .map((imgPath) => _imageItem(context, imgPath))
+                    .map(
+                      (imgPath) => ImageViewerWithCancel(
+                        imageUrl: imgPath,
+                        onRemove: () {
+                          context
+                              .read<XRayDataEntryCubit>()
+                              .removeUploadedImage(imgPath);
+                        },
+                      ),
+                    )
                     .toList(),
               ),
 
@@ -83,31 +92,4 @@ class XRayImageUploadSection extends StatelessWidget {
       },
     );
   }
-}
-
-Widget _imageItem(BuildContext context, String imgPath) {
-  return Stack(
-    clipBehavior: Clip.none,
-    children: [
-      ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: CachedNetworkImage(
-          imageUrl: imgPath,
-          width: 80.w,
-          height: 80.w,
-          fit: BoxFit.cover,
-        ),
-      ),
-      Positioned(
-        right: -6,
-        top: -6,
-        child: IconButton(
-          icon: const Icon(Icons.close, size: 24, color: Colors.red),
-          onPressed: () {
-            context.read<XRayDataEntryCubit>().removeUploadedImage(imgPath);
-          },
-        ),
-      ),
-    ],
-  );
 }

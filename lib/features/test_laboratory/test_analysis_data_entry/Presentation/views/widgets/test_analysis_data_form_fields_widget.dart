@@ -98,12 +98,22 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(16),
 
             UserSelectionContainer(
+              initialValue: state.selectedLabCenter?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedLabCenter,
               isDisabled: state.selectedHospitalName.isNotEmptyOrNull,
               allowManualEntry: true,
+              onDismiss: () {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedLabCenter("");
+              },
               categoryLabel: "مركز التحاليل",
               containerHintText: state.selectedHospitalName.isNotEmptyOrNull
                   ? "المستشفى محددة، لا يمكن الإختيار "
-                  : (state.selectedLabCenter ?? "اختر اسم المركز"),
+                  : (state.selectedLabCenter.isEmptyOrNull
+                      ? "اختر اسم المركز"
+                      : state.selectedLabCenter!),
               options: state.labCenters,
               onOptionSelected: (value) {
                 context
@@ -118,15 +128,22 @@ class _TestAnalysisDataEntryFormFieldsState
             /// المركز / المستشفى
             //   //! write by ur hand
             UserSelectionContainer(
+              initialValue: state.selectedHospitalName?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedHospitalName,
+              onDismiss: () {
+                context
+                    .read<TestAnalysisDataEntryCubit>()
+                    .updateSelectedHospital("");
+              },
               isDisabled: state.selectedLabCenter.isNotEmptyOrNull,
               allowManualEntry: true,
               categoryLabel: "المعمل / المستشفى",
               containerHintText: state.selectedLabCenter.isNotEmptyOrNull
                   ? "مركز التحاليل محدد، لا يمكن الإختيار "
-                  : (state.selectedHospitalName ??
-                      "اختر اسم المعمل / المستشفى"),
-              // containerHintText:
-              //     state.selectedHospitalName ?? "اختر اسم المعمل / المستشفى",
+                  : (state.selectedHospitalName.isEmptyOrNull
+                      ? "اختر اسم المعمل / المستشفى"
+                      : state.selectedHospitalName!),
               options: state.hospitalNames,
               onOptionSelected: (value) {
                 context

@@ -2,22 +2,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/dynamic_question_with_dynamic_answer_list_option.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/widgets/insurance_upload_section_widget.dart';
+import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/widgets/profile_image_upload_section_widget.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/logic/cubit/essential_data_entry_cubit.dart';
 
 class EssentialDataEntryFormFields extends StatelessWidget {
@@ -61,7 +59,6 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   placeholderText: state.birthDate ?? 'يوم / شهر / سنة',
                   onDateSelected: (pickedDate) {
                     cubit.updateBirthDate(pickedDate);
-                    // cubit.onAnyFieldChanged();
                   },
                 ),
                 verticalSpacing(16),
@@ -94,32 +91,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(18),
-                Text(
-                  "صورة شخصية( 4x6)",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(10),
-                SelectImageContainer(
-                  containerBorderColor:
-                      AppColorsManager.textfieldOutsideBorderColor,
-                  imagePath: "assets/images/photo_icon.png",
-                  label: "ارفق صورة",
-                  onTap: () async {
-                    await showImagePicker(
-                      context,
-                      onImagePicked: (isImagePicked) async {
-                        final picker = getIt.get<ImagePickerService>();
-                        if (isImagePicked && picker.isImagePickedAccepted) {
-                          await context
-                              .read<EssentialDataEntryCubit>()
-                              .uploadProfileImage(
-                                imagePath: picker.pickedImage!.path,
-                              );
-                        }
-                      },
-                    );
-                  },
-                ),
+                ProfileImageUploadSection(),
                 verticalSpacing(18),
                 UserSelectionContainer(
                   categoryLabel: 'الدولة',
@@ -410,34 +382,7 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                             onChanged: (_) {},
                           ),
                           verticalSpacing(16),
-                          Text(
-                            "صورة كارت التأمين",
-                            style: AppTextStyles.font18blackWight500,
-                          ),
-                          verticalSpacing(10),
-                          SelectImageContainer(
-                            containerBorderColor:
-                                AppColorsManager.textfieldOutsideBorderColor,
-                            imagePath: "assets/images/photo_icon.png",
-                            label: "ارفق صورة",
-                            onTap: () async {
-                              await showImagePicker(
-                                context,
-                                onImagePicked: (isImagePicked) async {
-                                  final picker =
-                                      getIt.get<ImagePickerService>();
-                                  if (isImagePicked &&
-                                      picker.isImagePickedAccepted) {
-                                    await context
-                                        .read<EssentialDataEntryCubit>()
-                                        .uploadInsuranceCardImage(
-                                          imagePath: picker.pickedImage!.path,
-                                        );
-                                  }
-                                },
-                              );
-                            },
-                          ),
+                          InsuranceCardImageUploadSection(),
                         ],
                       )
                     : const SizedBox.shrink(

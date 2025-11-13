@@ -359,15 +359,13 @@ Widget buildCustomContainer({required SymptomAndProcedureItem model}) {
         width: .5,
       ),
     ),
-    child: Expanded(
-      child: Text(
-        model.title,
-        style: AppTextStyles.font14blackWeight400,
-        textAlign: TextAlign.right,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        textDirection: TextDirection.ltr,
-      ),
+    child: Text(
+      model.title,
+      style: AppTextStyles.font14blackWeight400,
+      textAlign: TextAlign.right,
+      maxLines: 10,
+      overflow: TextOverflow.ellipsis,
+      textDirection: TextDirection.ltr,
     ),
   );
 }

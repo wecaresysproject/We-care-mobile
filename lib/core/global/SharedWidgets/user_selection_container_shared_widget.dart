@@ -26,6 +26,7 @@ class UserSelectionContainer extends StatefulWidget {
     this.onRetryPressed,
     this.loadingErrorMessage = "حدث خطأ في تحميل البيانات",
     this.loadingText = "جاري التحميل...",
+    this.onDismiss,
   });
 
   final List<String> options;
@@ -41,6 +42,7 @@ class UserSelectionContainer extends StatefulWidget {
   final String? userEntryLabelText;
   final bool isEditMode;
   final String? initialValue; // Used to initialize selected item in edit mode
+  final VoidCallback? onDismiss;
 
   // New properties for loading state
   final OptionsLoadingState loadingState;
@@ -126,6 +128,7 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
       allowManualEntry: widget.allowManualEntry,
       userEntryLabelText: widget.userEntryLabelText ?? "أدخل اسمًا يدويًا",
       searchHintText: widget.searchHintText,
+      onDismiss: widget.onDismiss,
     );
   }
 
@@ -242,6 +245,7 @@ void _showSelectionBottomSheet({
   required String searchHintText,
   String? initialSelectedItem,
   bool allowManualEntry = false,
+  VoidCallback? onDismiss,
 }) {
   showModalBottomSheet(
     context: context,
@@ -260,6 +264,7 @@ void _showSelectionBottomSheet({
       initialSelectedItem: initialSelectedItem,
       allowManualEntry: allowManualEntry,
       searchHintText: searchHintText,
+      onDismiss: onDismiss,
     ),
   );
 }
@@ -273,6 +278,8 @@ class _SelectionBottomSheet extends StatefulWidget {
   final bool allowManualEntry;
   final String searchHintText;
 
+  final VoidCallback? onDismiss;
+
   const _SelectionBottomSheet({
     required this.title,
     required this.options,
@@ -281,6 +288,7 @@ class _SelectionBottomSheet extends StatefulWidget {
     required this.searchHintText,
     this.initialSelectedItem,
     this.allowManualEntry = false,
+    this.onDismiss, // ✅
   });
 
   @override
@@ -411,27 +419,62 @@ class _SelectionBottomSheetState extends State<_SelectionBottomSheet> {
 
   Widget _buildOptionsList(ScrollController scrollController) {
     return Expanded(
-      child: _filteredOptions.isEmpty
-          ? Center(
-              child: Text(
-                "لا توجد نتائج",
-                style: AppTextStyles.font16DarkGreyWeight400,
-              ),
-            )
-          : ListView.builder(
-              controller: scrollController,
-              itemCount: _filteredOptions.length,
-              itemBuilder: (context, index) {
-                final option = _filteredOptions[index];
-                final isSelected = _selectedItem == option;
+      child: Column(
+        children: [
+          // ✅ اعرض زر "إلغاء الاختيار" فقط لو فيه onDismiss
+          if (widget.onDismiss != null) ...[
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _selectedItem = null; // ✅ تفريغ الاختيار
+                });
 
-                return OptionItem(
-                  option: option,
-                  isSelected: isSelected,
-                  onTap: () => _selectItem(option),
-                );
+                widget.onDismiss?.call(); // ✅ نفّذ الكولباك
+
+                Navigator.pop(context); // ✅ أقفل الـ BottomSheet
               },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  "إلغاء الاختيار",
+                  textAlign: TextAlign.left,
+                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
+            const Divider(height: 1, thickness: 0.4),
+          ],
+
+          // 🔹 القائمة الفعلية
+          Expanded(
+            child: _filteredOptions.isEmpty
+                ? Center(
+                    child: Text(
+                      "لا توجد نتائج",
+                      style: AppTextStyles.font16DarkGreyWeight400,
+                    ),
+                  )
+                : ListView.builder(
+                    controller: scrollController,
+                    itemCount: _filteredOptions.length,
+                    itemBuilder: (context, index) {
+                      final option = _filteredOptions[index];
+                      final isSelected = _selectedItem == option;
+
+                      return OptionItem(
+                        option: option,
+                        isSelected: isSelected,
+                        onTap: () => _selectItem(option),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -288,8 +288,12 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: EyeGlassesLensDataRequestBodyModel(
         leftLens: LensData(
-          myopiaDegree: leftShortSightController.text,
-          hyperopiaDegree: leftLongSightController.text,
+          myopiaDegree: leftShortSightController.text.isEmpty
+              ? "--"
+              : leftShortSightController.text,
+          hyperopiaDegree: leftLongSightController.text.isEmpty
+              ? "--"
+              : leftLongSightController.text,
           astigmatismDegree: leftAstigmatismController.text.isEmpty
               ? "--"
               : leftAstigmatismController.text,
@@ -321,8 +325,12 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
           lensType: state.leftLensType ?? "--",
         ),
         rightLens: LensData(
-          myopiaDegree: rightShortSightController.text,
-          hyperopiaDegree: rightLongSightController.text,
+          myopiaDegree: rightShortSightController.text.isEmpty
+              ? "--"
+              : rightShortSightController.text,
+          hyperopiaDegree: rightLongSightController.text.isEmpty
+              ? "--"
+              : rightLongSightController.text,
           astigmatismDegree: rightAstigmatismController.text.isEmpty
               ? "--"
               : rightAstigmatismController.text,
@@ -353,7 +361,7 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
               : rightLensThicknessController.text,
           lensType: state.rightLensType ?? "--",
         ),
-        examinationDate: state.examinationDateSelection!,
+        examinationDate: state.examinationDateSelection ?? "--",
         doctorName: state.doctorName ?? locale.no_data_entered,
         centerHospitalName:
             state.selectedHospitalCenter ?? locale.no_data_entered,
