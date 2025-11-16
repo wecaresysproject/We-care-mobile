@@ -79,7 +79,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     isExpanded: true,
-                    title: "المعمل/المستشفى",
+                    title: "المركز/المستشفى",
                     value: data.hospitalName,
                     icon: 'assets/images/date_icon.png',
                   ),

@@ -25,7 +25,7 @@ class DetailsViewInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(value.isEmpty||value=="لم يتم ادخال بيانات"||value=="") {
+    if(value.isEmpty||value=="لم يتم ادخال بيانات"||value==""||value=='-'||value=="--") {
       return SizedBox.shrink();
     }
     return Padding(
