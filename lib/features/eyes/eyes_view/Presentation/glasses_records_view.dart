@@ -8,9 +8,9 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/glasses_details_view.dart';
+import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/glasses_records_item.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 
 class EyeGlassesRecordsView extends StatelessWidget {
   const EyeGlassesRecordsView({super.key});
@@ -42,40 +42,31 @@ class EyeGlassesRecordsView extends StatelessWidget {
                     const Expanded(child: Center(child: Text("لا توجد بيانات")))
                   else
                     Expanded(
-                      child: MedicalItemGridView(
-                        items: items,
-                        onTap: (id) async {
-                          final bool? result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EyesGlassesDetailsView(
-                                documentId: id,
-                              ),
-                            ),
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final doc = items[index];
+                          return GlassesRecordItem(
+                            item: doc,
+                            onArrowTap: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EyesGlassesDetailsView(
+                                    documentId: doc.id,
+                                  ),
+                                ),
+                              );
+                              if (context.mounted) {
+                                context
+                                    .read<EyeViewCubit>()
+                                    .getEyeGlassesRecords();
+                              }
+                            },
                           );
-                          if (result == true && context.mounted) {
-                            context.read<EyeViewCubit>().getEyeGlassesRecords();
-                          }
                         },
-                        titleBuilder: (item) => item.date ?? "-",
-                        infoRowBuilder: (item) => [
-                          {
-                            "title": "الطبيب / المستشفى:",
-                            "value": item.doctorName ?? "-",
-                          },
-                          {
-                            "title": "العين اليمني قصر/طول النظر:",
-                            "value": item.rightEyeSphericalPower ?? "-",
-                          },
-                          {
-                            "title": "العين اليسري قصر/طول النظر:",
-                            "value": item.leftEyeSphericalPower ?? "-",
-                          },
-                          {
-                            "title": "محل النظارات:",
-                            "value": item.storeName ?? "-",
-                          }
-                        ],
                       ),
                     ),
                   verticalSpacing(12),
@@ -141,3 +132,4 @@ class EyeGlassesRecordsView extends StatelessWidget {
     );
   }
 }
+

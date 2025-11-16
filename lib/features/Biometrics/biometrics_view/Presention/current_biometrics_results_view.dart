@@ -150,7 +150,7 @@ class CurrentBiometricsResultsTab extends StatelessWidget {
 
                 // BMI
                 Positioned(
-                  top: 530.h,
+                  top: 475.h,
                   left: MediaQuery.of(context).size.width / 2 - 70.w,
                   child: BiometricMeasurementCard(
                     label: 'مؤشر الكتلة ',
@@ -164,7 +164,7 @@ class CurrentBiometricsResultsTab extends StatelessWidget {
                   child: Image.asset(
                     "assets/images/skeleton_image.png",
                     fit: BoxFit.fill,
-                    height: 480.h,
+                    height: 440.h,
                   ).paddingFrom(
                     bottom: 90,
                     left: 100,
