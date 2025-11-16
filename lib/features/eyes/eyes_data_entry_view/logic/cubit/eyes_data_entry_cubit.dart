@@ -57,6 +57,31 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     await getInitialRequests();
   }
 
+  Future<void> emitDoctorNames() async {
+    final response = await sharedRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+      specialization: "طب العيون",
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctorNames: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   void updateSymptomDuration(String? val) {
     emit(state.copyWith(symptomDuration: val));
   }
@@ -77,6 +102,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   Future<void> getInitialRequests() async {
     Future.wait([
       emitCountriesData(),
+      emitDoctorNames(),
       emitHospitalNames(),
     ]);
   }

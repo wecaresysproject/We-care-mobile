@@ -29,6 +29,7 @@ class AnalysisDetailedData {
   String hospital;
   String doctor;
   String country;
+  final String radiologyCenter;
 
   AnalysisDetailedData({
     required this.id,
@@ -43,6 +44,7 @@ class AnalysisDetailedData {
     this.testNeedType,
     this.symptomsRequiringIntervention,
     this.writtenReport,
+    required this.radiologyCenter,
   });
 
   factory AnalysisDetailedData.fromJson(Map<String, dynamic> json) =>

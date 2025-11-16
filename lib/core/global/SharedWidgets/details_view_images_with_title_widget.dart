@@ -6,7 +6,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
@@ -29,36 +28,36 @@ class DetailsViewImagesWithTitleTile extends StatelessWidget {
             .toList() ??
         [];
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  title,
-                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: AppColorsManager.mainDarkBlue,
-                    fontSize: 18.sp,
+    return validImages.isNotEmpty
+        ? Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        title,
+                        style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                          color: AppColorsManager.mainDarkBlue,
+                          fontSize: 18.sp,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (isShareEnabled && validImages.isNotEmpty)
+                        CustomActionButton(
+                          onTap: () {
+                            shareImages(context, validImages, title);
+                          },
+                          title: 'ارسال',
+                          icon: 'assets/images/share.png',
+                        ),
+                    ],
                   ),
-                ),
-                const Spacer(),
-                if (isShareEnabled && validImages.isNotEmpty)
-                  CustomActionButton(
-                    onTap: () {
-                      shareImages(context, validImages, title);
-                    },
-                    title: 'ارسال',
-                    icon: 'assets/images/share.png',
-                  ),
-              ],
-            ),
-            verticalSpacing(8),
-            validImages.isNotEmpty
-                ? SizedBox(
+                  verticalSpacing(8),
+                  SizedBox(
                     height: 180.h,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
@@ -89,14 +88,11 @@ class DetailsViewImagesWithTitleTile extends StatelessWidget {
                       },
                     ),
                   )
-                : const CustomContainer(
-                    value: 'لم يتم رفع صور',
-                    isExpanded: true,
-                  ),
-          ],
-        ),
-      ),
-    );
+                ],
+              ),
+            ),
+          )
+        : SizedBox.shrink();
   }
 }
 
@@ -167,6 +163,11 @@ class _FullScreenImageViewerState extends State<FullScreenImageViewer> {
           return Center(
             child: PhotoView(
               backgroundDecoration: const BoxDecoration(color: Colors.black),
+              heroAttributes:
+                  PhotoViewHeroAttributes(tag: widget.images[index]),
+              // يسمح بالـ pinch-to-zoom بسلاسة
+              minScale: PhotoViewComputedScale.contained,
+              maxScale: PhotoViewComputedScale.covered * 4,
               imageProvider: NetworkImage(widget.images[index]),
             ),
           );

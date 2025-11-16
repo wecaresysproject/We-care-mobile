@@ -219,13 +219,41 @@ extension StringExtensions on String? {
   String get firstLetterToUpperCase =>
       this![0].toUpperCase() + this!.substring(1);
 }
+
 extension StringCheckExtension on String {
-  bool get isFilled =>
-      trim().isNotEmpty && trim() != 'لم يتم ادخال بيانات';
+  bool get isFilled => trim().isNotEmpty && trim() != 'لم يتم ادخال بيانات';
 
   bool get isNotFilled => !isFilled;
 }
 
+extension NameExtensions on String {
+  String get firstAndLastName {
+    final cleaned = trim();
+
+    final parts = cleaned.split(' ').where((word) => word.isNotEmpty).toList();
+
+    if (parts.isEmpty) return 'user name';
+    if (parts.length == 1) return parts.first;
+
+    return '${parts.first} ${parts.last}';
+  }
+}
+
+extension PhoneValidation on String {
+  String? validateEgyptPhone() {
+    final trimmed = trim();
+
+    if (trimmed.isEmpty) {
+      return 'رقم التليفون مطلوب';
+    }
+
+    if (trimmed.length != 11) {
+      return 'رقم التليفون يجب أن يكون 11 رقماً';
+    }
+
+    return null; // validation passed
+  }
+}
 
 extension WidgetVisibility on Widget {
   Widget visible(bool isVisible) {

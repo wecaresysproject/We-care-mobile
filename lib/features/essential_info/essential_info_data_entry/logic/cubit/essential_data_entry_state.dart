@@ -8,6 +8,7 @@ class EssentialDataEntryState extends Equatable {
   final List<String> citiesNames;
   final List<String> areasNames;
   final List<String> neighborhoodsNames;
+  final List<String> doctors;
 
   // selected options
   final String? selectedGender;
@@ -20,6 +21,7 @@ class EssentialDataEntryState extends Equatable {
   final String? weeklyWorkingHours;
   final String? disabilityLevel;
   final String? socialStatus;
+  final String? selectedFamilyDoctorName;
 
   // yes/no
   final bool? hasMedicalInsurance;
@@ -66,12 +68,14 @@ class EssentialDataEntryState extends Equatable {
     required this.citiesNames,
     required this.areasNames,
     required this.neighborhoodsNames,
+    required this.doctors,
     this.userPersonalImage,
     this.disabilityLevel,
     this.isPictureSelected,
     this.insuranceCardPhotoUrl,
     this.profileImageUploadStatus,
     this.insuranceImageUploadStatus,
+    this.selectedFamilyDoctorName,
   });
 
   factory EssentialDataEntryState.initial() {
@@ -100,12 +104,14 @@ class EssentialDataEntryState extends Equatable {
       citiesNames: [],
       areasNames: [],
       neighborhoodsNames: [],
+      doctors: [],
       userPersonalImage: null,
       disabilityLevel: null,
       profileImageUploadStatus: null,
       insuranceImageUploadStatus: null,
       isPictureSelected: null,
       insuranceCardPhotoUrl: null,
+      selectedFamilyDoctorName: null,
     );
   }
 
@@ -134,12 +140,14 @@ class EssentialDataEntryState extends Equatable {
     List<String>? citiesNames,
     List<String>? areasNames,
     List<String>? neighborhoodsNames,
+    List<String>? doctors,
     String? userPersonalImage,
     String? disabilityLevel,
     UploadImageRequestStatus? profileImageUploadStatus,
     UploadImageRequestStatus? insuranceImageUploadStatus,
     bool? isPictureSelected,
     String? insuranceCardPhotoUrl,
+    String? selectedFamilyDoctorName,
   }) {
     return EssentialDataEntryState(
       birthDate: birthDate ?? this.birthDate,
@@ -170,6 +178,7 @@ class EssentialDataEntryState extends Equatable {
       citiesNames: citiesNames ?? this.citiesNames,
       areasNames: areasNames ?? this.areasNames,
       neighborhoodsNames: neighborhoodsNames ?? this.neighborhoodsNames,
+      doctors: doctors ?? this.doctors,
       userPersonalImage: userPersonalImage ?? this.userPersonalImage,
       disabilityLevel: disabilityLevel ?? this.disabilityLevel,
       isPictureSelected: isPictureSelected ?? this.isPictureSelected,
@@ -179,6 +188,8 @@ class EssentialDataEntryState extends Equatable {
           profileImageUploadStatus ?? this.profileImageUploadStatus,
       insuranceImageUploadStatus:
           insuranceImageUploadStatus ?? this.insuranceImageUploadStatus,
+      selectedFamilyDoctorName:
+          selectedFamilyDoctorName ?? this.selectedFamilyDoctorName,
     );
   }
 
@@ -207,12 +218,14 @@ class EssentialDataEntryState extends Equatable {
         countriesNames,
         citiesNames,
         areasNames,
+        doctors,
         neighborhoodsNames,
         userPersonalImage,
         disabilityLevel,
         isPictureSelected,
         insuranceCardPhotoUrl,
         profileImageUploadStatus,
-        insuranceImageUploadStatus
+        insuranceImageUploadStatus,
+        selectedFamilyDoctorName,
       ];
 }

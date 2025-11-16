@@ -16,6 +16,7 @@ class TestAnalysisDataEnteryRequestBodyModel {
     required this.doctor,
     required this.country,
     required this.writtenReport,
+    required this.radiologyCenter,
   });
   final String testDate;
   @JsonKey(name: "result")
@@ -32,6 +33,7 @@ class TestAnalysisDataEnteryRequestBodyModel {
   final String hospital;
   final String doctor;
   final String country;
+  final String radiologyCenter;
 
   Map<String, dynamic> toJson() =>
       _$TestAnalysisDataEnteryRequestBodyModelToJson(this);
@@ -48,6 +50,7 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
     required this.hospital,
     required this.doctor,
     required this.country,
+    required this.radiologyCenter,
   });
   final String testDate;
   @JsonKey(name: "testNeedType")
@@ -61,6 +64,7 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
   final String hospital;
   final String doctor;
   final String country;
+  final String radiologyCenter;
 
   Map<String, dynamic> toJson() =>
       _$EditTestAnalysisDataEnteryRequestBodyModelToJson(this);

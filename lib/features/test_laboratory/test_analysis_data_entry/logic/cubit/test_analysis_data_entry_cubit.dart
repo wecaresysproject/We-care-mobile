@@ -64,6 +64,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         updatedTestId: editingAnalysisDetailsData.id,
         uploadedTestImages: editingAnalysisDetailsData.imageBase64,
         uploadedTestReports: editingAnalysisDetailsData.reportBase64,
+        selectedLabCenter: editingAnalysisDetailsData.radiologyCenter,
       ),
     );
     reportTextController.text = editingAnalysisDetailsData.writtenReport!;
@@ -481,6 +482,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     final response =
         await _testAnalysisDataEntryRepo.postLaboratoryTestDataEntrered(
       testAnalysisRequestBodyModel: TestAnalysisDataEnteryRequestBodyModel(
+        radiologyCenter:
+            state.selectedLabCenter ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
         testDate: state.selectedDate!,
         testTableEnteredResults: state.enteredTableRows,
@@ -536,6 +539,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
     final response = await _testAnalysisDataEntryRepo.editLaboratoryTestData(
       requestBodyModel: EditTestAnalysisDataEnteryRequestBodyModel(
+        radiologyCenter: state.selectedLabCenter!,
         country: state.selectedCountryName!,
         testDate: state.selectedDate!,
         testImages: state.uploadedTestImages,

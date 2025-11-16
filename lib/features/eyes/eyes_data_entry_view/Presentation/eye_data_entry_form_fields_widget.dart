@@ -10,7 +10,6 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
@@ -227,19 +226,18 @@ class EyeDataEntryFormFields extends StatelessWidget {
                 ),
               ),
               verticalSpacing(16),
-              Text(
-                "اسم الطبيب",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              CustomTextField(
-                hintText: state.doctorName ?? "اكتب اسم الطبيب",
-                validator: (value) {},
-                onChanged: (value) {
+              UserSelectionContainer(
+                allowManualEntry: true,
+                categoryLabel: "اسم الطبيب",
+                containerHintText: state.doctorName ?? "اختر اسم الطبيب",
+                options: state.doctorNames,
+                onOptionSelected: (value) {
                   context
                       .read<EyesDataEntryCubit>()
                       .updateSelectedDoctorName(value);
                 },
+                bottomSheetTitle: 'اختر اسم الطبيب',
+                searchHintText: "ابحث عن اسم الطبيب",
               ),
               verticalSpacing(16),
               UserSelectionContainer(

@@ -13,12 +13,14 @@ class DateTimePickerContainer extends StatefulWidget {
   final String placeholderText;
   final Function(String)? onDateSelected;
   final Color containerBorderColor;
+  final bool? isForInsuranceExpiry;
 
   const DateTimePickerContainer({
     super.key,
     required this.placeholderText,
     this.onDateSelected,
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
+    this.isForInsuranceExpiry = false,
   });
 
   @override
@@ -33,8 +35,10 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: widget.isForInsuranceExpiry!
+          ? DateTime.now().add(const Duration(days: 3650)) // 10 سنوات لقدام
+          : DateTime.now(),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(

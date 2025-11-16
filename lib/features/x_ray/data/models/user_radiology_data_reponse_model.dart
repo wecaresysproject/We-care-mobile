@@ -42,6 +42,8 @@ class RadiologyData {
   String? language;
   String? writtenReport;
   String? radiologyCenter;
+  @JsonKey(name: 'selectedBodyPartId')
+  String? bodyPartId;
 
   RadiologyData({
     required this.id,
@@ -62,6 +64,7 @@ class RadiologyData {
     this.language,
     this.writtenReport,
     this.radiologyCenter,
+    this.bodyPartId,
   });
 
   factory RadiologyData.fromJson(Map<String, dynamic> json) =>

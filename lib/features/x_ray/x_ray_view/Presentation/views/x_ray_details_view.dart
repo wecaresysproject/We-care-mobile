@@ -174,6 +174,7 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
 الطبيب المعالج: ${radiologyData.doctor ?? ""}
 طبيب الأشعة: ${radiologyData.radiologyDoctor ?? ""}
 المستشفى: ${radiologyData.hospital ?? ""}
+مركز الأشاعة: ${radiologyData.radiologyCenter ?? ""}
 الدولة: ${radiologyData.country ?? ""}
 ملاحظات: ${radiologyData.radiologyNote ?? ""}
 التقرير الطبي: ${radiologyData.writtenReport ?? ""}

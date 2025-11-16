@@ -26,7 +26,7 @@ class BiometricHistoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<BiometricsViewCubit>(
       create: (context) => getIt<BiometricsViewCubit>()
-        ..getFilteredBiometrics( biometricCategories: [metricName]),
+        ..getFilteredBiometrics(biometricCategories: [metricName]),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: SingleChildScrollView(
@@ -40,14 +40,16 @@ class BiometricHistoryView extends StatelessWidget {
               ),
               verticalSpacing(16),
               BlocConsumer<BiometricsViewCubit, BiometricsViewState>(
-                        listener: (context, state)async {
-          if (state.deleteRequestStatus == RequestStatus.success|| state.editRequestStatus == RequestStatus.success) {
-            showSuccess(state.responseMessage);
-          }
-          if (state.deleteRequestStatus == RequestStatus.failure|| state.editRequestStatus == RequestStatus.failure) {
-            showError(state.responseMessage);
-          }
-        },
+                listener: (context, state) async {
+                  if (state.deleteRequestStatus == RequestStatus.success ||
+                      state.editRequestStatus == RequestStatus.success) {
+                    showSuccess(state.responseMessage);
+                  }
+                  if (state.deleteRequestStatus == RequestStatus.failure ||
+                      state.editRequestStatus == RequestStatus.failure) {
+                    showError(state.responseMessage);
+                  }
+                },
                 builder: (context, state) {
                   return _buildDataTableByState(state, context);
                 },
@@ -59,13 +61,14 @@ class BiometricHistoryView extends StatelessWidget {
     );
   }
 
-  Widget _buildDataTableByState(BiometricsViewState state, BuildContext context) {
+  Widget _buildDataTableByState(
+      BiometricsViewState state, BuildContext context) {
     switch (state.requestStatus) {
       case RequestStatus.loading:
         return _buildLoadingState();
 
       case RequestStatus.success:
-        return _buildSuccessState( state.biometricsData, context);
+        return _buildSuccessState(state.biometricsData, context);
 
       default:
         return _buildInitialState();
@@ -135,7 +138,7 @@ class BiometricHistoryView extends StatelessWidget {
               onPressed: () {
                 context
                     .read<BiometricsViewCubit>()
-                    .getFilteredBiometrics( biometricCategories: [metricName]);
+                    .getFilteredBiometrics(biometricCategories: [metricName]);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsManager.mainDarkBlue,
@@ -157,17 +160,16 @@ class BiometricHistoryView extends StatelessWidget {
       List<BiometricsDatasetModel> historyData, BuildContext context) {
     if (historyData.isEmpty) {
       return _buildEmptyState();
-    } 
-final formattedData = historyData.first.data.map((d) {
-  final formattedDate = formatDateTime(d.originalDate);
-  return BiometricData(
-    formattedDate: formattedDate, // المعروضة في الجدول
-    originalDate: d.originalDate, // الأصلية تُستخدم للإرسال للـ API
-    value: d.value,
-    secondaryValue: d.secondaryValue,
-  );
-}).toList();
-
+    }
+    final formattedData = historyData.first.data.map((d) {
+      final formattedDate = formatDateTime(d.originalDate);
+      return BiometricData(
+        formattedDate: formattedDate, // المعروضة في الجدول
+        originalDate: d.originalDate, // الأصلية تُستخدم للإرسال للـ API
+        value: d.value,
+        secondaryValue: d.secondaryValue,
+      );
+    }).toList();
 
     return DataTable(
       clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -228,7 +230,7 @@ final formattedData = historyData.first.data.map((d) {
     return [
       _buildColumn("التاريخ"),
       _buildColumn("القياس القديم"),
-       _buildColumn("تعديل"),
+      _buildColumn("تعديل"),
       _buildColumn("حذف"),
     ];
   }
@@ -239,12 +241,19 @@ final formattedData = historyData.first.data.map((d) {
       return DataRow(
         cells: [
           _buildCell(item.formattedDate ?? item.originalDate),
-          _buildCell(item.value),
+          _buildCell(getBiometricValue(item)),
           _buildEditCell(context, item),
           _buildDeleteCell(context, item.originalDate),
         ],
       );
     }).toList();
+  }
+
+  String getBiometricValue(BiometricData item) {
+    if (item.secondaryValue != null) {
+      return "${item.secondaryValue} / ${item.value}";
+    }
+    return item.value;
   }
 
   DataColumn _buildColumn(String label) {
@@ -280,12 +289,12 @@ final formattedData = historyData.first.data.map((d) {
     );
   }
 
-  DataCell _buildDeleteCell(BuildContext context,String date) {
+  DataCell _buildDeleteCell(BuildContext context, String date) {
     return DataCell(
       Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor:AppColorsManager.warningColor,
+            backgroundColor: AppColorsManager.warningColor,
             foregroundColor: Colors.white,
             padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
             minimumSize: const Size(0, 0),
@@ -296,13 +305,15 @@ final formattedData = historyData.first.data.map((d) {
           onPressed: () async {
             final confirm = await _showDeleteConfirmationDialog(context);
             if (confirm == true && context.mounted) {
-           await context.read<BiometricsViewCubit>().deleteBiometricDataOfSpecificCategory(
+              await context
+                  .read<BiometricsViewCubit>()
+                  .deleteBiometricDataOfSpecificCategory(
                     date: date, // Pass the appropriate date here
                     biometricName: metricName,
                   );
-                     context
-                .read<BiometricsViewCubit>()
-                .getFilteredBiometrics( biometricCategories: [metricName]);
+              context
+                  .read<BiometricsViewCubit>()
+                  .getFilteredBiometrics(biometricCategories: [metricName]);
             }
           },
           child: Row(
@@ -340,19 +351,25 @@ final formattedData = historyData.first.data.map((d) {
             ),
           ),
           onPressed: () async {
-            final newValue = await _showEditDialog(context, item);
-            if (newValue != null && context.mounted) {
-            await  context
+            // نجيب القيم الجديدة من الدايالوغ
+            final newValues = await _showEditDialog(context, item);
+            if (newValues != null && context.mounted) {
+              await context
                   .read<BiometricsViewCubit>()
                   .editBiometricDataOfSpecificCategory(
-                    minValue: newValue,
-                    maxValue: null,
+                    minValue: newValues[
+                        'min']!, // القيمة الانقباضية أو القيمة الوحيدة
+                    maxValue: newValues['max']!.isEmpty
+                        ? null
+                        : newValues['max'], // القيمة الانبساطية لو موجودة
                     date: item.originalDate,
                     biometricName: metricName,
                   );
-                  context
-                .read<BiometricsViewCubit>()
-                .getFilteredBiometrics( biometricCategories: [metricName]);
+
+              // تحديث البيانات بعد التعديل
+              context
+                  .read<BiometricsViewCubit>()
+                  .getFilteredBiometrics(biometricCategories: [metricName]);
             }
           },
           icon: Icon(Icons.edit, size: 12.sp),
@@ -367,8 +384,6 @@ final formattedData = historyData.first.data.map((d) {
       ),
     );
   }
-
-
 
   Future<bool?> _showDeleteConfirmationDialog(BuildContext context) {
     return showDialog<bool>(
@@ -431,7 +446,7 @@ final formattedData = historyData.first.data.map((d) {
                         borderRadius: BorderRadius.circular(12.r),
                         child: Container(
                           padding: EdgeInsets.symmetric(vertical: 12.h),
-                     decoration: BoxDecoration(
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
                               color: AppColorsManager.unselectedNavIconColor,
@@ -461,11 +476,13 @@ final formattedData = historyData.first.data.map((d) {
     );
   }
 
-  Future<String?> _showEditDialog(
+  Future<Map<String, String>?> _showEditDialog(
       BuildContext context, BiometricData item) {
-    final TextEditingController controller = TextEditingController();
+    final TextEditingController minController = TextEditingController();
+    final TextEditingController? maxController =
+        item.secondaryValue != null ? TextEditingController() : null;
 
-    return showDialog<String>(
+    return showDialog<Map<String, String>>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -484,22 +501,43 @@ final formattedData = historyData.first.data.map((d) {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                "أدخل القيمة الجديدة لـ $metricName",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14.sp),
-              ),
-              SizedBox(height: 16.h),
-              TextField(
-                controller: controller,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: "القيمة الجديدة",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
+              if (item.secondaryValue != null) //? means its blood pressure ones
+                Column(
+                  children: [
+                    TextField(
+                      controller: minController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: "القيمة الانقباضية",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    TextField(
+                      controller: maxController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        labelText: "القيمة الانبساطية",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              else
+                TextField(
+                  controller: minController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "القيمة الجديدة",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           actionsAlignment: MainAxisAlignment.center,
@@ -516,16 +554,24 @@ final formattedData = historyData.first.data.map((d) {
             ),
             ElevatedButton(
               onPressed: () {
-                final enteredValue = controller.text.trim();
-                if (enteredValue.isNotEmpty) {
-                  Navigator.pop(context, enteredValue);
-                } else {
+                if (minController.text.trim().isEmpty ||
+                    (maxController != null &&
+                        maxController.text.trim().isEmpty)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("من فضلك أدخل قيمة صحيحة"),
                     ),
                   );
+                  return;
                 }
+
+                Navigator.pop(
+                  context,
+                  {
+                    'min': minController.text.trim(),
+                    'max': maxController?.text.trim() ?? '',
+                  },
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColorsManager.mainDarkBlue,
@@ -558,7 +604,7 @@ final formattedData = historyData.first.data.map((d) {
 
 String formatDateTime(String isoString) {
   final dateTime = DateTime.tryParse(isoString);
-  if (dateTime == null) return isoString; 
+  if (dateTime == null) return isoString;
 
   final day = dateTime.day.toString().padLeft(2, '0');
   final month = dateTime.month.toString().padLeft(2, '0');
