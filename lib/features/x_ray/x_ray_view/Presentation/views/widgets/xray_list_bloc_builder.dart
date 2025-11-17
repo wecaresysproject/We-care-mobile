@@ -18,12 +18,12 @@ class XrayListBlocBuilder extends StatelessWidget {
     return BlocBuilder<XRayViewCubit, XRayViewState>(
       builder: (context, state) {
         if (state.requestStatus == RequestStatus.loading) {
-          return Expanded(
-              child: const Center(
-                  child: CircularProgressIndicator(
-            color: AppColorsManager.mainDarkBlue,
-            backgroundColor: Colors.white,
-          )));
+          return const Center(
+            child: CircularProgressIndicator(
+              color: AppColorsManager.mainDarkBlue,
+              backgroundColor: Colors.white,
+            ),
+          );
         } else if (state.requestStatus == RequestStatus.failure) {
           return Expanded(
             child: Center(
@@ -65,7 +65,7 @@ class XrayListBlocBuilder extends StatelessWidget {
             },
           );
         } else {
-          return Container();
+          return SizedBox.shrink();
         }
       },
     );

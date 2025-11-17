@@ -33,6 +33,7 @@ class XrayDataEntryRequestBodyModel {
   @JsonKey(name: "Language")
   final String language;
   final String writtenReport;
+  final String selectedBodyPartId;
 
   XrayDataEntryRequestBodyModel({
     required this.radiologyDate,
@@ -51,6 +52,7 @@ class XrayDataEntryRequestBodyModel {
     required this.language,
     required this.writtenReport,
     required this.radiologyCenter,
+    required this.selectedBodyPartId,
   });
 
   Map<String, dynamic> toJson() => _$XrayDataEntryRequestBodyModelToJson(this);

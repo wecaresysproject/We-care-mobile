@@ -84,7 +84,7 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await biometricsViewRepo.getCurrentBiometricData(
-        language: 'ar', userType: 'Patient');    
+        language: 'ar', userType: 'Patient');
     response.when(
       success: (data) {
         emit(state.copyWith(
@@ -96,10 +96,9 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
         emit(state.copyWith(
           requestStatus: RequestStatus.failure,
         ));
-      },  
+      },
     );
   }
-
 
   Future<void> deleteBiometricDataOfSpecificCategory({
     required String date,
@@ -107,11 +106,12 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
   }) async {
     emit(state.copyWith(deleteRequestStatus: RequestStatus.loading));
 
-    final response = await biometricsViewRepo.deleteBiometricDataOfSpecifcCategory(
-        language: 'ar',
-        userType: 'Patient',
-        date: date,
-        biometricName: biometricName);
+    final response =
+        await biometricsViewRepo.deleteBiometricDataOfSpecifcCategory(
+            language: 'ar',
+            userType: 'Patient',
+            date: date,
+            biometricName: biometricName);
     response.when(
       success: (data) {
         emit(state.copyWith(
@@ -136,15 +136,16 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
   }) async {
     emit(state.copyWith(editRequestStatus: RequestStatus.loading));
 
-    final response = await biometricsViewRepo.editBiometricDataOfSpecifcCategory(
-        requestBody: {
+    final response = await biometricsViewRepo
+        .editBiometricDataOfSpecifcCategory(
+            requestBody: {
           "minValue": minValue,
           "maxValue": maxValue,
         },
-        language: 'ar',
-        userType: 'Patient',
-        date: date,
-        biometricName: biometricName);
+            language: 'ar',
+            userType: 'Patient',
+            date: date,
+            biometricName: biometricName);
     response.when(
       success: (data) {
         emit(state.copyWith(

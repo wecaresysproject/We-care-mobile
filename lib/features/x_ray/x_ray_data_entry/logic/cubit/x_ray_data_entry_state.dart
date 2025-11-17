@@ -21,6 +21,7 @@ class XRayDataEntryState extends Equatable {
   final bool isFormValidated;
   final String? xRayDateSelection;
   final String? xRayBodyPartSelection;
+  final String? selectedBodyPartId;
   final String? xRayTypeSelection;
   final String? selectedCountryName;
   final String? selectedTreatedDoctor;
@@ -63,6 +64,7 @@ class XRayDataEntryState extends Equatable {
     this.uploadedTestReports = const [],
     this.radiologyDoctors = const [],
     this.symptomsRequiringIntervention,
+    this.selectedBodyPartId,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -90,6 +92,7 @@ class XRayDataEntryState extends Equatable {
           uploadedTestReports: const [],
           radiologyDoctors: const [],
           symptomsRequiringIntervention: null,
+          selectedBodyPartId: null,
         );
 
   XRayDataEntryState copyWith({
@@ -122,6 +125,7 @@ class XRayDataEntryState extends Equatable {
     List<String>? uploadedTestReports,
     List<String>? radiologyDoctors,
     String? symptomsRequiringIntervention,
+    String? selectedBodyPartId,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -165,6 +169,7 @@ class XRayDataEntryState extends Equatable {
       radiologyDoctors: radiologyDoctors ?? this.radiologyDoctors,
       symptomsRequiringIntervention:
           symptomsRequiringIntervention ?? this.symptomsRequiringIntervention,
+      selectedBodyPartId: selectedBodyPartId ?? this.selectedBodyPartId,
     );
   }
 
@@ -199,5 +204,6 @@ class XRayDataEntryState extends Equatable {
         uploadedTestReports,
         radiologyDoctors,
         symptomsRequiringIntervention,
+        selectedBodyPartId,
       ];
 }

@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
@@ -24,6 +25,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     this.essentialInfoDataEntryRepo,
   ) : super(EssentialDataEntryState.initial());
 
+  final formKey = GlobalKey<FormState>();
+
   // Controllers (managed by Cubit)
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
@@ -40,8 +43,6 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final TextEditingController additionalInsuranceConditionsController =
       TextEditingController();
 
-  final TextEditingController familyDoctorNameController =
-      TextEditingController();
   final TextEditingController familyDoctorPhoneNumberController =
       TextEditingController();
   final TextEditingController numberOfChildrenController =
@@ -57,11 +58,39 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       TextEditingController();
 
   final List<String> bloodTypes = [
-    'A',
-    'B',
-    'O',
-    'AB',
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
   ];
+  Future<void> emitDoctorNames() async {
+    final response = await _sharedRepo.getAllDoctors(
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      language: AppStrings.arabicLang,
+      specialization: "الأشعة التداخلية",
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            doctors: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> submitEditsOnUserEssentialInfo(S localization) async {
     emit(state.copyWith(submissionStatus: RequestStatus.loading));
@@ -92,7 +121,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         numberOfChildren: int.parse(numberOfChildrenController.text.isEmpty
             ? '0'
             : numberOfChildrenController.text),
-        familyDoctorName: familyDoctorNameController.text.trim(),
+        familyDoctorName: state.selectedFamilyDoctorName!,
         workHours: noOfWoringHours.text.trim(),
         emergencyContact1: mainEmergencyPhoneController.text.trim(),
         emergencyContact2: anotherEmergencyPhoneController.text.trim(),
@@ -149,6 +178,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         insuranceEndDate: editingModel.insuranceCoverageExpiryDate ?? '',
         insuranceCardPhotoUrl: editingModel.insuranceCardPhotoUrl,
         isEditMode: true,
+        selectedFamilyDoctorName: editingModel.familyDoctorName,
       ),
     );
     fullNameController.text = editingModel.fullName!;
@@ -165,7 +195,6 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     disabilityTypeDetailsController.text = "مش موجود في العرض";
     noOfWoringHours.text = editingModel.workHours!;
 
-    familyDoctorNameController.text = editingModel.familyDoctorName!;
     familyDoctorPhoneNumberController.text =
         editingModel.familyDoctorPhoneNumber!;
     numberOfChildrenController.text = editingModel.numberOfChildren.toString();
@@ -177,7 +206,12 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   initialRequests() async {
-    await emitCountriesData();
+    Future.wait(
+      [
+        emitCountriesData(),
+        emitDoctorNames(),
+      ],
+    );
   }
 
   Future<void> uploadProfileImage({required String imagePath}) async {
@@ -290,9 +324,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
             : localization.no_data_entered),
         socialStatus: state.socialStatus ?? localization.no_data_entered,
         numberOfChildren: int.tryParse(numberOfChildrenController.text) ?? 0,
-        familyDoctorName: familyDoctorNameController.text.trim().isNotEmpty
-            ? familyDoctorNameController.text.trim()
-            : localization.no_data_entered,
+        familyDoctorName:
+            state.selectedFamilyDoctorName ?? localization.no_data_entered,
         workHours: noOfWoringHours.text.trim().isNotEmpty
             ? noOfWoringHours.text.trim()
             : localization.no_data_entered,
@@ -389,6 +422,8 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   // Update functions
   void updateIsMarriedOrNot(String? val) =>
       emit(state.copyWith(socialStatus: val));
+  void updateFamilyDoctorName(String? val) =>
+      emit(state.copyWith(selectedFamilyDoctorName: val));
   void updateDisabilityLevel(String? val) =>
       emit(state.copyWith(disabilityLevel: val));
 
@@ -461,11 +496,9 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     disabilityTypeDetailsController.dispose();
     additionalInsuranceConditionsController.dispose();
-    familyDoctorNameController.dispose();
     numberOfChildrenController.dispose();
     mainEmergencyPhoneController.dispose();
     anotherEmergencyPhoneController.dispose();
-
     return super.close();
   }
 }

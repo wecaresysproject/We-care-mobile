@@ -11,12 +11,13 @@ class EyeProceduresAndSymptomsDetailsModel {
   final String medicalReportDate;
   final List<String> medicalProcedures;
   final String affectedEyePart;
-  final String medicalReportUrl;
-  final String medicalExaminationImages;
+  final List<String> medicalReportUrl;
+  final List<String> medicalExaminationImages;
   final String doctorName;
   final String centerHospitalName;
   final String country;
   final String additionalNotes;
+  final String writtenReport;
 
   EyeProceduresAndSymptomsDetailsModel({
     required this.id,
@@ -32,6 +33,7 @@ class EyeProceduresAndSymptomsDetailsModel {
     required this.centerHospitalName,
     required this.country,
     required this.additionalNotes,
+    required this.writtenReport,
   });
 
   factory EyeProceduresAndSymptomsDetailsModel.fromJson(

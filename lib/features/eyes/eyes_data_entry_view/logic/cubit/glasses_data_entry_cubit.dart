@@ -445,6 +445,7 @@ class GlassesDataEntryCubit extends Cubit<GlassesDataEntryState> {
     final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
+      specialization: "طب العيون",
     );
 
     response.when(

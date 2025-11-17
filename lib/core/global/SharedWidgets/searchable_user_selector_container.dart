@@ -109,7 +109,7 @@ class _SearchableUserSelectorContainerState
         widget.onOptionSelected(selected);
       },
       allowManualEntry: widget.allowManualEntry,
-      userEntryLabelText: widget.userEntryLabelText ?? "أدخل اسمًا يدويًا",
+      userEntryLabelText: widget.userEntryLabelText ?? "أدخل يدويًا",
       searchHintText: widget.searchHintText,
       emptyResultMessage: widget.emptyResultMessage,
       loadingText: widget.loadingText,

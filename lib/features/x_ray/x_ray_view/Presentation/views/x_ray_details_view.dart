@@ -174,16 +174,16 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
 الطبيب المعالج: ${radiologyData.doctor ?? ""}
 طبيب الأشعة: ${radiologyData.radiologyDoctor ?? ""}
 المستشفى: ${radiologyData.hospital ?? ""}
+مركز الأشاعة: ${radiologyData.radiologyCenter ?? ""}
 الدولة: ${radiologyData.country ?? ""}
 ملاحظات: ${radiologyData.radiologyNote ?? ""}
 التقرير الطبي: ${radiologyData.writtenReport ?? ""}
 ''';
 
-  // 📥 تحميل الصور والتقارير
   final tempDir = await getTemporaryDirectory();
   List<XFile> filesToShare = [];
 
-  // 🖼️ تحميل صور الأشعة (لو عندك list)
+  // 🖼️ تحميل صور الأشعة
   if (radiologyData.radiologyPhotos != null &&
       radiologyData.radiologyPhotos!.isNotEmpty) {
     for (int i = 0; i < radiologyData.radiologyPhotos!.length; i++) {
@@ -198,7 +198,7 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     }
   }
 
-  // 📄 تحميل التقارير (لو عندك list)
+  // 📄 تحميل التقارير
   if (radiologyData.reports != null && radiologyData.reports!.isNotEmpty) {
     for (int i = 0; i < radiologyData.reports!.length; i++) {
       final url = radiologyData.reports![i];
@@ -212,10 +212,11 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     }
   }
 
-  // 📤 المشاركة
+  // 📤 1) مشاركة الصور فقط
   if (filesToShare.isNotEmpty) {
-    await Share.shareXFiles(filesToShare, text: shareContent);
-  } else {
-    await Share.share(shareContent);
+    await Share.shareXFiles(filesToShare);
   }
+
+  // 📤 2) مشاركة البيانات مرة واحدة فقط
+  await Share.share(shareContent);
 }

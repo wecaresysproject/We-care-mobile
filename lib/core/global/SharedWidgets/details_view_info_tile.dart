@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -17,7 +18,7 @@ class DetailsViewInfoTile extends StatelessWidget {
       {super.key,
       required this.title,
       required this.value,
-       this.icon,
+      this.icon,
       this.isMultiContainer = false,
       this.isSmallContainers = false,
       this.isExpanded = false,
@@ -25,7 +26,11 @@ class DetailsViewInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(value.isEmpty||value=="لم يتم ادخال بيانات"||value==""||value=='-'||value=="--") {
+    if (value.isEmpty ||
+        value == context.translate.no_data_entered ||
+        value == "" ||
+        value == "--" ||
+        value.isEmptyOrNull) {
       return SizedBox.shrink();
     }
     return Padding(
@@ -35,12 +40,15 @@ class DetailsViewInfoTile extends StatelessWidget {
         children: [
           Row(
             children: [
-            icon != null?  Image.asset(icon!, height: 14.h, width: 14.w):SizedBox.shrink(),
+              icon != null
+                  ? Image.asset(icon!, height: 14.h, width: 14.w)
+                  : SizedBox.shrink(),
               horizontalSpacing(2),
               Text(
                 title,
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-                    color: AppColorsManager.mainDarkBlue, fontSize: isSmallContainers? 14.sp: 16.5.sp),
+                    color: AppColorsManager.mainDarkBlue,
+                    fontSize: isSmallContainers ? 14.sp : 16.5.sp),
               ),
             ],
           ),
@@ -48,7 +56,11 @@ class DetailsViewInfoTile extends StatelessWidget {
           SizedBox(
             width: isExpanded
                 ? MediaQuery.of(context).size.width - 32.w
-                : isPartiallyExpanded?(MediaQuery.of(context).size.width * 0.65) - 27.w: isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: (MediaQuery.of(context).size.width * 0.5) - 27.w,
+                : isPartiallyExpanded
+                    ? (MediaQuery.of(context).size.width * 0.65) - 27.w
+                    : isSmallContainers
+                        ? (MediaQuery.of(context).size.width * 0.35) - 27.w
+                        : (MediaQuery.of(context).size.width * 0.5) - 27.w,
             child: CustomContainer(
               value: value,
               isExpanded: isExpanded,
@@ -77,7 +89,9 @@ class CustomContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: isExpanded
-          ?isSmallContainers? (MediaQuery.of(context).size.width * 0.35) - 27.w: MediaQuery.of(context).size.width - 32.w
+          ? isSmallContainers
+              ? (MediaQuery.of(context).size.width * 0.35) - 27.w
+              : MediaQuery.of(context).size.width - 32.w
           : (MediaQuery.of(context).size.width * 0.46) - 24.w,
       child: Container(
         padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
@@ -97,8 +111,9 @@ class CustomContainer extends StatelessWidget {
             value,
             textAlign: TextAlign.right,
             style: AppTextStyles.font16DarkGreyWeight400.copyWith(
-              fontSize: 15.sp,
-                color: AppColorsManager.textColor, fontWeight: FontWeight.w500),
+                fontSize: 15.sp,
+                color: AppColorsManager.textColor,
+                fontWeight: FontWeight.w500),
           ),
         ),
       ),

@@ -27,7 +27,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
   final AppSharedRepo sharedRepo;
 
   final personalNotesController = TextEditingController();
-  final reportTextController = TextEditingController(); // ✅ أضف ده
+  final reportTextController = TextEditingController();
 
   Future<void> emitBodyPartsData() async {
     final response = await _xRayDataEntryRepo.getBodyPartsData();
@@ -193,12 +193,16 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
 
   Future<void> intialRequestsForXRayDataEntry() async {
     if (isClosed) return;
-    await emitBodyPartsData();
-    await emitCountriesData();
-    await emitDoctorNames();
-    await emitRadiologyDoctorNames();
-    await emitRadiologyCenters();
-    await emitHospitalNames();
+    Future.wait(
+      [
+        emitBodyPartsData(),
+        emitCountriesData(),
+        emitDoctorNames(),
+        emitRadiologyDoctorNames(),
+        emitRadiologyCenters(),
+        emitHospitalNames(),
+      ],
+    );
   }
 
   Future<void> _getRadiologyTypeByBodyPartId(String id) async {
@@ -212,6 +216,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
                 response.radiologyTypeOfBodyPart.map((e) => e.type).toList(),
             selectedRadiologyTypesOfBodyPartModel:
                 response.radiologyTypeOfBodyPart,
+            selectedBodyPartId: id,
           ),
         );
       },
@@ -234,6 +239,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     //!because i pass all edited data to loadAnalysisDataForEditing method at begining of my cubit in case i have an model to edit
     final response = await _xRayDataEntryRepo.updateXRayDocumentDetails(
       requestBody: XrayDataEntryRequestBodyModel(
+        selectedBodyPartId: state.selectedBodyPartId!,
         radiologyCenter: state.selectedRadiologyCenter,
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang,
@@ -282,7 +288,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         isEditMode: true,
         xRayBodyPartSelection: editingRadiologyDetailsData.bodyPart,
         xRayTypeSelection: editingRadiologyDetailsData.radioType,
-        selectedPupose: editingRadiologyDetailsData.periodicUsage,
+        selectedPupose: editingRadiologyDetailsData.periodicUsage, //! check
         xRayEditedModel: editingRadiologyDetailsData,
         selectedTreatedDoctor: editingRadiologyDetailsData.doctor,
         selectedRadiologistDoctorName:
@@ -292,11 +298,17 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         uploadedTestImages: editingRadiologyDetailsData.radiologyPhotos,
         uploadedTestReports: editingRadiologyDetailsData.reports,
         symptomsRequiringIntervention: editingRadiologyDetailsData.symptoms,
+        selectedBodyPartId: editingRadiologyDetailsData.bodyPartId,
+        selectedCountryName: editingRadiologyDetailsData.country,
       ),
     );
     personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;
     reportTextController.text = editingRadiologyDetailsData.writtenReport!;
     validateRequiredFields();
+    await _getRadiologyTypeByBodyPartId(
+      editingRadiologyDetailsData.bodyPartId!,
+    );
+    _getRadiologySpecifcTypePurposes(editingRadiologyDetailsData.radioType);
     await intialRequestsForXRayDataEntry();
   }
 
@@ -524,6 +536,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     log("xxx: report text : ${reportTextController.text}");
     final response = await _xRayDataEntryRepo.postRadiologyDataEntry(
       XrayDataEntryRequestBodyModel(
+        selectedBodyPartId: state.selectedBodyPartId!,
         radiologyCenter: state.selectedRadiologyCenter,
         radiologyDate: state.xRayDateSelection!,
         bodyPartName: state.xRayBodyPartSelection!,

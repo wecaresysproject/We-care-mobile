@@ -746,6 +746,7 @@ class SymptomsRequiringInterventionSelector extends StatelessWidget {
         final xrayCubit = context.read<TestAnalysisDataEntryCubit>();
 
         return SearchableUserSelectorContainer(
+          allowManualEntry: true,
           categoryLabel: "الأعراض المستدعية للاجراء",
           bottomSheetTitle: "اختر الأعراض المستدعية",
           containerHintText:

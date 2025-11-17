@@ -10,9 +10,9 @@ class EyesDataEntryState extends Equatable {
   final String? surgeryBodyPartSelection;
   final String? surgeryNameSelection;
   final String message; // error or success message
-  final String? reportImageUploadedUrl;
+  final List<String> uploadedReportImages;
   final UploadReportRequestStatus uploadReportStatus;
-  final String? medicalExaminationImageUploadedUrl;
+  final List<String> medicalExaminationImages;
   final UploadImageRequestStatus uploadMedicalExaminationStatus;
   final EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures;
 
@@ -22,6 +22,7 @@ class EyesDataEntryState extends Equatable {
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
   final List<String> surgeryNames;
+  final List<String> doctorNames;
   final String? selectedSubSurgery; //المنطقة المختاره للعمليات الفرعية
   final List<String> allTechUsed;
   final List<String> allSurgeryStatuses;
@@ -45,9 +46,9 @@ class EyesDataEntryState extends Equatable {
     this.surgeryBodyPartSelection,
     this.surgeryNameSelection,
     this.message = '',
-    this.reportImageUploadedUrl,
+    this.uploadedReportImages = const [],
     this.uploadReportStatus = UploadReportRequestStatus.initial,
-    this.medicalExaminationImageUploadedUrl,
+    this.medicalExaminationImages = const [],
     this.uploadMedicalExaminationStatus = UploadImageRequestStatus.initial,
     this.countriesNames = const [],
     this.selectedCountryName,
@@ -68,6 +69,7 @@ class EyesDataEntryState extends Equatable {
     this.eyePartSyptomsAndProcedures,
     this.affectedEyePart = '',
     this.hospitalNames = const [],
+    this.doctorNames = const [],
   }) : super();
 
   const EyesDataEntryState.initialState()
@@ -80,9 +82,9 @@ class EyesDataEntryState extends Equatable {
           surgeryBodyPartSelection: null,
           surgeryNameSelection: null,
           message: '',
-          reportImageUploadedUrl: null,
+          uploadedReportImages: const [],
           uploadReportStatus: UploadReportRequestStatus.initial,
-          medicalExaminationImageUploadedUrl: null,
+          medicalExaminationImages: const [],
           uploadMedicalExaminationStatus: UploadImageRequestStatus.initial,
           countriesNames: const [],
           selectedCountryName: null,
@@ -103,6 +105,7 @@ class EyesDataEntryState extends Equatable {
           eyePartSyptomsAndProcedures: null,
           affectedEyePart: null,
           hospitalNames: const [],
+          doctorNames: const [],
         );
 
   EyesDataEntryState copyWith({
@@ -115,9 +118,9 @@ class EyesDataEntryState extends Equatable {
     String? surgeryBodyPartSelection,
     String? surgeryNameSelection,
     String? message,
-    String? reportImageUploadedUrl,
+    List<String>? uploadedReportImages,
     UploadReportRequestStatus? uploadReportStatus,
-    String? medicalExaminationImageUploadedUrl,
+    List<String>? medicalExaminationImages,
     UploadImageRequestStatus? uploadMedicalExaminationStatus,
     List<String>? countriesNames,
     String? selectedCountryName,
@@ -138,6 +141,7 @@ class EyesDataEntryState extends Equatable {
     EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
     String? affectedEyePart,
     List<String>? hospitalNames,
+    List<String>? doctorNames,
   }) {
     return EyesDataEntryState(
       eyeDataEntryStatus: eyeDataEntryStatus ?? this.eyeDataEntryStatus,
@@ -150,10 +154,9 @@ class EyesDataEntryState extends Equatable {
           surgeryBodyPartSelection ?? this.surgeryBodyPartSelection,
       surgeryNameSelection: surgeryNameSelection ?? this.surgeryNameSelection,
       message: message ?? this.message,
-      reportImageUploadedUrl:
-          reportImageUploadedUrl ?? this.reportImageUploadedUrl,
-      medicalExaminationImageUploadedUrl: medicalExaminationImageUploadedUrl ??
-          this.medicalExaminationImageUploadedUrl,
+      uploadedReportImages: uploadedReportImages ?? this.uploadedReportImages,
+      medicalExaminationImages:
+          medicalExaminationImages ?? this.medicalExaminationImages,
       uploadMedicalExaminationStatus:
           uploadMedicalExaminationStatus ?? this.uploadMedicalExaminationStatus,
       uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
@@ -180,6 +183,7 @@ class EyesDataEntryState extends Equatable {
           eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
       affectedEyePart: affectedEyePart ?? this.affectedEyePart,
       hospitalNames: hospitalNames ?? this.hospitalNames,
+      doctorNames: doctorNames ?? this.doctorNames,
     );
   }
 
@@ -192,8 +196,8 @@ class EyesDataEntryState extends Equatable {
         surgeryBodyPartSelection,
         surgeryNameSelection,
         message,
-        reportImageUploadedUrl,
-        medicalExaminationImageUploadedUrl,
+        uploadedReportImages,
+        medicalExaminationImages,
         uploadMedicalExaminationStatus,
         symptomDuration,
         procedureDateSelection,
@@ -217,5 +221,6 @@ class EyesDataEntryState extends Equatable {
         eyePartSyptomsAndProcedures,
         affectedEyePart,
         hospitalNames,
+        doctorNames,
       ];
 }

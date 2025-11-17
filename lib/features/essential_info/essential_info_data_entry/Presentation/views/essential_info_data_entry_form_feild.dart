@@ -27,7 +27,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<EssentialDataEntryCubit>();
         return Form(
-          key: GlobalKey<FormState>(),
+          key: cubit.formKey,
           child: Padding(
             padding: EdgeInsets.only(bottom: 70.h),
             child: Column(
@@ -155,6 +155,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   options: [
                     'كلي',
                     'جزئي',
+                    'لا يوجد',
                   ],
                   questionTitle: "العجز الجسدى أو الوظيفى ان وجد",
                   initialValue: state.disabilityLevel,
@@ -204,16 +205,17 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
-                Text(
-                  "طبيب الأسرة",
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                verticalSpacing(10),
-                CustomTextField(
-                  controller: cubit.familyDoctorNameController,
-                  hintText: "اكتب اسم طبيب الأسرة ان وجد",
-                  validator: (val) {},
-                  onChanged: (_) {},
+                UserSelectionContainer(
+                  allowManualEntry: true,
+                  categoryLabel: 'طبيب الأسرة',
+                  containerHintText:
+                      state.selectedFamilyDoctorName ?? 'اختر طبيب الأسرة',
+                  options: state.doctors,
+                  onOptionSelected: (val) {
+                    cubit.updateFamilyDoctorName(val);
+                  },
+                  bottomSheetTitle: 'اختر طبيب الأسرة',
+                  searchHintText: 'ابحث عن طبيب الأسرة',
                 ),
                 verticalSpacing(16),
                 Text(
@@ -225,7 +227,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   controller: cubit.familyDoctorPhoneNumberController,
                   hintText: "اكتب تليفون طبيب الأسرة",
                   keyboardType: TextInputType.number,
-                  validator: (val) {},
+                  validator: (val) => val?.validateEgyptPhone(),
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
@@ -251,7 +253,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   controller: cubit.mainEmergencyPhoneController,
                   hintText: "تليفون اخر (الأم/الأب/الأخ/الأخت/الزوج/الزوجة)",
                   keyboardType: TextInputType.number,
-                  validator: (val) {},
+                  validator: (val) => val?.validateEgyptPhone(),
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
@@ -264,7 +266,7 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   controller: cubit.anotherEmergencyPhoneController,
                   hintText: "تليفون اخر (الأم/الأب/الأخ/الأخت/الزوج/الزوجة)",
                   keyboardType: TextInputType.number,
-                  validator: (val) {},
+                  validator: (val) => val?.validateEgyptPhone(),
                   onChanged: (_) {},
                 ),
                 verticalSpacing(16),
@@ -360,6 +362,7 @@ class MedicalInsuranceYesOrNoWidget extends StatelessWidget {
                           ),
                           verticalSpacing(10),
                           DateTimePickerContainer(
+                            isForInsuranceExpiry: true,
                             placeholderText:
                                 state.insuranceEndDate ?? 'يوم / شهر / سنة',
                             onDateSelected: (pickedDate) {

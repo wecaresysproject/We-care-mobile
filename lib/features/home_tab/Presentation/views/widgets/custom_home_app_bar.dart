@@ -21,11 +21,14 @@ class HomeCustomAppBarWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         BlocProvider<EssentialInfoViewCubit>(
-          create: (context) => getIt<EssentialInfoViewCubit>()..getUserEssentialInfo(),
+          create: (context) =>
+              getIt<EssentialInfoViewCubit>()..getUserEssentialInfo(),
           child: BlocBuilder<EssentialInfoViewCubit, EssentialInfoViewState>(
             builder: (context, state) {
-              final fullName = state.userEssentialInfo?.fullName ?? 'user name';
-            final firstTwoNames = fullName.split(' ').take(2).join(' ');
+              final displayName =
+                  (state.userEssentialInfo?.fullName ?? 'user name')
+                      .firstAndLastName;
+
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -36,7 +39,7 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                     userImageUrl: state.userEssentialInfo?.personalPhotoUrl,
                   ),
                   Text(
-                   firstTwoNames,
+                    displayName,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                       color: AppColorsManager.textColor,

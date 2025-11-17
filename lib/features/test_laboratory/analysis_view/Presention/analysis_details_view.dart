@@ -160,7 +160,7 @@ class AnalysisDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "المعمل",
-                    value: "dummy",
+                    value: state.selectedAnalysisDetails!.radiologyCenter,
                     icon: 'assets/images/hospital_icon.png',
                     isExpanded: true,
                   ),
