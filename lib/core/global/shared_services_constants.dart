@@ -8,4 +8,6 @@ class SharedServicesConstants {
   static const labCenters = "/DoctorUser/getLabCenters";
   static const diseasesNames = "/DoctorUser/getDiseasesNames";
   static const doctorNames = "/Doctor/GetAllDoctors";
+  static const uploadImageEndpoint = "/FileUpload/upload-image";
+  static const uploadReportEndpoint = "/FileUpload/upload-report";
 }

@@ -25,6 +25,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   final AppSharedRepo sharedRepo;
 
   final personalNotesController = TextEditingController();
+  final reportTextController = TextEditingController();
 
   Future<void> loadPastEyeDataEnteredForEditing({
     required EyeProceduresAndSymptomsDetailsModel pastEyeData,
@@ -40,21 +41,44 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
           symptoms: pastEyeData.symptoms,
         ),
         symptomDuration: pastEyeData.symptomDuration,
-        medicalExaminationImageUploadedUrl:
-            pastEyeData.medicalExaminationImages,
+        medicalExaminationImages: pastEyeData.medicalExaminationImages,
         doctorName: pastEyeData.doctorName,
         isEditMode: true,
         editDecumentId: id,
         affectedEyePart: pastEyeData.affectedEyePart,
-        reportImageUploadedUrl: pastEyeData.medicalReportUrl,
+        uploadedReportImages: pastEyeData.medicalReportUrl,
         procedureDateSelection: pastEyeData.medicalReportDate,
       ),
     );
     personalNotesController.text =
         pastEyeData.additionalNotes == '--' ? '' : pastEyeData.additionalNotes;
+    reportTextController.text = pastEyeData.writtenReport;
 
     validateRequiredFields();
     await getInitialRequests();
+  }
+
+  void removeUploadedReportImage(String url) {
+    final updated = List<String>.from(state.uploadedReportImages)..remove(url);
+
+    emit(
+      state.copyWith(
+        uploadedReportImages: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
+  void removeUploadedExaminationImage(String url) {
+    final updated = List<String>.from(state.medicalExaminationImages)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        medicalExaminationImages: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
   }
 
   Future<void> emitDoctorNames() async {
@@ -135,22 +159,35 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   }
 
   Future<void> uploadReportImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.uploadedReportImages.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadReportStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         uploadReportStatus: UploadReportRequestStatus.initial,
       ),
     );
-    final response = await _eyesDataEntryRepo.uploadReportImage(
+    final response = await sharedRepo.uploadReport(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
       image: File(imagePath),
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.uploadedReportImages)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
             message: response.message,
-            reportImageUploadedUrl: response.reportUrl,
+            uploadedReportImages: updatedReports,
             uploadReportStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -168,22 +205,35 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
 
   Future<void> uploadMedicalExaminationImage(
       {required String imagePath}) async {
+    // 1) Check limit
+    if (state.medicalExaminationImages.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadMedicalExaminationStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         uploadMedicalExaminationStatus: UploadImageRequestStatus.initial,
       ),
     );
-    final response = await _eyesDataEntryRepo.uploadMedicalExaminationImage(
+    final response = await sharedRepo.uploadImage(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
       image: File(imagePath),
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedImages = List<String>.from(state.medicalExaminationImages)
+          ..add(response.imageUrl);
         emit(
           state.copyWith(
             message: response.message,
-            medicalExaminationImageUploadedUrl: response.imageUrl,
+            medicalExaminationImages: updatedImages,
             uploadMedicalExaminationStatus: UploadImageRequestStatus.success,
           ),
         );
@@ -238,6 +288,9 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     final response = await _eyesDataEntryRepo.postEyeDataEntry(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: EyeDataEntryRequestBody(
+        writtenReport: reportTextController.text.isEmpty
+            ? locale.no_data_entered
+            : reportTextController.text,
         affectedEyePart: affectedEyePart,
         symptomStartDate: state.syptomStartDate!,
         centerHospitalName:
@@ -252,10 +305,8 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
             : procedures.map((e) => e.title).toList(),
         medicalReportDate:
             state.procedureDateSelection ?? locale.no_data_entered,
-        medicalReportUrl:
-            state.reportImageUploadedUrl ?? locale.no_data_entered,
-        medicalExaminationImages:
-            state.medicalExaminationImageUploadedUrl ?? locale.no_data_entered,
+        medicalReportUrl: state.uploadedReportImages,
+        medicalExaminationImages: state.medicalExaminationImages,
         doctorName: state.doctorName ?? locale.no_data_entered,
         additionalNotes: personalNotesController.text.isEmpty
             ? '--'
@@ -291,6 +342,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     );
     final response = await _eyesDataEntryRepo.editEyeDataEntered(
       requestBody: EyeDataEntryRequestBody(
+        writtenReport: reportTextController.text,
         affectedEyePart: state.affectedEyePart!,
         symptomStartDate: state.syptomStartDate!,
         centerHospitalName: state.selectedHospitalCenter!,
@@ -299,8 +351,8 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
         symptomDuration: state.symptomDuration!,
         medicalProcedures: state.eyePartSyptomsAndProcedures!.procedures,
         medicalReportDate: state.procedureDateSelection!,
-        medicalReportUrl: state.reportImageUploadedUrl!,
-        medicalExaminationImages: state.medicalExaminationImageUploadedUrl!,
+        medicalReportUrl: state.uploadedReportImages,
+        medicalExaminationImages: state.medicalExaminationImages,
         doctorName: state.doctorName!,
         additionalNotes: personalNotesController.text.isEmpty
             ? '--'
@@ -395,6 +447,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
   @override
   Future<void> close() {
     personalNotesController.dispose();
+    reportTextController.dispose();
     return super.close();
   }
 }

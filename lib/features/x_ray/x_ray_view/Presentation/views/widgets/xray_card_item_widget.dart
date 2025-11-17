@@ -106,20 +106,31 @@ class XRayCardItem extends StatelessWidget {
 
                       /// Severity
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'دواعي الفحص:',
-                            style: AppTextStyles.font14BlueWeight700
-                                .copyWith(fontSize: 14.sp),
+                            style: AppTextStyles.font14BlueWeight700.copyWith(
+                              fontSize: 14.sp,
+                            ),
                           ),
                           SizedBox(width: 8.w),
-                          Text(
-                            item.symptoms!,
-                            style: AppTextStyles.font14blackWeight400
-                                .copyWith(fontSize: 14.sp),
+
+                          // 🔥Expanded علشان ياخد باقي المساحة
+                          Expanded(
+                            child: Text(
+                              item.symptoms ?? "",
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                              maxLines: 1, // ← أو خليه null لو عايز يلف براحتو
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
+
                       SizedBox(height: 8.h),
 
                       Row(

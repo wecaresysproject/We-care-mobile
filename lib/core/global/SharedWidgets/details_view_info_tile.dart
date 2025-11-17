@@ -29,9 +29,8 @@ class DetailsViewInfoTile extends StatelessWidget {
     if (value.isEmpty ||
         value == context.translate.no_data_entered ||
         value == "" ||
-        value.isEmptyOrNull ||
-        value == '-' ||
-        value == "--") {
+        value == "--" ||
+        value.isEmptyOrNull) {
       return SizedBox.shrink();
     }
     return Padding(

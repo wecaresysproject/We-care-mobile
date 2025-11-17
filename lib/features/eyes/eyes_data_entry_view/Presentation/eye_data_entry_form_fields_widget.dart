@@ -3,21 +3,21 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/medical_examinations_upload_section_widget.dart';
+import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/upload_eye_report_section_widget.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
 
 class EyeDataEntryFormFields extends StatelessWidget {
@@ -148,83 +148,36 @@ class EyeDataEntryFormFields extends StatelessWidget {
               verticalSpacing(10),
               SelectImageContainer(
                 imagePath: "assets/images/t_shape_icon.png",
-                label: "اكتب التقرير",
-                onTap: () {},
-              ),
-              verticalSpacing(8),
-              BlocListener<EyesDataEntryCubit, EyesDataEntryState>(
-                listenWhen: (previous, current) =>
-                    previous.uploadReportStatus != current.uploadReportStatus,
-                listener: (context, state) async {
-                  if (state.uploadReportStatus ==
-                      UploadReportRequestStatus.success) {
-                    await showSuccess(state.message);
-                  }
-                  if (state.uploadReportStatus ==
-                      UploadReportRequestStatus.failure) {
-                    await showError(state.message);
-                  }
+                label: context
+                        .read<EyesDataEntryCubit>()
+                        .reportTextController
+                        .text
+                        .isEmpty
+                    ? "اكتب التقرير"
+                    : "تعديل التقرير",
+                onTap: () async {
+                  // ✅ اقرا الـ cubit من الـ context الحالي
+                  final cubit = context.read<EyesDataEntryCubit>();
+                  final isFirstTime =
+                      cubit.reportTextController.text.isEmpty == true;
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WriteReportScreenSharedWidget(
+                        reportController: cubit.reportTextController,
+                        screenTitle:
+                            isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                        saveButtonText:
+                            isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                      ),
+                    ),
+                  );
                 },
-                child: SelectImageContainer(
-                  imagePath: "assets/images/photo_icon.png",
-                  label: "ارفق صورة",
-                  onTap: () async {
-                    await showImagePicker(
-                      context,
-                      onImagePicked: (isImagePicked) async {
-                        final picker = getIt.get<ImagePickerService>();
-                        if (isImagePicked && picker.isImagePickedAccepted) {
-                          await context
-                              .read<EyesDataEntryCubit>()
-                              .uploadReportImagePicked(
-                                imagePath: picker.pickedImage!.path,
-                              );
-                        }
-                      },
-                    );
-                  },
-                ),
               ),
               verticalSpacing(16),
-              Text(
-                "صورة الفحوصات الطبية",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              BlocListener<EyesDataEntryCubit, EyesDataEntryState>(
-                listenWhen: (previous, current) =>
-                    previous.uploadMedicalExaminationStatus !=
-                    current.uploadMedicalExaminationStatus,
-                listener: (context, state) async {
-                  if (state.uploadMedicalExaminationStatus ==
-                      UploadImageRequestStatus.success) {
-                    await showSuccess(state.message);
-                  }
-                  if (state.uploadMedicalExaminationStatus ==
-                      UploadImageRequestStatus.failure) {
-                    await showError(state.message);
-                  }
-                },
-                child: SelectImageContainer(
-                  imagePath: "assets/images/photo_icon.png",
-                  label: "ارفق صورة",
-                  onTap: () async {
-                    await showImagePicker(
-                      context,
-                      onImagePicked: (isImagePicked) async {
-                        final picker = getIt.get<ImagePickerService>();
-                        if (isImagePicked && picker.isImagePickedAccepted) {
-                          await context
-                              .read<EyesDataEntryCubit>()
-                              .uploadMedicalExaminationImage(
-                                imagePath: picker.pickedImage!.path,
-                              );
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
+              EyeReportUploadSection(),
+              verticalSpacing(16),
+              MedicalExaminationUploadSection(),
               verticalSpacing(16),
               UserSelectionContainer(
                 allowManualEntry: true,

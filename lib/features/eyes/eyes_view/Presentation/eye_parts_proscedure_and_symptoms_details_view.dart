@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_procedures_and_syptoms_data_entry.dart';
@@ -127,27 +126,36 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     icon: 'assets/images/doctor_icon.png',
                     isExpanded: true,
                   ),
-                  DetailsViewImageWithTitleTile(
-                    image: details.medicalReportUrl,
+                  DetailsViewImagesWithTitleTile(
+                    images: details.medicalReportUrl,
                     title: 'التقرير الطبي',
                     isShareEnabled: true,
                   ),
-                  DetailsViewImageWithTitleTile(
-                    image: details.medicalExaminationImages,
+                  DetailsViewImagesWithTitleTile(
+                    images: details.medicalExaminationImages,
                     title: 'صورة الفحص الطبي',
                     isShareEnabled: true,
                   ),
                   DetailsViewInfoTile(
-                    title: 'المستشفى',
-                    value: details.centerHospitalName,
-                    icon: 'assets/images/hospital_icon.png',
+                    title: "التقرير الطبي الكتابي",
+                    value: details.writtenReport,
+                    icon: 'assets/images/notes_icon.png',
                     isExpanded: true,
                   ),
-                  DetailsViewInfoTile(
-                    title: 'الطبيب',
-                    value: details.doctorName,
-                    icon: 'assets/images/doctor_name.png',
-                    isExpanded: true,
+                  Row(
+                    children: [
+                      DetailsViewInfoTile(
+                        title: 'المستشفى',
+                        value: details.centerHospitalName,
+                        icon: 'assets/images/hospital_icon.png',
+                      ),
+                      const Spacer(),
+                      DetailsViewInfoTile(
+                        title: 'الطبيب',
+                        value: details.doctorName,
+                        icon: 'assets/images/doctor_name.png',
+                      ),
+                    ],
                   ),
                   DetailsViewInfoTile(
                     title: 'الدولة',

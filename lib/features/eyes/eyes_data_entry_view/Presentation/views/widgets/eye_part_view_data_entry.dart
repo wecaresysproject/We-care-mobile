@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -52,6 +53,7 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            verticalSpacing(20),
 
             /// 🔍 Eye Detail View
             EyePartDetailView(
@@ -59,7 +61,9 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
               leftImageAsset: partData!.leftImage,
               rightImageAsset: partData.rightImage,
               isLoading: false,
-            ).paddingSymmetricHorizontal(12),
+            ).paddingSymmetricHorizontal(16),
+
+            verticalSpacing(24),
 
             EyeCategoriesGridView(
               categories: [

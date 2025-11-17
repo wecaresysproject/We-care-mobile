@@ -32,9 +32,7 @@ class XRayView extends StatelessWidget {
               children: [
                 ViewAppBar(),
                 XrayFiltersBlocBuilder(),
-                Expanded(
-                  child: XrayListBlocBuilder(),
-                ),
+                Expanded(child: XrayListBlocBuilder()),
                 XRayDataViewFooterRow(),
               ],
             ),
