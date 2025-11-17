@@ -110,9 +110,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 60.h,
             left: 0,
             child: BiometricMeasurementButton(
-              label: 'نبضات\nالقلب',
+              label: 'نبضات القلب',
               onTap: () => _showMeasurementDialog(
-                  context, 'نبضات القلب', 'bpm', 'نبضات\nالقلب'),
+                  context, 'نبضات القلب', 'bpm', 'نبضات القلب'),
               image: 'assets/images/heart_beat.png',
             ),
           ),
@@ -159,9 +159,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 60.h,
             right: 0,
             child: BiometricMeasurementButton(
-              label: 'مستوى\nالأكسجين',
+              label: 'مستوى الأكسجين',
               onTap: () => _showMeasurementDialog(
-                  context, 'مستوى الأكسجين', '%', 'مستوى\nالأكسجين'),
+                  context, 'مستوى الأكسجين', '%', 'مستوى الأكسجين'),
               image: 'assets/images/oxygen_level.png',
             ),
           ),
@@ -171,9 +171,9 @@ class BiometricSkeletonSection extends StatelessWidget {
             top: 170.h,
             right: 0,
             child: BiometricMeasurementButton(
-              label: 'سكر\nعشوائي',
+              label: 'سكر عشوائي',
               onTap: () => _showMeasurementDialog(
-                  context, 'سكر الدم العشوائي', 'mg/dL', 'سكر\nعشوائي'),
+                  context, 'سكر الدم العشوائي', 'mg/dL', 'سكر عشوائي'),
               image: 'assets/images/glucose_level.png',
             ),
           ),

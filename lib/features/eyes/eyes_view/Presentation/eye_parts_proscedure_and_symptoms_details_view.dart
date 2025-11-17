@@ -137,20 +137,17 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     title: 'صورة الفحص الطبي',
                     isShareEnabled: true,
                   ),
-                  Row(
-                    children: [
-                      DetailsViewInfoTile(
-                        title: 'المستشفى',
-                        value: details.centerHospitalName,
-                        icon: 'assets/images/hospital_icon.png',
-                      ),
-                      const Spacer(),
-                      DetailsViewInfoTile(
-                        title: 'الطبيب',
-                        value: details.doctorName,
-                        icon: 'assets/images/doctor_name.png',
-                      ),
-                    ],
+                  DetailsViewInfoTile(
+                    title: 'المستشفى',
+                    value: details.centerHospitalName,
+                    icon: 'assets/images/hospital_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewInfoTile(
+                    title: 'الطبيب',
+                    value: details.doctorName,
+                    icon: 'assets/images/doctor_name.png',
+                    isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: 'الدولة',
