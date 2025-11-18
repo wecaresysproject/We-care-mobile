@@ -67,7 +67,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         selectedLabCenter: editingAnalysisDetailsData.radiologyCenter,
       ),
     );
-    reportTextController.text = editingAnalysisDetailsData.writtenReport!;
+    reportTextController.text = editingAnalysisDetailsData.writtenReport ?? "";
     validateRequiredFields();
     intialRequestsForTestAnalysisDataEntry();
   }
