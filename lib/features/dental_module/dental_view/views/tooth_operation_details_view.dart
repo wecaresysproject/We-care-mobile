@@ -10,7 +10,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -152,20 +152,20 @@ class DentalOperationDetailsView extends StatelessWidget {
                         "",
                   ),
                   verticalSpacing(16),
-                  DetailsViewImageWithTitleTile(
-                    image: state.selectedToothOperationDetails!
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedToothOperationDetails!
                         .medicalReportImage, // Replace with actual image URL or asset
                     title: "التقرير الطبي",
                   ),
                   verticalSpacing(16),
-                  DetailsViewImageWithTitleTile(
-                    image: state.selectedToothOperationDetails!
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedToothOperationDetails!
                         .xRayImage, // Replace with actual image URL or asset
                     title: "اللقطة السنية",
                   ),
                   verticalSpacing(16),
-                  DetailsViewImageWithTitleTile(
-                    image: state.selectedToothOperationDetails!
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedToothOperationDetails!
                         .lymphAnalysisImage, // Replace with actual image URL or asset
                     title: "التحاليل الطبية الفموية ",
                   ),
@@ -464,23 +464,23 @@ Future<void> shareDentalDetails(
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    if (dentalData.medicalReportImage.startsWith("http")) {
-      final path = await downloadImage(
-          dentalData.medicalReportImage, tempDir, 'report.png');
-      if (path != null) imagePaths.add(path);
-    }
+    // if (dentalData.medicalReportImage.startsWith("http")) {
+    //   final path = await downloadImage(
+    //       dentalData.medicalReportImage, tempDir, 'report.png');
+    //   if (path != null) imagePaths.add(path);
+    // }
 
-    if (dentalData.xRayImage.startsWith("http")) {
-      final path =
-          await downloadImage(dentalData.xRayImage, tempDir, 'xray.png');
-      if (path != null) imagePaths.add(path);
-    }
+    // if (dentalData.xRayImage.startsWith("http")) {
+    //   final path =
+    //       await downloadImage(dentalData.xRayImage, tempDir, 'xray.png');
+    //   if (path != null) imagePaths.add(path);
+    // }
 
-    if (dentalData.lymphAnalysisImage.startsWith("http")) {
-      final path = await downloadImage(
-          dentalData.lymphAnalysisImage, tempDir, 'lymph.png');
-      if (path != null) imagePaths.add(path);
-    }
+    // if (dentalData.lymphAnalysisImage.startsWith("http")) {
+    //   final path = await downloadImage(
+    //       dentalData.lymphAnalysisImage, tempDir, 'lymph.png');
+    //   if (path != null) imagePaths.add(path);
+    // }
 
     // المشاركة
     if (imagePaths.isNotEmpty) {

@@ -25,15 +25,16 @@ class GetToothOpertionDetailsByIdResponseModel {
 class ToothOperationDetails {
   MedicalComplaints medicalComplaints;
   Procedure procedure;
-  String medicalReportImage;
-  String xRayImage;
+  List<String> medicalReportImage;
+  List<String> xRayImage;
   String lymphAnalysis;
-  String lymphAnalysisImage;
+  List<String> lymphAnalysisImage;
   String gumCondition;
   String treatingDoctor;
   String hospital;
   String country;
   String additionalNotes;
+  String? writtenReport;
 
   ToothOperationDetails(
       {required this.medicalComplaints,

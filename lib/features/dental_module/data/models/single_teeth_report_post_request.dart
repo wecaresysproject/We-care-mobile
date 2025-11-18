@@ -23,13 +23,13 @@ final class SingleTeethReportRequestBody {
   @JsonKey(name: 'SubProcedure')
   final String subProcedure;
   @JsonKey(name: 'MedicalReportImage')
-  final String medicalReportImage;
+  final List<String> medicalReportImage;
   @JsonKey(name: 'XRayImage')
-  final String xRayImage;
+  final List<String> xRayImage;
   @JsonKey(name: 'LymphAnalysis')
   final String lymphAnalysis;
   @JsonKey(name: 'LymphAnalysisImage')
-  final String lymphAnalysisImage;
+  final List<String> lymphAnalysisImage;
   @JsonKey(name: 'GumCondition')
   final String gumCondition;
   @JsonKey(name: 'TreatingDoctor')
@@ -40,6 +40,7 @@ final class SingleTeethReportRequestBody {
   final String country;
   @JsonKey(name: 'AdditionalNotes')
   final String additionalNotes;
+  final String writtenReport;
 
   const SingleTeethReportRequestBody({
     required this.symptomStartDate,
@@ -60,6 +61,7 @@ final class SingleTeethReportRequestBody {
     required this.hospital,
     required this.country,
     required this.additionalNotes,
+    required this.writtenReport,
   });
 
   factory SingleTeethReportRequestBody.fromJson(Map<String, dynamic> json) =>

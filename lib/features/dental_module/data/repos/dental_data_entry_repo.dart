@@ -123,40 +123,6 @@ class DentalDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getAllComplainNatures({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _dentalService.getAllComplainNatures(
-        userType,
-        language,
-      );
-      final complainNatures =
-          (response['data'] as List).map((e) => e.toString()).toList();
-      return ApiResult.success(complainNatures);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<List<String>>> getAllComaplainsDurations({
-    required String language,
-    required String userType,
-  }) async {
-    try {
-      final response = await _dentalService.getAllComaplainsDurations(
-        userType,
-        language,
-      );
-      final complainDurations =
-          (response['data'] as List).map((e) => e.toString()).toList();
-      return ApiResult.success(complainDurations);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
   Future<ApiResult<List<String>>> getAllGumsconditions({
     required String language,
     required String userType,
