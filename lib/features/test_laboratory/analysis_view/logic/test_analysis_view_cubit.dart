@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/debouncer.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
@@ -10,6 +11,8 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       : super(TestAnalysisViewState.initial());
   final TestAnalysisViewRepo testAnalysisViewRepo;
   final resultEditingController = TextEditingController();
+  final searchController = TextEditingController();
+
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
@@ -44,6 +47,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
         analysisSummarizedDataList: page == 1 || page == null
             ? newTestAnalysisTests
             : [...state.analysisSummarizedDataList, ...newTestAnalysisTests],
+        originalList: newTestAnalysisTests,
         message: response.message,
         isLoadingMore: false,
       ));
@@ -60,6 +64,31 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
         isLoadingMore: false,
       ));
     });
+  }
+
+  void onSearchChanged({required String query}) {
+    Debouncer(
+      milliseconds: 300,
+    ).call(
+      () {
+        search(query);
+      },
+    );
+  }
+
+  void search(String query) {
+    final q = query.toLowerCase();
+
+    final filtered = state.originalList.where((item) {
+      return item.testName.toLowerCase().contains(q) ||
+          item.code.toLowerCase().contains(q);
+    }).toList();
+
+    emit(
+      state.copyWith(
+        analysisSummarizedDataList: filtered,
+      ),
+    );
   }
 
   Future<void> loadMoreMedicines() async {
@@ -195,6 +224,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
   @override
   Future<void> close() {
     resultEditingController.dispose();
+    searchController.dispose();
     return super.close();
   }
 }

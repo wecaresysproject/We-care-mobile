@@ -35,9 +35,17 @@ class MedicalAnalysisView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
               builder: (context, state) {
+                final cubit = context.read<TestAnalysisViewCubit>();
                 return Column(
                   children: [
-                    ViewAppBar(),
+                    ViewAppBar(
+                      controller: cubit.searchController,
+                      onSearchChanged: (query) =>
+                          cubit.onSearchChanged(query: query),
+                      onSearchCleared: () {
+                        cubit.onSearchChanged(query: "");
+                      },
+                    ),
                     _buildFilterAndCountSection(context, state),
                     verticalSpacing(8),
                     state.analysisSummarizedDataList.isNotEmpty
@@ -205,10 +213,7 @@ class MedicalAnalysisView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onTap: () =>
-                        (data.result != null || data.selectedChoice != null)
-                            ? _navigateToSimilarAnalysisView(context, data)
-                            : null,
+                    onTap: () => _navigateToSimilarAnalysisView(context, data),
                   ),
                 ]);
               }).toList(),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 
 import 'api_error_model.dart';
@@ -19,11 +21,13 @@ class ApiErrorHandler {
             errors: ["Connection timeout with the server"],
           );
         case DioExceptionType.unknown:
-          return ApiErrorModel(
-            errors: [
-              "Connection to the server failed due to internet connection"
-            ],
-          );
+          if (error.error is SocketException) {
+            return ApiErrorModel(errors: ["No internet connection"]);
+          }
+          return ApiErrorModel(errors: [
+            "Something went wrong while connecting to the server. Please try again."
+          ]);
+
         case DioExceptionType.receiveTimeout:
           return ApiErrorModel(
             errors: ["Receive timeout in connection with the server"],

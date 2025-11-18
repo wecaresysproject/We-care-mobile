@@ -33,10 +33,13 @@ class CustomAnalysisContainer extends StatelessWidget {
               height: 24.h,
             ),
             horizontalSpacing(8),
-            Text(
-              title,
-              style: AppTextStyles.font20blackWeight600.copyWith(
-                color: AppColorsManager.mainDarkBlue,
+            Expanded(
+              child: Text(
+                title,
+                style: AppTextStyles.font20blackWeight600.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                ),
+                maxLines: 2,
               ),
             ),
             horizontalSpacing(24),

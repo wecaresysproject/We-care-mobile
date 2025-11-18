@@ -8,6 +8,7 @@ class TestAnalysisViewState extends Equatable {
   final RequestStatus requestStatus;
   final List<int> yearsFilter;
   final List<AnalysisSummarizedData> analysisSummarizedDataList;
+  final List<AnalysisSummarizedData> originalList;
   final AnalysisDetailedData? selectedAnalysisDetails;
   final String? message;
   final bool isDeleteRequest;
@@ -21,6 +22,7 @@ class TestAnalysisViewState extends Equatable {
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
     this.analysisSummarizedDataList = const [],
+    this.originalList = const [],
     this.selectedAnalysisDetails,
     this.message,
     this.isDeleteRequest = false,
@@ -36,6 +38,7 @@ class TestAnalysisViewState extends Equatable {
       requestStatus: RequestStatus.initial,
       yearsFilter: const [],
       analysisSummarizedDataList: const [],
+      originalList: const [],
       selectedAnalysisDetails: null,
       message: null,
       isDeleteRequest: false,
@@ -51,6 +54,7 @@ class TestAnalysisViewState extends Equatable {
       {RequestStatus? requestStatus,
       List<int>? yearsFilter,
       List<AnalysisSummarizedData>? analysisSummarizedDataList,
+      List<AnalysisSummarizedData>? originalList,
       AnalysisDetailedData? selectedAnalysisDetails,
       String? message,
       bool? isDeleteRequest,
@@ -64,6 +68,7 @@ class TestAnalysisViewState extends Equatable {
         yearsFilter: yearsFilter ?? this.yearsFilter,
         analysisSummarizedDataList:
             analysisSummarizedDataList ?? this.analysisSummarizedDataList,
+        originalList: originalList ?? this.originalList,
         selectedAnalysisDetails:
             selectedAnalysisDetails ?? this.selectedAnalysisDetails,
         message: message ?? this.message,
@@ -81,6 +86,7 @@ class TestAnalysisViewState extends Equatable {
         requestStatus,
         yearsFilter,
         analysisSummarizedDataList,
+        originalList,
         selectedAnalysisDetails,
         message,
         isDeleteRequest,

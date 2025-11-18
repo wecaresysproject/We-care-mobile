@@ -10,8 +10,8 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
+import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/widget/complain_card_item_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class EmergencyComplaintsView extends StatelessWidget {
@@ -73,29 +73,31 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
             )),
           );
         }
-        return MedicalItemGridView(
-          items: state.emergencyComplaints,
-          onTap: (id) async {
-            final result =
-                await Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return EmergencyComplaintsDetailsView(
-                documentId: id,
+
+        return Expanded(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.emergencyComplaints.length,
+            itemBuilder: (context, index) {
+              final doc = state.emergencyComplaints[index];
+              return ComplaintCardItem(
+                item: doc,
+                onArrowTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EmergencyComplaintsDetailsView(
+                        documentId: doc.id,
+                      ),
+                    ),
+                  );
+                  if (context.mounted) {
+                    await cubit.intialRequests();
+                  }
+                },
               );
-            }));
-            if (context.mounted && result as bool && result == true) {
-              await cubit.intialRequests();
-            }
-          },
-          titleBuilder: (item) =>
-              item.mainSymptoms.first.symptomsRegion.substring(2),
-          isExpendingTileTitle: true,
-          infoRowBuilder: (item) => [
-            {"title": "التاريخ:", "value": item.date},
-            {
-              "title": "العرض الرئيسي:",
-              "value": item.mainSymptoms.first.sypmptomsComplaintIssue
             },
-          ],
+          ),
         );
       },
     );

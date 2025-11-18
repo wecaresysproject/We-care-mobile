@@ -29,7 +29,7 @@ class AnalysisDetailedData {
   String hospital;
   String doctor;
   String country;
-  final String radiologyCenter;
+  String? radiologyCenter;
 
   AnalysisDetailedData({
     required this.id,
