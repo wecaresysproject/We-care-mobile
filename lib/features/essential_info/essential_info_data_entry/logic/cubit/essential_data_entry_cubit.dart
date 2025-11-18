@@ -66,6 +66,10 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'AB-',
     'O+',
     'O-',
+    'A',
+    'B',
+    'AB',
+    'O',
   ];
   Future<void> emitDoctorNames() async {
     final response = await _sharedRepo.getAllDoctors(
