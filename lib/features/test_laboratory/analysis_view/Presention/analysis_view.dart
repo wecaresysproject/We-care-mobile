@@ -213,10 +213,7 @@ class MedicalAnalysisView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onTap: () =>
-                        (data.result != null || data.selectedChoice != null)
-                            ? _navigateToSimilarAnalysisView(context, data)
-                            : null,
+                    onTap: () => _navigateToSimilarAnalysisView(context, data),
                   ),
                 ]);
               }).toList(),
