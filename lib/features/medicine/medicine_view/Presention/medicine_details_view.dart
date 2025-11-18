@@ -136,29 +136,23 @@ class MedicineDetailsView extends StatelessWidget {
                       Spacer(),
                       DetailsViewInfoTile(
                         title: "مستمر/متوقف",
-                        value: state.selectestMedicineDetails!
-                                    .chronicDiseaseMedicine ==
-                                'نعم'
-                            ? 'مستمر'
-                            : 'متوقف',
+                        value: calculateMedicineStatus(
+                          state.selectestMedicineDetails!.startDate,
+                          state.selectestMedicineDetails!.timeDuration,
+                        ),
                         icon: 'assets/images/doctor_name.png',
                       ),
                     ]),
-                    Row(
-                      children: [
-                        DetailsViewInfoTile(
-                          title: "اسم الطبيب ",
-                          value: state.selectestMedicineDetails!.doctorName,
-                          icon: 'assets/images/doctor_icon.png',
-                        ),
-                        Spacer(),
-                        DetailsViewInfoTile(
-                          title: " دواء مرض مزمن",
-                          value: state
-                              .selectestMedicineDetails!.chronicDiseaseMedicine,
-                          icon: 'assets/images/medicine_icon.png',
-                        ),
-                      ],
+                    DetailsViewInfoTile(
+                      title: "اسم الطبيب ",
+                      value: state.selectestMedicineDetails!.doctorName,
+                      icon: 'assets/images/doctor_icon.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: " دواء مرض مزمن",
+                      value: state
+                          .selectestMedicineDetails!.chronicDiseaseMedicine,
+                      icon: 'assets/images/medicine_icon.png',
                     ),
 
                     // Display the main symptoms using SymptomContainer
@@ -214,65 +208,67 @@ class MedicineDetailsView extends StatelessWidget {
 
 String calculateMedicineStatus(String startDateStr, String durationStr) {
   try {
-    // Split the string manually by hyphen to extract year, month, and day
     final dateParts = startDateStr.split('-');
-    if (dateParts.length != 3) {
-      throw FormatException("Invalid date format");
-    }
+    if (dateParts.length != 3) throw FormatException("Invalid date format");
 
-    // Extract year, month, and day
     final year = int.parse(dateParts[0]);
     final month = int.parse(dateParts[1]);
     final day = int.parse(dateParts[2]);
-
-    // Create the DateTime object
     final startDate = DateTime(year, month, day);
-
     final now = DateTime.now();
 
     Duration duration;
 
-    // Determine the duration in days based on the given string
     switch (durationStr) {
+      case '10 أيام':
+        duration = Duration(days: 10);
+        break;
+      case '14 يومًا (أسبوعين)':
+        duration = Duration(days: 14);
+        break;
+      case '21 يومًا (3 أسابيع)':
+        duration = Duration(days: 21);
+        break;
       case '6 أسابيع':
-        duration = Duration(days: 42); // 6 weeks
+        duration = Duration(days: 42);
+        break;
+      case 'شهر':
+        duration = Duration(days: 30);
         break;
       case 'شهرين':
-        duration = Duration(days: 60); // 2 months
+        duration = Duration(days: 60);
         break;
       case '3 أشهر':
-        duration = Duration(days: 90); // 3 months
+        duration = Duration(days: 90);
         break;
       case '6 أشهر':
-        duration = Duration(days: 180); // 6 months
+        duration = Duration(days: 180);
         break;
       case '9 أشهر':
-        duration = Duration(days: 270); // 9 months
+        duration = Duration(days: 270);
         break;
       case 'سنة واحدة':
-        duration = Duration(days: 365); // 1 year
+        duration = Duration(days: 365);
         break;
       case 'سنتين':
-        duration = Duration(days: 730); // 2 years
+        duration = Duration(days: 730);
         break;
       case '3 سنوات':
-        duration = Duration(days: 1095); // 3 years
+        duration = Duration(days: 1095);
         break;
       case 'مدى الحياة':
-        return 'مستمر'; // Lifetime, always ongoing
+        return 'مستمر';
       default:
-        return 'غير معروف'; // Unknown duration
+        return 'غير معروف';
     }
 
-    // Calculate the end date by adding the duration to the start date
     final endDate = startDate.add(duration);
-
-    // Return the status based on whether the current date is before or after the end date
     return now.isBefore(endDate) ? 'مستمر' : 'متوقف';
   } catch (e) {
-    return 'غير معروف'; // In case of an error or invalid date format
+    return 'غير معروف';
   }
 }
+
 
 Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =

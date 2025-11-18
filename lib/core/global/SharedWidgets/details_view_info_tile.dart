@@ -87,6 +87,13 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (value.isEmpty ||
+        value == context.translate.no_data_entered ||
+        value == "" ||
+        value == "--" ||
+        value.isEmptyOrNull) {
+      return SizedBox.shrink();
+    }
     return SizedBox(
       width: isExpanded
           ? isSmallContainers
@@ -94,7 +101,7 @@ class CustomContainer extends StatelessWidget {
               : MediaQuery.of(context).size.width - 32.w
           : (MediaQuery.of(context).size.width * 0.46) - 24.w,
       child: Container(
-        padding: EdgeInsets.fromLTRB(4.w, 8.h, 14.w, 8.h),
+        padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 8.h),
         margin: EdgeInsets.zero,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
