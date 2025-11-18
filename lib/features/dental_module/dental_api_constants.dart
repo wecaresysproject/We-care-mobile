@@ -16,12 +16,9 @@ class DentalApiConstants {
       "/TeethDataEntry/GetAllSubProcedureNames";
   static const getAllDoctors = "/Doctor/GetAllDcotors";
   static const getAllComplainTypes = "/TeethDataEntry/GetAllComplaintTypes";
-  static const getAllComplainNatures = "/TeethDataEntry/GetAllComplaintNatures";
   static const getAllOralMedicalTests =
       "/TeethDataEntry/GetAllOralMedicalTests";
   static const getAllGumsconditions = "//TeethDataEntry/GetAllGumConditions";
-  static const getAllComplainsDurations =
-      "/TeethDataEntry/GetAllComplaintDurations";
   //View Entry
   static const getDefectedTooth = "/TeethDataEntry/GetAllTeethNumbersForUser";
   static const getDocumentsByToothNumber =

@@ -2,19 +2,19 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/image_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/report_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
@@ -85,7 +85,21 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "مدة الأعراض",
               containerHintText:
                   state.selectedSyptomsPeriod ?? "اختر مدة استمرار الأعراض",
-              options: state.complainDurations,
+              options: [
+                'ساعات',
+                'يوم',
+                'يومين',
+                'ثلاث أيام',
+                'أربعة أيام',
+                'خمسة أيام',
+                'ستة أيام',
+                'أسبوع',
+                '10 أيام',
+                'أسبوعين',
+                'ثلاث أسابيع',
+                'شهر',
+                'أكثر من شهر',
+              ],
               onOptionSelected: (value) async {
                 await context
                     .read<DentalDataEntryCubit>()
@@ -106,7 +120,12 @@ class _DentalDataFormFieldsWidgetState
               categoryLabel: "طبيعة الشكوي",
               containerHintText:
                   state.natureOfComplaintSelection ?? "اختر الحالة",
-              options: state.complainNatures,
+              options: [
+                "مستمرة",
+                "متقطعة",
+                " تتزايد مع الوقت",
+                " تتناقص مع الوقت"
+              ],
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -200,86 +219,75 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
+              label: context
+                      .read<DentalDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                // ✅ اقرا الـ cubit من الـ context الحالي
+                final cubit = context.read<DentalDataEntryCubit>();
+                final isFirstTime =
+                    cubit.reportTextController.text.isEmpty == true;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
+              },
             ),
-
             verticalSpacing(8),
 
-            BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.uploadReportStatus != current.uploadReportStatus,
-              listener: (context, state) async {
-                if (state.uploadReportStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.uploadReportStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
+            ReportUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
+              statusSelector: (state) => state.uploadReportStatus,
+              uploadedSelector: (state) => state.reportsImageUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .removeUploadedTeethReport(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<DentalDataEntryCubit>()
-                            .uploadTeethReport(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context.read<DentalDataEntryCubit>().uploadTeethReport(
+                      imagePath: path,
+                    );
+              },
             ),
+
             verticalSpacing(16),
             Text(
-              "الأشعة السينية",
+              "الأشعة السينية  ${state.xrayImagesUploadedUrls.length}/8",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.xRayImageRequestStatus != curr.xRayImageRequestStatus,
-              listener: (context, state) async {
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.xRayImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
+
+            ImageUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
+              statusSelector: (state) => state.xRayImageRequestStatus,
+              uploadedSelector: (state) => state.xrayImagesUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .removeUploadedXrayImage(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        //!imaplement uploading image to server
-                        log("xxx:Picked Image Path: ${picker.pickedImage!.path}");
-                        await context
-                            .read<DentalDataEntryCubit>()
-                            .uploadXrayImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<DentalDataEntryCubit>()
+                    .uploadXrayImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
+
             verticalSpacing(16),
 
             UserSelectionContainer(
@@ -296,41 +304,24 @@ class _DentalDataFormFieldsWidgetState
               searchHintText: "ابحث عن التحاليل الطبية الفموية",
             ),
 
-            verticalSpacing(8),
-            BlocListener<DentalDataEntryCubit, DentalDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.lymphAnalysisImageStatus !=
-                  curr.lymphAnalysisImageStatus,
-              listener: (context, state) async {
-                if (state.lymphAnalysisImageStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.lymphAnalysisImageStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
+            verticalSpacing(16),
+
+            ImageUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
+              statusSelector: (state) => state.lymphAnalysisImageStatus,
+              uploadedSelector: (state) => state.lymphAnalysisImagesUploadedUrl,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .removeUploadedLymphImage(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        //!imaplement uploading image to server
-                        await context
-                            .read<DentalDataEntryCubit>()
-                            .uploadLymphAnalysisImage(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<DentalDataEntryCubit>()
+                    .uploadLymphAnalysisImage(
+                      imagePath: path,
+                    );
+              },
             ),
             verticalSpacing(16),
 

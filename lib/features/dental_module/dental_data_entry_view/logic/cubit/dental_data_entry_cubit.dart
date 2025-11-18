@@ -23,6 +23,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   final AppSharedRepo sharedRepo;
 
   final additionalNotesController = TextEditingController();
+  final reportTextController = TextEditingController();
 
   Future<void> loadPastToothDataForEditing(
     ToothOperationDetails pastToothData, {
@@ -43,9 +44,9 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
             pastToothData.procedure.primaryProcedure,
         secondaryMedicalProcedureSelection:
             pastToothData.procedure.subProcedure,
-        reportImageUploadedUrl: pastToothData.medicalReportImage,
-        xrayImageUploadedUrl: pastToothData.xRayImage,
-        lymphAnalysisImageUploadedUrl: pastToothData.lymphAnalysisImage,
+        reportsImageUploadedUrls: pastToothData.medicalReportImage,
+        xrayImagesUploadedUrls: pastToothData.xRayImage,
+        lymphAnalysisImagesUploadedUrl: pastToothData.lymphAnalysisImage,
         oralPathologySelection: pastToothData.lymphAnalysis,
         selectedSurroundingGumStatus: pastToothData.gumCondition,
         treatingDoctor: pastToothData.treatingDoctor,
@@ -56,6 +57,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       ),
     );
     additionalNotesController.text = pastToothData.additionalNotes;
+    reportTextController.text = pastToothData.writtenReport ?? "";
 
     validateRequiredFields();
     await intialRequestsForDataEntry();
@@ -126,8 +128,6 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       [
         emitPrimaryMedicalProcedures(),
         emitComplainTypes(),
-        emitComaplainsDurations(),
-        emitComplainNatures(),
         emitDoctorNames(),
         emitAllGumsconditions(),
         emitAllOralMedicalTests(),
@@ -137,7 +137,29 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
   }
 
+  void removeUploadedTeethReport(String url) {
+    final updated = List<String>.from(state.reportsImageUploadedUrls)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        reportsImageUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadTeethReport({required String imagePath}) async {
+    // 1) Check limit
+    if (state.reportsImageUploadedUrls.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadReportStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         uploadReportStatus: UploadReportRequestStatus.initial,
@@ -150,10 +172,13 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.reportsImageUploadedUrls)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
             message: response.message,
-            reportImageUploadedUrl: response.reportUrl,
+            reportsImageUploadedUrls: updatedReports,
             uploadReportStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -169,7 +194,29 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
   }
 
+  void removeUploadedXrayImage(String url) {
+    final updated = List<String>.from(state.xrayImagesUploadedUrls)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        xrayImagesUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadXrayImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.xrayImagesUploadedUrls.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          xRayImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         xRayImageRequestStatus: UploadImageRequestStatus.initial,
@@ -182,10 +229,14 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final xrayImages = List<String>.from(state.xrayImagesUploadedUrls)
+          ..add(response.imageUrl);
+
         emit(
           state.copyWith(
             message: response.message,
-            xrayImageUploadedUrl: response.imageUrl,
+            xrayImagesUploadedUrls: xrayImages,
             xRayImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
@@ -201,7 +252,29 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
   }
 
+  void removeUploadedLymphImage(String url) {
+    final updated = List<String>.from(state.lymphAnalysisImagesUploadedUrl)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        lymphAnalysisImagesUploadedUrl: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadLymphAnalysisImage({required String imagePath}) async {
+    // 1) Check limit
+    if (state.lymphAnalysisImagesUploadedUrl.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          xRayImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         lymphAnalysisImageStatus: UploadImageRequestStatus.initial,
@@ -214,10 +287,14 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final lymphImages =
+            List<String>.from(state.lymphAnalysisImagesUploadedUrl)
+              ..add(response.imageUrl);
         emit(
           state.copyWith(
             message: response.message,
-            lymphAnalysisImageUploadedUrl: response.imageUrl,
+            lymphAnalysisImagesUploadedUrl: lymphImages,
             lymphAnalysisImageStatus: UploadImageRequestStatus.success,
           ),
         );
@@ -243,54 +320,6 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emit(
           state.copyWith(
             countriesNames: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> emitComaplainsDurations() async {
-    final response = await _dentalDataEntryRepo.getAllComaplainsDurations(
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-      language: AppStrings.arabicLang,
-    );
-
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            complainDurations: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> emitComplainNatures() async {
-    final response = await _dentalDataEntryRepo.getAllComplainNatures(
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-      language: AppStrings.arabicLang,
-    );
-
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            complainNatures: response,
           ),
         );
       },
@@ -432,6 +461,9 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     final response = await _dentalDataEntryRepo.postOneTeethReportDetails(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: SingleTeethReportRequestBody(
+        writtenReport: reportTextController.text.isNotEmpty
+            ? reportTextController.text
+            : locale.no_data_entered,
         teethNumber: teethNumber, //TODO: to change this to dynamic value
         symptomStartDate: state.startIssueDateSelection!,
         symptomType: state.syptomTypeSelection!,
@@ -447,13 +479,11 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         additionalNotes: additionalNotesController.text.isNotEmpty
             ? additionalNotesController.text
             : locale.no_data_entered,
-        medicalReportImage:
-            state.reportImageUploadedUrl ?? locale.no_data_entered,
-        xRayImage: state.xrayImageUploadedUrl ?? locale.no_data_entered,
+        medicalReportImage: state.reportsImageUploadedUrls,
+        xRayImage: state.xrayImagesUploadedUrls,
         lymphAnalysis:
             state.oralPathologySelection ?? locale.no_data_entered, //!check
-        lymphAnalysisImage:
-            state.lymphAnalysisImageUploadedUrl ?? locale.no_data_entered,
+        lymphAnalysisImage: state.lymphAnalysisImagesUploadedUrl,
         gumCondition:
             state.selectedSurroundingGumStatus ?? locale.no_data_entered,
         treatingDoctor: state.treatingDoctor ?? locale.no_data_entered,
@@ -496,6 +526,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       documentId: decumentId,
       requestBody: SingleTeethReportRequestBody(
+        writtenReport: reportTextController.text,
         teethNumber: teethNumber,
         symptomStartDate: state.startIssueDateSelection!,
         symptomType: state.syptomTypeSelection!,
@@ -506,10 +537,10 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         primaryProcedure: state.primaryMedicalProcedureSelection!,
         subProcedure: state.secondaryMedicalProcedureSelection!,
         additionalNotes: additionalNotesController.text,
-        medicalReportImage: state.reportImageUploadedUrl!,
-        xRayImage: state.xrayImageUploadedUrl!,
+        medicalReportImage: state.reportsImageUploadedUrls,
+        xRayImage: state.xrayImagesUploadedUrls,
         lymphAnalysis: state.oralPathologySelection!,
-        lymphAnalysisImage: state.lymphAnalysisImageUploadedUrl!,
+        lymphAnalysisImage: state.lymphAnalysisImagesUploadedUrl,
         gumCondition: state.selectedSurroundingGumStatus!,
         treatingDoctor: state.treatingDoctor!,
         hospital: state.selectedHospitalCenter!,
@@ -610,6 +641,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   @override
   Future<void> close() {
     additionalNotesController.dispose();
+    reportTextController.dispose();
     return super.close();
   }
 }

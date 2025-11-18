@@ -24,9 +24,9 @@ class DentalDataEntryState extends Equatable {
   final String? primaryMedicalProcedureSelection; //"الاجراء الطبى الرئيسى"
   final String? secondaryMedicalProcedureSelection; //"الاجراء الطبى الفرعي"
   final String? selectedSurroundingGumStatus; //حالة اللثة المحيطة
-  final String? reportImageUploadedUrl;
-  final String? xrayImageUploadedUrl;
-  final String? lymphAnalysisImageUploadedUrl;
+  final List<String> reportsImageUploadedUrls;
+  final List<String> xrayImagesUploadedUrls;
+  final List<String> lymphAnalysisImagesUploadedUrl;
 
   final UploadReportRequestStatus uploadReportStatus;
   final UploadImageRequestStatus xRayImageRequestStatus;
@@ -63,9 +63,9 @@ class DentalDataEntryState extends Equatable {
     this.primaryMedicalProcedureSelection,
     this.secondaryMedicalProcedureSelection,
     this.selectedSurroundingGumStatus,
-    this.reportImageUploadedUrl,
-    this.xrayImageUploadedUrl,
-    this.lymphAnalysisImageUploadedUrl,
+    this.reportsImageUploadedUrls = const [],
+    this.xrayImagesUploadedUrls = const [],
+    this.lymphAnalysisImagesUploadedUrl = const [],
     this.uploadReportStatus = UploadReportRequestStatus.initial,
     this.xRayImageRequestStatus = UploadImageRequestStatus.initial,
     this.oralPathologyReportStatus = UploadImageRequestStatus.initial,
@@ -103,13 +103,13 @@ class DentalDataEntryState extends Equatable {
           secondaryMedicalProcedureSelection: null,
           selectedSurroundingGumStatus: null,
           message: '',
-          reportImageUploadedUrl: null,
-          xrayImageUploadedUrl: null,
+          reportsImageUploadedUrls: const [],
+          xrayImagesUploadedUrls: const [],
           uploadReportStatus: UploadReportRequestStatus.initial,
           xRayImageRequestStatus: UploadImageRequestStatus.initial,
           oralPathologyReportStatus: UploadImageRequestStatus.initial,
           lymphAnalysisImageStatus: UploadImageRequestStatus.initial,
-          lymphAnalysisImageUploadedUrl: null,
+          lymphAnalysisImagesUploadedUrl: const [],
           oralPathologySelection: null,
           countriesNames: const [],
           selectedCountryName: null,
@@ -142,9 +142,9 @@ class DentalDataEntryState extends Equatable {
     String? complaintDegree,
     String? selectedSurroundingGumStatus,
     String? message,
-    String? reportImageUploadedUrl,
-    String? xrayImageUploadedUrl,
-    String? lymphAnalysisImageUploadedUrl,
+    List<String>? reportsImageUploadedUrls,
+    List<String>? xrayImagesUploadedUrls,
+    List<String>? lymphAnalysisImagesUploadedUrl,
     UploadReportRequestStatus? uploadReportStatus,
     UploadImageRequestStatus? xRayImageRequestStatus,
     UploadImageRequestStatus? oralPathologyReportStatus,
@@ -187,16 +187,17 @@ class DentalDataEntryState extends Equatable {
       selectedSurroundingGumStatus:
           selectedSurroundingGumStatus ?? this.selectedSurroundingGumStatus,
       message: message ?? this.message,
-      reportImageUploadedUrl:
-          reportImageUploadedUrl ?? this.reportImageUploadedUrl,
-      xrayImageUploadedUrl: xrayImageUploadedUrl ?? this.xrayImageUploadedUrl,
+      reportsImageUploadedUrls:
+          reportsImageUploadedUrls ?? this.reportsImageUploadedUrls,
+      xrayImagesUploadedUrls:
+          xrayImagesUploadedUrls ?? this.xrayImagesUploadedUrls,
       uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       xRayImageRequestStatus:
           xRayImageRequestStatus ?? this.xRayImageRequestStatus,
       lymphAnalysisImageStatus:
           lymphAnalysisImageStatus ?? this.lymphAnalysisImageStatus,
-      lymphAnalysisImageUploadedUrl:
-          lymphAnalysisImageUploadedUrl ?? this.lymphAnalysisImageUploadedUrl,
+      lymphAnalysisImagesUploadedUrl:
+          lymphAnalysisImagesUploadedUrl ?? this.lymphAnalysisImagesUploadedUrl,
       oralPathologyReportStatus:
           oralPathologyReportStatus ?? this.oralPathologyReportStatus,
       oralPathologySelection:
@@ -236,13 +237,13 @@ class DentalDataEntryState extends Equatable {
         secondaryMedicalProcedureSelection,
         selectedSurroundingGumStatus,
         message,
-        reportImageUploadedUrl,
-        xrayImageUploadedUrl,
+        reportsImageUploadedUrls,
+        xrayImagesUploadedUrls,
         uploadReportStatus,
         xRayImageRequestStatus,
         oralPathologyReportStatus,
         lymphAnalysisImageStatus,
-        lymphAnalysisImageUploadedUrl,
+        lymphAnalysisImagesUploadedUrl,
         oralPathologySelection,
         countriesNames,
         selectedCountryName,

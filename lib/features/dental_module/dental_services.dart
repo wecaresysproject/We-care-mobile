@@ -72,16 +72,7 @@ abstract class DentalService {
     @Query("usertype") String userType,
     @Query("Language") String language,
   );
-  @GET(DentalApiConstants.getAllComplainsDurations)
-  Future<dynamic> getAllComaplainsDurations(
-    @Query("usertype") String userType,
-    @Query("Language") String language,
-  );
-  @GET(DentalApiConstants.getAllComplainNatures)
-  Future<dynamic> getAllComplainNatures(
-    @Query("usertype") String userType,
-    @Query("Language") String language,
-  );
+
   @GET(DentalApiConstants.getAllComplainTypes)
   Future<dynamic> getAllComplainTypes(
     @Query("usertype") String userType,
