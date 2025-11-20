@@ -38,7 +38,6 @@ class XRayReportSection extends StatelessWidget {
                     .toList(),
               ),
 
-            SizedBox(height: 10.h),
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",

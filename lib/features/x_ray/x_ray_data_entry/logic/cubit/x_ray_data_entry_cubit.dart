@@ -147,8 +147,25 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  void updateSymptomsRequiringIntervention(String? issue) {
-    emit(state.copyWith(symptomsRequiringIntervention: issue));
+  void updateSymptomsRequiringIntervention(String issue) {
+    if (issue.isEmpty) return;
+
+    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
+
+    // موجود؟ شيله .. مش موجود؟ ضيفه  (toggle)
+    if (symptoms.contains(issue)) {
+      symptoms.remove(issue);
+    } else {
+      symptoms.add(issue);
+    }
+
+    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
+  }
+
+  void removeSymptomRequiringIntervention(String issue) {
+    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
+    symptoms.remove(issue);
+    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
   }
 
   void updateSelectedCountry(String? selectedCountry) {
@@ -246,10 +263,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyDate: state.xRayDateSelection!,
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
-        radiologyTypePurposes: state.selectedPupose,
+        radiologyTypePurposes: state.selectedPuposes,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: state.symptomsRequiringIntervention!,
+        cause: state.symptomsRequiringIntervention,
         radiologyDoctor: state.selectedRadiologistDoctorName,
         hospital: state.selectedHospitalName,
         curedDoctor: state.selectedTreatedDoctor,
@@ -288,7 +305,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         isEditMode: true,
         xRayBodyPartSelection: editingRadiologyDetailsData.bodyPart,
         xRayTypeSelection: editingRadiologyDetailsData.radioType,
-        selectedPupose: editingRadiologyDetailsData.periodicUsage, //! check
+        selectedPuposes: editingRadiologyDetailsData.periodicUsage, //! check
         xRayEditedModel: editingRadiologyDetailsData,
         selectedTreatedDoctor: editingRadiologyDetailsData.doctor,
         selectedRadiologistDoctorName:
@@ -312,10 +329,32 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     await intialRequestsForXRayDataEntry();
   }
 
-  void updateXRaySelectedPupose(String? selectedPupose) {
+  void updateXRaySelectedPupose(String selectedPurpose) {
+    if (selectedPurpose.isEmpty) return;
+
+    final List<String> selected = List.from(state.selectedPuposes);
+
+    // لو موجود → شيله، لو مش موجود → ضيفه
+    if (selected.contains(selectedPurpose)) {
+      selected.remove(selectedPurpose);
+    } else {
+      selected.add(selectedPurpose);
+    }
+
     emit(
       state.copyWith(
-        selectedPupose: selectedPupose,
+        selectedPuposes: selected,
+      ),
+    );
+  }
+
+  void removeSelectedPurpose(String purpose) {
+    final List<String> selected = List.from(state.selectedPuposes);
+    selected.remove(purpose);
+
+    emit(
+      state.copyWith(
+        selectedPuposes: selected,
       ),
     );
   }
@@ -541,10 +580,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyDate: state.xRayDateSelection!,
         bodyPartName: state.xRayBodyPartSelection!,
         radiologyType: state.xRayTypeSelection!,
-        radiologyTypePurposes: state.selectedPupose,
+        radiologyTypePurposes: state.selectedPuposes,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: state.symptomsRequiringIntervention ?? localize.no_data_entered,
+        cause: state.symptomsRequiringIntervention,
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localize.no_data_entered,
         hospital: state.selectedHospitalName,

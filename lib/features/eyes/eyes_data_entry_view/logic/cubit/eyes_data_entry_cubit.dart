@@ -40,6 +40,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
           procedures: pastEyeData.medicalProcedures,
           symptoms: pastEyeData.symptoms,
         ),
+        selectedEyeMedicalCenter: pastEyeData.eyeMedicalCenter,
         symptomDuration: pastEyeData.symptomDuration,
         medicalExaminationImages: pastEyeData.medicalExaminationImages,
         doctorName: pastEyeData.doctorName,
@@ -123,10 +124,38 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     emit(state.copyWith(selectedHospitalCenter: val));
   }
 
+  void updateSelectedEyeMedicalCenter(String? val) {
+    emit(state.copyWith(selectedEyeMedicalCenter: val));
+  }
+
+  Future<void> emitEyeMedicalCenters() async {
+    final response = await sharedRepo.getEyeMedicalCenters(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            eyeMedicalCenters: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> getInitialRequests() async {
     Future.wait([
       emitCountriesData(),
       emitDoctorNames(),
+      emitEyeMedicalCenters(),
       emitHospitalNames(),
     ]);
   }
@@ -288,13 +317,13 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     final response = await _eyesDataEntryRepo.postEyeDataEntry(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: EyeDataEntryRequestBody(
+        eyeMedicalCenter: state.selectedEyeMedicalCenter,
         writtenReport: reportTextController.text.isEmpty
             ? locale.no_data_entered
             : reportTextController.text,
         affectedEyePart: affectedEyePart,
         symptomStartDate: state.syptomStartDate!,
-        centerHospitalName:
-            state.selectedHospitalCenter ?? locale.no_data_entered,
+        centerHospitalName: state.selectedHospitalCenter,
         country: state.selectedCountryName ?? locale.no_data_entered,
         symptoms: symptoms.map((e) => e.title).toList().isEmpty
             ? [locale.no_data_entered]
@@ -342,6 +371,7 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     );
     final response = await _eyesDataEntryRepo.editEyeDataEntered(
       requestBody: EyeDataEntryRequestBody(
+        eyeMedicalCenter: state.selectedEyeMedicalCenter!,
         writtenReport: reportTextController.text,
         affectedEyePart: state.affectedEyePart!,
         symptomStartDate: state.syptomStartDate!,

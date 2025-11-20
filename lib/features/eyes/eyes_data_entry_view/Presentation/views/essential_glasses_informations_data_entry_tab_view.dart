@@ -70,7 +70,7 @@ class EssenstialGlassesInformationsDataDataEntryTabBar extends StatelessWidget {
               //   //! write by ur hand
               UserSelectionContainer(
                 allowManualEntry: true,
-                categoryLabel: "المعمل / المستشفى",
+                categoryLabel: "المركز / المستشفى",
                 options: state.hosptitalsNames,
                 onOptionSelected: (value) {
                   context

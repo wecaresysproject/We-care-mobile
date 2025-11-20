@@ -35,10 +35,12 @@ class DentalDataEntryState extends Equatable {
       oralPathologyReportStatus; // التحاليل الطبية الفموية
   final String? oralPathologySelection; //التحاليل الطبية الفموية
   final List<String> countriesNames;
+  final List<String> dentalCenters;
   final String? selectedCountryName;
   final String? selectedSyptomsPeriod; //مدة الاعراض
   final bool isEditMode;
   final String? selectedHospitalCenter;
+  final String? selectedDentalCenter;
   final String? treatingDoctor; // طبيب باطنه
   final String updatedTeethId;
 
@@ -77,8 +79,10 @@ class DentalDataEntryState extends Equatable {
     this.isEditMode = false,
     this.updatedTeethId = '',
     this.selectedHospitalCenter,
+    this.selectedDentalCenter,
     this.treatingDoctor,
     this.hospitals = const [],
+    this.dentalCenters = const [],
   }) : super();
 
   const DentalDataEntryState.initialState()
@@ -117,8 +121,10 @@ class DentalDataEntryState extends Equatable {
           isEditMode: false,
           updatedTeethId: '',
           selectedHospitalCenter: null,
+          selectedDentalCenter: null,
           treatingDoctor: null,
           hospitals: const [],
+          dentalCenters: const [],
         );
 
   DentalDataEntryState copyWith({
@@ -156,8 +162,10 @@ class DentalDataEntryState extends Equatable {
     bool? isEditMode,
     String? updatedTeethId,
     String? selectedHospitalCenter,
+    String? selectedDentalCenter,
     String? treatingDoctor,
     List<String>? hospitals,
+    List<String>? dentalCenters,
   }) {
     return DentalDataEntryState(
       dentalDataEntryStatus:
@@ -210,8 +218,10 @@ class DentalDataEntryState extends Equatable {
       updatedTeethId: updatedTeethId ?? this.updatedTeethId,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
+      selectedDentalCenter: selectedDentalCenter ?? this.selectedDentalCenter,
       treatingDoctor: treatingDoctor ?? this.treatingDoctor,
       hospitals: hospitals ?? this.hospitals,
+      dentalCenters: dentalCenters ?? this.dentalCenters,
     );
   }
 
@@ -251,7 +261,9 @@ class DentalDataEntryState extends Equatable {
         isEditMode,
         updatedTeethId,
         selectedHospitalCenter,
+        selectedDentalCenter,
         treatingDoctor,
         hospitals,
+        dentalCenters,
       ];
 }

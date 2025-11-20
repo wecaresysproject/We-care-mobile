@@ -88,15 +88,31 @@ class XRayDetailsView extends StatelessWidget {
                       value: radiologyData.radioType,
                       icon: 'assets/images/type_icon.png'),
                   DetailsViewInfoTile(
-                      isExpanded: true,
-                      title: "نوعية الاحتياج",
-                      value: radiologyData.periodicUsage ?? "",
-                      icon: 'assets/images/need_icon.png'),
+                    isExpanded: true,
+                    title: "نوعية الاحتياج",
+                    value: radiologyData.periodicUsage == null
+                        ? ""
+                        : radiologyData.periodicUsage!
+                            .asMap()
+                            .entries
+                            .map((e) => "${e.key + 1}. ${e.value}")
+                            .join("\n"),
+                    icon: 'assets/images/need_icon.png',
+                  ),
                   DetailsViewInfoTile(
-                      title: "الأعراض",
-                      value: radiologyData.symptoms ?? "",
-                      icon: 'assets/images/symptoms_icon.png',
-                      isExpanded: true),
+                    title: "الأعراض",
+                    value: radiologyData.symptoms == null ||
+                            radiologyData.symptoms!.first ==
+                                context.translate.no_data_entered
+                        ? ""
+                        : radiologyData.symptoms!
+                            .asMap()
+                            .entries
+                            .map((e) => "${e.key + 1}. ${e.value}")
+                            .join("\n"),
+                    icon: 'assets/images/symptoms_icon.png',
+                    isExpanded: true,
+                  ),
                   DetailsViewImagesWithTitleTile(
                     images: radiologyData.radiologyPhotos,
                     isShareEnabled: true,

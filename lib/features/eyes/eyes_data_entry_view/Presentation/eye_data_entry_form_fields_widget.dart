@@ -194,19 +194,60 @@ class EyeDataEntryFormFields extends StatelessWidget {
               ),
               verticalSpacing(16),
               UserSelectionContainer(
+                initialValue:
+                    state.selectedEyeMedicalCenter?.isEmptyOrNull == true
+                        ? null
+                        : state.selectedEyeMedicalCenter,
                 allowManualEntry: true,
-                categoryLabel: "المركز / المستشفى",
-                containerHintText:
-                    state.selectedHospitalCenter ?? "اختر اسم المستشفى/المركز",
-                options: state.hospitalNames,
+                isDisabled: state.selectedHospitalCenter.isNotEmptyOrNull,
+                categoryLabel: "مركز العيون",
+                containerHintText: state.selectedHospitalCenter.isNotEmptyOrNull
+                    ? "المستشفى محددة، لا يمكن اختيار مركز"
+                    : (state.selectedEyeMedicalCenter.isEmptyOrNull
+                        ? "اختر اسم مركز العيون"
+                        : state.selectedEyeMedicalCenter!),
+                options: state.eyeMedicalCenters,
+                onDismiss: () {
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSelectedEyeMedicalCenter("");
+                },
                 onOptionSelected: (value) {
-                  log("xxx:Selected: $value");
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSelectedEyeMedicalCenter(value);
+                },
+                bottomSheetTitle: 'اختر اسم مركز العيون',
+                searchHintText: "ابحث عن مركز العيون",
+              ),
+              verticalSpacing(16),
+              UserSelectionContainer(
+                initialValue:
+                    state.selectedHospitalCenter?.isEmptyOrNull == true
+                        ? null
+                        : state.selectedHospitalCenter,
+                allowManualEntry: true,
+                isDisabled: state.selectedEyeMedicalCenter.isNotEmptyOrNull,
+                categoryLabel: "المستشفى",
+                containerHintText:
+                    state.selectedEyeMedicalCenter.isNotEmptyOrNull
+                        ? "المركز محدد، لا يمكن اختيار مستشفى"
+                        : (state.selectedHospitalCenter.isEmptyOrNull
+                            ? "اختر اسم المستشفى"
+                            : state.selectedHospitalCenter!),
+                options: state.hospitalNames,
+                onDismiss: () {
+                  context
+                      .read<EyesDataEntryCubit>()
+                      .updateSelectedHospitalName("");
+                },
+                onOptionSelected: (value) {
                   context
                       .read<EyesDataEntryCubit>()
                       .updateSelectedHospitalName(value);
                 },
-                bottomSheetTitle: 'اختر اسم المستشفى/المركز',
-                searchHintText: "ابحث عن اسم المستشفى/المركز",
+                bottomSheetTitle: 'اختر اسم المستشفى',
+                searchHintText: "ابحث عن المستشفى",
               ),
               verticalSpacing(16),
               UserSelectionContainer(

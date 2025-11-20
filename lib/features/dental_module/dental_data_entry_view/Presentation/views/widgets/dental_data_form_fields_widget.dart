@@ -213,9 +213,10 @@ class _DentalDataFormFieldsWidgetState
             verticalSpacing(16),
 
             Text(
-              "التقرير الطبي",
+              "التقرير الطبي (${state.reportsImageUploadedUrls.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
+            verticalSpacing(10),
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
@@ -265,7 +266,7 @@ class _DentalDataFormFieldsWidgetState
 
             verticalSpacing(16),
             Text(
-              "الأشعة السينية  ${state.xrayImagesUploadedUrls.length}/8",
+              "الأشعة السينية (${state.xrayImagesUploadedUrls.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
@@ -292,7 +293,8 @@ class _DentalDataFormFieldsWidgetState
 
             UserSelectionContainer(
               options: state.allOralMedicalTests,
-              categoryLabel: "التحاليل الطبية الفموية",
+              categoryLabel:
+                  "التحاليل الطبية الفموية (${state.lymphAnalysisImagesUploadedUrl.length}/8)",
               bottomSheetTitle: "اختر التحاليل الطبية الفموية",
               onOptionSelected: (value) {
                 context
@@ -358,22 +360,76 @@ class _DentalDataFormFieldsWidgetState
               searchHintText: "ابحث عن اسم طبيب المعالج",
             ),
             verticalSpacing(16),
-
-            // "المستشفى / المركز"
-
+// اختيار مركز الأسنان
             UserSelectionContainer(
               allowManualEntry: true,
-              categoryLabel: "المستشفى / المركز",
-              containerHintText:
-                  state.selectedHospitalCenter ?? "اختر اسم المستشفى/المركز",
+              initialValue: state.selectedDentalCenter?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedDentalCenter,
+
+              /// يتعطل لو المستخدم اختار مستشفى
+              isDisabled: state.selectedHospitalCenter.isNotEmptyOrNull,
+
+              categoryLabel: "المركز",
+
+              containerHintText: state.selectedHospitalCenter.isNotEmptyOrNull
+                  ? "المستشفى محددة، لا يمكن اختيار مركز"
+                  : (state.selectedDentalCenter.isEmptyOrNull
+                      ? "اختر اسم المركز"
+                      : state.selectedDentalCenter!),
+
+              options: state.dentalCenters,
+
+              onOptionSelected: (value) {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .updateSelectedDentalCenter(value);
+              },
+
+              /// لو مسح الاختيار
+              onDismiss: () {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .updateSelectedDentalCenter("");
+              },
+
+              bottomSheetTitle: 'اختر اسم المركز',
+              searchHintText: "ابحث عن المركز",
+            ),
+
+            verticalSpacing(16),
+
+// اختيار مستشفى الأسنان
+            UserSelectionContainer(
+              allowManualEntry: true,
+              initialValue: state.selectedHospitalCenter?.isEmptyOrNull == true
+                  ? null
+                  : state.selectedHospitalCenter,
+
+              /// يتعطل لو المستخدم اختار مركز
+              isDisabled: state.selectedDentalCenter.isNotEmptyOrNull,
+              categoryLabel: "المستشفى",
+              containerHintText: state.selectedDentalCenter.isNotEmptyOrNull
+                  ? "المركز محدد، لا يمكن اختيار مستشفى"
+                  : (state.selectedHospitalCenter.isEmptyOrNull
+                      ? "اختر اسم المستشفى"
+                      : state.selectedHospitalCenter!),
               options: state.hospitals,
               onOptionSelected: (value) {
                 context
                     .read<DentalDataEntryCubit>()
                     .updateSelectedHospitalCenter(value);
               },
-              bottomSheetTitle: 'اختر اسم المستشفى/المركز',
-              searchHintText: "ابحث عن المستشفى/المركز",
+
+              /// لو مسح الاختيار
+              onDismiss: () {
+                context
+                    .read<DentalDataEntryCubit>()
+                    .updateSelectedHospitalCenter("");
+              },
+
+              bottomSheetTitle: 'اختر اسم المستشفى',
+              searchHintText: "ابحث عن المستشفى",
             ),
 
             verticalSpacing(16),

@@ -60,22 +60,22 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   final List<String> bloodTypes = [
     'A+',
     'A-',
+    'A (غير معروف +/–)',
     'B+',
     'B-',
+    'B (غير معروف +/–)',
     'AB+',
     'AB-',
+    'AB (غير معروف +/–)',
     'O+',
     'O-',
-    'A',
-    'B',
-    'AB',
-    'O',
+    'O (غير معروف +/–)',
   ];
+
   Future<void> emitDoctorNames() async {
     final response = await _sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
-      specialization: "الأشعة التداخلية",
     );
 
     response.when(

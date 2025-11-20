@@ -142,7 +142,12 @@ class AnalysisDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                     title: "الأعراض المستدعية للإجراء",
                     value: state.selectedAnalysisDetails!
-                        .symptomsRequiringIntervention!,
+                            .symptomsRequiringIntervention
+                            ?.asMap()
+                            .entries
+                            .map((e) => "${e.key + 1}- ${e.value}")
+                            .join('\n') ??
+                        "",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),

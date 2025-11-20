@@ -94,6 +94,36 @@ class AppSharedRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getDentalMedicalCenters(
+      {required String language}) async {
+    try {
+      final response = await _sharedServices.getDentalMedicalCenters(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final dentalCenters =
+          (response['data'] as List).map((center) => center as String).toList();
+      return ApiResult.success(dentalCenters);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getEyeMedicalCenters(
+      {required String language}) async {
+    try {
+      final response = await _sharedServices.getEyeMedicalCenters(
+        UserTypes.patient.name.firstLetterToUpperCase,
+        language,
+      );
+      final eyeCenters =
+          (response['data'] as List).map((center) => center as String).toList();
+      return ApiResult.success(eyeCenters);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<List<String>>> getLabCenters({
     required String language,
   }) async {
