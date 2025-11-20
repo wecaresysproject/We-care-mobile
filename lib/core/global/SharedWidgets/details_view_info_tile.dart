@@ -30,6 +30,7 @@ class DetailsViewInfoTile extends StatelessWidget {
         value == context.translate.no_data_entered ||
         value == "" ||
         value == "--" ||
+        value == "-" ||
         value.isEmptyOrNull) {
       return SizedBox.shrink();
     }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
@@ -7,6 +9,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/custom_image_with_text_eye_module_widget.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/widgets/eye_part_view_data_entry.dart';
+import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 
 class EyeOrGlassesView extends StatelessWidget {
   const EyeOrGlassesView({super.key, this.onGlassesTapped, this.onEyesTapped});
@@ -36,16 +39,20 @@ class EyeOrGlassesView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => EyePartsViewDataEntry(
-                              pageTitle: 'اضغط على جزء العين الذى تشتكى منه',
-                              handleArrowTap: (partName) async {
-                                await context.pushNamed(
-                                  Routes.eyeProceduresAndSyptomsDataEntry,
-                                  arguments: {
-                                    'eyePart': partName,
-                                  },
-                                );
-                              },
+                            builder: (context) => BlocProvider(
+                              create: (context) => getIt<EyeViewCubit>()
+                                ..getEffectedEyeParts(),
+                              child: EyePartsViewDataEntry(
+                                pageTitle: 'اضغط على جزء العين الذى تشتكى منه',
+                                handleArrowTap: (partName) async {
+                                  await context.pushNamed(
+                                    Routes.eyeProceduresAndSyptomsDataEntry,
+                                    arguments: {
+                                      'eyePart': partName,
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         );

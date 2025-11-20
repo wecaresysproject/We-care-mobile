@@ -20,7 +20,7 @@ class XRayCardItem extends StatelessWidget {
       onTap: onArrowTap,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 8.h),
-        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 10.w),
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18.r),
@@ -43,7 +43,7 @@ class XRayCardItem extends StatelessWidget {
             /// Header with title
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 0.w),
               decoration: BoxDecoration(
                 border: Border.all(
                     color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
@@ -117,17 +117,17 @@ class XRayCardItem extends StatelessWidget {
                           SizedBox(width: 8.w),
 
                           // 🔥Expanded علشان ياخد باقي المساحة
-                          // Expanded(
-                          //   child: Text(
-                          //     item.symptoms ?? "",
-                          //     style:
-                          //         AppTextStyles.font14blackWeight400.copyWith(
-                          //       fontSize: 14.sp,
-                          //     ),
-                          //     maxLines: 1, // ← أو خليه null لو عايز يلف براحتو
-                          //     overflow: TextOverflow.ellipsis,
-                          //   ),
-                          // ),
+                          Expanded(
+                            child: Text(
+                              item.symptoms!.join(', '),
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                              maxLines: 3, // ← أو خليه null لو عايز يلف براحتو
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ],
                       ),
 
@@ -157,7 +157,6 @@ class XRayCardItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.w),
 
                 /// Arrow Icon
                 Align(
@@ -166,8 +165,8 @@ class XRayCardItem extends StatelessWidget {
                     onPressed: onArrowTap,
                     icon: Image.asset(
                       'assets/images/side_arrow_filled.png',
-                      width: 20.w,
-                      height: 20.h,
+                      width: 15.w,
+                      height: 15.h,
                     ),
                   ),
                 )

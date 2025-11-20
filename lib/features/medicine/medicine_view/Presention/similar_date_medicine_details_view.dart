@@ -76,25 +76,17 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                             ),
                           ),
                         ]),
-                        SizedBox(height: 8.h),
-                        Row(children: [
-                          Expanded(
-                            child: DetailsViewInfoTile(
-                              title: "مدة العلاج",
-                              value: medicine.timeDuration,
-                              icon: 'assets/images/time_icon.png',
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: DetailsViewInfoTile(
-                              title: "اسم الطبيب",
-                              value: medicine.doctorName,
-                              icon: 'assets/images/doctor_icon.png',
-                            ),
-                          ),
-                        ]),
-                        SizedBox(height: 8.h),
+                        DetailsViewInfoTile(
+                          title: "مدة العلاج",
+                          value: medicine.timeDuration,
+                          icon: 'assets/images/time_icon.png',
+                        ),
+                        DetailsViewInfoTile(
+                          title: "اسم الطبيب",
+                          value: medicine.doctorName,
+                          icon: 'assets/images/doctor_icon.png',
+                          isExpanded: true,
+                        ),
                         DetailsViewInfoTile(
                           title: "الشكل الدوائي",
                           value: " اقراص",

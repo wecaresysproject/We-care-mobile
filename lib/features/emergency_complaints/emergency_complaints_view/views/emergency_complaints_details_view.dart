@@ -185,7 +185,7 @@ class SectionTitleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 55.w),
+      margin: EdgeInsets.only(right: 55.w, bottom: 10.h, left: 55.w),
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.5.h),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14.r),
@@ -228,6 +228,7 @@ class SymptomContainer extends StatelessWidget {
       padding: isMainSymptom
           ? EdgeInsets.all(8)
           : EdgeInsets.only(left: 8, right: 8, bottom: 8),
+          margin: const EdgeInsets.only(top: 16, bottom: 16),
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),

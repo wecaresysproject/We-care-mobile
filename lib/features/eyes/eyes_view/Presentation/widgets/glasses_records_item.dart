@@ -147,7 +147,6 @@ class GlassesRecordItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(width: 16.w),
 
                 /// Arrow Icon
                 Align(
@@ -156,8 +155,8 @@ class GlassesRecordItem extends StatelessWidget {
                     onPressed: onArrowTap,
                     icon: Image.asset(
                       'assets/images/side_arrow_filled.png',
-                      width: 20.w,
-                      height: 20.h,
+                      width: 15.w,
+                      height: 15.h,
                     ),
                   ),
                 )

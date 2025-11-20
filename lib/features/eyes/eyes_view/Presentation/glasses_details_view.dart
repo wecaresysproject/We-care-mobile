@@ -11,6 +11,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
+import 'package:we_care/generated/l10n.dart';
 
 class EyesGlassesDetailsView extends StatelessWidget {
   final String documentId;
@@ -96,74 +97,71 @@ class EyesGlassesDetailsView extends StatelessWidget {
                     icon: 'assets/images/hospital_icon.png',
                   ),
                   Row(
+                 children: [
+                    DetailsViewInfoTile(
+                      title: "حماية من ضوء ازرق",
+                      value: data.blueLightProtection == null
+                          ? "-"
+                          : data.blueLightProtection!
+                              ? "نعم"
+                              : "لا",
+                      icon: 'assets/images/blue_light.png',
+                    ),
+                    const Spacer(),
+                    DetailsViewInfoTile(
+                      title: "مقاومة الخدش",
+                      value: data.scratchResistance == null
+                          ? "-"
+                          : data.scratchResistance!
+                              ? "نعم"
+                              : "لا",
+                      icon: 'assets/images/scratch_protection.png',
+                    )
+                  ]),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      DetailsViewInfoTile(
-                        title: "حماية من ضوء \nازرق",
-                        value: data.blueLightProtection == null
-                            ? "-"
-                            : data.blueLightProtection!
-                                ? "نعم"
-                                : "لا",
-                        icon: 'assets/images/blue_light.png',
-                        isSmallContainers: true,
-                      ),
-                      const Spacer(),
-                      DetailsViewInfoTile(
-                        title: "مقاومة الخدش",
-                        value: data.scratchResistance == null
-                            ? "-"
-                            : data.scratchResistance!
-                                ? "نعم"
-                                : "لا",
-                        icon: 'assets/images/scratch_protection.png',
-                        isSmallContainers: true,
-                      ),
-                      const Spacer(),
-                      DetailsViewInfoTile(
-                        title: "مضاد للانعكاس",
-                        value: data.antiReflection == null
-                            ? "-"
-                            : data.antiReflection!
-                                ? "نعم"
-                                : "لا",
-                        icon: 'assets/images/reflection.png',
-                        isSmallContainers: true,
-                      ),
-                    ],
-                  ),
+                    DetailsViewInfoTile(
+                      title: ' مضادة للانعكاس',
+                      value: data.antiReflection == null
+                          ? "-"
+                          : data.antiReflection!
+                              ? "نعم"
+                              : "لا",
+                      icon: 'assets/images/reflection.png',
+                    ),
+                    const Spacer(),
+                    DetailsViewInfoTile(
+                      title: " مضادة لبصمات",
+                      value: data.fingerprintResistance == null
+                          ? "-"
+                          : data.fingerprintResistance!
+                              ? "نعم"
+                              : "لا",
+                      icon: 'assets/images/fingerprint.png',
+                    ),
+                  ]),
                   Row(
                     children: [
                       DetailsViewInfoTile(
-                        title: "طبقة مضادة\n لبصمات",
-                        value: data.fingerprintResistance == null
-                            ? "-"
-                            : data.fingerprintResistance!
-                                ? "نعم"
-                                : "لا",
-                        icon: 'assets/images/fingerprint.png',
-                        isSmallContainers: true,
-                      ),
-                      const Spacer(),
-                      DetailsViewInfoTile(
-                        title: "طبقة مضادة\n لضباب",
+                        title: "طبقة مضادة لضباب",
                         value: data.antiFog == null
                             ? "-"
                             : data.antiFog!
                                 ? "نعم"
                                 : "لا",
                         icon: 'assets/images/fog.png',
-                        isSmallContainers: true,
                       ),
                       const Spacer(),
                       DetailsViewInfoTile(
-                        title: "حماية من أشعة \nفوق بنفسجية",
+                        title: "حماية من أشعة UV",
                         value: data.uvProtection == null
                             ? "-"
                             : data.uvProtection!
                                 ? "نعم"
                                 : "لا",
                         icon: 'assets/images/uv.png',
-                        isSmallContainers: true,
                       ),
                     ],
                   ),

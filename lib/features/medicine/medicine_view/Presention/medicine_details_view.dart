@@ -147,6 +147,7 @@ class MedicineDetailsView extends StatelessWidget {
                       title: "اسم الطبيب ",
                       value: state.selectestMedicineDetails!.doctorName,
                       icon: 'assets/images/doctor_icon.png',
+                      isExpanded: true,
                     ),
                     DetailsViewInfoTile(
                       title: " دواء مرض مزمن",

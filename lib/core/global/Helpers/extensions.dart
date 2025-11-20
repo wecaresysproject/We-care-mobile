@@ -220,8 +220,15 @@ extension StringExtensions on String? {
       this![0].toUpperCase() + this!.substring(1);
 }
 
-extension StringCheckExtension on String {
-  bool get isFilled => trim().isNotEmpty && trim() != 'لم يتم ادخال بيانات';
+extension StringCheckExtension on String? {
+  bool get isFilled {
+    final trimmed = this?.trim() ?? '';
+
+    return trimmed.isNotEmpty &&
+        trimmed != '-' &&
+        trimmed != '--' &&
+        trimmed != 'لم يتم ادخال بيانات';
+  }
 
   bool get isNotFilled => !isFilled;
 }

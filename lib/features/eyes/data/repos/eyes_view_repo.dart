@@ -171,4 +171,21 @@ class EyesViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  //get Effected Eye Parts
+    Future<ApiResult<List<String>>> getEffectedEyeParts({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await eyesService.getEffectedEyeParts(
+        language,
+        userType,
+      );
+      final List<String> eyeParts = List<String>.from(response['data']);
+      return ApiResult.success(eyeParts);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));    
+    }
+  }
 }

@@ -188,7 +188,7 @@ Widget submitDataEnteredButtonBlocBuilder(TabController tabController) {
         title: "التالي",
         onPressed: () async {
           tabController.animateTo(
-            0,
+            1,
             curve: Curves.easeInOut,
           );
         },

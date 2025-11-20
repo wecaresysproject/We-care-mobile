@@ -98,8 +98,10 @@ class DentalOperationDetailsView extends StatelessWidget {
                     },
                     shareFunction: () => shareDentalDetails(context, state),
                     title: state.selectedToothOperationDetails!.procedure
-                            .primaryProcedure ??
-                        "",
+                            .primaryProcedure != null && state.selectedToothOperationDetails!.procedure.primaryProcedure!.isNotFilled ?
+                         "تفاصيل الإجراء السني": state.selectedToothOperationDetails!.procedure
+                            .primaryProcedure!,
+                    showActionButtons: true,
                   ),
                   verticalSpacing(16),
                   SymptomContainer(
@@ -157,19 +159,16 @@ class DentalOperationDetailsView extends StatelessWidget {
                         .medicalReportImage, // Replace with actual image URL or asset
                     title: "التقرير الطبي",
                   ),
-                  verticalSpacing(16),
                   DetailsViewImagesWithTitleTile(
                     images: state.selectedToothOperationDetails!
                         .xRayImage, // Replace with actual image URL or asset
                     title: "اللقطة السنية",
                   ),
-                  verticalSpacing(16),
                   DetailsViewImagesWithTitleTile(
                     images: state.selectedToothOperationDetails!
                         .lymphAnalysisImage, // Replace with actual image URL or asset
                     title: "التحاليل الطبية الفموية ",
                   ),
-                  verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "الطبيب المعالج",
                     value: state.selectedToothOperationDetails!.treatingDoctor,
@@ -177,18 +176,16 @@ class DentalOperationDetailsView extends StatelessWidget {
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
-                    isExpanded: true,
                     title: "الدولة",
                     value: state.selectedToothOperationDetails!.country,
                     icon: 'assets/images/country_icon.png',
+                    isExpanded: true,
                   ),
                   DetailsViewInfoTile(
-                    isExpanded: true,
-                    title: "المركز / المتسشفي",
-                    value: state.selectedToothOperationDetails!.hospital ??
-                        state.selectedToothOperationDetails!.dentalCenter ??
-                        "",
+                    title: "المستشفي",
+                    value: state.selectedToothOperationDetails!.hospital??"",
                     icon: 'assets/images/hospital_icon.png',
+                    isExpanded: true,
                   ),
                   DetailsViewInfoTile(
                     title: " ملاحظات شخصية",
@@ -224,6 +221,13 @@ class SymptomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (complaintDate.isNotFilled &&
+        symptomComplaint.isNotFilled &&
+        natureOfComplaint.isNotFilled &&
+        severityOfComplaint.isEmpty &&
+        complaintReason.isNotFilled) {
+      return SizedBox.shrink();
+    }
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -267,28 +271,24 @@ class SymptomContainer extends StatelessWidget {
             icon: 'assets/images/date_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: " الشكوى",
             value: symptomComplaint,
             isExpanded: true,
             icon: 'assets/images/symptoms_icon.png',
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "الاسباب المحتملة ",
             value: complaintReason,
             icon: 'assets/images/notes_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "طبيعة الشكوى",
             value: natureOfComplaint,
             icon: 'assets/images/file_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "حدة الشكوى",
             value: severityOfComplaint,
@@ -325,6 +325,16 @@ class MedicalOperationsComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+if (operationStartDate.isNotFilled &&
+        mainMedicalOperation.isNotFilled &&
+        secendoryMedicalOperation.isNotFilled &&
+        operationDetailedDescription.isNotFilled &&
+        operationType.isNotFilled &&
+        operationLevelOfPain.isNotFilled &&
+        operationRecoveryDuration.isNotFilled &&
+        useOfAnesthesia.isNotFilled) {
+      return SizedBox.shrink();
+    }
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -373,28 +383,24 @@ class MedicalOperationsComponent extends StatelessWidget {
             icon: 'assets/images/date_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "الإجراء الطبي الرئيسي",
             value: mainMedicalOperation,
             icon: 'assets/images/data_search_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "الإجراء الطبي الفرعي",
             value: secendoryMedicalOperation,
             icon: 'assets/images/data_search_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           DetailsViewInfoTile(
             title: "الوصف التفصيلي للإجراء",
             value: operationDetailedDescription,
             icon: 'assets/images/notes_icon.png',
             isExpanded: true,
           ),
-          verticalSpacing(16),
           Row(
             children: [
               DetailsViewInfoTile(
@@ -410,7 +416,6 @@ class MedicalOperationsComponent extends StatelessWidget {
               ),
             ],
           ),
-          verticalSpacing(16),
           Row(
             children: [
               DetailsViewInfoTile(

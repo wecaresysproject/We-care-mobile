@@ -40,14 +40,14 @@ class LensDetailsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               lensSide == "العدسة اليسرى"
-                  ? Image.asset(icon, height: 24.h, width: 24.w)
+                  ? Image.asset(icon, height: 22.h, width: 22.w)
                   : SizedBox.shrink(),
               Text(
                 lensSide,
-                style: AppTextStyles.font14BlueWeight700,
+                style: AppTextStyles.font14BlueWeight700.copyWith(fontSize: 13.sp),
               ),
               lensSide == "العدسة اليمنى"
-                  ? Image.asset(icon, height: 24.h, width: 24.w)
+                  ? Image.asset(icon, height: 22.h, width: 22.w)
                   : SizedBox.shrink(),
             ],
           ),

@@ -161,4 +161,11 @@ abstract class EyesModuleServices {
     @Query("language") String language,
     @Query("UserType") String userType,
   );
+
+  // get Effected Eye Parts
+    @GET(EyesApiConstants.getEffectedEyeParts)
+  Future<dynamic> getEffectedEyeParts(
+    @Query("language") String language,
+    @Query("UserType") String userType,
+  );
 }

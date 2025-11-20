@@ -7,6 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/logic/cubit/eyes_data_entry_cubit.dart';
+import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 
 class EyePartsViewDataEntry extends StatefulWidget {
   const EyePartsViewDataEntry(
@@ -65,21 +66,32 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
 
             verticalSpacing(24),
 
-            EyeCategoriesGridView(
-              categories: [
-                'الجفون',
-                'القرنية',
-                'الملتحمة',
-                'بياض العين',
-                'الشبكية',
-                'العصب البصرى',
-                'العدسة',
-                'القزحيه',
-                'الجسم الزجاجى',
-                'السائل المائى',
-              ],
-              onArrowTapped: widget.handleArrowTap,
-              onButtonTapped: handlePartTap,
+            FutureBuilder(
+              future: getEffectedEyeParts(),
+              builder: (context, asyncSnapshot) {
+                if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (asyncSnapshot.hasError) {
+                  return Center(child: Text('Error loading data'));
+                }
+                return EyeCategoriesGridView(
+                  categories: [
+                    'الجفون',
+                    'القرنية',
+                    'الملتحمة',
+                    'بياض العين',
+                    'الشبكية',
+                    'العصب البصرى',
+                    'العدسة',
+                    'القزحيه',
+                    'الجسم الزجاجى',
+                    'السائل المائى',
+                  ],
+                  onArrowTapped: widget.handleArrowTap,
+                  onButtonTapped: handlePartTap,
+                  activeCategories: asyncSnapshot.data!,
+                );
+              }
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -88,19 +100,31 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
                 color: AppColorsManager.mainDarkBlue,
               ),
             ),
-            EyeCategoriesGridView(
-              categories: [
-                'أعراض عامة',
-                'ضغط العين',
-                'الجهاز الدمعى',
-                'عضلات العين',
-                'الحول',
-                'الانكسار البصرى',
-                'الاصابة والعدوى',
-                'الاجراءات التعويضية والتجميد',
-              ],
-              onArrowTapped: widget.handleArrowTap,
-              onButtonTapped: widget.handleArrowTap,
+            FutureBuilder<List<String>>(
+              future: getEffectedEyeParts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error loading data'));
+                } else {
+                  return EyeCategoriesGridView(
+                    categories: [
+                      'أعراض عامة',
+                      'ضغط العين',
+                      'الجهاز الدمعى',
+                      'عضلات العين',
+                      'الحول',
+                      'الانكسار البصرى',
+                      'الاصابة والعدوى',
+                      'الاجراءات التعويضية والتجميد',        
+                    ],
+                    onArrowTapped: widget.handleArrowTap,
+                    onButtonTapped: widget.handleArrowTap,
+                    activeCategories: snapshot.data ?? [],
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -113,12 +137,14 @@ class MedicalCategoryButton extends StatelessWidget {
   final String title;
   final void Function(String) onButtonTapped;
   final void Function(String) onArrowTapped;
+  final bool isSelected;
 
   const MedicalCategoryButton({
     super.key,
     required this.title,
     required this.onButtonTapped,
     required this.onArrowTapped,
+    this.isSelected = false,
   });
 
   @override
@@ -126,7 +152,7 @@ class MedicalCategoryButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => onButtonTapped(title),
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColorsManager.mainDarkBlue,
+        backgroundColor: isSelected ? AppColorsManager.mainDarkBlue:AppColorsManager.unselectedNavIconColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),
@@ -139,7 +165,7 @@ class MedicalCategoryButton extends StatelessWidget {
                   fontWeight: FontWeight.w600)),
           Spacer(),
           InkWell(
-            onTap: () => onArrowTapped(title),
+            onTap: isSelected? () => onArrowTapped(title):null,
             child: Image.asset(
               'assets/images/back_icon.png',
               width: 30.w,
@@ -152,15 +178,22 @@ class MedicalCategoryButton extends StatelessWidget {
   }
 }
 
+Future<List<String>> getEffectedEyeParts()async {
+  final effectedEyeParts =await getIt<EyeViewCubit>().getEffectedEyeParts();
+  return effectedEyeParts;
+}
+
 class EyeCategoriesGridView extends StatelessWidget {
   final List<String> categories;
   final void Function(String) onButtonTapped;
   final void Function(String) onArrowTapped;
+  final List<String> activeCategories;
 
   const EyeCategoriesGridView(
       {super.key,
       required this.categories,
       required this.onButtonTapped,
+      required this.activeCategories,
       required this.onArrowTapped});
 
   @override
@@ -178,6 +211,8 @@ class EyeCategoriesGridView extends StatelessWidget {
             title: category,
             onButtonTapped: onButtonTapped,
             onArrowTapped: onArrowTapped,
+            isSelected:
+                activeCategories.contains(category),
           ),
         );
       }).toList(),

@@ -185,7 +185,7 @@ class MedicalAnalysisView extends StatelessWidget {
                           style: TextStyle(
                             color: AppColorsManager.mainDarkBlue,
                             decoration: TextDecoration.underline,
-                            fontSize: 12.sp,
+                            fontSize: 11.sp,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -208,7 +208,7 @@ class MedicalAnalysisView extends StatelessWidget {
                               data.result == null && data.selectedChoice == null
                                   ? TextDecoration.none
                                   : TextDecoration.underline,
-                          fontSize: 15.sp,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -252,7 +252,7 @@ class MedicalAnalysisView extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: color ?? Colors.black87,
-            fontSize: 12.sp,
+            fontSize: 11.5.sp,
             fontWeight: FontWeight.w500,
           ),
         ),

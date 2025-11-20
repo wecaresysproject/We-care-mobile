@@ -15,6 +15,7 @@ class EyeViewState extends Equatable {
   final EyeGlassesDetailsModel? selectedEyeGlassesDetails;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final List<String> effectedEyeParts;
 
   const EyeViewState({
     this.requestStatus = RequestStatus.initial,
@@ -26,6 +27,7 @@ class EyeViewState extends Equatable {
     this.selectedEyeGlassesDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.effectedEyeParts = const [],
   });
 
   EyeViewState copyWith({
@@ -37,7 +39,8 @@ class EyeViewState extends Equatable {
     List<EyeGlassesRecordModel>? eyeGlassesRecords,
     EyeGlassesDetailsModel? selectedEyeGlassesDetails,
     bool? isDeleteRequest,
-    bool? isLoadingMore,
+    bool? isLoadingMore, 
+     List<String>? effectedEyeParts,
   }) {
     return EyeViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -51,6 +54,7 @@ class EyeViewState extends Equatable {
           selectedEyeGlassesDetails ?? this.selectedEyeGlassesDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      effectedEyeParts: effectedEyeParts ?? this.effectedEyeParts,
     );
   }
 
@@ -65,5 +69,6 @@ class EyeViewState extends Equatable {
         selectedEyeGlassesDetails,
         isDeleteRequest,
         isLoadingMore,
+        effectedEyeParts,
       ];
 }

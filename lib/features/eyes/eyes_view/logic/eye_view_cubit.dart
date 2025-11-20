@@ -211,4 +211,26 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     if (!hasMore || isLoadingMore) return;
     await getEyeGlassesRecords(page: currentPage + 1);
   }
+
+    Future<List<String>> getEffectedEyeParts() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    final result = await _repo.getEffectedEyeParts(
+      language: AppStrings.arabicLang,   
+      userType: UserTypes.patient.name.firstLetterToUpperCase, 
+    );
+    result.when(
+      success: (data) => emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        effectedEyeParts: data,
+      )),
+      failure: (error) => emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        responseMessage: error.errors.first,
+      )),
+    );
+    return result.when(
+      success: (data) => data,
+      failure: (error) => [],
+    );
+  }
 }
