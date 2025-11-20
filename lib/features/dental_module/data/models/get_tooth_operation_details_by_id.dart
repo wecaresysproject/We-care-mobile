@@ -31,23 +31,26 @@ class ToothOperationDetails {
   List<String> lymphAnalysisImage;
   String gumCondition;
   String treatingDoctor;
-  String hospital;
+  String? hospital;
   String country;
   String additionalNotes;
   String? writtenReport;
+  String? dentalCenter;
 
-  ToothOperationDetails(
-      {required this.medicalComplaints,
-      required this.procedure,
-      required this.medicalReportImage,
-      required this.xRayImage,
-      required this.lymphAnalysis,
-      required this.lymphAnalysisImage,
-      required this.gumCondition,
-      required this.treatingDoctor,
-      required this.hospital,
-      required this.country,
-      required this.additionalNotes});
+  ToothOperationDetails({
+    required this.medicalComplaints,
+    required this.procedure,
+    required this.medicalReportImage,
+    required this.xRayImage,
+    required this.lymphAnalysis,
+    required this.lymphAnalysisImage,
+    required this.gumCondition,
+    required this.treatingDoctor,
+    required this.hospital,
+    required this.country,
+    required this.additionalNotes,
+    required this.dentalCenter,
+  });
 
   factory ToothOperationDetails.fromJson(Map<String, dynamic> json) =>
       _$ToothOperationDetailsFromJson(json);

@@ -35,12 +35,13 @@ final class SingleTeethReportRequestBody {
   @JsonKey(name: 'TreatingDoctor')
   final String treatingDoctor;
   @JsonKey(name: 'Hospital')
-  final String hospital;
+  final String? hospital;
   @JsonKey(name: 'Country')
   final String country;
   @JsonKey(name: 'AdditionalNotes')
   final String additionalNotes;
   final String writtenReport;
+  final String? dentalCenter;
 
   const SingleTeethReportRequestBody({
     required this.symptomStartDate,
@@ -62,6 +63,7 @@ final class SingleTeethReportRequestBody {
     required this.country,
     required this.additionalNotes,
     required this.writtenReport,
+    required this.dentalCenter,
   });
 
   factory SingleTeethReportRequestBody.fromJson(Map<String, dynamic> json) =>

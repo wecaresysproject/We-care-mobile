@@ -117,17 +117,17 @@ class XRayCardItem extends StatelessWidget {
                           SizedBox(width: 8.w),
 
                           // 🔥Expanded علشان ياخد باقي المساحة
-                          Expanded(
-                            child: Text(
-                              item.symptoms ?? "",
-                              style:
-                                  AppTextStyles.font14blackWeight400.copyWith(
-                                fontSize: 14.sp,
-                              ),
-                              maxLines: 1, // ← أو خليه null لو عايز يلف براحتو
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
+                          // Expanded(
+                          //   child: Text(
+                          //     item.symptoms ?? "",
+                          //     style:
+                          //         AppTextStyles.font14blackWeight400.copyWith(
+                          //       fontSize: 14.sp,
+                          //     ),
+                          //     maxLines: 1, // ← أو خليه null لو عايز يلف براحتو
+                          //     overflow: TextOverflow.ellipsis,
+                          //   ),
+                          // ),
                         ],
                       ),
 

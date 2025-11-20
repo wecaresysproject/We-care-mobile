@@ -8,12 +8,12 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/syptoms_requiring_intervevention_selectior_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/x_ray_image_upload_section_widget.dart';
+import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/x_ray_purposes_multi_select_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/xray_report_section_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -92,22 +92,8 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             ),
 
             verticalSpacing(16),
-            UserSelectionContainer(
-              categoryLabel:
-                  "نوعية الاحتياج للأشعة", // Another Dropdown Example
-              containerHintText:
-                  state.selectedPupose ?? "اختر نوعية احتياجك للأشعة",
-              options: state.puposesOfSelectedXRayType,
-              isEditMode: state.isEditMode,
-              onOptionSelected: (selectedPupose) {
-                log("xxx:Selected: $selectedPupose");
-                context
-                    .read<XRayDataEntryCubit>()
-                    .updateXRaySelectedPupose(selectedPupose);
-              },
-              bottomSheetTitle: "اختر نوعية احتياجك للأشعة",
-              searchHintText: "ابحث عن نوعية احتياجك للأشعة",
-            ),
+
+            XRayPurposeMultiSelect(),
 
             verticalSpacing(16),
 
@@ -120,7 +106,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             verticalSpacing(16),
 
             // //! الأعراض المستدعية للاجراء"
-
             SymptomsRequiringInterventionSelector(),
 
             verticalSpacing(16),
@@ -282,7 +267,7 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
       builder: (context, state) {
         return AppCustomButton(
           isLoading: state.xRayDataEntryStatus == RequestStatus.loading,
-          title: context.translate.send,
+          title: state.isEditMode ? "حفظ التعديلات" : context.translate.send,
           onPressed: () async {
             if (state.isFormValidated) {
               if (state.isEditMode) {
@@ -300,34 +285,6 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             }
           },
           isEnabled: state.isFormValidated ? true : false,
-        );
-      },
-    );
-  }
-}
-
-class SymptomsRequiringInterventionSelector extends StatelessWidget {
-  const SymptomsRequiringInterventionSelector({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
-        MedicalComplaintDataEntryDetailsState>(
-      buildWhen: (previous, current) =>
-          previous.medicalSymptomsIssue != current.medicalSymptomsIssue,
-      builder: (context, state) {
-        final xrayCubit = context.read<XRayDataEntryCubit>();
-
-        return SearchableUserSelectorContainer(
-          allowManualEntry: true,
-          categoryLabel: "الأعراض المستدعية للاجراء",
-          bottomSheetTitle: "اختر الأعراض المستدعية",
-          containerHintText:
-              state.medicalSymptomsIssue ?? "اختر الأعراض المستدعية",
-          onOptionSelected: (value) {
-            xrayCubit.updateSymptomsRequiringIntervention(value);
-          },
-          searchHintText: "ابحث عن الأعراض المستدعية",
         );
       },
     );

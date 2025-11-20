@@ -13,10 +13,11 @@ class EyeDataEntryRequestBody {
   final List<String> medicalReportUrl;
   final List<String> medicalExaminationImages;
   final String doctorName;
-  final String centerHospitalName;
+  final String? centerHospitalName;
   final String country;
   final String additionalNotes;
   final String writtenReport;
+  final String? eyeMedicalCenter;
 
   EyeDataEntryRequestBody({
     required this.symptomStartDate,
@@ -32,6 +33,7 @@ class EyeDataEntryRequestBody {
     required this.country,
     required this.additionalNotes,
     required this.writtenReport,
+    required this.eyeMedicalCenter,
   });
 
   factory EyeDataEntryRequestBody.fromJson(Map<String, dynamic> json) =>

@@ -24,13 +24,13 @@ class RadiologyData {
   String radiologyDate;
   String bodyPart;
   String radioType;
-  String? periodicUsage;
+  List<String>? periodicUsage;
   @JsonKey(name: 'xrayImages')
   List<String>? radiologyPhotos;
   @JsonKey(name: 'reportImages')
   List<String>? reports;
   @JsonKey(name: 'cause')
-  String? symptoms;
+  List<String>? symptoms;
   String? hospital;
   String? radiologyDoctor;
   @JsonKey(name: 'curedDoctor')

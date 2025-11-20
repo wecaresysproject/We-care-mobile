@@ -25,7 +25,7 @@ class EyeReportUploadSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "الصور المرفوعة (${state.uploadedReportImages.length}/8)",
+              "رفع صورة التقرير الطبي (${state.uploadedReportImages.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
             SizedBox(height: 8.h),

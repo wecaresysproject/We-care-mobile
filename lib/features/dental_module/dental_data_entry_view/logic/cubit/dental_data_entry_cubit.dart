@@ -31,6 +31,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   }) async {
     emit(
       state.copyWith(
+        selectedDentalCenter: pastToothData.dentalCenter,
         pastEditedToothData: pastToothData,
         startIssueDateSelection:
             pastToothData.medicalComplaints.symptomStartDate,
@@ -90,6 +91,10 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     emit(state.copyWith(selectedHospitalCenter: selectedHospital));
   }
 
+  void updateSelectedDentalCenter(String? val) {
+    emit(state.copyWith(selectedDentalCenter: val));
+  }
+
   void updateSelectedTreatingDoctor(String? val) {
     emit(state.copyWith(treatingDoctor: val));
   }
@@ -132,6 +137,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         emitAllGumsconditions(),
         emitAllOralMedicalTests(),
         emitCountriesData(),
+        emitDentalMedicalCenters(),
         emitHospitalNames(),
       ],
     );
@@ -146,6 +152,29 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         reportsImageUploadedUrls: updated,
         message: "تم حذف الصورة",
       ),
+    );
+  }
+
+  Future<void> emitDentalMedicalCenters() async {
+    final response = await sharedRepo.getDentalMedicalCenters(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            dentalCenters: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
     );
   }
 
@@ -361,6 +390,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     final response = await sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       language: AppStrings.arabicLang,
+      specialization: "طب اسنان عام",
     );
 
     response.when(
@@ -461,6 +491,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     final response = await _dentalDataEntryRepo.postOneTeethReportDetails(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: SingleTeethReportRequestBody(
+        dentalCenter: state.selectedDentalCenter,
         writtenReport: reportTextController.text.isNotEmpty
             ? reportTextController.text
             : locale.no_data_entered,
@@ -487,7 +518,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         gumCondition:
             state.selectedSurroundingGumStatus ?? locale.no_data_entered,
         treatingDoctor: state.treatingDoctor ?? locale.no_data_entered,
-        hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
+        hospital: state.selectedHospitalCenter,
         country: state.selectedCountryName ?? locale.no_data_entered,
       ),
       language: AppStrings.arabicLang,
@@ -526,6 +557,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       documentId: decumentId,
       requestBody: SingleTeethReportRequestBody(
+        dentalCenter: state.selectedDentalCenter!,
         writtenReport: reportTextController.text,
         teethNumber: teethNumber,
         symptomStartDate: state.startIssueDateSelection!,

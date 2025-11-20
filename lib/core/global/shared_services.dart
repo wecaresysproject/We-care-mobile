@@ -34,11 +34,13 @@ abstract class SharedServices {
     @Query('language') String language,
     @Query('country') String country,
   );
+  //? للأشعة
   @GET(SharedServicesConstants.radiologyCenters)
   Future<dynamic> getRadiologyCenters(
     @Query("userType") String userType,
     @Query('language') String language,
   );
+  //? للتحاليل
   @GET(SharedServicesConstants.labCenters)
   Future<dynamic> getLabCenters(
     @Query("userType") String userType,
@@ -55,6 +57,16 @@ abstract class SharedServices {
     @Query("userType") String userType,
     @Query('language') String language,
     @Query('specialty') String? specialization,
+  );
+  @GET(SharedServicesConstants.eyeMedicalCenters)
+  Future<dynamic> getEyeMedicalCenters(
+    @Query("userType") String userType,
+    @Query('language') String language,
+  );
+  @GET(SharedServicesConstants.dentalMedicalCenters)
+  Future<dynamic> getDentalMedicalCenters(
+    @Query("userType") String userType,
+    @Query('language') String language,
   );
   @MultiPart()
   @POST(SharedServicesConstants.uploadImageEndpoint)

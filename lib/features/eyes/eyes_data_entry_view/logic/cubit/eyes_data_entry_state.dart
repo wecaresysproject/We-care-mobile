@@ -18,6 +18,7 @@ class EyesDataEntryState extends Equatable {
 
   final List<String> countriesNames;
   final List<String> hospitalNames;
+  final List<String> eyeMedicalCenters;
   final String? selectedCountryName;
   final List<String> bodyParts;
   final List<String> subSurgeryRegions; // منطقة العمليية الفرعية
@@ -33,6 +34,7 @@ class EyesDataEntryState extends Equatable {
   final String editDecumentId;
   final String? surgeonName;
   final String? selectedHospitalCenter;
+  final String? selectedEyeMedicalCenter;
   final String? doctorName;
   final String? affectedEyePart;
 
@@ -65,10 +67,12 @@ class EyesDataEntryState extends Equatable {
     this.editDecumentId = '',
     this.surgeonName,
     this.selectedHospitalCenter,
+    this.selectedEyeMedicalCenter,
     this.doctorName,
     this.eyePartSyptomsAndProcedures,
     this.affectedEyePart = '',
     this.hospitalNames = const [],
+    this.eyeMedicalCenters = const [],
     this.doctorNames = const [],
   }) : super();
 
@@ -101,10 +105,12 @@ class EyesDataEntryState extends Equatable {
           editDecumentId: '',
           surgeonName: null,
           selectedHospitalCenter: null,
+          selectedEyeMedicalCenter: null,
           doctorName: null,
           eyePartSyptomsAndProcedures: null,
           affectedEyePart: null,
           hospitalNames: const [],
+          eyeMedicalCenters: const [],
           doctorNames: const [],
         );
 
@@ -137,10 +143,12 @@ class EyesDataEntryState extends Equatable {
     String? editDecumentId,
     String? surgeonName,
     String? selectedHospitalCenter,
+    String? selectedEyeMedicalCenter,
     String? doctorName,
     EyePartSyptomsAndProceduresResponseModel? eyePartSyptomsAndProcedures,
     String? affectedEyePart,
     List<String>? hospitalNames,
+    List<String>? eyeMedicalCenters,
     List<String>? doctorNames,
   }) {
     return EyesDataEntryState(
@@ -177,12 +185,15 @@ class EyesDataEntryState extends Equatable {
       surgeonName: surgeonName ?? this.surgeonName,
       selectedHospitalCenter:
           selectedHospitalCenter ?? this.selectedHospitalCenter,
+      selectedEyeMedicalCenter:
+          selectedEyeMedicalCenter ?? this.selectedEyeMedicalCenter,
       doctorName: doctorName ?? this.doctorName,
       symptomDuration: symptomDuration ?? this.symptomDuration,
       eyePartSyptomsAndProcedures:
           eyePartSyptomsAndProcedures ?? this.eyePartSyptomsAndProcedures,
       affectedEyePart: affectedEyePart ?? this.affectedEyePart,
       hospitalNames: hospitalNames ?? this.hospitalNames,
+      eyeMedicalCenters: eyeMedicalCenters ?? this.eyeMedicalCenters,
       doctorNames: doctorNames ?? this.doctorNames,
     );
   }
@@ -217,10 +228,12 @@ class EyesDataEntryState extends Equatable {
         editDecumentId,
         surgeonName,
         selectedHospitalCenter,
+        selectedEyeMedicalCenter,
         doctorName,
         eyePartSyptomsAndProcedures,
         affectedEyePart,
         hospitalNames,
+        eyeMedicalCenters,
         doctorNames,
       ];
 }

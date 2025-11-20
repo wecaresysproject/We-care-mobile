@@ -293,8 +293,28 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  void updateSymptomsRequiringIntervention(String? issue) {
-    emit(state.copyWith(symptomsRequiringIntervention: issue));
+  // void updateSymptomsRequiringIntervention(String? issue) {
+  //   emit(state.copyWith(symptomsRequiringIntervention: issue));
+  // }
+  void updateSymptomsRequiringIntervention(String issue) {
+    if (issue.isEmpty) return;
+
+    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
+
+    // موجود؟ شيله .. مش موجود؟ ضيفه  (toggle)
+    if (symptoms.contains(issue)) {
+      symptoms.remove(issue);
+    } else {
+      symptoms.add(issue);
+    }
+
+    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
+  }
+
+  void removeSymptomRequiringIntervention(String issue) {
+    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
+    symptoms.remove(issue);
+    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
   }
 
   Future<void> emitListOfTestNames(
@@ -491,8 +511,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
-        symptomsRequiringIntervention:
-            state.symptomsRequiringIntervention ?? localozation.no_data_entered,
+        symptomsRequiringIntervention: state.symptomsRequiringIntervention,
         timesTestPerformed: state.selectedNoOftimesTestPerformed ??
             localozation.no_data_entered,
         writtenReport: reportTextController.text.isEmpty
@@ -546,7 +565,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName!,
         doctor: state.selectedDoctorName!,
-        symptomsRequiringIntervention: state.symptomsRequiringIntervention!,
+        symptomsRequiringIntervention: state.symptomsRequiringIntervention,
         timesTestPerformed: state.selectedNoOftimesTestPerformed!,
       ),
       testId: state.updatedTestId,

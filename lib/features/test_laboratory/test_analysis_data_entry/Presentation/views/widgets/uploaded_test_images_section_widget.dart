@@ -18,12 +18,14 @@ class UploadedTestImagesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TestAnalysisDataEntryCubit, TestAnalysisDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.uploadedTestImages != current.uploadedTestImages,
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "الصور المرفوعة (${state.uploadedTestImages.length}/8)",
+              "صور نسخة التحاليل الورقية (${state.uploadedTestImages.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
             SizedBox(height: 8.h),
