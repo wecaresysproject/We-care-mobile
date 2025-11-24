@@ -45,10 +45,10 @@ abstract class SurgeriesService {
     @Query("language") String language,
   );
 
-  @GET(SurgeriesApiConstants.getSurgeryStatus)
-  Future<dynamic> getSurgeryStatus(
-    @Query("language") String language,
-  );
+  // @GET(SurgeriesApiConstants.getSurgeryStatus)
+  // Future<dynamic> getSurgeryStatus(
+  //   @Query("language") String language,
+  // );
   @GET(SurgeriesApiConstants.getSurgeryName)
   Future<dynamic> getSurgeryNameBasedOnRegion(
     @Query("surgeryRegion") String region,

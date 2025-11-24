@@ -64,6 +64,40 @@ class MedicinesDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getAllDoseAmounts({
+    required String language,
+    required String userType,
+    required String medicalForm,
+  }) async {
+    try {
+      final response = await _medicinesServices.getAllDoseAmounts(
+        language,
+        userType,
+        medicalForm,
+      );
+      final allDoseAmounts =
+          (response['doses'] as List).map((e) => e as String).toList();
+      return ApiResult.success(allDoseAmounts);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getChronicDiseasesNames({
+    required String language,
+  }) async {
+    try {
+      final response = await _medicinesServices.getChronicDiseasesNames(
+        language,
+      );
+      final chronicDiseasesNames =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(chronicDiseasesNames);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<List<String>>> getAllComplaintsRelevantToBodyPartName({
     required String bodyPartName,
   }) async {

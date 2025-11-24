@@ -10,7 +10,7 @@ class SurgeryRequestBodyModel {
   final String surgeryName;
   final String usedTechnique;
   final String surgeryDescription;
-  final String medicalReportImage;
+  final List<String> medicalReportImage;
   final String surgeryStatus;
   final String hospitalCenter;
   final String surgeonName;
@@ -18,6 +18,7 @@ class SurgeryRequestBodyModel {
   final String postSurgeryInstructions;
   final String country;
   final String additionalNotes;
+  final String writtenReport;
 
   const SurgeryRequestBodyModel({
     required this.surgeryDate,
@@ -34,6 +35,7 @@ class SurgeryRequestBodyModel {
     required this.postSurgeryInstructions,
     required this.country,
     required this.additionalNotes,
+    required this.writtenReport,
   });
 
   Map<String, dynamic> toJson() => _$SurgeryRequestBodyModelToJson(this);

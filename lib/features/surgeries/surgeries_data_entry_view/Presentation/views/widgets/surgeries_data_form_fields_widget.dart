@@ -2,17 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/report_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
@@ -166,50 +165,91 @@ class _SuergeriesDataEntryFormFieldsState
             verticalSpacing(16),
 
             Text(
-              "التقرير الطبي",
+              "التقرير الطبي (${state.reportsImageUploadedUrls.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
+              label: context
+                      .read<SurgeryDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                // ✅ اقرا الـ cubit من الـ context الحالي
+                final cubit = context.read<SurgeryDataEntryCubit>();
+                final isFirstTime =
+                    cubit.reportTextController.text.isEmpty == true;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
+              },
             ),
 
             verticalSpacing(8),
-            BlocListener<SurgeryDataEntryCubit, SurgeryDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.surgeryUploadReportStatus !=
-                  current.surgeryUploadReportStatus,
-              listener: (context, state) async {
-                if (state.surgeryUploadReportStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.surgeryUploadReportStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
+            // BlocListener<SurgeryDataEntryCubit, SurgeryDataEntryState>(
+            //   listenWhen: (previous, current) =>
+            //       previous.surgeryUploadReportStatus !=
+            //       current.surgeryUploadReportStatus,
+            //   listener: (context, state) async {
+            //     if (state.surgeryUploadReportStatus ==
+            //         UploadReportRequestStatus.success) {
+            //       await showSuccess(state.message);
+            //     }
+            //     if (state.surgeryUploadReportStatus ==
+            //         UploadReportRequestStatus.failure) {
+            //       await showError(state.message);
+            //     }
+            //   },
+            //   child: SelectImageContainer(
+            //     imagePath: "assets/images/photo_icon.png",
+            //     label: "ارفق صورة",
+            //     onTap: () async {
+            //       await showImagePicker(
+            //         context,
+            //         onImagePicked: (isImagePicked) async {
+            //           final picker = getIt.get<ImagePickerService>();
+            //           if (isImagePicked && picker.isImagePickedAccepted) {
+            //             await context
+            //                 .read<SurgeryDataEntryCubit>()
+            //                 .uploadReportImagePicked(
+            //                   imagePath: picker.pickedImage!.path,
+            //                 );
+            //           }
+            //         },
+            //       );
+            //     },
+            //   ),
+            // ),
+
+            ReportUploaderSection<SurgeryDataEntryCubit, SurgeryDataEntryState>(
+              statusSelector: (state) => state.surgeryUploadReportStatus,
+              uploadedSelector: (state) => state.reportsImageUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<SurgeryDataEntryCubit>()
+                    .removeUploadedReport(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<SurgeryDataEntryCubit>()
-                            .uploadReportImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<SurgeryDataEntryCubit>()
+                    .uploadReportImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
             verticalSpacing(16),
 
@@ -217,7 +257,15 @@ class _SuergeriesDataEntryFormFieldsState
 
             UserSelectionContainer(
               categoryLabel: "حالة العملية",
-              options: state.allSurgeryStatuses,
+              options: [
+                "تمت بنجاح",
+                "تمت بمضاعفات",
+                "في مرحلة التعافي",
+                "لم تنجح",
+                "إعادة العملية",
+                "نجاح جزئي",
+                "النتيجة غير واضحه",
+              ],
               bottomSheetTitle: "اختر حالة العملية",
               onOptionSelected: (value) {
                 log("xxx:Selected: $value");
@@ -350,9 +398,9 @@ class _SuergeriesDataEntryFormFieldsState
           await showSuccess(state.message);
           if (!context.mounted) return;
           context.pop(
-              result:
-                  true //! send true back to test analysis details view inn order to check if its updated , then reload the view
-              );
+            result:
+                true, //! send true back to test analysis details view inn order to check if its updated , then reload the view
+          );
         } else {
           await showError(state.message);
         }

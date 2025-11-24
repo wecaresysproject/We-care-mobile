@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -115,19 +113,29 @@ class MedicineDetailsView extends StatelessWidget {
                       ),
                     ]),
 
-                    Row(children: [
-                      DetailsViewInfoTile(
-                          title: "عدد مرات الجرعة  ",
-                          value:
-                              state.selectestMedicineDetails!.dosageFrequency,
-                          icon: 'assets/images/times_icon.png'),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: " مدة العلاج",
-                        value: state.selectestMedicineDetails!.timeDuration,
-                        icon: 'assets/images/time_icon.png',
-                      ),
-                    ]),
+                    Row(
+                      children: [
+                        DetailsViewInfoTile(
+                            title: "عدد مرات الجرعة  ",
+                            value:
+                                state.selectestMedicineDetails!.dosageFrequency,
+                            icon: 'assets/images/times_icon.png'),
+                        Spacer(),
+                        DetailsViewInfoTile(
+                          title: " مدة العلاج",
+                          value: state.selectestMedicineDetails!.timeDuration,
+                          icon: 'assets/images/time_icon.png',
+                        ),
+                      ],
+                    ),
+                    DetailsViewInfoTile(
+                      title: "كمية الدواء",
+                      value:
+                          state.selectestMedicineDetails!.selectedDoseAmount ??
+                              "",
+                      icon: 'assets/images/time_icon.png',
+                      isExpanded: true,
+                    ),
                     Row(children: [
                       DetailsViewInfoTile(
                           title: "تاريخ بدء الدواء",
@@ -150,7 +158,7 @@ class MedicineDetailsView extends StatelessWidget {
                       isExpanded: true,
                     ),
                     DetailsViewInfoTile(
-                      title: " دواء مرض مزمن",
+                      title: "مرض مزمن",
                       value: state
                           .selectestMedicineDetails!.chronicDiseaseMedicine,
                       icon: 'assets/images/medicine_icon.png',
@@ -270,7 +278,6 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
   }
 }
 
-
 Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =
       context.read<MedicineViewCubit>().state.selectestMedicineDetails;
@@ -291,8 +298,9 @@ Future<void> _shareMedicineDetails(BuildContext context) async {
     '📅 *تاريخ بدء الدواء*:': medicine.startDate,
     '🧬 *دواء مرض مزمن*:': medicine.chronicDiseaseMedicine,
     '👨‍⚕️ *اسم الطبيب*:': medicine.doctorName,
-    '📝 *الملاحظات الشخصية*:':
-        (medicine.personalNotes?.isNotEmpty ?? false) ? medicine.personalNotes : 'لا توجد',
+    '📝 *الملاحظات الشخصية*:': (medicine.personalNotes.isNotEmpty ?? false)
+        ? medicine.personalNotes
+        : 'لا توجد',
     '⏰ *التنبيهات*:': boolToText(medicine.reminderStatus),
     '🕒 *وقت التنبيه*:': medicine.reminder,
   };

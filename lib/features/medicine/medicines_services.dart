@@ -81,6 +81,18 @@ abstract class MedicinesServices {
     @Query('userType') String userType,
     @Query('medicineId') String medicineId,
   );
+  @GET(MedicinesApiConstants.getAllDoseAmounts)
+  Future<dynamic> getAllDoseAmounts(
+    @Query('language') String language,
+    @Query('userType') String userType,
+    @Query('selectedMedicalForm') String selectedMedicalForm,
+  );
+
+  @GET(MedicinesApiConstants.getChronicDiseasesNames)
+  Future<dynamic> getChronicDiseasesNames(
+    @Query('language') String language,
+  );
+
   @GET(MedicinesApiConstants.getMedcineDosesByForms)
   Future<dynamic> getMedcineDosesByForms(
     @Query('form') String form,

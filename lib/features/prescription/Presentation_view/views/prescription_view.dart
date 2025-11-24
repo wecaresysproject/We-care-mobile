@@ -11,8 +11,8 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
+import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class PrescriptionView extends StatelessWidget {
@@ -69,29 +69,32 @@ class PrescriptionViewListBuilder extends StatelessWidget {
             ),
           );
         }
-        return MedicalItemGridView(
-          items: state.userPrescriptions,
-          onTap: (id) async {
-            final result = await context
-                .pushNamed(Routes.prescriptionDetailsView, arguments: {
-              'id': id,
-            });
-            if (result != null && result as bool && context.mounted) {
-              await context
-                  .read<PrescriptionViewCubit>()
-                  .getUserPrescriptionList();
-              await context
-                  .read<PrescriptionViewCubit>()
-                  .getPrescriptionFilters();
-            }
-          },
-          titleBuilder: (item) =>
-              item.doctorName, // Extract the title dynamically
-          infoRowBuilder: (item) => [
-            {"title": "التخصص:", "value": item.doctorSpecialty},
-            {"title": "التاريخ:", "value": item.preDescriptionDate},
-            {"title": "المرض:", "value": item.disease},
-          ],
+
+        return Expanded(
+          child: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.userPrescriptions.length,
+            itemBuilder: (context, index) {
+              final doc = state.userPrescriptions[index];
+              return PrescriptionCardITem(
+                prescription: doc,
+                onArrowTap: () async {
+                  final result = await context
+                      .pushNamed(Routes.prescriptionDetailsView, arguments: {
+                    'id': doc.id,
+                  });
+                  if (result != null && result as bool && context.mounted) {
+                    await context
+                        .read<PrescriptionViewCubit>()
+                        .getUserPrescriptionList();
+                    await context
+                        .read<PrescriptionViewCubit>()
+                        .getPrescriptionFilters();
+                  }
+                },
+              );
+            },
+          ),
         );
       },
     );
@@ -251,6 +254,157 @@ class PrescriptionViewFooterRow extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class PrescriptionCardITem extends StatelessWidget {
+  final PrescriptionModel prescription;
+  final VoidCallback? onArrowTap;
+
+  const PrescriptionCardITem({
+    super.key,
+    required this.prescription,
+    this.onArrowTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onArrowTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.h),
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18.r),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              offset: const Offset(0, 1),
+              blurRadius: 3,
+            )
+          ],
+          border: Border.all(color: Colors.grey.shade400, width: 0.8),
+        ),
+        child: Column(
+          children: [
+            /// Header with title
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                    width: 1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                prescription.doctorName,
+                style: AppTextStyles.font14BlueWeight700
+                    .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            SizedBox(height: 12.h),
+
+            Row(
+              children: [
+                /// Content Column - Right side
+                Expanded(
+                  child: Column(
+                    children: [
+                      /// Date
+                      Row(
+                        children: [
+                          Text(
+                            'التخصص :',
+                            style: AppTextStyles.font14BlueWeight700
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            prescription.doctorSpecialty,
+                            style: AppTextStyles.font14blackWeight400
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      /// Duration
+                      Row(
+                        children: [
+                          Text(
+                            'التاريخ :',
+                            style: AppTextStyles.font14BlueWeight700
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            prescription.preDescriptionDate,
+                            style: AppTextStyles.font14blackWeight400
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      /// Severity
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'المرض :',
+                            style: AppTextStyles.font14BlueWeight700.copyWith(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              prescription.disease,
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(width: 16.w),
+
+                /// Arrow Icon
+                Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                    onPressed: onArrowTap,
+                    icon: Image.asset(
+                      'assets/images/side_arrow_filled.png',
+                      width: 20.w,
+                      height: 20.h,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

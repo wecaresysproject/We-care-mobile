@@ -19,6 +19,7 @@ class MedicineDataEntryRequestBody {
   final List<MedicalComplaint> userMedicalComplaint;
   final bool reminderStatus;
   final String personalNotes;
+  final String selectedDoseAmount;
 
   MedicineDataEntryRequestBody({
     required this.startDate,
@@ -34,6 +35,7 @@ class MedicineDataEntryRequestBody {
     required this.reminderStatus,
     required this.personalNotes,
     required this.userMedicalComplaint,
+    required this.selectedDoseAmount,
   });
 
   factory MedicineDataEntryRequestBody.fromJson(Map<String, dynamic> json) =>

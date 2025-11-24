@@ -1,19 +1,14 @@
 import 'dart:developer';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/image_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -136,63 +131,33 @@ class _PrescriptionDataEntryFormFieldsState
 
               verticalSpacing(16),
               Text(
-                "الروشتة",
+                "الروشتة (${state.prescriptionPictureUploadedUrl.length})",
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
-              BlocListener<PrescriptionDataEntryCubit,
-                  PrescriptionDataEntryState>(
-                listenWhen: (prev, curr) =>
-                    prev.prescriptionImageRequestStatus !=
-                    curr.prescriptionImageRequestStatus,
-                listener: (context, state) async {
-                  if (state.prescriptionImageRequestStatus ==
-                      UploadImageRequestStatus.success) {
-                    await showSuccess(state.message);
-                  }
-                  if (state.prescriptionImageRequestStatus ==
-                      UploadImageRequestStatus.failure) {
-                    await showError(state.message);
-                  }
-                },
-                child: SelectImageContainer(
-                  containerBorderColor: ((state.isPrescriptionPictureSelected ==
-                                  null) ||
-                              (state.isPrescriptionPictureSelected == false)) &&
-                          state.prescriptionPictureUploadedUrl.isEmpty
-                      ? AppColorsManager.warningColor
-                      : AppColorsManager.textfieldOutsideBorderColor,
-                  imagePath: "assets/images/photo_icon.png",
-                  label: "ارفق صورة",
-                  onTap: () async {
-                    await showImagePicker(
-                      context,
-                      onImagePicked: (isImagePicked) async {
-                        final picker = getIt.get<ImagePickerService>();
-                        if (isImagePicked && picker.isImagePickedAccepted) {
-                          context
-                              .read<PrescriptionDataEntryCubit>()
-                              .updatePrescriptionPicture(isImagePicked);
 
-                          await context
-                              .read<PrescriptionDataEntryCubit>()
-                              .uploadPrescriptionImagePicked(
-                                imagePath: picker.pickedImage!.path,
-                              );
-                        }
-                      },
-                    );
-                  },
-                ),
+              ImageUploaderSection<PrescriptionDataEntryCubit,
+                  PrescriptionDataEntryState>(
+                statusSelector: (state) => state.prescriptionImageRequestStatus,
+                uploadedSelector: (state) =>
+                    state.prescriptionPictureUploadedUrl,
+                resultMessage: state.message,
+                hasValidation: true,
+                onRemove: (imagePath) {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .removeUploadedImage(imagePath);
+                },
+                onUpload: (path) async {
+                  await context
+                      .read<PrescriptionDataEntryCubit>()
+                      .uploadPrescriptionImagePicked(
+                        imagePath: path,
+                      );
+                },
               ),
 
               verticalSpacing(16),
-              // verticalSpacing(8),
-              // if (state.prescriptionPictureUploadedUrl.isNotEmpty)
-              //   imageWithMenuItem(
-              //     state.prescriptionPictureUploadedUrl,
-              //     context,
-              //   ),
 
               ///الدولة
               UserSelectionContainer(
@@ -294,68 +259,4 @@ class _PrescriptionDataEntryFormFieldsState
       },
     );
   }
-}
-
-Widget imageWithMenuItem(String imageUrl, BuildContext context) {
-  return Container(
-    height: 100.h,
-    padding: EdgeInsets.all(8.r),
-    decoration: BoxDecoration(
-      color: Colors.grey[200],
-      borderRadius: BorderRadius.circular(12.r),
-    ),
-    child: Row(
-      children: [
-        // IconButton(
-        //   onPressed: () {},
-        //   padding: EdgeInsets.zero,
-        //   alignment: Alignment.topCenter,
-        //   icon: Icon(
-        //     Icons.delete,
-        //     size: 28.sp,
-        //     color: AppColorsManager.warningColor,
-        //   ),
-        // ),
-        Spacer(),
-        // Image on the left with tap action
-        GestureDetector(
-          onTap: () {
-            showImagePreview(context, imageUrl);
-          },
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: CachedNetworkImage(
-              imageUrl: imageUrl,
-              width: 80.w,
-              height: 80.w,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-// Preview Dialog Function
-void showImagePreview(BuildContext context, String imageUrl) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      Future.delayed(Duration(seconds: 1), () {
-        if (!context.mounted) return;
-
-        Navigator.of(context).pop();
-      });
-
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: CachedNetworkImage(
-          imageUrl: imageUrl,
-          fit: BoxFit.contain,
-        ),
-      );
-    },
-  );
 }

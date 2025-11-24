@@ -7,7 +7,6 @@ class PrescriptionDataEntryState extends Equatable {
   final String? preceriptionDateSelection;
   final String? doctorNameSelection;
   final String? doctorSpecialitySelection;
-  final bool? isPrescriptionPictureSelected;
   final List<String> countriesNames;
   final List<String> citiesNames;
   final List<String> doctorNames;
@@ -20,7 +19,7 @@ class PrescriptionDataEntryState extends Equatable {
   final PrescriptionModel? prescribtionEditedModel;
 
   final String message; // error or success message
-  final String prescriptionPictureUploadedUrl;
+  final List<String> prescriptionPictureUploadedUrl;
 
   final UploadImageRequestStatus prescriptionImageRequestStatus;
 
@@ -30,7 +29,6 @@ class PrescriptionDataEntryState extends Equatable {
     this.preceriptionDateSelection,
     this.doctorNameSelection,
     this.doctorSpecialitySelection,
-    this.isPrescriptionPictureSelected,
     this.selectedCountryName,
     this.selectedCityName,
     this.selectedDisease,
@@ -38,7 +36,7 @@ class PrescriptionDataEntryState extends Equatable {
     this.citiesNames = const [],
     this.doctorNames = const [],
     this.message = '',
-    this.prescriptionPictureUploadedUrl = '',
+    this.prescriptionPictureUploadedUrl = const [],
     this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
     this.isEditMode = false,
     this.prescribtionEditedModel,
@@ -53,7 +51,6 @@ class PrescriptionDataEntryState extends Equatable {
           preceriptionDateSelection: null,
           doctorNameSelection: null,
           doctorSpecialitySelection: null,
-          isPrescriptionPictureSelected: null,
           selectedCountryName: null,
           selectedCityName: null,
           selectedDisease: null,
@@ -61,7 +58,7 @@ class PrescriptionDataEntryState extends Equatable {
           prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
           isEditMode: false,
           prescribtionEditedModel: null,
-          prescriptionPictureUploadedUrl: '',
+          prescriptionPictureUploadedUrl: const [],
           countriesNames: const [],
           citiesNames: const [],
           doctorNames: const [],
@@ -81,7 +78,7 @@ class PrescriptionDataEntryState extends Equatable {
     List<String>? countriesNames,
     String? message,
     List<String>? citiesNames,
-    String? prescriptionPictureUploadedUrl,
+    List<String>? prescriptionPictureUploadedUrl,
     UploadImageRequestStatus? prescriptionImageRequestStatus,
     String? selectedDisease,
     bool? isEditMode,
@@ -99,8 +96,6 @@ class PrescriptionDataEntryState extends Equatable {
       doctorNameSelection: doctorNameSelection ?? this.doctorNameSelection,
       doctorSpecialitySelection:
           doctorSpecialitySelection ?? this.doctorSpecialitySelection,
-      isPrescriptionPictureSelected:
-          isPrescriptionPictureSelected ?? this.isPrescriptionPictureSelected,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
       countriesNames: countriesNames ?? this.countriesNames,
       message: message ?? this.message,
@@ -127,7 +122,6 @@ class PrescriptionDataEntryState extends Equatable {
         preceriptionDateSelection,
         doctorNameSelection,
         doctorSpecialitySelection,
-        isPrescriptionPictureSelected,
         selectedCountryName,
         countriesNames,
         message,

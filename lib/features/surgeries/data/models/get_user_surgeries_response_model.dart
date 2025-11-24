@@ -32,7 +32,7 @@ class SurgeryModel {
   String surgeryName;
   String usedTechnique;
   String surgeryDescription;
-  String medicalReportImage;
+  List<String> medicalReportImage;
   String surgeryStatus;
   String hospitalCenter;
   String surgeonName;
@@ -40,6 +40,7 @@ class SurgeryModel {
   String postSurgeryInstructions;
   String country;
   String additionalNotes;
+  String? writtenReport;
 
   SurgeryModel({
     required this.id,
@@ -61,6 +62,7 @@ class SurgeryModel {
     required this.postSurgeryInstructions,
     required this.country,
     required this.additionalNotes,
+    this.writtenReport,
   });
 
   factory SurgeryModel.fromJson(Map<String, dynamic> json) =>

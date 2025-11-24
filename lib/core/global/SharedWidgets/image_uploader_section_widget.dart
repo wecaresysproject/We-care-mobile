@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/image_preview_item_with_cancel.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
     StateType> extends StatelessWidget {
@@ -19,6 +20,7 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
 
   final int maxImages;
   final String resultMessage;
+  final bool hasValidation;
 
   const ImageUploaderSection({
     super.key,
@@ -27,6 +29,7 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
     required this.uploadedSelector,
     required this.onRemove,
     required this.resultMessage,
+    this.hasValidation = false,
     this.maxImages = 8,
   });
 
@@ -75,6 +78,9 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
                 }
               },
               child: SelectImageContainer(
+                containerBorderColor: hasValidation && uploaded.isEmpty
+                    ? AppColorsManager.warningColor
+                    : AppColorsManager.textfieldOutsideBorderColor,
                 imagePath: "assets/images/photo_icon.png",
                 label: "ارفق صورة",
                 onTap: uploaded.length >= maxImages

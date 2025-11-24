@@ -7,9 +7,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_cubit.dart';
@@ -71,16 +70,16 @@ class PrescriptionDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                       title: "التاريخ",
-                      value: state
-                          .selectedPrescriptionDetails!.preDescriptionDate,
-                          isExpanded: true,
-                      icon: 'assets/images/date_icon.png'),
-                          DetailsViewInfoTile(
-                      title: "التشخيص",
+                      value:
+                          state.selectedPrescriptionDetails!.preDescriptionDate,
                       isExpanded: true,
-                      value: state.selectedPrescriptionDetails!.disease,
-                      icon: 'assets/images/symptoms_icon.png',
-                    ),
+                      icon: 'assets/images/date_icon.png'),
+                  DetailsViewInfoTile(
+                    title: "التشخيص",
+                    isExpanded: true,
+                    value: state.selectedPrescriptionDetails!.disease,
+                    icon: 'assets/images/symptoms_icon.png',
+                  ),
                   DetailsViewInfoTile(
                     title: "اسم الطبيب",
                     value: state.selectedPrescriptionDetails!.doctorName,
@@ -90,13 +89,12 @@ class PrescriptionDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                       title: "التخصص ",
                       isExpanded: true,
-                      value:
-                          state.selectedPrescriptionDetails!.doctorSpecialty,
+                      value: state.selectedPrescriptionDetails!.doctorSpecialty,
                       icon: 'assets/images/doctor_icon.png'),
-                  DetailsViewImageWithTitleTile(
-                    image:
+                  DetailsViewImagesWithTitleTile(
+                    images:
                         state.selectedPrescriptionDetails!.preDescriptionPhoto,
-                    title: "صورة الروشتة",
+                    title: "صور الروشتة",
                     isShareEnabled: true,
                   ),
                   DetailsViewInfoTile(
@@ -153,13 +151,13 @@ Future<void> _shareDetails(
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
-      final imagePath = await downloadImage(
-          prescriptionDetails.preDescriptionPhoto,
-          tempDir,
-          'analysis_image.png');
-      if (imagePath != null) imagePaths.add(imagePath);
-    }
+    // if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
+    //   final imagePath = await downloadImage(
+    //       prescriptionDetails.preDescriptionPhoto,
+    //       tempDir,
+    //       'analysis_image.png');
+    //   if (imagePath != null) imagePaths.add(imagePath);
+    // }
 
 //!TODO: to be removed after adding real data
     // 📤 Share text & images

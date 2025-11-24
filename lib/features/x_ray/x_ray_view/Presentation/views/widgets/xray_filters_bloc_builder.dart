@@ -21,7 +21,7 @@ class XrayFiltersBlocBuilder extends StatelessWidget {
             FilterConfig(
                 title: 'السنة', options: state.yearsFilter, isYearFilter: true),
             FilterConfig(title: 'نوع الاشعة', options: state.xrayTypeFilter),
-            FilterConfig(title: ' منطفة الاشعة', options: state.bodyPartFilter),
+            FilterConfig(title: 'منطقة الاشعة', options: state.bodyPartFilter),
           ],
           onApply: (selectedFilters) {
             AppLogger.debug(
@@ -29,7 +29,7 @@ class XrayFiltersBlocBuilder extends StatelessWidget {
             BlocProvider.of<XRayViewCubit>(context).emitFilteredData(
                 selectedFilters['السنة'].toString(),
                 selectedFilters['نوع الاشعة'],
-                selectedFilters[' منطفة الاشعة']);
+                selectedFilters['منطقة الاشعة']);
           },
         );
       },
