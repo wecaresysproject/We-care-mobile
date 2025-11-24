@@ -43,6 +43,7 @@ class EyeOrGlassesView extends StatelessWidget {
                               create: (context) => getIt<EyeViewCubit>()
                                 ..getEffectedEyeParts(),
                               child: EyePartsViewDataEntry(
+                                isDataEntryPage: true,
                                 pageTitle: 'اضغط على جزء العين الذى تشتكى منه',
                                 handleArrowTap: (partName) async {
                                   await context.pushNamed(
