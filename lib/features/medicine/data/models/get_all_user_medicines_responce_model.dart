@@ -39,6 +39,7 @@ class MedicineModel {
   String personalNotes;
   String userId;
   String modifiedAt;
+  String? selectedDoseAmount;
 
   MedicineModel({
     required this.id,
@@ -57,6 +58,7 @@ class MedicineModel {
     required this.personalNotes,
     required this.userId,
     required this.modifiedAt,
+    required this.selectedDoseAmount,
   });
   factory MedicineModel.fromJson(Map<String, dynamic> json) =>
       _$MedicineModelFromJson(json);

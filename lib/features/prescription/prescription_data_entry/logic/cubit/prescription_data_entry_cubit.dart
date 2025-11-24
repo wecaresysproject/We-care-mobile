@@ -223,8 +223,31 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
+  void removeUploadedImage(String url) {
+    final updated = List<String>.from(state.prescriptionPictureUploadedUrl)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        prescriptionPictureUploadedUrl: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+    validateRequiredFields();
+  }
+
   Future<void> uploadPrescriptionImagePicked(
       {required String imagePath}) async {
+    // 1) Check limit
+    if (state.prescriptionPictureUploadedUrl.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          prescriptionImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
@@ -237,13 +260,18 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedPrescribtions =
+            List<String>.from(state.prescriptionPictureUploadedUrl)
+              ..add(response.imageUrl);
         emit(
           state.copyWith(
             message: response.message,
-            prescriptionPictureUploadedUrl: response.imageUrl,
+            prescriptionPictureUploadedUrl: updatedPrescribtions,
             prescriptionImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
+        validateRequiredFields();
       },
       failure: (error) {
         emit(
@@ -275,9 +303,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
             ? symptomsAccompanyingComplaintController.text
             : localozation.no_data_entered,
         disease: state.selectedDisease ?? localozation.no_data_entered,
-        preDescriptionPhoto: state.prescriptionPictureUploadedUrl.isNotEmpty
-            ? state.prescriptionPictureUploadedUrl
-            : localozation.no_data_entered,
+        preDescriptionPhoto: state.prescriptionPictureUploadedUrl,
         governate: state.selectedCityName ?? localozation.no_data_entered,
         preDescriptionNotes: personalNotesController.text.isNotEmpty
             ? personalNotesController.text
@@ -361,8 +387,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     if (state.preceriptionDateSelection == null ||
         state.doctorNameSelection == null ||
         state.doctorSpecialitySelection == null ||
-        state.isPrescriptionPictureSelected == null ||
-        state.isPrescriptionPictureSelected == false) {
+        state.prescriptionPictureUploadedUrl.isEmpty) {
       emit(
         state.copyWith(
           isFormValidated: false,

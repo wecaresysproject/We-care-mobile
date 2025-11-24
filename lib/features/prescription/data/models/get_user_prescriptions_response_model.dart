@@ -30,7 +30,7 @@ class PrescriptionModel {
   String doctorSpecialty;
   String cause;
   String disease;
-  String preDescriptionPhoto;
+  List<String> preDescriptionPhoto;
   String country;
   String governate;
   String preDescriptionNotes;

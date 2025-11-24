@@ -113,6 +113,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         doseDuration: pastDataEntered.usageDuration,
         timePeriods: pastDataEntered.timeDuration,
         selectedChronicDiseaseName: pastDataEntered.chronicDiseaseMedicine,
+        selectedDoseAmount: pastDataEntered.selectedDoseAmount ?? "",
         medicalComplaints: pastDataEntered.mainSymptoms,
         selectedDoctorName: pastDataEntered.doctorName,
         selectedAlarmTime: pastDataEntered.reminder,
@@ -146,6 +147,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         await _medicinesDataEntryRepo.editSpecifcMedicineDataDetails(
       medicineId: state.updatedDocumentId,
       requestBody: MedicineDataEntryRequestBody(
+        selectedDoseAmount: state.selectedDoseAmount!,
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
@@ -430,6 +432,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     final response = await _medicinesDataEntryRepo.postMedicinesDataEntry(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: MedicineDataEntryRequestBody(
+        selectedDoseAmount: state.selectedDoseAmount!,
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
@@ -437,7 +440,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
-        chronicDiseaseMedicine: locale.no_data_entered,
+        chronicDiseaseMedicine:
+            state.selectedChronicDiseaseName ?? locale.no_data_entered,
         doctorName: state.selectedDoctorName ?? locale.no_data_entered,
         reminder: state.selectedAlarmTime ?? locale.no_data_entered,
         reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,

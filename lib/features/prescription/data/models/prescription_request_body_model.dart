@@ -17,7 +17,7 @@ class PrescriptionRequestBodyModel {
   final String cause;
   final String disease;
   @JsonKey(name: 'PreDescriptionPhoto')
-  final String preDescriptionPhoto;
+  final List<String> preDescriptionPhoto;
   final String country;
   final String governate;
   @JsonKey(name: 'PreDescriptionNotes')

@@ -270,7 +270,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(10),
             CustomAlarmButton(
               containerHintText: state.selectedAlarmTime != null &&
-                      state.selectedAlarmTime != ''
+                      state.selectedAlarmTime != '' &&
+                      state.selectedAlarmTime !=
+                          context.translate.no_data_entered
                   ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
                   : 'اختر موعد التنبيه',
             ),
