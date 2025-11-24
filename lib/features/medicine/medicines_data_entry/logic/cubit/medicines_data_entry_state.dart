@@ -14,17 +14,20 @@ class MedicinesDataEntryState extends Equatable {
   final String? selectedMedicalForm;
   final String? selectedDose;
   final String? selectedNoOfDose;
+  final String? selectedDoseAmount;
   final String? doseDuration;
   final String? timePeriods;
-  final String? selectedChronicDisease;
   final String? selectedDoctorName;
+  final String? selectedChronicDiseaseName;
   final bool isFormValidated;
   final bool isAddNewMedicineFormValidated;
   final List<MedicalComplaint> medicalComplaints;
+  final List<String> chronicDiseaseNames;
   final List<String> medicinesNames;
   final List<String> medicineForms;
   final List<String> medicalDoses;
   final List<String> doctorNames;
+  final List<String> dosageAmounts;
   final String medicineId;
   final String updatedDocumentId;
   final List<MedicineBasicInfoModel>? medicinesBasicInfo;
@@ -41,6 +44,7 @@ class MedicinesDataEntryState extends Equatable {
   final OptionsLoadingState medicalFormsOptionsLoadingState;
   final OptionsLoadingState medicalDosesOptionsLoadingState;
   final OptionsLoadingState dosageFrequenciesOptionsLoadingState;
+  final OptionsLoadingState dosageAmountOptionsLoadingState;
   final OptionsLoadingState allUsageCategoriesOptionsLoadingState;
   final OptionsLoadingState allDurationsBasedOnCategoryOptionsLoadingState;
 
@@ -62,10 +66,12 @@ class MedicinesDataEntryState extends Equatable {
     this.selectedMedicalForm,
     this.selectedDose,
     this.selectedNoOfDose,
+    this.selectedDoseAmount,
     this.doseDuration,
     this.timePeriods,
-    this.selectedChronicDisease,
+    this.selectedChronicDiseaseName,
     this.selectedDoctorName,
+    this.chronicDiseaseNames = const [],
     this.medicalComplaints = const [],
     this.medicinesNames = const [],
     this.medicineForms = const [],
@@ -84,9 +90,11 @@ class MedicinesDataEntryState extends Equatable {
     this.medicalDosesOptionsLoadingState = OptionsLoadingState.loading,
     this.dosageFrequenciesOptionsLoadingState = OptionsLoadingState.loading,
     this.allUsageCategoriesOptionsLoadingState = OptionsLoadingState.loading,
+    this.dosageAmountOptionsLoadingState = OptionsLoadingState.loading,
     this.allDurationsBasedOnCategoryOptionsLoadingState =
         OptionsLoadingState.loading,
     this.doctorNames = const [],
+    this.dosageAmounts = const [],
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -104,10 +112,12 @@ class MedicinesDataEntryState extends Equatable {
           selectedMedicalForm: null,
           selectedDose: null,
           selectedNoOfDose: null,
+          selectedDoseAmount: null,
           doseDuration: null,
           timePeriods: null,
-          selectedChronicDisease: null,
+          selectedChronicDiseaseName: null,
           selectedDoctorName: null,
+          chronicDiseaseNames: const [],
           medicalComplaints: const [],
           medicinesNames: const [],
           medicineForms: const [],
@@ -126,9 +136,11 @@ class MedicinesDataEntryState extends Equatable {
           medicalDosesOptionsLoadingState: OptionsLoadingState.loading,
           dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loading,
           allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
+          dosageAmountOptionsLoadingState: OptionsLoadingState.loading,
           allDurationsBasedOnCategoryOptionsLoadingState:
               OptionsLoadingState.loading,
           doctorNames: const [],
+          dosageAmounts: const [],
         );
 
   MedicinesDataEntryState copyWith({
@@ -145,11 +157,13 @@ class MedicinesDataEntryState extends Equatable {
     String? selectedMedicalForm,
     String? selectedDose,
     String? selectedNoOfDose,
+    String? selectedDoseAmount,
     String? doseDuration,
     String? timePeriods,
-    String? selectedChronicDisease,
+    String? selectedChronicDiseaseName,
     String? selectedDoctorName,
     List<MedicalComplaint>? medicalComplaints,
+    List<String>? chronicDiseaseNames,
     List<String>? medicinesNames,
     List<String>? medicineForms,
     List<String>? medicalDoses,
@@ -167,9 +181,11 @@ class MedicinesDataEntryState extends Equatable {
     OptionsLoadingState? medicalFormsOptionsLoadingState,
     OptionsLoadingState? medicalDosesOptionsLoadingState,
     OptionsLoadingState? dosageFrequenciesOptionsLoadingState,
+    OptionsLoadingState? dosageAmountOptionsLoadingState,
     OptionsLoadingState? allUsageCategoriesOptionsLoadingState,
     OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
     List<String>? doctorNames,
+    List<String>? dosageAmounts,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -190,10 +206,12 @@ class MedicinesDataEntryState extends Equatable {
       selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
       selectedDose: selectedDose ?? this.selectedDose,
       selectedNoOfDose: selectedNoOfDose ?? this.selectedNoOfDose,
+      selectedDoseAmount: selectedDoseAmount ?? this.selectedDoseAmount,
+      chronicDiseaseNames: chronicDiseaseNames ?? this.chronicDiseaseNames,
       doseDuration: doseDuration ?? this.doseDuration,
       timePeriods: timePeriods ?? this.timePeriods,
-      selectedChronicDisease:
-          selectedChronicDisease ?? this.selectedChronicDisease,
+      selectedChronicDiseaseName:
+          selectedChronicDiseaseName ?? this.selectedChronicDiseaseName,
       selectedDoctorName: selectedDoctorName ?? this.selectedDoctorName,
       medicalComplaints: medicalComplaints ?? this.medicalComplaints,
       medicinesNames: medicinesNames ?? this.medicinesNames,
@@ -218,6 +236,8 @@ class MedicinesDataEntryState extends Equatable {
       dosageFrequenciesOptionsLoadingState:
           dosageFrequenciesOptionsLoadingState ??
               this.dosageFrequenciesOptionsLoadingState,
+      dosageAmountOptionsLoadingState: dosageAmountOptionsLoadingState ??
+          this.dosageAmountOptionsLoadingState,
       allUsageCategoriesOptionsLoadingState:
           allUsageCategoriesOptionsLoadingState ??
               this.allUsageCategoriesOptionsLoadingState,
@@ -225,6 +245,7 @@ class MedicinesDataEntryState extends Equatable {
           allDurationsBasedOnCategoryOptionsLoadingState ??
               this.allDurationsBasedOnCategoryOptionsLoadingState,
       doctorNames: doctorNames ?? this.doctorNames,
+      dosageAmounts: dosageAmounts ?? this.dosageAmounts,
     );
   }
 
@@ -243,10 +264,12 @@ class MedicinesDataEntryState extends Equatable {
         selectedMedicalForm,
         selectedDose,
         selectedNoOfDose,
+        selectedDoseAmount,
         doseDuration,
         timePeriods,
-        selectedChronicDisease,
+        selectedChronicDiseaseName,
         selectedDoctorName,
+        chronicDiseaseNames,
         medicalComplaints,
         medicinesNames,
         medicineForms,
@@ -264,8 +287,10 @@ class MedicinesDataEntryState extends Equatable {
         medicalFormsOptionsLoadingState,
         medicalDosesOptionsLoadingState,
         dosageFrequenciesOptionsLoadingState,
+        dosageAmountOptionsLoadingState,
         allUsageCategoriesOptionsLoadingState,
         allDurationsBasedOnCategoryOptionsLoadingState,
         doctorNames,
+        dosageAmounts,
       ];
 }

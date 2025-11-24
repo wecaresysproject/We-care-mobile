@@ -6,13 +6,11 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
-
-import '../../../../core/global/Helpers/share_details_helper.dart';
 
 class SurgeryDetailsView extends StatelessWidget {
   const SurgeryDetailsView({super.key, required this.documentId});
@@ -62,12 +60,12 @@ class SurgeryDetailsView extends StatelessWidget {
                         Routes.surgeriesDataEntryView,
                         arguments: state.selectedSurgeryDetails,
                       );
-                      if (result != null && result) {
-                        if (!context.mounted) return;
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getSurgeryDetailsById(documentId);
-                      }
+                      // if (result != null && result) {
+                      if (!context.mounted) return;
+                      await context
+                          .read<SurgeriesViewCubit>()
+                          .getSurgeryDetailsById(documentId);
+                      // }
                     },
                   ),
                   Row(children: [
@@ -163,9 +161,16 @@ class SurgeryDetailsView extends StatelessWidget {
                       value: state.selectedSurgeryDetails!.additionalNotes,
                       icon: 'assets/images/notes_icon.png',
                       isExpanded: true),
-                  DetailsViewImageWithTitleTile(
-                    image: state.selectedSurgeryDetails!.medicalReportImage,
+                  DetailsViewInfoTile(
+                    title: "التقرير الطبي المكتوب",
+                    value: state.selectedSurgeryDetails!.writtenReport ?? "",
+                    icon: 'assets/images/notes_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewImagesWithTitleTile(
+                    images: state.selectedSurgeryDetails!.medicalReportImage,
                     title: "التقرير الطبي",
+                    isShareEnabled: true,
                   ),
                 ],
               ),
@@ -183,7 +188,7 @@ Future<void> _shareSurgeryDetails(
 ) async {
   try {
     final surgery = state.selectedSurgeryDetails!;
-    
+
     // 🧾 نجهّز البيانات الأساسية
     final detailsMap = {
       '📅 *التاريخ*:': surgery.surgeryDate,
@@ -198,19 +203,18 @@ Future<void> _shareSurgeryDetails(
     };
 
     // 📷 الصور (التقرير الطبي فقط إن وُجد)
-    final imageUrls = <String>[];
-    if (surgery.medicalReportImage != null &&
-        surgery.medicalReportImage.startsWith("http")) {
-      imageUrls.add(surgery.medicalReportImage);
-    }
+    // final imageUrls = <String>[];
+    // if (surgery.medicalReportImage.startsWith("http")) {
+    //   imageUrls.add(surgery.medicalReportImage);
+    // }
 
-    // 🚀 استدعاء الميثود الجينيريك
-    await shareDetails(
-      title: '⚕️ *تفاصيل العملية* ⚕️',
-      details: detailsMap,
-      imageUrls: imageUrls,
-      errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل العملية",
-    );
+    // // 🚀 استدعاء الميثود الجينيريك
+    // await shareDetails(
+    //   title: '⚕️ *تفاصيل العملية* ⚕️',
+    //   details: detailsMap,
+    //   imageUrls: imageUrls,
+    //   errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل العملية",
+    // );
   } catch (e) {
     await showError("❌ حدث خطأ أثناء المشاركة");
   }

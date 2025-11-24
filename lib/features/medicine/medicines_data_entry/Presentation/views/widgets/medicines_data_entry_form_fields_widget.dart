@@ -131,6 +131,29 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
             UserSelectionContainer(
               allowManualEntry: true,
+              containerBorderColor: state.selectedDoseAmount == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              categoryLabel: "كمية الدواء",
+              containerHintText: state.selectedDoseAmount ?? "اختر كمية الدواء",
+              options: state.dosageAmounts,
+              loadingState: state.dosageAmountOptionsLoadingState,
+              onOptionSelected: (value) {
+                context
+                    .read<MedicinesDataEntryCubit>()
+                    .updateSelectedDoseAmount(value);
+              },
+              searchHintText: "ابحث عن كمية الدواء",
+              bottomSheetTitle: "اختر كمية الدواء",
+              onRetryPressed: () async {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .emitAllDoseAmounts();
+              },
+            ),
+            verticalSpacing(16),
+            UserSelectionContainer(
+              allowManualEntry: true,
               containerBorderColor: state.selectedNoOfDose == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
@@ -204,23 +227,18 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
 
             UserSelectionContainer(
-              categoryLabel: "دواء مرض مزمن",
+              allowManualEntry: true,
+              categoryLabel: "مرض المزمن",
               containerHintText:
-                  state.selectedChronicDisease ?? "اختر اسم دواء مرض مزمن",
-              options: [
-                "باطنة",
-                "جراحة",
-                "طبيب عام",
-                "طبيب اطفال",
-                "طبيب جراحة",
-              ],
+                  state.selectedChronicDiseaseName ?? "اختر المرض المزمن",
+              options: state.chronicDiseaseNames,
               onOptionSelected: (value) {
                 context
                     .read<MedicinesDataEntryCubit>()
                     .updateSelectedChronicDisease(value);
               },
-              bottomSheetTitle: "اختر اسم دواء مرض مزمن",
-              searchHintText: "ابحث عن اسم دواء مرض مزمن",
+              bottomSheetTitle: "اختر المرض المزمن",
+              searchHintText: "ابحث عن المرض المزمن",
             ),
 
             verticalSpacing(16),

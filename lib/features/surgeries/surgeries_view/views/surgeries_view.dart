@@ -7,11 +7,11 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgery_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_grid_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class SurgeriesView extends StatelessWidget {
@@ -82,31 +82,34 @@ class SurgeriesView extends StatelessWidget {
                       )),
                     );
                   }
-                  return MedicalItemGridView(
-                    items: state.userSurgeries,
-                    onTap: (id) async {
-                      final result = await Navigator.push(context,
-                          MaterialPageRoute(builder: (_) {
-                        return SurgeryDetailsView(
-                          documentId: id,
+                  return Expanded(
+                    child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: state.userSurgeries.length,
+                      itemBuilder: (context, index) {
+                        final doc = state.userSurgeries[index];
+                        return SurgeryCardITem(
+                          surgery: doc,
+                          onArrowTap: () async {
+                            final result = await Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                              return SurgeryDetailsView(
+                                documentId: doc.id,
+                              );
+                            }));
+                            if (context.mounted) {
+                              await context
+                                  .read<SurgeriesViewCubit>()
+                                  .getUserSurgeriesList();
+                              if (!context.mounted) return;
+                              await context
+                                  .read<SurgeriesViewCubit>()
+                                  .getSurgeriesFilters();
+                            }
+                          },
                         );
-                      }));
-                      if (context.mounted) {
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getUserSurgeriesList();
-                        await context
-                            .read<SurgeriesViewCubit>()
-                            .getSurgeriesFilters();
-                      }
-                    },
-                    titleBuilder: (item) => (item.surgeryName as String).split(' ').take(4).join(' '),
-                    infoRowBuilder: (item) => [
-                      {"title": "التاريخ:", "value": item.surgeryDate},
-                      {"title": "منطقة العملية:", "value": item.surgeryRegion},
-                      {"title": "حالة العملية:", "value": item.surgeryStatus},
-                      {"title": "ملاحظات:", "value": item.additionalNotes},
-                    ],
+                      },
+                    ),
                   );
                 },
               ),
@@ -206,6 +209,182 @@ class SurgeriesFooterRow extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class SurgeryCardITem extends StatelessWidget {
+  final SurgeryModel surgery;
+  final VoidCallback? onArrowTap;
+
+  const SurgeryCardITem({
+    super.key,
+    required this.surgery,
+    this.onArrowTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onArrowTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8.h),
+        padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18.r),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: const [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              offset: const Offset(0, 1),
+              blurRadius: 3,
+            )
+          ],
+          border: Border.all(color: Colors.grey.shade400, width: 0.8),
+        ),
+        child: Column(
+          children: [
+            /// Header with title
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                    width: 1),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Text(
+                surgery.surgeryName,
+                style: AppTextStyles.font14BlueWeight700
+                    .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+            ),
+
+            SizedBox(height: 12.h),
+
+            Row(
+              children: [
+                /// Content Column - Right side
+                Expanded(
+                  child: Column(
+                    children: [
+                      /// Date
+                      Row(
+                        children: [
+                          Text(
+                            'التاريخ :',
+                            style: AppTextStyles.font14BlueWeight700
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            surgery.surgeryDate,
+                            style: AppTextStyles.font14blackWeight400
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      /// Duration
+                      Row(
+                        children: [
+                          Text(
+                            'منطقة العملية :',
+                            style: AppTextStyles.font14BlueWeight700
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                          SizedBox(width: 8.w),
+                          Text(
+                            surgery.subSurgeryRegion,
+                            style: AppTextStyles.font14blackWeight400
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      /// Severity
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'حالة العملية:',
+                            style: AppTextStyles.font14BlueWeight700.copyWith(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+
+                          // 🔥Expanded علشان ياخد باقي المساحة
+                          Expanded(
+                            child: Text(
+                              surgery.surgeryStatus,
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                              maxLines: 1, // ← أو خليه null لو عايز يلف براحتو
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 8.h),
+
+                      Row(
+                        children: [
+                          Text(
+                            'ملاحظات:',
+                            style: AppTextStyles.font14BlueWeight700
+                                .copyWith(fontSize: 14.sp),
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              surgery.additionalNotes,
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 16.w),
+
+                /// Arrow Icon
+                Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                    onPressed: onArrowTap,
+                    icon: Image.asset(
+                      'assets/images/side_arrow_filled.png',
+                      width: 20.w,
+                      height: 20.h,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

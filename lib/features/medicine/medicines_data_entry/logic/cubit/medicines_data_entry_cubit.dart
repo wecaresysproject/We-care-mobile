@@ -112,7 +112,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         selectedNoOfDose: pastDataEntered.dosageFrequency,
         doseDuration: pastDataEntered.usageDuration,
         timePeriods: pastDataEntered.timeDuration,
-        selectedChronicDisease: pastDataEntered.chronicDiseaseMedicine,
+        selectedChronicDiseaseName: pastDataEntered.chronicDiseaseMedicine,
         medicalComplaints: pastDataEntered.mainSymptoms,
         selectedDoctorName: pastDataEntered.doctorName,
         selectedAlarmTime: pastDataEntered.reminder,
@@ -153,7 +153,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
-        chronicDiseaseMedicine: state.selectedChronicDisease!,
+        chronicDiseaseMedicine: state.selectedChronicDiseaseName!,
         doctorName: state.selectedDoctorName!,
         reminder: state.selectedAlarmTime!,
         reminderStatus: state.selectedAlarmTime.isNotNull ? true : false,
@@ -185,10 +185,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> initialDataEntryRequests() async {
-    await emitAllMedicinesNames();
-    await emitAllDosageFrequencies();
-    await getAllUsageCategories();
-    await emitDoctorNames();
+    await Future.wait([
+      emitAllMedicinesNames(),
+      emitAllDosageFrequencies(),
+      getAllUsageCategories(),
+      getChronicDiseasesNames(),
+      emitDoctorNames(),
+    ]);
   }
 
   Future<void> emitAllMedicinesNames() async {
@@ -412,30 +415,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
             message: error.errors.first,
             allDurationsBasedOnCategoryOptionsLoadingState:
                 OptionsLoadingState.error,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> getMedicineDetails(String medicineId) async {
-    final response = await _medicinesDataEntryRepo.getMedicineDetailsById(
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name,
-      medicineId: medicineId,
-    );
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-              // medicineDetails: response,
-              ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
           ),
         );
       },
@@ -712,7 +691,11 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
   Future<void> updateSelectedMedicalForm(String? form) async {
     emit(state.copyWith(selectedMedicalForm: form));
-    await emitMedcineDosesByForms();
+    await Future.wait([
+      emitMedcineDosesByForms(),
+      emitAllDoseAmounts(),
+    ]);
+
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
@@ -729,6 +712,70 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
+  void updateSelectedChronicDisease(String? val) {
+    emit(state.copyWith(selectedChronicDiseaseName: val));
+  }
+
+  Future<void> getChronicDiseasesNames() async {
+    final response = await _medicinesDataEntryRepo.getChronicDiseasesNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (diseasesList) {
+        emit(
+          state.copyWith(
+            chronicDiseaseNames: diseasesList,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  void updateSelectedDoseAmount(String? doseAmount) {
+    emit(state.copyWith(selectedDoseAmount: doseAmount));
+    validateRequiredFields();
+    validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+  }
+
+  Future<void> emitAllDoseAmounts() async {
+    emit(
+      state.copyWith(
+        dosageAmountOptionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
+    final response = await _medicinesDataEntryRepo.getAllDoseAmounts(
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name,
+      medicalForm: state.selectedMedicalForm!, // الشكل الدواءي
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            dosageAmounts: response,
+            dosageAmountOptionsLoadingState: OptionsLoadingState.loaded,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            dosageAmountOptionsLoadingState: OptionsLoadingState.error,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> updateSelectedDoseDuration(String? doseDuration) async {
     emit(state.copyWith(doseDuration: doseDuration));
     await emitAllDurationsForCategory();
@@ -738,10 +785,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void updateSelectedTimePeriod(String? timePeriods) {
     emit(state.copyWith(timePeriods: timePeriods));
     validateRequiredFields();
-  }
-
-  void updateSelectedChronicDisease(String? value) {
-    emit(state.copyWith(selectedChronicDisease: value));
   }
 
   void updateSelectedDoctorName(String? value) {
@@ -755,7 +798,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
-        state.timePeriods == null) {
+        state.timePeriods == null ||
+        state.selectedDoseAmount == null) {
       emit(
         state.copyWith(
           isFormValidated: false,
@@ -829,6 +873,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         state.selectedMedicalForm == null ||
         state.selectedDose == null ||
         state.selectedNoOfDose == null) {
+      //! check for this later is there is aneed to add selectedDoseAmount here in this validation or no
       emit(
         state.copyWith(
           isAddNewMedicineFormValidated: false,

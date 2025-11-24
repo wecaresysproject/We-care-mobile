@@ -15,6 +15,11 @@ class MedicinesApiConstants {
   static const editDataEntryEndpoint =
       "MedicineUserEntryPage/EditUserMedicineDocument";
   static const getMedcineForms = "MedicineUserEntryPage/GetMedicineFormsOnly";
+  static const getAllDoseAmounts =
+      "MedicineUserEntryPage/GetDosesByMedicalForm"; //! to do to changes this later
+
+  static const getChronicDiseasesNames =
+      "ChronicDiseases/all-name-chronic-diseases";
 
   static const getMedcineDosesByForms =
       "MedicineUserEntryPage/GetMedicineDosesByForm";

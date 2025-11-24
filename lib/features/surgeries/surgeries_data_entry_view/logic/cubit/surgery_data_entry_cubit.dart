@@ -25,6 +25,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   final personalNotesController = TextEditingController();
   final suergeryDescriptionController = TextEditingController(); // وصف اضافي
   final postSurgeryInstructions = TextEditingController();
+  final reportTextController = TextEditingController();
 
   Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
     emit(
@@ -35,7 +36,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         surgeryNameSelection: pastSurgery.surgeryName,
         selectedTechUsed: pastSurgery.usedTechnique,
         surgeryPurpose: pastSurgery.purpose,
-        reportImageUploadedUrl: pastSurgery.medicalReportImage,
+        reportsImageUploadedUrls: pastSurgery.medicalReportImage,
         selectedSurgeryStatus: pastSurgery.surgeryStatus,
         selectedHospitalCenter: pastSurgery.hospitalCenter,
         internistName: pastSurgery.anesthesiologistName,
@@ -47,6 +48,8 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     );
     personalNotesController.text = pastSurgery.additionalNotes;
     suergeryDescriptionController.text = pastSurgery.surgeryDescription;
+    reportTextController.text = pastSurgery.writtenReport ?? "";
+
     postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
 
     validateRequiredFields();
@@ -133,12 +136,34 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   Future<void> intialRequestsForDataEntry() async {
     await emitGetAllSurgeriesRegions();
     await emitCountriesData();
-    await emitGetSurgeryStatus();
+    // await emitGetSurgeryStatus();
     await emitDoctorNames();
     await emitHospitalNames();
   }
 
+  void removeUploadedReport(String url) {
+    final updated = List<String>.from(state.reportsImageUploadedUrls)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        reportsImageUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadReportImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.reportsImageUploadedUrls.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          surgeryUploadReportStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         surgeryUploadReportStatus: UploadReportRequestStatus.initial,
@@ -151,10 +176,13 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.reportsImageUploadedUrls)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
             message: response.message,
-            reportImageUploadedUrl: response.reportUrl,
+            reportsImageUploadedUrls: updatedReports,
             surgeryUploadReportStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -204,6 +232,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     final response = await _surgeriesDataEntryRepo.updateSurgeryDocumentById(
       langauge: AppStrings.arabicLang,
       requestBody: SurgeryRequestBodyModel(
+        writtenReport: reportTextController.text,
         surgeryDate: state.surgeryDateSelection!,
         surgeryRegion: state.surgeryBodyPartSelection!,
         subSurgeryRegion: state.selectedSubSurgery!,
@@ -217,7 +246,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         anesthesiologistName: state.internistName!,
         country: state.selectedCountryName!,
         surgeonName: state.surgeonName!,
-        medicalReportImage: state.reportImageUploadedUrl!,
+        medicalReportImage: state.reportsImageUploadedUrls,
       ),
       id: state.updatedSurgeryId,
     );
@@ -241,27 +270,27 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     );
   }
 
-  Future<void> emitGetSurgeryStatus() async {
-    final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
-      language: AppStrings.arabicLang,
-    );
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            allSurgeryStatuses: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> emitGetSurgeryStatus() async {
+  //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
+  //     language: AppStrings.arabicLang,
+  //   );
+  //   response.when(
+  //     success: (response) {
+  //       emit(
+  //         state.copyWith(
+  //           allSurgeryStatuses: response,
+  //         ),
+  //       );
+  //     },
+  //     failure: (error) {
+  //       emit(
+  //         state.copyWith(
+  //           message: error.errors.first,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> emitHospitalNames() async {
     final response = await sharedRepo.getHospitalNames(
@@ -432,6 +461,9 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     final response = await _surgeriesDataEntryRepo.postModuleData(
       language: AppStrings.arabicLang,
       requestBody: SurgeryRequestBodyModel(
+        writtenReport: reportTextController.text.isEmpty
+            ? locale.no_data_entered
+            : reportTextController.text,
         surgeryDate: state.surgeryDateSelection!,
         surgeryName: state.surgeryNameSelection!,
         surgeryRegion: state.surgeryBodyPartSelection!,
@@ -440,11 +472,10 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         surgeryDescription: suergeryDescriptionController.text.isEmpty
             ? locale.no_data_entered
             : suergeryDescriptionController.text,
-        medicalReportImage:
-            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        medicalReportImage: state.reportsImageUploadedUrls,
         surgeryStatus: state.selectedSurgeryStatus ?? locale.no_data_entered,
         hospitalCenter: state.selectedHospitalCenter ?? locale.no_data_entered,
-        surgeonName: state.surgeryNameSelection ?? locale.no_data_entered,
+        surgeonName: state.surgeonName ?? locale.no_data_entered,
         anesthesiologistName: state.internistName ?? locale.no_data_entered,
         postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
             ? locale.no_data_entered
@@ -480,6 +511,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     personalNotesController.dispose();
     suergeryDescriptionController.dispose();
     postSurgeryInstructions.dispose();
+    reportTextController.dispose();
     return super.close();
   }
 }

@@ -101,20 +101,20 @@ class SurgeriesDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getSurgeryStatus({
-    required String language,
-  }) async {
-    try {
-      final response = await _surgeriesService.getSurgeryStatus(
-        language,
-      );
-      final data = (response['data'] as List).map((e) => e as String).toList();
+  // Future<ApiResult<List<String>>> getSurgeryStatus({
+  //   required String language,
+  // }) async {
+  //   try {
+  //     final response = await _surgeriesService.getSurgeryStatus(
+  //       language,
+  //     );
+  //     final data = (response['data'] as List).map((e) => e as String).toList();
 
-      return ApiResult.success(data);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
+  //     return ApiResult.success(data);
+  //   } catch (error) {
+  //     return ApiResult.failure(ApiErrorHandler.handle(error));
+  //   }
+  // }
 
   Future<ApiResult<String>> getSurgeryPurpose({
     required String language,
