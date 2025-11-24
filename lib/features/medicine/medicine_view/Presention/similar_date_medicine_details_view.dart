@@ -80,6 +80,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                           title: "مدة العلاج",
                           value: medicine.timeDuration,
                           icon: 'assets/images/time_icon.png',
+                          isExpanded: true,
                         ),
                         DetailsViewInfoTile(
                           title: "اسم الطبيب",
@@ -91,6 +92,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                           title: "الشكل الدوائي",
                           value: " اقراص",
                           icon: 'assets/images/symptoms_icon.png',
+                          isExpanded: true,
                         ),
                         SizedBox(height: 8.h),
                         DetailsViewInfoTile(

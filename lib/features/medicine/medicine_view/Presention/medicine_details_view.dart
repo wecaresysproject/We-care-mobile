@@ -229,6 +229,25 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
     Duration duration;
 
     switch (durationStr) {
+
+      // --------------------
+      // 🔹 المدد الجديدة اليومية
+      // --------------------
+      case 'يوم واحد فقط':
+        duration = Duration(days: 1);
+        break;
+      case 'يومين':
+        duration = Duration(days: 2);
+        break;
+      case '3 أيام':
+        duration = Duration(days: 3);
+        break;
+      case '5 أيام':
+        duration = Duration(days: 5);
+        break;
+      case '7 أيام (أسبوع)':
+        duration = Duration(days: 7);
+        break;
       case '10 أيام':
         duration = Duration(days: 10);
         break;
@@ -238,11 +257,38 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
       case '21 يومًا (3 أسابيع)':
         duration = Duration(days: 21);
         break;
-      case '6 أسابيع':
-        duration = Duration(days: 42);
-        break;
+      case 'شهر (30 يومًا)':
       case 'شهر':
         duration = Duration(days: 30);
+        break;
+
+      // --------------------
+      // 🔹 مدد أسبوعية/شهرية متكررة (لا يمكن حساب نهاية ثابتة)
+      // --------------------
+      case 'يومين في الأسبوع':
+      case 'ثلاث أيام في الأسبوع':
+      case 'أسبوع كل شهر':
+      case 'عشر أيام كل شهر':
+      case 'استخدام موسمي':
+        return 'مستمر';
+
+      // --------------------
+      // 🔹 مدد غير محددة بزمن (تعتمد على الحالة)
+      // --------------------
+      case 'حتى انتهاء العبوة':
+      case 'حتى زوال الأعراض':
+      case 'حتى مراجعة الطبيب':
+      case 'حسب الحاجة':
+      case 'حسب استجابة المريض':
+      case 'حسب إرشادات الطبيب':
+      case 'مدى الحياة':
+        return 'غير محدد';
+
+      // --------------------
+      // 🔹 المدد القديمة (لا تُحذف)
+      // --------------------
+      case '6 أسابيع':
+        duration = Duration(days: 42);
         break;
       case 'شهرين':
         duration = Duration(days: 60);
@@ -265,18 +311,19 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
       case '3 سنوات':
         duration = Duration(days: 1095);
         break;
-      case 'مدى الحياة':
-        return 'مستمر';
+
       default:
-        return 'غير معروف';
+       return 'غير محدد';
     }
 
     final endDate = startDate.add(duration);
     return now.isBefore(endDate) ? 'مستمر' : 'متوقف';
+
   } catch (e) {
-    return 'غير معروف';
+   return 'غير محدد';
   }
 }
+
 
 Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =
