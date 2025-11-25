@@ -119,12 +119,16 @@ class XRayCardItem extends StatelessWidget {
                           // 🔥Expanded علشان ياخد باقي المساحة
                           Expanded(
                             child: Text(
-                              item.symptoms!.join(', '),
+                             item.periodicUsage!
+                            .asMap()
+                            .entries
+                            .map((e) => "${e.key + 1}. ${e.value}")
+                            .join("\n"),
                               style:
                                   AppTextStyles.font14blackWeight400.copyWith(
                                 fontSize: 14.sp,
                               ),
-                              maxLines: 3, // ← أو خليه null لو عايز يلف براحتو
+                              maxLines: 5, // ← أو خليه null لو عايز يلف براحتو
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

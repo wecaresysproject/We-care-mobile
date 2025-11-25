@@ -118,14 +118,17 @@ class EmergencyComplaintsFiltersRow extends StatelessWidget {
           previous.bodyPartFilter != current.bodyPartFilter,
       builder: (context, state) {
         return DataViewFiltersRow(
-          filters: [
-            FilterConfig(
-                title: 'السنة', options: state.yearsFilter, isYearFilter: true),
-            FilterConfig(
-              title: 'مكان الشكوى',
-              options: state.bodyPartFilter,
-            ),
-          ],
+         filters: [
+    FilterConfig(
+      title: 'السنة',
+      options: ['الكل', ...state.yearsFilter],
+      isYearFilter: true,
+    ),
+    FilterConfig(
+      title: 'مكان الشكوى',
+      options: ['الكل', ...state.bodyPartFilter],
+    ),
+  ],
           onApply: (selectedFilters) async {
             AppLogger.debug("Selected Filters: $selectedFilters");
             await context

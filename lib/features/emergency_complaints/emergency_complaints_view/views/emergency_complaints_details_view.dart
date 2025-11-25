@@ -119,15 +119,15 @@ if (complaint.medications.dosage.isFilled ||
     iconPath: 'assets/images/medicines.png',
   ),
     DetailsViewInfoTile(
-      title: "تاريخ الاستخدام / الجرعة",
-      value: complaint.medications.dosage,
-      icon: 'assets/images/hugeicons_medicine-01.png',
-      isExpanded: true,
-    ),
-    DetailsViewInfoTile(
       title: "اسم الدواء",
       value: complaint.medications.medicationName,
       icon: 'assets/images/doctor_name.png',
+      isExpanded: true,
+    ),
+    DetailsViewInfoTile(
+      title: "الجرعة",
+      value: complaint.medications.dosage,
+      icon: 'assets/images/hugeicons_medicine-01.png',
       isExpanded: true,
     ),
 ],

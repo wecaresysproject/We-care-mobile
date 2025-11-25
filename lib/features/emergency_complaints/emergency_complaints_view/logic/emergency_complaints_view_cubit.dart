@@ -185,6 +185,14 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
   Future<void> getFilteredEmergencyComplaintList(
       {String? year, String? placeOfComplaint}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
+    if (year == "الكل") year = null;
+    if (placeOfComplaint == "الكل") placeOfComplaint = null;
+
+    if (year == null && placeOfComplaint == null) {
+      await getUserEmergencyComplaintsList();
+      return;
+    }
+
     final result =
         await _emergencyComplaintsViewRepo.getFilteredEmergencyComplaints(
       year: year,
