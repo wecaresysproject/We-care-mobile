@@ -217,38 +217,6 @@ class AllergyFooterRow extends StatelessWidget {
 class AllergyDataView extends StatelessWidget {
   const AllergyDataView({super.key});
 
-  // List<AllergyDiseaseModel> dummyList = [
-  //   AllergyDiseaseModel(
-  //     causes: [
-  //       'غبار, حبوب لقاح',
-  //     ],
-  //     date: '2022-01-15',
-  //     severity: 'شديدة',
-  //     title: 'حساسية الحليب',
-  //     precautions: 'تجنب الخروج في أوقات الذروة',
-  //     id: '1',
-  //   ),
-  //   AllergyDiseaseModel(
-  //     causes: [
-  //       'مكسرات, شوكولاتة',
-  //     ],
-  //     date: '2021-11-10',
-  //     severity: 'متوسطة',
-  //     title: 'حساسية المكسرات',
-  //     precautions: 'قراءة مكونات الطعام بعناية',
-  //     id: '2',
-  //   ),
-  //   AllergyDiseaseModel(
-  //     causes: [
-  //       'غبار, حبوب لقاح',
-  //     ],
-  //     date: '2022-01-15',
-  //     severity: 'شديدة',
-  //     title: 'حساسية الربيع',
-  //     precautions: 'تجنب الخروج في أوقات الذروة',
-  //     id: '3',
-  //   ),
-  // ];
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AllergyViewCubit>(

@@ -32,6 +32,12 @@ abstract class AllergyServices {
     @Query("language") String language,
     @Query("userType") String userType,
   );
+  @GET(AllergyApiConstants.getExpectedSideEffects)
+  Future<dynamic> getExpectedSideEffects(
+    @Query("language") String language,
+    @Query("userType") String userType,
+    @Query("allergyType") String allergyType,
+  );
   @GET(AllergyApiConstants.getAllTechUsed)
   Future<dynamic> getAllTechUsed(
     @Query("surgeryRegion") String region,

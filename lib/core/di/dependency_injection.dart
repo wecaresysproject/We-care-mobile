@@ -329,6 +329,7 @@ void setupAppCubits() {
   getIt.registerFactory<AllergyDataEntryCubit>(
     () => AllergyDataEntryCubit(
       getIt<AllergyDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<AllergyViewCubit>(

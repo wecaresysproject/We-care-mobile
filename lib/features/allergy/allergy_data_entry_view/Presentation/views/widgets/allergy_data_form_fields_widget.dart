@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/dynamic_question_with_dynamic_answer_list_option.dart';
 import 'package:we_care/core/global/SharedWidgets/general_yes_or_no_question_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/report_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/widgets/medicine_name_selector_section_widget.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/logic/cubit/allergy_data_entry_cubit.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/genetic_disease_template_widget.dart';
 
 import '../../../../../../core/global/SharedWidgets/select_image_container_shared_widget.dart';
 import '../../../../../../core/global/SharedWidgets/user_selection_container_shared_widget.dart';
@@ -49,7 +49,7 @@ class _AllergyDataFormFieldsWidgetState
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
               placeholderText: state.allergyDateSelection == null
-                  ? "منذ الولادة او اختر تاريخ بداية الأعراض"
+                  ? "اختر تاريخ بداية الأعراض"
                   : state.allergyDateSelection!,
               onDateSelected: (pickedDate) {
                 context
@@ -80,11 +80,15 @@ class _AllergyDataFormFieldsWidgetState
             verticalSpacing(16),
 
             UserSelectionContainer(
+              isDisabled: state.allergyTriggers.isEmpty,
               allowManualEntry: true,
               categoryLabel: "مسببات الحساسية",
-              containerHintText: state.selectedAllergyCauses.isEmpty
-                  ? 'اختر الأشياء المسببة للحساسية'
-                  : '${state.selectedAllergyCauses.length} مسببات محددة',
+              containerHintText: state.alleryTypeSelection == null
+                  ? 'اختر نوع الحساسية أولاً'
+                  : state.selectedAllergyCauses.isEmpty
+                      ? 'اختر الأشياء المسببة للحساسية'
+                      : '${state.selectedAllergyCauses.length} مسببات محددة',
+
               options: state.allergyTriggers, //! get from backend
               onOptionSelected: (value) {
                 context
@@ -145,26 +149,25 @@ class _AllergyDataFormFieldsWidgetState
               ),
             ],
 
-            verticalSpacing(16),
-            UserSelectionContainer(
-              allowManualEntry: true,
+            if (state.expectedSideEffects.isNotEmpty)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  verticalSpacing(16),
+                  Text(
+                    "الأعراض الجانبية المتوقعة",
+                    style: AppTextStyles.font18blackWight500,
+                  ),
+                  verticalSpacing(10),
+                  ...state.expectedSideEffects.asMap().entries.map(
+                        (e) => CustomContainer(
+                          value: "${e.key + 1}. ${e.value}",
+                          isExpanded: true,
+                        ).paddingBottom(5),
+                      ),
+                ],
+              ),
 
-              categoryLabel:
-                  "الأعراض الجانبية المتوقعة", // Another Dropdown Example
-              containerHintText: state.expectedSideEffectSelection ??
-                  "اختر الأعراض الجانبية المتوقعة",
-              options: [
-                "test1",
-                "test2",
-              ],
-              onOptionSelected: (value) {
-                context
-                    .read<AllergyDataEntryCubit>()
-                    .updateExpectedSideEffect(value);
-              },
-              bottomSheetTitle: "اختر الأعراض الجانبية المتوقعة",
-              searchHintText: "ابحث عن الأعراض الجانبية المتوقعة",
-            ),
             verticalSpacing(16),
             Text(
               "حدة الأعراض",
@@ -242,50 +245,62 @@ class _AllergyDataFormFieldsWidgetState
             verticalSpacing(16),
 
             Text(
-              "التقرير الطبى/ اختبار الحساسية",
+              "التقرير الطبى/ اختبار الحساسية (${state.reportsUploadedUrls.length}/8)",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
+            // SelectImageContainer(
+            //   imagePath: "assets/images/t_shape_icon.png",
+            //   label: "اكتب التقرير",
+            //   onTap: () {},
+            // ),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
+              label: context
+                      .read<AllergyDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                // ✅ اقرا الـ cubit من الـ context الحالي
+                final cubit = context.read<AllergyDataEntryCubit>();
+                final isFirstTime = state.isEditMode;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
+              },
+            ),
+            verticalSpacing(8),
+
+            ReportUploaderSection<AllergyDataEntryCubit, AllergyDataEntryState>(
+              statusSelector: (state) => state.uploadReportStatus,
+              uploadedSelector: (state) => state.reportsUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<AllergyDataEntryCubit>()
+                    .removeUploadedReport(imagePath);
+              },
+              onUpload: (path) async {
+                await context
+                    .read<AllergyDataEntryCubit>()
+                    .uploadReportImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
 
-            verticalSpacing(8),
-            BlocListener<AllergyDataEntryCubit, AllergyDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.uploadReportStatus != current.uploadReportStatus,
-              listener: (context, state) async {
-                if (state.uploadReportStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.uploadReportStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
-              },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<AllergyDataEntryCubit>()
-                            .uploadReportImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
-            ),
             verticalSpacing(16),
             Text(
               "التاريخ العائلى",

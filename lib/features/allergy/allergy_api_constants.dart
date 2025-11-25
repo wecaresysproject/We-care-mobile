@@ -13,6 +13,7 @@ class AllergyApiConstants {
   static const getAllergyTriggers = "/v1/lookup/allergy-triggers";
   static const surgeryPurpose = "/EnterSectionSurgery/purpose";
   static const postAllergyModuleData = "/v1/allergy-data";
+  static const getExpectedSideEffects = "/v1/lookup/allergy-severity-info";
   //View Entry
   static const deleteAllergyById = "/v1/allergy-data";
   static const getAllergyDiseases = "/v1/All-allergies";
