@@ -11,9 +11,10 @@ import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 
 class EyePartsViewDataEntry extends StatefulWidget {
   const EyePartsViewDataEntry(
-      {super.key, required this.handleArrowTap, required this.pageTitle});
+      {super.key, required this.handleArrowTap, required this.pageTitle,  this.isDataEntryPage=false});
   final void Function(String partName) handleArrowTap;
   final String pageTitle;
+  final bool isDataEntryPage;
 
   @override
   State<EyePartsViewDataEntry> createState() => _EyePartsViewStateDataEntry();
@@ -69,11 +70,11 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
             FutureBuilder(
               future: getEffectedEyeParts(),
               builder: (context, asyncSnapshot) {
-                if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (asyncSnapshot.hasError) {
-                  return Center(child: Text('Error loading data'));
-                }
+                // if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+                //   return Center(child: CircularProgressIndicator());
+                // } else if (asyncSnapshot.hasError) {
+                //   return Center(child: Text('Error loading data'));
+                // }
                 return EyeCategoriesGridView(
                   categories: [
                     'الجفون',
@@ -89,7 +90,8 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
                   ],
                   onArrowTapped: widget.handleArrowTap,
                   onButtonTapped: handlePartTap,
-                  activeCategories: asyncSnapshot.data!,
+                  activeCategories: asyncSnapshot.data ?? [],
+                  isDataEntryPage: widget.isDataEntryPage,
                 );
               }
             ),
@@ -103,11 +105,11 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
             FutureBuilder<List<String>>(
               future: getEffectedEyeParts(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error loading data'));
-                } else {
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return Center(child: CircularProgressIndicator());
+                // } else if (snapshot.hasError) {
+                //   return Center(child: Text('Error loading data'));
+                // } else {
                   return EyeCategoriesGridView(
                     categories: [
                       'أعراض عامة',
@@ -120,11 +122,11 @@ class _EyePartsViewStateDataEntry extends State<EyePartsViewDataEntry> {
                       'الاجراءات التعويضية والتجميد',        
                     ],
                     onArrowTapped: widget.handleArrowTap,
-                    onButtonTapped: widget.handleArrowTap,
+                    onButtonTapped: (_){},
                     activeCategories: snapshot.data ?? [],
+                    isDataEntryPage: widget.isDataEntryPage,
                   );
                 }
-              },
             ),
           ],
         ),
@@ -138,6 +140,7 @@ class MedicalCategoryButton extends StatelessWidget {
   final void Function(String) onButtonTapped;
   final void Function(String) onArrowTapped;
   final bool isSelected;
+  final bool isDataEntryPage;
 
   const MedicalCategoryButton({
     super.key,
@@ -145,6 +148,7 @@ class MedicalCategoryButton extends StatelessWidget {
     required this.onButtonTapped,
     required this.onArrowTapped,
     this.isSelected = false,
+    required this.isDataEntryPage,
   });
 
   @override
@@ -152,7 +156,7 @@ class MedicalCategoryButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () => onButtonTapped(title),
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? AppColorsManager.mainDarkBlue:AppColorsManager.unselectedNavIconColor,
+        backgroundColor: isSelected ? AppColorsManager.criticalRisk:AppColorsManager.mainDarkBlue,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       ),
@@ -165,7 +169,7 @@ class MedicalCategoryButton extends StatelessWidget {
                   fontWeight: FontWeight.w600)),
           Spacer(),
           InkWell(
-            onTap: isSelected? () => onArrowTapped(title):null,
+            onTap: isSelected||isDataEntryPage? () => onArrowTapped(title):null,
             child: Image.asset(
               'assets/images/back_icon.png',
               width: 30.w,
@@ -188,13 +192,15 @@ class EyeCategoriesGridView extends StatelessWidget {
   final void Function(String) onButtonTapped;
   final void Function(String) onArrowTapped;
   final List<String> activeCategories;
+  final bool isDataEntryPage;
 
   const EyeCategoriesGridView(
       {super.key,
       required this.categories,
       required this.onButtonTapped,
       required this.activeCategories,
-      required this.onArrowTapped});
+      required this.onArrowTapped,
+       required  this.isDataEntryPage});
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +219,7 @@ class EyeCategoriesGridView extends StatelessWidget {
             onArrowTapped: onArrowTapped,
             isSelected:
                 activeCategories.contains(category),
+          isDataEntryPage: isDataEntryPage,
           ),
         );
       }).toList(),
