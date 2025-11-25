@@ -48,6 +48,25 @@ class AllergyDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getExpectedSideEffects({
+    required String language,
+    required String userType,
+    required String allergyType,
+  }) async {
+    try {
+      final response = await _allergyServices.getExpectedSideEffects(
+        language,
+        userType,
+        allergyType,
+      );
+      final partSubRegions =
+          (response['data'] as List).map((e) => e as String).toList();
+      return ApiResult.success(partSubRegions);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<List<String>>> getAllergyTriggers({
     required String language,
     required String allergyType,

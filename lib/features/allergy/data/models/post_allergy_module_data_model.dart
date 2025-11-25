@@ -7,25 +7,25 @@ class PostAllergyModuleDataModel {
   final String allergyOccurrenceDate;
   final String allergyType;
   final List<String> allergyTriggers;
-  final String expectedSideEffects;
   final String symptomSeverity;
   final String timeToSymptomOnset;
   final bool? isDoctorConsulted;
   final bool? isAllergyTestPerformed;
   final String medicationName;
   final bool? isTreatmentsEffective;
-  final String medicalReportImage;
+  final List<String> medicalReportImage;
+  final List<String> expectedSideEffects;
   final String familyHistory;
   final String precautions;
   final String? proneToAllergies;
   final String? isMedicalWarningReceived;
   final bool? carryEpinephrine;
+  final String writtenReport;
 
   const PostAllergyModuleDataModel({
     required this.allergyOccurrenceDate,
     required this.allergyType,
     required this.allergyTriggers,
-    required this.expectedSideEffects,
     required this.symptomSeverity,
     required this.timeToSymptomOnset,
     required this.isDoctorConsulted,
@@ -33,11 +33,13 @@ class PostAllergyModuleDataModel {
     required this.medicationName,
     required this.isTreatmentsEffective,
     required this.medicalReportImage,
+    required this.expectedSideEffects,
     required this.familyHistory,
     required this.precautions,
     required this.proneToAllergies,
     required this.isMedicalWarningReceived,
     required this.carryEpinephrine,
+    required this.writtenReport,
   });
 
   factory PostAllergyModuleDataModel.fromJson(Map<String, dynamic> json) =>

@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
@@ -15,13 +16,15 @@ import 'package:we_care/generated/l10n.dart';
 part 'allergy_data_entry_state.dart';
 
 class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
-  AllergyDataEntryCubit(this._allergyDataEntryRepo)
+  AllergyDataEntryCubit(this._allergyDataEntryRepo, this._appSharedRepo)
       : super(
           AllergyDataEntryState.initialState(),
         );
   final AllergyDataEntryRepo _allergyDataEntryRepo;
+  final AppSharedRepo _appSharedRepo;
   final effectedFamilyMembers = TextEditingController();
   final precautions = TextEditingController(); // الاحتياطات
+  final reportTextController = TextEditingController();
 
   Future<void> loadpastAllergyDataForEditing(
       AllergyDetailsData pastAllergy, S locale) async {
@@ -29,15 +32,14 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
       state.copyWith(
         allergyDateSelection: pastAllergy.allergyOccurrenceDate,
         alleryTypeSelection: pastAllergy.allergyType,
-        allergyTriggers: pastAllergy.allergyTriggers,
-        expectedSideEffectSelection: pastAllergy.expectedSideEffects,
+        expectedSideEffects: pastAllergy.expectedSideEffects,
         selectedSyptomSeverity: pastAllergy.symptomSeverity,
         symptomOnsetAfterExposure: pastAllergy.timeToSymptomOnset,
         isDoctorConsulted: pastAllergy.isDoctorConsulted,
         isAllergyTestDn: pastAllergy.isAllergyTestPerformed,
         selectedMedicineName: pastAllergy.medicationName,
         isTreatmentsEffective: pastAllergy.isTreatmentsEffective,
-        reportImageUploadedUrl: pastAllergy.medicalReportImage,
+        reportsUploadedUrls: pastAllergy.medicalReportImage,
         isAtRiskOfAnaphylaxis: pastAllergy.proneToAllergies,
         isThereMedicalWarningOnExposure: pastAllergy.isMedicalWarningReceived,
         isEpinephrineInjectorCarried: pastAllergy.carryEpinephrine,
@@ -53,9 +55,9 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     precautions.text = pastAllergy.precautions == locale.no_data_entered
         ? ""
         : pastAllergy.precautions!;
-
+    reportTextController.text = pastAllergy.writtenReport ?? "";
     validateRequiredFields();
-    // await intialRequestsForDataEntry();
+    await intialRequestsForDataEntry();
   }
 
   /// Update Field Values
@@ -88,14 +90,15 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     emit(state.copyWith(isTreatmentsEffective: val));
   }
 
-  void updateAllergyType(String? bodyPart) {
-    emit(state.copyWith(alleryTypeSelection: bodyPart));
-    emitAlleryTriggersBasedOnSelectedAllergyType();
-    validateRequiredFields();
-  }
-
-  void updateExpectedSideEffect(String? name) {
-    emit(state.copyWith(expectedSideEffectSelection: name));
+  Future<void> updateAllergyType(String? bodyPart) async {
+    emit(state.copyWith(
+      alleryTypeSelection: bodyPart,
+      selectedAllergyCauses: [],
+    ));
+    await Future.wait([
+      emitAlleryTriggersBasedOnSelectedAllergyType(),
+      emitExpectedSideEffects(),
+    ]);
     validateRequiredFields();
   }
 
@@ -134,23 +137,47 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     await emitGetAllAllergyTypes();
   }
 
+  void removeUploadedReport(String url) {
+    final updated = List<String>.from(state.reportsUploadedUrls)..remove(url);
+
+    emit(
+      state.copyWith(
+        reportsUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadReportImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.reportsUploadedUrls.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadReportStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
     emit(
       state.copyWith(
         uploadReportStatus: UploadReportRequestStatus.initial,
       ),
     );
-    final response = await _allergyDataEntryRepo.uploadReportImage(
+    final response = await _appSharedRepo.uploadReport(
       contentType: AppStrings.contentTypeMultiPartValue,
       language: AppStrings.arabicLang,
       image: File(imagePath),
     );
     response.when(
       success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.reportsUploadedUrls)
+          ..add(response.reportUrl);
         emit(
           state.copyWith(
             message: response.message,
-            reportImageUploadedUrl: response.reportUrl,
+            reportsUploadedUrls: updatedReports,
             uploadReportStatus: UploadReportRequestStatus.success,
           ),
         );
@@ -175,21 +202,24 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     final response = await _allergyDataEntryRepo.updateAllergyDocumentById(
       langauge: AppStrings.arabicLang,
       requestBody: PostAllergyModuleDataModel(
+        writtenReport: reportTextController.text.isNotEmpty
+            ? reportTextController.text
+            : "",
         allergyOccurrenceDate: state.allergyDateSelection!,
         allergyType: state.alleryTypeSelection!,
-        allergyTriggers: state.allergyTriggers,
-        expectedSideEffects: state.expectedSideEffectSelection!,
+        allergyTriggers: state.selectedAllergyCauses,
+        expectedSideEffects: state.expectedSideEffects,
         symptomSeverity: state.selectedSyptomSeverity!,
         timeToSymptomOnset: state.symptomOnsetAfterExposure!,
         isDoctorConsulted: state.isDoctorConsulted,
         isAllergyTestPerformed: state.isAllergyTestDn,
         medicationName: state.selectedMedicineName!,
         isTreatmentsEffective: state.isTreatmentsEffective,
-        medicalReportImage: state.reportImageUploadedUrl!,
+        medicalReportImage: state.reportsUploadedUrls,
         familyHistory: effectedFamilyMembers.text,
         precautions: precautions.text,
-        proneToAllergies: state.isAtRiskOfAnaphylaxis!,
-        isMedicalWarningReceived: state.isThereMedicalWarningOnExposure!,
+        proneToAllergies: state.isAtRiskOfAnaphylaxis,
+        isMedicalWarningReceived: state.isThereMedicalWarningOnExposure,
         carryEpinephrine: state.isEpinephrineInjectorCarried,
       ),
       id: state.updatedDocId,
@@ -225,6 +255,30 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
         emit(
           state.copyWith(
             allergyTriggers: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitExpectedSideEffects() async {
+    final response = await _allergyDataEntryRepo.getExpectedSideEffects(
+      language: AppStrings.arabicLang,
+      allergyType: state.alleryTypeSelection!,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            expectedSideEffects: response,
           ),
         );
       },
@@ -295,13 +349,13 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       requestBody: PostAllergyModuleDataModel(
+        writtenReport: reportTextController.text.isNotEmpty
+            ? reportTextController.text
+            : locale.no_data_entered,
         allergyOccurrenceDate: state.allergyDateSelection!,
         allergyType: state.alleryTypeSelection!,
-        allergyTriggers: state.allergyTriggers.isEmpty
-            ? [locale.no_data_entered]
-            : state.allergyTriggers,
-        expectedSideEffects:
-            state.expectedSideEffectSelection ?? locale.no_data_entered,
+        allergyTriggers: state.selectedAllergyCauses,
+        expectedSideEffects: state.expectedSideEffects,
         symptomSeverity: state.selectedSyptomSeverity ?? locale.no_data_entered,
         timeToSymptomOnset:
             state.symptomOnsetAfterExposure ?? locale.no_data_entered,
@@ -309,8 +363,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
         isAllergyTestPerformed: state.isAllergyTestDn,
         medicationName: state.selectedMedicineName ?? locale.no_data_entered,
         isTreatmentsEffective: state.isTreatmentsEffective,
-        medicalReportImage:
-            state.reportImageUploadedUrl ?? locale.no_data_entered,
+        medicalReportImage: state.reportsUploadedUrls,
         familyHistory: effectedFamilyMembers.text.isEmpty
             ? locale.no_data_entered
             : effectedFamilyMembers.text,
@@ -345,6 +398,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   @override
   Future<void> close() {
     effectedFamilyMembers.dispose();
+    reportTextController.dispose();
     precautions.dispose();
     return super.close();
   }

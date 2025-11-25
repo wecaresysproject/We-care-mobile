@@ -3,11 +3,9 @@ part of 'allergy_data_entry_cubit.dart';
 @immutable
 class AllergyDataEntryState extends Equatable {
   final RequestStatus allergyDataEntryStatus;
-  final String? errorMessage;
   final bool isFormValidated;
   final String? allergyDateSelection;
   final String? alleryTypeSelection;
-  final String? expectedSideEffectSelection;
   final String? selectedSyptomSeverity;
   final bool? isDoctorConsulted;
   final bool? isAllergyTestDn;
@@ -17,12 +15,13 @@ class AllergyDataEntryState extends Equatable {
   final String? isThereMedicalWarningOnExposure;
 
   final String message; // error or success message
-  final String? reportImageUploadedUrl;
+  final List<String> reportsUploadedUrls;
   final UploadReportRequestStatus uploadReportStatus;
   final List<String> allergyTypes;
   final List<String> selectedAllergyCauses; // Changed type
 
   final List<String> allergyTriggers;
+  final List<String> expectedSideEffects;
   final String? symptomOnsetAfterExposure; //زمن بدء الأعراض بعد التعرض للمسبب
   final String? selectedMedicineName;
   final bool isEditMode;
@@ -30,11 +29,9 @@ class AllergyDataEntryState extends Equatable {
 
   const AllergyDataEntryState({
     this.allergyDataEntryStatus = RequestStatus.initial,
-    this.errorMessage,
     this.isFormValidated = false,
     this.allergyDateSelection,
     this.alleryTypeSelection,
-    this.expectedSideEffectSelection,
     this.selectedSyptomSeverity,
     this.isDoctorConsulted,
     this.isAllergyTestDn,
@@ -43,11 +40,12 @@ class AllergyDataEntryState extends Equatable {
     this.isAtRiskOfAnaphylaxis,
     this.isThereMedicalWarningOnExposure,
     this.message = '',
-    this.reportImageUploadedUrl,
+    this.reportsUploadedUrls = const [],
     this.uploadReportStatus = UploadReportRequestStatus.initial,
     this.allergyTypes = const [],
     this.selectedAllergyCauses = const [],
     this.allergyTriggers = const [],
+    this.expectedSideEffects = const [],
     this.symptomOnsetAfterExposure,
     this.selectedMedicineName,
     this.isEditMode = false,
@@ -60,7 +58,6 @@ class AllergyDataEntryState extends Equatable {
           isFormValidated: false,
           allergyDateSelection: null,
           alleryTypeSelection: null,
-          expectedSideEffectSelection: null,
           selectedSyptomSeverity: null,
           isDoctorConsulted: null,
           isAllergyTestDn: null,
@@ -69,11 +66,12 @@ class AllergyDataEntryState extends Equatable {
           isThereMedicalWarningOnExposure: null,
           message: '',
           isAtRiskOfAnaphylaxis: null,
-          reportImageUploadedUrl: null,
+          reportsUploadedUrls: const [],
           uploadReportStatus: UploadReportRequestStatus.initial,
           allergyTypes: const [],
           selectedAllergyCauses: const [],
           allergyTriggers: const [],
+          expectedSideEffects: const [],
           symptomOnsetAfterExposure: null,
           selectedMedicineName: null,
           isEditMode: false,
@@ -82,11 +80,9 @@ class AllergyDataEntryState extends Equatable {
 
   AllergyDataEntryState copyWith({
     RequestStatus? allergyDataEntryStatus,
-    String? errorMessage,
     bool? isFormValidated,
     String? allergyDateSelection,
     String? alleryTypeSelection,
-    String? expectedSideEffectSelection,
     String? selectedSyptomSeverity,
     bool? isDoctorConsulted,
     bool? isAllergyTestDn,
@@ -95,12 +91,13 @@ class AllergyDataEntryState extends Equatable {
     String? isAtRiskOfAnaphylaxis,
     String? isThereMedicalWarningOnExposure,
     String? message,
-    String? reportImageUploadedUrl,
+    List<String>? reportsUploadedUrls,
     UploadReportRequestStatus? uploadReportStatus,
     List<String>? bodyParts,
     List<String>? allergyTypes,
     List<String>? selectedAllergyCauses,
     List<String>? allergyTriggers,
+    List<String>? expectedSideEffects,
     String? symptomOnsetAfterExposure,
     String? selectedMedicineName,
     bool? isEditMode,
@@ -109,12 +106,9 @@ class AllergyDataEntryState extends Equatable {
     return AllergyDataEntryState(
       allergyDataEntryStatus:
           allergyDataEntryStatus ?? this.allergyDataEntryStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       allergyDateSelection: allergyDateSelection ?? this.allergyDateSelection,
       alleryTypeSelection: alleryTypeSelection ?? this.alleryTypeSelection,
-      expectedSideEffectSelection:
-          expectedSideEffectSelection ?? this.expectedSideEffectSelection,
       selectedSyptomSeverity:
           selectedSyptomSeverity ?? this.selectedSyptomSeverity,
       isDoctorConsulted: isDoctorConsulted ?? this.isDoctorConsulted,
@@ -128,13 +122,13 @@ class AllergyDataEntryState extends Equatable {
       isAtRiskOfAnaphylaxis:
           isAtRiskOfAnaphylaxis ?? this.isAtRiskOfAnaphylaxis,
       message: message ?? this.message,
-      reportImageUploadedUrl:
-          reportImageUploadedUrl ?? this.reportImageUploadedUrl,
+      reportsUploadedUrls: reportsUploadedUrls ?? this.reportsUploadedUrls,
       uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       allergyTypes: allergyTypes ?? this.allergyTypes,
       selectedAllergyCauses:
           selectedAllergyCauses ?? this.selectedAllergyCauses,
       allergyTriggers: allergyTriggers ?? this.allergyTriggers,
+      expectedSideEffects: expectedSideEffects ?? this.expectedSideEffects,
       symptomOnsetAfterExposure:
           symptomOnsetAfterExposure ?? this.symptomOnsetAfterExposure,
       selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
@@ -146,24 +140,23 @@ class AllergyDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         allergyDataEntryStatus,
-        errorMessage,
         isFormValidated,
         allergyDateSelection,
         alleryTypeSelection,
         isAllergyTestDn,
         isTreatmentsEffective,
-        expectedSideEffectSelection,
         selectedSyptomSeverity,
         isDoctorConsulted,
         isEpinephrineInjectorCarried,
         isAtRiskOfAnaphylaxis,
         isThereMedicalWarningOnExposure,
         message,
-        reportImageUploadedUrl,
+        reportsUploadedUrls,
         uploadReportStatus,
         allergyTypes,
         selectedAllergyCauses,
         allergyTriggers,
+        expectedSideEffects,
         symptomOnsetAfterExposure,
         selectedMedicineName,
         isEditMode,

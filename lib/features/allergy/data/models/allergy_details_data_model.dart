@@ -8,19 +8,20 @@ class AllergyDetailsData {
   final String allergyOccurrenceDate;
   final String allergyType;
   final List<String> allergyTriggers;
-  final String? expectedSideEffects;
+  final List<String>? expectedSideEffects;
   final String? symptomSeverity;
   final String? timeToSymptomOnset;
   final bool? isDoctorConsulted;
   final bool? isAllergyTestPerformed;
   final String? medicationName;
   final bool? isTreatmentsEffective;
-  final String? medicalReportImage;
+  final List<String> medicalReportImage;
   final String? familyHistory;
   final String? precautions;
   final String? proneToAllergies;
   final String? isMedicalWarningReceived;
   final bool? carryEpinephrine;
+  String? writtenReport;
 
   AllergyDetailsData({
     this.id,
@@ -32,14 +33,15 @@ class AllergyDetailsData {
     required this.timeToSymptomOnset,
     required this.isDoctorConsulted,
     required this.isAllergyTestPerformed,
+    required this.medicalReportImage,
     this.medicationName,
     this.isTreatmentsEffective,
-    this.medicalReportImage,
     this.familyHistory,
     this.precautions,
     this.proneToAllergies,
     this.isMedicalWarningReceived,
     this.carryEpinephrine,
+    this.writtenReport,
   });
 
   factory AllergyDetailsData.fromJson(Map<String, dynamic> json) =>

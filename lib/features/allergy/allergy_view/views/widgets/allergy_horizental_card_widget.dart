@@ -90,14 +90,19 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                         children: [
                           Text(
                             'المسببات :',
-                            style: AppTextStyles.font14BlueWeight700
-                                .copyWith(fontSize: 14.sp),
+                            style: AppTextStyles.font14BlueWeight700.copyWith(
+                              fontSize: 14.sp,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 2,
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.allergyTriggers.join(','),
-                            style: AppTextStyles.font14blackWeight400
-                                .copyWith(fontSize: 14.sp),
+                            item.allergyTriggers.first,
+                            style: AppTextStyles.font14blackWeight400.copyWith(
+                                fontSize: 14.sp,
+                                overflow: TextOverflow.ellipsis),
+                            maxLines: 2,
                           ),
                         ],
                       ),

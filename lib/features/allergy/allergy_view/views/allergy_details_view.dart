@@ -8,7 +8,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/share_details_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
@@ -66,14 +66,13 @@ class AllergyDetailsView extends StatelessWidget {
                           '🤧 *الأعراض الجانبية*:': allergy.expectedSideEffects,
                           '⚡ *حدة الأعراض*:': allergy.symptomSeverity,
                           '💊 *الأدوية*:': allergy.medicationName,
-                          '👪 *التاريخ العائلى*:': allergy.familyHistory
-                          ,
+                          '👪 *التاريخ العائلى*:': allergy.familyHistory,
                           '⚠️ *الاحتياطات*:': allergy.precautions,
                           '📸 *التقارير الطبية*:': allergy.medicalReportImage,
                         },
                         imageUrls: [
-                          if (allergy.medicalReportImage != null)
-                            allergy.medicalReportImage!,
+                          // if (allergy.medicalReportImage != null)
+                          //   allergy.medicalReportImage!,
                         ],
                         errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية",
                       );
@@ -109,12 +108,23 @@ class AllergyDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "مسببات الحساسية",
-                      value: state.selectedAllergyDetails!.allergyTriggers
-                          .join(', '),
+                      value:
+                          state.selectedAllergyDetails!.allergyTriggers.first ==
+                                  context.translate.no_data_entered
+                              ? ""
+                              : state.selectedAllergyDetails!.allergyTriggers
+                                  .asMap()
+                                  .entries
+                                  .map((e) => "${e.key + 1}. ${e.value}")
+                                  .join('\n'),
                       icon: 'assets/images/chat_question.png'),
                   DetailsViewInfoTile(
                     title: "الأعراض الجانبية المتوقعة",
-                    value: state.selectedAllergyDetails!.expectedSideEffects!,
+                    value: state.selectedAllergyDetails!.expectedSideEffects!
+                        .asMap()
+                        .entries
+                        .map((e) => "${e.key + 1}. ${e.value}")
+                        .join('\n'),
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
@@ -184,10 +194,16 @@ class AllergyDetailsView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  DetailsViewImageWithTitleTile(
+                  DetailsViewInfoTile(
+                    title: "التقرير الطبي",
+                    value: state.selectedAllergyDetails!.writtenReport ?? "",
+                    icon: 'assets/images/file_icon.png',
+                    isExpanded: true,
+                  ),
+                  DetailsViewImagesWithTitleTile(
                     isShareEnabled: true,
-                    image: state.selectedAllergyDetails!
-                        .medicalReportImage!, // Replace with actual image URL or asset
+                    images: state.selectedAllergyDetails!
+                        .medicalReportImage, // Replace with actual image URL or asset
                     title: "التقرير الطبى/اختبار الحساسية",
                   ),
                   DetailsViewInfoTile(
