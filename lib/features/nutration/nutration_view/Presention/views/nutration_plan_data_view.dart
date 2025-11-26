@@ -422,6 +422,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
 
     IconData arrowIcon =
         !isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
+    num exactPercentage = consumed / standard * 100;
 
     return Container(
       padding: EdgeInsets.fromLTRB(2.w, 8.h, 5.w, 0),
@@ -489,14 +490,16 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
                   margin: const EdgeInsets.only(right: 15),
                   decoration: BoxDecoration(
-                    color: borderColor,
+                    color: (percentage) < 100
+                        ? Color(0xFF00C896)
+                        : Color(0xFFE53E3E),
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        '${percentage.toStringAsFixed(0)}%',
+                        '${exactPercentage.toStringAsFixed(0)}%',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -505,7 +508,9 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                       ),
                       horizontalSpacing(4),
                       Icon(
-                        arrowIcon,
+                        exactPercentage < 100
+                            ? Icons.arrow_downward
+                            : Icons.arrow_upward,
                         color: Colors.white,
                         size: 16,
                       ),

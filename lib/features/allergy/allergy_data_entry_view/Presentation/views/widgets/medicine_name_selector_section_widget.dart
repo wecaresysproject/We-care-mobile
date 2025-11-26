@@ -17,36 +17,40 @@ class MedicineNameSelectorSection extends StatelessWidget {
       create: (_) => getIt<MedicinesDataEntryCubit>()..emitAllMedicinesNames(),
       child: BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
         builder: (context, state) {
-          return Column(
-            children: [
-              UserSelectionContainer(
-                categoryLabel: "اسم الدواء",
-                containerHintText:
-                    state.selectedMedicineName ?? "اختر اسم الدواء",
-                options: state.medicinesNames,
-                onOptionSelected: (value) async {
-                  await context
-                      .read<MedicinesDataEntryCubit>()
-                      .updateSelectedMedicineName(value);
-                  if (!context.mounted) return;
-                  context
-                      .read<AllergyDataEntryCubit>()
-                      .updateSelectedMedicineName(value);
-                },
-                bottomSheetTitle: "اختر اسم الدواء",
-                searchHintText: "ابحث عن اسم الدواء",
-                allowManualEntry: true,
-                loadingState: state.medicinesNamesOptionsLoadingState,
-                onRetryPressed: () async {
-                  await context
-                      .read<MedicinesDataEntryCubit>()
-                      .emitAllMedicinesNames();
-                },
-              ),
-              verticalSpacing(16),
-              MedicneNameScannerContainer(state: state),
-            ],
-          );
+          return BlocBuilder<AllergyDataEntryCubit, AllergyDataEntryState>(
+              builder: (context, allergyState) {
+            return Column(
+              children: [
+                UserSelectionContainer(
+                  isEditMode: allergyState.isEditMode,
+                  categoryLabel: "اسم الدواء",
+                  containerHintText:
+                      allergyState.selectedMedicineName ?? "اختر اسم الدواء",
+                  options: state.medicinesNames,
+                  onOptionSelected: (value) async {
+                    await context
+                        .read<MedicinesDataEntryCubit>()
+                        .updateSelectedMedicineName(value);
+                    if (!context.mounted) return;
+                    context
+                        .read<AllergyDataEntryCubit>()
+                        .updateSelectedMedicineName(value);
+                  },
+                  bottomSheetTitle: "اختر اسم الدواء",
+                  searchHintText: "ابحث عن اسم الدواء",
+                  allowManualEntry: true,
+                  loadingState: state.medicinesNamesOptionsLoadingState,
+                  onRetryPressed: () async {
+                    await context
+                        .read<MedicinesDataEntryCubit>()
+                        .emitAllMedicinesNames();
+                  },
+                ),
+                verticalSpacing(16),
+                MedicneNameScannerContainer(state: state),
+              ],
+            );
+          });
         },
       ),
     );

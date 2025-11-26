@@ -542,6 +542,16 @@ class NutritionFollowUpReportView extends StatelessWidget {
     );
   }
 
+  double? _calculatePercentage(NutritionElement element) {
+    if (element.accumulativeActual != null &&
+        element.accumulativeStandard != null &&
+        element.accumulativeStandard != 0) {
+      return (element.accumulativeActual! / element.accumulativeStandard!) *
+          100;
+    }
+    return null;
+  }
+
 // 🎨 Build colored difference cell with dialog
   DataCell _buildColoredDiff(
     String text,
@@ -549,25 +559,44 @@ class NutritionFollowUpReportView extends StatelessWidget {
     NutritionElement element,
     BuildContext context,
   ) {
+    // حساب النسبة التراكمية
+
+    final percentage = _calculatePercentage(element);
+
     return DataCell(
       Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: _getCellTextStyle(false).copyWith(
-            color: color,
-            decoration: color == Colors.black
-                ? TextDecoration.none
-                : TextDecoration.underline,
-            decorationColor: color,
-            fontWeight: FontWeight.w600,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 🔹 الرقم الأساسي
+            Text(
+              text,
+              textAlign: TextAlign.center,
+              style: _getCellTextStyle(false).copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+                decoration: TextDecoration.none,
+              ),
+            ),
+
+            SizedBox(height: 3),
+
+            // 🔹 النسبة المئوية
+            Text(
+              '${percentage?.toStringAsFixed(1) ?? "0"}%',
+              style: TextStyle(
+                fontSize: 11.sp,
+                color: color.withOpacity(0.8),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
       onTap: () {
         NutritionDifferenceDialog.show(
           context,
-          elementName: (element.elementName),
+          elementName: element.elementName,
           consumedAmount: "${element.accumulativeActual ?? 0} جم",
           standardAmount: "${element.accumulativeStandard ?? 0} جم",
           difference: "${element.difference?.abs() ?? 0} جم",

@@ -119,11 +119,33 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         selectedAlarmTime: pastDataEntered.reminder,
         isEditMode: true,
         updatedDocumentId: pastDataEntered.id,
+        medicineId: pastDataEntered.id,
+        medicalFormsOptionsLoadingState: OptionsLoadingState.loaded,
+        medicinesNamesOptionsLoadingState: OptionsLoadingState.loaded,
+        dosageAmountOptionsLoadingState: OptionsLoadingState.loaded,
+        medicalDosesOptionsLoadingState: OptionsLoadingState.loaded,
+        dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loaded,
+        allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loaded,
+        allDurationsBasedOnCategoryOptionsLoadingState:
+            OptionsLoadingState.loaded,
       ),
     );
     personalInfoController.text = pastDataEntered.personalNotes;
     validateRequiredFields();
-    await initialDataEntryRequests();
+    await initialDataEntryForEditing();
+  }
+
+  Future<void> initialDataEntryForEditing() async {
+    await emitAllMedicinesNames();
+    await updateSelectedMedicineName(state.selectedMedicineName);
+    await emitMedcineDosesByForms();
+    await emitAllDoseAmounts();
+    await Future.wait([
+      emitAllDosageFrequencies(),
+      getAllUsageCategories(),
+      getChronicDiseasesNames(),
+      emitDoctorNames(),
+    ]);
   }
 
   Future<void> storeTempUserPastComplaints(

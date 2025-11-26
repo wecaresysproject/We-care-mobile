@@ -33,6 +33,15 @@ class _QuestionWithDynamicAnswerListOption
     selectedAnswer = widget.initialValue;
   }
 
+  @override
+  void didUpdateWidget(
+      covariant QuestionWithDynamicAnswerListOption oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      selectedAnswer = widget.initialValue;
+    }
+  }
+
   void _handleAnswerChange(String? value) {
     setState(() {
       selectedAnswer = value;

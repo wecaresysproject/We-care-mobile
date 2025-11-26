@@ -25,13 +25,13 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 183.h,
+        height: 130.h,
         width: 355.w,
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 2.w),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
-          borderRadius: BorderRadius.circular(70.r),
+          borderRadius: BorderRadius.circular(47.r),
           boxShadow: [
             BoxShadow(
               color: Colors.black26,
@@ -52,12 +52,15 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
 
   /// Builds the image widget with preset dimensions and caching.
   Widget _buildImage() {
-    return Image.asset(
-      imagePath,
-      width: 101.w,
-      height: 151.h,
-      cacheWidth: 1000,
-      cacheHeight: 1000,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.r), // Adjust radius as needed
+      child: Image.asset(
+        imagePath,
+        width: 150.w,
+        height: 100.h,
+        cacheWidth: 1000,
+        cacheHeight: 1000,
+      ),
     );
   }
 

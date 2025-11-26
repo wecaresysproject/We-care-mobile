@@ -158,6 +158,7 @@ class MedicineDetailsView extends StatelessWidget {
                       isExpanded: true,
                     ),
                     DetailsViewInfoTile(
+                      isExpanded: true,
                       title: "مرض مزمن",
                       value: state
                           .selectestMedicineDetails!.chronicDiseaseMedicine,
@@ -229,7 +230,6 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
     Duration duration;
 
     switch (durationStr) {
-
       // --------------------
       // 🔹 المدد الجديدة اليومية
       // --------------------
@@ -313,17 +313,15 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
         break;
 
       default:
-       return 'غير محدد';
+        return 'غير محدد';
     }
 
     final endDate = startDate.add(duration);
     return now.isBefore(endDate) ? 'مستمر' : 'متوقف';
-
   } catch (e) {
-   return 'غير محدد';
+    return 'غير محدد';
   }
 }
-
 
 Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =

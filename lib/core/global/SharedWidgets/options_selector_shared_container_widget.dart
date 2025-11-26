@@ -34,6 +34,14 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
   }
 
   @override
+  void didUpdateWidget(covariant OptionSelectorWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialSelectedOption != widget.initialSelectedOption) {
+      _selectedOption = widget.initialSelectedOption;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

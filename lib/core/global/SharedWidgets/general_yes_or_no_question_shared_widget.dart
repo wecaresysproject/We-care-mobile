@@ -36,6 +36,14 @@ class _GenericQuestionWidgetState extends State<GenericQuestionWidget> {
     }
   }
 
+  @override
+  void didUpdateWidget(covariant GenericQuestionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      selectedAnswer = widget.initialValue == true ? 'نعم' : 'لا';
+    }
+  }
+
   void _handleAnswerChange(String? value) {
     setState(() {
       selectedAnswer = value;

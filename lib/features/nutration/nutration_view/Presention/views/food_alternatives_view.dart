@@ -233,13 +233,28 @@ class FoodCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(0, 4, 4, 4),
+      padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
-        color: Color(0xffF1F3F6),
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(16.r),
+        gradient: LinearGradient(
+          colors: [
+            Color(0xffECF5FF),
+            Color(0xffFBFDFF),
+          ],
+          begin: Alignment.bottomLeft,
+          end: Alignment.bottomCenter,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x40000000), // #00000040
+            offset: Offset(0, 2), // x:0, y:2
+            blurRadius: 3, // blur: 3
+            spreadRadius: 0, // spread: 0
+          ),
+        ],
         border: Border.all(
-          color: Color(0xff555555),
-          width: .9,
+          color: Color(0xff777777),
+          width: .3,
         ),
       ),
       child: Column(
@@ -251,6 +266,7 @@ class FoodCard extends StatelessWidget {
             style: AppTextStyles.font14blackWeight400.copyWith(
               color: AppColorsManager.mainDarkBlue,
               fontSize: 15.sp,
+              fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.center,
             maxLines: 2,
@@ -279,17 +295,15 @@ class FoodCard extends StatelessWidget {
                           fontWeight: FontWeight.w900,
                         ),
                         maxLines: 2,
-                        // minFontSize: 10,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
 
-                horizontalSpacing(2),
                 VerticalDivider(
                   color: Colors.black,
-                  thickness: .7,
+                  thickness: .9,
                   indent: 12,
                   endIndent: 12,
                 ),
@@ -297,11 +311,12 @@ class FoodCard extends StatelessWidget {
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         _formatPercent(percent),
                         style: AppTextStyles.font14BlueWeight700.copyWith(
-                          color: AppColorsManager.elevatedRisk,
+                          color: Color(0xffE88A1F),
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w900,
                         ),
@@ -309,7 +324,7 @@ class FoodCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       AutoSizeText(
-                        'من الاحتياج\nاليومي',
+                        'من احتياجك\nاليومي',
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font18blackWight500.copyWith(
                           fontSize: 8.sp,

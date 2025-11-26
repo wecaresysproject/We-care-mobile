@@ -249,11 +249,7 @@ class _AllergyDataFormFieldsWidgetState
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            // SelectImageContainer(
-            //   imagePath: "assets/images/t_shape_icon.png",
-            //   label: "اكتب التقرير",
-            //   onTap: () {},
-            // ),
+
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
               label: context
