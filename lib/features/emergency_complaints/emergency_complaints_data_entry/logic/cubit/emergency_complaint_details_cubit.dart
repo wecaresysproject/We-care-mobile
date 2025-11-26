@@ -155,13 +155,11 @@ class EmergencyComplaintDataEntryDetailsCubit
   }
 
 // الاعراض المرضية - الشكوى
-  Future<void> getAllRelevantComplaintsToSelectedBodyPart(
-    String selectedBodyPartName,
-  ) async {
+  Future<void> getAllRelevantComplaintsToSelectedBodyPart() async {
     final response = await _emergencyComplaintsDataEntryRepo
         .getAllComplaintsRelevantToBodyPartName(
       language: AppStrings.arabicLang,
-      bodyPartName: selectedBodyPartName,
+      bodyPartName: state.selectedOrganOrPartSymptom!,
       mainArea: state.symptomsDiseaseRegion!,
     );
     response.when(
@@ -239,15 +237,21 @@ class EmergencyComplaintDataEntryDetailsCubit
   }
 
   Future<void> updateSymptomsDiseaseRegion(String? symptom) async {
-    emit(state.copyWith(symptomsDiseaseRegion: symptom));
+    emit(
+      state.copyWith(
+        symptomsDiseaseRegion: symptom,
+        medicalSymptomsIssue: "",
+        selectedOrganOrPartSymptom: "",
+        natureOfComplaint: "",
+      ),
+    );
     await getAllOrganOrPartSymptomsRelativeToMainRegion(symptom!);
-    await getAllRelevantComplaintsToSelectedBodyPart(symptom);
     validateRequiredFields();
   }
 
   Future<void> updateSelectedOrganOrPartSymptom(String? value) async {
     emit(state.copyWith(selectedOrganOrPartSymptom: value));
-    // await getAllRelevantComplaintsToSelectedBodyPart(symptom!);
+    await getAllRelevantComplaintsToSelectedBodyPart();
     validateRequiredFields();
   }
 

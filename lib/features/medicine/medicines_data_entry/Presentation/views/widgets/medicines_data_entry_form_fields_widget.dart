@@ -56,6 +56,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
 
             verticalSpacing(16),
             UserSelectionContainer(
+              isEditMode: state.isEditMode,
               containerBorderColor: state.selectedMedicineName == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
@@ -84,6 +85,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
 
             verticalSpacing(16),
             UserSelectionContainer(
+              isEditMode: state.isEditMode,
               containerBorderColor: state.selectedMedicalForm == null
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textfieldOutsideBorderColor,
@@ -107,6 +109,7 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(16),
             UserSelectionContainer(
+              isEditMode: state.isEditMode,
               allowManualEntry: true,
               containerBorderColor: state.selectedDose == null
                   ? AppColorsManager.warningColor

@@ -112,14 +112,19 @@ Widget _bodyRegionSearchTab(
 
                   verticalSpacing(16),
                   UserSelectionContainer(
+                    initialValue: state.selectedOrganOrPartSymptom.isEmptyOrNull
+                        ? null
+                        : state.selectedOrganOrPartSymptom,
                     allowManualEntry: true,
                     containerBorderColor:
-                        state.selectedOrganOrPartSymptom == null
+                        state.selectedOrganOrPartSymptom.isEmptyOrNull
                             ? AppColorsManager.warningColor
                             : AppColorsManager.textfieldOutsideBorderColor,
                     categoryLabel: "الأعراض المرضية - العضو/الجزء",
                     containerHintText:
-                        state.selectedOrganOrPartSymptom ?? "اختر العضو/الجزء",
+                        state.selectedOrganOrPartSymptom.isEmptyOrNull
+                            ? "اختر العضو/الجزء"
+                            : state.selectedOrganOrPartSymptom!,
                     options: state.complaintPlacesRelativeToMainRegion,
                     onOptionSelected: (value) async {
                       await context
@@ -137,13 +142,18 @@ Widget _bodyRegionSearchTab(
                   verticalSpacing(16),
 
                   UserSelectionContainer(
-                    containerBorderColor: state.medicalSymptomsIssue == null
-                        ? AppColorsManager.warningColor
-                        : AppColorsManager.textfieldOutsideBorderColor,
+                    initialValue: state.medicalSymptomsIssue.isEmptyOrNull
+                        ? null
+                        : state.medicalSymptomsIssue,
+                    containerBorderColor:
+                        state.medicalSymptomsIssue.isEmptyOrNull
+                            ? AppColorsManager.warningColor
+                            : AppColorsManager.textfieldOutsideBorderColor,
                     categoryLabel:
                         "الأعراض المرضية - الشكوى", // Another Dropdown Example§
-                    containerHintText: state.medicalSymptomsIssue ??
-                        "اختر الأعراض المستدعية", //state.selectedDisease ??
+                    containerHintText: state.medicalSymptomsIssue.isEmptyOrNull
+                        ? "اختر الأعراض المستدعية"
+                        : state.medicalSymptomsIssue!,
                     options: state.releatedComplaintsToSelectedBodyPartName,
                     onOptionSelected: (value) {
                       context
@@ -157,8 +167,11 @@ Widget _bodyRegionSearchTab(
                   verticalSpacing(16),
 
                   UserSelectionContainer(
+                    initialValue: state.natureOfComplaint.isEmptyOrNull
+                        ? null
+                        : state.natureOfComplaint,
                     allowManualEntry: true,
-                    containerBorderColor: state.natureOfComplaint == null
+                    containerBorderColor: state.natureOfComplaint.isEmptyOrNull
                         ? AppColorsManager.warningColor
                         : AppColorsManager.textfieldOutsideBorderColor,
                     options: [
@@ -168,16 +181,15 @@ Widget _bodyRegionSearchTab(
                       "تتناقص مع الوقت",
                     ],
                     categoryLabel: "طبيعة الشكوى",
-                    bottomSheetTitle:
-                        state.natureOfComplaint ?? "اختر طبيعة الشكوى",
+                    bottomSheetTitle: "اختر طبيعة الشكوى",
                     onOptionSelected: (value) async {
                       context
                           .read<EmergencyComplaintDataEntryDetailsCubit>()
                           .updateNatureOfComplaint(value);
                     },
-                    containerHintText: state.natureOfComplaint ??
-                        "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
-
+                    containerHintText: state.natureOfComplaint.isEmptyOrNull
+                        ? "اختر طبيعة الشكوى"
+                        : state.natureOfComplaint!,
                     userEntryLabelText: "اضف الوصف من عندك",
                     searchHintText: "ابحث عن طبيعة الشكوى",
                   ),
@@ -270,14 +282,15 @@ Widget _symptomSearchTab(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SearchableUserSelectorContainer(
+                  isEditMode: editingComplaintDetails != null,
                   containerBorderColor: state.medicalSymptomsIssue == null
                       ? AppColorsManager.warningColor
                       : AppColorsManager.textfieldOutsideBorderColor,
                   categoryLabel:
                       "الأعراض المرضية - الشكوى", // Another Dropdown Example
-                  containerHintText: state.medicalSymptomsIssue ??
-                      "اختر الأعراض المستدعية", //state.selectedDisease ??
-                  // options: state.releatedComplaintsToSelectedBodyPartName,
+                  containerHintText: state.medicalSymptomsIssue.isEmptyOrNull
+                      ? "اختر الأعراض المستدعية"
+                      : state.medicalSymptomsIssue!,
                   onOptionSelected: (value) {
                     context
                         .read<EmergencyComplaintDataEntryDetailsCubit>()
@@ -301,16 +314,15 @@ Widget _symptomSearchTab(
                     "تتناقص مع الوقت",
                   ],
                   categoryLabel: "طبيعة الشكوى",
-                  bottomSheetTitle:
-                      state.natureOfComplaint ?? "اختر طبيعة الشكوى",
+                  bottomSheetTitle: "اختر طبيعة الشكوى",
                   onOptionSelected: (value) async {
                     context
                         .read<EmergencyComplaintDataEntryDetailsCubit>()
                         .updateNatureOfComplaint(value);
                   },
-                  containerHintText: state.natureOfComplaint ??
-                      "اختر طبيعة الشكوى", //state.selectedCityName ?? "اختر المدينة",
-
+                  containerHintText: state.natureOfComplaint.isEmptyOrNull
+                      ? "اختر طبيعة الشكوى"
+                      : state.natureOfComplaint!,
                   userEntryLabelText: "اضف الوصف من عندك",
                   searchHintText: "ابحث عن طبيعة الشكوى",
                 ),

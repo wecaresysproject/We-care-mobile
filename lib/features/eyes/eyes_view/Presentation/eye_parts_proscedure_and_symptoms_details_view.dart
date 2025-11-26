@@ -143,6 +143,7 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
+                    isExpanded: true,
                     title: 'المركز / المستشفى',
                     value: details.centerHospitalName ??
                         details.eyeMedicalCenter ??
@@ -150,11 +151,13 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     icon: 'assets/images/hospital_icon.png',
                   ),
                   DetailsViewInfoTile(
+                    isExpanded: true,
                     title: 'الطبيب',
                     value: details.doctorName,
                     icon: 'assets/images/doctor_name.png',
                   ),
                   DetailsViewInfoTile(
+                    isExpanded: true,
                     title: 'الدولة',
                     value: details.country,
                     icon: 'assets/images/country_icon.png',
