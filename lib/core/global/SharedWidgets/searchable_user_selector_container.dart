@@ -26,7 +26,7 @@ class SearchableUserSelectorContainer extends StatefulWidget {
     this.initialValue,
     this.emptyResultMessage = "لا توجد نتائج",
     this.loadingText = "جاري البحث...",
-    this.searchDebounceTime = const Duration(milliseconds: 300),
+    this.searchDebounceTime = const Duration(milliseconds: 100),
   });
 
   final String categoryLabel;
@@ -500,7 +500,7 @@ class _OptionItem extends StatelessWidget {
                   child: Text(
                     option,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                    maxLines: 10,
                     softWrap: true,
                     style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                       color: isSelected
