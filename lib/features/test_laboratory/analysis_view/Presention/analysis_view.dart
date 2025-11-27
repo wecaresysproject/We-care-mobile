@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/empty_state_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
@@ -17,6 +18,7 @@ import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analys
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
+import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicalAnalysisView extends StatelessWidget {
@@ -84,28 +86,14 @@ class MedicalAnalysisView extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return Row(
-      children: [
-        SearchFilterWidget(
-          filterTitle: 'السنة',
-          isYearFilter: true,
-          filterList: state.yearsFilter,
-          onFilterSelected: (filterTitle, selectedValue) {
-            if (selectedValue == 0 || selectedValue == null) {
-              context.read<TestAnalysisViewCubit>().emitTests();
-              return;
-            } else {
-              context
-                  .read<TestAnalysisViewCubit>()
-                  .emitFilteredData(selectedValue);
-            }
-          },
-        ),
-        Spacer(),
-        CustomAppContainer(
-            label: 'العدد', value: state.analysisSummarizedDataList.length),
-      ],
-    );
+    return DataViewFiltersRow(filters:[
+      FilterConfig(title: 'السنة', options: state.yearsFilter, isYearFilter: true),
+      FilterConfig(title: 'المجموعة', options: state.groupNamesFilter?? []),
+      FilterConfig(title: 'الرمز', options: state.codesFilter?? []),
+    ] , onApply: (selectedFilters) {
+      AppLogger.debug("Selected Filters: $selectedFilters");
+      context.read<TestAnalysisViewCubit>().emitFilteredData(selectedFilters['السنة'], selectedFilters['المجموعة'], selectedFilters['الرمز']);
+    },);
   }
 
   Widget _buildMainContent(BuildContext context, TestAnalysisViewState state) {

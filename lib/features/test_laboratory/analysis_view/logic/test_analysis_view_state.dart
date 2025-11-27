@@ -17,6 +17,8 @@ class TestAnalysisViewState extends Equatable {
   final String? editingId;
   final String? currentResult;
   final bool isLoadingMore;
+  final List<String>? groupNamesFilter;
+  final List<String>? codesFilter;
 
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
@@ -31,6 +33,8 @@ class TestAnalysisViewState extends Equatable {
     this.editingId,
     this.currentResult,
     this.isLoadingMore = false,
+    this.groupNamesFilter,
+    this.codesFilter,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -47,6 +51,8 @@ class TestAnalysisViewState extends Equatable {
       editingId: null,
       currentResult: null,
       isLoadingMore: false,
+      groupNamesFilter: null,
+      codesFilter: null,
     );
   }
 
@@ -62,7 +68,7 @@ class TestAnalysisViewState extends Equatable {
       bool? isEditing,
       String? editingId,
       bool? isLoadingMore,
-      String? currentResult}) {
+      String? currentResult, List<String>? groupNamesFilter, List<String>? codesFilter}) {
     return TestAnalysisViewState(
         requestStatus: requestStatus ?? this.requestStatus,
         yearsFilter: yearsFilter ?? this.yearsFilter,
@@ -78,6 +84,8 @@ class TestAnalysisViewState extends Equatable {
         isEditing: isEditing ?? this.isEditing,
         editingId: editingId ?? this.editingId,
         isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+        groupNamesFilter: groupNamesFilter ?? this.groupNamesFilter,
+        codesFilter: codesFilter ?? this.codesFilter,
         currentResult: currentResult ?? this.currentResult);
   }
 
@@ -92,6 +100,8 @@ class TestAnalysisViewState extends Equatable {
         isDeleteRequest,
         getSimilarTestsResponseModel,
         isEditing,
+        groupNamesFilter,
+        codesFilter,
         editingId,
         currentResult,
         isLoadingMore,

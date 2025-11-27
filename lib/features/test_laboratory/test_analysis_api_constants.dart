@@ -10,6 +10,8 @@ class TestAnalysisApiConstants {
   //View Endpoints
 
   static const getYearsFilter = "/lab-tests/years";
+  static const getAllUserGroupNames = "/lab-tests/UserGroupNames";
+  static const getAllUserTestCodes = "/lab-tests/UserCodes";
 
   static const getUserTests = "/lab-tests/summary";
 

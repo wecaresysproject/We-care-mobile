@@ -25,6 +25,12 @@ abstract class TestAnalysisSerices {
   @GET(TestAnalysisApiConstants.getYearsFilter)
   Future<dynamic> getYearsFilter();
 
+  @GET(TestAnalysisApiConstants.getAllUserGroupNames)
+  Future<dynamic> getAllUserGroupNames();
+
+    @GET(TestAnalysisApiConstants.getAllUserTestCodes)
+  Future<dynamic> getAllUserTestCodes();
+
   @GET(TestAnalysisApiConstants.getUserTests)
   Future<GetUserAnalysisReponseModel> getUserTests(
     @Query('language') String language,
@@ -36,7 +42,9 @@ abstract class TestAnalysisSerices {
   @GET(TestAnalysisApiConstants.getFilteredTestsByYear)
   Future<GetUserAnalysisReponseModel> getFilteredTestsByYear(
     @Query('language') String language,
-    @Query('year') int year,
+    @Query('year') int? year,
+    @Query('search') String? groupName,
+    @Query('search') String? testCode,
   );
 
   @GET(TestAnalysisApiConstants.getTestbyId)

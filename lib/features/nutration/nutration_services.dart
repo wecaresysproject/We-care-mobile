@@ -42,7 +42,7 @@ abstract class NutrationServices {
   @GET(NutrationApiConstants.getAllNutrationTableData)
   Future<dynamic> getAllNutrationTableData(
     @Query('Language') String language,
-    @Query('date') String date,
+    @Query('date') String? date,
   );
   @GET(NutrationApiConstants.getFoodAlternatives)
   Future<dynamic> getFoodAlternatives(

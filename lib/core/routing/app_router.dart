@@ -559,7 +559,7 @@ class AppRouter {
       case Routes.nutritionFollowUpReportTableView:
         return MaterialPageRoute(
           builder: (_) => NutritionFollowUpReportView(
-            date: arguments as String,
+            date: arguments as String?,
           ),
         );
       case Routes.foodAlternativesView:

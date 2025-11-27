@@ -94,7 +94,7 @@ class NutrationDataEntryRepo {
 
   Future<ApiResult<List<NutritionElement>>> getAllNutrationTableData({
     required String language,
-    required String date,
+    required String? date,
   }) async {
     try {
       final response = await _nutrationServices.getAllNutrationTableData(

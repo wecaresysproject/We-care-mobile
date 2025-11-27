@@ -96,7 +96,8 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   icon: Icons.insert_chart_outlined,
                   onPressed: () async {
                     // TODO: Add your logic here
-                    // await context.pushNamed(Routes.followUpReportView);
+                    await context.pushNamed(Routes.nutritionFollowUpReportTableView,
+                        arguments: null);
                   },
                 ),
                 GradientButton(

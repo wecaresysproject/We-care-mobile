@@ -20,7 +20,9 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
 
   Future<void> init() async {
     await emitTests();
-    await emitFilters();
+    await emitYearsFilter();
+    await emitGroupNamesFilter();
+    await emitTestCodesFilter();
   }
 
   Future<void> emitTests({int? page, int? pageSize}) async {
@@ -97,10 +99,10 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     await emitTests(page: currentPage + 1);
   }
 
-  Future<void> emitFilters() async {
+  Future<void> emitYearsFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await testAnalysisViewRepo.gettFilters();
+    final response = await testAnalysisViewRepo.getYearsFilter();
     response.when(success: (response) async {
       response.add(0);
       emit(state.copyWith(
@@ -114,10 +116,41 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  Future<void> emitFilteredData(int year) async {
+    Future<void> emitGroupNamesFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await testAnalysisViewRepo.getTestsByYear(year);
+    final response = await testAnalysisViewRepo.getGroupNamesFilter();
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        groupNamesFilter: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+      ));
+    });
+  }
+    Future<void> emitTestCodesFilter() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await testAnalysisViewRepo.getTestCodesFilter();
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.success,
+        codesFilter: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+      ));
+    });
+  }
+
+  Future<void> emitFilteredData(int? year, String? group, String? code) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await testAnalysisViewRepo.getFilteredTests(year, groupName: group, testCode: code);
 
     response.when(success: (response) async {
       emit(state.copyWith(

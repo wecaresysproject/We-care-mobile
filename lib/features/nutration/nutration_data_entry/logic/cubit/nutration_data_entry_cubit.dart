@@ -407,7 +407,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     );
   }
 
-  Future<void> getAllNutrationTableData({required String date}) async {
+  Future<void> getAllNutrationTableData({required String? date}) async {
     emit(state.copyWith(dataTableStatus: RequestStatus.loading));
 
     final result = await _nutrationDataEntryRepo.getAllNutrationTableData(
@@ -511,7 +511,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   Future<void> updateNutrientStandard({
     required String standardNutrientName,
     required double newStandard,
-    required String date,
+    required String? date,
   }) async {
     final result = await _nutrationDataEntryRepo.updateNutrientStandard(
       language: AppStrings.arabicLang,

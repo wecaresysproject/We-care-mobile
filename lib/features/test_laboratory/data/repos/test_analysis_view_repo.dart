@@ -12,11 +12,31 @@ class TestAnalysisViewRepo {
 
   TestAnalysisViewRepo(this.testAnalysisSerices);
 
-  Future<ApiResult<List<int>>> gettFilters() async {
+  Future<ApiResult<List<int>>> getYearsFilter() async {
     try {
       final response = await testAnalysisSerices.getYearsFilter();
       return ApiResult.success(
           (response["data"] as List).map((e) => e as int).toList());
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+    Future<ApiResult<List<String>>> getGroupNamesFilter() async {
+    try {
+      final response = await testAnalysisSerices.getAllUserGroupNames();
+      return ApiResult.success(
+          (response["data"] as List).map((e) => e as String).toList());
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+    Future<ApiResult<List<String>>> getTestCodesFilter() async {
+    try {
+      final response = await testAnalysisSerices.getAllUserTestCodes();
+      return ApiResult.success(
+          (response["data"] as List).map((e) => e as String).toList());
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -33,11 +53,11 @@ class TestAnalysisViewRepo {
     }
   }
 
-  Future<ApiResult<GetUserAnalysisReponseModel>> getTestsByYear(
-      int year) async {
+  Future<ApiResult<GetUserAnalysisReponseModel>> getFilteredTests(
+      int? year,{String ? groupName, String ? testCode}) async {
     try {
       final response = await testAnalysisSerices.getFilteredTestsByYear(
-          AppStrings.arabicLang, year);
+          AppStrings.arabicLang, year, groupName, testCode);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

@@ -16,7 +16,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutr
 
 class NutritionFollowUpReportView extends StatelessWidget {
   const NutritionFollowUpReportView({super.key, required this.date});
-  final String date;
+  final String? date;
 
   @override
   Widget build(BuildContext context) {
