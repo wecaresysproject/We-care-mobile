@@ -43,8 +43,8 @@ abstract class TestAnalysisSerices {
   Future<GetUserAnalysisReponseModel> getFilteredTestsByYear(
     @Query('language') String language,
     @Query('year') int? year,
-    @Query('search') String? groupName,
-    @Query('search') String? testCode,
+    @Query('groupTestName') String? groupName,
+    @Query('codeName') String? testCode,
   );
 
   @GET(TestAnalysisApiConstants.getTestbyId)
