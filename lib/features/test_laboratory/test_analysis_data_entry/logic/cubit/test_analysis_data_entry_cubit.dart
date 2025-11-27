@@ -293,9 +293,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  // void updateSymptomsRequiringIntervention(String? issue) {
-  //   emit(state.copyWith(symptomsRequiringIntervention: issue));
-  // }
   void updateSymptomsRequiringIntervention(String issue) {
     if (issue.isEmpty) return;
 

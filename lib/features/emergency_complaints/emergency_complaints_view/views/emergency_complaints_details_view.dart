@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -78,81 +79,105 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                   ),
 
                   // Display the main symptoms using SymptomContainer
-                  ...complaint.mainSymptoms.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final symptom = entry.value;
-                    return SymptomContainer(
-                      isMainSymptom:
-                          index == 0, // First symptom is the main one
-                      symptomArea: symptom.symptomsRegion,
-                      symptomComplaint: symptom.sypmptomsComplaintIssue,
-                      natureOfComplaint: symptom.natureOfComplaint,
-                      severityOfComplaint: symptom.severityOfComplaint,
-                    );
-                  }),
-               // شكاوى مشابهه سابقا
-if (complaint.similarComplaint.dateOfComplaint.isFilled ||
-    complaint.similarComplaint.diagnosis.isFilled) ...[
-  SectionTitleContainer(
-    title: 'شكاوى مشابهه سابقا',
-    iconPath: 'assets/images/symptoms_icon.png',
-  ),
-    DetailsViewInfoTile(
-      title: "تاريخ الشكوى",
-      value: complaint.similarComplaint.dateOfComplaint,
-      icon: 'assets/images/date_icon.png',
-      isExpanded: true,),
+                  ...complaint.mainSymptoms.asMap().entries.map(
+                    (entry) {
+                      final index = entry.key;
+                      final symptom = entry.value;
+                      return SymptomContainer(
+                        isMainSymptom:
+                            index == 0, // First symptom is the main one
+                        symptomArea: symptom.symptomsRegion,
+                        symptomComplaint: symptom.sypmptomsComplaintIssue,
+                        natureOfComplaint: symptom.natureOfComplaint,
+                        severityOfComplaint: symptom.severityOfComplaint,
+                      );
+                    },
+                  ),
+                  if (complaint.additionalMedicalComplains.isNotEmptyOrNull &&
+                      complaint.additionalMedicalComplains !=
+                          context.translate.no_data_entered) ...[
+                    SectionTitleContainer(
+                      title: "شكاوى إضافية",
+                      iconPath: 'assets/images/notes_icon.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: "شكاوى إضافية",
+                      value: complaint.additionalMedicalComplains!,
+                      icon: 'assets/images/notes_icon.png',
+                      isExpanded: true,
+                    ),
+                  ],
+                  // شكاوى مشابهه سابقا
+                  if (complaint.similarComplaint.dateOfComplaint.isFilled ||
+                      complaint.similarComplaint.diagnosis.isFilled) ...[
+                    SectionTitleContainer(
+                      title: 'شكاوى مشابهه سابقا',
+                      iconPath: 'assets/images/symptoms_icon.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: "تاريخ الشكوى",
+                      value: complaint.similarComplaint.dateOfComplaint,
+                      icon: 'assets/images/date_icon.png',
+                      isExpanded: true,
+                    ),
+                    DetailsViewInfoTile(
+                      title: "التشخيص",
+                      value: complaint.similarComplaint.diagnosis,
+                      icon: 'assets/images/doctor_stethoscope_icon.png',
+                      isExpanded: true,
+                    ),
+                  ],
 
-    DetailsViewInfoTile(
-      title: "التشخيص",
-      value: complaint.similarComplaint.diagnosis,
-      icon: 'assets/images/doctor_stethoscope_icon.png',
-      isExpanded: true,
-    ),
-],
+                  DetailsViewImagesWithTitleTile(
+                    isShareEnabled: true,
+                    images: complaint
+                        .complainsImages, // Replace with actual image URL or asset
+                    title: "صور الشكاوي",
+                  ),
 
 // أدوية حالية
-if (complaint.medications.dosage.isFilled ||
-    complaint.medications.medicationName.isFilled) ...[
-  SectionTitleContainer(
-    title: "أدوية حالية",
-    iconPath: 'assets/images/medicines.png',
-  ),
-    DetailsViewInfoTile(
-      title: "اسم الدواء",
-      value: complaint.medications.medicationName,
-      icon: 'assets/images/doctor_name.png',
-      isExpanded: true,
-    ),
-    DetailsViewInfoTile(
-      title: "الجرعة",
-      value: complaint.medications.dosage,
-      icon: 'assets/images/hugeicons_medicine-01.png',
-      isExpanded: true,
-    ),
-],
+                  if (complaint.medications.dosage.isFilled ||
+                      complaint.medications.medicationName.isFilled) ...[
+                    SectionTitleContainer(
+                      title: "أدوية حالية",
+                      iconPath: 'assets/images/medicines.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: "اسم الدواء",
+                      value: complaint.medications.medicationName,
+                      icon: 'assets/images/doctor_name.png',
+                      isExpanded: true,
+                    ),
+                    DetailsViewInfoTile(
+                      title: "الجرعة",
+                      value: complaint.medications.dosage,
+                      icon: 'assets/images/hugeicons_medicine-01.png',
+                      isExpanded: true,
+                    ),
+                  ],
 
 // تدخل طبي طارئ للشكوى
-if (complaint.emergencyIntervention.interventionDate.isFilled ||
-    complaint.emergencyIntervention.interventionType.isFilled) ...[
-  SectionTitleContainer(
-    title: "تدخل طبي طارئ للشكوى",
-    iconPath: 'assets/images/medical_kit_icon.png',
-  ),
-    DetailsViewInfoTile(
-      title: "تاريخ التدخل",
-      value: complaint.emergencyIntervention.interventionDate,
-      icon: 'assets/images/date_icon.png',
-      isExpanded: true,
-    ),
-    DetailsViewInfoTile(
-      title: "نوع التدخل",
-      value: complaint.emergencyIntervention.interventionType,
-      icon: 'assets/images/qr_code_icon.png',
-      isExpanded: true,
-    ),
-],
-
+                  if (complaint
+                          .emergencyIntervention.interventionDate.isFilled ||
+                      complaint
+                          .emergencyIntervention.interventionType.isFilled) ...[
+                    SectionTitleContainer(
+                      title: "تدخل طبي طارئ للشكوى",
+                      iconPath: 'assets/images/medical_kit_icon.png',
+                    ),
+                    DetailsViewInfoTile(
+                      title: "تاريخ التدخل",
+                      value: complaint.emergencyIntervention.interventionDate,
+                      icon: 'assets/images/date_icon.png',
+                      isExpanded: true,
+                    ),
+                    DetailsViewInfoTile(
+                      title: "نوع التدخل",
+                      value: complaint.emergencyIntervention.interventionType,
+                      icon: 'assets/images/qr_code_icon.png',
+                      isExpanded: true,
+                    ),
+                  ],
 
                   if (complaint.personalNote.isFilled) ...[
                     SectionTitleContainer(
@@ -228,7 +253,7 @@ class SymptomContainer extends StatelessWidget {
       padding: isMainSymptom
           ? EdgeInsets.all(8)
           : EdgeInsets.only(left: 8, right: 8, bottom: 8),
-          margin: const EdgeInsets.only(top: 16, bottom: 16),
+      margin: const EdgeInsets.only(top: 16, bottom: 16),
       decoration: BoxDecoration(
         color: Colors.transparent,
         border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1),

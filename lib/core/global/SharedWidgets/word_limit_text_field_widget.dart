@@ -10,16 +10,18 @@ class WordLimitTextField extends StatefulWidget {
     super.key,
     this.controller,
     this.hintText = "اكتب باختصار اى معلومات مهمة اخرى",
+    this.maxWords = 100,
   });
   final TextEditingController? controller;
   final String hintText;
+
+  final int maxWords; // ⬅️ إضافة المتغير هنا
 
   @override
   WordLimitTextFieldState createState() => WordLimitTextFieldState();
 }
 
 class WordLimitTextFieldState extends State<WordLimitTextField> {
-  final int maxWords = 100;
   String? _errorText;
   @override
   Widget build(BuildContext context) {
@@ -29,10 +31,10 @@ class WordLimitTextFieldState extends State<WordLimitTextField> {
           heightFactor: 0,
           alignment: !isArabic() ? Alignment.bottomRight : Alignment.bottomLeft,
           child: Text(
-            "${countWords(widget.controller!.text)}/$maxWords ${context.translate.word}",
+            "${countWords(widget.controller!.text)}/${widget.maxWords} ${context.translate.word}",
             textAlign: TextAlign.right,
             style: AppTextStyles.font14whiteWeight600.copyWith(
-              color: countWords(widget.controller!.text) > maxWords
+              color: countWords(widget.controller!.text) > widget.maxWords
                   ? AppColorsManager.warningColor
                   : AppColorsManager.textColor,
             ),
@@ -47,7 +49,7 @@ class WordLimitTextFieldState extends State<WordLimitTextField> {
           hintText: widget.hintText,
           onChanged: (text) {
             int wordCount = countWords(text);
-            if (wordCount > maxWords) {
+            if (wordCount > widget.maxWords) {
               setState(() {
                 _errorText = context.translate.word_limit_exceeded;
               });
