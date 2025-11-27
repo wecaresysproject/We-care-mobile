@@ -10,18 +10,23 @@ class EmergencyComplainRequestBody {
   @JsonKey(name: 'mainSymptoms')
   final List<MedicalComplaint> userMedicalComplaint;
   final String? personalNote;
+  final String? additionalMedicalComplains;
   final SimilarComplaint? similarComplaint;
   @JsonKey(name: 'medications')
   final Medications? medication;
   final EmergencyIntervention? emergencyIntervention;
+  @JsonKey(name: 'photo')
+  final List<String> complainsImages;
 
   EmergencyComplainRequestBody({
     required this.dateOfComplaint,
     required this.userMedicalComplaint,
+    this.additionalMedicalComplains,
     this.personalNote,
     this.similarComplaint,
     this.medication,
     this.emergencyIntervention,
+    required this.complainsImages,
   });
 
   factory EmergencyComplainRequestBody.fromJson(Map<String, dynamic> json) =>

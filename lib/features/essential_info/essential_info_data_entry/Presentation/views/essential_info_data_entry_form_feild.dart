@@ -62,6 +62,18 @@ class EssentialDataEntryFormFields extends StatelessWidget {
                   },
                 ),
                 verticalSpacing(16),
+                QuestionWithDynamicAnswerListOption(
+                  options: [
+                    'ذكر',
+                    'انثى',
+                  ],
+                  questionTitle: 'النوع',
+                  initialValue: state.selectedGender,
+                  onAnswerChanged: (val) {
+                    context.read<EssentialDataEntryCubit>().updateGender(val);
+                  },
+                ),
+                verticalSpacing(16),
                 Text('الرقم الوطنى', style: AppTextStyles.font18blackWight500),
                 verticalSpacing(10),
                 CustomTextField(

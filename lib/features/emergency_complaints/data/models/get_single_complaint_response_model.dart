@@ -12,19 +12,25 @@ class DetailedComplaintModel {
   String date;
   List<MedicalComplaint> mainSymptoms;
   String personalNote;
+  String? additionalMedicalComplains;
   SimilarComplaint similarComplaint;
   Medications medications;
   EmergencyIntervention emergencyIntervention;
+  @JsonKey(name: 'photo')
+  List<String>? complainsImages;
 
-  DetailedComplaintModel(
-      {required this.id,
-      required this.userId,
-      required this.date,
-      required this.mainSymptoms,
-      required this.personalNote,
-      required this.similarComplaint,
-      required this.medications,
-      required this.emergencyIntervention});
+  DetailedComplaintModel({
+    required this.id,
+    required this.userId,
+    required this.date,
+    required this.mainSymptoms,
+    required this.personalNote,
+    required this.similarComplaint,
+    required this.medications,
+    required this.emergencyIntervention,
+    required this.additionalMedicalComplains,
+    required this.complainsImages,
+  });
 
   factory DetailedComplaintModel.fromJson(Map<String, dynamic> json) =>
       _$DetailedComplaintModelFromJson(json);

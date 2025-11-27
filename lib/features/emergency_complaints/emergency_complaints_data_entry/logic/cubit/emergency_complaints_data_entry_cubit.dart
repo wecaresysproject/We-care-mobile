@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart'
     as model;
@@ -17,13 +20,18 @@ part 'emergency_complaints_data_entry_state.dart';
 
 class EmergencyComplaintsDataEntryCubit
     extends Cubit<EmergencyComplaintsDataEntryState> {
-  EmergencyComplaintsDataEntryCubit(this._emergencyDataEntryRepo)
+  EmergencyComplaintsDataEntryCubit(
+      this._emergencyDataEntryRepo, this._appSharedRepo)
       : super(
           EmergencyComplaintsDataEntryState.initialState(),
-        );
+        ) {
+    additionalMedicalComplains.addListener(validateRequiredFields);
+  }
   // ignore: unused_field
   final EmergencyComplaintsDataEntryRepo _emergencyDataEntryRepo;
+  final AppSharedRepo _appSharedRepo;
   final personalInfoController = TextEditingController();
+  final additionalMedicalComplains = TextEditingController();
   final complaintDiagnosisController = TextEditingController(); // التشخيص
 
   final medicineDoseController = TextEditingController(); // الجرعه
@@ -73,6 +81,64 @@ class EmergencyComplaintsDataEntryCubit
     );
   }
 
+  void removeUploadedComplainsImage(String url) {
+    final updated = List<String>.from(state.uploadedComplainsImages)
+      ..remove(url);
+
+    emit(
+      state.copyWith(
+        uploadedComplainsImages: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
+  Future<void> uploadComplainsImage({required String imagePath}) async {
+    // 1) Check limit
+    if (state.uploadedComplainsImages.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
+    emit(
+      state.copyWith(
+        uploadImageRequestStatus: UploadImageRequestStatus.initial,
+      ),
+    );
+    final response = await _appSharedRepo.uploadImage(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        // add URL to existing list
+        final xrayImages = List<String>.from(state.uploadedComplainsImages)
+          ..add(response.imageUrl);
+
+        emit(
+          state.copyWith(
+            message: response.message,
+            uploadedComplainsImages: xrayImages,
+            uploadImageRequestStatus: UploadImageRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadImageRequestStatus: UploadImageRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   void updateSelectedMedicineName(String medicine) {
     emit(
       state.copyWith(
@@ -90,6 +156,8 @@ class EmergencyComplaintsDataEntryCubit
     final result =
         await _emergencyDataEntryRepo.editSpecifcEmergencyDocumentDataDetails(
       requestBody: EmergencyComplainRequestBody(
+        complainsImages: state.uploadedComplainsImages,
+        additionalMedicalComplains: additionalMedicalComplains.text,
         dateOfComplaint: state.complaintAppearanceDate!,
         medication: Medications(
           medicationName: state.secondQuestionAnswer
@@ -186,6 +254,7 @@ class EmergencyComplaintsDataEntryCubit
         isEditMode: true,
         updatedDocumentId: emergencyComplaint.id,
         selectedMedicineName: emergencyComplaint.medications.medicationName,
+        uploadedComplainsImages: emergencyComplaint.complainsImages,
       ),
     );
     complaintDiagnosisController.text =
@@ -205,6 +274,10 @@ class EmergencyComplaintsDataEntryCubit
         emergencyComplaint.personalNote == locale.no_data_entered
             ? ''
             : emergencyComplaint.personalNote;
+    additionalMedicalComplains.text =
+        emergencyComplaint.additionalMedicalComplains == locale.no_data_entered
+            ? ''
+            : emergencyComplaint.additionalMedicalComplains ?? '';
   }
 
   Future<void> storeTempUserPastComplaints(
@@ -226,6 +299,7 @@ class EmergencyComplaintsDataEntryCubit
     );
     final response = await _emergencyDataEntryRepo.postEmergencyDataEntry(
       requestBody: EmergencyComplainRequestBody(
+        complainsImages: state.uploadedComplainsImages,
         dateOfComplaint: state.complaintAppearanceDate!,
         userMedicalComplaint:
             state.medicalComplaints.isEmpty ? [] : state.medicalComplaints,
@@ -239,6 +313,9 @@ class EmergencyComplaintsDataEntryCubit
         personalNote: personalInfoController.text.isEmpty
             ? locale.no_data_entered
             : personalInfoController.text,
+        additionalMedicalComplains: additionalMedicalComplains.text.isEmpty
+            ? locale.no_data_entered
+            : additionalMedicalComplains.text,
         medication: Medications(
           medicationName: state.selectedMedicineName ?? locale.no_data_entered,
           dosage: medicineDoseController.text.isEmpty
@@ -374,7 +451,8 @@ class EmergencyComplaintsDataEntryCubit
         state.hasSimilarComplaintBefore == null ||
         state.isCurrentlyTakingMedication == null ||
         state.hasReceivedEmergencyCareBefore == null ||
-        state.medicalComplaints.isEmpty) {
+        (state.medicalComplaints.isEmpty &&
+            additionalMedicalComplains.text.isEmpty)) {
       emit(
         state.copyWith(
           isFormValidated: false,
@@ -391,10 +469,12 @@ class EmergencyComplaintsDataEntryCubit
 
   @override
   Future<void> close() async {
+    additionalMedicalComplains.removeListener(validateRequiredFields);
     personalInfoController.dispose();
     complaintDiagnosisController.dispose();
     medicineDoseController.dispose();
     emergencyInterventionTypeController.dispose();
+    additionalMedicalComplains.dispose();
     await clearAllAddedComplaints();
     return super.close();
   }

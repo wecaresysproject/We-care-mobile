@@ -12,7 +12,6 @@ class EssentialDataEntryState extends Equatable {
 
   // selected options
   final String? selectedGender;
-  final String? selectedReligion;
   final String? selectedNationality;
   final String? selectedMaritalStatus;
   final String? selectedBloodType;
@@ -47,7 +46,6 @@ class EssentialDataEntryState extends Equatable {
     required this.birthDate,
     required this.nationalIdIssueDate,
     required this.selectedGender,
-    required this.selectedReligion,
     required this.selectedNationality,
     required this.selectedMaritalStatus,
     required this.selectedBloodType,
@@ -83,7 +81,6 @@ class EssentialDataEntryState extends Equatable {
       birthDate: null,
       nationalIdIssueDate: null,
       selectedGender: null,
-      selectedReligion: null,
       selectedNationality: null,
       selectedMaritalStatus: null,
       selectedBloodType: null,
@@ -119,7 +116,6 @@ class EssentialDataEntryState extends Equatable {
     String? birthDate,
     String? nationalIdIssueDate,
     String? selectedGender,
-    String? selectedReligion,
     String? selectedNationality,
     String? selectedCity,
     String? selectedMaritalStatus,
@@ -153,7 +149,6 @@ class EssentialDataEntryState extends Equatable {
       birthDate: birthDate ?? this.birthDate,
       nationalIdIssueDate: nationalIdIssueDate ?? this.nationalIdIssueDate,
       selectedGender: selectedGender ?? this.selectedGender,
-      selectedReligion: selectedReligion ?? this.selectedReligion,
       selectedNationality: selectedNationality ?? this.selectedNationality,
       selectedMaritalStatus:
           selectedMaritalStatus ?? this.selectedMaritalStatus,
@@ -198,7 +193,6 @@ class EssentialDataEntryState extends Equatable {
         birthDate,
         nationalIdIssueDate,
         selectedGender,
-        selectedReligion,
         selectedNationality,
         selectedMaritalStatus,
         selectedBloodType,

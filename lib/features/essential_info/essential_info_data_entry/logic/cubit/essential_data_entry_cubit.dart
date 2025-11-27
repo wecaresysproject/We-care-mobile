@@ -426,13 +426,18 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   // Update functions
   void updateIsMarriedOrNot(String? val) =>
       emit(state.copyWith(socialStatus: val));
+
+  void updateGender(String? val) => emit(state.copyWith(selectedGender: val));
+
   void updateFamilyDoctorName(String? val) =>
       emit(state.copyWith(selectedFamilyDoctorName: val));
+
   void updateDisabilityLevel(String? val) =>
       emit(state.copyWith(disabilityLevel: val));
 
   void updateNationality(String? val) =>
       emit(state.copyWith(selectedNationality: val));
+
   void updateCity(String? val) => emit(state.copyWith(selectedCity: val));
 
   void updateMaritalStatus(String? val) =>
@@ -448,6 +453,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       emit(state.copyWith(weeklyWorkingHours: val));
 
   void updateBirthDate(String? val) => emit(state.copyWith(birthDate: val));
+
   void updateInsuranceCompanyName(String? val) =>
       emit(state.copyWith(insuranceCompany: val));
 

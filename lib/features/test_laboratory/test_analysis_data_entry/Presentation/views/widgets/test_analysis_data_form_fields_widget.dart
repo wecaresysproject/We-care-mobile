@@ -733,34 +733,6 @@ DataCell _buildCell(
   );
 }
 
-// class SymptomsRequiringInterventionSelector extends StatelessWidget {
-//   const SymptomsRequiringInterventionSelector({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
-//         MedicalComplaintDataEntryDetailsState>(
-//       buildWhen: (previous, current) =>
-//           previous.medicalSymptomsIssue != current.medicalSymptomsIssue,
-//       builder: (context, state) {
-//         final xrayCubit = context.read<TestAnalysisDataEntryCubit>();
-
-//         return SearchableUserSelectorContainer(
-//           allowManualEntry: true,
-//           categoryLabel: "الأعراض المستدعية للاجراء",
-//           bottomSheetTitle: "اختر الأعراض المستدعية",
-//           containerHintText:
-//               state.medicalSymptomsIssue ?? "اختر الأعراض المستدعية",
-//           onOptionSelected: (value) {
-//             xrayCubit.updateSymptomsRequiringIntervention(value);
-//           },
-//           searchHintText: "ابحث عن الأعراض المستدعية",
-//         );
-//       },
-//     );
-//   }
-// }
-
 class SymptomsRequiringInterventionSelector extends StatelessWidget {
   const SymptomsRequiringInterventionSelector({super.key});
 

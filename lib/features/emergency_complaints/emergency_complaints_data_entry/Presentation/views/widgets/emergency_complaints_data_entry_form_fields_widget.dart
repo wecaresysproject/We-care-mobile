@@ -12,6 +12,7 @@ import 'package:we_care/core/global/SharedWidgets/add_new_item_button_shared_wid
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/image_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -32,6 +33,7 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
     return BlocBuilder<EmergencyComplaintsDataEntryCubit,
         EmergencyComplaintsDataEntryState>(
       builder: (context, state) {
+        final cubit = context.read<EmergencyComplaintsDataEntryCubit>();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -64,7 +66,44 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
             verticalSpacing(16),
 
             buildAddNewComplainButtonBlocBuilder(context),
+            verticalSpacing(16),
+            Text(
+              "شكاوي طبية إضافية",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            WordLimitTextField(
+              controller: cubit.additionalMedicalComplains,
+              hintText: "اكتب باختصار اى معلومات مهمة اخرى",
+            ),
+            verticalSpacing(10),
 
+            Text(
+              "صور الشكاوي (${state.uploadedComplainsImages.length}/8)",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+
+            ImageUploaderSection<EmergencyComplaintsDataEntryCubit,
+                EmergencyComplaintsDataEntryState>(
+              statusSelector: (state) => state.uploadImageRequestStatus,
+              uploadedSelector: (state) => state.uploadedComplainsImages,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<EmergencyComplaintsDataEntryCubit>()
+                    .removeUploadedComplainsImage(imagePath);
+              },
+              onUpload: (path) async {
+                await context
+                    .read<EmergencyComplaintsDataEntryCubit>()
+                    .uploadComplainsImage(
+                      imagePath: path,
+                    );
+              },
+            ),
+
+            verticalSpacing(16),
             verticalSpacing(16),
             FirstQuestionDetails(),
             verticalSpacing(16),
@@ -81,13 +120,8 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
             verticalSpacing(10),
 
             WordLimitTextField(
-              controller: context
-                  .read<EmergencyComplaintsDataEntryCubit>()
-                  .personalInfoController,
+              controller: cubit.personalInfoController,
               hintText: "اكتب باختصار اى معلومات مهمة اخرى",
-
-              // hintText: state.prescribtionEditedModel?.preDescriptionNotes ??
-              //     "اكتب باختصار اى معلومات مهمة اخرى",
             ),
 
             ///TODO: handle this button in main view and remove it from here

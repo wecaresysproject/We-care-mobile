@@ -29,6 +29,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final String? emergencyInterventionDate; // تاريخ التدخل
   final List<MedicalComplaint> medicalComplaints;
   final String updatedDocumentId; // تاريخ التدخل
+  final List<String> uploadedComplainsImages;
+  final UploadImageRequestStatus uploadImageRequestStatus;
 
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
@@ -51,6 +53,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.medicalComplaints = const [],
     this.medicines = const [],
     this.updatedDocumentId = '',
+    this.uploadedComplainsImages = const [],
+    this.uploadImageRequestStatus = UploadImageRequestStatus.initial,
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -75,6 +79,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           medicalComplaints: const [],
           medicines: const [],
           updatedDocumentId: '',
+          uploadedComplainsImages: const [],
+          uploadImageRequestStatus: UploadImageRequestStatus.initial,
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -103,6 +109,8 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     List<MedicalComplaint>? medicalComplaints,
     String? updatedDocumentId,
     List<String>? medicines,
+    List<String>? uploadedComplainsImages,
+    UploadImageRequestStatus? uploadImageRequestStatus,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -133,6 +141,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
       medicalComplaints: medicalComplaints ?? this.medicalComplaints,
       updatedDocumentId: updatedDocumentId ?? this.updatedDocumentId,
       medicines: medicines ?? this.medicines,
+      uploadedComplainsImages:
+          uploadedComplainsImages ?? this.uploadedComplainsImages,
+      uploadImageRequestStatus:
+          uploadImageRequestStatus ?? this.uploadImageRequestStatus,
     );
   }
 
@@ -158,5 +170,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         medicalComplaints,
         updatedDocumentId,
         medicines,
+        uploadedComplainsImages,
+        uploadImageRequestStatus,
       ];
 }
