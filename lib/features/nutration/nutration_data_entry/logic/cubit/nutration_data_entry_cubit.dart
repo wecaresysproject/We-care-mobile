@@ -10,6 +10,7 @@ import 'package:we_care/features/nutration/data/models/nutration_element_table_r
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
@@ -604,5 +605,31 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     heightController.dispose();
     ageController.dispose();
     return super.close();
+  }
+
+  //getNutritionElementDefinition
+  Future<void> getNutritionElementDefinition(
+      {required String elementName}) async {
+    // emit(state.copyWith(requestStatus: RequestStatus.loading)); // We might need a separate status for this or just show loading in UI
+
+    final result = await _nutrationDataEntryRepo.getNutritionElementDefinition(
+      elementName: elementName,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            nutritionDefinition: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
   }
 }

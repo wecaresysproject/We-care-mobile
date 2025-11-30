@@ -26,6 +26,7 @@ class NutrationDataEntryState extends Equatable {
   final bool weeklyActivationStatus;
   final bool isFoodAnalysisSuccess;
   final bool isAnyPlanActivated;
+  final NutritionDefinitionModel? nutritionDefinition;
 
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
@@ -48,6 +49,7 @@ class NutrationDataEntryState extends Equatable {
     this.nutrationElementsRows = const [],
     this.dataTableStatus = RequestStatus.initial,
     this.isAnyPlanActivated = false,
+    this.nutritionDefinition,
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -72,6 +74,7 @@ class NutrationDataEntryState extends Equatable {
           nutrationElementsRows: const [],
           dataTableStatus: RequestStatus.initial,
           isAnyPlanActivated: false,
+          nutritionDefinition: null,
         );
 
   NutrationDataEntryState copyWith({
@@ -95,6 +98,7 @@ class NutrationDataEntryState extends Equatable {
     List<NutritionElement>? nutrationElementsRows,
     RequestStatus? dataTableStatus,
     bool? isAnyPlanActivated,
+    NutritionDefinitionModel? nutritionDefinition,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -126,6 +130,7 @@ class NutrationDataEntryState extends Equatable {
           nutrationElementsRows ?? this.nutrationElementsRows,
       dataTableStatus: dataTableStatus ?? this.dataTableStatus,
       isAnyPlanActivated: isAnyPlanActivated ?? this.isAnyPlanActivated,
+      nutritionDefinition: nutritionDefinition ?? this.nutritionDefinition,
     );
   }
 
@@ -151,5 +156,6 @@ class NutrationDataEntryState extends Equatable {
         nutrationElementsRows,
         dataTableStatus,
         isAnyPlanActivated,
+        nutritionDefinition,
       ];
 }

@@ -96,7 +96,8 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   icon: Icons.insert_chart_outlined,
                   onPressed: () async {
                     // TODO: Add your logic here
-                    await context.pushNamed(Routes.nutritionFollowUpReportTableView,
+                    await context.pushNamed(
+                        Routes.nutritionFollowUpReportTableView,
                         arguments: null);
                   },
                 ),
@@ -425,6 +426,13 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
         !isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
     num exactPercentage = consumed / standard * 100;
 
+    Color percentageColor = exactPercentage >= 100
+        ? const Color(0xFF00C896)
+        : const Color(0xFFE53E3E);
+
+    IconData percentageArrowIcon =
+        exactPercentage >= 100 ? Icons.arrow_upward : Icons.arrow_downward;
+
     return Container(
       padding: EdgeInsets.fromLTRB(2.w, 8.h, 5.w, 0),
       decoration: BoxDecoration(
@@ -477,23 +485,20 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                     color: AppColorsManager.mainDarkBlue,
                     fontSize: 15.sp,
                   ),
-                  maxLines: 2, // يخليه سطر واحد
-                  minFontSize: 7, // أقل حجم خط ممكن يوصل له
-                  overflow:
-                      TextOverflow.ellipsis, // يحط ... لو الاسم أطول من كده
+                  maxLines: 2,
+                  minFontSize: 7,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
 
               horizontalSpacing(8),
-              // Percentage indicator (if exists)
+              // 🆕 Percentage indicator (with reversed colors)
               if (doc.hasPercentage && percentage != null)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
                   margin: const EdgeInsets.only(right: 15),
                   decoration: BoxDecoration(
-                    color: (percentage) < 100
-                        ? Color(0xFF00C896)
-                        : Color(0xFFE53E3E),
+                    color: percentageColor, // 👈 اللون المعكوس
                     borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Row(
@@ -509,9 +514,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                       ),
                       horizontalSpacing(4),
                       Icon(
-                        exactPercentage < 100
-                            ? Icons.arrow_downward
-                            : Icons.arrow_upward,
+                        percentageArrowIcon, // 👈 السهم المعكوس
                         color: Colors.white,
                         size: 16,
                       ),
@@ -568,8 +571,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic, // 👈 ده مهم جداً
-
+        textBaseline: TextBaseline.alphabetic,
         children: [
           Text(
             label,
@@ -635,7 +637,6 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
       child: Container(
         height: 28.h,
         padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
-        // margin: EdgeInsets.only(left: 3.w, right: 0.w),
         decoration: BoxDecoration(
           color: AppColorsManager.mainDarkBlue,
           borderRadius: BorderRadius.circular(10.r),

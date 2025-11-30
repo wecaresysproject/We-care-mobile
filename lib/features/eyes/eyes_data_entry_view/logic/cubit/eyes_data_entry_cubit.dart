@@ -371,11 +371,11 @@ class EyesDataEntryCubit extends Cubit<EyesDataEntryState> {
     );
     final response = await _eyesDataEntryRepo.editEyeDataEntered(
       requestBody: EyeDataEntryRequestBody(
-        eyeMedicalCenter: state.selectedEyeMedicalCenter!,
+        eyeMedicalCenter: state.selectedEyeMedicalCenter ?? "",
         writtenReport: reportTextController.text,
         affectedEyePart: state.affectedEyePart!,
         symptomStartDate: state.syptomStartDate!,
-        centerHospitalName: state.selectedHospitalCenter!,
+        centerHospitalName: state.selectedHospitalCenter ?? "",
         country: state.selectedCountryName!,
         symptoms: state.eyePartSyptomsAndProcedures!.symptoms,
         symptomDuration: state.symptomDuration!,

@@ -6,6 +6,7 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
 import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/models/organ_nutritional_effects_response_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 
@@ -294,6 +295,32 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
           state.copyWith(
             requestStatus: RequestStatus.success,
             organNutritionalEffectsData: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          responseMessage: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  //getNutritionElementDefinition
+  Future<void> getNutritionElementDefinition(
+      {required String elementName}) async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await nutrationViewRepo.getNutritionElementDefinition(
+      elementName: elementName,
+    );
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            nutritionDefinition: data,
           ),
         );
       },
