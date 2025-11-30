@@ -110,4 +110,8 @@ abstract class NutrationServices {
   Future<dynamic> deleteDayDietPlan(
     @Query("date") String date,
   );
+  @GET(NutrationApiConstants.getNutritionElementDefinition)
+  Future<dynamic> getNutritionElementDefinition(
+    @Query('elementName') String elementName,
+  );
 }

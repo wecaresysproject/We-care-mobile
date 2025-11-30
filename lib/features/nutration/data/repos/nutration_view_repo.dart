@@ -4,6 +4,7 @@ import 'package:we_care/features/nutration/data/models/element_recommendation_re
 import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
 import 'package:we_care/features/nutration/data/models/organ_nutritional_effects_response_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationViewRepo {
@@ -244,4 +245,18 @@ class NutrationViewRepo {
   //     return ApiResult.failure(ApiErrorHandler.handle(error));
   //   }
   // }
+
+  Future<ApiResult<NutritionDefinitionModel>> getNutritionElementDefinition({
+    required String elementName,
+  }) async {
+    try {
+      final response = await nutrationServices.getNutritionElementDefinition(
+        elementName,
+      );
+      return ApiResult.success(
+          NutritionDefinitionModel.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

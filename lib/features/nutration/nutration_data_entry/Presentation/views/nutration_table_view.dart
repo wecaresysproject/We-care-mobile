@@ -13,6 +13,7 @@ import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/nutration_diff_dialoge.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 
 class NutritionFollowUpReportView extends StatelessWidget {
   const NutritionFollowUpReportView({super.key, required this.date});
@@ -44,7 +45,39 @@ class NutritionFollowUpReportView extends StatelessWidget {
                 icon: Icons.person,
               ).paddingFrom(right: 140, bottom: 5),
               // 🔥 BlocBuilder to handle different states
-              BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
+              BlocConsumer<NutrationDataEntryCubit, NutrationDataEntryState>(
+                listener: (context, state) {
+                  if (state.nutritionDefinition != null) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(
+                          state.nutritionDefinition!.elementName,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.font18blackWight500.copyWith(
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                        ),
+                        content: Text(
+                          state.nutritionDefinition!.definition,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.font14blackWeight400,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text("إغلاق"),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (state.message.isNotEmpty &&
+                      state.submitNutrationDataStatus ==
+                          RequestStatus.failure) {
+                    showError(state.message);
+                  }
+                },
                 builder: (context, state) {
                   return _buildDataTableByState(state, context);
                 },
@@ -251,6 +284,13 @@ class NutritionFollowUpReportView extends StatelessWidget {
             isBold: true,
             isElement: true,
             isNarrow: true,
+            onTap: () {
+              context
+                  .read<NutrationDataEntryCubit>()
+                  .getNutritionElementDefinition(
+                    elementName: element.elementName,
+                  );
+            },
           ),
           _buildCell(
             element.dailyActual?.toString() ?? "N/A",
@@ -523,7 +563,10 @@ class NutritionFollowUpReportView extends StatelessWidget {
 
 // // 🔤 Build individual cell
   DataCell _buildCell(String text,
-      {bool isBold = false, bool isElement = false, bool isNarrow = false}) {
+      {bool isBold = false,
+      bool isElement = false,
+      bool isNarrow = false,
+      VoidCallback? onTap}) {
     final style = _getCellTextStyle(isBold);
 
     return DataCell(
@@ -539,6 +582,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
           ),
         ),
       ),
+      onTap: onTap,
     );
   }
 

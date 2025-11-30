@@ -11,8 +11,9 @@ class NutrationViewState extends Equatable {
   final List<String> monthlyPlanDateRangesFilter;
   final List<String> weeklyPlanDateRangesFilter;
   final ElementData? elementRecommendation;
-  final List<String> affectedOrgansList ;
+  final List<String> affectedOrgansList;
   final OrganNutritionalEffectsData? organNutritionalEffectsData;
+  final NutritionDefinitionModel? nutritionDefinition;
 
   final List<AlternativeFoodCategoryModel> foodAlternatives;
 
@@ -28,8 +29,9 @@ class NutrationViewState extends Equatable {
     this.foodAlternatives = const [],
     this.followUpNutrationViewCurrentTabIndex = 0,
     this.elementRecommendation,
-     this.affectedOrgansList = const [],
-     this.organNutritionalEffectsData
+    this.affectedOrgansList = const [],
+    this.organNutritionalEffectsData,
+    this.nutritionDefinition,
   });
 
   factory NutrationViewState.initial() {
@@ -46,7 +48,8 @@ class NutrationViewState extends Equatable {
       followUpNutrationViewCurrentTabIndex: 0,
       elementRecommendation: null,
       affectedOrgansList: const [],
-      organNutritionalEffectsData: null
+      organNutritionalEffectsData: null,
+      nutritionDefinition: null,
     );
   }
 
@@ -63,7 +66,8 @@ class NutrationViewState extends Equatable {
     int? followUpNutrationViewCurrentTabIndex,
     ElementData? elementRecommendation,
     List<String>? affectedOrgansList,
-    OrganNutritionalEffectsData? organNutritionalEffectsData
+    OrganNutritionalEffectsData? organNutritionalEffectsData,
+    NutritionDefinitionModel? nutritionDefinition,
   }) {
     return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -84,9 +88,12 @@ class NutrationViewState extends Equatable {
       followUpNutrationViewCurrentTabIndex:
           followUpNutrationViewCurrentTabIndex ??
               this.followUpNutrationViewCurrentTabIndex,
-      elementRecommendation: elementRecommendation ?? this.elementRecommendation, 
-      affectedOrgansList: affectedOrgansList ?? this.affectedOrgansList  ,
-      organNutritionalEffectsData: organNutritionalEffectsData ?? this.organNutritionalEffectsData       
+      elementRecommendation:
+          elementRecommendation ?? this.elementRecommendation,
+      affectedOrgansList: affectedOrgansList ?? this.affectedOrgansList,
+      organNutritionalEffectsData:
+          organNutritionalEffectsData ?? this.organNutritionalEffectsData,
+      nutritionDefinition: nutritionDefinition ?? this.nutritionDefinition,
     );
   }
 
@@ -104,6 +111,7 @@ class NutrationViewState extends Equatable {
         elementRecommendation,
         foodAlternatives,
         affectedOrgansList,
-        organNutritionalEffectsData
+        organNutritionalEffectsData,
+        nutritionDefinition,
       ];
 }
