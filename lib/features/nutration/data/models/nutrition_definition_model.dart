@@ -9,7 +9,7 @@ class NutritionDefinitionModel {
 
   factory NutritionDefinitionModel.fromJson(Map<String, dynamic> json) {
     return NutritionDefinitionModel(
-      elementName: json['elementName'] as String,
+      elementName: json['nutrient'] as String,
       definition: json['definition'] as String,
     );
   }
