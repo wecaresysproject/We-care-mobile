@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
@@ -28,10 +31,6 @@ class NutrientAnalysisView extends StatelessWidget {
               dietInput: dietInput,
             ),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("تحليل $targetNutrient"),
-          backgroundColor: AppColorsManager.mainDarkBlue,
-        ),
         body: BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
           builder: (context, state) {
             /// ---------- 🔄 Loading ----------
@@ -41,14 +40,14 @@ class NutrientAnalysisView extends StatelessWidget {
 
             /// ---------- ❌ Error ----------
             if (state.submitNutrationDataStatus == RequestStatus.failure) {
-              return _buildErrorView(state.message);
+              return _buildErrorView(state.message, context);
             }
 
             /// ---------- 🎯 Success ----------
             if (state.submitNutrationDataStatus == RequestStatus.success &&
                 state.singleNutrientModel != null) {
               return _buildResultTable(
-                  state.singleNutrientModel!, targetNutrient);
+                  state.singleNutrientModel!, targetNutrient, context);
             }
 
             /// ---------- Initial ----------
@@ -72,7 +71,7 @@ class NutrientAnalysisView extends StatelessWidget {
         ),
       );
 
-  Widget _buildErrorView(String msg) => Center(
+  Widget _buildErrorView(String msg, BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -82,87 +81,135 @@ class NutrientAnalysisView extends StatelessWidget {
                 style: TextStyle(fontSize: 16, color: Colors.red)),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {}, // ممكن نعمل retry
-              child: const Text("إعادة المحاولة"),
+              onPressed: () async {
+                await context
+                    .read<NutrationDataEntryCubit>()
+                    .analyzeSingleNutrient(
+                        targetNutrient: targetNutrient, dietInput: dietInput);
+              }, // ممكن نعمل retry
+              child: const Text(
+                "إعادة المحاولة",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             )
           ],
         ),
       );
 
-  /// 📊 جدول إظهار نتائج Single Nutrient Model
-  Widget _buildResultTable(SingleNutrientModel model, String targetNutrient) {
+  Widget _buildResultTable(
+      SingleNutrientModel model, String targetNutrient, BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
       child: Column(
         children: [
-          Text(
-            "الإجمالي اليومي: ${model.totalNutrientIntake.toStringAsFixed(2)}",
-            style: AppTextStyles.font20blackWeight600,
+          AppBarWithCenteredTitle(
+            title: "تحليل $targetNutrient",
+            showShareButtonOnly: true,
+            shareFunction: () {},
           ),
-          const SizedBox(height: 18),
+          verticalSpacing(20),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              headingRowColor:
+                  WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
 
-          /// ---------- 📌 جدول البيانات ----------
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                headingRowColor:
-                    WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
-                columns: [
-                  DataColumn(label: Text("اسم الصنف الغذائي", style: _header)),
-                  DataColumn(
-                    label: Text(
-                      "الكمية\n(جم/مل)",
-                      textAlign: TextAlign.center,
-                      style: _header,
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      "كمية $targetNutrient لكل\n100 جم",
-                      style: _header,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  DataColumn(
-                    label: Text(
-                      "كمية $targetNutrient\nالفعلية",
-                      style: _header,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-                rows: model.items.map(
-                  (item) {
-                    return DataRow(
-                      cells: [
-                        _cell(item.name),
-                        _cell("${item.quantityGrams.toStringAsFixed(1)} g"),
-                        _cell("${item.nutrientPer100g}"),
-                        _cell(item.nutrientIntake.toStringAsFixed(2)),
-                      ],
-                    );
-                  },
-                ).toList(),
+              columnSpacing: context.screenWidth * 0.09,
+              // dataRowMaxHeight: 46,
+              horizontalMargin: 10,
+              dividerThickness: 0.83,
+              headingTextStyle: _headingTextStyle(),
+              showBottomBorder: true,
+
+              border: TableBorder.all(
+                style: BorderStyle.solid,
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xff909090),
+                width: 0.15,
               ),
+
+              // 🔥 نفس المسميات الأصلية هنا
+              columns: [
+                // _column("اسم الصنف الغذائي"),
+                // _column("الكمية\n(جم/مل)"),
+                // _column("كمية $targetNutrient لكل\n100 جم"),
+                // _column("كمية $targetNutrient\nالفعلية"),
+                _column("الصنف"),
+                _column("الكمية\n(جم/مل)"),
+                _column("لكل 100 جم"),
+                _column("المتناول"),
+              ],
+
+              rows: model.items.map((item) {
+                return DataRow(
+                  cells: [
+                    _cell(item.name),
+                    _cell("${item.quantityGrams.toStringAsFixed(1)} جم"),
+                    _cell("${item.nutrientPer100g}"),
+                    _cell(item.nutrientIntake.toStringAsFixed(2)),
+                  ],
+                );
+              }).toList(),
             ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            "الإجمالي اليومي لل $targetNutrient في وجباتك: ${model.totalNutrientIntake.toStringAsFixed(2)}",
+            style: AppTextStyles.font14BlueWeight700,
+            textAlign: TextAlign.start,
+          ).paddingSymmetricHorizontal(
+            16,
           ),
         ],
       ),
     );
   }
 
-  // ========= STYLES =========
-
-  static const _header = TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.bold,
-    fontSize: 13,
-  );
-
-  DataCell _cell(String text) => DataCell(
-        Center(
-          child: Text(text, style: const TextStyle(fontSize: 13)),
+  /// Column (Same UI/style as LabTestTable)
+  DataColumn _column(String label) {
+    return DataColumn(
+      label: Center(
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
         ),
+      ),
+    );
+  }
+
+  /// Cell Style (matching LabTestTable)
+  DataCell _cell(
+    String value,
+  ) {
+    return DataCell(
+      Center(
+        child: Text(
+          value,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Table Header Style (same as LabTestTable)
+  TextStyle _headingTextStyle() =>
+      AppTextStyles.font16DarkGreyWeight400.copyWith(
+        color: AppColorsManager.backGroundColor,
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
       );
 }
