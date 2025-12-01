@@ -97,8 +97,9 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                   onPressed: () async {
                     // TODO: Add your logic here
                     await context.pushNamed(
-                        Routes.nutritionFollowUpReportTableView,
-                        arguments: null);
+                      Routes.nutritionFollowUpReportTableView,
+                      arguments: null,
+                    );
                   },
                 ),
                 GradientButton(

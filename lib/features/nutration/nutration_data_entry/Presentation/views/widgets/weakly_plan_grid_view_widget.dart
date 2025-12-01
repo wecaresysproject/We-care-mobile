@@ -97,6 +97,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
               // لو اليوم له تقرير
               return MealCard.planActivatedandHaveDocument(
                 day: day.dayOfWeek,
+                dietPlan: day.userDietPlan,
                 date: day.date,
                 onTap: () {},
               );

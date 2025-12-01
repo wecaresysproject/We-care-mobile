@@ -1,5 +1,6 @@
 // essential_data_entry_cubit.dart
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
@@ -101,6 +102,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     try {
       final updatedModel = UserEssentialInfoRequestBodyModel(
+        gender: state.selectedGender,
         familyDoctorPhoneNumber: familyDoctorPhoneNumberController.text.trim(),
         fullName: fullNameController.text.trim(),
         dateOfBirth: state.birthDate!,
@@ -169,6 +171,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     emit(
       state.copyWith(
         birthDate: editingModel.dateOfBirth,
+        selectedGender: editingModel.gender,
         selectedNationality: editingModel.country,
         selectedCity: editingModel.city,
         userPersonalImage: editingModel.personalPhotoUrl, //! check it later
@@ -287,6 +290,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     try {
       final model = UserEssentialInfoRequestBodyModel(
+        gender: state.selectedGender ?? localization.no_data_entered,
         familyDoctorPhoneNumber:
             familyDoctorPhoneNumberController.text.trim().isNotEmpty
                 ? familyDoctorPhoneNumberController.text.trim()
@@ -427,7 +431,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   void updateIsMarriedOrNot(String? val) =>
       emit(state.copyWith(socialStatus: val));
 
-  void updateGender(String? val) => emit(state.copyWith(selectedGender: val));
+  void updateGender(String? val) {
+    log("gender : $val");
+    emit(
+      state.copyWith(
+        selectedGender: val,
+      ),
+    );
+  }
 
   void updateFamilyDoctorName(String? val) =>
       emit(state.copyWith(selectedFamilyDoctorName: val));

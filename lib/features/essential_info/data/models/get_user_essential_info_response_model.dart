@@ -34,7 +34,7 @@ class UserEssentialInfoData {
   final String? personalPhotoUrl;
   final String? country;
   final String? city;
-
+  final String? gender;
   // --- Location & Work Data ---
   final String? areaOrDistrict;
   final String? bloodType;
@@ -60,6 +60,7 @@ class UserEssentialInfoData {
     this.fullName,
     this.dateOfBirth,
     this.nationalID,
+    this.gender,
     this.email,
     this.personalPhotoUrl,
     this.country,

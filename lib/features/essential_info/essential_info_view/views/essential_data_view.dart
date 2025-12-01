@@ -104,6 +104,11 @@ class EssentialDataView extends StatelessWidget {
                     ],
                   ),
 
+                  DetailsViewInfoTile(
+                    title: "النوع",
+                    value: info.gender ?? "",
+                    isExpanded: true,
+                  ),
                   // Email
                   DetailsViewInfoTile(
                     title: "البريد الإلكتروني",

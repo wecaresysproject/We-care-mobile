@@ -10,14 +10,17 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutrient_analysis_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/nutration_diff_dialoge.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 
 class NutritionFollowUpReportView extends StatelessWidget {
-  const NutritionFollowUpReportView({super.key, required this.date});
+  const NutritionFollowUpReportView(
+      {super.key, required this.date, required this.userDietPlan});
   final String? date;
+  final String userDietPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -292,9 +295,36 @@ class NutritionFollowUpReportView extends StatelessWidget {
                   );
             },
           ),
-          _buildCell(
-            element.dailyActual?.toString() ?? "N/A",
-          ), //! check it later
+          // _buildCell(
+          //   element.dailyActual?.toString() ?? "N/A",
+          // ), //! check it later
+          DataCell(
+            InkWell(
+              onTap: () {
+                /// 🔥 انتقل لصفحة تحليل عنصر واحد (مثل فيتامين C)
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => NutrientAnalysisView(
+                      targetNutrient: element.elementName,
+                      dietInput: userDietPlan,
+                    ),
+                  ),
+                );
+              },
+              child: Center(
+                child: Text(
+                  element.dailyActual?.toString() ?? "N/A",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColorsManager.mainDarkBlue,
+                    fontSize: 15.sp,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+          ),
 
           DataCell(
             Column(

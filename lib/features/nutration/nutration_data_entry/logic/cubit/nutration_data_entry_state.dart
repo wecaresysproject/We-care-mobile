@@ -12,6 +12,7 @@ class NutrationDataEntryState extends Equatable {
   final String recognizedText;
   final int followUpNutrationViewCurrentTabIndex;
   final String selectedPlanDate;
+  final SingleNutrientModel? singleNutrientModel;
   final String? genderType;
   final String? selectedPhysicalActivity;
   final List<String> selectedChronicDiseases;
@@ -38,6 +39,7 @@ class NutrationDataEntryState extends Equatable {
     this.followUpNutrationViewCurrentTabIndex = 0,
     this.nutrationFactsModel,
     this.selectedPlanDate = '',
+    this.singleNutrientModel,
     this.genderType = 'ذكر',
     this.selectedPhysicalActivity = 'متوسط',
     this.chronicDiseases = const [],
@@ -63,6 +65,7 @@ class NutrationDataEntryState extends Equatable {
           followUpNutrationViewCurrentTabIndex: 0,
           nutrationFactsModel: null,
           selectedPlanDate: '',
+          singleNutrientModel: null,
           genderType: 'ذكر',
           selectedPhysicalActivity: 'متوسط',
           chronicDiseases: const [],
@@ -87,6 +90,7 @@ class NutrationDataEntryState extends Equatable {
     int? followUpNutrationViewCurrentTabIndex,
     NutrationFactsModel? nutrationFactsModel,
     String? selectedPlanDate,
+    SingleNutrientModel? singleNutrientModel,
     String? genderType,
     String? selectedPhysicalActivity,
     List<String>? chronicDiseases,
@@ -113,6 +117,7 @@ class NutrationDataEntryState extends Equatable {
               this.followUpNutrationViewCurrentTabIndex,
       nutrationFactsModel: nutrationFactsModel ?? this.nutrationFactsModel,
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
+      singleNutrientModel: singleNutrientModel ?? this.singleNutrientModel,
       genderType: genderType ?? this.genderType,
       selectedPhysicalActivity:
           selectedPhysicalActivity ?? this.selectedPhysicalActivity,
@@ -145,6 +150,7 @@ class NutrationDataEntryState extends Equatable {
         followUpNutrationViewCurrentTabIndex,
         nutrationFactsModel,
         selectedPlanDate,
+        singleNutrientModel,
         genderType,
         selectedPhysicalActivity,
         chronicDiseases,

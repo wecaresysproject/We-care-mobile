@@ -36,11 +36,13 @@ class Day {
   final bool hasDocument;
   final String date;
   final String dayOfWeek;
+  final String? userDietPlan;
 
   Day({
     required this.hasDocument,
     required this.date,
     required this.dayOfWeek,
+    this.userDietPlan,
   });
 
   factory Day.fromJson(Map<String, dynamic> json) => _$DayFromJson(json);

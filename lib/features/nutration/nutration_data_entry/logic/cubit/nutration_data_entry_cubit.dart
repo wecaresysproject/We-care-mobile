@@ -9,6 +9,7 @@ import 'package:we_care/features/nutration/data/models/get_all_created_plans_mod
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
@@ -203,7 +204,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
       // Call ChatGPT service
       final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
-
+      if (nutritionData != null) {
+        nutritionData.userDietPlan = dietInput;
+      }
       // You can now use nutritionData to send to your backend
       await postDailyDietPlan(
         nutritionData: nutritionData!,
@@ -220,6 +223,51 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     }
   }
 
+  // NEW METHOD: Analyze single nutrient using DeepSeek
+  Future<void> analyzeSingleNutrient({
+    required String targetNutrient,
+    required String dietInput,
+  }) async {
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.loading,
+        ),
+      );
+
+      // Call DeepSeek service
+      final singleNutrientData = await DeepSeekService.analyzeSingleNutrient(
+        dietInput: dietInput,
+        targetNutrient: targetNutrient,
+      );
+
+      if (singleNutrientData != null) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.success,
+            singleNutrientModel: singleNutrientData,
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: 'فشل في تحليل العنصر الغذائي',
+          ),
+        );
+      }
+    } catch (e) {
+      AppLogger.error('Error in analyzeSingleNutrient: $e');
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل العنصر الغذائي',
+        ),
+      );
+    }
+  }
+
   void clearRelativeControllerToCurrentTab() {
     if (state.followUpNutrationViewCurrentTabIndex == 0) {
       weeklyMessageController.clear();
@@ -231,11 +279,11 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
   // Optional: Method to send nutrition data to your backend
   Future<void> postDailyDietPlan({
-    required NutrationFactsModel nutritionData,
+    required NutrationFactsModel? nutritionData,
     required String userDietplan,
   }) async {
     final result = await _nutrationDataEntryRepo.postDailyDietPlan(
-      requestBody: nutritionData,
+      nutrationFact: nutritionData!,
       lanugage: AppStrings.arabicLang,
       date: state.selectedPlanDate,
     );
