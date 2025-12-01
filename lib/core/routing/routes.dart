@@ -124,4 +124,6 @@ class Routes {
   static const dailyActivityLogger = '/dailyActivityLogger';
   static const essentialInfoView = '/essentialInfoView';
   static const essentialInfoDataEntry = '/essentialInfoDataEntry';
+  static const medicalNotesView = '/medicalNotesView';
+  static const createEditMedicalNote = '/createEditMedicalNote';
 }

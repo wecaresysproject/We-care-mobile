@@ -10,6 +10,9 @@ class ViewAppBar extends StatelessWidget {
   final Function(String)? onSearchSubmitted;
   final VoidCallback? onSearchCleared;
   final TextEditingController? controller;
+  final bool isItemSelectionMode;
+  final VoidCallback? onShare;
+  final VoidCallback? onDelete;
 
   const ViewAppBar({
     super.key,
@@ -17,6 +20,9 @@ class ViewAppBar extends StatelessWidget {
     this.onSearchChanged,
     this.onSearchSubmitted,
     this.onSearchCleared,
+    this.isItemSelectionMode = false,
+    this.onShare,
+    this.onDelete,
   });
 
   @override
@@ -26,13 +32,48 @@ class ViewAppBar extends StatelessWidget {
       child: Row(
         children: [
           CustomBackArrow(),
-          horizontalSpacing(50),
+          isItemSelectionMode == true
+              ? horizontalSpacing(12)
+              : horizontalSpacing(50),
           CustomSearchBar(
             controller: controller ?? TextEditingController(),
             onChanged: onSearchChanged,
             onSubmitted: onSearchSubmitted,
             onCleared: onSearchCleared,
           ),
+          ...(isItemSelectionMode
+              ? [
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColorsManager.mainDarkBlue,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: IconButton(
+                      onPressed: onShare,
+                      icon: Icon(
+                        Icons.share,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColorsManager.warningColor,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: IconButton(
+                      onPressed: onDelete,
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                    ),
+                  ),
+                ]
+              : []),
         ],
       ),
     );

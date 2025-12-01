@@ -23,6 +23,9 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_view/
 import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/essential_info_data_entry_view.dart';
 import 'package:we_care/features/essential_info/essential_info_view/views/essential_data_view.dart';
+import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
+import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
+import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_data_entry.dart';
@@ -637,6 +640,24 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => EssentialDataEntryView(
             editingModel: argumentsMap,
+          ),
+        );
+      case Routes.medicalNotesView:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<MedicalNotesCubit>(
+            create: (context) => getIt<MedicalNotesCubit>()..loadNotes(),
+            child: const MedicalNotesView(),
+          ),
+        );
+      case Routes.createEditMedicalNote:
+        final noteId = arguments as String?;
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<MedicalNotesCubit>(
+            create: (context) => getIt<MedicalNotesCubit>()..loadNotes(),
+            child: CreateEditMedicalNoteView(
+              noteId: noteId,
+            ),
           ),
         );
       default:
