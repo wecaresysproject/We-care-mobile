@@ -60,13 +60,13 @@ class NutrationDataEntryRepo {
   }
 
   Future<ApiResult<String>> postDailyDietPlan({
-    required NutrationFactsModel requestBody,
+    required NutrationFactsModel nutrationFact,
     required String lanugage,
     required String date,
   }) async {
     try {
       final response = await _nutrationServices.postDailyDietPlan(
-        requestBody,
+        nutrationFact,
         lanugage,
         date,
       );

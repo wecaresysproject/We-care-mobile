@@ -4,11 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
@@ -68,10 +66,10 @@ class DayCardWidget extends StatelessWidget {
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
             confirmText: 'مراجعة تقرير اليوم',
             onConfirm: () async {
-              await context.pushNamed(
-                Routes.nutritionFollowUpReportTableView,
-                arguments: date,
-              );
+              // await context.pushNamed(
+              //   Routes.nutritionFollowUpReportTableView,
+              //   arguments: date,
+              // );
             },
             hasDelete: true,
             onDelete: () {

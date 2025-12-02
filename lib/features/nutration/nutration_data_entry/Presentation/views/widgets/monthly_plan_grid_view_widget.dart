@@ -100,6 +100,7 @@ class _MonthlyMealGridBlocBuilderState
               return MealCard.planActivatedandHaveDocument(
                 day: day.dayOfWeek,
                 date: day.date,
+                dietPlan: day.userDietPlan,
                 onTap: () {
                   setState(() {
                     selectedDay = day.date;

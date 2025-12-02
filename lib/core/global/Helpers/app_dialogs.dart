@@ -10,7 +10,9 @@ Future<void> showWarningDialog(
   String confirmText = "حسناً",
   VoidCallback? onConfirm,
   bool hasDelete = false,
+  bool showDietPlan = false,
   VoidCallback? onDelete,
+  VoidCallback? onViewPlan, // NEW
 }) {
   return showDialog<void>(
     context: context,
@@ -30,21 +32,63 @@ Future<void> showWarningDialog(
         title: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.warning_amber_rounded,
-                    color: Colors.orange, size: 22),
-                SizedBox(width: 6.w),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColorsManager.mainDarkBlue,
+                /// LEFT SIDE — Button if showDietPlan = true
+                if (showDietPlan)
+                  Expanded(
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        onPressed: () {
+                          if (onViewPlan != null) onViewPlan();
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            "مشاهدة الخطة",
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColorsManager.mainDarkBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                else
+
+                  /// If no button, keep same width for alignment balance
+                  const Expanded(flex: 3, child: SizedBox()),
+
+                /// CENTER — Warning Icon + Text
+                Expanded(
+                  flex: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.warning_amber_rounded,
+                        color: Colors.orange,
+                        size: 22,
+                      ),
+                      SizedBox(width: 6.w),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: AppColorsManager.mainDarkBlue,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
+                /// RIGHT SIDE — Empty space equal to button width for balance
+                const Expanded(flex: 3, child: SizedBox()),
               ],
-            ),
+            )
           ],
         ),
         content: SizedBox(

@@ -14,6 +14,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutr
 class MealCard extends StatelessWidget {
   final String day;
   final String date;
+  final String? dietPlan;
   final bool haveAdocument;
   final Color backgroundColor;
   final VoidCallback onTap;
@@ -23,6 +24,7 @@ class MealCard extends StatelessWidget {
     super.key,
     required this.day,
     required this.date,
+    this.dietPlan,
     this.haveAdocument = false,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
@@ -33,6 +35,7 @@ class MealCard extends StatelessWidget {
     super.key,
     this.day = 'اليوم',
     this.date = '--/--/----',
+    this.dietPlan = "",
     this.backgroundColor = const Color(0xffF1F3F6),
     required this.onTap,
   })  : haveAdocument = false,
@@ -42,6 +45,7 @@ class MealCard extends StatelessWidget {
     super.key,
     required this.day,
     required this.date,
+    required this.dietPlan,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
   })  : haveAdocument = true,
@@ -51,6 +55,7 @@ class MealCard extends StatelessWidget {
     super.key,
     required this.day,
     required this.date,
+    this.dietPlan,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
   })  : haveAdocument = false,
@@ -69,10 +74,31 @@ class MealCard extends StatelessWidget {
             onConfirm: () async {
               await context.pushNamed(
                 Routes.nutritionFollowUpReportTableView,
-                arguments: date,
+                arguments: {
+                  "userDietPlan": dietPlan,
+                  "date": date,
+                },
               );
             },
             hasDelete: true,
+            onViewPlan: () async {
+              Navigator.of(context).pop();
+
+              // 2) افتح صفحة مشاهدة الخطة
+              final updatedPlan = await context.pushNamed(
+                Routes.viewAndEditDietPlanView,
+                arguments: {
+                  "userDietPlan": dietPlan,
+                  "date": date,
+                },
+              );
+
+              // 3) لو رجعت بقيمة جديدة.. استخدمها (اختياري)
+              if (updatedPlan != null && context.mounted) {
+                context.read<NutrationDataEntryCubit>().loadExistingPlans();
+              }
+            },
+            showDietPlan: true,
             onDelete: () {
               context
                   .read<NutrationDataEntryCubit>()

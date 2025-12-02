@@ -38,8 +38,9 @@ class NutrationFactsModel {
   final double vitaminB12Mcg;
   final double cholineMg;
   final double waterL;
+  String? userDietPlan;
 
-  const NutrationFactsModel({
+  NutrationFactsModel({
     required this.calories,
     required this.protein,
     required this.saturatedFats,
@@ -74,6 +75,7 @@ class NutrationFactsModel {
     required this.vitaminB12Mcg,
     required this.cholineMg,
     required this.waterL,
+    this.userDietPlan,
   });
 
   factory NutrationFactsModel.fromJson(Map<String, dynamic> json) =>

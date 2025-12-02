@@ -73,6 +73,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/organ_affected_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/view_and_edit_diet_plan_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_recomendation_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/nutration_plan_data_view.dart';
@@ -557,9 +558,11 @@ class AppRouter {
           builder: (_) => FollowUpNutrationPlansView(),
         );
       case Routes.nutritionFollowUpReportTableView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
           builder: (_) => NutritionFollowUpReportView(
-            date: arguments as String?,
+            date: argumentsMap?['date'] as String?,
+            userDietPlan: argumentsMap?['userDietPlan'] as String,
           ),
         );
       case Routes.foodAlternativesView:
@@ -619,6 +622,14 @@ class AppRouter {
       case Routes.essentialInfoView:
         return MaterialPageRoute(
           builder: (_) => const EssentialDataView(),
+        );
+      case Routes.viewAndEditDietPlanView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => ViewAndEditDietPlanView(
+            writtenDietPlan: argumentsMap?['userDietPlan'] as String,
+            date: argumentsMap?['date'] as String,
+          ),
         );
       case Routes.essentialInfoDataEntry:
         final argumentsMap = arguments as UserEssentialInfoData?;

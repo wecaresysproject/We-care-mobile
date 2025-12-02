@@ -8,6 +8,7 @@ class UserEssentialInfoRequestBodyModel {
   final String dateOfBirth;
   final String nationalID;
   final String email;
+  final String? gender;
   final String personalPhotoUrl;
   final String country;
   final String city;
@@ -30,6 +31,7 @@ class UserEssentialInfoRequestBodyModel {
     required this.nationalID,
     required this.email,
     required this.personalPhotoUrl,
+    required this.gender,
     required this.country,
     required this.city,
     required this.areaOrDistrict,

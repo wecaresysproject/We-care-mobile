@@ -1,4 +1,3 @@
-
 class Routes {
   static const bottomNavBar = '/bottomNavBar'; //'/bottomNavBar'
   static const userTypesView = '/userTypesView';
@@ -101,6 +100,7 @@ class Routes {
   static const chronicDiseaseDetailsView = '/chronicDiseaseDetailsView';
   static const userInfoNutrationDataEntry = '/userInfoNutrationDataEntry';
   static const followUpNutrationPlansView = '/followUpNutrationPlansView';
+  static const viewAndEditDietPlanView = '/viewAndEditDietPlanView';
   static const nutritionFollowUpReportTableView =
       '/NutritionFollowUpReportView';
   static const nutritionPlanDataView = '/nutritionPlanDataView';
