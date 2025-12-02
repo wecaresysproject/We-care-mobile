@@ -59,6 +59,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   speech_to_text: ^7.3.0
   timezone: ^0.10.0
+  uuid: ^4.5.2
 
 dev_dependencies:
   build_runner: ^2.4.9

@@ -107,9 +107,13 @@ class HomeTabView extends StatelessWidget {
                     onTap: () {},
                   ),
                   HomeSecondCategoryItem(
-                    categoryName: "الاعدادات\n",
-                    imagePath: "assets/images/setting_icon.png",
-                    onTap: () {},
+                    categoryName: "مفكرتي\n الطبية",
+                    imagePath: "assets/images/medical_note.png",
+                    onTap: () async {
+                      await context.pushNamedWithSettingRootNavigator(
+                        Routes.medicalNotesView,
+                      );
+                    },
                   ),
                 ],
               ),

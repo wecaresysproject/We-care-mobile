@@ -61,10 +61,12 @@ class NutritionFollowUpReportView extends StatelessWidget {
                             color: AppColorsManager.mainDarkBlue,
                           ),
                         ),
-                        content: Text(
-                          state.nutritionDefinition!.definition,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.font14blackWeight400,
+                        content: SingleChildScrollView(
+                          child: Text(
+                            state.nutritionDefinition!.definition,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.font14blackWeight400,
+                          ),
                         ),
                         actions: [
                           TextButton(
@@ -608,7 +610,9 @@ class NutritionFollowUpReportView extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 3,
             // overflow: TextOverflow.ellipsis,
-            style: style,
+            style: style.copyWith(
+              decoration: onTap != null ? TextDecoration.underline : null,
+            ),
           ),
         ),
       ),
