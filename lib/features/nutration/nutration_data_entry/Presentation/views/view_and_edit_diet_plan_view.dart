@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
@@ -57,22 +58,17 @@ class _ViewAndEditDietPlanViewState extends State<ViewAndEditDietPlanView> {
       create: (context) => getIt<NutrationDataEntryCubit>(),
       child: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            "مشاهدة وتعديل النظام الغذائي",
-            style: AppTextStyles.font18blackWight500.copyWith(
-              color: AppColorsManager.mainDarkBlue,
-            ),
-          ),
-        ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 48.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AppBarWithCenteredTitle(
+                title: "مشاهدة وتعديل النظام الغذائي",
+                fontSize: 18,
+                showActionButtons: false,
+                shareFunction: () {},
+              ),
               Text(
                 "النظام الغذائي",
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(

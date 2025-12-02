@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
@@ -107,52 +108,58 @@ class NutrientAnalysisView extends StatelessWidget {
           AppBarWithCenteredTitle(
             title: "تحليل $targetNutrient",
             showShareButtonOnly: true,
-            shareFunction: () {},
+            shareFunction: () async {
+              await _shareNutrientAnalysis(model, targetNutrient);
+            },
           ),
           verticalSpacing(20),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              headingRowColor:
-                  WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  headingRowColor:
+                      WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
 
-              columnSpacing: context.screenWidth * 0.09,
-              // dataRowMaxHeight: 46,
-              horizontalMargin: 10,
-              dividerThickness: 0.83,
-              headingTextStyle: _headingTextStyle(),
-              showBottomBorder: true,
+                  columnSpacing: context.screenWidth * 0.09,
+                  horizontalMargin: 10,
+                  dividerThickness: 0.83,
+                  headingTextStyle: _headingTextStyle(),
+                  showBottomBorder: true,
 
-              border: TableBorder.all(
-                style: BorderStyle.solid,
-                borderRadius: BorderRadius.circular(8),
-                color: const Color(0xff909090),
-                width: 0.15,
-              ),
+                  border: TableBorder.all(
+                    style: BorderStyle.solid,
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xff909090),
+                    width: 0.15,
+                  ),
 
-              // 🔥 نفس المسميات الأصلية هنا
-              columns: [
-                // _column("اسم الصنف الغذائي"),
-                // _column("الكمية\n(جم/مل)"),
-                // _column("كمية $targetNutrient لكل\n100 جم"),
-                // _column("كمية $targetNutrient\nالفعلية"),
-                _column("الصنف"),
-                _column("الكمية\n(جم/مل)"),
-                _column("لكل 100 جم"),
-                _column("المتناول"),
-              ],
-
-              rows: model.items.map((item) {
-                return DataRow(
-                  cells: [
-                    _cell(item.name),
-                    _cell("${item.quantityGrams.toStringAsFixed(1)} جم"),
-                    _cell("${item.nutrientPer100g}"),
-                    _cell(item.nutrientIntake.toStringAsFixed(2)),
+                  // 🔥 نفس المسميات الأصلية هنا
+                  columns: [
+                    // _column("اسم الصنف الغذائي"),
+                    // _column("الكمية\n(جم/مل)"),
+                    // _column("كمية $targetNutrient لكل\n100 جم"),
+                    // _column("كمية $targetNutrient\nالفعلية"),
+                    _column("الصنف"),
+                    _column("الكمية\n(جم/مل)"),
+                    _column("لكل 100 جم"),
+                    _column("المتناول"),
                   ],
-                );
-              }).toList(),
+
+                  rows: model.items.map((item) {
+                    return DataRow(
+                      cells: [
+                        _cell(item.name),
+                        _cell("${item.quantityGrams.toStringAsFixed(1)} جم"),
+                        _cell("${item.nutrientPer100g}"),
+                        _cell(item.nutrientIntake.toStringAsFixed(2)),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -166,6 +173,27 @@ class NutrientAnalysisView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _shareNutrientAnalysis(
+      SingleNutrientModel model, String targetNutrient) async {
+    final buffer = StringBuffer();
+
+    buffer.writeln("🍽 تحليل $targetNutrient في وجباتك");
+    buffer.writeln("──────────────────────────");
+    buffer.writeln("🔸 إجمالي المتناول من $targetNutrient: "
+        "${model.totalNutrientIntake.toStringAsFixed(2)}");
+    buffer.writeln("");
+
+    for (var item in model.items) {
+      buffer.writeln("📌 ${item.name}");
+      buffer.writeln("• الكمية: ${item.quantityGrams.toStringAsFixed(1)} جم");
+      buffer.writeln("• لكل 100 جم: ${item.nutrientPer100g}");
+      buffer.writeln("• المتناول: ${item.nutrientIntake.toStringAsFixed(2)}");
+      buffer.writeln(""); // سطر فاصل بين كل صنف
+    }
+
+    await Share.share(buffer.toString());
   }
 
   /// Column (Same UI/style as LabTestTable)
