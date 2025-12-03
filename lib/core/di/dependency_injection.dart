@@ -49,11 +49,17 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/lo
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
+import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
+import 'package:we_care/features/home_tab/repositories/home_repository.dart';
+import 'package:we_care/features/home_tab/services/home_service.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_data_entry_repo.dart';
 import 'package:we_care/features/medical_illnesses/data/repos/mental_illnesses_view_repo.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/logic/cubit/mental_illnesses_data_entry_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/mental_illnesses_services.dart';
+import 'package:we_care/features/medical_notes/data/repos/medical_notes_repository.dart';
+import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
+import 'package:we_care/features/medical_notes/medical_notes_services.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -97,11 +103,6 @@ import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_entry_cubit.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
-import 'package:we_care/features/medical_notes/data/repos/medical_notes_repository.dart';
-import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
-import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
-import 'package:we_care/features/home_tab/repositories/home_repository.dart';
-import 'package:we_care/features/home_tab/services/home_service.dart';
 
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
@@ -610,7 +611,9 @@ void setupAppRepos() {
   );
 
   getIt.registerLazySingleton<MedicalNotesRepository>(
-    () => MedicalNotesRepository(),
+    () => MedicalNotesRepository(
+      medicalNotesServices: getIt<MedicalNotesServices>(),
+    ),
   );
 
   getIt.registerLazySingleton<HomeRepository>(
@@ -708,5 +711,8 @@ void setupAppServices() {
 
   getIt.registerLazySingleton<HomeService>(
     () => HomeService(dio),
+  );
+  getIt.registerLazySingleton<MedicalNotesServices>(
+    () => MedicalNotesServices(dio),
   );
 }

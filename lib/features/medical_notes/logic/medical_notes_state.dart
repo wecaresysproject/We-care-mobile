@@ -5,7 +5,7 @@ class MedicalNotesState extends Equatable {
   final List<MedicalNote> filteredNotes;
   final bool isSelectionMode;
   final RequestStatus requestStatus;
-  final String? errorMessage;
+  final String? message;
   final String searchQuery;
 
   const MedicalNotesState({
@@ -13,7 +13,7 @@ class MedicalNotesState extends Equatable {
     required this.filteredNotes,
     required this.isSelectionMode,
     required this.requestStatus,
-    this.errorMessage,
+    this.message,
     required this.searchQuery,
   });
 
@@ -23,7 +23,7 @@ class MedicalNotesState extends Equatable {
       filteredNotes: [],
       isSelectionMode: false,
       requestStatus: RequestStatus.initial,
-      errorMessage: null,
+      message: null,
       searchQuery: '',
     );
   }
@@ -33,7 +33,7 @@ class MedicalNotesState extends Equatable {
     List<MedicalNote>? filteredNotes,
     bool? isSelectionMode,
     RequestStatus? requestStatus,
-    String? errorMessage,
+    String? message,
     String? searchQuery,
   }) {
     return MedicalNotesState(
@@ -41,14 +41,15 @@ class MedicalNotesState extends Equatable {
       filteredNotes: filteredNotes ?? this.filteredNotes,
       isSelectionMode: isSelectionMode ?? this.isSelectionMode,
       requestStatus: requestStatus ?? this.requestStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
+      message: message ?? this.message,
       searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
+//
   // Helper getters
   List<MedicalNote> get selectedNotes =>
-      filteredNotes.where((note) => note.isSelected).toList();
+      filteredNotes.where((note) => note.isSelected!).toList();
 
   int get selectedCount => selectedNotes.length;
 
@@ -60,7 +61,7 @@ class MedicalNotesState extends Equatable {
         filteredNotes,
         isSelectionMode,
         requestStatus,
-        errorMessage,
+        message,
         searchQuery,
       ];
 }

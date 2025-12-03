@@ -5,14 +5,15 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medical_notes/data/models/medical_note_model.dart';
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 
 class CreateEditMedicalNoteView extends StatefulWidget {
-  final String? noteId; // null for create, noteId for edit
+  final MedicalNote? note;
 
   const CreateEditMedicalNoteView({
     super.key,
-    this.noteId,
+    this.note,
   });
 
   @override
@@ -29,15 +30,9 @@ class _CreateEditMedicalNoteViewState extends State<CreateEditMedicalNoteView> {
   void initState() {
     super.initState();
 
-    // If editing, pre-fill the content
-    if (widget.noteId != null) {
-      final cubit = context.read<MedicalNotesCubit>();
-      final note = cubit.state.notes.firstWhere(
-        (n) => n.id == widget.noteId,
-      );
-      _contentController.text = note.content;
+    if (widget.note != null) {
+      _contentController.text = widget.note!.note;
     } else {
-      // Auto-focus for new notes
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _focusNode.requestFocus();
       });
@@ -77,9 +72,9 @@ class _CreateEditMedicalNoteViewState extends State<CreateEditMedicalNoteView> {
     final cubit = context.read<MedicalNotesCubit>();
     bool success;
 
-    if (widget.noteId != null) {
+    if (widget.note != null) {
       // Update existing note
-      success = await cubit.updateNote(widget.noteId!, content);
+      success = await cubit.updateNote(widget.note!.id, content);
     } else {
       // Create new note
       success = await cubit.createNote(content);

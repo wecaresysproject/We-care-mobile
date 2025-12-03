@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
@@ -7,9 +8,9 @@ import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/medical_notes/data/models/medical_note_model.dart';
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 import 'package:we_care/features/medical_notes/presentation/views/widgets/medical_note_card_widget.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MedicalNotesListWidget extends StatelessWidget {
   final MedicalNotesState state;
@@ -29,7 +30,7 @@ class MedicalNotesListWidget extends StatelessWidget {
     // Error
     if (state.requestStatus == RequestStatus.failure && state.notes.isEmpty) {
       return ErrorViewWidget(
-        errorMessage: state.errorMessage ?? 'حدث خطأ ما',
+        errorMessage: state.message ?? 'حدث خطأ ما',
         onRetry: () => context.read<MedicalNotesCubit>().loadNotes(),
       );
     }
@@ -58,7 +59,7 @@ class MedicalNotesListWidget extends StatelessWidget {
           note: note,
           isSelectionMode: state.isSelectionMode,
           onTap: () => _handleNoteTap(context, note.id, state.isSelectionMode),
-          onDoubleTap: () => _handleNoteDoubleTap(context, note.id),
+          onDoubleTap: () => _handleNoteDoubleTap(context, note),
         );
       },
     );
@@ -76,12 +77,12 @@ class MedicalNotesListWidget extends StatelessWidget {
     }
   }
 
-  void _handleNoteDoubleTap(BuildContext context, String noteId) {
+  void _handleNoteDoubleTap(BuildContext context, MedicalNote note) {
     // Navigate to edit screen on double tap
     context
         .pushNamed(
       Routes.createEditMedicalNote,
-      arguments: noteId,
+      arguments: note,
     )
         .then((_) {
       // Reload notes after returning from edit screen

@@ -36,10 +36,10 @@ class MedicalNoteCardWidget extends StatelessWidget {
           color: Color(0xFFF1F3F6),
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: note.isSelected
+            color: note.isSelected!
                 ? AppColorsManager.warningColor
                 : Colors.transparent,
-            width: note.isSelected ? 2.0 : 0,
+            width: note.isSelected! ? 2.0 : 0,
           ),
           boxShadow: [
             BoxShadow(
@@ -60,17 +60,17 @@ class MedicalNoteCardWidget extends StatelessWidget {
                 margin: EdgeInsets.only(left: 12.w),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: note.isSelected
+                  color: note.isSelected!
                       ? AppColorsManager.mainDarkBlue
                       : Colors.transparent,
                   border: Border.all(
-                    color: note.isSelected
+                    color: note.isSelected!
                         ? AppColorsManager.mainDarkBlue
                         : AppColorsManager.textColor.withOpacity(0.3),
                     width: 2,
                   ),
                 ),
-                child: note.isSelected
+                child: note.isSelected!
                     ? Icon(
                         Icons.check,
                         size: 16.sp,
@@ -97,7 +97,7 @@ class MedicalNoteCardWidget extends StatelessWidget {
 
                   // Note content preview
                   Text(
-                    note.content,
+                    note.note,
                     textAlign: TextAlign.right,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,

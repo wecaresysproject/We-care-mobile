@@ -21,50 +21,64 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
 
     response.when(
       success: (notes) {
-        emit(state.copyWith(
-          notes: notes,
-          filteredNotes: notes,
-          requestStatus: RequestStatus.success,
-        ));
+        safeEmit(
+          state.copyWith(
+            notes: notes,
+            filteredNotes: notes,
+            requestStatus: RequestStatus.success,
+          ),
+        );
         AppLogger.info('Loaded ${notes.length} medical notes');
       },
       failure: (error) {
-        emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          errorMessage: error.errors.isNotEmpty
-              ? error.errors.first
-              : 'Failed to load notes',
-        ));
+        safeEmit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'Failed to load notes',
+          ),
+        );
         AppLogger.error('Failed to load medical notes: ${error.errors}');
       },
     );
+  }
+
+  void safeEmit(MedicalNotesState cubitState) {
+    if (!isClosed) emit(cubitState);
   }
 
   /// Create a new note
   Future<bool> createNote(String content) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await repository.createNote(content);
+    final response = await repository.createNote(
+      content: content,
+    );
 
     bool success = false;
     response.when(
       success: (newNote) {
         final updatedNotes = List<MedicalNote>.from(state.notes)..add(newNote);
-        emit(state.copyWith(
-          notes: updatedNotes,
-          filteredNotes: updatedNotes,
-          requestStatus: RequestStatus.success,
-        ));
+        safeEmit(
+          state.copyWith(
+            notes: updatedNotes,
+            filteredNotes: updatedNotes,
+            requestStatus: RequestStatus.success,
+          ),
+        );
         AppLogger.info('Created new medical note: ${newNote.id}');
         success = true;
       },
       failure: (error) {
-        emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          errorMessage: error.errors.isNotEmpty
-              ? error.errors.first
-              : 'Failed to create note',
-        ));
+        safeEmit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'Failed to create note',
+          ),
+        );
         AppLogger.error('Failed to create medical note: ${error.errors}');
       },
     );
@@ -76,7 +90,10 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
   Future<bool> updateNote(String id, String content) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await repository.updateNote(id, content);
+    final response = await repository.updateNote(
+      id: id,
+      content: content,
+    );
 
     bool success = false;
     response.when(
@@ -89,21 +106,25 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
           return note.id == id ? updatedNote : note;
         }).toList();
 
-        emit(state.copyWith(
-          notes: updatedNotes,
-          filteredNotes: updatedFilteredNotes,
-          requestStatus: RequestStatus.success,
-        ));
+        safeEmit(
+          state.copyWith(
+            notes: updatedNotes,
+            filteredNotes: updatedFilteredNotes,
+            requestStatus: RequestStatus.success,
+          ),
+        );
         AppLogger.info('Updated medical note: $id');
         success = true;
       },
       failure: (error) {
-        emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          errorMessage: error.errors.isNotEmpty
-              ? error.errors.first
-              : 'Failed to update note',
-        ));
+        safeEmit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'Failed to update note',
+          ),
+        );
         AppLogger.error('Failed to update medical note: ${error.errors}');
       },
     );
@@ -117,9 +138,12 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
 
     if (selectedIds.isEmpty) return;
 
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await repository.deleteNotes(selectedIds);
+    final response = await repository.deleteNotes(
+      ids: selectedIds,
+      language: 'ar',
+    );
 
     response.when(
       success: (_) {
@@ -131,7 +155,7 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
             .where((note) => !selectedIds.contains(note.id))
             .toList();
 
-        emit(state.copyWith(
+        safeEmit(state.copyWith(
           notes: updatedNotes,
           filteredNotes: updatedFilteredNotes,
           isSelectionMode: false,
@@ -140,12 +164,14 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
         AppLogger.info('Deleted ${selectedIds.length} medical notes');
       },
       failure: (error) {
-        emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          errorMessage: error.errors.isNotEmpty
-              ? error.errors.first
-              : 'Failed to delete notes',
-        ));
+        safeEmit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'Failed to delete notes',
+          ),
+        );
         AppLogger.error('Failed to delete medical notes: ${error.errors}');
       },
     );
@@ -159,12 +185,12 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
         return note.copyWith(isSelected: false);
       }).toList();
 
-      emit(state.copyWith(
+      safeEmit(state.copyWith(
         filteredNotes: clearedNotes,
         isSelectionMode: false,
       ));
     } else {
-      emit(state.copyWith(isSelectionMode: true));
+      safeEmit(state.copyWith(isSelectionMode: true));
     }
   }
 
@@ -172,49 +198,52 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
   void toggleNoteSelection(String noteId) {
     final updatedFilteredNotes = state.filteredNotes.map((note) {
       if (note.id == noteId) {
-        return note.copyWith(isSelected: !note.isSelected);
+        return note.copyWith(isSelected: !note.isSelected!);
       }
       return note;
     }).toList();
 
-    emit(state.copyWith(filteredNotes: updatedFilteredNotes));
+    safeEmit(state.copyWith(filteredNotes: updatedFilteredNotes));
   }
 
   /// Search/filter notes
-  Future<void> searchNotes(String query) async {
-    emit(state.copyWith(
-      searchQuery: query,
-      requestStatus: RequestStatus.loading,
-    ));
+  // Future<void> searchNotes(String query) async {
+  //   emit(state.copyWith(
+  //     searchQuery: query,
+  //     requestStatus: RequestStatus.loading,
+  //   ));
 
-    final response = await repository.searchNotes(query);
+  //   final response = await repository.searchNotes(
+  //     query: query,
+  //     language: 'ar',
+  //   );
 
-    response.when(
-      success: (filteredNotes) {
-        emit(state.copyWith(
-          filteredNotes: filteredNotes,
-          requestStatus: RequestStatus.success,
-        ));
-        AppLogger.info(
-            'Search returned ${filteredNotes.length} notes for query: "$query"');
-      },
-      failure: (error) {
-        emit(state.copyWith(
-          requestStatus: RequestStatus.failure,
-          errorMessage: error.errors.isNotEmpty
-              ? error.errors.first
-              : 'Failed to search notes',
-        ));
-        AppLogger.error('Failed to search medical notes: ${error.errors}');
-      },
-    );
-  }
+  //   response.when(
+  //     success: (filteredNotes) {
+  //       emit(state.copyWith(
+  //         filteredNotes: filteredNotes,
+  //         requestStatus: RequestStatus.success,
+  //       ));
+  //       AppLogger.info(
+  //           'Search returned ${filteredNotes.length} notes for query: "$query"');
+  //     },
+  //     failure: (error) {
+  //       emit(state.copyWith(
+  //         requestStatus: RequestStatus.failure,
+  //         errorMessage: error.errors.isNotEmpty
+  //             ? error.errors.first
+  //             : 'Failed to search notes',
+  //       ));
+  //       AppLogger.error('Failed to search medical notes: ${error.errors}');
+  //     },
+  //   );
+  // }
 
   void shareSelectedNotes() {
     final selectedNotes = state.selectedNotes;
 
 //share using share_plus
     Share.share(
-        'Selected notes: ${selectedNotes.map((note) => note.content).join('\n')}');
+        'Selected notes: ${selectedNotes.map((note) => note.note).join('\n')}');
   }
 }

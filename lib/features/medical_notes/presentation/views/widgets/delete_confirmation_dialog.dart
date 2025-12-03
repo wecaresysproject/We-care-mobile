@@ -6,10 +6,12 @@ import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 
 class DeleteConfirmationDialog extends StatelessWidget {
   final int selectedCount;
+  final Function() onDelete;
 
   const DeleteConfirmationDialog({
     super.key,
     required this.selectedCount,
+    required this.onDelete,
   });
 
   static Future<void> show(BuildContext context) async {
@@ -20,6 +22,11 @@ class DeleteConfirmationDialog extends StatelessWidget {
       context: context,
       builder: (dialogContext) => DeleteConfirmationDialog(
         selectedCount: selectedCount,
+        onDelete: () async {
+          Navigator.pop(context);
+
+          await cubit.deleteSelectedNotes();
+        },
       ),
     );
   }
@@ -51,8 +58,8 @@ class DeleteConfirmationDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.pop(context);
-            context.read<MedicalNotesCubit>().deleteSelectedNotes();
+            onDelete();
+            // context.read<MedicalNotesCubit>().deleteSelectedNotes();
           },
           child: Text(
             'حذف',

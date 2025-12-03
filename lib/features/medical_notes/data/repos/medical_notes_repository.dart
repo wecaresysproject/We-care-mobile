@@ -1,133 +1,131 @@
-import 'package:uuid/uuid.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/features/medical_notes/data/models/medical_note_model.dart';
+import 'package:we_care/features/medical_notes/medical_notes_services.dart';
+
+import '../models/medical_note_model.dart';
 
 class MedicalNotesRepository {
-  // In-memory storage for now - will be replaced with API calls later
-  final List<MedicalNote> _notes = [];
-  final Uuid _uuid = const Uuid();
+  final MedicalNotesServices _medicalNotesServices;
 
-  MedicalNotesRepository() {
-    // Add some dummy data for testing
-    _notes.addAll([
-      MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime(2025, 5, 12),
-        content: 'راجع احدث نتائج تحليل الدم للمريض.',
-      ),
-      MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime(2025, 1, 12),
-        content: 'حدد موعد متابعة مع المريض ............',
-      ),
-      MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime(2024, 12, 12),
-        content: 'حدد موعد متابعة مع المريض ............',
-      ),
-      MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime(2024, 10, 20),
-        content: 'حدد موعد متابعة مع المريض ............',
-      ),
-      MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime(2024, 8, 12),
-        content: 'حدد موعد متابعة مع المريض ............',
-      ),
-    ]);
-  }
+  MedicalNotesRepository({required MedicalNotesServices medicalNotesServices})
+      : _medicalNotesServices = medicalNotesServices;
 
+  /// Get all medical notes
   Future<ApiResult<List<MedicalNote>>> getAllNotes() async {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      // Sort by date descending (newest first)
-      final sortedNotes = List<MedicalNote>.from(_notes)
-        ..sort((a, b) => b.date.compareTo(a.date));
-
-      return ApiResult.success(sortedNotes);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
-  Future<ApiResult<MedicalNote>> createNote(String content) async {
-    try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      final newNote = MedicalNote(
-        id: _uuid.v4(),
-        date: DateTime.now(),
-        content: content,
+      final response = await _medicalNotesServices.getAllNotes(
+        "ar",
+        UserTypes.patient.name.firstLetterToUpperCase,
       );
 
-      _notes.add(newNote);
+      final notes = (response['data'] as List)
+          .map((json) => MedicalNote.fromJson(json))
+          .toList();
 
-      return ApiResult.success(newNote);
+      return ApiResult.success(notes);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<MedicalNote>> updateNote(String id, String content) async {
+  /// Create a new medical note
+  Future<ApiResult<MedicalNote>> createNote({
+    required String content,
+  }) async {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 300));
+      final requestBody = {
+        'note': content,
+      };
 
-      final index = _notes.indexWhere((note) => note.id == id);
-
-      if (index == -1) {
-        throw Exception('Note not found');
-      }
-
-      final updatedNote = _notes[index].copyWith(
-        content: content,
-        date: DateTime.now(), // Update the date when editing
+      final response = await _medicalNotesServices.createNote(
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+        requestBody,
       );
 
-      _notes[index] = updatedNote;
-
-      return ApiResult.success(updatedNote);
+      final note = MedicalNote.fromJson(response['data']);
+      return ApiResult.success(note);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<void>> deleteNotes(List<String> ids) async {
+  /// Update an existing medical note
+  Future<ApiResult<MedicalNote>> updateNote({
+    required String id,
+    required String content,
+  }) async {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 300));
+      final requestBody = {
+        'Note': content,
+      };
 
-      _notes.removeWhere((note) => ids.contains(note.id));
+      final response = await _medicalNotesServices.updateNote(
+        id,
+        'ar',
+        UserTypes.patient.name.firstLetterToUpperCase,
+        requestBody,
+      );
 
-      return ApiResult.success(null);
+      final note = MedicalNote.fromJson(
+        response['data'],
+      );
+      return ApiResult.success(note);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<List<MedicalNote>>> searchNotes(String query) async {
+  /// Delete multiple medical notes
+  Future<ApiResult<String>> deleteNotes({
+    required List<String> ids,
+    required String language,
+  }) async {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 200));
+      final response = await _medicalNotesServices.deleteNotes(
+        language,
+        UserTypes.patient.name.firstLetterToUpperCase,
+        ids,
+      );
 
-      if (query.isEmpty) {
-        return getAllNotes();
-      }
-
-      final filteredNotes = _notes
-          .where((note) =>
-              note.content.toLowerCase().contains(query.toLowerCase()))
-          .toList()
-        ..sort((a, b) => b.date.compareTo(a.date));
-
-      return ApiResult.success(filteredNotes);
+      return ApiResult.success(response['message'] as String);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  /// Search medical notes by query
+  // Future<ApiResult<List<MedicalNote>>> searchNotes({
+  //   required String query,
+  //   required String language,
+  //   int page = 1,
+  //   int pageSize = 100,
+  // }) async {
+  //   try {
+  //     if (query.isEmpty) {
+  //       return getAllNotes(language: language, page: page, pageSize: pageSize);
+  //     }
+
+  //     final response = await _medicalNotesServices.searchNotes(
+  //       query,
+  //       language,
+  //       UserTypes.patient.name.firstLetterToUpperCase,
+  //       page,
+  //       pageSize,
+  //     );
+
+  //     final notes = (response['data'] as List)
+  //         .map((json) => MedicalNote.fromJson(json))
+  //         .toList();
+
+  //     // Sort by date descending (newest first)
+  //     notes.sort((a, b) => b.date.compareTo(a.date));
+
+  //     return ApiResult.success(notes);
+  //   } catch (error) {
+  //     return ApiResult.failure(ApiErrorHandler.handle(error));
+  //   }
+  // }
 }
