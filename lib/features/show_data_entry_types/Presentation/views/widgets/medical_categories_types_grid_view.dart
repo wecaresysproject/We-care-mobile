@@ -66,9 +66,11 @@ class _MedicalCategoriesTypesGridViewState
           return Expanded(
               child: const Center(child: CircularProgressIndicator()));
         }
+        final sortedCategories = [...categoriesView]
+  ..sort((a, b) => (b['isActive'] ? 1 : 0).compareTo(a['isActive'] ? 1 : 0));
         return Expanded(
           child: GridView.builder(
-            itemCount: categoriesView.length,
+            itemCount: sortedCategories.length,
             physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.symmetric(vertical: 32.h),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -81,16 +83,16 @@ class _MedicalCategoriesTypesGridViewState
             ),
             itemBuilder: (context, index) {
               final counts = snapshot.data!;
-              final categoryName = categoriesView[index]["title"]!;
+              final categoryName = sortedCategories[index]["title"]!;
               final count = getCategoryCountByArabicTitle(counts, categoryName);
 
               return MedicalCategoryItem(
                 title: categoryName,
-                imagePath: categoriesView[index]["image"]!,
-                routeName: categoriesView[index]["route"]!,
+                imagePath: sortedCategories[index]["image"]!,
+                routeName: sortedCategories[index]["route"]!,
                 notificationCount: count,
-                isActive: categoriesView[index]["isActive"],
-                onTap: categoriesView[index]["isActive"]
+                isActive: sortedCategories[index]["isActive"],
+                onTap: sortedCategories[index]["isActive"]
                     ? () async {
                         await context
                             .pushNamed(categoriesView[index]["route"]!);

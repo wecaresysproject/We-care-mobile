@@ -20,27 +20,36 @@ class DataEntryCategoriesGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: GridView.builder(
-        itemCount: dataEntryCategories.length,
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(vertical: 32.h),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisExtent:
-              148.h, //! Fixed height for each item until text overflows
-          childAspectRatio: .85,
-          crossAxisSpacing: 13.w,
-          mainAxisSpacing: 32.h,
-        ),
-        itemBuilder: (context, index) {
-          return CategoryItem(
-            title: dataEntryCategories[index]["title"]!,
-            imagePath: dataEntryCategories[index]["image"]!,
-            routeName: dataEntryCategories[index]["route"]!,
-            isActive: dataEntryCategories[index]["isActive"] ?? false,
-            cornerImagePath: dataEntryCategories[index]["cornerImagePath"] ??
-                "assets/images/basic_data.png", // Default corner image
-            audio: dataEntryCategories[index]["audio"] ?? "",
+      child: Builder(
+        builder: (context) {
+          // Sort active first
+          final sortedCategories = [...dataEntryCategories]..sort((a, b) =>
+              (b["isActive"] == true ? 1 : 0)
+                  .compareTo(a["isActive"] == true ? 1 : 0));
+
+          return GridView.builder(
+            itemCount: sortedCategories.length,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(vertical: 32.h),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisExtent: 148.h,
+              childAspectRatio: .85,
+              crossAxisSpacing: 13.w,
+              mainAxisSpacing: 32.h,
+            ),
+            itemBuilder: (context, index) {
+              final category = sortedCategories[index];
+              return CategoryItem(
+                title: category["title"]!,
+                imagePath: category["image"]!,
+                routeName: category["route"]!,
+                isActive: category["isActive"] ?? false,
+                cornerImagePath: category["cornerImagePath"] ??
+                    "assets/images/basic_data.png",
+                audio: category["audio"] ?? "",
+              );
+            },
           );
         },
       ),
