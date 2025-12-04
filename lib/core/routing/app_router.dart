@@ -566,7 +566,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => NutritionFollowUpReportView(
             date: argumentsMap?['date'] as String?,
-            userDietPlan: argumentsMap?['userDietPlan'] as String? ?? "",
+            userDietPlan: argumentsMap?['userDietPlan'] as String?,
           ),
         );
       case Routes.foodAlternativesView:
