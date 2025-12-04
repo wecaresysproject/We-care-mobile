@@ -23,6 +23,12 @@ abstract class NutrationServices {
     @Query('language') String language,
     @Query('date') String date,
   );
+  @PUT(NutrationApiConstants.editDailyDietPlan)
+  Future<dynamic> updateDailyDietPlan(
+    @Body() NutrationFactsModel requestBody,
+    @Query('language') String language,
+    @Query('date') String date,
+  );
   @GET(NutrationApiConstants.getAllCreatedPlans)
   Future<GetAllCreatedPlansModel> getAllCreatedPlans(
     @Query('language') String language,

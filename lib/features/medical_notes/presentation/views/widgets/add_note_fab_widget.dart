@@ -14,9 +14,12 @@ class AddNoteFabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () async {
-        await context.pushNamed(Routes.createEditMedicalNote);
+        await context.pushNamed(
+          Routes.createEditMedicalNote,
+          arguments: null,
+        );
         if (context.mounted) {
-          context.read<MedicalNotesCubit>().loadNotes();
+          await context.read<MedicalNotesCubit>().loadNotes();
         }
       },
       backgroundColor: AppColorsManager.mainDarkBlue,

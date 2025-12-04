@@ -1,50 +1,42 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'medical_note_model.g.dart';
+
+@JsonSerializable()
 class MedicalNote extends Equatable {
   final String id;
+  @JsonKey(name: "createdAt")
   final DateTime date;
-  final String content;
-  final bool isSelected;
+  final String note;
+  final bool? isSelected;
 
   const MedicalNote({
     required this.id,
     required this.date,
-    required this.content,
+    required this.note,
     this.isSelected = false,
   });
 
-  factory MedicalNote.fromJson(Map<String, dynamic> json) {
-    return MedicalNote(
-      id: json['id'] as String,
-      date: DateTime.parse(json['date'] as String),
-      content: json['content'] as String,
-      isSelected: json['isSelected'] as bool? ?? false,
-    );
-  }
+  factory MedicalNote.fromJson(Map<String, dynamic> json) =>
+      _$MedicalNoteFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'date': date.toIso8601String(),
-      'content': content,
-      'isSelected': isSelected,
-    };
-  }
+  Map<String, dynamic> toJson() => _$MedicalNoteToJson(this);
 
   MedicalNote copyWith({
     String? id,
     DateTime? date,
-    String? content,
+    String? note,
     bool? isSelected,
   }) {
     return MedicalNote(
       id: id ?? this.id,
       date: date ?? this.date,
-      content: content ?? this.content,
+      note: note ?? this.note,
       isSelected: isSelected ?? this.isSelected,
     );
   }
 
   @override
-  List<Object?> get props => [id, date, content, isSelected];
+  List<Object?> get props => [id, date, note, isSelected];
 }

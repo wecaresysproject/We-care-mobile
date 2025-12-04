@@ -3,9 +3,9 @@ import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
-import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationDataEntryRepo {
@@ -66,6 +66,23 @@ class NutrationDataEntryRepo {
   }) async {
     try {
       final response = await _nutrationServices.postDailyDietPlan(
+        nutrationFact,
+        lanugage,
+        date,
+      );
+      return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> updateDailyDietPlan({
+    required NutrationFactsModel nutrationFact,
+    required String lanugage,
+    required String date,
+  }) async {
+    try {
+      final response = await _nutrationServices.updateDailyDietPlan(
         nutrationFact,
         lanugage,
         date,

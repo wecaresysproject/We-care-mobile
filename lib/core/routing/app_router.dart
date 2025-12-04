@@ -23,9 +23,6 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_view/
 import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/essential_info_data_entry/Presentation/views/essential_info_data_entry_view.dart';
 import 'package:we_care/features/essential_info/essential_info_view/views/essential_data_view.dart';
-import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
-import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
-import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_procedures_and_symptoms_details_model.dart';
 import 'package:we_care/features/eyes/eyes_data_entry_view/Presentation/views/eye_data_entry.dart';
@@ -65,6 +62,10 @@ import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presen
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illness_follow_up_reports_data_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/mental_illnesses_or_mind_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/umbrella_mental_ilnesss_records_view.dart';
+import 'package:we_care/features/medical_notes/data/models/medical_note_model.dart';
+import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
+import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
+import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -565,7 +566,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => NutritionFollowUpReportView(
             date: argumentsMap?['date'] as String?,
-            userDietPlan: argumentsMap?['userDietPlan'] as String? ?? "",
+            userDietPlan: argumentsMap?['userDietPlan'] as String?,
           ),
         );
       case Routes.foodAlternativesView:
@@ -650,13 +651,13 @@ class AppRouter {
           ),
         );
       case Routes.createEditMedicalNote:
-        final noteId = arguments as String?;
+        final note = arguments as MedicalNote?;
 
         return MaterialPageRoute(
           builder: (_) => BlocProvider<MedicalNotesCubit>(
-            create: (context) => getIt<MedicalNotesCubit>()..loadNotes(),
+            create: (context) => getIt<MedicalNotesCubit>(),
             child: CreateEditMedicalNoteView(
-              noteId: noteId,
+              note: note,
             ),
           ),
         );

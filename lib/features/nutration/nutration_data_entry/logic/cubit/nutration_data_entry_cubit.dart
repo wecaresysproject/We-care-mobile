@@ -8,10 +8,10 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
-import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
@@ -223,10 +223,46 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     }
   }
 
+  Future<void> analyzeUpdatedDietPlan(
+    String editedDietPlan,
+    String date,
+  ) async {
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.loading,
+        ),
+      );
+
+      // Call ChatGPT service
+      final nutritionData =
+          await DeepSeekService.analyzeDietPlan(editedDietPlan);
+      if (nutritionData != null) {
+        nutritionData.userDietPlan = editedDietPlan;
+      }
+      // You can now use nutritionData to send to your backend
+      await updateDailyDietPlan(
+        nutritionData: nutritionData!,
+        userDietplan: editedDietPlan,
+        date: date,
+      );
+    } catch (e) {
+      AppLogger.error('Error in analyzeDietPlan: $e');
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل البيانات الغذائية',
+        ),
+      );
+    }
+  }
+
   // NEW METHOD: Analyze single nutrient using DeepSeek
   Future<void> analyzeSingleNutrient({
     required String targetNutrient,
     required String dietInput,
+    required int targetValue,
   }) async {
     try {
       // Start loading
@@ -240,6 +276,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       final singleNutrientData = await DeepSeekService.analyzeSingleNutrient(
         dietInput: dietInput,
         targetNutrient: targetNutrient,
+        targetValue: targetValue,
       );
 
       if (singleNutrientData != null) {
@@ -301,6 +338,43 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         AppLogger.debug(
           'successMessage for  postDailyDietPlan: $successMessage'
           'submitNutrationDataStatus: ${state.submitNutrationDataStatus}',
+        );
+        // call endpoint that returies the list of days
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateDailyDietPlan({
+    required NutrationFactsModel? nutritionData,
+    required String userDietplan,
+    required String date,
+  }) async {
+    final result = await _nutrationDataEntryRepo.updateDailyDietPlan(
+      nutrationFact: nutritionData!,
+      lanugage: AppStrings.arabicLang,
+      date: date,
+    );
+    result.when(
+      success: (successMessage) async {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.success,
+            message: successMessage,
+            isFoodAnalysisSuccess: true,
+          ),
+        );
+        // await loadExistingPlans();//from ui
+        AppLogger.debug(
+          'successMessage for  postDailyDietPlan: $successMessage'
+          'submitEditsForNutrationDataStatus: ${state.submitNutrationDataStatus}',
         );
         // call endpoint that returies the list of days
       },
