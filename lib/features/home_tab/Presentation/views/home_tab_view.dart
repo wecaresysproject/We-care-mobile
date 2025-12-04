@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
@@ -10,13 +12,16 @@ import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_home
 import 'package:we_care/features/home_tab/Presentation/views/widgets/faq_section_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_crausal_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_second_category_widget.dart';
+import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 
 class HomeTabView extends StatelessWidget {
   const HomeTabView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return BlocProvider(
+      create: (context) => getIt<HomeCubit>()..getMessageNotifications(),
+      child: SafeArea(
       child: DecoratedBox(
         decoration: ShapeDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -162,6 +167,6 @@ class HomeTabView extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));  
   }
 }

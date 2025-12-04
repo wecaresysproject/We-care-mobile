@@ -99,6 +99,9 @@ import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 import 'package:we_care/features/medical_notes/data/repos/medical_notes_repository.dart';
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
+import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
+import 'package:we_care/features/home_tab/repositories/home_repository.dart';
+import 'package:we_care/features/home_tab/services/home_service.dart';
 
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
@@ -373,6 +376,12 @@ void setupAppCubits() {
       getIt<MedicalNotesRepository>(),
     ),
   );
+
+  getIt.registerFactory<HomeCubit>(
+    () => HomeCubit(
+      getIt<HomeRepository>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -603,6 +612,12 @@ void setupAppRepos() {
   getIt.registerLazySingleton<MedicalNotesRepository>(
     () => MedicalNotesRepository(),
   );
+
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepository(
+      getIt<HomeService>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -689,5 +704,9 @@ void setupAppServices() {
     () => EssentialInfoServices(
       dio,
     ),
+  );
+
+  getIt.registerLazySingleton<HomeService>(
+    () => HomeService(dio),
   );
 }
