@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -14,13 +15,12 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/custom_gradient_button_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/nutration_diff_dialoge.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
-import 'package:we_care/core/global/Helpers/app_toasts.dart';
 
 class NutritionFollowUpReportView extends StatelessWidget {
   const NutritionFollowUpReportView(
       {super.key, required this.date, required this.userDietPlan});
   final String? date;
-  final String userDietPlan;
+  final String? userDietPlan;
 
   @override
   Widget build(BuildContext context) {
@@ -201,24 +201,49 @@ class NutritionFollowUpReportView extends StatelessWidget {
     if (nutritionData.isEmpty) {
       return _buildEmptyState();
     }
+    //  columnSpacing: context.screenWidth * 0.09,
+    // columnSpacing: MediaQuery.of(context).size.width < 400 ? 6.h : 14.h,
 
-    return DataTable(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      headingRowColor: WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
-      columnSpacing: MediaQuery.of(context).size.width < 400 ? 6.h : 14.h,
-      dataRowMaxHeight: 80,
-      horizontalMargin: 2.w,
-      headingTextStyle: _getHeadingTextStyle(),
-      showBottomBorder: true,
-      border: TableBorder.all(
-        style: BorderStyle.solid,
-        borderRadius: BorderRadius.circular(8),
-        color: const Color(0xff909090),
-        width: 0.19,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: DataTable(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        headingRowColor: WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
+        columnSpacing: _getResponsiveColumnSpacing(
+            context), //context.screenWidth * .02, //
+        dataRowMaxHeight: 80,
+        horizontalMargin: _getResponsiveColumnSpacing(context), //1.w,
+        dividerThickness: 0.83,
+        headingTextStyle: _getHeadingTextStyle(),
+        showBottomBorder: true,
+        border: TableBorder.all(
+          style: BorderStyle.solid,
+          borderRadius: BorderRadius.circular(8),
+          color: const Color(0xff909090),
+          width: 0.19,
+        ),
+        columns: _buildColumns(),
+        rows: _buildRowsFromData(nutritionData, context),
       ),
-      columns: _buildColumns(),
-      rows: _buildRowsFromData(nutritionData, context),
     );
+  }
+
+  double _getResponsiveColumnSpacing(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    if (width <= 360) {
+      return 6; // شاشات صغيرة جداً
+    } else if (width <= 480) {
+      return 10; // موبايلات صغيرة
+    } else if (width <= 600) {
+      return 14; // موبايلات متوسطة
+    } else if (width <= 800) {
+      return 18; // تابلت صغيرة
+    } else if (width <= 1200) {
+      return 22; // تابلت كبيرة
+    } else {
+      return 28; // شاشات كبيرة / Desktop
+    }
   }
 
   // 📭 Empty State Widget
@@ -297,31 +322,37 @@ class NutritionFollowUpReportView extends StatelessWidget {
                   );
             },
           ),
-          // _buildCell(
-          //   element.dailyActual?.toString() ?? "N/A",
-          // ), //! check it later
+
           DataCell(
             InkWell(
-              onTap: () {
-                /// 🔥 انتقل لصفحة تحليل عنصر واحد (مثل فيتامين C)
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => NutrientAnalysisView(
-                      targetNutrient: element.elementName,
-                      dietInput: userDietPlan,
-                    ),
-                  ),
-                );
-              },
+              onTap: userDietPlan.isNotEmptyOrNull
+                  ? () {
+                      /// 🔥 انتقل لصفحة تحليل عنصر واحد (مثل فيتامين C)
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => NutrientAnalysisView(
+                            targetNutrient: element.elementName,
+                            dietInput: userDietPlan!,
+                            targetValue: element.dailyActual!,
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               child: Center(
                 child: Text(
                   element.dailyActual?.toString() ?? "N/A",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    color: AppColorsManager.mainDarkBlue,
+                    color: userDietPlan.isNotEmptyOrNull
+                        ? AppColorsManager.mainDarkBlue
+                        : Colors.black,
                     fontSize: 15.sp,
-                    decoration: TextDecoration.underline,
+                    decoration: userDietPlan.isNotEmptyOrNull
+                        ? TextDecoration.underline
+                        : null,
                   ),
                 ),
               ),
@@ -609,7 +640,6 @@ class NutritionFollowUpReportView extends StatelessWidget {
             text,
             textAlign: TextAlign.center,
             maxLines: 3,
-            // overflow: TextOverflow.ellipsis,
             style: style.copyWith(
               decoration: onTap != null ? TextDecoration.underline : null,
             ),

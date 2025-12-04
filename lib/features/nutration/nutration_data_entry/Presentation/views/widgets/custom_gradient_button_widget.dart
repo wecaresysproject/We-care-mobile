@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -46,13 +47,20 @@ class GradientButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           alignment: Alignment.centerRight,
           child: Row(
+            mainAxisSize: MainAxisSize.min,
             spacing: 6,
             children: [
               Icon(icon, color: Colors.white, size: 20),
-              Text(
-                text,
-                style: AppTextStyles.font14whiteWeight600.copyWith(
-                  color: textColor,
+              Expanded(
+                child: AutoSizeText(
+                  text,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  stepGranularity: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.font14whiteWeight600.copyWith(
+                    color: textColor,
+                  ),
                 ),
               ),
             ],

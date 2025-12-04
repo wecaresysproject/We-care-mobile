@@ -8,10 +8,10 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
+import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
-import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
@@ -227,6 +227,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
   Future<void> analyzeSingleNutrient({
     required String targetNutrient,
     required String dietInput,
+    required int targetValue,
   }) async {
     try {
       // Start loading
@@ -240,6 +241,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       final singleNutrientData = await DeepSeekService.analyzeSingleNutrient(
         dietInput: dietInput,
         targetNutrient: targetNutrient,
+        targetValue: targetValue,
       );
 
       if (singleNutrientData != null) {

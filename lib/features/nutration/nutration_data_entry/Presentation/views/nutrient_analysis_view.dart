@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -15,11 +16,13 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutr
 class NutrientAnalysisView extends StatelessWidget {
   final String targetNutrient;
   final String dietInput;
+  final int targetValue;
 
   const NutrientAnalysisView({
     super.key,
     required this.targetNutrient,
     required this.dietInput,
+    required this.targetValue,
   });
 
   @override
@@ -30,6 +33,7 @@ class NutrientAnalysisView extends StatelessWidget {
             ..analyzeSingleNutrient(
               targetNutrient: targetNutrient,
               dietInput: dietInput,
+              targetValue: targetValue,
             ),
       child: Scaffold(
         body: BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
@@ -86,7 +90,10 @@ class NutrientAnalysisView extends StatelessWidget {
                 await context
                     .read<NutrationDataEntryCubit>()
                     .analyzeSingleNutrient(
-                        targetNutrient: targetNutrient, dietInput: dietInput);
+                      targetNutrient: targetNutrient,
+                      dietInput: dietInput,
+                      targetValue: targetValue,
+                    );
               }, // ممكن نعمل retry
               child: const Text(
                 "إعادة المحاولة",
@@ -125,23 +132,21 @@ class NutrientAnalysisView extends StatelessWidget {
 
                   columnSpacing: context.screenWidth * 0.09,
                   horizontalMargin: 10,
+
                   dividerThickness: 0.83,
+
                   headingTextStyle: _headingTextStyle(),
                   showBottomBorder: true,
-
+                  dataRowMaxHeight: 85,
                   border: TableBorder.all(
                     style: BorderStyle.solid,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(8.r),
                     color: const Color(0xff909090),
                     width: 0.15,
                   ),
 
                   // 🔥 نفس المسميات الأصلية هنا
                   columns: [
-                    // _column("اسم الصنف الغذائي"),
-                    // _column("الكمية\n(جم/مل)"),
-                    // _column("كمية $targetNutrient لكل\n100 جم"),
-                    // _column("كمية $targetNutrient\nالفعلية"),
                     _column("الصنف"),
                     _column("الكمية\n(جم/مل)"),
                     _column("لكل 100 جم"),
@@ -199,11 +204,12 @@ class NutrientAnalysisView extends StatelessWidget {
   /// Column (Same UI/style as LabTestTable)
   DataColumn _column(String label) {
     return DataColumn(
-      label: Center(
+      label: Expanded(
         child: Text(
           label,
           textAlign: TextAlign.center,
           overflow: TextOverflow.ellipsis,
+          maxLines: 3,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -219,14 +225,17 @@ class NutrientAnalysisView extends StatelessWidget {
   ) {
     return DataCell(
       Center(
-        child: Text(
-          value,
-          textAlign: TextAlign.center,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+        child: SizedBox(
+          width: 62.w,
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       ),
