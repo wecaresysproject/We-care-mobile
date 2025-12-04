@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/contact_support/presentation/views/contact_support_modal.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_home_app_bar.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/faq_section_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_crausal_widget.dart';
@@ -116,6 +118,37 @@ class HomeTabView extends StatelessWidget {
                     },
                   ),
                 ],
+              ),
+              verticalSpacing(16),
+
+              GestureDetector(
+                onTap: () {
+                  ContactSupportModal.show(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                  width: double.infinity ,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFF4F5F5), Color(0xFFDFEFFC)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/Chat.png",width: 36.w,height: 28.h,),
+                      horizontalSpacing(8),
+                      Text(
+                        "تواصل معنا",
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(color: AppColorsManager.mainDarkBlue),
+                      ),
+                      
+                    ],
+                  ),
+                ),
               ),
 
               verticalSpacing(30),
