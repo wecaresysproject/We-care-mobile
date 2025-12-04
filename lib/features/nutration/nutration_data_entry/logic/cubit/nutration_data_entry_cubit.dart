@@ -223,6 +223,41 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
     }
   }
 
+  Future<void> analyzeUpdatedDietPlan(
+    String editedDietPlan,
+    String date,
+  ) async {
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.loading,
+        ),
+      );
+
+      // Call ChatGPT service
+      final nutritionData =
+          await DeepSeekService.analyzeDietPlan(editedDietPlan);
+      if (nutritionData != null) {
+        nutritionData.userDietPlan = editedDietPlan;
+      }
+      // You can now use nutritionData to send to your backend
+      await updateDailyDietPlan(
+        nutritionData: nutritionData!,
+        userDietplan: editedDietPlan,
+        date: date,
+      );
+    } catch (e) {
+      AppLogger.error('Error in analyzeDietPlan: $e');
+      emit(
+        state.copyWith(
+          submitNutrationDataStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل البيانات الغذائية',
+        ),
+      );
+    }
+  }
+
   // NEW METHOD: Analyze single nutrient using DeepSeek
   Future<void> analyzeSingleNutrient({
     required String targetNutrient,
@@ -303,6 +338,43 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         AppLogger.debug(
           'successMessage for  postDailyDietPlan: $successMessage'
           'submitNutrationDataStatus: ${state.submitNutrationDataStatus}',
+        );
+        // call endpoint that returies the list of days
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> updateDailyDietPlan({
+    required NutrationFactsModel? nutritionData,
+    required String userDietplan,
+    required String date,
+  }) async {
+    final result = await _nutrationDataEntryRepo.updateDailyDietPlan(
+      nutrationFact: nutritionData!,
+      lanugage: AppStrings.arabicLang,
+      date: date,
+    );
+    result.when(
+      success: (successMessage) async {
+        emit(
+          state.copyWith(
+            submitNutrationDataStatus: RequestStatus.success,
+            message: successMessage,
+            isFoodAnalysisSuccess: true,
+          ),
+        );
+        // await loadExistingPlans();//from ui
+        AppLogger.debug(
+          'successMessage for  postDailyDietPlan: $successMessage'
+          'submitEditsForNutrationDataStatus: ${state.submitNutrationDataStatus}',
         );
         // call endpoint that returies the list of days
       },

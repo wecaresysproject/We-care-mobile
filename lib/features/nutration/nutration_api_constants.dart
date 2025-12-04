@@ -3,6 +3,7 @@ class NutrationApiConstants {
   //Data Entry
   static const postPersonalUserInfoData = "SmartNutritionAnalyzer/calculate";
   static const postDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
+  static const editDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
   static const getAllCreatedPlans = "SmartNutritionAnalyzer/generate-plan";
   static const getAllChronicDiseases = "SmartNutritionAnalyzer/names";
   static const getPlanActivationStatus =

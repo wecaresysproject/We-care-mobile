@@ -85,7 +85,7 @@ class MealCard extends StatelessWidget {
               Navigator.of(context).pop();
 
               // 2) افتح صفحة مشاهدة الخطة
-              final updatedPlan = await context.pushNamed(
+              final result = await context.pushNamed(
                 Routes.viewAndEditDietPlanView,
                 arguments: {
                   "userDietPlan": dietPlan,
@@ -94,7 +94,7 @@ class MealCard extends StatelessWidget {
               );
 
               // 3) لو رجعت بقيمة جديدة.. استخدمها (اختياري)
-              if (updatedPlan != null && context.mounted) {
+              if (result && context.mounted) {
                 context.read<NutrationDataEntryCubit>().loadExistingPlans();
               }
             },
