@@ -45,7 +45,7 @@ class WeCareApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-        initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
+          initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
           theme: ThemeData(
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file

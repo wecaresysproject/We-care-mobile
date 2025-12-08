@@ -17,8 +17,13 @@ class MealCard extends StatelessWidget {
   final String? dietPlan;
   final bool haveAdocument;
   final Color backgroundColor;
+  final Function(String date)? onDateSelected;
+  final Function(String date)? onDelete;
+  final Function(String date)? onViewReport;
   final VoidCallback onTap;
-  final bool isSelectable; // خاصية جديدة للتحكم في إمكانية الاختيار
+  final bool isSelectable;
+  final bool showDietPlan;
+  final String? dialogTitle;
 
   const MealCard({
     super.key,
@@ -28,7 +33,12 @@ class MealCard extends StatelessWidget {
     this.haveAdocument = false,
     required this.onTap,
     this.backgroundColor = const Color(0xffF1F3F6),
-    this.isSelectable = true, // افتراضي قابل للاختيار
+    this.isSelectable = true,
+    this.onDateSelected,
+    this.onDelete,
+    this.onViewReport,
+    this.showDietPlan = true,
+    this.dialogTitle,
   });
 
   const MealCard.planNotActivated({
@@ -38,6 +48,11 @@ class MealCard extends StatelessWidget {
     this.dietPlan = "",
     this.backgroundColor = const Color(0xffF1F3F6),
     required this.onTap,
+    this.onDateSelected,
+    this.onDelete,
+    this.onViewReport,
+    this.dialogTitle,
+    this.showDietPlan = true,
   })  : haveAdocument = false,
         isSelectable = true;
 
@@ -47,9 +62,14 @@ class MealCard extends StatelessWidget {
     required this.date,
     required this.dietPlan,
     required this.onTap,
-    this.backgroundColor = const Color(0xffF1F3F6),
+    this.backgroundColor = const Color(0xffDAE9FA),
+    this.onDateSelected,
+    this.onDelete,
+    this.onViewReport,
+    this.dialogTitle,
+    this.showDietPlan = true,
   })  : haveAdocument = true,
-        isSelectable = false; // غير قابل للاختيار
+        isSelectable = false;
 
   const MealCard.planActivatedandHaveNoDocument({
     super.key,
@@ -57,7 +77,12 @@ class MealCard extends StatelessWidget {
     required this.date,
     this.dietPlan,
     required this.onTap,
+    this.dialogTitle,
     this.backgroundColor = const Color(0xffF1F3F6),
+    this.onDateSelected,
+    this.onDelete,
+    this.onViewReport,
+    this.showDietPlan = true,
   })  : haveAdocument = false,
         isSelectable = true;
 
@@ -69,9 +94,13 @@ class MealCard extends StatelessWidget {
           // إظهار رسالة تحذير للأيام التي لها تقرير بالفعل
           await showWarningDialog(
             context,
-            message: 'هذا اليوم مدخل فيه وجبات بالفعل',
+            message: dialogTitle ?? 'هذا اليوم مدخل فيه وجبات بالفعل',
             confirmText: 'مراجعة تقرير اليوم',
             onConfirm: () async {
+              if (onViewReport != null) {
+                onViewReport!(date);
+                return;
+              }
               await context.pushNamed(
                 Routes.nutritionFollowUpReportTableView,
                 arguments: {
@@ -81,25 +110,33 @@ class MealCard extends StatelessWidget {
               );
             },
             hasDelete: true,
-            onViewPlan: () async {
-              Navigator.of(context).pop();
+            onViewPlan: showDietPlan
+                ? () async {
+                    Navigator.of(context).pop();
 
-              // 2) افتح صفحة مشاهدة الخطة
-              final result = await context.pushNamed(
-                Routes.viewAndEditDietPlanView,
-                arguments: {
-                  "userDietPlan": dietPlan,
-                  "date": date,
-                },
-              );
+                    // 2) افتح صفحة مشاهدة الخطة
+                    final result = await context.pushNamed(
+                      Routes.viewAndEditDietPlanView,
+                      arguments: {
+                        "userDietPlan": dietPlan,
+                        "date": date,
+                      },
+                    );
 
-              // 3) لو رجعت بقيمة جديدة.. استخدمها (اختياري)
-              if (result && context.mounted) {
-                context.read<NutrationDataEntryCubit>().loadExistingPlans();
-              }
-            },
-            showDietPlan: true,
+                    // 3) لو رجعت بقيمة جديدة.. استخدمها (اختياري)
+                    if (result && context.mounted) {
+                      context
+                          .read<NutrationDataEntryCubit>()
+                          .loadExistingPlans();
+                    }
+                  }
+                : null,
+            showDietPlan: showDietPlan,
             onDelete: () {
+              if (onDelete != null) {
+                onDelete!(date);
+                return;
+              }
               context
                   .read<NutrationDataEntryCubit>()
                   .deleteDayDietPlan(date)
@@ -117,11 +154,22 @@ class MealCard extends StatelessWidget {
         }
 
         onTap();
-        context.read<NutrationDataEntryCubit>().updateSelectedPlanDate(date);
+        if (onDateSelected != null) {
+          onDateSelected!(date);
+        } else {
+          // Fallback to Cubit if callback not provided, but wrap in try-catch or check
+          try {
+            context
+                .read<NutrationDataEntryCubit>()
+                .updateSelectedPlanDate(date);
+          } catch (e) {
+            // Ignore if Cubit not found (e.g. in Supplements view)
+          }
+        }
       },
       child: Container(
         height: 70,
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.only(bottom: 4, top: 4),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(12.r),
@@ -155,7 +203,7 @@ class MealCard extends StatelessWidget {
                 color: AppColorsManager.mainDarkBlue,
               ),
             ),
-            verticalSpacing(6),
+            //  verticalSpacing(6),
             haveAdocument
                 ? Container(
                     width: 69.w,

@@ -90,6 +90,8 @@ import 'package:we_care/features/prescription/Presentation_view/views/prescripti
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_report_table_view.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
@@ -659,6 +661,17 @@ class AppRouter {
             child: CreateEditMedicalNoteView(
               note: note,
             ),
+          ),
+        );
+      case Routes.supplementsView:
+        return MaterialPageRoute(
+          builder: (_) => const SupplementsPlansView(),
+        );
+      case Routes.supplementsReportTableView:
+        final date = arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => SupplementsReportTableView(
+            date: date,
           ),
         );
       default:

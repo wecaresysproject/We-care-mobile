@@ -66,8 +66,8 @@ class _MedicalCategoriesTypesGridViewState
           return Expanded(
               child: const Center(child: CircularProgressIndicator()));
         }
-        final sortedCategories = [...categoriesView]
-  ..sort((a, b) => (b['isActive'] ? 1 : 0).compareTo(a['isActive'] ? 1 : 0));
+        final sortedCategories = [...categoriesView]..sort(
+            (a, b) => (b['isActive'] ? 1 : 0).compareTo(a['isActive'] ? 1 : 0));
         return Expanded(
           child: GridView.builder(
             itemCount: sortedCategories.length,
@@ -407,6 +407,12 @@ final List<Map<String, dynamic>> categoriesView = [
     "title": "النشاط الرياضي",
     "image": "assets/images/physical_exercise.png",
     "route": Routes.physicalActivityDataView,
+    "isActive": true,
+  },
+  {
+    "title": "المكملات\nالغذائية",
+    "image": "assets/images/chemical_medicine.png",
+    "route": Routes.supplementsView,
     "isActive": true,
   },
 ];
