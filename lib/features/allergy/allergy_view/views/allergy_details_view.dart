@@ -108,15 +108,17 @@ class AllergyDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                       isExpanded: true,
                       title: "مسببات الحساسية",
-                      value:
-                          state.selectedAllergyDetails!.allergyTriggers.first ==
+                      value: state.selectedAllergyDetails!.allergyTriggers
+                                  .isEmpty ||
+                              state.selectedAllergyDetails!.allergyTriggers
+                                      .first ==
                                   context.translate.no_data_entered
-                              ? ""
-                              : state.selectedAllergyDetails!.allergyTriggers
-                                  .asMap()
-                                  .entries
-                                  .map((e) => "${e.key + 1}. ${e.value}")
-                                  .join('\n'),
+                          ? ""
+                          : state.selectedAllergyDetails!.allergyTriggers
+                              .asMap()
+                              .entries
+                              .map((e) => "${e.key + 1}. ${e.value}")
+                              .join('\n'),
                       icon: 'assets/images/chat_question.png'),
                   DetailsViewInfoTile(
                     title: "الأعراض الجانبية المتوقعة",

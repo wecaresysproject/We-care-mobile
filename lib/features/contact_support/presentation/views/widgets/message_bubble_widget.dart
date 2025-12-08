@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/contact_support/data/models/chat_message_model.dart';
 
@@ -15,7 +16,7 @@ class MessageBubbleWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUserMessage;
-    
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
       child: Align(
@@ -24,16 +25,19 @@ class MessageBubbleWidget extends StatelessWidget {
           constraints: BoxConstraints(maxWidth: 0.75.sw),
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           decoration: BoxDecoration(
-            color: isUser ? AppColorsManager.mainDarkBlue : const Color(0xeeeeeeee),
+            color: isUser
+                ? AppColorsManager.mainDarkBlue
+                : const Color(0xeeeeeeee),
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(isUser ? 16.r : 4.r),
-              topRight: Radius.circular(isUser ? 4.r : 16.r),
-              bottomLeft: Radius.circular(16.r),
-              bottomRight: Radius.circular(16.r),
+              topLeft: Radius.circular(isUser ? 25.r : 4.r),
+              topRight: Radius.circular(isUser ? 4.r : 25.r),
+              bottomLeft: Radius.circular(isUser ? 25.r : 25.r),
+              bottomRight: Radius.circular(isUser ? 25.r : 25.r),
             ),
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment:
+                isUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
@@ -47,11 +51,10 @@ class MessageBubbleWidget extends StatelessWidget {
               SizedBox(height: 4.h),
               Text(
                 _formatTimestamp(message.timestamp),
-                style: TextStyle(
-                  color: isUser 
-                      ? Colors.white.withValues(alpha: 0.7)
-                      : Colors.grey.shade600,
-                  fontSize: 10.sp,
+                textAlign: !isUser ? TextAlign.right : TextAlign.left,
+                style: AppTextStyles.font18blackWight500.copyWith(
+                  color: isUser ? Colors.white : Colors.black87,
+                  fontSize: 12.sp,
                 ),
               ),
             ],
@@ -64,7 +67,8 @@ class MessageBubbleWidget extends StatelessWidget {
   String _formatTimestamp(DateTime timestamp) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final messageDate = DateTime(timestamp.year, timestamp.month, timestamp.day);
+    final messageDate =
+        DateTime(timestamp.year, timestamp.month, timestamp.day);
 
     if (messageDate == today) {
       // Today - show time only

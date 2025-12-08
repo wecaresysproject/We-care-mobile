@@ -98,7 +98,9 @@ class AllergyHorizentalCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.allergyTriggers.first,
+                            item.allergyTriggers.isNotEmpty
+                                ? item.allergyTriggers.first
+                                : "لا يوجد",
                             style: AppTextStyles.font14blackWeight400.copyWith(
                                 fontSize: 14.sp,
                                 overflow: TextOverflow.ellipsis),

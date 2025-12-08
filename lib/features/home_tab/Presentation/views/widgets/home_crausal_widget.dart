@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
@@ -24,7 +25,8 @@ class HomeCarouselWidgetState extends State<HomeCarouselWidget> {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         // Show loading indicator
-        if (state.requestStatus == RequestStatus.loading && state.notifications.isEmpty) {
+        if (state.requestStatus == RequestStatus.loading &&
+            state.notifications.isEmpty) {
           return SizedBox(
             height: 60.h,
             child: const Center(
@@ -45,116 +47,231 @@ class HomeCarouselWidgetState extends State<HomeCarouselWidget> {
           );
         }
 
-        final messages = state.notifications.map((n) => n.message ?? '').toList();
+        final messages =
+            state.notifications.map((n) => n.message ?? '').toList();
 
         if (messages.isEmpty) {
           return const SizedBox.shrink();
         }
-
-        return Row(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CarouselSlider(
-                    items: messages.map(
-                      (message) {
-                        return Container(
-                          width: 271.0, // Fixed width as specified
-                          height: 40.h,
-                          padding: EdgeInsets.only(
-                            top: 3.0,
-                            right: 6.0,
-                            bottom: 3.0,
-                            left: 6.0,
-                          ),
-                          margin: EdgeInsets.only(
-                            bottom: 8.0,
-                            left: 7,
-                            right: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(16.0), // Radius as specified
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Color(0xFFECF5FF),
-                                Color(0xFFFBFDFF)
-                              ], // Linear gradient colors
-                            ),
-                            color: Colors
-                                .white, // Background color for the container, adjust as necessary
-                            border: Border.all(
-                              color:
-                                  Colors.black, // Border color, adjust as necessary
-                              width:
-                                  0.2, // Border width as specified, though very thin and might not be visible
-                            ),
-                          ),
-
-                          child: Text(
-                            message,
-                            style: AppTextStyles.font14blackWeight400,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    ).toList(),
-                    carouselController: _carouselController,
-                    options: CarouselOptions(
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      height: 60.h,
-                      aspectRatio: 2.0,
-                      // padEnds: false,
-
-                      onPageChanged: (index, reason) {
-                        setState(
-                          () {
-                            _currentIndex = index;
+        return SizedBox(
+          height: 75.h, // ارتفاع ثابت يمنع أي Overflow
+          child: Row(
+            children: [
+              // ---------------- LEFT SIDE (Carousel + Indicators) ----------------
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // ---------------- CAROUSEL ----------------
+                    Flexible(
+                      child: CarouselSlider(
+                        items: messages.map(
+                          (message) {
+                            return Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 8.h,
+                              ),
+                              margin: EdgeInsets.symmetric(horizontal: 6.w),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: AppColorsManager.mainDarkBlue,
+                                  width: 0.2.r,
+                                ),
+                                borderRadius: BorderRadius.circular(16.r),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFFECF5FF),
+                                    Color(0xFFFBFDFF),
+                                  ],
+                                ),
+                              ),
+                              child: Text(
+                                message,
+                                style:
+                                    AppTextStyles.font14blackWeight400.copyWith(
+                                  fontSize: 12.sp,
+                                ),
+                                textAlign: isArabic()
+                                    ? TextAlign.right
+                                    : TextAlign.left,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
                           },
-                        );
-                      },
+                        ).toList(),
+                        carouselController: _carouselController,
+                        options: CarouselOptions(
+                          height: double.infinity,
+                          autoPlay: true,
+                          viewportFraction: 1,
+                          enlargeCenterPage: false,
+                          onPageChanged: (index, _) {
+                            setState(() => _currentIndex = index);
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: messages.asMap().entries.map(
-                      (entry) {
-                        return GestureDetector(
-                          onTap: () => _carouselController.animateToPage(entry.key),
-                          child: Container(
-                            width: _currentIndex == entry.key
-                                ? 14.0.w
-                                : 8.0.w, // Change width if it's the current index
 
-                            height: 6.h,
-                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.r),
-                              color: _currentIndex == entry.key
-                                  ? AppColorsManager.mainDarkBlue
-                                  : Color(0xff909090),
-                            ),
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ],
+                    SizedBox(height: 4.h),
+
+                    // ---------------- INDICATORS (Bullets) ----------------
+                    SizedBox(
+                      height: 14.h,
+                      child: Center(
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 4.w,
+                          runSpacing: 2.h,
+                          children: messages.asMap().entries.map((entry) {
+                            final isActive = _currentIndex == entry.key;
+                            return GestureDetector(
+                              onTap: () =>
+                                  _carouselController.animateToPage(entry.key),
+                              child: Container(
+                                width: isActive ? 14.w : 8.w,
+                                height: 6.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.r),
+                                  color: isActive
+                                      ? AppColorsManager.mainDarkBlue
+                                      : const Color(0xff909090),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Image.asset(
-              'assets/images/percent_indicator.png',
-              height: 61,
-              width: 56,
-            ),
-          ],
+
+              SizedBox(width: 8.w),
+
+              // ---------------- RIGHT SIDE IMAGE ----------------
+              Image.asset(
+                'assets/images/percent_indicator.png',
+                height: 50.h,
+                width: 50.w,
+              ),
+            ],
+          ),
         );
+
+        // return Row(
+        //   children: [
+        //     Expanded(
+        //       child: Column(
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         crossAxisAlignment: CrossAxisAlignment.center,
+        //         children: [
+        //           CarouselSlider(
+        //             items: messages.map(
+        //               (message) {
+        //                 return Container(
+        //                   width: 350.0, // Fixed width as specified
+        //                   height: 40.h,
+        //                   padding: EdgeInsets.only(
+        //                     top: 3.0,
+        //                     right: 6.0,
+        //                     bottom: 3.0,
+        //                     left: 6.0,
+        //                   ),
+        //                   margin: EdgeInsets.only(
+        //                     bottom: 8.0,
+        //                     left: 7.w,
+        //                     right: 2.w,
+        //                   ),
+        //                   decoration: BoxDecoration(
+        //                     borderRadius: BorderRadius.circular(
+        //                       16.0,
+        //                     ), // Radius as specified
+        //                     gradient: LinearGradient(
+        //                       begin: Alignment.topLeft,
+        //                       end: Alignment.bottomRight,
+        //                       colors: [
+        //                         Color(0xFFECF5FF),
+        //                         Color(0xFFFBFDFF)
+        //                       ], // Linear gradient colors
+        //                     ),
+        //                     color: Colors
+        //                         .white, // Background color for the container, adjust as necessary
+        //                     border: Border.all(
+        //                       color: Colors
+        //                           .black, // Border color, adjust as necessary
+        //                       width:
+        //                           0.2, // Border width as specified, though very thin and might not be visible
+        //                     ),
+        //                   ),
+
+        //                   child: Text(
+        //                     message,
+        //                     style: AppTextStyles.font14blackWeight400.copyWith(
+        //                       fontSize: 12.sp,
+        //                     ),
+        //                     textAlign: TextAlign.center,
+        //                   ),
+        //                 );
+        //               },
+        //             ).toList(),
+        //             carouselController: _carouselController,
+        //             options: CarouselOptions(
+        //               autoPlay: true,
+        //               enlargeCenterPage: false,
+
+        //               height: 60.h,
+        //               aspectRatio: 1.5,
+        //               // padEnds: false,
+        //               onPageChanged: (index, reason) {
+        //                 setState(
+        //                   () {
+        //                     _currentIndex = index;
+        //                   },
+        //                 );
+        //               },
+        //             ),
+        //           ),
+        //           Row(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: messages.asMap().entries.map(
+        //               (entry) {
+        //                 return GestureDetector(
+        //                   onTap: () =>
+        //                       _carouselController.animateToPage(entry.key),
+        //                   child: Container(
+        //                     width: _currentIndex == entry.key
+        //                         ? 14.0.w
+        //                         : 8.0
+        //                             .w, // Change width if it's the current index
+
+        //                     height: 6.h,
+        //                     margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        //                     decoration: BoxDecoration(
+        //                       borderRadius: BorderRadius.circular(5.r),
+        //                       color: _currentIndex == entry.key
+        //                           ? AppColorsManager.mainDarkBlue
+        //                           : Color(0xff909090),
+        //                     ),
+        //                   ),
+        //                 );
+        //               },
+        //             ).toList(),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     Image.asset(
+        //       'assets/images/percent_indicator.png',
+        //       height: 61,
+        //       width: 56,
+        //     ),
+        //   ],
+        // );
       },
     );
   }

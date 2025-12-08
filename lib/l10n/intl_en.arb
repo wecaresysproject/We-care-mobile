@@ -54,7 +54,7 @@
         "create_new_password": "Create a New Password",
         "confirm_new_password": "Confirm New Password",
         "white_spaces_validation":"Empty field",
-        "search_text":"Advanced Search",
+        "search_text":"Search",
         "medical_inter_cat1": "Drug Interactions",
         "medical_summary_cat2": "Medical Summary",
         "life_quality_cat3": "Life Quality",

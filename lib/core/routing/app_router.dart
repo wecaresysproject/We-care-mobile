@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/allergy_data_entry_view.dart';
@@ -690,7 +691,12 @@ class NotFoundView extends StatelessWidget {
         title: Text('Not Found'),
       ),
       body: Center(
-        child: Text('Page not found'),
+        child: Text(
+          'Page still not found',
+          style: AppTextStyles.font14BlueWeight700.copyWith(
+            fontSize: 24,
+          ),
+        ),
       ),
     );
   }

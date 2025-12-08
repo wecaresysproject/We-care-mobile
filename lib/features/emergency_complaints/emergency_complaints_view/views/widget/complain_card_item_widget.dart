@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
@@ -51,7 +52,9 @@ class ComplaintCardItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                item.mainSymptoms.first.symptomsRegion.substring(2),
+                item.mainSymptoms.isNotEmpty
+                    ? item.mainSymptoms.first.symptomsRegion.substring(2)
+                    : 'لم يتم تحديد مكان الشكوي',
                 style: AppTextStyles.font14BlueWeight700
                     .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
@@ -95,7 +98,10 @@ class ComplaintCardItem extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              item.mainSymptoms.first.sypmptomsComplaintIssue,
+                              item.mainSymptoms.isNotEmpty
+                                  ? item.mainSymptoms.first
+                                      .sypmptomsComplaintIssue
+                                  : context.translate.no_data_entered,
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style:
