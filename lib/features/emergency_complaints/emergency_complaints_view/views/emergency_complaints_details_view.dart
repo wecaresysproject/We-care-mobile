@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -63,7 +67,7 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                       }
                     },
                     shareFunction: () async {
-                      await _shareComplaintDetails(context, state);
+                      await shareEmergencyComplaint(context, state);
                     },
                     deleteFunction: () async {
                       await context
@@ -310,41 +314,178 @@ class SymptomContainer extends StatelessWidget {
   }
 }
 
-Future<void> _shareComplaintDetails(
+// ============================
+// 🔵 1) دالة تنظيف النص
+// ============================
+String? cleanValue(BuildContext context, String? value) {
+  if (value == null ||
+      value.trim().isEmpty ||
+      value == context.translate.no_data_entered) {
+    return null;
+  }
+  return value;
+}
+
+// ============================
+// 🔵 2) دالة بناء بلوك كامل
+// ============================
+String buildBlock(String title, List<String?> lines) {
+  final filtered =
+      lines.where((line) => line != null && line.trim().isNotEmpty).toList();
+
+  if (filtered.isEmpty) return ""; // إلغاء البلوك تمامًا
+
+  return '''
+$title
+${filtered.join("\n")}
+''';
+}
+
+// ============================
+// 🔵 3) تحميل الصور
+// ============================
+Future<List<XFile>> downloadImages(List<String> urls) async {
+  final client = HttpClient();
+  List<XFile> files = [];
+
+  for (final url in urls) {
+    try {
+      final request = await client.getUrl(Uri.parse(url));
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final bytes = await consolidateHttpClientResponseBytes(response);
+        final tempDir = await getTemporaryDirectory();
+
+        final file = File(
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg',
+        );
+
+        await file.writeAsBytes(bytes);
+        files.add(XFile(file.path));
+      }
+    } catch (_) {}
+  }
+
+  return files;
+}
+
+// ============================
+// 🔵 4) ميثود الشير الكاملة
+// ============================
+Future<void> shareEmergencyComplaint(
     BuildContext context, EmergencyComplaintViewState state) async {
   try {
-    final complaintDetails = state.selectedEmergencyComplaint!;
+    final c = state.selectedEmergencyComplaint!;
 
+    // ---------------------------------------------------
+    // 🔥 Build Blocks
+    // ---------------------------------------------------
+
+    // الأعراض الرئيسية
+    final symptomsBlock = buildBlock(
+      "💡 *الأعراض الرئيسية*: ",
+      c.mainSymptoms.map((s) {
+        return cleanValue(context, s.symptomsRegion) == null &&
+                cleanValue(context, s.sypmptomsComplaintIssue) == null &&
+                cleanValue(context, s.natureOfComplaint) == null &&
+                cleanValue(context, s.severityOfComplaint) == null
+            ? null
+            : '''
+- المنطقة: ${cleanValue(context, s.symptomsRegion)}
+- الشكوى: ${cleanValue(context, s.sypmptomsComplaintIssue)}
+- طبيعة الشكوى: ${cleanValue(context, s.natureOfComplaint)}
+- حدة الشكوى: ${cleanValue(context, s.severityOfComplaint)}
+''';
+      }).toList(),
+    );
+
+    // شكوى مشابهة سابقًا
+    final similarBlock = buildBlock(
+      "🔍 *شكوى مشابهة سابقًا*: ",
+      [
+        cleanValue(context, c.similarComplaint.diagnosis) == null
+            ? null
+            : "- التشخيص: ${cleanValue(context, c.similarComplaint.diagnosis)}",
+        cleanValue(context, c.similarComplaint.dateOfComplaint) == null
+            ? null
+            : "- تاريخ الشكوى: ${cleanValue(context, c.similarComplaint.dateOfComplaint)}",
+      ],
+    );
+
+    // شكاوى إضافية
+    final additionalComplaintsBlock = buildBlock(
+      "🟦 *شكاوى إضافية*: ",
+      [
+        cleanValue(context, c.additionalMedicalComplains) == null
+            ? null
+            : "- ${cleanValue(context, c.additionalMedicalComplains)}",
+      ],
+    );
+
+    // الأدوية الحالية
+    final medsBlock = buildBlock(
+      "💊 *الأدوية الحالية*: ",
+      [
+        cleanValue(context, c.medications.medicationName) == null
+            ? null
+            : "- الاسم: ${cleanValue(context, c.medications.medicationName)}",
+        cleanValue(context, c.medications.dosage) == null
+            ? null
+            : "- الجرعة: ${cleanValue(context, c.medications.dosage)}",
+      ],
+    );
+
+    // التدخل الطبي الطارئ
+    final interventionBlock = buildBlock(
+      "🚑 *التدخل الطبي الطارئ*: ",
+      [
+        cleanValue(context, c.emergencyIntervention.interventionType) == null
+            ? null
+            : "- النوع: ${cleanValue(context, c.emergencyIntervention.interventionType)}",
+        cleanValue(context, c.emergencyIntervention.interventionDate) == null
+            ? null
+            : "- التاريخ: ${cleanValue(context, c.emergencyIntervention.interventionDate)}",
+      ],
+    );
+
+    // ملاحظات شخصية
+    final notesBlock = buildBlock(
+      "📝 *ملاحظات شخصية*: ",
+      [
+        cleanValue(context, c.personalNote),
+      ],
+    );
+
+    // ---------------------------------------------------
+    // 🔥 Final Share Text
+    // ---------------------------------------------------
     final text = '''
-    🚨 *تفاصيل الشكوى المرضية الطارئة* 🚨
+🚨 *تفاصيل الشكوى المرضية الطارئة* 🚨
 
-    📅 *تاريخ ظهور الشكوى*: ${complaintDetails.date}
+📅 *تاريخ ظهور الشكوى*: ${cleanValue(context, c.date)}
 
-    💡 *الأعراض الرئيسية*:
-    ${complaintDetails.mainSymptoms.map((symptom) {
-      return '''
-      - *المنطقة*: ${symptom.symptomsRegion}
-      - *الشكوى*: ${symptom.sypmptomsComplaintIssue}
-      - *طبيعة الشكوى*: ${symptom.natureOfComplaint}
-      - *حدة الشكوى*: ${symptom.severityOfComplaint}
-      ''';
-    }).join('\n')}
+$symptomsBlock
+$similarBlock
+$additionalComplaintsBlock
+$medsBlock
+$interventionBlock
+$notesBlock
+''';
 
-    🔍 *شكوى مشابهة سابقًا*:
-    - *التشخيص*: ${complaintDetails.similarComplaint.diagnosis}
-    - *تاريخ الشكوى*: ${complaintDetails.similarComplaint.dateOfComplaint}
+    // ---------------------------------------------------
+    // 🔥 Share images if available
+    // ---------------------------------------------------
+    if (c.complainsImages != null && c.complainsImages!.isNotEmpty) {
+      final files = await downloadImages(c.complainsImages!);
 
-    💊 *الأدوية الحالية*:
-    - *اسم الدواء*: ${complaintDetails.medications.medicationName}
-    - *الجرعة*: ${complaintDetails.medications.dosage}
+      if (files.isNotEmpty) {
+        await Share.shareXFiles(files, text: text);
+        return;
+      }
+    }
 
-    🚑 *التدخل الطبي الطارئ*:
-    - *نوع التدخل*: ${complaintDetails.emergencyIntervention.interventionType}
-    - *تاريخ التدخل*: ${complaintDetails.emergencyIntervention.interventionDate}
-
-    📝 *ملاحظات شخصية*: ${complaintDetails.personalNote}
-    ''';
-
+    // مشاركة النص فقط لو مفيش صور
     await Share.share(text);
   } catch (e) {
     await showError("❌ حدث خطأ أثناء المشاركة");

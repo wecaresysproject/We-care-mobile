@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/Presentation/views/biometrics_data_entry_view.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/biometrics_view.dart';
 import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/views/allergy_data_entry_view.dart';
@@ -90,6 +91,7 @@ import 'package:we_care/features/prescription/Presentation_view/views/prescripti
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_report_table_view.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
@@ -674,6 +676,10 @@ class AppRouter {
             date: date,
           ),
         );
+      case Routes.supplementsDataEntry:
+        return MaterialPageRoute(
+          builder: (_) => const SupplementsDataEntryView(),
+        );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
     }
@@ -690,7 +696,12 @@ class NotFoundView extends StatelessWidget {
         title: Text('Not Found'),
       ),
       body: Center(
-        child: Text('Page not found'),
+        child: Text(
+          'Page still not found',
+          style: AppTextStyles.font14BlueWeight700.copyWith(
+            fontSize: 24,
+          ),
+        ),
       ),
     );
   }

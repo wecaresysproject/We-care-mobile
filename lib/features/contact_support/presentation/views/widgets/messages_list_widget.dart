@@ -75,7 +75,7 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
           itemCount: groupedMessages.length,
           itemBuilder: (context, index) {
             final entry = groupedMessages[index];
-            
+
             return Column(
               children: [
                 // Date separator
@@ -88,7 +88,17 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
                         vertical: 6.h,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE3F2FD),
+                        gradient: const LinearGradient(
+                          begin: Alignment.bottomLeft,
+                          end: Alignment.topRight,
+                          colors: [
+                            Color(0xFF6EA1CB), // الأزرق من الأسفل لليمين
+                            Color(0xFFEFF5FB), // وسط فاتح
+                            Color(0xFFEDF4FF), // أفتح درجة في الأعلى لليسار
+                          ],
+                          stops: [0.0, 0.45, 1.0],
+                        ),
+                        // color: const Color(0xFFE3F2FD),
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: Text(

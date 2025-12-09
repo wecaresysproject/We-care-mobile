@@ -10,7 +10,7 @@ class UserSelectionContainer extends StatefulWidget {
   const UserSelectionContainer({
     super.key,
     required this.options,
-    required this.categoryLabel,
+    this.categoryLabel,
     required this.bottomSheetTitle,
     required this.onOptionSelected,
     required this.containerHintText,
@@ -30,7 +30,7 @@ class UserSelectionContainer extends StatefulWidget {
   });
 
   final List<String> options;
-  final String categoryLabel;
+  final String? categoryLabel;
   final String bottomSheetTitle;
   final String containerHintText;
   final String searchHintText;
@@ -76,11 +76,13 @@ class _UserSelectionContainerState extends State<UserSelectionContainer> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.categoryLabel,
-          style: AppTextStyles.font18blackWight500,
-        ),
-        verticalSpacing(10),
+        if (widget.categoryLabel != null) ...[
+          Text(
+            widget.categoryLabel!,
+            style: AppTextStyles.font18blackWight500,
+          ),
+          verticalSpacing(10),
+        ],
         _buildSelectionContainer(),
         if (_shouldShowErrorMessage())
           Padding(

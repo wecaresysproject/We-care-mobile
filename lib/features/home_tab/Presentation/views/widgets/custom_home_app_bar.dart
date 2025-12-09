@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
-import 'package:we_care/core/global/Helpers/custom_rich_text.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -18,9 +17,10 @@ class HomeCustomAppBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           BlocProvider(
             create: (context) =>
@@ -32,10 +32,17 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                         .firstAndLastName;
 
                 return Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      /// ---------------- 3 Dots ----------------
-                      PopupMenuButton(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    /// ---------------- 3 Dots ----------------
+                    SizedBox(
+                      width: 20,
+                      height: 24,
+                      child: PopupMenuButton(
+                        constraints: BoxConstraints(), // مهم جدًا
+
                         color: AppColorsManager.scaffoldBackGroundColor,
                         padding: EdgeInsets.zero,
                         offset: const Offset(-10, 35),
@@ -44,7 +51,7 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                         ),
                         icon: Icon(
                           Icons.more_vert,
-                          size: 22,
+                          size: 30,
                           color: AppColorsManager.mainDarkBlue,
                         ),
                         itemBuilder: (context) => [
@@ -59,43 +66,48 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                           // TODO: Navigate or perform action
                         },
                       ),
-                      SizedBox(width: 4.w),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          /// ---------------- Avatar ----------------
-                          UserAvatarWidget(
-                            height: 35,
-                            width: 35,
-                            borderRadius: 50,
-                            userImageUrl:
-                                state.userEssentialInfo?.personalPhotoUrl,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        /// ---------------- Avatar ----------------
+                        UserAvatarWidget(
+                          height: 30,
+                          width: 30,
+                          borderRadius: 50,
+                          userImageUrl:
+                              state.userEssentialInfo?.personalPhotoUrl,
+                        ),
+                        Text(
+                          displayName,
+                          style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeightHelper.medium,
+                            color: AppColorsManager.textColor,
                           ),
-                          SizedBox(height: 3.h),
-                          Text(
-                            displayName,
-                            style:
-                                AppTextStyles.font16DarkGreyWeight400.copyWith(
-                              fontSize: 10.sp,
-                              fontWeight: FontWeightHelper.medium,
-                              color: AppColorsManager.textColor,
-                            ),
-                          )
-                        ],
-                      ),
-                    ]);
+                        )
+                      ],
+                    ),
+                  ],
+                );
               },
             ),
           ),
 
-          SizedBox(width: 10.w),
+          SizedBox(width: 8.w),
+          NotificationIcon(
+            count: 2,
+          ),
+          SizedBox(width: 8.w),
 
           /// ---------------- Search Area ----------------
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: isArabic()
                   ? CrossAxisAlignment.end
                   : CrossAxisAlignment.start,
+              textBaseline: TextBaseline.alphabetic,
               children: [
                 SizedBox(
                   height: 35.h,
@@ -172,4 +184,67 @@ Widget buildCustomSearchIcon() {
       height: 12.h,
     ),
   );
+}
+
+class NotificationIcon extends StatelessWidget {
+  final int count;
+
+  const NotificationIcon({super.key, required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // Main red circle with bell icon
+        Container(
+          height: 36,
+          width: 36,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Color(0xFFD64541), // red like in your photo
+          ),
+          child: const Center(
+            child: Icon(
+              Icons.notifications_none_rounded,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+        ),
+
+        // Notification badge
+        Positioned(
+          top: -5,
+          right: -5,
+          child: Container(
+            height: 18,
+            width: 18,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xffF1F3F6),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Center(
+              child: FittedBox(
+                child: Text(
+                  "$count",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.font18blackWight500.copyWith(
+                    color: AppColorsManager.placeHolderColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }

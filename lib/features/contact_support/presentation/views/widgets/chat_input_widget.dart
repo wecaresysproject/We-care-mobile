@@ -60,50 +60,63 @@ class _ChatInputWidgetState extends State<ChatInputWidget> {
             children: [
               // Text field
               Expanded(
-                child: TextField(
-                  controller: _controller,
-                  enabled: !widget.isLoading,
-                  maxLines: null,
-                  textInputAction: TextInputAction.send,
-                  onSubmitted: (_) => _sendMessage(),
-                  textDirection: TextDirection.rtl,
-                  decoration: InputDecoration(
-                    hintText: 'اكتب رسالتك هنا...',
-                    hintStyle: TextStyle(
-                      color: Colors.grey.shade400,
-                      fontSize: 14.sp,
-                    ),
-                    filled: true,
-                    fillColor: Colors.white,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(28.r),
-                      borderSide: BorderSide(
-                        color: const Color(0xFFB8D0EB),
-                        width: 1.5,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColorsManager.mainDarkBlue.withAlpha(40),
+                        offset: const Offset(5, 4),
+                        blurRadius: 20,
+                        spreadRadius: 0,
                       ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(28.r),
-                      borderSide: BorderSide(
-                        color: const Color(0xFFB8D0EB),
-                        width: 2,
-                      ),
-                    ),
-                    disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(28.r),
-                      borderSide: BorderSide(
-                        color: Colors.grey.shade300,
-                        width: 1.5,
-                      ),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 24.w,
-                      vertical: 18.h,
-                    ),
+                    ],
                   ),
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.black87,
+                  child: TextField(
+                    controller: _controller,
+                    enabled: !widget.isLoading,
+                    maxLines: null,
+                    textInputAction: TextInputAction.send,
+                    onSubmitted: (_) => _sendMessage(),
+                    textDirection: TextDirection.rtl,
+                    decoration: InputDecoration(
+                      hintText: "اكتب رسالتك .......",
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade400,
+                        fontSize: 14.sp,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28.r),
+                        borderSide: BorderSide(
+                          color: const Color(0xFFB8D0EB),
+                          width: 1.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28.r),
+                        borderSide: BorderSide(
+                          color: const Color(0xFFB8D0EB),
+                          width: 2,
+                        ),
+                      ),
+                      disabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28.r),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                          width: 1.5,
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 18.h,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ),

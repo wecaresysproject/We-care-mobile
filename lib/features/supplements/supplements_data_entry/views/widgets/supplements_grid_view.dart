@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/meal_card_widget.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/multi_selector_supplements_dialog_widget.dart';
 
 class SupplementsGridView extends StatelessWidget {
   final int itemCount;
@@ -47,8 +48,10 @@ class SupplementsGridView extends StatelessWidget {
             dialogTitle: "هل تريد مراجعة تقرير الفايتمينات الخاص باليوم؟",
             onTap: () {},
             onViewReport: (date) {
-              context.pushNamed(Routes.supplementsReportTableView,
-                  arguments: date);
+              context.pushNamed(
+                Routes.supplementsReportTableView,
+                arguments: date,
+              );
             },
             onDelete: (date) {
               // Handle delete
@@ -60,7 +63,26 @@ class SupplementsGridView extends StatelessWidget {
             date: dayData['date'],
             showDietPlan: false,
             dialogTitle: "هل تريد مراجعة تقرير الفايتمينات الخاص باليوم؟",
-            onTap: () {},
+            onTap: () async {
+              await showDialog(
+                context: context,
+                builder: (context) {
+                  return MultiSelectSupplementsDialog(
+                    dateTitle: dayData['date'], // Example: 15/01/2025
+                    items: [
+                      "فيتامين C",
+                      "فيتامين D",
+                      "Omega 3",
+                      "Calcium",
+                      "Magnesium",
+                    ], // ← دي هتجيلك من الـ backend لاحقًا
+                    onSubmit: (selectedItems) {
+                      AppLogger.debug("Selected: $selectedItems");
+                    },
+                  );
+                },
+              );
+            },
             onViewReport: (date) {
               context.pushNamed(Routes.supplementsReportTableView,
                   arguments: date);

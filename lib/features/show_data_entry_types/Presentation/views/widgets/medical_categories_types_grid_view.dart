@@ -95,7 +95,7 @@ class _MedicalCategoriesTypesGridViewState
                 onTap: sortedCategories[index]["isActive"]
                     ? () async {
                         await context
-                            .pushNamed(categoriesView[index]["route"]!);
+                            .pushNamed(sortedCategories[index]["route"]!);
                         // Refresh data when returning from navigated screen
                         _refreshData();
                       }

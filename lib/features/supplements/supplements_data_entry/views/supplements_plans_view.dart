@@ -45,7 +45,7 @@ class _SupplementsPlansViewState extends State<SupplementsPlansView>
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: const AppBarWithCenteredTitle(
-              title: 'المكملات الغذائية',
+              title: 'خطة متابعة المكملات',
               showActionButtons: false,
             ),
           ),
