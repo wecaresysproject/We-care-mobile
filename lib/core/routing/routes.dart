@@ -126,6 +126,7 @@ class Routes {
   static const essentialInfoDataEntry = '/essentialInfoDataEntry';
   static const medicalNotesView = '/medicalNotesView';
   static const createEditMedicalNote = '/createEditMedicalNote';
+  static const supplementsDataEntry = '/supplementsDataEntry';
   static const supplementsView = '/supplementsView';
   static const supplementsReportTableView = '/supplementsReportTableView';
 }
