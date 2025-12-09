@@ -410,8 +410,8 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": true,
   },
   {
-    "title": "المكملات\nالغذائية",
-    "image": "assets/images/chemical_medicine.png",
+    "title": "الفيتامينات و\nالمكملات الغذائية",
+    "image": "assets/images/vitamin_module_icon.png",
     "route": Routes.supplementsView,
     "isActive": true,
   },

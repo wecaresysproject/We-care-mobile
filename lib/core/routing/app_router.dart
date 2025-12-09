@@ -94,6 +94,7 @@ import 'package:we_care/features/show_data_entry_types/Presentation/views/medica
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_report_table_view.dart';
+import 'package:we_care/features/supplements/supplements_view/presentation/views/supplements_view.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
@@ -667,7 +668,7 @@ class AppRouter {
         );
       case Routes.supplementsView:
         return MaterialPageRoute(
-          builder: (_) => const SupplementsPlansView(),
+          builder: (_) => const SupplementsView(),
         );
       case Routes.supplementsReportTableView:
         final date = arguments as String;
