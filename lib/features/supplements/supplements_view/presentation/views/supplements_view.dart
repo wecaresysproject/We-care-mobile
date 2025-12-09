@@ -128,7 +128,7 @@ class _SupplementsViewState extends State<SupplementsView>
             filters: [
               FilterConfig(
                   title: 'التاريخ',
-                  options: ['اليوم', 'الاسبوع', 'الشهر', 'السنة'])
+                  options: ['من 1/7/2025 الي 8/7/2025', 'من 1/7/2025 الي 8/7/2025', 'من 1/7/2025 الي 8/7/2025', 'من 1/7/2025 الي 8/7/2025'])
             ],
           ),
           verticalSpacing(16),
@@ -237,7 +237,7 @@ class _SupplementsViewState extends State<SupplementsView>
         rows: elements.map((item) {
           return DataRow(
             cells: [
-              _cell(item, isVitaminNameCell: true),
+              _cell(item, isElementNameCell: true),
               _cell("1200"),
               _cell("1200"),
               _cell("1200"),
@@ -250,7 +250,7 @@ class _SupplementsViewState extends State<SupplementsView>
     );
   }
 
-  DataCell _cell(String text, {bool isVitaminNameCell = false}) {
+  DataCell _cell(String text, {bool isElementNameCell = false}) {
     return DataCell(
       Center(
         child: Text(
@@ -259,7 +259,7 @@ class _SupplementsViewState extends State<SupplementsView>
           style: AppTextStyles.font12blackWeight400.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 13.sp,
-            color: isVitaminNameCell
+            color: isElementNameCell
                 ? AppColorsManager.mainDarkBlue
                 : Colors.black,
           ),
@@ -362,7 +362,7 @@ class _SupplementsViewState extends State<SupplementsView>
       rows: elements.map((item) {
         return DataRow(
           cells: [
-            _cell(item, isVitaminNameCell: true),
+            _cell(item, isElementNameCell: true),
             _cell("1200"),
             _cell("1200"),
             _cell("1200"),

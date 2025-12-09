@@ -17,6 +17,7 @@ class FAQSectionWidget extends StatefulWidget {
 
 class FAQSectionWidgetState extends State<FAQSectionWidget> {
   bool _isExpanded = false;
+  final Set<int> _expandedQuestions = {};
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +89,9 @@ class FAQSectionWidgetState extends State<FAQSectionWidget> {
             setState(
               () {
                 _isExpanded = expanded;
+                if (!expanded) {
+                  _expandedQuestions.clear();
+                }
               },
             );
           },
@@ -106,18 +110,26 @@ class FAQSectionWidgetState extends State<FAQSectionWidget> {
                   );
                 } else if (state is FAQLoaded) {
                   return Column(
-                    children: state.faqList.map((faq) {
-                      return Column(
-                        children: [
-                          Divider(
-                            color: _isExpanded
-                                ? AppColorsManager.mainDarkBlue
-                                : AppColorsManager.placeHolderColor,
-                          ),
-                          _buildFAQItem(faq.question ?? "", faq.answer ?? ""),
-                        ],
-                      );
-                    }).toList(),
+                    children: List.generate(
+                      state.faqList.length,
+                      (index) {
+                        final faq = state.faqList[index];
+                        return Column(
+                          children: [
+                            if (index > 0)
+                              Divider(
+                                color: AppColorsManager.placeHolderColor.withAlpha(100),
+                                height: 1,
+                              ),
+                            _buildFAQItem(
+                              question: faq.question ?? "",
+                              answer: faq.answer ?? "",
+                              index: index,
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   );
                 }
                 return const SizedBox.shrink();
@@ -129,25 +141,54 @@ class FAQSectionWidgetState extends State<FAQSectionWidget> {
     );
   }
 
-  Widget _buildFAQItem(String question, String answer) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Question (Header)
-          Text(
-            question,
-            style: AppTextStyles.font22MainBlueWeight700.copyWith(
-              color: AppColorsManager.textColor,
-              fontSize: 12.sp,
-            ),
+  Widget _buildFAQItem({
+    required String question,
+    required String answer,
+    required int index,
+  }) {
+    final isExpanded = _expandedQuestions.contains(index);
+
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+        childrenPadding: EdgeInsets.only(
+          left: 16.w,
+          right: 16.w,
+          bottom: 12.h,
+        ),
+        trailing: Icon(
+          isExpanded ? Icons.remove : Icons.add,
+          color: AppColorsManager.mainDarkBlue,
+          size: 20.sp,
+        ),
+        title: Text(
+          question,
+          style: AppTextStyles.font22MainBlueWeight700.copyWith(
+            color: AppColorsManager.textColor,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
           ),
-          // Answer (Description)
-          Text(
-            answer,
-            style: AppTextStyles.font12blackWeight400.copyWith(
-              fontSize: 12.sp,
+        ),
+        onExpansionChanged: (expanded) {
+          setState(() {
+            if (expanded) {
+              _expandedQuestions.add(index);
+            } else {
+              _expandedQuestions.remove(index);
+            }
+          });
+        },
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              answer,
+              style: AppTextStyles.font12blackWeight400.copyWith(
+                fontSize: 12.sp,
+                color: AppColorsManager.textColor.withOpacity(0.8),
+              ),
+              textAlign: TextAlign.right,
             ),
           ),
         ],
