@@ -26,44 +26,51 @@ class ContactSupportModal extends StatelessWidget {
     return BlocProvider(
       create: (context) => ContactSupportCubit(ContactSupportRepository())
         ..loadMessages(),
-      child: Container(
-        height: MediaQuery.of(context).size.height * 0.85,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24.r),
-            topRight: Radius.circular(24.r),
-          ),
+      child: AnimatedPadding(
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 250),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: Column(
-          children: [
-            // Header with close button
-            const ModalHeaderWidget(),
-            
-            // Intro banner
-            const IntroBannerWidget(),
-            
-            // Messages list
-            const Expanded(
-              child: MessagesListWidget(),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFECF5FF), Color(0xFFFBFDFF)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            
-            // Input field
-            BlocBuilder<ContactSupportCubit, ContactSupportState>(
-              builder: (context, state) {
-                return ChatInputWidget(
-                  isLoading: state.requestStatus == RequestStatus.loading,
-                  onSendMessage: (message) {
-                    context.read<ContactSupportCubit>().sendMessage(message);
-                  },
-                );
-              },
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.r),
+              topRight: Radius.circular(24.r),
             ),
-          ],
+          ),
+          child: Column(
+            children: [
+              // Header with close button
+              const ModalHeaderWidget(),
+              
+              // Intro banner
+              const IntroBannerWidget(),
+              
+              // Messages list
+              const Expanded(
+                child: MessagesListWidget(),
+              ),
+              
+              // Input field
+              BlocBuilder<ContactSupportCubit, ContactSupportState>(
+                builder: (context, state) {
+                  return ChatInputWidget(
+                    isLoading: state.requestStatus == RequestStatus.loading,
+                    onSendMessage: (message) {
+                      context.read<ContactSupportCubit>().sendMessage(message);
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

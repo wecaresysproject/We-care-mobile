@@ -4,15 +4,17 @@ import 'package:we_care/features/essential_info/data/models/get_user_essential_i
 
 class EssentialInfoViewState extends Equatable {
   final RequestStatus requestStatus;
-  final RequestStatus deleteRequestStatus ;
+  final RequestStatus deleteRequestStatus;
   final String responseMessage;
   final UserEssentialInfoData? userEssentialInfo;
+  final double profileCompletionPercentage;
 
   const EssentialInfoViewState({
     this.requestStatus = RequestStatus.initial,
     this.deleteRequestStatus = RequestStatus.initial,
     this.responseMessage = '',
     this.userEssentialInfo,
+    this.profileCompletionPercentage = 0.0,
   });
 
   factory EssentialInfoViewState.initial() {
@@ -21,6 +23,7 @@ class EssentialInfoViewState extends Equatable {
       responseMessage: '',
       userEssentialInfo: null,
       deleteRequestStatus: RequestStatus.initial,
+      profileCompletionPercentage: 0.0,
     );
   }
 
@@ -28,13 +31,16 @@ class EssentialInfoViewState extends Equatable {
     RequestStatus? requestStatus,
     String? responseMessage,
     UserEssentialInfoData? userEssentialInfo,
-    RequestStatus? deleteRequestStatus
+    RequestStatus? deleteRequestStatus,
+    double? profileCompletionPercentage,
   }) {
     return EssentialInfoViewState(
       requestStatus: requestStatus ?? this.requestStatus,
       responseMessage: responseMessage ?? this.responseMessage,
       userEssentialInfo: userEssentialInfo ?? this.userEssentialInfo,
-      deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus
+      deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
+      profileCompletionPercentage:
+          profileCompletionPercentage ?? this.profileCompletionPercentage,
     );
   }
 
@@ -44,5 +50,6 @@ class EssentialInfoViewState extends Equatable {
         responseMessage,
         userEssentialInfo,
         deleteRequestStatus,
+        profileCompletionPercentage,
       ];
 }

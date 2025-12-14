@@ -2,10 +2,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/home_tab/Presentation/views/widgets/profile_completion_widget.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_state.dart';
 
@@ -67,39 +69,46 @@ class HomeCarouselWidgetState extends State<HomeCarouselWidget> {
                       child: CarouselSlider(
                         items: messages.map(
                           (message) {
-                            return Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10.w,
-                                vertical: 8.h,
-                              ),
-                              margin: EdgeInsets.symmetric(horizontal: 6.w),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColorsManager.mainDarkBlue,
-                                  width: 0.2.r,
+                            return GestureDetector(
+                              onTap: () {
+                                //pop up to display the full message
+
+                                showWarningDialog(context, message: message);
+                              },
+                              child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10.w,
+                                  vertical: 8.h,
                                 ),
-                                borderRadius: BorderRadius.circular(16.r),
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFFECF5FF),
-                                    Color(0xFFFBFDFF),
-                                  ],
+                                margin: EdgeInsets.symmetric(horizontal: 6.w),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: AppColorsManager.mainDarkBlue,
+                                    width: 0.2.r,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16.r),
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFECF5FF),
+                                      Color(0xFFFBFDFF),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              child: Text(
-                                message,
-                                style:
-                                    AppTextStyles.font14blackWeight400.copyWith(
-                                  fontSize: 12.sp,
+                                child: Text(
+                                  message,
+                                  style: AppTextStyles.font14blackWeight400
+                                      .copyWith(
+                                    fontSize: 12.sp,
+                                  ),
+                                  textAlign: isArabic()
+                                      ? TextAlign.right
+                                      : TextAlign.left,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                textAlign: isArabic()
-                                    ? TextAlign.right
-                                    : TextAlign.left,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             );
                           },
@@ -152,13 +161,7 @@ class HomeCarouselWidgetState extends State<HomeCarouselWidget> {
               ),
 
               SizedBox(width: 8.w),
-
-              // ---------------- RIGHT SIDE IMAGE ----------------
-              Image.asset(
-                'assets/images/percent_indicator.png',
-                height: 50.h,
-                width: 50.w,
-              ),
+              ProfileCompletionWidget()
             ],
           ),
         );

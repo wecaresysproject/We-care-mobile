@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/essential_info/data/repos/essential_info_view_repo.dart';
@@ -12,6 +13,11 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
 
   EssentialInfoViewCubit(this._essentialInfoRepo)
       : super(EssentialInfoViewState.initial());
+
+  Future<void> init() async {
+    await getUserEssentialInfo();
+    await calculateCompletionPercentage();
+  }
 
   Future<void> getUserEssentialInfo() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -125,5 +131,105 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     } else {
       await Share.share(shareText);
     }
+  }
+
+  Future<void> calculateCompletionPercentage() async {
+    double percentage = 0.0;
+
+    final info = state.userEssentialInfo;
+    if (info == null) return;
+
+    if (info.fullName != null &&
+        info.fullName!.isNotEmpty &&
+        info.fullName!.isFilled) {
+      percentage += 12;
+    }
+    if (info.dateOfBirth != null &&
+        info.dateOfBirth!.isNotEmpty &&
+        info.dateOfBirth!.isFilled) {
+      percentage += 12;
+    }
+    if (info.gender != null &&
+        info.gender!.isNotEmpty &&
+        info.gender!.isFilled) {
+      percentage += 12;
+    }
+    if (info.nationalID != null &&
+        info.nationalID!.isNotEmpty &&
+        info.nationalID!.isFilled) {
+      percentage += 12;
+    }
+    if (info.email != null &&
+        info.email!.isNotEmpty &&
+        info.email!.isFilled) {
+      percentage += 3;
+    }
+    if (info.personalPhotoUrl != null &&
+        info.personalPhotoUrl!.isNotEmpty &&
+        info.personalPhotoUrl!.isFilled) {
+      percentage += 12;
+    }
+    if (info.country != null &&
+        info.country!.isNotEmpty &&
+        info.country!.isFilled) {
+      percentage += 12;
+    }
+    if (info.city != null && info.city!.isNotEmpty && info.city!.isFilled) {
+      percentage += 6;
+    }
+    if (info.areaOrDistrict != null &&
+        info.areaOrDistrict!.isNotEmpty &&
+        info.areaOrDistrict!.isFilled) {
+      percentage += 2; // District
+    }
+    // Neighborhood (3%) - Missing in model, skipping
+    if (info.bloodType != null &&
+        info.bloodType!.isNotEmpty &&
+        info.bloodType!.isFilled) {
+      percentage += 6;
+    }
+    if (info.insuranceCompany != null &&
+        info.insuranceCompany!.isNotEmpty &&
+        info.insuranceCompany!.isFilled) {
+      percentage += 3;
+    }
+    if (info.disabilityType != null &&
+        info.disabilityType!.isNotEmpty &&
+        info.disabilityType!.isFilled) {
+      percentage += 3;
+    }
+    if (info.socialStatus != null &&
+        info.socialStatus!.isNotEmpty &&
+        info.socialStatus!.isFilled) {
+      percentage += 3;
+    }
+    if (info.numberOfChildren != null) percentage += 3;
+    if (info.familyDoctorName != null &&
+        info.familyDoctorName!.isNotEmpty &&
+        info.familyDoctorName!.isFilled) {
+      percentage += 1;
+    }
+    if (info.familyDoctorPhoneNumber != null &&
+        info.familyDoctorPhoneNumber!.isNotEmpty &&
+        info.familyDoctorPhoneNumber!.isFilled) {
+      percentage += 3;
+    }
+    if (info.workHours != null &&
+        info.workHours!.isNotEmpty &&
+        info.workHours!.isFilled) {
+      percentage += 3;
+    }
+    if (info.emergencyContact1 != null &&
+        info.emergencyContact1!.isNotEmpty &&
+        info.emergencyContact1!.isFilled) {
+      percentage += 1;
+    }
+    if (info.emergencyContact2 != null &&
+        info.emergencyContact2!.isNotEmpty &&
+        info.emergencyContact2!.isFilled) {
+      percentage += 1;
+    }
+
+    emit(state.copyWith(profileCompletionPercentage: percentage));
   }
 }
