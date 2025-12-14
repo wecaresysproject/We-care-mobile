@@ -10,6 +10,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 class HomeCustomAppBarWidget extends StatelessWidget {
   const HomeCustomAppBarWidget({super.key});
@@ -95,8 +96,13 @@ class HomeCustomAppBarWidget extends StatelessWidget {
           ),
 
           SizedBox(width: 8.w),
-          NotificationIcon(
-            count: 2,
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, Routes.notificationsScreen);
+            },
+            child: NotificationIcon(
+              count: 2,
+            ),
           ),
           SizedBox(width: 8.w),
 

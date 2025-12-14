@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -29,6 +30,8 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
 
     result.when(
       success: (response) {
+        CacheHelper.setData("userName", response.data?.fullName ?? "");
+        CacheHelper.setData("userPhoto", response.data?.personalPhotoUrl ?? "");
         emit(
           state.copyWith(
             requestStatus: RequestStatus.success,

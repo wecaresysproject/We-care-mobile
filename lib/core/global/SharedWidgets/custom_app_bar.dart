@@ -7,25 +7,52 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
 
-class CustomAppBarWidget extends StatelessWidget {
+class CustomAppBarWidget extends StatefulWidget {
   const CustomAppBarWidget(
       {super.key, this.haveBackArrow = false, this.onNavigateToBack});
 
   final bool haveBackArrow;
   final void Function()? onNavigateToBack;
+
+  @override
+  State<CustomAppBarWidget> createState() => _CustomAppBarWidgetState();
+}
+
+class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
+  String userName = "";
+  String userPhoto = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final name = await CacheHelper.getString("userName");
+    final photo = await CacheHelper.getString("userPhoto");
+    if (mounted) {
+      setState(() {
+        userName = name;
+        userPhoto = photo;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        haveBackArrow
+        widget.haveBackArrow
             ? CustomBackArrow(
-                onTap: onNavigateToBack,
+                onTap: widget.onNavigateToBack,
               )
             : SizedBox.shrink(),
         Spacer(),
         Text(
-          context.translate.dummyUserName,
+          userName.isNotEmpty ? userName : context.translate.dummyUserName,
           style: AppTextStyles.font16DarkGreyWeight400.copyWith(
             color: AppColorsManager.textColor,
             fontWeight: FontWeightHelper.medium,
@@ -36,6 +63,7 @@ class CustomAppBarWidget extends StatelessWidget {
           width: 40,
           height: 40,
           borderRadius: 17,
+          userImageUrl: userPhoto,
         ),
       ],
     );

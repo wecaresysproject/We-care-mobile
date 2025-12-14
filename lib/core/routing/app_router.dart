@@ -92,7 +92,6 @@ import 'package:we_care/features/prescription/data/models/get_user_prescriptions
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
-import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_report_table_view.dart';
 import 'package:we_care/features/supplements/supplements_view/presentation/views/supplements_view.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
@@ -107,6 +106,7 @@ import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.da
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
+import 'package:we_care/features/home_tab/Presentation/views/notifications_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
@@ -680,6 +680,10 @@ class AppRouter {
       case Routes.supplementsDataEntry:
         return MaterialPageRoute(
           builder: (_) => const SupplementsDataEntryView(),
+        );
+      case Routes.notificationsScreen:
+        return MaterialPageRoute(
+          builder: (_) => const NotificationsView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -129,4 +129,5 @@ class Routes {
   static const supplementsDataEntry = '/supplementsDataEntry';
   static const supplementsView = '/supplementsView';
   static const supplementsReportTableView = '/supplementsReportTableView';
+  static const notificationsScreen = '/notificationsScreen';
 }

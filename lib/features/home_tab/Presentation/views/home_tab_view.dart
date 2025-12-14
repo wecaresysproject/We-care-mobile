@@ -12,7 +12,6 @@ import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_home
 import 'package:we_care/features/home_tab/Presentation/views/widgets/faq_section_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_crausal_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_second_category_widget.dart';
-import 'package:we_care/features/home_tab/presentation/views/widgets/profile_completion_widget.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 
 class HomeTabView extends StatelessWidget {
