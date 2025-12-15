@@ -84,7 +84,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
                   }
                 },
                 builder: (context, state) {
-                  return _buildDataTableByState(state, context);
+                  return _buildDataTableByState(state, context, date ?? "");
                 },
               ),
             ],
@@ -95,13 +95,14 @@ class NutritionFollowUpReportView extends StatelessWidget {
   }
 
   // 🎯 Main method to handle different states
-  Widget _buildDataTableByState(NutrationDataEntryState state, context) {
+  Widget _buildDataTableByState(
+      NutrationDataEntryState state, context, String date) {
     switch (state.dataTableStatus) {
       case RequestStatus.loading:
         return _buildLoadingState();
 
       case RequestStatus.success:
-        return _buildSuccessState(state.nutrationElementsRows, context);
+        return _buildSuccessState(state.nutrationElementsRows, context, date);
 
       case RequestStatus.failure:
         return _buildErrorState(state.message, context);
@@ -197,7 +198,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
 
   // 📊 Success State Widget (Main Data Table)
   Widget _buildSuccessState(
-      List<NutritionElement> nutritionData, BuildContext context) {
+      List<NutritionElement> nutritionData, BuildContext context, String date) {
     if (nutritionData.isEmpty) {
       return _buildEmptyState();
     }
@@ -223,7 +224,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
           width: 0.19,
         ),
         columns: _buildColumns(),
-        rows: _buildRowsFromData(nutritionData, context),
+        rows: _buildRowsFromData(nutritionData, context, date),
       ),
     );
   }
@@ -301,7 +302,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
 
   // 🎯 Build table rows from actual API data
   List<DataRow> _buildRowsFromData(
-      List<NutritionElement> nutritionData, BuildContext context) {
+      List<NutritionElement> nutritionData, BuildContext context, String date) {
     return nutritionData.map((element) {
       // 🔥 Determine difference color based on the value
       Color diffColor = _getDifferenceColor(
@@ -334,8 +335,7 @@ class NutritionFollowUpReportView extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (_) => NutrientAnalysisView(
                             targetNutrient: element.elementName,
-                            dietInput: userDietPlan!,
-                            targetValue: element.dailyActual!,
+                            date: date,
                           ),
                         ),
                       );

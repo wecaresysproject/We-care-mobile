@@ -2,14 +2,41 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'nutration_facts_data_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class NutrationFactsModel {
+  String userDietplan;
+  final List<FoodItemModel> foodItems;
+
+  NutrationFactsModel({
+    required this.userDietplan,
+    required this.foodItems,
+  });
+
+  factory NutrationFactsModel.fromJson(Map<String, dynamic> json) =>
+      _$NutrationFactsModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NutrationFactsModelToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class FoodItemModel {
+  final String foodName;
+  final String servingSize;
+  final String mainIngredient;
+  final double amount;
+  final String unit;
+  final String analysisMethod;
+  final String recipeSource;
+  final String usdaFdcId;
+  final String usdaDescription;
+
+  // 34 عنصر غذائي
   final double calories;
   final double protein;
+  final double totalFat;
   final double saturatedFats;
   final double monounsaturatedFats;
   final double polyunsaturatedFats;
-  final double totalFat;
   final double cholesterol;
   final double carbohydrates;
   final double fiber;
@@ -38,15 +65,23 @@ class NutrationFactsModel {
   final double vitaminB12Mcg;
   final double cholineMg;
   final double waterL;
-  String? userDietPlan;
 
-  NutrationFactsModel({
+  FoodItemModel({
+    required this.foodName,
+    required this.servingSize,
+    required this.mainIngredient,
+    required this.amount,
+    required this.unit,
+    required this.analysisMethod,
+    required this.recipeSource,
+    required this.usdaFdcId,
+    required this.usdaDescription,
     required this.calories,
     required this.protein,
+    required this.totalFat,
     required this.saturatedFats,
     required this.monounsaturatedFats,
     required this.polyunsaturatedFats,
-    required this.totalFat,
     required this.cholesterol,
     required this.carbohydrates,
     required this.fiber,
@@ -75,11 +110,10 @@ class NutrationFactsModel {
     required this.vitaminB12Mcg,
     required this.cholineMg,
     required this.waterL,
-    this.userDietPlan,
   });
 
-  factory NutrationFactsModel.fromJson(Map<String, dynamic> json) =>
-      _$NutrationFactsModelFromJson(json);
+  factory FoodItemModel.fromJson(Map<String, dynamic> json) =>
+      _$FoodItemModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$NutrationFactsModelToJson(this);
+  Map<String, dynamic> toJson() => _$FoodItemModelToJson(this);
 }

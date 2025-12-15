@@ -670,6 +670,10 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const SupplementsView(),
         );
+      case Routes.supplementsPlansView:
+        return MaterialPageRoute(
+          builder: (_) => const SupplementsPlansView(),
+        );
       case Routes.supplementsReportTableView:
         final date = arguments as String;
         return MaterialPageRoute(

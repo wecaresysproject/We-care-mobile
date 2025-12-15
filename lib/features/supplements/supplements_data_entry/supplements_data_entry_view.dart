@@ -259,7 +259,7 @@ class SupplementsDataEntryView extends StatelessWidget {
               title: "التالي",
               onPressed: () async {
                 await context.pushNamed(
-                  Routes.supplementsView,
+                  Routes.supplementsPlansView,
                 );
               },
               isEnabled: true,

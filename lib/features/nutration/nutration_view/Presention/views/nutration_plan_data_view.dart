@@ -193,6 +193,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             content = Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text("حدث خطأ أثناء تحميل البيانات"),
                   verticalSpacing(10),
@@ -261,7 +262,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: content,
+                child: Center(child: content), // 👈 بدل SizedBox.expand
               ),
             ),
           ],
@@ -320,6 +321,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             content = Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text("حدث خطأ أثناء تحميل البيانات"),
                   verticalSpacing(10),
@@ -389,7 +391,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: content,
+                child: Center(child: content), // 👈 بدل SizedBox.expand
               ),
             ),
           ],
