@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -57,7 +58,14 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                         ),
                         itemBuilder: (context) => [
                           _popupItem(
-                              Icons.person, "الدخول على البيانات الرئيسية"),
+                            Icons.person,
+                            "الدخول على البيانات الرئيسية",
+                            onClick: () async {
+                              await context.pushNamed(
+                                Routes.essentialInfoView,
+                              );
+                            },
+                          ),
                           _popupItem(Icons.lock, "تغيير كلمة السر"),
                           _popupItem(Icons.admin_panel_settings, "الصلاحيات"),
                           _popupItem(Icons.subscriptions, "الاشتراكات"),
@@ -153,9 +161,10 @@ class HomeCustomAppBarWidget extends StatelessWidget {
     );
   }
 
-  PopupMenuItem _popupItem(IconData icon, String title, {bool isRed = false}) {
+  PopupMenuItem _popupItem(IconData icon, String title,
+      {bool isRed = false, VoidCallback? onClick}) {
     return PopupMenuItem(
-      value: title,
+      onTap: onClick,
       child: Row(
         children: [
           Icon(

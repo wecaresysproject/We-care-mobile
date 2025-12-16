@@ -15,14 +15,12 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutr
 
 class NutrientAnalysisView extends StatelessWidget {
   final String targetNutrient;
-  final String dietInput;
-  final int targetValue;
+  final String date;
 
   const NutrientAnalysisView({
     super.key,
     required this.targetNutrient,
-    required this.dietInput,
-    required this.targetValue,
+    required this.date,
   });
 
   @override
@@ -31,9 +29,8 @@ class NutrientAnalysisView extends StatelessWidget {
       create: (_) =>
           NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context)
             ..analyzeSingleNutrient(
-              targetNutrient: targetNutrient,
-              dietInput: dietInput,
-              targetValue: targetValue,
+              elementName: targetNutrient,
+              date: date,
             ),
       child: Scaffold(
         body: BlocBuilder<NutrationDataEntryCubit, NutrationDataEntryState>(
@@ -90,9 +87,8 @@ class NutrientAnalysisView extends StatelessWidget {
                 await context
                     .read<NutrationDataEntryCubit>()
                     .analyzeSingleNutrient(
-                      targetNutrient: targetNutrient,
-                      dietInput: dietInput,
-                      targetValue: targetValue,
+                      elementName: targetNutrient,
+                      date: date,
                     );
               }, // ممكن نعمل retry
               child: const Text(
@@ -147,9 +143,13 @@ class NutrientAnalysisView extends StatelessWidget {
 
                   // 🔥 نفس المسميات الأصلية هنا
                   columns: [
+                    // _column("الصنف"),
+                    // _column("الكمية\n(جم/مل)"),
+                    // _column("لكل 100 جم"),
+                    // _column("المتناول"),
                     _column("الصنف"),
-                    _column("الكمية\n(جم/مل)"),
-                    _column("لكل 100 جم"),
+                    _column("الحصة"),
+                    _column("الكمية"),
                     _column("المتناول"),
                   ],
 
@@ -157,8 +157,8 @@ class NutrientAnalysisView extends StatelessWidget {
                     return DataRow(
                       cells: [
                         _cell(item.name),
-                        _cell("${item.quantityGrams.toStringAsFixed(1)} جم"),
-                        _cell("${item.nutrientPer100g}"),
+                        _cell(item.servingSize),
+                        _cell(item.amount),
                         _cell(item.nutrientIntake.toStringAsFixed(2)),
                       ],
                     );
@@ -192,10 +192,10 @@ class NutrientAnalysisView extends StatelessWidget {
 
     for (var item in model.items) {
       buffer.writeln("📌 ${item.name}");
-      buffer.writeln("• الكمية: ${item.quantityGrams.toStringAsFixed(1)} جم");
-      buffer.writeln("• لكل 100 جم: ${item.nutrientPer100g}");
+      buffer.writeln("• الحصة: ${item.servingSize}");
+      buffer.writeln("• الكمية: ${item.amount}");
       buffer.writeln("• المتناول: ${item.nutrientIntake.toStringAsFixed(2)}");
-      buffer.writeln(""); // سطر فاصل بين كل صنف
+      buffer.writeln("");
     }
 
     await Share.share(buffer.toString());

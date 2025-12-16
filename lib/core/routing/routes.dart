@@ -128,6 +128,7 @@ class Routes {
   static const createEditMedicalNote = '/createEditMedicalNote';
   static const supplementsDataEntry = '/supplementsDataEntry';
   static const supplementsView = '/supplementsView';
+  static const supplementsPlansView = '/supplementsPlansView';
   static const supplementsReportTableView = '/supplementsReportTableView';
   static const notificationsScreen = '/notificationsScreen';
 }

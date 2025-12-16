@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/nutration_api_constants.dart';
 
@@ -119,5 +120,10 @@ abstract class NutrationServices {
   @GET(NutrationApiConstants.getNutritionElementDefinition)
   Future<dynamic> getNutritionElementDefinition(
     @Query('elementName') String elementName,
+  );
+  @GET(NutrationApiConstants.analyzeSingleNutrient)
+  Future<SingleNutrientModel> analyzeSingleNutrient(
+    @Query('elementName') String elementName,
+    @Query('date') String date,
   );
 }

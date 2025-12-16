@@ -4,13 +4,15 @@ part 'single_nutrient_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class SingleNutrientModel {
-  final List<NutrientItem> items;
-  @JsonKey(name: "total_nutrient_intake")
+  @JsonKey(name: 'total')
   final double totalNutrientIntake;
 
+  @JsonKey(name: 'data')
+  final List<NutrientItem> items;
+
   SingleNutrientModel({
-    required this.items,
     required this.totalNutrientIntake,
+    required this.items,
   });
 
   factory SingleNutrientModel.fromJson(Map<String, dynamic> json) =>
@@ -21,21 +23,20 @@ class SingleNutrientModel {
 
 @JsonSerializable()
 class NutrientItem {
+  @JsonKey(name: 'foodName')
   final String name;
 
-  @JsonKey(name: "quantity_grams")
-  final double quantityGrams;
+  final String servingSize;
 
-  @JsonKey(name: "nutrient_per_100g")
-  final double nutrientPer100g;
+  final String amount;
 
-  @JsonKey(name: "nutrient_intake")
+  @JsonKey(name: 'value')
   final double nutrientIntake;
 
   NutrientItem({
     required this.name,
-    required this.quantityGrams,
-    required this.nutrientPer100g,
+    required this.servingSize,
+    required this.amount,
     required this.nutrientIntake,
   });
 

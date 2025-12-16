@@ -42,7 +42,7 @@ class GradientButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         child: Container(
-          height: 38.h, // from Figma
+          height: 38.h,
           constraints: const BoxConstraints(minWidth: 186),
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           alignment: Alignment.centerRight,
@@ -51,7 +51,7 @@ class GradientButton extends StatelessWidget {
             spacing: 6,
             children: [
               Icon(icon, color: Colors.white, size: 20),
-              Expanded(
+              Flexible(
                 child: AutoSizeText(
                   text,
                   maxLines: 1,

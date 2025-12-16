@@ -5,6 +5,7 @@ import 'package:we_care/features/nutration/data/models/nutration_element_table_r
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 import 'package:we_care/features/nutration/data/models/nutrition_definition_model.dart';
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
@@ -185,6 +186,21 @@ class NutrationDataEntryRepo {
       );
       return ApiResult.success(
           NutritionDefinitionModel.fromJson(response['data']));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<SingleNutrientModel>> analyzeSingleNutrient({
+    required String elementName,
+    required String date,
+  }) async {
+    try {
+      final response = await _nutrationServices.analyzeSingleNutrient(
+        elementName,
+        date,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

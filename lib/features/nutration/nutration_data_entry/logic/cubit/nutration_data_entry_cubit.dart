@@ -205,7 +205,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       // Call ChatGPT service
       final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
       if (nutritionData != null) {
-        nutritionData.userDietPlan = dietInput;
+        nutritionData.userDietplan = dietInput;
       }
       // You can now use nutritionData to send to your backend
       await postDailyDietPlan(
@@ -239,7 +239,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       final nutritionData =
           await DeepSeekService.analyzeDietPlan(editedDietPlan);
       if (nutritionData != null) {
-        nutritionData.userDietPlan = editedDietPlan;
+        nutritionData.userDietplan = editedDietPlan;
       }
       // You can now use nutritionData to send to your backend
       await updateDailyDietPlan(
@@ -260,9 +260,8 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
   // NEW METHOD: Analyze single nutrient using DeepSeek
   Future<void> analyzeSingleNutrient({
-    required String targetNutrient,
-    required String dietInput,
-    required int targetValue,
+    required String elementName,
+    required String date,
   }) async {
     try {
       // Start loading
@@ -272,28 +271,28 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         ),
       );
 
-      // Call DeepSeek service
-      final singleNutrientData = await DeepSeekService.analyzeSingleNutrient(
-        dietInput: dietInput,
-        targetNutrient: targetNutrient,
-        targetValue: targetValue,
+      final result = await _nutrationDataEntryRepo.analyzeSingleNutrient(
+        elementName: elementName,
+        date: date,
       );
-
-      if (singleNutrientData != null) {
-        emit(
-          state.copyWith(
-            submitNutrationDataStatus: RequestStatus.success,
-            singleNutrientModel: singleNutrientData,
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            submitNutrationDataStatus: RequestStatus.failure,
-            message: 'فشل في تحليل العنصر الغذائي',
-          ),
-        );
-      }
+      result.when(
+        success: (singleNutrientData) async {
+          emit(
+            state.copyWith(
+              submitNutrationDataStatus: RequestStatus.success,
+              singleNutrientModel: singleNutrientData,
+            ),
+          );
+        },
+        failure: (messages) async {
+          emit(
+            state.copyWith(
+              submitNutrationDataStatus: RequestStatus.failure,
+              message: messages.errors.first,
+            ),
+          );
+        },
+      );
     } catch (e) {
       AppLogger.error('Error in analyzeSingleNutrient: $e');
       emit(
