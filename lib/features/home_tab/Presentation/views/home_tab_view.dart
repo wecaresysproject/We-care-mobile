@@ -36,6 +36,7 @@ class HomeTabView extends StatelessWidget {
                   HomeCarouselWidget(),
                   verticalSpacing(8),
                   Image.asset("assets/images/panner.png"),
+                  Image.asset("assets/images/indicators.png"),
                   verticalSpacing(16),
                   GridView.count(
                     crossAxisCount: 2,

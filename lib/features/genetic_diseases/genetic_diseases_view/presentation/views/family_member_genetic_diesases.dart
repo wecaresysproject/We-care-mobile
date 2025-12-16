@@ -358,13 +358,13 @@ String getFamilyMemberCode(String familyMemberCode) {
     case 'GrandmaMother':
       return 'الجدة';
     case 'MotherSideAunt':
-      return 'الخاله';
+      return 'الخالة';
     case 'MotherSideUncle':
       return 'الخال';
     case 'FatherSideAunt':
       return 'العمة';
     case 'FatherSideUncle':
-      return 'العم ';
+      return 'العم';
     default:
       return familyMemberCode; // Return the code as is if no match found
   }

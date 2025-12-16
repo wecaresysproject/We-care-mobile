@@ -115,10 +115,12 @@ class GeneticDiseasesViewRepo {
       );
       return ApiResult.success(response['message']);
     } catch (e) {
-      throw ApiErrorHandler.handle(e);
+      return ApiResult.failure(ApiErrorHandler.handle(e));
     }
   }
-   Future<ApiResult<String>> deleteFamilyMemberSpecificDiseasebyNameAndCodeAndDiseaseName(
+
+  Future<ApiResult<String>>
+      deleteFamilyMemberSpecificDiseasebyNameAndCodeAndDiseaseName(
     String language,
     String userType,
     String code,
@@ -126,8 +128,9 @@ class GeneticDiseasesViewRepo {
     String diseaseName,
   ) async {
     try {
-  final response = await _geneticDiseasesServices.deleteFamilyMemberGeneticDiseasebyNameAndCode(
-       language,
+      final response = await _geneticDiseasesServices
+          .deleteFamilyMemberGeneticDiseasebyNameAndCode(
+        language,
         userType,
         name,
         code,
@@ -135,7 +138,7 @@ class GeneticDiseasesViewRepo {
       );
       return ApiResult.success(response['message']);
     } catch (e) {
-      throw ApiErrorHandler.handle(e);
+      return ApiResult.failure(ApiErrorHandler.handle(e));
     }
   }
 
@@ -151,28 +154,28 @@ class GeneticDiseasesViewRepo {
         userType,
       );
       return ApiResult.success(
-        PersonalGeneticDiseasesResponseModel.fromJson(
-            response),
+        PersonalGeneticDiseasesResponseModel.fromJson(response),
       );
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));
     }
   }
 
-
-
-  Future<ApiResult<List<CurrentPersonalGeneticDiseasesResponseModel>>> getCurrentPersonalGeneticDiseases({
+  Future<ApiResult<List<CurrentPersonalGeneticDiseasesResponseModel>>>
+      getCurrentPersonalGeneticDiseases({
     required String language,
     required String userType,
   }) async {
     try {
-      final response =await _geneticDiseasesServices.getCurrentPersonalGeneticDiseases(
+      final response =
+          await _geneticDiseasesServices.getCurrentPersonalGeneticDiseases(
         language,
         userType,
       );
       return ApiResult.success(
         (response['data'] as List)
-            .map((e) => CurrentPersonalGeneticDiseasesResponseModel.fromJson(e as Map<String, dynamic>))
+            .map((e) => CurrentPersonalGeneticDiseasesResponseModel.fromJson(
+                e as Map<String, dynamic>))
             .toList(),
       );
     } catch (error) {
@@ -186,7 +189,8 @@ class GeneticDiseasesViewRepo {
     required String id,
   }) async {
     try {
-      final response = await _geneticDiseasesServices.deleteSpecificCurrentPersonalGeneticDiseaseById(
+      final response = await _geneticDiseasesServices
+          .deleteSpecificCurrentPersonalGeneticDiseaseById(
         language,
         userType,
         id,
