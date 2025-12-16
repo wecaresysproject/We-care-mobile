@@ -27,6 +27,20 @@ class MentalIllnessesUmbrellRecordsView extends StatefulWidget {
 
 class _MentalIllnessesUmbrellRecordsViewState
     extends State<MentalIllnessesUmbrellRecordsView> {
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   // Control open/close logic
   int? openedIndex;
 
@@ -115,7 +129,9 @@ class _MentalIllnessesUmbrellRecordsViewState
         body: Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Column(
                 children: [
                   CustomAppBarWidget(
@@ -123,10 +139,10 @@ class _MentalIllnessesUmbrellRecordsViewState
                   ),
                   verticalSpacing(40),
                   _buildActionButtons(),
-                  verticalSpacing(36),
-                  const SizedBox(height: 24),
+                  verticalSpacing(20),
+                  verticalSpacing(24),
                   _buildSeverityIndicator(),
-                  const SizedBox(height: 24),
+                  verticalSpacing(24),
                   BlocBuilder<MentalIllnessDataViewCubit,
                       MentalIllnessDataViewState>(
                     builder: (context, state) {
@@ -203,7 +219,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                               headerBorderRadius: 16.r,
                               headerPadding:
                                   EdgeInsets.symmetric(horizontal: 12.w),
-                              flipRightIconIfOpen: false,
+                              flipRightIconIfOpen: true,
                               scaleWhenAnimating: true,
                               rightIcon: Icon(
                                 Icons.keyboard_arrow_down,
@@ -216,6 +232,19 @@ class _MentalIllnessesUmbrellRecordsViewState
                                   index: openedIndex ?? 0,
                                   onOpenSection: () {
                                     setState(() => openedIndex = index);
+                                    // ⬇️ الحل السحري
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      if (_scrollController.hasClients) {
+                                        _scrollController.animateTo(
+                                          _scrollController
+                                              .position.maxScrollExtent,
+                                          duration:
+                                              const Duration(milliseconds: 350),
+                                          curve: Curves.easeOut,
+                                        );
+                                      }
+                                    });
                                   },
                                   onCloseSection: () {
                                     setState(() => openedIndex = null);
@@ -268,6 +297,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                       );
                     },
                   ),
+                  verticalSpacing(100),
                 ],
               ),
             ),

@@ -208,4 +208,3 @@ class MedicalItemCard extends StatelessWidget {
     }
   }
 }
-

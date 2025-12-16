@@ -12,6 +12,7 @@ import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
+import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 
 class AllergyDetailsView extends StatelessWidget {
   const AllergyDetailsView({super.key, required this.documentId});
@@ -58,22 +59,21 @@ class AllergyDetailsView extends StatelessWidget {
                         .deleteAllergyById(documentId),
                     shareFunction: () async {
                       final allergy = state.selectedAllergyDetails!;
+
+                      final details =
+                          buildAllergyShareDetails(allergy, context);
+
+                      if (details.isEmpty) {
+                        showError('لا توجد بيانات متاحة للمشاركة');
+                        return;
+                      }
+
                       await shareDetails(
-                        title: '⚕️ *تفاصيل الحساسية* ⚕️',
-                        details: {
-                          '📅 *التاريخ*:': allergy.allergyOccurrenceDate,
-                          '🦠 *مسببات الحساسية*:': allergy.allergyTriggers,
-                          '🤧 *الأعراض الجانبية*:': allergy.expectedSideEffects,
-                          '⚡ *حدة الأعراض*:': allergy.symptomSeverity,
-                          '💊 *الأدوية*:': allergy.medicationName,
-                          '👪 *التاريخ العائلى*:': allergy.familyHistory,
-                          '⚠️ *الاحتياطات*:': allergy.precautions,
-                          '📸 *التقارير الطبية*:': allergy.medicalReportImage,
-                        },
-                        imageUrls: [
-                          // if (allergy.medicalReportImage != null)
-                          //   allergy.medicalReportImage!,
-                        ],
+                        title: '⚕️ تفاصيل الحساسية',
+                        details: details,
+                        imageUrls: allergy.medicalReportImage.isEmpty == true
+                            ? null
+                            : allergy.medicalReportImage,
                         errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية",
                       );
                     },
@@ -249,5 +249,90 @@ class AllergyDetailsView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Map<String, String> buildAllergyShareDetails(
+    AllergyDetailsData allergy,
+    BuildContext context,
+  ) {
+    final Map<String, String> details = {};
+
+    void addIfValid(String key, String? value) {
+      if (value == null) return;
+      if (value.trim().isEmpty) return;
+      if (value == context.translate.no_data_entered) return;
+
+      details[key] = value;
+    }
+
+    void addListIfValid(String key, List<String>? values) {
+      if (values == null || values.isEmpty) return;
+      if (values.first == context.translate.no_data_entered) return;
+
+      details[key] = values
+          .asMap()
+          .entries
+          .map((e) => "${e.key + 1}. ${e.value}")
+          .join('\n');
+    }
+
+    addIfValid('📅 التاريخ :', allergy.allergyOccurrenceDate);
+    addIfValid('🦠 نوع الحساسية :', allergy.allergyType);
+
+    addListIfValid('🤧 مسببات الحساسية :', allergy.allergyTriggers);
+    addListIfValid('🤕 الأعراض الجانبية :', allergy.expectedSideEffects);
+
+    addIfValid('⚡ حدة الأعراض :', allergy.symptomSeverity);
+    addIfValid('⏱ زمن بدء الأعراض :', allergy.timeToSymptomOnset);
+
+    addIfValid(
+      '👨‍⚕️ استشارة طبيب :',
+      allergy.isDoctorConsulted == null
+          ? null
+          : allergy.isDoctorConsulted!
+              ? 'نعم'
+              : 'لا',
+    );
+
+    addIfValid(
+      '🧪 اختبار حساسية :',
+      allergy.isAllergyTestPerformed == null
+          ? null
+          : allergy.isAllergyTestPerformed!
+              ? 'نعم'
+              : 'لا',
+    );
+
+    addIfValid('💊 الأدوية :', allergy.medicationName);
+
+    addIfValid(
+      '✅ فعالية العلاج :',
+      allergy.isTreatmentsEffective == null
+          ? null
+          : allergy.isTreatmentsEffective!
+              ? 'نعم'
+              : 'لا',
+    );
+
+    addIfValid('⚠️ وجود صدمة تحسسية :', allergy.proneToAllergies);
+    addIfValid('📄 التقرير الطبي :', allergy.writtenReport);
+    addIfValid('👪 التاريخ العائلي :', allergy.familyHistory);
+    addIfValid('🛡 الاحتياطات :', allergy.precautions);
+
+    addIfValid(
+      '🚨 تحذير طبي للمسببات :',
+      allergy.isMedicalWarningReceived,
+    );
+
+    addIfValid(
+      '💉 حمل حقنة الإبينفرين :',
+      allergy.carryEpinephrine == null
+          ? null
+          : allergy.carryEpinephrine!
+              ? 'نعم'
+              : 'لا',
+    );
+
+    return details;
   }
 }
