@@ -12,9 +12,9 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
-import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/features/medicine/shared/widgets/medicine_name_scanner_container.dart';
 
 class AddNewMedicationView extends StatelessWidget {
   const AddNewMedicationView({

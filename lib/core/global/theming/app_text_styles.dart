@@ -67,6 +67,20 @@ class AppTextStyles {
     // fontFamily: AppStrings.fontFamilyIBMPlexSansArabic,//cairo
     color: AppColorsManager.textColor,
   );
+  static final font16BlackSemiBold = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeightHelper.semiBold,
+    fontFamily: AppStrings.cairoFontFamily,
+    color: AppColorsManager.textColor,
+  );
+
+  static final font14BlackMedium = TextStyle(
+    fontSize: 14.sp,
+    fontWeight: FontWeightHelper.medium,
+    fontFamily: AppStrings.cairoFontFamily,
+    color: AppColorsManager.textColor,
+  );
+
   static final customTextStyle = TextStyle(
     fontSize: 14, // 14px
     fontWeight: FontWeight.w600, // 600 weight

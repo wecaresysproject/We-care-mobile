@@ -57,7 +57,11 @@ class HomeTabView extends StatelessWidget {
                       ),
                       CustomElevatedButton(
                         text: "اختبار توافق أدويتى",
-                        onPressed: () {},
+                        onPressed: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.medicationCompatibilityView,
+                          );
+                        },
                       ),
                       CustomElevatedButton(
                         text: "زيارة طبية للمنزل",
