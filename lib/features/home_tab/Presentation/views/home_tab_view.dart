@@ -100,7 +100,11 @@ class HomeTabView extends StatelessWidget {
                       HomeSecondCategoryItem(
                         categoryName: "تقاريرى\nالطبية",
                         imagePath: "assets/images/medical_file_icon.png",
-                        onTap: () {},
+                        onTap: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.myMedicalReportsView,
+                          );
+                        },
                       ),
                       HomeSecondCategoryItem(
                         categoryName: "جودة\nالحياة",

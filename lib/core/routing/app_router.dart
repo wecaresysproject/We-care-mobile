@@ -109,6 +109,7 @@ import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_m
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_view.dart';
+import 'package:we_care/features/my_medical_reports/presentation/views/my_medical_reports_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
@@ -694,6 +695,10 @@ class AppRouter {
       case Routes.medicationCompatibilityView:
         return MaterialPageRoute(
           builder: (_) => const MedicationCompatibilityView(),
+        );
+      case Routes.myMedicalReportsView:
+        return MaterialPageRoute(
+          builder: (_) => const MyMedicalReportsView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
