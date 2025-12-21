@@ -4,6 +4,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
+import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
 
 class MyMedicalReportsView extends StatefulWidget {
@@ -18,6 +19,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   final Map<int, bool> _expandedStates = {};
   // Map to track selected state of each category
   final Map<int, bool> _selectedStates = {};
+  // Map to track selected option values for each category (multi-selection)
+  final Map<int, Set<String>> _selectedOptionValues = {};
   // Map to track selected filters for each category: {categoryIndex: {filterTitle: {selectedValues}}}
   final Map<int, Map<String, Set<String>>> _selectedFilters = {};
 
@@ -66,27 +69,51 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                         });
                       },
                     ),
-                    if (isExpanded)
-                      CategoryFiltersWidget(
-                        filters: List<Map<String, dynamic>>.from(
-                            category['filters'] ?? []),
-                        selectedFilters: _selectedFilters[index] ?? {},
-                        onFilterToggle: (filterTitle, value) {
-                          setState(() {
-                            final categoryFilters =
-                                _selectedFilters[index] ?? {};
-                            final selectedValues =
-                                categoryFilters[filterTitle] ?? {};
-                            if (selectedValues.contains(value)) {
-                              selectedValues.remove(value);
-                            } else {
-                              selectedValues.add(value);
-                            }
-                            categoryFilters[filterTitle] = selectedValues;
-                            _selectedFilters[index] = categoryFilters;
-                          });
-                        },
-                      ),
+                    if (isExpanded) ...[
+                      if (category['selectionType'] == 'selection' ||
+                          category['selectionType'] ==
+                              'selection_and_filters')
+                        MedicalCategorySelectionWidget(
+                          options: List<String>.from(
+                              category['radioOptions'] ?? []),
+                          selectedValues: _selectedOptionValues[index] ?? {},
+                          onChanged: (value, isSelected) {
+                            setState(() {
+                              final currentSelected =
+                                  _selectedOptionValues[index] ?? {};
+                              if (isSelected) {
+                                currentSelected.add(value);
+                              } else {
+                                currentSelected.remove(value);
+                              }
+                              _selectedOptionValues[index] = currentSelected;
+                            });
+                          },
+                        ),
+                      if (category['selectionType'] == 'filters' ||
+                          category['selectionType'] ==
+                              'selection_and_filters')
+                        CategoryFiltersWidget(
+                          filters: List<Map<String, dynamic>>.from(
+                              category['filters'] ?? []),
+                          selectedFilters: _selectedFilters[index] ?? {},
+                          onFilterToggle: (filterTitle, value) {
+                            setState(() {
+                              final categoryFilters =
+                                  _selectedFilters[index] ?? {};
+                              final selectedValues =
+                                  categoryFilters[filterTitle] ?? {};
+                              if (selectedValues.contains(value)) {
+                                selectedValues.remove(value);
+                              } else {
+                                selectedValues.add(value);
+                              }
+                              categoryFilters[filterTitle] = selectedValues;
+                              _selectedFilters[index] = categoryFilters;
+                            });
+                          },
+                        ),
+                    ],
                   ],
                 );
               },

@@ -4,9 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/share_details_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/widgets/medicine_details_template_widget.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
@@ -47,20 +49,19 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                   AppBarWithCenteredTitle(
                     title: 'الامراض المزمنة',
                     editFunction: () async {
-                      //! just un comment this section
-                      // final result = await context.pushNamed(
-                      //   Routes.chronicDiseaseDataEntry,
-                      //   arguments: {
-                      //     'id': documentId,
-                      //     'editModel': state.selectedChronicDiseaseDetails
-                      //   },
-                      // );
-                      // if (result) {
-                      //   if (!context.mounted) return;
-                      //   await context
-                      //       .read<ChronicDiseaseViewCubit>()
-                      //       .getUserChronicDiseaseDetailsById(documentId);
-                      // }
+                      final result = await context.pushNamed(
+                        Routes.chronicDiseaseDataEntry,
+                        arguments: {
+                          'id': documentId,
+                          'editModel': state.selectedChronicDiseaseDetails
+                        },
+                      );
+                      if (result) {
+                        if (!context.mounted) return;
+                        await context
+                            .read<ChronicDiseaseViewCubit>()
+                            .getUserChronicDiseaseDetailsById(documentId);
+                      }
                     },
                     shareFunction: () async {
                       final details = state.selectedChronicDiseaseDetails!;

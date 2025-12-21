@@ -29,44 +29,90 @@ class CategoryFiltersWidget extends StatelessWidget {
             Border.all(color: AppColorsManager.mainDarkBlue.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(16.r),
       ),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: filters.map((filter) {
           final String title = filter['title'] ?? "";
           final List<String> values = List<String>.from(filter['values'] ?? []);
           final bool isLast = filters.last == filter;
 
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: isLast ? 0 : 12.w),
-              child: Column(
-                children: [
-                  _buildHeader(title),
-                  verticalSpacing(8),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: values.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: title == "السنة" ? 3 : 2,
-                      mainAxisSpacing: 8.h,
-                      crossAxisSpacing: 8.w,
-                      childAspectRatio: title == "السنة" ? 1.8 : 2.2,
-                    ),
-                    itemBuilder: (context, index) {
-                      final value = values[index];
-                      final isSelected =
-                          (selectedFilters[title] ?? {}).contains(value);
-                      return _buildFilterChip(
-                          value, isSelected, () => onFilterToggle(title, value));
-                    },
-                  ),
-                ],
-              ),
+          return Padding(
+            padding: EdgeInsets.only(bottom: isLast ? 0 : 16.h),
+            child: _FilterSection(
+              title: title,
+              values: values,
+              selectedValues: selectedFilters[title] ?? {},
+              onToggle: (value) => onFilterToggle(title, value),
             ),
           );
         }).toList(),
       ),
+    );
+  }
+}
+
+class _FilterSection extends StatefulWidget {
+  final String title;
+  final List<String> values;
+  final Set<String> selectedValues;
+  final ValueChanged<String> onToggle;
+
+  const _FilterSection({
+    required this.title,
+    required this.values,
+    required this.selectedValues,
+    required this.onToggle,
+  });
+
+  @override
+  State<_FilterSection> createState() => _FilterSectionState();
+}
+
+class _FilterSectionState extends State<_FilterSection> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeader(widget.title),
+        verticalSpacing(8),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: 120.h),
+          child: Scrollbar(
+            controller: _scrollController,
+            thumbVisibility: true,
+            child: GridView.builder(
+              controller: _scrollController,
+              shrinkWrap: true,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: widget.values.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 8.h,
+                crossAxisSpacing: 8.w,
+                childAspectRatio: 2.5,
+              ),
+              itemBuilder: (context, index) {
+                final value = widget.values[index];
+                final isSelected = widget.selectedValues.contains(value);
+                return _buildFilterChip(
+                  value,
+                  isSelected,
+                  () => widget.onToggle(value),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -111,12 +157,16 @@ class CategoryFiltersWidget extends StatelessWidget {
                   size: 14.sp, color: AppColorsManager.mainDarkBlue),
               horizontalSpacing(4),
             ],
-            Text(
-              label,
-              style: AppTextStyles.font14BlackMedium.copyWith(
-                fontSize: 12.sp,
-                color:
-                    isSelected ? AppColorsManager.mainDarkBlue : Colors.black,
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.font14BlackMedium.copyWith(
+                  fontSize: 12.sp,
+                  color:
+                      isSelected ? AppColorsManager.mainDarkBlue : Colors.black,
+                ),
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
