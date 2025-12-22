@@ -4,14 +4,16 @@ final List<Map<String, dynamic>> categoriesView = [
     "image": "assets/images/pin_edit_icon.png",
     "selectionType": "selection",
     "radioOptions": [
-      "الاسم",
+      "الجميع",
       "تاريخ الميلاد",
+      "الاسم",
       "النوع",
-      "صورة الفرد",
-      "الجنسية",
-      "الحالة الاجتماعية",
+      "الصورة",
       "فصيلة الدم",
-      "العنوان الطبي"
+      "الدولة",
+      "المدينة",
+      'نوع العجز الجسدي',
+      "التأمين الطبي",
     ],
   },
   {
@@ -19,10 +21,11 @@ final List<Map<String, dynamic>> categoriesView = [
     "image": "assets/images/medical_tools_img.png",
     "selectionType": "selection",
     "radioOptions": [
-      "ضغط الدم",
+      "الضغط",
       "درجة الحرارة",
       "الأكسجين",
       "السكر الصائم",
+      'السكر عشوائي',
       "نبضات القلب",
       "الوزن",
       "BMI"
@@ -35,11 +38,32 @@ final List<Map<String, dynamic>> categoriesView = [
     "filters": [
       {
         "title": "اسم الدواء",
-        "values": ["بنادول", "كونجستال", "أوجمنتين", "بروفين"]
+       //put large medicines names
+        "values": [
+            "بنادول",
+            "كونجستال",
+            "أوجمنتين",
+            "بروفين"  
+        ]
       },
       {
         "title": "السنة",
         "values": ["2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000"]
+      }
+    ],
+  },
+  {
+    "title": "الامراض المزمنه",
+    "image": "assets/images/time_icon.png",
+    "selectionType": "filters",
+    "filters": [
+      {
+        "title": "المرض المزمن",
+        "values": ["ضغط", "سكر", "قلب"]
+      },
+      {
+        "title": "السنة",
+        "values": ["2024", "2023"]
       }
     ],
   },
@@ -130,30 +154,7 @@ final List<Map<String, dynamic>> categoriesView = [
       }
     ],
   },
-  {
-    "title": "المناظير الطبيه",
-    "image": "assets/images/machine_icon.png",
-  },
-  {
-    "title": "الامراض المزمنه",
-    "image": "assets/images/time_icon.png",
-    "selectionType": "filters",
-    "filters": [
-      {
-        "title": "المرض المزمن",
-        "values": ["ضغط", "سكر", "قلب"]
-      },
-      {
-        "title": "السنة",
-        "values": ["2024", "2023"]
-      }
-    ],
-  },
-  {
-    "title": "الأورام",
-    "image": "assets/images/tumor_icon.png",
-  },
-  {
+   {
     "title": "الأمراض الوراثية",
     "image": "assets/images/icon_family.png",
     "selectionType": "selection",
@@ -162,11 +163,8 @@ final List<Map<String, dynamic>> categoriesView = [
       "أمراضي الوراثية المتوقعة"
     ],
   },
-  {
-    "title": "الغسيل الكلوى",
-    "image": "assets/images/kidney_wash.png",
-  },
-  {
+
+   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
     "selectionType": "filters",
@@ -201,7 +199,7 @@ final List<Map<String, dynamic>> categoriesView = [
       }
     ],
   },
-  {
+   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
     "selectionType": "selection_and_filters",
@@ -226,30 +224,6 @@ final List<Map<String, dynamic>> categoriesView = [
     ],
   },
   {
-    "title": "العلاج الطبيعي",
-    "image": "assets/images/physical_therapy.png",
-  },
-  {
-    "title": "التطعيمات",
-    "image": "assets/images/eye_dropper.png",
-  },
-  {
-    "title": "متابعة الحمل",
-    "image": "assets/images/pergenant_woman.png",
-  },
-  {
-    "title": "علاج مشاكل الانجاب",
-    "image": "assets/images/baby_icon.png",
-  },
-  {
-    "title": "الحروق",
-    "image": "assets/images/fire_icon.png",
-  },
-  {
-    "title": "الجراحات التجميلية",
-    "image": "assets/images/woman.png",
-  },
-  {
     "title": "الأمراض النفسية",
     "image": "assets/images/mental_health.png",
     "selectionType": "filters",
@@ -263,25 +237,14 @@ final List<Map<String, dynamic>> categoriesView = [
         "values": ["اكتئاب", "قلق"]
       },
       {
-        "title": "العلاج النفسي والسلوكي",
+        "title": " المحاور النفسية و السلوكية ",
         "values": ["جلسات", "أدوية"]
       }
     ],
   },
-  {
-    "title": "السلوكيات الخطرة",
-    "image": "assets/images/red_icon.png",
-  },
-  {
-    "title": "الصحه العامه",
-    "image": "assets/images/heart_icon.png",
-  },
-  {
-    "title": "العادات الغذائية",
-    "image": "assets/images/spoon_icon.png",
-  },
-  {
-    "title": "المتابعه الغذائية",
+
+    {
+    "title": " المحلل الغذائي الذكي",
     "image": "assets/images/chemical_medicine.png",
     "selectionType": "selection",
     "radioOptions": ["تقرير المتابعة الغذائيه"],
@@ -293,7 +256,7 @@ final List<Map<String, dynamic>> categoriesView = [
     "radioOptions": ["تقرير المتابعة الرياضية"],
   },
   {
-    "title": "الفيتامينات والمكملات الغذائية",
+    "title": "المكملات الغذائية",
     "image": "assets/images/vitamin_module_icon.png",
     "selectionType": "filters",
     "filters": [

@@ -89,26 +89,20 @@ class _FilterSectionState extends State<_FilterSection> {
           child: Scrollbar(
             controller: _scrollController,
             thumbVisibility: true,
-            child: GridView.builder(
+            child: SingleChildScrollView(
               controller: _scrollController,
-              shrinkWrap: true,
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: widget.values.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 8.h,
-                crossAxisSpacing: 8.w,
-                childAspectRatio: 2.5,
+              child: Wrap(
+                spacing: 8.w,
+                runSpacing: 8.h,
+                children: widget.values.map((value) {
+                  final isSelected = widget.selectedValues.contains(value);
+                  return _buildFilterChip(
+                    value,
+                    isSelected,
+                    () => widget.onToggle(value),
+                  );
+                }).toList(),
               ),
-              itemBuilder: (context, index) {
-                final value = widget.values[index];
-                final isSelected = widget.selectedValues.contains(value);
-                return _buildFilterChip(
-                  value,
-                  isSelected,
-                  () => widget.onToggle(value),
-                );
-              },
             ),
           ),
         ),
@@ -138,7 +132,7 @@ class _FilterSectionState extends State<_FilterSection> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
@@ -150,14 +144,14 @@ class _FilterSectionState extends State<_FilterSection> {
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (isSelected) ...[
               Icon(Icons.check,
                   size: 14.sp, color: AppColorsManager.mainDarkBlue),
               horizontalSpacing(4),
             ],
-            Expanded(
+            Flexible(
               child: Text(
                 label,
                 style: AppTextStyles.font14BlackMedium.copyWith(
@@ -166,7 +160,6 @@ class _FilterSectionState extends State<_FilterSection> {
                       isSelected ? AppColorsManager.mainDarkBlue : Colors.black,
                 ),
                 textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
