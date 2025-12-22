@@ -4,8 +4,10 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
+import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
+
 class CategoryFiltersWidget extends StatelessWidget {
-  final List<Map<String, dynamic>> filters;
+  final List<MedicalFilterModel> filters;
   final Map<String, Set<String>> selectedFilters;
   final Function(String, String) onFilterToggle;
 
@@ -32,17 +34,34 @@ class CategoryFiltersWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: filters.map((filter) {
-          final String title = filter['title'] ?? "";
-          final List<String> values = List<String>.from(filter['values'] ?? []);
+          final String title = filter.title;
+          final String displayTitle = filter.displayTitle ?? title;
+          final String? sectionTitle = filter.sectionTitle;
+          final List<String> values = filter.values;
           final bool isLast = filters.last == filter;
 
           return Padding(
             padding: EdgeInsets.only(bottom: isLast ? 0 : 16.h),
-            child: _FilterSection(
-              title: title,
-              values: values,
-              selectedValues: selectedFilters[title] ?? {},
-              onToggle: (value) => onFilterToggle(title, value),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (sectionTitle != null) ...[
+                  Text(
+                    sectionTitle,
+                    style: AppTextStyles.font16BlackSemiBold.copyWith(
+                      color: AppColorsManager.mainDarkBlue,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  verticalSpacing(12),
+                ],
+                _FilterSection(
+                  title: displayTitle,
+                  values: values,
+                  selectedValues: selectedFilters[title] ?? {},
+                  onToggle: (value) => onFilterToggle(title, value),
+                ),
+              ],
             ),
           );
         }).toList(),

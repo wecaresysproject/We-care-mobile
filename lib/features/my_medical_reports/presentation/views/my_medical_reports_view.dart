@@ -54,8 +54,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                 return Column(
                   children: [
                     MedicalReportCategoryItem(
-                      title: category['title']!,
-                      iconPath: category['image']!,
+                      title: category.title,
+                      iconPath: category.image,
                       isExpanded: isExpanded,
                       isSelected: isSelected,
                       onExpandToggle: () {
@@ -70,12 +70,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                       },
                     ),
                     if (isExpanded) ...[
-                      if (category['selectionType'] == 'selection' ||
-                          category['selectionType'] ==
-                              'selection_and_filters')
+                      if (category.selectionType == 'selection' ||
+                          category.selectionType == 'selection_and_filters')
                         MedicalCategorySelectionWidget(
-                          options: List<String>.from(
-                              category['radioOptions'] ?? []),
+                          options: category.radioOptions,
                           selectedValues: _selectedOptionValues[index] ?? {},
                           onChanged: (value, isSelected) {
                             setState(() {
@@ -90,12 +88,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                             });
                           },
                         ),
-                      if (category['selectionType'] == 'filters' ||
-                          category['selectionType'] ==
-                              'selection_and_filters')
+                      if (category.selectionType == 'filters' ||
+                          category.selectionType == 'selection_and_filters')
                         CategoryFiltersWidget(
-                          filters: List<Map<String, dynamic>>.from(
-                              category['filters'] ?? []),
+                          filters: category.filters,
                           selectedFilters: _selectedFilters[index] ?? {},
                           onFilterToggle: (filterTitle, value) {
                             setState(() {
