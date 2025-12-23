@@ -91,7 +91,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                       if (category.selectionType == 'filters' ||
                           category.selectionType == 'selection_and_filters')
                         CategoryFiltersWidget(
-                          filters: category.filters,
+                          filterSections: category.filterSections,
                           selectedFilters: _selectedFilters[index] ?? {},
                           onFilterToggle: (filterTitle, value) {
                             setState(() {

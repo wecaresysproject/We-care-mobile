@@ -7,20 +7,20 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 
 class CategoryFiltersWidget extends StatelessWidget {
-  final List<MedicalFilterModel> filters;
+  final List<MedicalFilterSectionModel> filterSections;
   final Map<String, Set<String>> selectedFilters;
   final Function(String, String) onFilterToggle;
 
   const CategoryFiltersWidget({
     super.key,
-    required this.filters,
+    required this.filterSections,
     required this.selectedFilters,
     required this.onFilterToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (filters.isEmpty) return const SizedBox.shrink();
+    if (filterSections.isEmpty) return const SizedBox.shrink();
 
     return Container(
       margin: EdgeInsets.only(top: 4.h),
@@ -33,36 +33,41 @@ class CategoryFiltersWidget extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: filters.map((filter) {
-          final String title = filter.title;
-          final String displayTitle = filter.displayTitle ?? title;
-          final String? sectionTitle = filter.sectionTitle;
-          final List<String> values = filter.values;
-          final bool isLast = filters.last == filter;
+        children: filterSections.map((section) {
+          final String? sectionTitle = section.title;
+          final List<MedicalFilterModel> filters = section.filters;
 
-          return Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : 16.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (sectionTitle != null) ...[
-                  Text(
-                    sectionTitle,
-                    style: AppTextStyles.font16BlackSemiBold.copyWith(
-                      color: AppColorsManager.mainDarkBlue,
-                      fontSize: 14.sp,
-                    ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (sectionTitle != null) ...[
+                Text(
+                  sectionTitle,
+                  style: AppTextStyles.font16BlackSemiBold.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                    fontSize: 14.sp,
                   ),
-                  verticalSpacing(12),
-                ],
-                _FilterSection(
-                  title: displayTitle,
-                  values: values,
-                  selectedValues: selectedFilters[title] ?? {},
-                  onToggle: (value) => onFilterToggle(title, value),
                 ),
+                verticalSpacing(12),
               ],
-            ),
+              ...filters.map((filter) {
+                final String title = filter.title;
+                final String displayTitle = filter.displayTitle ?? title;
+                final List<String> values = filter.values;
+                final bool isLast =
+                    filterSections.last == section && filters.last == filter;
+
+                return Padding(
+                  padding: EdgeInsets.only(bottom: isLast ? 0 : 16.h),
+                  child: _FilterSection(
+                    title: displayTitle,
+                    values: values,
+                    selectedValues: selectedFilters[title] ?? {},
+                    onToggle: (value) => onFilterToggle(title, value),
+                  ),
+                );
+              }),
+            ],
           );
         }).toList(),
       ),

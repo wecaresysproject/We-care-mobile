@@ -38,81 +38,84 @@ final medicinesCategory = MedicalCategoryModel(
   title: "الأدوية",
   image: "assets/images/medicines_icon.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "اسم الدواء",
-      values: [
-        "بنادول",
-        "كونجستال",
-        "أوجمنتين",
-        "بروفين"
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "اسم الدواء",
+          values: ["بنادول", "كونجستال", "أوجمنتين", "بروفين"],
+        ),
+        MedicalFilterModel(
+          title: "السنة",
+          values: [
+            "2024",
+            "2023",
+            "2022",
+            "2021",
+            "2020",
+            "2019",
+            "2018",
+            "2017",
+            "2016",
+            "2015",
+            "2014",
+            "2013",
+            "2012",
+            "2011",
+            "2010",
+            "2009",
+            "2008",
+            "2007",
+            "2006",
+            "2005",
+            "2004",
+            "2003",
+            "2002",
+            "2001",
+            "2000"
+          ],
+        ),
       ],
     ),
-    MedicalFilterModel(
-      title: "السنة",
-      values: [
-        "2024",
-        "2023",
-        "2022",
-        "2021",
-        "2020",
-        "2019",
-        "2018",
-        "2017",
-        "2016",
-        "2015",
-        "2014",
-        "2013",
-        "2012",
-        "2011",
-        "2010",
-        "2009",
-        "2008",
-        "2007",
-        "2006",
-        "2005",
-        "2004",
-        "2003",
-        "2002",
-        "2001",
-        "2000"
-      ],
-    ),
-    MedicalFilterModel(
-      sectionTitle: "الادوية منتهية الصلاحية اخر 3 أشهر",
-      title: "اسم الدواء_expired",
-      displayTitle: "اسم الدواء",
-      values: ["بنادول", "كونجستال", "أوجمنتين", "بروفين"],
-    ),
-    MedicalFilterModel(
-      title: "السنة_expired",
-      displayTitle: "السنة",
-      values: [
-        "2024",
-        "2023",
-        "2022",
-        "2021",
-        "2020",
-        "2019",
-        "2018",
-        "2017",
-        "2016",
-        "2015",
-        "2014",
-        "2013",
-        "2012",
-        "2011",
-        "2010",
-        "2009",
-        "2008",
-        "2007",
-        "2006",
-        "2005",
-        "2004",
-        "2003",
-        "2002",
-        "2001",
-        "2000"
+    MedicalFilterSectionModel(
+      title: "الادوية منتهية الصلاحية اخر 3 أشهر",
+      filters: [
+        MedicalFilterModel(
+          title: "اسم الدواء_expired",
+          displayTitle: "اسم الدواء",
+          values: ["بنادول", "كونجستال", "أوجمنتين", "بروفين"],
+        ),
+        MedicalFilterModel(
+          title: "السنة_expired",
+          displayTitle: "السنة",
+          values: [
+            "2024",
+            "2023",
+            "2022",
+            "2021",
+            "2020",
+            "2019",
+            "2018",
+            "2017",
+            "2016",
+            "2015",
+            "2014",
+            "2013",
+            "2012",
+            "2011",
+            "2010",
+            "2009",
+            "2008",
+            "2007",
+            "2006",
+            "2005",
+            "2004",
+            "2003",
+            "2002",
+            "2001",
+            "2000"
+          ],
+        ),
       ],
     ),
   ],
@@ -122,14 +125,18 @@ final chronicDiseasesCategory = MedicalCategoryModel(
   title: "الامراض المزمنه",
   image: "assets/images/time_icon.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "المرض المزمن",
-      values: ["ضغط", "سكر", "قلب"],
-    ),
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "المرض المزمن",
+          values: ["ضغط", "سكر", "قلب"],
+        ),
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+      ],
     ),
   ],
 );
@@ -138,18 +145,22 @@ final urgentComplaintsCategory = MedicalCategoryModel(
   title: "الشكاوى الطارئة",
   image: "assets/images/urgent_icon.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2025", "2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "العضو",
-      values: ["الرأس", "الصدر", "البطن", "الظهر"],
-    ),
-    MedicalFilterModel(
-      title: "الشكوى",
-      values: ["ألم شديد", "دوخة", "غثيان"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2025", "2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "العضو",
+          values: ["الرأس", "الصدر", "البطن", "الظهر"],
+        ),
+        MedicalFilterModel(
+          title: "الشكوى",
+          values: ["ألم شديد", "دوخة", "غثيان"],
+        ),
+      ],
     ),
   ],
 );
@@ -159,18 +170,22 @@ final doctorsPrescriptionCategory = MedicalCategoryModel(
   image: "assets/images/doctor_medicines.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق صور الروشتات"],
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023", "2022", "2021"],
-    ),
-    MedicalFilterModel(
-      title: "التخصص",
-      values: ["عيون", "أسنان", "عظام", "باطنة"],
-    ),
-    MedicalFilterModel(
-      title: "اسم الطبيب",
-      values: ["د. أحمد", "د. محمد", "د. سارة"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023", "2022", "2021"],
+        ),
+        MedicalFilterModel(
+          title: "التخصص",
+          values: ["عيون", "أسنان", "عظام", "باطنة"],
+        ),
+        MedicalFilterModel(
+          title: "اسم الطبيب",
+          values: ["د. أحمد", "د. محمد", "د. سارة"],
+        ),
+      ],
     ),
   ],
 );
@@ -180,14 +195,18 @@ final medicalTestsCategory = MedicalCategoryModel(
   image: "assets/images/test_tube.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق صور التحاليل"],
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "مجموعة التحاليل",
-      values: ["دم", "هرمونات", "بول", "براز"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "مجموعة التحاليل",
+          values: ["دم", "هرمونات", "بول", "براز"],
+        ),
+      ],
     ),
   ],
 );
@@ -197,18 +216,22 @@ final radiologyCategory = MedicalCategoryModel(
   image: "assets/images/x_ray.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق صور الاشعة"],
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "منطقة الأشعة",
-      values: ["الصدر", "القدم", "الرأس"],
-    ),
-    MedicalFilterModel(
-      title: "نوع الأشعة",
-      values: ["سينية", "مقطعية", "رنين"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "منطقة الأشعة",
+          values: ["الصدر", "القدم", "الرأس"],
+        ),
+        MedicalFilterModel(
+          title: "نوع الأشعة",
+          values: ["سينية", "مقطعية", "رنين"],
+        ),
+      ],
     ),
   ],
 );
@@ -218,10 +241,14 @@ final surgeriesCategory = MedicalCategoryModel(
   image: "assets/images/surgery_icon.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق التقرير الطبي"],
-  filters: [
-    MedicalFilterModel(
-      title: "اسم العملية",
-      values: ["زايدة", "لوز", "فتق"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "اسم العملية",
+          values: ["زايدة", "لوز", "فتق"],
+        ),
+      ],
     ),
   ],
 );
@@ -240,10 +267,14 @@ final allergiesCategory = MedicalCategoryModel(
   title: "الحساسية",
   image: "assets/images/hand_icon.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "النوع",
-      values: ["جلدية", "صدرية", "طعام"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "النوع",
+          values: ["جلدية", "صدرية", "طعام"],
+        ),
+      ],
     ),
   ],
 );
@@ -253,22 +284,26 @@ final eyesCategory = MedicalCategoryModel(
   image: "assets/images/eye_module_pic.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق التقرير الطبي"],
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "المنطقه",
-      values: ["الشبكية", "القرنية"],
-    ),
-    MedicalFilterModel(
-      title: "الأعراض",
-      values: ["احمرار", "زغللة"],
-    ),
-    MedicalFilterModel(
-      title: "الإجراء الطبي",
-      values: ["كشف", "عملية"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "المنطقه",
+          values: ["الشبكية", "القرنية"],
+        ),
+        MedicalFilterModel(
+          title: "الأعراض",
+          values: ["احمرار", "زغللة"],
+        ),
+        MedicalFilterModel(
+          title: "الإجراء الطبي",
+          values: ["كشف", "عملية"],
+        ),
+      ],
     ),
   ],
 );
@@ -278,22 +313,26 @@ final dentalCategory = MedicalCategoryModel(
   image: "assets/images/teeth_icon.png",
   selectionType: "selection_and_filters",
   radioOptions: ["ارفاق التقرير الطبي"],
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "لرقم السن",
-      values: ["1", "2", "3", "4"],
-    ),
-    MedicalFilterModel(
-      title: "الشكوى",
-      values: ["ألم", "تسوس"],
-    ),
-    MedicalFilterModel(
-      title: "الإجراء الطبي",
-      values: ["حشو", "خلع"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "لرقم السن",
+          values: ["1", "2", "3", "4"],
+        ),
+        MedicalFilterModel(
+          title: "الشكوى",
+          values: ["ألم", "تسوس"],
+        ),
+        MedicalFilterModel(
+          title: "الإجراء الطبي",
+          values: ["حشو", "خلع"],
+        ),
+      ],
     ),
   ],
 );
@@ -302,18 +341,22 @@ final mentalHealthCategory = MedicalCategoryModel(
   title: "الأمراض النفسية",
   image: "assets/images/mental_health.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "السنة",
-      values: ["2024", "2023"],
-    ),
-    MedicalFilterModel(
-      title: "نوع المرض النفسي",
-      values: ["اكتئاب", "قلق"],
-    ),
-    MedicalFilterModel(
-      title: " المحاور النفسية و السلوكية ",
-      values: ["جلسات", "أدوية"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2024", "2023"],
+        ),
+        MedicalFilterModel(
+          title: "نوع المرض النفسي",
+          values: ["اكتئاب", "قلق"],
+        ),
+        MedicalFilterModel(
+          title: " المحاور النفسية و السلوكية ",
+          values: ["جلسات", "أدوية"],
+        ),
+      ],
     ),
   ],
 );
@@ -336,10 +379,14 @@ final supplementsCategory = MedicalCategoryModel(
   title: "المكملات الغذائية",
   image: "assets/images/vitamin_module_icon.png",
   selectionType: "filters",
-  filters: [
-    MedicalFilterModel(
-      title: "اسم الفيتامين أو المكمل الغذائي",
-      values: ["فيتامين د", "حديد", "زنك"],
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "اسم الفيتامين أو المكمل الغذائي",
+          values: ["فيتامين د", "حديد", "زنك"],
+        ),
+      ],
     ),
   ],
 );
