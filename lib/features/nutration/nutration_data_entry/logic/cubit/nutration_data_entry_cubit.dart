@@ -217,7 +217,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       emit(
         state.copyWith(
           submitNutrationDataStatus: RequestStatus.failure,
-          message: 'حدث خطأ أثناء تحليل البيانات الغذائية',
+          message: 'حدث خطأ أثناء تحليل البيانات الغذائية $e',
         ),
       );
     }
@@ -747,6 +747,30 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       failure: (failure) {
         safeEmit(
           state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> fetchSystemPrompt() async {
+    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
+
+    final result = await _nutrationDataEntryRepo.fetchNutrationSystemPrompt();
+    result.when(
+      success: (prompt) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.success,
+            systemPrompt: prompt,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );

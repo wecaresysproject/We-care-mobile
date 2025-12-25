@@ -4,69 +4,154 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
-import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 
 class DeepSeekService {
   static final String deepSeekBaseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
 
   static final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
+
+  static String? cachedSystemPrompt;
+
+//! real deepseek
   static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
     try {
-      AppLogger.debug(' deepSeekBaseUrl: $apiKey $deepSeekBaseUrl');
-      final prompt = buildNutritionPrompt(dietInput);
-      AppLogger.debug('Prompt: $prompt');
+      final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
+      final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
 
+      AppLogger.debug('DeepSeek Direct URL: $baseUrl');
+      AppLogger.info('system prompt : ${buildSystemNutritionPrompt()}');
       final response = await http.post(
-        Uri.parse(deepSeekBaseUrl),
+        Uri.parse(baseUrl),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $apiKey',
         },
-        body: jsonEncode({
-          'model': "deepseek/deepseek-chat",
-          'messages': [
-            {
-              'role': 'user',
-              'content': prompt,
-            }
-          ],
-          'max_tokens': 4000,
-          'temperature': 0.3,
-        }),
+        body: jsonEncode(
+          {
+            'model': 'deepseek-chat',
+            'messages': [
+              {
+                'role': 'system',
+                'content': buildSystemNutritionPrompt(),
+              },
+              {
+                'role': 'user',
+                'content': buildUserDietPrompt(dietInput),
+              }
+            ],
+            'temperature': 0.1,
+            'max_tokens': 8000, // مهم لتقليل cost ومنع expansion
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
-        /// 🔥 هنا الإصلاح الأساسي — UTF8 correct decoding
+        /// ✅ UTF8 safe decoding
         final decoded = jsonDecode(utf8.decode(response.bodyBytes));
 
-        final content = decoded['choices'][0]['message']['content'];
-        AppLogger.debug('deepseek Response (decoded): $content');
-
-        /// استخراج JSON من النص
-        final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
-
-        if (jsonMatch != null) {
-          final jsonString = jsonMatch.group(0)!;
-
-          /// parse JSON
-          final nutritionJson = jsonDecode(jsonString);
-
-          return NutrationFactsModel.fromJson(nutritionJson);
+        final content = decoded['choices']?[0]?['message']?['content'];
+        if (content == null) {
+          AppLogger.error('DeepSeek response content is null');
+          return null;
         }
 
-        AppLogger.error("❗ JSON not found inside LLM response");
+        AppLogger.debug('DeepSeek response (raw): $content');
+
+        final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
+
+        if (jsonMatch == null) {
+          AppLogger.error('❗ JSON not found inside DeepSeek response');
+          return null;
+        }
+
+        final jsonString = jsonMatch.group(0)!;
+        final nutritionJson = jsonDecode(jsonString);
+
+        return NutrationFactsModel.fromJson(nutritionJson);
       } else {
         AppLogger.error(
-            'deepseek API Error: ${response.statusCode} - ${response.body}');
+          'DeepSeek API Error: ${response.statusCode} - ${response.body}',
+        );
       }
-    } catch (e) {
+    } catch (e, stack) {
       AppLogger.error('Error analyzing diet plan: $e');
+      AppLogger.error('StackTrace: $stack');
     }
 
     return null;
   }
 
-  static String buildNutritionPrompt(String dietInput) {
+  // static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
+  //   try {
+  //     AppLogger.debug(' deepSeekBaseUrl: $apiKey $deepSeekBaseUrl');
+
+  //     final response = await http.post(
+  //       Uri.parse("https://openrouter.ai/api/v1/chat/completions"),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization':
+  //             'Bearer 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',
+  //       },
+  //       body: jsonEncode(
+  //         {
+  //           'model':
+  //               "deepseek/deepseek-r1-0528:free", //"deepseek/deepseek-chat",
+  //           // "reasoning": {"enabled": true},
+  //           'messages': [
+  //             {
+  //               'role': 'system',
+  //               'content': buildSystemNutritionPrompt(),
+  //             },
+  //             {
+  //               'role': 'user',
+  //               'content': buildUserDietPrompt(dietInput),
+  //             }
+  //           ],
+  //
+  //           // 'max_tokens': 4000,
+  //           'temperature': 0.2,
+  //         },
+  //       ),
+  //     );
+
+  //     // input tokens (algorithm) + buildUserDietPrompt <= limited cridets
+
+  //     if (response.statusCode == 200) {
+  //       /// 🔥 هنا الإصلاح الأساسي — UTF8 correct decoding
+  //       final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+  //       AppLogger.debug('deepseek Response (decoded): $decoded');
+
+  //       final content = decoded['choices'][0]['message']['content'];
+  //       // AppLogger.debug('deepseek Response (decoded): $content');
+
+  //       /// استخراج JSON من النص
+  //       final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
+
+  //       if (jsonMatch != null) {
+  //         final jsonString = jsonMatch.group(0)!;
+
+  //         /// parse JSON
+  //         final nutritionJson = jsonDecode(jsonString);
+
+  //         return NutrationFactsModel.fromJson(nutritionJson);
+  //       }
+
+  //       AppLogger.error("❗ JSON not found inside LLM response");
+  //     } else {
+  //       AppLogger.error(
+  //           'deepseek API Error: ${response.statusCode} - ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     AppLogger.error('Error analyzing diet plan: $e');
+  //   }
+
+  //   return null;
+  // }
+
+  static String buildSystemNutritionPrompt() {
+    if (cachedSystemPrompt != null && cachedSystemPrompt!.isNotEmpty) {
+      return cachedSystemPrompt!;
+    }
     return '''
 أنت محلل غذائي تنفيذي متخصص في تحليل الأصناف الغذائية اعتمادًا على خوارزمية تفصيلية معقدة.
 
@@ -81,19 +166,13 @@ class DeepSeekService {
    - المرحلة 4: التجميع والتحقق
    - المرحلة 5: الإخراج النهائي
 3) استخدام نفس المنطق والجداول والقواعد المذكورة بالضبط (مضاعفات الحصص، نسب اللحم إلى العظم، قواعد استبعاد المكونات، تحويل الوحدات، عدد الأعمدة، إلخ).
-4) بعد تنفيذ الخوارزمية بالكامل على "الطعام المدخل الفعلي" الذي سيتم تزويدك به في هذا البرومبت، يجب أن تُرجِع **JSON فقط** بالهيكل المحدد أدناه **بدون أي نص إضافي قبله أو بعده**.
+4) بعد تنفيذ الخوارزمية بالكامل على الطعام المدخل فعليًا من المستخدم، يجب أن تُرجِع **JSON فقط** بالهيكل المحدد أدناه **بدون أي نص إضافي قبله أو بعده**.
 
 ⚠️ تنبيه بالغ الأهمية:
 - نص الخوارزمية الكامل المرفق أدناه يحتوي في آخره على سطر يبدأ بـ: "الطعام المدخل:" متبوعًا بقائمة أطعمة مثل "دقية بامية، مسقعة باللحم المفروم، ...".
 - هذه القائمة هي **مثال توضيحي فقط** ضمن وصف الخوارزمية، وليست الطعام الحقيقي المطلوب تحليله في هذه الجلسة.
 - **يجب تجاهُل هذا المثال تمامًا** وعدم استخدامه في التحليل في هذه الجلسة.
-- الطعام الحقيقي المطلوب تحليله هو النص الموجود في المتغير التالي داخل هذا البرومبت:
-
-=====================================================================
-📌 الطعام المدخل الفعلي للتحليل (Actual User Diet Input)
-=====================================================================
-
-"$dietInput"
+- الطعام الحقيقي المطلوب تحليله سيتم تزويدك به لاحقًا في رسالة مستقلة.
 
 =====================================================================
 📌 هيكل JSON الإلزامي النهائي (Required JSON Output Structure)
@@ -159,8 +238,6 @@ class DeepSeekService {
 - الحقل "userDietplan" اجعله دائمًا القيمة النصية الثابتة: "UserDietPlan" في هذا السياق، إلا إذا طُلِب غير ذلك صراحةً.
 - الحقول الرقمية يجب أن تكون أرقامًا (integer أو float) قابلة للـ JSON.
 - لا تستخدم Markdown، لا تستخدم ```، لا تضف أي جملة تفسيرية.
-
-بعد قراءة الخوارزمية التالية وتنفيذها على "$dietInput"، يجب أن تنتج مباشرة الكائن JSON النهائي فقط.
 
 =====================================================================
 📚 الخوارزمية الشاملة لنظام تحليل التغذية (يجب تطبيقها كما هي)
@@ -368,56 +445,7 @@ text
   - خزن القيم المحسوبة في الصف المقابل في الجدول
   - تأكد من وجود 34 قيمة رقمية (حتى لو 0.0)
 المرحلة 4: التجميع والتحقق
-الخطوة 4.1: إنشاء الجدول الكامل
-🗂️ هيكل الجدول النهائي (43 عموداً)
-الأعمدة الوصفية (1-9):
-A: الصنف الغذائي
-B: الكمية/العدد
-C: المكون الأساسي
-D: الكمية
-E: وحدة
-F: طريقة التحليل
-G: مصدر الوصفة
-H: USDA FDC ID (رقم فقط)
-I: USDA Description (وصف كامل)
-
-الأعمدة الغذائية (10-43): العناصر الـ 34 بالترتيب:
-J: calories
-K: protein
-L: totalFat
-M: saturatedFats
-N: monounsaturatedFats
-O: polyunsaturatedFats
-P: cholesterol
-Q: carbohydrates
-R: fiber
-S: sugars
-T: sodium
-U: potassium
-V: calcium
-W: iron
-X: magnesium
-Y: zinc
-Z: copper
-AA: phosphorus
-AB: manganese
-AC: seleniumMcg
-AD: iodineMcg
-AE: vitaminAMcg
-AF: vitaminDMcg
-AG: vitaminEMg
-AH: vitaminKMcg
-AI: vitaminCMg
-AJ: vitaminB1Mg
-AK: vitaminB2Mg
-AL: vitaminB3Mg
-AM: vitaminB6Mg
-AN: folateMcg
-AO: vitaminB12Mcg
-AP: cholineMg
-AQ: waterL
 📊 مثال تطبيقي: "خبز بلدي"
-csv
 "خبز بلدي";"1 رغيف (~90 جم)";"خبز عربي/بلدي";90;"g";"USDA_DIRECT_MATCH";"-";172184;"Bread, pita, white";247.5;8.1;0.63;0.135;0.09;0.27;0;49.5;2.7;0.9;482.4;135;27;1.8;45;0.9;0.135;90;0.45;18.9;1.8;0;0;0.18;0.9;0;0.09;0.09;0.9;0.09;18;0;13.5;0.063
 ⚙️ تنسيق الملف
 المحدد: فاصلة منقوطة ;
@@ -464,175 +492,18 @@ text
 الثبات عبر الجلسات: نفس الصنف → نفس التحليل → نفس النتائج.
 معالجة الأخطاء: إذا فشل البحث في جميع المصادر، أعد خطأ واضحاً.
 
-الطعام المدخل:
-"دقية بامية، مسقعة باللحم المفروم، مقلوبة باللحم الضاني، كسكسي بالسكر، طبق كشري بالدقة، ٣/٤ كوب كشك بالبصل، طبق شكشوكة، ٣/٤ كوب متوسط ملوخية، ربع دجاجة محمرة (صدر) وزن الفرخة صافي قبل الطهي ١،٢٥٠ جرام، قطعة مكرونة بالباشميل و اللحم المفروم, 4 وحدات محشي باذنجان ابيض, ساندوتش طرب بالطحينه, 3 قطع بيتزا بابا جونز بالببروني, صنية بطاطس حمراء في الفرن.
-
-ابدأ المعالجة فوراً باستخدام الخوارزمية الشاملة لنظام تحليل التغذية.
-
-=====================================================================
-
-تذكير نهائي:
-- تجاهَل "الطعام المدخل" المذكور في نص الخوارزمية أعلاه باعتباره مثالاً تدريبياً فقط.
-- استخدم فقط النص التالي كمدخل فعلي للتحليل:
-"$dietInput"
-
 بعد تنفيذ جميع المراحل، أخرج JSON فقط بالهيكل المحدد سابقًا ولا تضف أي نص آخر.
 ''';
   }
 
-  static Future<SingleNutrientModel?> analyzeSingleNutrient({
-    required String dietInput,
-    required String targetNutrient,
-    required int targetValue,
-  }) async {
-    try {
-      AppLogger.debug(
-          'DeepSeek Single Nutrient: $apiKey $deepSeekBaseUrl | nutrient: $targetNutrient');
-
-      final prompt = buildSingleNutrientPrompt(
-        dietInput: dietInput,
-        targetNutrient: targetNutrient,
-        targetValue: targetValue,
-      );
-
-      final response = await http.post(
-        Uri.parse(deepSeekBaseUrl),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $apiKey',
-        },
-        body: jsonEncode(
-          {
-            'model': "deepseek/deepseek-chat",
-            'messages': [
-              {
-                'role': 'user',
-                'content': prompt,
-              }
-            ],
-            'max_tokens': 1000,
-            'temperature': 0.2,
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        /// 🔥 تصحيح الترميز للـ response كامل
-        final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
-        final content = decodedResponse['choices'][0]['message']['content'];
-
-        AppLogger.debug("DeepSeek Parsed Content:\n$content");
-
-        /// استخراج JSON فقط من النص
-        final match = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
-        if (match != null) {
-          final jsonRaw = match.group(0)!;
-
-          /// ❗ لا نستخدم utf8.decode هنا — مباشرة JSON decode
-          final parsed = jsonDecode(jsonRaw);
-
-          return SingleNutrientModel.fromJson(parsed);
-        }
-        AppLogger.error("❗JSON Not Found in response");
-      } else {
-        AppLogger.error("API Error ${response.statusCode} → ${response.body}");
-      }
-    } catch (e) {
-      AppLogger.error("❗Error analyzing single nutrient → $e");
-    }
-    return null;
-  }
-
-  /// يبني البرومبت لتحليل عنصر غذائي واحد (Dynamic Nutrient)
-  static String buildSingleNutrientPrompt({
-    required String dietInput,
-    required String targetNutrient,
-    required int targetValue,
-  }) {
+  static String buildUserDietPrompt(String dietInput) {
     return '''
-أنت محلل غذائي متخصص. سيتم تزويدك بعنصر غذائي واحد مستهدف للتحليل (مثل: بروتين، كالوري، فيتامين C...)
-وبقائمة أطعمة ومشروبات تم استهلاكها خلال اليوم، إضافةً إلى "قيمة هدف" يجب أن لا يتجاوزها مجموع التحليل.
+الطعام المدخل للتحليل:
 
-العنصر المطلوب تحليله: "$targetNutrient"  
-القيمة القصوى المسموح بها لهذا العنصر: $targetValue  
+$dietInput
 
-----------
-
-# مهمتك الأساسية
-
-1) تحليل كل صنف غذائي وارد في القائمة بدون استثناء.  
-2) تقدير الأوزان والاحجام وتحويلها إلى جرام/مل حسب القواعد الآتية:
-   - بيضة = 50 جم
-   - راحة يد بروتين ≈ 100–120 جم
-   - قبضة يد نشويات/فاكهة ≈ 120–150 جم
-   - طبق عادي ممتلئ ≈ 300–350 جم
-   - كوب = 240 مل
-   - ملعقة كبيرة = 15 جم/مل
-   - ملعقة صغيرة = 5 جم/مل
-3) الاعتماد على USDA FoodData Central كمصدر أساسي لقيم "$targetNutrient".  
-4) عند الغموض، استخدم الوزن القياسي الأكثر شيوعًا في USDA.  
-5) الطهي:
-   - القلي يضيف 12 جم زيت افتراضيًا لكل حصة إذا لم يذكر المستخدم كمية الزيت.
-   - السلق والشوي لا يضيفان دهونًا تذكر.
-6) **ممنوع اختراع أطعمة غير مذكورة** — التزم بنص المدخلات فقط.
-7) المطلوب حساب **"$targetNutrient" فقط**.
-8) **مهم جداً — التقييد بالقيمة القصوى targetValue**:
-   - مجموع "$targetNutrient" من جميع الأصناف **يجب ألا يتجاوز $targetValue**.
-   - إذا كانت القيم المحسوبة تتجاوز الحد، قم تلقائيًا بعمل:
-     - مراجعة تقدير الكميات،
-     - اختيار أقل التقديرات المنطقية،
-     - ضبط الحصص بحيث يبقى مجموع "$targetNutrient" ≤ $targetValue،
-     - دون اختلاق بيانات غير موجودة.
-   - الهدف: **نتيجة نهائية متسقة وغير متضاربة، لا تتخطى القيمة المحددة.**
-
-9) قاعدة الالتزام الإجباري بالهدف (CRITICAL RULE):
-   - مجموع قيم "$targetNutrient" لكل الأصناف **يجب أن يساوي تمامًا** القيمة "$targetValue" أو يكون أقل منها بشكل بسيط جدًا (<= 1%).
-   - إذا أدت الكميات التقديرية العادية إلى تجاوز "$targetValue"، يجب عليك إعادة تقدير الكميات تلقائيًا:
-       * تقليل حجم الحصة،
-       * استخدام الحد الأدنى المنطقي،
-       * أو إعادة ضبط الوزن الافتراضي للصنف.
-   - **ممنوع منعًا باتًا** أن يكون مجموع القيم في الحقل "total_nutrient_intake" أعلى من "$targetValue".
-   - **ممنوع كذلك** أن يظهر "total_nutrient_intake" ضمن الحد بينما مجموع القيم داخل "items" يتجاوزه — كلاهما يجب أن يتطابقا رياضيًا.
-   - في حالة وجود تضارب، أعد الحساب حتى يصبح:
-       total_nutrient_intake == sum(items[nutrient_intake])
-   - القاعدة الذهبية: **لا يتم إنهاء الحساب قبل التأكد أن إجمالي المدخول النهائي مطابق للحد المستهدف بشكل دقيق.**
-
-----------
-
-
-# قائمة الأطعمة والمشروبات:
-
-"$dietInput"
-
-----------
-
-أرجع النتيجة بالصيغة التالية، مع أرقام فعلية بدل الأصفار:
-
-{
-  "items": [
-    {
-      "name": "اسم الصنف الغذائي",
-      "quantity_grams": 0,
-      "nutrient_per_100g": 0,
-      "nutrient_intake": 0
-    }
-  ],
-  "total_nutrient_intake": 0
-}
-
-- name: اسم الصنف كما فسّرته أنت.
-- quantity_grams: الوزن الفعلي المقدر أو المذكور (بالجرام أو ما يعادلها من مل).
-- nutrient_per_100g: قيمة "$targetNutrient" لكل 100 جم/مل حسب المرجع الغذائي.
-- nutrient_intake: القيمة الفعلية المستمدة من الكمية المتناولة.
-- total_nutrient_intake: مجموع كل "nutrient_intake" لكل الأصناف.
-
-أرجع JSON فقط بدون أي نص أو شرح إضافي خارج البنية السابقة.
+نفّذ الخوارزمية المذكورة في رسالة النظام حرفيًا،
+وأخرج JSON فقط بالهيكل المحدد، بدون أي نص إضافي.
 ''';
   }
 }
-
-// 9) **مهم جداً — الاتساق بين كل صنف والنتيجة النهائية:**
-//    - يجب أن يكون مجموع "nutrient_intake" لجميع الأصناف مطابقًا للمجال المنطقي بحيث لا يتعدى "target_limit".
-//    - إذا كان صنف واحد يمتلك قيمة "$targetNutrient" عالية ترفع المجموع فوق $targetValue، يجب تعديل تقدير الكمية تلقائيًا لتصبح الكمية منطقية وتبقى النتيجة النهائية ضمن الحد.
-//    - **ممنوع تمامًا أن يظهر أي صنف بقيمة nutrient_intake تؤدي إلى إجمالي أعلى من $targetValue بينما يظهر total_nutrient_intake أقل أو يساوي الحد.**
-//    - جميع القيم يجب أن تكون متناسقة، منطقية، ولا تعتمد على تخفيض المجموع النهائي فقط دون تعديل القيم الفردية.

@@ -35,7 +35,10 @@ class BottomSheetChildWidget extends StatelessWidget {
                 color: Colors.grey.shade100,
                 child: Text(
                   text,
-                  style: const TextStyle(height: 2),
+                  textAlign: TextAlign.justify,
+                  style: const TextStyle(
+                    height: 2,
+                  ),
                 ),
               ),
             ),

@@ -37,4 +37,7 @@ class NutrationApiConstants {
       "SmartNutritionAnalyzer/nutrient";
   static const analyzeSingleNutrient =
       "SmartNutritionAnalyzer/nutrition-by-food";
+
+  static const fetchNutrationSystemPrompt =
+      "LongTextContents/SmartNutritionAnalyzer/system-prompt";
 }

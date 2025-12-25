@@ -10,6 +10,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/system_prompt_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/instruction_text_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/message_input_section_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/monthly_plan_grid_view_widget.dart';
@@ -76,6 +77,26 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
         },
         child: Builder(builder: (context) {
           return Scaffold(
+            floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                // Navigate to SystemPromptView
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<NutrationDataEntryCubit>(),
+                      child: const SystemPromptView(),
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: AppColorsManager.mainDarkBlue,
+              child: const Icon(
+                Icons.download,
+                color: Colors.white,
+              ),
+            ),
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
               toolbarHeight: 0.h,

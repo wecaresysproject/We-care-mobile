@@ -126,4 +126,6 @@ abstract class NutrationServices {
     @Query('elementName') String elementName,
     @Query('date') String date,
   );
+  @GET(NutrationApiConstants.fetchNutrationSystemPrompt)
+  Future<dynamic> fetchNutrationSystemPrompt();
 }
