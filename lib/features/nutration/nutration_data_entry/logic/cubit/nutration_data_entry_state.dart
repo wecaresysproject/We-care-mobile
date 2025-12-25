@@ -29,6 +29,10 @@ class NutrationDataEntryState extends Equatable {
   final bool isAnyPlanActivated;
   final NutritionDefinitionModel? nutritionDefinition;
 
+  // System Prompt Fetching
+  final RequestStatus fetchSystemPromptStatus;
+  final String systemPrompt;
+
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
@@ -52,6 +56,8 @@ class NutrationDataEntryState extends Equatable {
     this.dataTableStatus = RequestStatus.initial,
     this.isAnyPlanActivated = false,
     this.nutritionDefinition,
+    this.fetchSystemPromptStatus = RequestStatus.initial,
+    this.systemPrompt = '',
   }) : super();
 
   const NutrationDataEntryState.initialState()
@@ -78,6 +84,8 @@ class NutrationDataEntryState extends Equatable {
           dataTableStatus: RequestStatus.initial,
           isAnyPlanActivated: false,
           nutritionDefinition: null,
+          fetchSystemPromptStatus: RequestStatus.initial,
+          systemPrompt: '',
         );
 
   NutrationDataEntryState copyWith({
@@ -103,6 +111,8 @@ class NutrationDataEntryState extends Equatable {
     RequestStatus? dataTableStatus,
     bool? isAnyPlanActivated,
     NutritionDefinitionModel? nutritionDefinition,
+    RequestStatus? fetchSystemPromptStatus,
+    String? systemPrompt,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -136,6 +146,9 @@ class NutrationDataEntryState extends Equatable {
       dataTableStatus: dataTableStatus ?? this.dataTableStatus,
       isAnyPlanActivated: isAnyPlanActivated ?? this.isAnyPlanActivated,
       nutritionDefinition: nutritionDefinition ?? this.nutritionDefinition,
+      fetchSystemPromptStatus:
+          fetchSystemPromptStatus ?? this.fetchSystemPromptStatus,
+      systemPrompt: systemPrompt ?? this.systemPrompt,
     );
   }
 
@@ -163,5 +176,7 @@ class NutrationDataEntryState extends Equatable {
         dataTableStatus,
         isAnyPlanActivated,
         nutritionDefinition,
+        fetchSystemPromptStatus,
+        systemPrompt,
       ];
 }

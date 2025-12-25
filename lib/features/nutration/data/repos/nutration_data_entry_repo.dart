@@ -7,12 +7,25 @@ import 'package:we_care/features/nutration/data/models/nutrition_definition_mode
 import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 
 class NutrationDataEntryRepo {
   final NutrationServices _nutrationServices;
 
   NutrationDataEntryRepo(this._nutrationServices);
+
+  Future<ApiResult<String>> fetchNutrationSystemPrompt() async {
+    try {
+      final response = await _nutrationServices.fetchNutrationSystemPrompt();
+      final prompt = response['data'] as String;
+      // Store in global variable
+      DeepSeekService.cachedSystemPrompt = prompt;
+      return ApiResult.success(prompt);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   Future<ApiResult<String>> postPersonalUserInfoData({
     required PostPersonalUserInfoData requestBody,
