@@ -8,6 +8,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/contact_support/presentation/views/contact_support_modal.dart';
+import 'package:we_care/features/home_tab/Presentation/views/widgets/banner_crausal_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_home_app_bar.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/faq_section_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_crausal_widget.dart';
@@ -33,9 +34,9 @@ class HomeTabView extends StatelessWidget {
                 children: [
                   HomeCustomAppBarWidget(),
                   verticalSpacing(10),
-                  HomeCarouselWidget(),
+                  const HomeCarouselWidget(),
                   verticalSpacing(8),
-                  Image.asset("assets/images/panner.png"),
+                  const BannerCrausalWidget(),
                   Image.asset("assets/images/indicators.png"),
                   verticalSpacing(16),
                   GridView.count(
