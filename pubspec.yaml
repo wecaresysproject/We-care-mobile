@@ -60,6 +60,9 @@ dependencies:
   speech_to_text: ^7.3.0
   timezone: ^0.10.0
   uuid: ^4.5.2
+  screenshot: ^3.0.0
+  pdf: ^3.10.0
+  printing: ^5.11.0
 
 dev_dependencies:
   build_runner: ^2.4.9

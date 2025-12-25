@@ -6,6 +6,8 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_report_c
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
+import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MyMedicalReportsView extends StatefulWidget {
   const MyMedicalReportsView({super.key});
@@ -23,6 +25,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   final Map<int, Set<String>> _selectedOptionValues = {};
   // Map to track selected filters for each category: {categoryIndex: {filterTitle: {selectedValues}}}
   final Map<int, Map<String, Set<String>>> _selectedFilters = {};
+  
+  bool _isExporting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +120,39 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
             ),
             verticalSpacing(20),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _isExporting
+            ? null
+            : () async {
+                setState(() {
+                  _isExporting = true;
+                });
+
+                final logic = MedicalReportExportLogic();
+             //  await logic.exportAndShareReport(context);
+
+                if (mounted) {
+                  setState(() {
+                    _isExporting = false;
+                  });
+                }
+              },
+        backgroundColor: AppColorsManager.mainDarkBlue,
+        icon: _isExporting
+            ? const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : const Icon(Icons.picture_as_pdf, color: Colors.white),
+        label: Text(
+          _isExporting ? 'Generating...' : 'Export as PDF',
+          style: const TextStyle(color: Colors.white),
         ),
       ),
     );
