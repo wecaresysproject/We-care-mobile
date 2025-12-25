@@ -1,13 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 
 import '../../../../../core/global/Helpers/bottom_sheet_child.dart';
 import '../../../../../core/global/Helpers/extensions.dart';
 import '../../../../../core/global/Helpers/font_weight_helper.dart';
-import '../../../../../core/global/Helpers/functions.dart';
 import '../../../../../core/global/theming/app_text_styles.dart';
 import '../../../../../core/global/theming/color_manager.dart';
+import '../../../logic/sign_up_cubit.dart';
 
 class TermsAndConditionsTextWidget extends StatelessWidget {
   final bool isAccepted;
@@ -69,11 +72,15 @@ class TermsAndConditionsTextWidget extends StatelessWidget {
                           context: context,
                           backgroundColor: Colors.white,
                           isScrollControlled: true,
-                          builder: (context) => ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxHeight: context.screenHeight * 0.7,
+                          builder: (context) => BlocProvider.value(
+                            value: getIt<SignUpCubit>()
+                              ..getTermsAndConditions(),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: context.screenHeight * 0.7,
+                              ),
+                              child: const TermsAndConditionView(),
                             ),
-                            child: const TermsAndConditionView(),
                           ),
                         );
                       },
@@ -98,47 +105,36 @@ class TermsAndConditionsTextWidget extends StatelessWidget {
 class TermsAndConditionView extends StatelessWidget {
   const TermsAndConditionView({super.key});
 
-  final String termsAndConditionsArabic = """
-• أُقر بأنني قد قرأت وفهمت وأوافق على شروط الاستخدام
-  وسياسة الخصوصية الخاصة بمنصة WeCare.
-
-• أوافق طوعًا على جمع ومعالجة وتخزين بياناتي الشخصية
-  بشكل آمن وفقًا لما هو موضح في سياسة الخصوصية.
-
-• أفهم أن بياناتي محمية، ويحق لي الوصول إلى معلوماتي
-  الشخصية أو تعديلها أو حذفها في أي وقت.
-
-• أقر بأن بياناتي الصحية قد تُستخدم لتحسين تجربتي وتعزيز
-  جودة الخدمات الطبية المقدمة لي.
-
-• أدرك أن لدي الحق في سحب موافقتي في أي وقت عبر التواصل
-  مع خدمة العملاء أو من إعدادات حسابي.
-""";
-
-  final String termsAndConditionsEnglish = """
-• I acknowledge that I have read, understood, and agree
-  to the Terms of Use and Privacy Policy of the WeCare platform.
-
-• I voluntarily consent to the collection, processing,
-  and secure storage of my personal data as outlined
-  in the Privacy Policy.
-
-• I understand that my data is protected, and I have the right
-  to access, modify, or delete my personal information at any time.
-
-• I acknowledge that my health data may be used to enhance my experience
-  and improve the quality of medical services provided to me.
-
-• I recognize that I have the right to withdraw my consent
-  at any time by contacting customer support or through
-  my account settings.
-""";
-
   @override
   Widget build(BuildContext context) {
-    return BottomSheetChildWidget(
-      title: context.translate.T_and_C,
-      text: isArabic() ? termsAndConditionsArabic : termsAndConditionsEnglish,
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      builder: (context, state) {
+        if (state.termsAndConditionsStatus == RequestStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state.termsAndConditionsStatus == RequestStatus.failure) {
+          return Center(
+            child: Text(
+              state.termsErrorMessage,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.font18blackWight500.copyWith(
+                color: Colors.red,
+              ),
+            ),
+          );
+        } else if (state.termsAndConditionsStatus == RequestStatus.success &&
+            state.termsAndConditions != null) {
+          return BottomSheetChildWidget(
+            title: context.translate.T_and_C,
+            text: state.termsAndConditions!
+                .map((e) => '• ${e.description}')
+                .toList()
+                .join('\n'),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

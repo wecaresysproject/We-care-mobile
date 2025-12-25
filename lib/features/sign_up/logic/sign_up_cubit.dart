@@ -5,6 +5,7 @@ import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/sign_up/Data/models/sign_up_response_model.dart';
+import 'package:we_care/features/sign_up/Data/models/terms_and_conditions_response_model.dart';
 
 import '../../../core/global/Helpers/app_enums.dart';
 import '../../../core/global/Helpers/extensions.dart';
@@ -64,6 +65,37 @@ class SignUpCubit extends Cubit<SignUpState> {
     await CacheHelper.setSecuredString(
         AuthApiConstants.userTokenKey, response.userData.token);
     DioServices.setTokenIntoHeaderAfterLogin(response.userData.token);
+  }
+
+  Future<void> getTermsAndConditions() async {
+    emit(
+      state.copyWith(
+        termsAndConditionsStatus: RequestStatus.loading,
+      ),
+    );
+    final response = await _signupRepo.getTermsAndConditions(
+      AppStrings.arabicLang,
+      UserTypes.patient.name.firstLetterToUpperCase,
+    );
+    response.when(
+      success: (response) async {
+        emit(
+          state.copyWith(
+            termsAndConditionsStatus: RequestStatus.success,
+            termsAndConditions: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            termsAndConditionsStatus: RequestStatus.failure,
+            errorMessage: error.errors.first,
+            termsErrorMessage: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 
   @override
