@@ -131,7 +131,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                 });
 
                 final logic = MedicalReportExportLogic();
-             //  await logic.exportAndShareReport(context);
+               await logic.exportAndShareReport(context);
 
                 if (mounted) {
                   setState(() {
