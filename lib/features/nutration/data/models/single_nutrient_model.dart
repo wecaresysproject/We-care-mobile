@@ -33,11 +33,20 @@ class NutrientItem {
   @JsonKey(name: 'value')
   final double nutrientIntake;
 
+  final String? analysisMethod;
+  final String? recipeSource;
+  final String? usdaFdcId;
+  final String? usdaDescription;
+
   NutrientItem({
     required this.name,
     required this.servingSize,
     required this.amount,
     required this.nutrientIntake,
+    this.analysisMethod,
+    this.recipeSource,
+    this.usdaFdcId,
+    this.usdaDescription,
   });
 
   factory NutrientItem.fromJson(Map<String, dynamic> json) =>

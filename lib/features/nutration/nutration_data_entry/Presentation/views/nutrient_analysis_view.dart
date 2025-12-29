@@ -11,6 +11,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutrient_items_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class NutrientAnalysisView extends StatelessWidget {
@@ -107,6 +108,7 @@ class NutrientAnalysisView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           AppBarWithCenteredTitle(
             title: "تحليل $targetNutrient",
@@ -114,6 +116,32 @@ class NutrientAnalysisView extends StatelessWidget {
             shareFunction: () async {
               await _shareNutrientAnalysis(model, targetNutrient);
             },
+          ),
+          verticalSpacing(20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColorsManager.mainDarkBlue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NutrientItemsView(
+                    items: model.items,
+                  ),
+                ),
+              );
+            },
+            child: Text(
+              "مشاهدة تفاصيل وجبات اليوم",
+              style: AppTextStyles.font14BlueWeight700.copyWith(
+                color: Colors.white,
+              ),
+            ),
           ),
           verticalSpacing(20),
           Expanded(
@@ -125,12 +153,9 @@ class NutrientAnalysisView extends StatelessWidget {
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   headingRowColor:
                       WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
-
                   columnSpacing: context.screenWidth * 0.09,
                   horizontalMargin: 10,
-
                   dividerThickness: 0.83,
-
                   headingTextStyle: _headingTextStyle(),
                   showBottomBorder: true,
                   dataRowMaxHeight: 85,
@@ -140,19 +165,12 @@ class NutrientAnalysisView extends StatelessWidget {
                     color: const Color(0xff909090),
                     width: 0.15,
                   ),
-
-                  // 🔥 نفس المسميات الأصلية هنا
                   columns: [
-                    // _column("الصنف"),
-                    // _column("الكمية\n(جم/مل)"),
-                    // _column("لكل 100 جم"),
-                    // _column("المتناول"),
                     _column("الصنف"),
                     _column("الحصة"),
                     _column("الكمية"),
                     _column("المتناول"),
                   ],
-
                   rows: model.items.map((item) {
                     return DataRow(
                       cells: [
