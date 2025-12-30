@@ -11,7 +11,6 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/data/models/single_nutrient_model.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutrient_items_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class NutrientAnalysisView extends StatelessWidget {
@@ -118,32 +117,6 @@ class NutrientAnalysisView extends StatelessWidget {
             },
           ),
           verticalSpacing(20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColorsManager.mainDarkBlue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NutrientItemsView(
-                    items: model.items,
-                  ),
-                ),
-              );
-            },
-            child: Text(
-              "مشاهدة تفاصيل وجبات اليوم",
-              style: AppTextStyles.font14BlueWeight700.copyWith(
-                color: Colors.white,
-              ),
-            ),
-          ),
-          verticalSpacing(20),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -158,7 +131,7 @@ class NutrientAnalysisView extends StatelessWidget {
                   dividerThickness: 0.83,
                   headingTextStyle: _headingTextStyle(),
                   showBottomBorder: true,
-                  dataRowMaxHeight: 85,
+                  dataRowMaxHeight: 111,
                   border: TableBorder.all(
                     style: BorderStyle.solid,
                     borderRadius: BorderRadius.circular(8.r),
@@ -170,6 +143,10 @@ class NutrientAnalysisView extends StatelessWidget {
                     _column("الحصة"),
                     _column("الكمية"),
                     _column("المتناول"),
+                    _column("Analysis Method"),
+                    _column("Recipe Source"),
+                    _column("USDA FDC ID"),
+                    _column("USDA Description"),
                   ],
                   rows: model.items.map((item) {
                     return DataRow(
@@ -178,6 +155,10 @@ class NutrientAnalysisView extends StatelessWidget {
                         _cell(item.servingSize),
                         _cell(item.amount),
                         _cell(item.nutrientIntake.toStringAsFixed(2)),
+                        _cell(item.analysisMethod ?? "N/A"),
+                        _cell(item.recipeSource ?? "N/A"),
+                        _cell(item.usdaFdcId ?? "N/A"),
+                        _cell(item.usdaDescription ?? "N/A"),
                       ],
                     );
                   }).toList(),
