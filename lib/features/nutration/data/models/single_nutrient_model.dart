@@ -34,6 +34,7 @@ class NutrientItem {
   final double nutrientIntake;
 
   final String? analysisMethod;
+  final String? mainIngredient;
   final String? recipeSource;
   final String? usdaFdcId;
   final String? usdaDescription;
@@ -43,6 +44,7 @@ class NutrientItem {
     required this.servingSize,
     required this.amount,
     required this.nutrientIntake,
+    required this.mainIngredient,
     this.analysisMethod,
     this.recipeSource,
     this.usdaFdcId,
