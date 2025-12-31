@@ -34,4 +34,56 @@ class SupplementsViewCubit extends Cubit<SupplementsViewState> {
       },
     );
   }
+
+  Future<void> fetchEffectsOnNutrients({String? range}) async {
+    emit(state.copyWith(effectsOnNutrientsStatus: RequestStatus.loading));
+    final result = await _supplementsViewRepo.getEffectsOnNutrients(
+      language: AppStrings.arabicLang,
+      range: range,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            effectsOnNutrientsStatus: RequestStatus.success,
+            effectsOnNutrientsList: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            effectsOnNutrientsStatus: RequestStatus.failure,
+            responseMessage: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> fetchVitaminsAndSupplements({String? range}) async {
+    emit(state.copyWith(vitaminsAndSupplementsStatus: RequestStatus.loading));
+    final result = await _supplementsViewRepo.getVitaminsAndSupplements(
+      language: AppStrings.arabicLang,
+      range: range,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            vitaminsAndSupplementsStatus: RequestStatus.success,
+            vitaminsAndSupplementsData: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            vitaminsAndSupplementsStatus: RequestStatus.failure,
+            responseMessage: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
 }

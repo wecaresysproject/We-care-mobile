@@ -12,4 +12,16 @@ abstract class SupplementsServices {
   Future<dynamic> getAvailableDateRanges(
     @Query('language') String language,
   );
+
+  @GET(SupplementsApiConstants.getEffectsOnNutrients)
+  Future<dynamic> getEffectsOnNutrients(
+    @Query('language') String language, {
+    @Query('range') String? range,
+  });
+
+  @GET(SupplementsApiConstants.getVitaminsAndSupplements)
+  Future<dynamic> getVitaminsAndSupplements(
+    @Query('language') String language, {
+    @Query('range') String? range,
+  });
 }

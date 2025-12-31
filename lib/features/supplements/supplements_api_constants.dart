@@ -7,4 +7,8 @@ class SupplementsApiConstants {
   //filters
   static const getAvailableDateRanges =
       "/SupplementsAndVitamins/available-date-ranges";
+  static const getEffectsOnNutrients =
+      "/SupplementsAndVitamins/EffectsSupplementsAndVitaminsTable";
+  static const getVitaminsAndSupplements =
+      "/SupplementsAndVitamins/supplements-elements";
 }

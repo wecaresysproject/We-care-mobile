@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -20,20 +21,7 @@ class SupplementsView extends StatefulWidget {
 class _SupplementsViewState extends State<SupplementsView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final mockData = [
-    "حديد",
-    "صوديوم",
-    "فيتامين د",
-    "فيتامين سي",
-    "زنك",
-    "ماغنسيوم",
-    "كالسيوم",
-    "صوديوم",
-    "فوليك اسيد",
-    "زنك",
-    "فوليك اسيد",
-    "حديد",
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -53,8 +41,13 @@ class _SupplementsViewState extends State<SupplementsView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          getIt<SupplementsViewCubit>()..getAvailableDateRanges(),
+      create: (context) {
+        final cubit = getIt<SupplementsViewCubit>();
+        cubit.getAvailableDateRanges();
+        cubit.fetchEffectsOnNutrients();
+        cubit.fetchVitaminsAndSupplements();
+        return cubit;
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
@@ -131,35 +124,111 @@ class _SupplementsViewState extends State<SupplementsView>
 
   Widget _buildTabContent(
       {required int tabNumber, required SupplementsViewState state}) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(18.0),
-      child: Column(
-        children: [
-          DataViewFiltersRow(
-            onFilterSelected: (filter, _) {},
-            onApply: (_) {},
-            filters: [
-              FilterConfig(
-                title: 'التاريخ',
-                options: state.availableDateRanges.isNotEmpty
-                    ? state.availableDateRanges
-                    : [],
-              )
+    return Builder(
+      builder: (context) {
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(18.0),
+          child: Column(
+            children: [
+              DataViewFiltersRow(
+                onFilterSelected: (filter, _) {},
+                onApply: (selectedFilter) {
+                  if (tabNumber == 1) {
+                    context
+                        .read<SupplementsViewCubit>()
+                        .fetchVitaminsAndSupplements(
+                            range: selectedFilter["التاريخ"]);
+                  } else {
+                    context
+                        .read<SupplementsViewCubit>()
+                        .fetchEffectsOnNutrients(
+                          range: selectedFilter["التاريخ"],
+                        );
+                  }
+                },
+                filters: [
+                  FilterConfig(
+                    title: 'التاريخ',
+                    options: state.availableDateRanges.isNotEmpty
+                        ? state.availableDateRanges
+                        : [],
+                  )
+                ],
+              ),
+              verticalSpacing(16),
+              if (tabNumber == 1)
+                _buildVitaminsAndSupplementsTable(state: state)
+              else
+                _buildEffectsOnNutrientsTable(state: state)
             ],
           ),
-          verticalSpacing(16),
-          if (tabNumber == 1)
-            _buildVitaminsAndSupplementsTable(elements: mockData)
-          else
-            _buildEffectsOnNutrientsTable(
-              elements: mockData,
-            )
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildVitaminsAndSupplementsTable({required List<String> elements}) {
+  Widget _buildVitaminsAndSupplementsTable(
+      {required SupplementsViewState state}) {
+    // Loading state
+    if (state.vitaminsAndSupplementsStatus == RequestStatus.loading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Error state
+    if (state.vitaminsAndSupplementsStatus == RequestStatus.failure) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 48.sp,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                state.responseMessage.isNotEmpty
+                    ? state.responseMessage
+                    : "حدث خطأ أثناء تحميل البيانات",
+                style: AppTextStyles.font14BlueWeight700.copyWith(
+                  color: Colors.red,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Empty state or no data
+    if (state.vitaminsAndSupplementsData == null ||
+        state.vitaminsAndSupplementsData!.supplements.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Text(
+            "لا يوجد بيانات ادخال",
+            style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+              color: AppColorsManager.placeHolderColor,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Success state with data - build dynamic table
+    final data = state.vitaminsAndSupplementsData!;
+    final supplements = data.supplements;
+    final elements = data.elements;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
@@ -194,71 +263,34 @@ class _SupplementsViewState extends State<SupplementsView>
               ),
             ),
           ),
-          DataColumn(
-            label: SizedBox(
-              width: 70.w,
-              child: const Center(
-                child: Text(
-                  "Centrum",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: SizedBox(
-              width: 70.w,
-              child: const Center(
-                child: Text(
-                  "Omega-3\nPlus",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: SizedBox(
-              width: 70.w,
-              child: const Center(
-                child: Text(
-                  "Redoxon\nVitamin C",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: SizedBox(
-              width: 70.w,
-              child: const Center(
-                child: Text(
-                  "Calci\nMax",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ),
-          DataColumn(
-            label: SizedBox(
-              width: 80.w,
-              child: const Center(
-                child: Text(
-                  "Feroglobin",
-                  textAlign: TextAlign.center,
+          ...supplements.map(
+            (supplement) => DataColumn(
+              label: SizedBox(
+                width: 70.w,
+                child: Center(
+                  child: Text(
+                    supplement.name,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
           ),
         ],
-        rows: elements.map((item) {
+        rows: elements.map((element) {
+          // Create value lookup map
+          final valueMap = {
+            for (var value in element.values) value.name: value.amount
+          };
+
           return DataRow(
             cells: [
-              _cell(item, isElementNameCell: true),
-              _cell("1200"),
-              _cell("1200"),
-              _cell("1200"),
-              _cell("200"),
-              _cell("200"),
+              _cell(element.elementName, isElementNameCell: true),
+              ...supplements.map(
+                (supplement) => _cell(valueMap[supplement.name] ?? "--"),
+              ),
             ],
           );
         }).toList(),
@@ -284,7 +316,64 @@ class _SupplementsViewState extends State<SupplementsView>
     );
   }
 
-  Widget _buildEffectsOnNutrientsTable({required List<String> elements}) {
+  Widget _buildEffectsOnNutrientsTable({
+    required SupplementsViewState state,
+  }) {
+    // Loading state
+    if (state.effectsOnNutrientsStatus == RequestStatus.loading) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32.0),
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Error state
+    if (state.effectsOnNutrientsStatus == RequestStatus.failure) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 48.sp,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                state.responseMessage.isNotEmpty
+                    ? state.responseMessage
+                    : "حدث خطأ أثناء تحميل البيانات",
+                style: AppTextStyles.font14BlueWeight700.copyWith(
+                  color: Colors.red,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Empty state
+    if (state.effectsOnNutrientsList.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Text(
+            "لا يوجد بيانات ادخال",
+            style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+              color: AppColorsManager.placeHolderColor,
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Success state with data
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
@@ -376,15 +465,16 @@ class _SupplementsViewState extends State<SupplementsView>
               ),
             ),
           ],
-          rows: elements.map((item) {
+          rows: state.effectsOnNutrientsList.map((item) {
             return DataRow(
               cells: [
-                _cell(item, isElementNameCell: true),
-                _cell("1200"),
-                _cell("1200"),
-                _cell("1200"),
-                _cell("200"),
-                _cell("200"),
+                _cell(item.nutrient ?? "N/A", isElementNameCell: true),
+                _cell(item.standard?.toStringAsFixed(2) ?? "N/A"),
+                _cell(item.accumulativeStandard?.toStringAsFixed(2) ?? "N/A"),
+                _cell(item.difference?.toStringAsFixed(2) ?? "N/A"),
+                _cell(item.value?.toStringAsFixed(2) ?? "N/A"),
+                _cell(
+                    item.differenceAfterVitamins?.toStringAsFixed(2) ?? "N/A"),
               ],
             );
           }).toList(),
