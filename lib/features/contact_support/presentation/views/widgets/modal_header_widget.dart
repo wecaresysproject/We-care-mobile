@@ -15,7 +15,6 @@ class ModalHeaderWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: Container(
               padding: const EdgeInsets.all(8),
-            
               child: const Icon(
                 Icons.close,
                 size: 25,

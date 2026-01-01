@@ -68,12 +68,14 @@ import 'package:we_care/features/medical_notes/data/models/medical_note_model.da
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
 import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/my_medical_reports/presentation/views/my_medical_reports_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/effect_on_body_organs_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
@@ -95,7 +97,7 @@ import 'package:we_care/features/show_data_entry_types/Presentation/views/medica
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_report_table_view.dart';
-import 'package:we_care/features/supplements/supplements_view/presentation/views/supplements_view.dart';
+import 'package:we_care/features/supplements/supplements_view/views/supplements_view.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/Presentation/views/surgeries_data_entry_view.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.dart';
@@ -108,8 +110,6 @@ import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.da
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
-import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_view.dart';
-import 'package:we_care/features/my_medical_reports/presentation/views/my_medical_reports_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';

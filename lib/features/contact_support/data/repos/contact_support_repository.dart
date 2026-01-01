@@ -1,88 +1,156 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:uuid/uuid.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/contact_support/data/models/chat_message_model.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ContactSupportRepository {
-  // In-memory storage for messages - will be replaced with API calls later
+  // WebSocket URL
+  static const String kDummyWebSocketUrl = 'ws://147.93.57.70/hubs/chat';
+  // In-memory storage for messages
   final List<ChatMessage> _messages = [];
   final Uuid _uuid = const Uuid();
-  int _replyIndex = 0;
 
-  // Mock auto-reply messages in Arabic
-  final List<String> _autoReplies = [
-    'شكراً على تواصلك معنا. سنرد عليك قريباً',
-    'تم استلام رسالتك. فريق الدعم سيتواصل معك قريباً',
-    'نحن هنا لمساعدتك. كيف يمكننا خدمتك؟',
-    'رسالتك مهمة بالنسبة لنا. سيتم الرد عليك في أقرب وقت',
-    'شكراً لتواصلك. نحن نعمل على حل استفسارك',
-  ];
+  // WebSocket handling
+  WebSocketChannel? _channel;
+  final StreamController<List<ChatMessage>> _messagesController =
+      StreamController<List<ChatMessage>>.broadcast();
+
+  // Expose messages stream
+  Stream<List<ChatMessage>> get messagesStream => _messagesController.stream;
 
   ContactSupportRepository() {
-    // Add initial welcome message
-    _messages.add(
-      ChatMessage(
-        id: _uuid.v4(),
-        content: 'مرحباً بك في خدمة الدعم. كيف يمكننا مساعدتك اليوم؟',
-        timestamp: DateTime.now(),
-        isUserMessage: false,
-      ),
-    );
+    _initWebSocket();
+  }
+  String? _extractAccessToken() {
+    final authHeader = DioServices.getUserToken();
+    if (authHeader.isEmptyOrNull) return null;
+
+    // Remove "Bearer "
+    return authHeader.replaceFirst('Bearer ', '');
   }
 
-  /// Get all messages
-  Future<ApiResult<List<ChatMessage>>> getAllMessages() async {
+  void _initWebSocket() {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 300));
+      final token = _extractAccessToken();
 
-      // Return messages sorted by timestamp (oldest first)
-      final sortedMessages = List<ChatMessage>.from(_messages)
-        ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+      _channel = WebSocketChannel.connect(
+        Uri.parse('$kDummyWebSocketUrl?access_token=$token'),
+      );
 
-      return ApiResult.success(sortedMessages);
+      /// Send SignalR handshake
+      final handshakePayload =
+          '${jsonEncode({"protocol": "json", "version": 1})}\u001e';
+      _channel!.sink.add(handshakePayload);
+
+      _channel!.stream.listen(
+        (message) {
+          log("message: $message");
+
+          /// 🔽 Then handle SignalR messages normally
+          try {
+            final raw = message.toString();
+            final frames = raw.split('\u001e');
+
+            for (final frame in frames) {
+              if (frame.trim().isEmpty) continue;
+
+              final data = jsonDecode(frame);
+
+              // 🔕 Ignore SignalR protocol frames
+              if (data is Map && (data['type'] == 6 || data['type'] == 7)) {
+                continue;
+              }
+
+              // ✅ Handle app messages
+              if (data is Map &&
+                  data['type'] == 1 &&
+                  data['target'] == 'SendMessage' &&
+                  data['arguments'] is List &&
+                  data['arguments'].isNotEmpty) {
+                final msg = data['arguments'][0];
+
+                if (msg is Map && msg['type'] == 'message') {
+                  final chatMessage = ChatMessage(
+                    id: _uuid.v4(),
+                    content: msg['content'],
+                    timestamp: DateTime.parse(msg['timestamp']),
+                    isUserMessage: msg['senderType'] == 'user', // false
+                  );
+
+                  _addMessage(chatMessage);
+                }
+              }
+            }
+          } catch (e) {
+            AppLogger.error('WS parse error: $e');
+          }
+        },
+        onError: (error) {
+          AppLogger.error('WebSocket error: $error');
+        },
+        onDone: () {},
+      );
+    } catch (e) {
+      AppLogger.error('Error connecting to WebSocket: $e');
+    }
+  }
+
+  void _addMessage(ChatMessage message) {
+    _messages.add(message);
+    // Sort by timestamp
+    _messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    _messagesController.add(List.from(_messages));
+  }
+
+  /// Send a message
+  Future<ApiResult<List<ChatMessage>>> sendMessage(String content) async {
+    try {
+      // Send to WebSocket with new structure
+      if (_channel != null) {
+        final payload = '${jsonEncode(
+          {
+            "type": 1,
+            "target": "SendMessage",
+            "arguments": [
+              {
+                "type": "message",
+                "content": content,
+                "senderType": "user",
+              }
+            ],
+          },
+        )}\u001e';
+
+        _channel!.sink.add(payload);
+      }
+
+      return ApiResult.success(_messages);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  /// Send a message and get auto-reply
-  Future<ApiResult<List<ChatMessage>>> sendMessage(String content) async {
+  void closeWebSocket() {
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(milliseconds: 500));
+      AppLogger.info("closeWebSocket called");
+      _channel?.sink.close();
+      _channel = null;
 
-      // Create user message
-      final userMessage = ChatMessage(
-        id: _uuid.v4(),
-        content: content,
-        timestamp: DateTime.now(),
-        isUserMessage: true,
-      );
+      if (!_messagesController.isClosed) {
+        _messagesController.close();
+      }
 
-      _messages.add(userMessage);
-
-      // Simulate slight delay before auto-reply
-      await Future.delayed(const Duration(milliseconds: 300));
-
-      // Create system auto-reply
-      final systemMessage = ChatMessage(
-        id: _uuid.v4(),
-        content: _autoReplies[_replyIndex % _autoReplies.length],
-        timestamp: DateTime.now(),
-        isUserMessage: false,
-      );
-
-      _messages.add(systemMessage);
-      _replyIndex++;
-
-      // Return all messages sorted by timestamp
-      final sortedMessages = List<ChatMessage>.from(_messages)
-        ..sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-      return ApiResult.success(sortedMessages);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
+      _messages.clear();
+    } catch (e) {
+      AppLogger.error('Error closing WebSocket: $e');
     }
   }
 }

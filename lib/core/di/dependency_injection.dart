@@ -85,7 +85,9 @@ import 'package:we_care/features/prescription/prescription_data_entry/logic/cubi
 import 'package:we_care/features/prescription/prescription_services.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
+import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_view_repo.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_services.dart';
 import 'package:we_care/features/supplements/supplements_view/logic/supplements_view_cubit.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
@@ -398,6 +400,11 @@ void setupAppCubits() {
       getIt<SupplementsViewRepo>(),
     ),
   );
+  getIt.registerFactory<SupplementsDataEntryCubit>(
+    () => SupplementsDataEntryCubit(
+      getIt<SupplementsDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -636,11 +643,16 @@ void setupAppRepos() {
       getIt<HomeService>(),
     ),
   );
-  getIt.registerLazySingleton<ContactSupportRepository>(
+  getIt.registerFactory<ContactSupportRepository>(
     () => ContactSupportRepository(),
   );
   getIt.registerLazySingleton<SupplementsViewRepo>(
     () => SupplementsViewRepo(
+      services: getIt<SupplementsServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<SupplementsDataEntryRepo>(
+    () => SupplementsDataEntryRepo(
       services: getIt<SupplementsServices>(),
     ),
   );
