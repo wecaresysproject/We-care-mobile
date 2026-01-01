@@ -106,6 +106,10 @@ class DioServices {
     };
   }
 
+  static String getUserToken() {
+    return dio?.options.headers['Authorization'];
+  }
+
   static void addDioInterceptor() {
     if (kDebugMode) {
       dio?.interceptors.add(

@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/contact_support/data/models/chat_message_model.dart';
 import 'package:we_care/features/contact_support/logic/contact_support_cubit.dart';
 import 'package:we_care/features/contact_support/presentation/views/widgets/message_bubble_widget.dart';
+import 'package:we_care/features/contact_support/presentation/views/widgets/shimmer_list_chat_bubble_widget.dart';
 
 class MessagesListWidget extends StatefulWidget {
   const MessagesListWidget({super.key});
@@ -19,51 +20,19 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  void _scrollToBottom() {
-    if (_scrollController.hasClients) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocConsumer<ContactSupportCubit, ContactSupportState>(
+      buildWhen: (previous, current) => previous.messages != current.messages,
       listener: (context, state) {
         if (state.requestStatus == RequestStatus.success) {
-          _scrollToBottom();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _scrollToBottom();
+          });
         }
       },
       builder: (context, state) {
-        if (state.requestStatus == RequestStatus.loading &&
-            state.messages.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        if (state.messages.isEmpty) {
-          return Center(
-            child: Text(
-              'لا توجد رسائل بعد',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 16.sp,
-              ),
-            ),
-          );
+        if (state.requestStatus == RequestStatus.loading) {
+          return ShimmerChatBubbleWidget();
         }
 
         // Group messages by date
@@ -92,9 +61,9 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
                           begin: Alignment.bottomLeft,
                           end: Alignment.topRight,
                           colors: [
-                            Color(0xFF6EA1CB), // الأزرق من الأسفل لليمين
-                            Color(0xFFEFF5FB), // وسط فاتح
-                            Color(0xFFEDF4FF), // أفتح درجة في الأعلى لليسار
+                            Color(0xFF6EA1CB),
+                            Color(0xFFEFF5FB),
+                            Color(0xFFEDF4FF),
                           ],
                           stops: [0.0, 0.45, 1.0],
                         ),
@@ -156,5 +125,28 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
     } else {
       return DateFormat('الأربعاء yyyy/M/d', 'ar').format(date);
     }
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        () {
+          if (_scrollController.hasClients) {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        },
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

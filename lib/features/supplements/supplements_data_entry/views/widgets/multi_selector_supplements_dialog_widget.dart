@@ -14,6 +14,22 @@ class MultiSelectSupplementsDialog extends StatefulWidget {
     required this.items,
     required this.onSubmit,
   });
+  static Future<void> show(
+    BuildContext context, {
+    required String dateTitle,
+    required List<String> items,
+    required ValueChanged<List<String>> onSubmit,
+  }) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => MultiSelectSupplementsDialog(
+        dateTitle: dateTitle,
+        items: items,
+        onSubmit: onSubmit,
+      ),
+    );
+  }
 
   @override
   State<MultiSelectSupplementsDialog> createState() =>

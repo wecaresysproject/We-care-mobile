@@ -20,6 +20,8 @@ import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_data_entry_repo.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_view_repo.dart';
+import 'package:we_care/features/contact_support/data/repos/contact_support_repository.dart';
+import 'package:we_care/features/contact_support/logic/contact_support_cubit.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_repo.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
@@ -83,6 +85,11 @@ import 'package:we_care/features/prescription/prescription_data_entry/logic/cubi
 import 'package:we_care/features/prescription/prescription_services.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
+import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
+import 'package:we_care/features/supplements/data/repos/supplements_view_repo.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
+import 'package:we_care/features/supplements/supplements_services.dart';
+import 'package:we_care/features/supplements/supplements_view/logic/supplements_view_cubit.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_data_entry_view/logic/cubit/surgery_data_entry_cubit.dart';
@@ -383,6 +390,21 @@ void setupAppCubits() {
       getIt<HomeRepository>(),
     ),
   );
+  getIt.registerFactory<ContactSupportCubit>(
+    () => ContactSupportCubit(
+      getIt<ContactSupportRepository>(),
+    ),
+  );
+  getIt.registerFactory<SupplementsViewCubit>(
+    () => SupplementsViewCubit(
+      getIt<SupplementsViewRepo>(),
+    ),
+  );
+  getIt.registerFactory<SupplementsDataEntryCubit>(
+    () => SupplementsDataEntryCubit(
+      getIt<SupplementsDataEntryRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -621,6 +643,19 @@ void setupAppRepos() {
       getIt<HomeService>(),
     ),
   );
+  getIt.registerFactory<ContactSupportRepository>(
+    () => ContactSupportRepository(),
+  );
+  getIt.registerLazySingleton<SupplementsViewRepo>(
+    () => SupplementsViewRepo(
+      services: getIt<SupplementsServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<SupplementsDataEntryRepo>(
+    () => SupplementsDataEntryRepo(
+      services: getIt<SupplementsServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -714,5 +749,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<MedicalNotesServices>(
     () => MedicalNotesServices(dio),
+  );
+  getIt.registerLazySingleton<SupplementsServices>(
+    () => SupplementsServices(dio),
   );
 }
