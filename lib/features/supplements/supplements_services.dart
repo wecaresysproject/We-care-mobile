@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/supplements_api_constants.dart';
 
 part 'supplements_services.g.dart';
@@ -24,4 +25,14 @@ abstract class SupplementsServices {
     @Query('language') String language, {
     @Query('range') String? range,
   });
+
+  @GET(SupplementsApiConstants.retrieveAvailableVitamins)
+  Future<dynamic> retrieveAvailableVitamins(
+    @Query('language') String language,
+  );
+
+  @POST(SupplementsApiConstants.submitSelectedSupplements)
+  Future<dynamic> submitSelectedSupplements(
+    @Body() List<SupplementEntry> supplements,
+  );
 }
