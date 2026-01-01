@@ -7,11 +7,12 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
-import 'package:we_care/features/supplements/supplements_data_entry/widgets/submit_supplements_button_bloc_consumer.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/dose_counter_widget.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/labeled_icon_widget.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/submit_supplements_button_bloc_consumer.dart';
 
 class SupplementsDataEntryView extends StatefulWidget {
   const SupplementsDataEntryView({super.key});
@@ -127,142 +128,6 @@ class _SupplementsDataEntryViewState extends State<SupplementsDataEntryView> {
           ),
         ),
       ],
-    );
-  }
-}
-
-class LabeledIcon extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const LabeledIcon({
-    super.key,
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: AppColorsManager.mainDarkBlue,
-          size: 24,
-        ),
-        horizontalSpacing(4),
-        Text(
-          text,
-          style: AppTextStyles.font18blackWight500.copyWith(
-            color: AppColorsManager.mainDarkBlue,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class DoseCounter extends StatefulWidget {
-  final int initialValue;
-  final ValueChanged<int> onChanged;
-
-  const DoseCounter({
-    super.key,
-    this.initialValue = 0,
-    required this.onChanged,
-  });
-
-  @override
-  State<DoseCounter> createState() => _DoseCounterState();
-}
-
-class _DoseCounterState extends State<DoseCounter> {
-  late int count;
-
-  @override
-  void initState() {
-    super.initState();
-    count = widget.initialValue;
-  }
-
-  void _increase() {
-    setState(() {
-      count++;
-    });
-    widget.onChanged(count);
-  }
-
-  void _decrease() {
-    if (count == 0) return;
-    setState(() {
-      count--;
-    });
-    widget.onChanged(count);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 45,
-      width: 120,
-      decoration: BoxDecoration(
-        color: AppColorsManager.mainDarkBlue,
-        borderRadius: BorderRadius.circular(17.r),
-      ),
-      child: Row(
-        children: [
-          // --- Increase Button ---
-          Expanded(
-            child: GestureDetector(
-              onTap: _increase,
-              child: Center(
-                child: Text(
-                  "+",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // --- Counter Center Box ---
-          Container(
-            width: 30,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.symmetric(
-                horizontal: BorderSide(color: Colors.black12, width: 0.7),
-                vertical: BorderSide(color: Colors.black26, width: 0.7),
-              ),
-            ),
-            child: Center(
-              child: Text(
-                "$count",
-                style: AppTextStyles.font20blackWeight600,
-              ),
-            ),
-          ),
-          // --- Decrease Button ---
-          Expanded(
-            child: GestureDetector(
-              onTap: _decrease,
-              child: Center(
-                child: Text(
-                  "-",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

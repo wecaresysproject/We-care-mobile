@@ -19,14 +19,14 @@ class SubmitSupplementsButtonBlocConsumer extends StatelessWidget {
           current.requestStatus == RequestStatus.failure,
       listener: (context, state) async {
         if (state.requestStatus == RequestStatus.success) {
-          await showSuccess(state.responseMessage);
+          await showSuccess(state.message);
           if (context.mounted) {
             await context.pushNamed(
               Routes.supplementsPlansView,
             );
           }
         } else if (state.requestStatus == RequestStatus.failure) {
-          await showError(state.responseMessage);
+          await showError(state.message);
         }
       },
       builder: (context, state) {

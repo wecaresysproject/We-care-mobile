@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
@@ -28,11 +29,212 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
         emit(
           state.copyWith(
             vitaminsStatus: RequestStatus.failure,
-            responseMessage: failure.errors.first,
+            message: failure.errors.first,
           ),
         );
       },
     );
+  }
+
+// each change in tab will call this method
+  Future<void> togglePlanActivationAndLoadingExistingPlans() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    final bool currentPlanActivationStatus = planType == PlanType.weekly.name
+        ? state.weeklyActivationStatus
+        : state.monthlyActivationStatus;
+    emit(
+      state.copyWith(requestStatus: RequestStatus.loading),
+    );
+    final result = await _supplementsDataEntryRepo.getAllCreatedPlans(
+      lanugage: AppStrings.arabicLang,
+      planActivationStatus:
+          !currentPlanActivationStatus, //! toggle it before call get plan again
+      planType: planType,
+    );
+
+    result.when(
+      success: (response) {
+        final days = response.plan.days;
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              weeklyActivationStatus: response.planStatus,
+              days: days,
+              requestStatus: RequestStatus.success,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              monthlyActivationStatus: response.planStatus,
+              days: days,
+              requestStatus: RequestStatus.success,
+            ),
+          );
+        }
+
+        // call endpoint that returies the list of days
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: failure.errors.first,
+            days: [],
+          ),
+        );
+      },
+    );
+  }
+
+  // New method to update the current tab index
+  Future<void> updateCurrentTab(int index) async {
+    emit(state.copyWith(supplementFollowUpCurrentTabIndex: index));
+    await getPlanActivationStatus();
+
+    //! Load existing plans without toggling
+    await loadExistingPlans();
+    // refetch data of the list of days
+    resetSelectedPlanDate();
+  }
+
+  void resetSelectedPlanDate() {
+    emit(state.copyWith(selectedPlanDate: ''));
+  }
+
+  // Separate method to just load/fetch existing plans without toggling
+  Future<void> loadExistingPlans() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+    final bool currentPlanActivationStatus = planType == PlanType.weekly.name
+        ? state.weeklyActivationStatus
+        : state.monthlyActivationStatus;
+
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final result = await _supplementsDataEntryRepo.getAllCreatedPlans(
+      lanugage: AppStrings.arabicLang,
+      planActivationStatus: currentPlanActivationStatus,
+      planType: planType,
+    );
+
+    result.when(
+      success: (response) {
+        final days = response.plan.days;
+
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              weeklyActivationStatus: response.planStatus,
+              days: days,
+              requestStatus: RequestStatus.success,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              monthlyActivationStatus: response.planStatus,
+              days: days,
+              requestStatus: RequestStatus.success,
+            ),
+          );
+        }
+
+        AppLogger.debug(
+            'Plans loaded successfully: ${days.length} days, status: ${response.planStatus}');
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: failure.errors.first,
+            days: [],
+          ),
+        );
+
+        AppLogger.error('Failed to load plans: ${failure.errors.first}');
+      },
+    );
+  }
+
+  // navigate to first or second tab , according to activation
+  Future<bool?> getAnyActivePlanStatus() async {
+    final result = await _supplementsDataEntryRepo.getAnyActivePlanStatus();
+
+    bool? finalResult;
+
+    result.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            isAnyPlanActivated: response.$1,
+            supplementFollowUpCurrentTabIndex: response.$2,
+          ),
+        );
+        finalResult = response.$1;
+      },
+      failure: (failure) {
+        AppLogger.error(
+            'Error in getAnyActivePlanStatus: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(message: failure.errors.first),
+        );
+        finalResult = null;
+      },
+    );
+
+    return finalResult;
+  }
+
+  String _getPlanTypeNameRelativeToCurrentActiveTab() {
+    return state.supplementFollowUpCurrentTabIndex == 0
+        ? PlanType.weekly.name
+        : PlanType.monthly.name;
+  }
+
+  Future<void> getPlanActivationStatus() async {
+    final planType = _getPlanTypeNameRelativeToCurrentActiveTab();
+
+    final result = await _supplementsDataEntryRepo.getPlanActivationStatus(
+      language: AppStrings.arabicLang,
+      planType: planType,
+    );
+
+    result.when(
+      success: (status) {
+        if (planType == PlanType.weekly.name) {
+          emit(
+            state.copyWith(
+              weeklyActivationStatus: status,
+            ),
+          );
+          AppLogger.debug("ana ray7 afta7l plan activation status weekly");
+          status ? loadExistingPlans() : null;
+        } else {
+          emit(
+            state.copyWith(
+              monthlyActivationStatus: status,
+            ),
+          );
+          AppLogger.debug("ana ray7 afta7l plan activation status Monthly");
+        }
+        AppLogger.debug(
+            ' getPlanActivationStatus called and => Plan activation status for $planType: $status');
+      },
+      failure: (failure) {
+        AppLogger.error(
+            'Error in getPlanActivationStatus: ${failure.errors.first}');
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  /// this method is used to emit state only if cubit is not closed
+  void safeEmit(SupplementsDataEntryState newState) {
+    if (!isClosed) emit(newState);
   }
 
   void updateSupplementName(int index, String name) {
@@ -62,7 +264,7 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
       emit(
         state.copyWith(
           requestStatus: RequestStatus.failure,
-          responseMessage: "يرجى اختيار مكمل واحد على الأقل",
+          message: "يرجى اختيار مكمل واحد على الأقل",
         ),
       );
       return;
@@ -78,7 +280,7 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
         emit(
           state.copyWith(
             requestStatus: RequestStatus.success,
-            responseMessage: message,
+            message: message,
           ),
         );
       },
@@ -86,7 +288,7 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
         emit(
           state.copyWith(
             requestStatus: RequestStatus.failure,
-            responseMessage: failure.errors.first,
+            message: failure.errors.first,
           ),
         );
       },

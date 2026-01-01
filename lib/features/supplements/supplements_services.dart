@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/supplements_api_constants.dart';
 
@@ -34,5 +35,21 @@ abstract class SupplementsServices {
   @POST(SupplementsApiConstants.submitSelectedSupplements)
   Future<dynamic> submitSelectedSupplements(
     @Body() List<SupplementEntry> supplements,
+  );
+
+  @GET(SupplementsApiConstants.getPlanActivationStatus)
+  Future<dynamic> getPlanActivationStatus(
+    @Query('language') String language,
+    @Query('planType') String planType,
+  );
+
+  @GET(SupplementsApiConstants.getAnyActivePlanStatus)
+  Future<dynamic> getAnyActivePlanStatus();
+
+  @GET(SupplementsApiConstants.getAllCreatedPlans)
+  Future<GetAllCreatedPlansModel> getAllCreatedPlans(
+    @Query('language') String language,
+    @Query('planStatus') bool planActivationStatus,
+    @Query('planType') String planType,
   );
 }

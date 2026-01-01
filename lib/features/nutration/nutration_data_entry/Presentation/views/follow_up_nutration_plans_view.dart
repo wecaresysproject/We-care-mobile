@@ -29,7 +29,6 @@ class FollowUpNutrationPlansView extends StatefulWidget {
 
 class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
     with SingleTickerProviderStateMixin {
-  // TabController for managing tabs
   late TabController _tabController;
 
   @override
