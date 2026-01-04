@@ -4,6 +4,8 @@ class SupplementsApiConstants {
   static const retrieveAvailableVitamins = "/SupplementsAndVitamins/names";
   static const submitSelectedSupplements =
       "/SupplementsAndVitamins/SupplementsAndVitamins";
+  static const getTrackedSupplementsAndVitamins =
+      "/SupplementsAndVitamins/SupplementsAndVitamins";
   //! change these to relative endpoints  later
   static const getAllCreatedPlans = "/SupplementsAndVitamins/generate-plan";
   static const getAnyActivePlanStatus = "/SmartNutritionAnalyzer/check-active";

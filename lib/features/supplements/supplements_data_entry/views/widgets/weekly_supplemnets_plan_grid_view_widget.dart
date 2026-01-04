@@ -119,13 +119,7 @@ class _WeeklySupplemnetsPlanGridViewWidgState
                   MultiSelectSupplementsDialog.show(
                     context,
                     dateTitle: selectedDay!, // Example: 15/01/2025
-                    items: [
-                      "فيتامين C",
-                      "فيتامين D",
-                      "Omega 3",
-                      "Calcium",
-                      "Magnesium",
-                    ], // ← دي هتجيلك من الـ backend لاحقًا
+                    items: state.trackedSupplementsAndVitamins,
                     onSubmit: (selectedItems) {
                       AppLogger.debug("Selected: $selectedItems");
                     },

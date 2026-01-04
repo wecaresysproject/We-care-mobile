@@ -37,6 +37,11 @@ abstract class SupplementsServices {
     @Body() List<SupplementEntry> supplements,
   );
 
+  @GET(SupplementsApiConstants.getTrackedSupplementsAndVitamins)
+  Future<dynamic> getTrackedSupplementsAndVitamins(
+    @Query('language') String language,
+  );
+
   @GET(SupplementsApiConstants.getPlanActivationStatus)
   Future<dynamic> getPlanActivationStatus(
     @Query('language') String language,

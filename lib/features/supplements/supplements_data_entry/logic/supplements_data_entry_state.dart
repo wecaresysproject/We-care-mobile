@@ -15,6 +15,8 @@ class SupplementsDataEntryState extends Equatable {
   final int supplementFollowUpCurrentTabIndex;
   final String selectedPlanDate;
   final bool isAnyPlanActivated;
+  final List<String> trackedSupplementsAndVitamins;
+  final RequestStatus trackedSupplementsAndVitaminsStatus;
 
   const SupplementsDataEntryState({
     this.message = '',
@@ -28,6 +30,8 @@ class SupplementsDataEntryState extends Equatable {
     this.isAnyPlanActivated = false,
     this.supplementFollowUpCurrentTabIndex = 0,
     this.selectedPlanDate = '',
+    this.trackedSupplementsAndVitamins = const [],
+    this.trackedSupplementsAndVitaminsStatus = RequestStatus.initial,
   });
 
   factory SupplementsDataEntryState.initial() {
@@ -46,6 +50,8 @@ class SupplementsDataEntryState extends Equatable {
       isAnyPlanActivated: false,
       supplementFollowUpCurrentTabIndex: 0,
       selectedPlanDate: '',
+      trackedSupplementsAndVitamins: const [],
+      trackedSupplementsAndVitaminsStatus: RequestStatus.initial,
     );
   }
 
@@ -61,6 +67,8 @@ class SupplementsDataEntryState extends Equatable {
     bool? isAnyPlanActivated,
     int? supplementFollowUpCurrentTabIndex,
     String? selectedPlanDate,
+    List<String>? trackedSupplementsAndVitamins,
+    RequestStatus? trackedSupplementsAndVitaminsStatus,
   }) {
     return SupplementsDataEntryState(
       message: message ?? this.message,
@@ -77,6 +85,11 @@ class SupplementsDataEntryState extends Equatable {
       supplementFollowUpCurrentTabIndex: supplementFollowUpCurrentTabIndex ??
           this.supplementFollowUpCurrentTabIndex,
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
+      trackedSupplementsAndVitamins:
+          trackedSupplementsAndVitamins ?? this.trackedSupplementsAndVitamins,
+      trackedSupplementsAndVitaminsStatus:
+          trackedSupplementsAndVitaminsStatus ??
+              this.trackedSupplementsAndVitaminsStatus,
     );
   }
 
@@ -93,5 +106,7 @@ class SupplementsDataEntryState extends Equatable {
         isAnyPlanActivated,
         supplementFollowUpCurrentTabIndex,
         selectedPlanDate,
+        trackedSupplementsAndVitamins,
+        trackedSupplementsAndVitaminsStatus,
       ];
 }

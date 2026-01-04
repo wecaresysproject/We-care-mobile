@@ -36,6 +36,36 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
     );
   }
 
+  Future<void> getTrackedSupplementsAndVitamins() async {
+    emit(
+      state.copyWith(
+        trackedSupplementsAndVitaminsStatus: RequestStatus.loading,
+      ),
+    );
+    final result =
+        await _supplementsDataEntryRepo.getTrackedSupplementsAndVitamins(
+      language: AppStrings.arabicLang,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            trackedSupplementsAndVitaminsStatus: RequestStatus.success,
+            trackedSupplementsAndVitamins: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            trackedSupplementsAndVitaminsStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
 // each change in tab will call this method
   Future<void> togglePlanActivationAndLoadingExistingPlans() async {
     final planType = _getPlanTypeNameRelativeToCurrentActiveTab();

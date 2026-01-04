@@ -21,6 +21,19 @@ class SupplementsDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getTrackedSupplementsAndVitamins({
+    required String language,
+  }) async {
+    try {
+      final response =
+          await services.getTrackedSupplementsAndVitamins(language);
+      final data = (response['data'] as List).map<String>((e) => e).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<(bool isAnyActivatedPlans, int currentActivatedPlanIndex)>>
       getAnyActivePlanStatus() async {
     try {
