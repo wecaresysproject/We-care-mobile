@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/day_card_widget.dart';
@@ -19,7 +20,7 @@ class MonthlySupplementsPlanGridViewWidget extends StatefulWidget {
 
 class _MonthlySupplementsPlanGridViewWidgetState
     extends State<MonthlySupplementsPlanGridViewWidget> {
-  String? selectedDay;
+  String? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class _MonthlySupplementsPlanGridViewWidgetState
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
-            final isSelected = selectedDay == day.date;
+            final isSelected = selectedDate == day.date;
 
             // اختر الـ constructor المناسب
             if (state.monthlyActivationStatus == false) {
@@ -106,7 +107,7 @@ class _MonthlySupplementsPlanGridViewWidgetState
                 dietPlan: day.userDietPlan,
                 onTap: () {
                   setState(() {
-                    selectedDay = day.date;
+                    selectedDate = day.date;
                   });
                 },
                 backgroundColor: isSelected
@@ -121,15 +122,26 @@ class _MonthlySupplementsPlanGridViewWidgetState
                 onTap: () {
                   setState(
                     () {
-                      selectedDay = day.date;
+                      selectedDate = day.date;
                     },
                   );
+
                   MultiSelectSupplementsDialog.show(
                     context,
-                    dateTitle: selectedDay!, // Example: 15/01/2025
+                    dateTitle: selectedDate!, // Example: 15/01/2025
                     items: state.trackedSupplementsAndVitamins,
                     onSubmit: (selectedItems) {
                       AppLogger.debug("Selected: $selectedItems");
+                      context
+                          .read<SupplementsDataEntryCubit>()
+                          .submitDailyUserTakenSupplement(
+                            dailyTakenSupplements:
+                                DailySupplementSubmissionModel(
+                              date: selectedDate!,
+                              hasDocument: true,
+                              vitaminsTaken: selectedItems,
+                            ),
+                          );
                     },
                   );
                 },

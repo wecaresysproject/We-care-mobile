@@ -6,6 +6,12 @@ class SupplementsApiConstants {
       "/SupplementsAndVitamins/SupplementsAndVitamins";
   static const getTrackedSupplementsAndVitamins =
       "/SupplementsAndVitamins/SupplementsAndVitamins";
+  static const deleteSubmittedSupplementOnSpecificDate =
+      "/SupplementsAndVitamins/DailyIntakeRecordByDate";
+  static const submitDailyUserTakenSupplement =
+      "/SupplementsAndVitamins/DailyIntakeRecord";
+  static const retrieveDailyFollowUpTable =
+      "/SupplementsAndVitamins/result-data";
   //! change these to relative endpoints  later
   static const getAllCreatedPlans = "/SupplementsAndVitamins/generate-plan";
   static const getAnyActivePlanStatus = "/SmartNutritionAnalyzer/check-active";

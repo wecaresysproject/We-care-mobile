@@ -18,6 +18,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/success_dialog_with_confetti_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/widgets/weakly_plan_grid_view_widget.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 
 class FollowUpNutrationPlansView extends StatefulWidget {
   const FollowUpNutrationPlansView({super.key});
@@ -49,17 +50,30 @@ class _FollowUpNutrationPlansViewState extends State<FollowUpNutrationPlansView>
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NutrationDataEntryCubit>(
-      create: (context) {
-        final cubit =
-            NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context);
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await cubit.getAnyActivePlanStatus();
-          await cubit.getPlanActivationStatus();
-          await cubit.loadExistingPlans();
-        });
-        return cubit;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NutrationDataEntryCubit>(
+          create: (context) {
+            final cubit = NutrationDataEntryCubit(
+                getIt<NutrationDataEntryRepo>(), context);
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              await cubit.getAnyActivePlanStatus();
+              await cubit.getPlanActivationStatus();
+              await cubit.loadExistingPlans();
+            });
+            return cubit;
+          },
+        ),
+        BlocProvider<SupplementsDataEntryCubit>(
+          create: (context) {
+            final cubit = getIt<SupplementsDataEntryCubit>();
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              await cubit.getTrackedSupplementsAndVitamins();
+            });
+            return cubit;
+          },
+        ),
+      ],
       child: BlocListener<NutrationDataEntryCubit, NutrationDataEntryState>(
         listenWhen: (prev, curr) =>
             prev.followUpNutrationViewCurrentTabIndex !=

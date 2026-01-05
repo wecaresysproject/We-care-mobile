@@ -678,7 +678,8 @@ class AppRouter {
           builder: (_) => const SupplementsPlansView(),
         );
       case Routes.supplementsReportTableView:
-        final date = arguments as String;
+        final argumentsMap = arguments as Map<String, dynamic>?;
+        final date = argumentsMap?['date'] as String;
         return MaterialPageRoute(
           builder: (_) => SupplementsReportTableView(
             date: date,
@@ -688,6 +689,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const SupplementsDataEntryView(),
         );
+
       case Routes.notificationsScreen:
         return MaterialPageRoute(
           builder: (_) => const NotificationsView(),

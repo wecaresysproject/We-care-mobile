@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
+import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/supplements_api_constants.dart';
 
@@ -40,6 +41,22 @@ abstract class SupplementsServices {
   @GET(SupplementsApiConstants.getTrackedSupplementsAndVitamins)
   Future<dynamic> getTrackedSupplementsAndVitamins(
     @Query('language') String language,
+  );
+
+  @POST(SupplementsApiConstants.submitDailyUserTakenSupplement)
+  Future<dynamic> submitDailyUserTakenSupplement(
+    @Body() DailySupplementSubmissionModel submission,
+    @Query('language') String language,
+  );
+
+  @DELETE(SupplementsApiConstants.deleteSubmittedSupplementOnSpecificDate)
+  Future<dynamic> deleteSubmittedSupplementOnSpecificDate(
+    @Query("date") String date,
+  );
+  @GET(SupplementsApiConstants.retrieveDailyFollowUpTable)
+  Future<dynamic> retrieveDailyFollowUpTable(
+    @Query("date") String date,
+    @Query("language") String language,
   );
 
   @GET(SupplementsApiConstants.getPlanActivationStatus)
