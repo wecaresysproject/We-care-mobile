@@ -20,6 +20,7 @@ class MedicinesDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final String? selectedChronicDiseaseName;
   final bool isFormValidated;
+  final bool isMedicationCompatibilityFormValidated;
   final bool isAddNewMedicineFormValidated;
   final List<MedicalComplaint> medicalComplaints;
   final List<String> chronicDiseaseNames;
@@ -55,6 +56,7 @@ class MedicinesDataEntryState extends Equatable {
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.isMedicationCompatibilityFormValidated = false,
     this.isAddNewMedicineFormValidated = false,
     this.isNewMedicineAddedSuccefuly = false,
     this.isEditingNewMedicineSuccess = false,
@@ -101,6 +103,7 @@ class MedicinesDataEntryState extends Equatable {
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           isFormValidated: false,
+          isMedicationCompatibilityFormValidated: false,
           isAddNewMedicineFormValidated: false,
           isNewMedicineAddedSuccefuly: false,
           isEditingNewMedicineSuccess: false,
@@ -146,6 +149,7 @@ class MedicinesDataEntryState extends Equatable {
   MedicinesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     bool? isFormValidated,
+    bool? isMedicationCompatibilityFormValidated,
     bool? isAddNewMedicineFormValidated,
     bool? isNewMedicineAddedSuccefuly,
     bool? isEditingNewMedicineSuccess,
@@ -191,6 +195,9 @@ class MedicinesDataEntryState extends Equatable {
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
+      isMedicationCompatibilityFormValidated:
+          isMedicationCompatibilityFormValidated ??
+              this.isMedicationCompatibilityFormValidated,
       isNewMedicineAddedSuccefuly:
           isNewMedicineAddedSuccefuly ?? this.isNewMedicineAddedSuccefuly,
       isEditingNewMedicineSuccess:
@@ -253,6 +260,7 @@ class MedicinesDataEntryState extends Equatable {
   List<Object?> get props => [
         medicinesDataEntryStatus,
         isFormValidated,
+        isMedicationCompatibilityFormValidated,
         isAddNewMedicineFormValidated,
         isNewMedicineAddedSuccefuly,
         isEditingNewMedicineSuccess,

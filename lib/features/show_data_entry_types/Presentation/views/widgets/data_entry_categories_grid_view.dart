@@ -11,6 +11,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 
 class DataEntryCategoriesGridView extends StatelessWidget {
   const DataEntryCategoriesGridView({
@@ -110,9 +111,16 @@ class _CategoryItemState extends State<CategoryItem> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NutrationDataEntryCubit>(
-      create: (context) =>
-          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NutrationDataEntryCubit>(
+          create: (context) =>
+              NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
+        ),
+        BlocProvider<SupplementsDataEntryCubit>(
+          create: (context) => getIt<SupplementsDataEntryCubit>(),
+        ),
+      ],
       child: Builder(builder: (context) {
         return Column(
           mainAxisSize: MainAxisSize.min,
@@ -232,8 +240,29 @@ class _CategoryItemState extends State<CategoryItem> {
 
     if (widget.title == "المتابعه الغذائية") {
       await _handleNutritionFollowUpTap(context);
+    } else if (widget.title == "الفيتامينات و\nالمكملات الغذائية") {
+      await _handleSupplementsFollowUpTap(context);
     } else {
       await _navigateTo(context, widget.routeName);
+    }
+  }
+
+  Future<void> _handleSupplementsFollowUpTap(BuildContext context) async {
+    final supplementsCubit = context.read<SupplementsDataEntryCubit>();
+
+    final result = await supplementsCubit.getAnyActivePlanStatus();
+
+    if (!context.mounted) return;
+
+    switch (result) {
+      case true:
+        await _navigateTo(context, Routes.supplementsFollowUpPlansView);
+        break;
+      case false:
+        await _navigateTo(context, widget.routeName);
+        break;
+      default:
+        await showError("من فضلك حاول مرة اخري");
     }
   }
 

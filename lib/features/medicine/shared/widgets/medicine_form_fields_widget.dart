@@ -14,30 +14,15 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/widgets/emergency_complaints_data_entry_form_fields_widget.dart';
-import 'package:we_care/features/medicine/shared/widgets/custom_alarm_button.dart';
-import 'package:we_care/features/medicine/shared/widgets/medicine_name_scanner_container.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/features/medicine/shared/widgets/custom_alarm_button.dart';
+import 'package:we_care/features/medicine/shared/widgets/medicine_name_scanner_container.dart';
 
 class MedicinesDataEntryFormFieldsWidget extends StatefulWidget {
   const MedicinesDataEntryFormFieldsWidget({
     super.key,
-    this.showStartDate = true,
-    this.showChronicDisease = true,
-    this.showMedicalComplaints = true,
-    this.showDoctorName = true,
-    this.showAlarms = true,
-    this.showPersonalNotes = true,
-    this.onCustomSubmit,
   });
-
-  final bool showStartDate;
-  final bool showChronicDisease;
-  final bool showMedicalComplaints;
-  final bool showDoctorName;
-  final bool showAlarms;
-  final bool showPersonalNotes;
-  final VoidCallback? onCustomSubmit;
 
   @override
   State<MedicinesDataEntryFormFieldsWidget> createState() =>
@@ -53,26 +38,24 @@ class _MedicinesDataEntryFormFieldsWidgetState
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.showStartDate) ...[
-              Text(
-                "تاريخ بدء الدواء",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
+            Text(
+              "تاريخ بدء الدواء",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
 
-              DateTimePickerContainer(
-                containerBorderColor: state.medicineStartDate == null
-                    ? AppColorsManager.warningColor
-                    : AppColorsManager.textfieldOutsideBorderColor,
-                placeholderText: state.medicineStartDate ?? "يوم / شهر / سنة",
-                onDateSelected: (pickedDate) {
-                  context
-                      .read<MedicinesDataEntryCubit>()
-                      .updateStartMedicineDate(pickedDate);
-                },
-              ),
-              verticalSpacing(16),
-            ],
+            DateTimePickerContainer(
+              containerBorderColor: state.medicineStartDate == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
+              placeholderText: state.medicineStartDate ?? "يوم / شهر / سنة",
+              onDateSelected: (pickedDate) {
+                context
+                    .read<MedicinesDataEntryCubit>()
+                    .updateStartMedicineDate(pickedDate);
+              },
+            ),
+            verticalSpacing(16),
             UserSelectionContainer(
               isEditMode: state.isEditMode,
               containerBorderColor: state.selectedMedicineName == null
@@ -247,87 +230,78 @@ class _MedicinesDataEntryFormFieldsWidgetState
             ),
             verticalSpacing(16),
 
-            if (widget.showChronicDisease) ...[
-              UserSelectionContainer(
-                allowManualEntry: true,
-                categoryLabel: "مرض المزمن",
-                containerHintText:
-                    state.selectedChronicDiseaseName ?? "اختر المرض المزمن",
-                options: state.chronicDiseaseNames,
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicinesDataEntryCubit>()
-                      .updateSelectedChronicDisease(value);
-                },
-                bottomSheetTitle: "اختر المرض المزمن",
-                searchHintText: "ابحث عن المرض المزمن",
-              ),
-              verticalSpacing(16),
-            ],
-
-            if (widget.showMedicalComplaints) ...[
-              buildMedicalComplaintsListBlocBuilder(),
-              buildAddNewComplainButtonBlocBuilder(),
-              verticalSpacing(16),
-            ],
-
-            if (widget.showDoctorName) ...[
-              UserSelectionContainer(
-                allowManualEntry: true,
-                options: state.doctorNames,
-                categoryLabel: "اسم الطبيب",
-                bottomSheetTitle: "اختر اسم الطبيب",
-                onOptionSelected: (value) {
-                  context
-                      .read<MedicinesDataEntryCubit>()
-                      .updateSelectedDoctorName(value);
-                },
-                containerHintText: state.selectedDoctorName ?? "اختر اسم الطبيب",
-                searchHintText: "ابحث عن اسم الطبيب",
-              ),
-              verticalSpacing(16),
-            ],
-            if (widget.showAlarms) ...[
-              Text(
-                "تنبيهات",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              CustomAlarmButton(
-                containerHintText: state.selectedAlarmTime != null &&
-                        state.selectedAlarmTime != '' &&
-                        state.selectedAlarmTime !=
-                            context.translate.no_data_entered
-                    ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
-                    : 'اختر موعد التنبيه',
-              ),
-              verticalSpacing(10),
-
-              Text(
-                'إذا لم يظهر زر الإيقاف، افتح مركز الإشعارات واسحب الإشعار لأسفل لرؤية الزر.',
-                style: AppTextStyles.font14BlueWeight700.copyWith(
-                  color: AppColorsManager.warningColor,
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              verticalSpacing(16),
-            ],
-
-            if (widget.showPersonalNotes) ...[
-              Text(
-                "ملاحظات شخصية",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-
-              WordLimitTextField(
-                controller: context
+            UserSelectionContainer(
+              allowManualEntry: true,
+              categoryLabel: "مرض المزمن",
+              containerHintText:
+                  state.selectedChronicDiseaseName ?? "اختر المرض المزمن",
+              options: state.chronicDiseaseNames,
+              onOptionSelected: (value) {
+                context
                     .read<MedicinesDataEntryCubit>()
-                    .personalInfoController,
-                hintText: "اكتب باختصار اى معلومات مهمة اخرى",
+                    .updateSelectedChronicDisease(value);
+              },
+              bottomSheetTitle: "اختر المرض المزمن",
+              searchHintText: "ابحث عن المرض المزمن",
+            ),
+            verticalSpacing(16),
+
+            // if (widget.showMedicalComplaints) ...[
+            buildMedicalComplaintsListBlocBuilder(),
+            buildAddNewComplainButtonBlocBuilder(),
+            verticalSpacing(16),
+            // ],
+
+            UserSelectionContainer(
+              allowManualEntry: true,
+              options: state.doctorNames,
+              categoryLabel: "اسم الطبيب",
+              bottomSheetTitle: "اختر اسم الطبيب",
+              onOptionSelected: (value) {
+                context
+                    .read<MedicinesDataEntryCubit>()
+                    .updateSelectedDoctorName(value);
+              },
+              containerHintText: state.selectedDoctorName ?? "اختر اسم الطبيب",
+              searchHintText: "ابحث عن اسم الطبيب",
+            ),
+            verticalSpacing(16),
+            Text(
+              "تنبيهات",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            CustomAlarmButton(
+              containerHintText: state.selectedAlarmTime != null &&
+                      state.selectedAlarmTime != '' &&
+                      state.selectedAlarmTime !=
+                          context.translate.no_data_entered
+                  ? 'تم ظبط موعد الدواء علي ${state.selectedAlarmTime}'
+                  : 'اختر موعد التنبيه',
+            ),
+            verticalSpacing(10),
+
+            Text(
+              'إذا لم يظهر زر الإيقاف، افتح مركز الإشعارات واسحب الإشعار لأسفل لرؤية الزر.',
+              style: AppTextStyles.font14BlueWeight700.copyWith(
+                color: AppColorsManager.warningColor,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
               ),
-            ],
+            ),
+            verticalSpacing(16),
+
+            Text(
+              "ملاحظات شخصية",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            WordLimitTextField(
+              controller: context
+                  .read<MedicinesDataEntryCubit>()
+                  .personalInfoController,
+              hintText: "اكتب باختصار اى معلومات مهمة اخرى",
+            ),
 
             ///TODO: handle this button in main view and remove it from here
             /// final section
@@ -343,78 +317,78 @@ class _MedicinesDataEntryFormFieldsWidgetState
   }
 
   Widget buildAddNewComplainButtonBlocBuilder() {
-  return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
-    buildWhen: (previous, current) =>
-        current.medicalComplaints.length != previous.medicalComplaints.length,
-    builder: (context, state) {
-      return Center(
-        child: AddNewMedicalComplaintButton(
-          text: state.medicalComplaints.isEmpty
-              ? "أضف أعراض مرضية"
-              : 'أضف أعراض مرضية أخرى ان وجد',
-          onPressed: () async {
-            final bool? result = await context.pushNamed(
-              Routes.medicationSymptomsFormFieldView,
-            );
+    return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+      buildWhen: (previous, current) =>
+          current.medicalComplaints.length != previous.medicalComplaints.length,
+      builder: (context, state) {
+        return Center(
+          child: AddNewMedicalComplaintButton(
+            text: state.medicalComplaints.isEmpty
+                ? "أضف أعراض مرضية"
+                : 'أضف أعراض مرضية أخرى ان وجد',
+            onPressed: () async {
+              final bool? result = await context.pushNamed(
+                Routes.medicationSymptomsFormFieldView,
+              );
 
-            if (result != null && context.mounted) {
-              await context
-                  .read<MedicinesDataEntryCubit>()
-                  .fetchAllAddedComplaints();
-            }
-          },
-        ),
-      );
-    },
-  );
-}
+              if (result != null && context.mounted) {
+                await context
+                    .read<MedicinesDataEntryCubit>()
+                    .fetchAllAddedComplaints();
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
 
-Widget buildMedicalComplaintsListBlocBuilder() {
-  return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
-    buildWhen: (previous, current) =>
-        previous.medicalComplaints != current.medicalComplaints,
-    builder: (context, state) {
-      return state.medicalComplaints.isNotEmpty
-          ? ListView.builder(
-              itemCount: state.medicalComplaints.length,
-              shrinkWrap: true,
-              physics:
-                  NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
-              itemBuilder: (context, index) {
-                final complaint = state.medicalComplaints[index];
-                return GestureDetector(
-                  onTap: () async {
-                    final bool? result = await context.pushNamed(
-                      Routes.addNewComplaintDetails,
-                      arguments: {
-                        'id': index,
-                        'complaint': complaint,
-                      },
-                    );
-                    if (result != null && context.mounted) {
-                      await context
-                          .read<MedicinesDataEntryCubit>()
-                          .fetchAllAddedComplaints();
-                    }
-                  },
-                  child: SymptomContainer(
-                    medicalComplaint: complaint,
-                    isMainSymptom: true,
-                    onDelete: () async {
-                      final cubit = context.read<MedicinesDataEntryCubit>();
-                      await cubit.removeAddedMedicalComplaint(index);
-                      await cubit.fetchAllAddedComplaints();
+  Widget buildMedicalComplaintsListBlocBuilder() {
+    return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+      buildWhen: (previous, current) =>
+          previous.medicalComplaints != current.medicalComplaints,
+      builder: (context, state) {
+        return state.medicalComplaints.isNotEmpty
+            ? ListView.builder(
+                itemCount: state.medicalComplaints.length,
+                shrinkWrap: true,
+                physics:
+                    NeverScrollableScrollPhysics(), // Prevents scrolling within ListView
+                itemBuilder: (context, index) {
+                  final complaint = state.medicalComplaints[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      final bool? result = await context.pushNamed(
+                        Routes.addNewComplaintDetails,
+                        arguments: {
+                          'id': index,
+                          'complaint': complaint,
+                        },
+                      );
+                      if (result != null && context.mounted) {
+                        await context
+                            .read<MedicinesDataEntryCubit>()
+                            .fetchAllAddedComplaints();
+                      }
                     },
-                  ).paddingBottom(
-                    16,
-                  ),
-                );
-              },
-            )
-          : const SizedBox.shrink();
-    },
-  );
-}
+                    child: SymptomContainer(
+                      medicalComplaint: complaint,
+                      isMainSymptom: true,
+                      onDelete: () async {
+                        final cubit = context.read<MedicinesDataEntryCubit>();
+                        await cubit.removeAddedMedicalComplaint(index);
+                        await cubit.fetchAllAddedComplaints();
+                      },
+                    ).paddingBottom(
+                      16,
+                    ),
+                  );
+                },
+              )
+            : const SizedBox.shrink();
+      },
+    );
+  }
 
   Widget submitEmergencyDataEnteredBlocConsumer() {
     return BlocConsumer<MedicinesDataEntryCubit, MedicinesDataEntryState>(
@@ -425,7 +399,6 @@ Widget buildMedicalComplaintsListBlocBuilder() {
           prev.isFormValidated != curr.isFormValidated ||
           prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
       listener: (context, state) async {
-        if (widget.onCustomSubmit != null) return;
         if (state.medicinesDataEntryStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (!context.mounted) return;
@@ -442,9 +415,7 @@ Widget buildMedicalComplaintsListBlocBuilder() {
           isLoading: state.medicinesDataEntryStatus == RequestStatus.loading,
           title: state.isEditMode ? "تحديت البيانات" : context.translate.send,
           onPressed: () async {
-            if (widget.onCustomSubmit != null&&state.isFormValidated) {
-              widget.onCustomSubmit!();
-            } else if (state.isFormValidated) {
+            if (state.isFormValidated) {
               state.isEditMode
                   ? await context
                       .read<MedicinesDataEntryCubit>()
@@ -456,11 +427,7 @@ Widget buildMedicalComplaintsListBlocBuilder() {
                       );
             }
           },
-          isEnabled: widget.onCustomSubmit != null
-              ? true
-              : state.isFormValidated
-                  ? true
-                  : false,
+          isEnabled: state.isFormValidated,
         );
       },
     );

@@ -673,7 +673,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const SupplementsView(),
         );
-      case Routes.supplementsPlansView:
+      case Routes.supplementsFollowUpPlansView:
         return MaterialPageRoute(
           builder: (_) => const SupplementsPlansView(),
         );
