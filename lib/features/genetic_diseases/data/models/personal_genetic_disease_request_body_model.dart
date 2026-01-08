@@ -9,21 +9,23 @@ class PersonalGeneticDiseaseRequestBodyModel {
   final String geneticDisease;
   final String diseaseStatus;
   @JsonKey(name: 'geneticTests')
-  final String firstUploadedImage;
+  final List<String> firstUploadedImages;
   @JsonKey(name: 'otherTests')
-  final String secondUploadedImage;
-  final String medicalReport;
+  final List<String> secondUploadedImages;
+  final List<String> medicalReport;
   final String doctor;
   final String hospital;
   final String country;
+  final String writtenReport;
 
   PersonalGeneticDiseaseRequestBodyModel({
     required this.date,
+    required this.writtenReport,
     required this.diseaseCategory,
     required this.geneticDisease,
     required this.diseaseStatus,
-    required this.firstUploadedImage,
-    required this.secondUploadedImage,
+    required this.firstUploadedImages,
+    required this.secondUploadedImages,
     required this.medicalReport,
     required this.doctor,
     required this.hospital,

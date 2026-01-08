@@ -14,29 +14,32 @@ class PersonalGeneticDiseasDetails {
   @JsonKey(name: "DiseaseStatus")
   String? diseaseStatus;
   @JsonKey(name: "GeneticTests")
-  String? geneticTestsImage;
+  List<String> geneticTestsImages;
   @JsonKey(name: "OtherTests")
-  String? otherTestsImage;
+  List<String> otherTestsImages;
   @JsonKey(name: "MedicalReport")
-  String? medicalReport;
+  List<String> medicalReport;
   @JsonKey(name: "Doctor")
   String? doctor;
   @JsonKey(name: "Hospital")
   String? hospital;
   @JsonKey(name: "Country")
   String? country;
+  String? writtenReport;
 
-  PersonalGeneticDiseasDetails(
-      {this.id,
-      this.date,
-      this.geneticDisease,
-      this.diseaseStatus,
-      this.geneticTestsImage,
-      this.otherTestsImage,
-      this.medicalReport,
-      this.doctor,
-      this.hospital,
-      this.country});
+  PersonalGeneticDiseasDetails({
+    this.id,
+    this.date,
+    this.geneticDisease,
+    this.diseaseStatus,
+    this.geneticTestsImages = const [],
+    this.otherTestsImages = const [],
+    this.medicalReport = const [],
+    this.doctor,
+    this.hospital,
+    this.country,
+    this.writtenReport,
+  });
 
   factory PersonalGeneticDiseasDetails.fromJson(Map<String, dynamic> json) =>
       _$PersonalGeneticDiseasDetailsFromJson(json);

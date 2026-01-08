@@ -46,9 +46,10 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final UploadImageRequestStatus firstImageRequestStatus;
   final UploadImageRequestStatus secondImageRequestStatus;
   final UploadReportRequestStatus reportRequestStatus;
-  final String? firstImageUploadedUrl;
-  final String? secondImageUploadedUrl;
-  final String? reportUploadedUrl;
+  final List<String> firstImageUploadedUrls;
+  final List<String> secondImageUploadedUrls;
+  final List<String> reportsUploadedUrls;
+  final UploadReportRequestStatus uploadReportStatus;
   final String noOfBrothers;
   final String noOfSisters;
   final String noOfUncles; // عدد الاعمام
@@ -95,9 +96,10 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.firstImageRequestStatus = UploadImageRequestStatus.initial,
     this.secondImageRequestStatus = UploadImageRequestStatus.initial,
     this.reportRequestStatus = UploadReportRequestStatus.initial,
-    this.firstImageUploadedUrl,
-    this.secondImageUploadedUrl,
-    this.reportUploadedUrl,
+    this.firstImageUploadedUrls = const [],
+    this.secondImageUploadedUrls = const [],
+    this.reportsUploadedUrls = const [],
+    this.uploadReportStatus = UploadReportRequestStatus.initial,
     this.medicineId = '',
     this.updatedDocumentId = '',
     this.noOfBrothers = '0',
@@ -135,9 +137,10 @@ class GeneticDiseasesDataEntryState extends Equatable {
           firstImageRequestStatus: UploadImageRequestStatus.initial,
           secondImageRequestStatus: UploadImageRequestStatus.initial,
           reportRequestStatus: UploadReportRequestStatus.initial,
-          firstImageUploadedUrl: null,
-          secondImageUploadedUrl: null,
-          reportUploadedUrl: null,
+          firstImageUploadedUrls: const [],
+          secondImageUploadedUrls: const [],
+          reportsUploadedUrls: const [],
+          uploadReportStatus: UploadReportRequestStatus.initial,
           selectedMedicalForm: null,
           selectedDose: null,
           selectedNoOfDose: null,
@@ -181,9 +184,10 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? selectedDiseaseName, // Added for consistency
     String? selectedHospital,
     String? selectedCountryName,
-    String? firstImageUploadedUrl,
-    String? secondImageUploadedUrl,
-    String? reportUploadedUrl,
+    List<String>? firstImageUploadedUrls,
+    List<String>? secondImageUploadedUrls,
+    List<String>? reportsUploadedUrls,
+    UploadReportRequestStatus? uploadReportStatus,
     UploadImageRequestStatus? firstImageRequestStatus,
     UploadImageRequestStatus? secondImageRequestStatus,
     UploadReportRequestStatus? reportRequestStatus,
@@ -241,11 +245,12 @@ class GeneticDiseasesDataEntryState extends Equatable {
       diseasesClassfications:
           diseasesClassfications ?? this.diseasesClassfications,
       diseasesStatuses: diseasesStatuses ?? this.diseasesStatuses,
-      firstImageUploadedUrl:
-          firstImageUploadedUrl ?? this.firstImageUploadedUrl,
-      secondImageUploadedUrl:
-          secondImageUploadedUrl ?? this.secondImageUploadedUrl,
-      reportUploadedUrl: reportUploadedUrl ?? this.reportUploadedUrl,
+      firstImageUploadedUrls:
+          firstImageUploadedUrls ?? this.firstImageUploadedUrls,
+      secondImageUploadedUrls:
+          secondImageUploadedUrls ?? this.secondImageUploadedUrls,
+      reportsUploadedUrls: reportsUploadedUrls ?? this.reportsUploadedUrls,
+      uploadReportStatus: uploadReportStatus ?? this.uploadReportStatus,
       firstImageRequestStatus:
           firstImageRequestStatus ?? this.firstImageRequestStatus,
       secondImageRequestStatus:
@@ -305,9 +310,10 @@ class GeneticDiseasesDataEntryState extends Equatable {
         diseasesNames,
         selectedDiseaseStatus,
         selectedDiseaseName,
-        firstImageUploadedUrl,
-        secondImageUploadedUrl,
-        reportUploadedUrl,
+        firstImageUploadedUrls,
+        secondImageUploadedUrls,
+        reportsUploadedUrls,
+        uploadReportStatus,
         firstImageRequestStatus,
         secondImageRequestStatus,
         reportRequestStatus,

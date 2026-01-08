@@ -27,6 +27,7 @@ class GeneticDiseasesDataEntryCubit
           GeneticDiseasesDataEntryState.initialState(),
         );
   final AppSharedRepo sharedRepo;
+  final reportTextController = TextEditingController();
 
   final TextEditingController noOfBrothers =
       TextEditingController(); // عدد الإخوة
@@ -48,13 +49,13 @@ class GeneticDiseasesDataEntryCubit
       final geneticDiseasesBox =
           Hive.box<NewGeneticDiseaseModel>("medical_genetic_diseases");
       geneticDiseases = geneticDiseasesBox.values.toList(growable: true);
-      emit(
+      safeEmit(
         state.copyWith(
           geneticDiseases: geneticDiseases,
         ),
       );
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           geneticDiseases: [],
           message: e.toString(),
@@ -67,15 +68,15 @@ class GeneticDiseasesDataEntryCubit
     PersonalGeneticDiseasDetails pastGeneticDisease, {
     required String documentId,
   }) async {
-    emit(
+    safeEmit(
       state.copyWith(
         diagnosisDate: pastGeneticDisease.date!,
         geneticDiseaseCategory: pastGeneticDisease.geneticDiseaseCategory,
         selectedDiseaseName: pastGeneticDisease.geneticDisease,
         selectedDiseaseStatus: pastGeneticDisease.diseaseStatus,
-        firstImageUploadedUrl: pastGeneticDisease.geneticTestsImage,
-        secondImageUploadedUrl: pastGeneticDisease.otherTestsImage,
-        reportUploadedUrl: pastGeneticDisease.medicalReport,
+        firstImageUploadedUrls: pastGeneticDisease.geneticTestsImages,
+        secondImageUploadedUrls: pastGeneticDisease.otherTestsImages,
+        reportsUploadedUrls: pastGeneticDisease.medicalReport,
         selectedDoctorName: pastGeneticDisease.doctor,
         selectedHospital: pastGeneticDisease.hospital,
         selectedCountryName: pastGeneticDisease.country,
@@ -83,6 +84,7 @@ class GeneticDiseasesDataEntryCubit
         updatedDocumentId: documentId,
       ),
     );
+    reportTextController.text = pastGeneticDisease.writtenReport ?? "";
 
     validateRequiredFields();
   }
@@ -106,7 +108,7 @@ class GeneticDiseasesDataEntryCubit
       oldGeneticDiseases,
     );
 
-    emit(
+    safeEmit(
       state.copyWith(
         isEditMode: true,
         geneticDiseases: oldGeneticDiseases,
@@ -131,7 +133,7 @@ class GeneticDiseasesDataEntryCubit
     required String memberCode,
     required String oldMembername,
   }) async {
-    emit(
+    safeEmit(
       state.copyWith(
         submitMemberGeneticDiseaseDetailsStatus: RequestStatus.loading,
       ),
@@ -148,7 +150,7 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: successMessage,
             submitMemberGeneticDiseaseDetailsStatus: RequestStatus.success,
@@ -156,7 +158,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             submitMemberGeneticDiseaseDetailsStatus: RequestStatus.failure,
@@ -173,14 +175,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             hospitalNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -193,7 +195,7 @@ class GeneticDiseasesDataEntryCubit
     required String name,
     required String code,
   }) async {
-    emit(state.copyWith(deleteRequestStatus: RequestStatus.initial));
+    safeEmit(state.copyWith(deleteRequestStatus: RequestStatus.initial));
     final result =
         await _geneticDiseasesDataEntryRepo.deleteFamilyMemberbyNameAndCode(
       AppStrings.arabicLang,
@@ -203,7 +205,7 @@ class GeneticDiseasesDataEntryCubit
     );
     result.when(
       success: (data) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: data,
             deleteRequestStatus: RequestStatus.success,
@@ -212,7 +214,7 @@ class GeneticDiseasesDataEntryCubit
         return true;
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             deleteRequestStatus: RequestStatus.failure,
@@ -225,40 +227,96 @@ class GeneticDiseasesDataEntryCubit
     return false;
   }
 
+  void removeUploadedReport(String url) {
+    final updated = List<String>.from(state.reportsUploadedUrls)..remove(url);
+
+    emit(
+      state.copyWith(
+        reportsUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
+  Future<void> uploadReportImagePicked({required String imagePath}) async {
+    // 1) Check limit
+    if (state.reportsUploadedUrls.length >= 8) {
+      emit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          uploadReportStatus: UploadReportRequestStatus.failure,
+        ),
+      );
+      return;
+    }
+    emit(
+      state.copyWith(
+        uploadReportStatus: UploadReportRequestStatus.initial,
+      ),
+    );
+    final response = await sharedRepo.uploadReport(
+      contentType: AppStrings.contentTypeMultiPartValue,
+      language: AppStrings.arabicLang,
+      image: File(imagePath),
+    );
+    response.when(
+      success: (response) {
+        // add URL to existing list
+        final updatedReports = List<String>.from(state.reportsUploadedUrls)
+          ..add(response.reportUrl);
+        emit(
+          state.copyWith(
+            message: response.message,
+            reportsUploadedUrls: updatedReports,
+            uploadReportStatus: UploadReportRequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            uploadReportStatus: UploadReportRequestStatus.failure,
+          ),
+        );
+      },
+    );
+  }
+
   void onNumberOfBrothersChanged(String? value) {
-    emit(state.copyWith(noOfBrothers: value));
+    safeEmit(state.copyWith(noOfBrothers: value));
   }
 
   void onNumberOfSistersChanged(String? value) {
-    emit(state.copyWith(noOfSisters: value));
+    safeEmit(state.copyWith(noOfSisters: value));
   }
 
   void onNumberOfUnclesChanged(String? value) {
-    emit(state.copyWith(noOfUncles: value));
+    safeEmit(state.copyWith(noOfUncles: value));
   }
 
   void onNumberOfAuntsChanged(String? value) {
-    emit(state.copyWith(noOfAunts: value));
+    safeEmit(state.copyWith(noOfAunts: value));
   }
 
   void onFamilyMemberChanges(String? value) {
-    emit(state.copyWith(familyMemberName: value));
+    safeEmit(state.copyWith(familyMemberName: value));
   }
 
   void onNumberOfMaternalUnclesChanged(String? value) {
-    emit(state.copyWith(noOfMaternalUncles: value));
+    safeEmit(state.copyWith(noOfMaternalUncles: value));
   }
 
   void onNumberOfMaternalAuntsChanged(String? value) {
-    emit(state.copyWith(noOfMaternalAunts: value));
+    safeEmit(state.copyWith(noOfMaternalAunts: value));
   }
 
   void updateSelectedHospitalName(String? value) {
-    emit(state.copyWith(selectedHospital: value));
+    safeEmit(state.copyWith(selectedHospital: value));
   }
 
   void updateSelectedCountry(String? value) {
-    emit(state.copyWith(selectedCountryName: value));
+    safeEmit(state.copyWith(selectedCountryName: value));
   }
 
   Future<void> getAllGeneticDiseasesClassfications() async {
@@ -269,14 +327,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (classifications) {
-        emit(
+        safeEmit(
           state.copyWith(
             diseasesClassfications: classifications,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -286,7 +344,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> editNoOfFamilyMembers() async {
-    emit(
+    safeEmit(
       state.copyWith(
         submitFamilyMemebersNumberStatus: RequestStatus.loading,
       ),
@@ -304,7 +362,7 @@ class GeneticDiseasesDataEntryCubit
     );
     response.when(
       success: (result) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: result,
             submitFamilyMemebersNumberStatus: RequestStatus.success,
@@ -312,7 +370,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             submitFamilyMemebersNumberStatus: RequestStatus.failure,
@@ -327,14 +385,14 @@ class GeneticDiseasesDataEntryCubit
         .getIsFirstTimeAnsweredFamilyMembersQuestions();
     response.when(
       success: (isFirstTime) {
-        emit(
+        safeEmit(
           state.copyWith(
             isFirstTimeAnsweringFamilyMemberQuestions: isFirstTime,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             isFirstTimeAnsweringFamilyMemberQuestions: false,
@@ -348,7 +406,7 @@ class GeneticDiseasesDataEntryCubit
     required String memberName,
     required String memberCode,
   }) async {
-    emit(
+    safeEmit(
       state.copyWith(
         addNewUserToFamilyTreeStatus: RequestStatus.initial,
       ),
@@ -362,7 +420,7 @@ class GeneticDiseasesDataEntryCubit
     );
     response.when(
       success: (result) {
-        emit(
+        safeEmit(
           state.copyWith(
             addNewUserToFamilyTreeStatus: RequestStatus.success,
             message: result,
@@ -370,7 +428,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             addNewUserToFamilyTreeStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -387,7 +445,7 @@ class GeneticDiseasesDataEntryCubit
     );
     response.when(
       success: (result) {
-        emit(
+        safeEmit(
           state.copyWith(
             familyMembersCount: result,
             noOfBrothers: result.bro.toString(),
@@ -400,7 +458,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(message: error.errors.first),
         );
       },
@@ -417,21 +475,21 @@ class GeneticDiseasesDataEntryCubit
     response.when(
       success: (statues) {
         if (statues.length == 1) {
-          emit(
+          safeEmit(
             state.copyWith(
               selectedDiseaseStatus: statues.first,
             ),
           );
           validateRequiredFields();
         }
-        emit(
+        safeEmit(
           state.copyWith(
             diseasesStatuses: statues,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -449,14 +507,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (statues) {
-        emit(
+        safeEmit(
           state.copyWith(
             diseasesNames: statues,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -475,7 +533,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> submitEditsForPersonalGeneticDiseases() async {
-    emit(
+    safeEmit(
       state.copyWith(
         geneticDiseaseDataEntryStatus: RequestStatus.loading,
       ),
@@ -484,14 +542,17 @@ class GeneticDiseasesDataEntryCubit
         await _geneticDiseasesDataEntryRepo.editPersonalGeneticDiseases(
       id: state.updatedDocumentId,
       requestBody: PersonalGeneticDiseaseRequestBodyModel(
+        writtenReport: reportTextController.text.isNotEmpty
+            ? reportTextController.text
+            : "",
         country: state.selectedCountryName!,
         date: state.diagnosisDate!,
         diseaseCategory: state.geneticDiseaseCategory!, //!TODO: change it later
         geneticDisease: state.selectedDiseaseName!,
         diseaseStatus: state.selectedDiseaseStatus!,
-        firstUploadedImage: state.firstImageUploadedUrl!,
-        secondUploadedImage: state.secondImageUploadedUrl!,
-        medicalReport: state.reportUploadedUrl!,
+        firstUploadedImages: state.firstImageUploadedUrls,
+        secondUploadedImages: state.secondImageUploadedUrls,
+        medicalReport: state.reportsUploadedUrls,
         doctor: state.selectedDoctorName!,
         hospital: state.selectedHospital!,
       ),
@@ -500,7 +561,7 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             geneticDiseaseDataEntryStatus: RequestStatus.success,
             message: successMessage,
@@ -508,7 +569,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             geneticDiseaseDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -525,8 +586,12 @@ class GeneticDiseasesDataEntryCubit
     await emitHospitalNames();
   }
 
+  void safeEmit(GeneticDiseasesDataEntryState cubitState) {
+    if (!isClosed) safeEmit(cubitState);
+  }
+
   Future<void> submitPersonalGeneticDiseaseDataEntry(S locale) async {
-    emit(
+    safeEmit(
       state.copyWith(
         geneticDiseaseDataEntryStatus: RequestStatus.loading,
       ),
@@ -534,23 +599,24 @@ class GeneticDiseasesDataEntryCubit
     final response =
         await _geneticDiseasesDataEntryRepo.submitPersonalGeneticDiseaseRequest(
       requestBody: PersonalGeneticDiseaseRequestBodyModel(
+        writtenReport: reportTextController.text.isNotEmpty
+            ? reportTextController.text
+            : locale.no_data_entered,
         date: state.diagnosisDate!,
         diseaseCategory: state.geneticDiseaseCategory!,
         diseaseStatus: state.selectedDiseaseStatus!,
         geneticDisease: state.selectedDiseaseName!,
         doctor: state.selectedDoctorName ?? locale.no_data_entered,
-        firstUploadedImage:
-            state.firstImageUploadedUrl ?? locale.no_data_entered,
-        secondUploadedImage:
-            state.secondImageUploadedUrl ?? locale.no_data_entered,
-        medicalReport: state.reportUploadedUrl ?? locale.no_data_entered,
+        firstUploadedImages: state.firstImageUploadedUrls,
+        secondUploadedImages: state.secondImageUploadedUrls,
+        medicalReport: state.reportsUploadedUrls,
         hospital: state.selectedHospital ?? locale.no_data_entered,
         country: state.selectedCountryName ?? locale.no_data_entered,
       ),
     );
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: successMessage,
             geneticDiseaseDataEntryStatus: RequestStatus.success,
@@ -558,7 +624,7 @@ class GeneticDiseasesDataEntryCubit
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             geneticDiseaseDataEntryStatus: RequestStatus.failure,
@@ -570,29 +636,29 @@ class GeneticDiseasesDataEntryCubit
 
   /// Update Field Values
   void updateDiagnosisDate(String? date) {
-    emit(state.copyWith(diagnosisDate: date));
+    safeEmit(state.copyWith(diagnosisDate: date));
     validateRequiredFields();
   }
 
   Future<void> updateSelectedGeneticDiseaseCategory(String? val) async {
-    emit(state.copyWith(geneticDiseaseCategory: val));
+    safeEmit(state.copyWith(geneticDiseaseCategory: val));
     await getGeneticDiseasesBasedOnClassification();
     validateRequiredFields();
   }
 
   Future<void> updateSelectedDiseaseStatus(String? val) async {
-    emit(state.copyWith(selectedDiseaseStatus: val));
+    safeEmit(state.copyWith(selectedDiseaseStatus: val));
     validateRequiredFields();
   }
 
   Future<void> updateSelectedGeneticDiseaseName(String? val) async {
-    emit(state.copyWith(selectedDiseaseName: val));
+    safeEmit(state.copyWith(selectedDiseaseName: val));
     validateRequiredFields();
     await getAllGeneticDiseasesStatus();
   }
 
   void updateSelectedDoctorName(String? value) {
-    emit(state.copyWith(selectedDoctorName: value));
+    safeEmit(state.copyWith(selectedDoctorName: value));
   }
 
   Future<void> emitCountriesData() async {
@@ -602,14 +668,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             countriesNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -618,8 +684,30 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  void removeSpecificUploadedSecondImage(String url) {
+    final updated = List<String>.from(state.secondImageUploadedUrls)
+      ..remove(url);
+
+    safeEmit(
+      state.copyWith(
+        secondImageUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadFirstImagePicked({required String imagePath}) async {
-    emit(
+    // 1) Check limit
+    if (state.firstImageUploadedUrls.length >= 8) {
+      safeEmit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          firstImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
+    safeEmit(
       state.copyWith(
         firstImageRequestStatus: UploadImageRequestStatus.initial,
       ),
@@ -631,16 +719,19 @@ class GeneticDiseasesDataEntryCubit
     );
     response.when(
       success: (response) {
-        emit(
+        // add URL to existing list
+        final updatedImages = List<String>.from(state.firstImageUploadedUrls)
+          ..add(response.imageUrl);
+        safeEmit(
           state.copyWith(
             message: response.message,
-            firstImageUploadedUrl: response.imageUrl,
+            firstImageUploadedUrls: updatedImages,
             firstImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             firstImageRequestStatus: UploadImageRequestStatus.failure,
@@ -650,8 +741,30 @@ class GeneticDiseasesDataEntryCubit
     );
   }
 
+  void removeSpecificUploadedFirstImage(String url) {
+    final updated = List<String>.from(state.firstImageUploadedUrls)
+      ..remove(url);
+
+    safeEmit(
+      state.copyWith(
+        firstImageUploadedUrls: updated,
+        message: "تم حذف الصورة",
+      ),
+    );
+  }
+
   Future<void> uploadSecondImagePicked({required String imagePath}) async {
-    emit(
+    // 1) Check limit
+    if (state.secondImageUploadedUrls.length >= 8) {
+      safeEmit(
+        state.copyWith(
+          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          secondImageRequestStatus: UploadImageRequestStatus.failure,
+        ),
+      );
+      return;
+    }
+    safeEmit(
       state.copyWith(
         secondImageRequestStatus: UploadImageRequestStatus.initial,
       ),
@@ -663,51 +776,22 @@ class GeneticDiseasesDataEntryCubit
     );
     response.when(
       success: (response) {
-        emit(
+        // add URL to existing list
+        final updatedImages = List<String>.from(state.secondImageUploadedUrls)
+          ..add(response.imageUrl);
+        safeEmit(
           state.copyWith(
             message: response.message,
-            secondImageUploadedUrl: response.imageUrl,
+            secondImageUploadedUrls: updatedImages,
             secondImageRequestStatus: UploadImageRequestStatus.success,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             secondImageRequestStatus: UploadImageRequestStatus.failure,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> uploadReportImage({required String imagePath}) async {
-    emit(
-      state.copyWith(
-        reportRequestStatus: UploadReportRequestStatus.initial,
-      ),
-    );
-    final response = await _geneticDiseasesDataEntryRepo.uploadReportImage(
-      contentType: AppStrings.contentTypeMultiPartValue,
-      language: AppStrings.arabicLang,
-      image: File(imagePath),
-    );
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            message: response.message,
-            reportRequestStatus: UploadReportRequestStatus.success,
-            reportUploadedUrl: response.reportUrl,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-            reportRequestStatus: UploadReportRequestStatus.failure,
           ),
         );
       },
@@ -722,14 +806,14 @@ class GeneticDiseasesDataEntryCubit
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             doctorNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -743,13 +827,13 @@ class GeneticDiseasesDataEntryCubit
         state.geneticDiseaseCategory == null ||
         state.selectedDiseaseStatus == null ||
         state.selectedDiseaseName == null) {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: true,
         ),
@@ -763,7 +847,7 @@ class GeneticDiseasesDataEntryCubit
           Hive.box<NewGeneticDiseaseModel>("medical_genetic_diseases");
       await geneticDiseasesBox.clear();
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: e.toString(),
         ),
@@ -774,6 +858,8 @@ class GeneticDiseasesDataEntryCubit
   @override
   Future<void> close() async {
     await clearAllAddedComplaints();
+    reportTextController.dispose();
+
     noOfBrothers.dispose();
     noOfSisters.dispose();
     noOfUncles.dispose();
