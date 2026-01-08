@@ -49,6 +49,7 @@ class _SupplementsPlansViewState extends State<SupplementsPlansView>
             await cubit.getAnyActivePlanStatus();
             await cubit.getPlanActivationStatus();
             await cubit.loadExistingPlans();
+            await cubit.getTrackedSupplementsAndVitamins();
           },
         );
         return cubit;

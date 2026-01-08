@@ -4,10 +4,18 @@ class SupplementsApiConstants {
   static const retrieveAvailableVitamins = "/SupplementsAndVitamins/names";
   static const submitSelectedSupplements =
       "/SupplementsAndVitamins/SupplementsAndVitamins";
+  static const getTrackedSupplementsAndVitamins =
+      "/SupplementsAndVitamins/SupplementsAndVitamins";
+  static const deleteSubmittedSupplementOnSpecificDate =
+      "/SupplementsAndVitamins/DailyIntakeRecordByDate";
+  static const submitDailyUserTakenSupplement =
+      "/SupplementsAndVitamins/DailyIntakeRecord";
+  static const retrieveDailyFollowUpTable =
+      "/SupplementsAndVitamins/result-data";
   //! change these to relative endpoints  later
   static const getAllCreatedPlans = "/SupplementsAndVitamins/generate-plan";
-  static const getAnyActivePlanStatus = "/SmartNutritionAnalyzer/check-active";
-  static const getPlanActivationStatus = "/SmartNutritionAnalyzer/check";
+  static const getAnyActivePlanStatus = "/SupplementsAndVitamins/check-active";
+  static const getPlanActivationStatus = "/SupplementsAndVitamins/check";
   //View Entry
 
   //filters

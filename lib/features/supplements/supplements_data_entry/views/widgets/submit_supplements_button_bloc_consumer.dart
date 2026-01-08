@@ -21,8 +21,8 @@ class SubmitSupplementsButtonBlocConsumer extends StatelessWidget {
         if (state.requestStatus == RequestStatus.success) {
           await showSuccess(state.message);
           if (context.mounted) {
-            await context.pushNamed(
-              Routes.supplementsPlansView,
+            await context.pushReplacementNamed(
+              Routes.supplementsFollowUpPlansView,
             );
           }
         } else if (state.requestStatus == RequestStatus.failure) {

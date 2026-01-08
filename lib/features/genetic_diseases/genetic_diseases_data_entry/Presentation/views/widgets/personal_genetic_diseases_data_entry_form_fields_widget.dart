@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/Helpers/image_quality_detector.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/image_uploader_section_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/report_uploader_section_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/select_image_container_shared_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/show_image_picker_selection_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/write_report_screen.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
@@ -136,133 +136,106 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
 
             verticalSpacing(16),
             Text(
-              "فحوصات جينية",
+              "فحوصات جينية ${state.firstImageUploadedUrls.length}/8",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
+            ImageUploaderSection<GeneticDiseasesDataEntryCubit,
                 GeneticDiseasesDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.firstImageRequestStatus != curr.firstImageRequestStatus,
-              listener: (context, state) async {
-                if (state.firstImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.firstImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
+              statusSelector: (state) => state.firstImageRequestStatus,
+              uploadedSelector: (state) => state.firstImageUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .removeSpecificUploadedFirstImage(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<GeneticDiseasesDataEntryCubit>()
-                            .uploadFirstImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .uploadFirstImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
 
             verticalSpacing(16),
             Text(
-              "فحوصات أخرى",
+              "فحوصات أخرى ${state.secondImageUploadedUrls.length}/8",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            BlocListener<GeneticDiseasesDataEntryCubit,
+
+            ImageUploaderSection<GeneticDiseasesDataEntryCubit,
                 GeneticDiseasesDataEntryState>(
-              listenWhen: (prev, curr) =>
-                  prev.secondImageRequestStatus !=
-                  curr.secondImageRequestStatus,
-              listener: (context, state) async {
-                if (state.secondImageRequestStatus ==
-                    UploadImageRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.secondImageRequestStatus ==
-                    UploadImageRequestStatus.failure) {
-                  await showError(state.message);
-                }
+              statusSelector: (state) => state.secondImageRequestStatus,
+              uploadedSelector: (state) => state.secondImageUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .removeSpecificUploadedSecondImage(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: "ارفق صورة",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<GeneticDiseasesDataEntryCubit>()
-                            .uploadSecondImagePicked(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .uploadSecondImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
 
             verticalSpacing(16),
             Text(
-              "التقرير الطبى",
+              "التقرير الطبى ${state.reportsUploadedUrls.length} / 8",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
             SelectImageContainer(
               imagePath: "assets/images/t_shape_icon.png",
-              label: "اكتب التقرير",
-              onTap: () {},
+              label: context
+                      .read<GeneticDiseasesDataEntryCubit>()
+                      .reportTextController
+                      .text
+                      .isEmpty
+                  ? "اكتب التقرير"
+                  : "تعديل التقرير",
+              onTap: () async {
+                final cubit = context.read<GeneticDiseasesDataEntryCubit>();
+                final isFirstTime = state.isEditMode;
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WriteReportScreenSharedWidget(
+                      reportController: cubit.reportTextController,
+                      screenTitle:
+                          isFirstTime ? "اكتب التقرير" : "تعديل التقرير",
+                      saveButtonText:
+                          isFirstTime ? "حفظ التقرير" : "حفظ التعديلات",
+                    ),
+                  ),
+                );
+              },
             ),
 
             verticalSpacing(8),
-            BlocListener<GeneticDiseasesDataEntryCubit,
+            ReportUploaderSection<GeneticDiseasesDataEntryCubit,
                 GeneticDiseasesDataEntryState>(
-              listenWhen: (previous, current) =>
-                  previous.reportRequestStatus != current.reportRequestStatus,
-              listener: (context, state) async {
-                if (state.reportRequestStatus ==
-                    UploadReportRequestStatus.success) {
-                  await showSuccess(state.message);
-                }
-                if (state.reportRequestStatus ==
-                    UploadReportRequestStatus.failure) {
-                  await showError(state.message);
-                }
+              statusSelector: (state) => state.uploadReportStatus,
+              uploadedSelector: (state) => state.reportsUploadedUrls,
+              resultMessage: state.message,
+              onRemove: (imagePath) {
+                context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .removeUploadedReport(imagePath);
               },
-              child: SelectImageContainer(
-                imagePath: "assets/images/photo_icon.png",
-                label: " ارفق صورة للتقرير",
-                onTap: () async {
-                  await showImagePicker(
-                    context,
-                    onImagePicked: (isImagePicked) async {
-                      final picker = getIt.get<ImagePickerService>();
-                      if (isImagePicked && picker.isImagePickedAccepted) {
-                        await context
-                            .read<GeneticDiseasesDataEntryCubit>()
-                            .uploadReportImage(
-                              imagePath: picker.pickedImage!.path,
-                            );
-                      }
-                    },
-                  );
-                },
-              ),
+              onUpload: (path) async {
+                await context
+                    .read<GeneticDiseasesDataEntryCubit>()
+                    .uploadReportImagePicked(
+                      imagePath: path,
+                    );
+              },
             ),
             verticalSpacing(16),
             UserSelectionContainer(

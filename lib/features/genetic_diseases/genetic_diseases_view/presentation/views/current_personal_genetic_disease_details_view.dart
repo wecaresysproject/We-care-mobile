@@ -9,7 +9,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/details_view_image_with_title.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/genetic_diseases/data/models/personal_genetic_disease_detaills.dart';
@@ -132,15 +132,13 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
               ),
               verticalSpacing(16),
               DetailsViewInfoTile(
-                title: 'الطبيب المعالج',
-                value: state.currentPersonalGeneticDiseaseDetails!.doctor!,
-                icon: 'assets/images/doctor_icon.png',
-                isExpanded: true,
-              ),
+                  title: 'الطبيب المعالج',
+                  value: state.currentPersonalGeneticDiseaseDetails!.doctor!,
+                  icon: 'assets/images/doctor_icon.png',
+                  isExpanded: true),
               DetailsViewInfoTile(
                 title: 'المستشفي',
-                value:
-                    state.currentPersonalGeneticDiseaseDetails!.hospital!,
+                value: state.currentPersonalGeneticDiseaseDetails!.hospital!,
                 icon: 'assets/images/hospital_icon.png',
                 isExpanded: true,
               ),
@@ -152,25 +150,33 @@ class PersonalGenaticDiseaseTab extends StatelessWidget {
                 isExpanded: true,
               ),
               verticalSpacing(16),
-              DetailsViewImageWithTitleTile(
-                image: state
-                    .currentPersonalGeneticDiseaseDetails!.geneticTestsImage!,
+              DetailsViewImagesWithTitleTile(
+                images: state
+                    .currentPersonalGeneticDiseaseDetails!.geneticTestsImages,
                 title: "فحصات جينية",
                 isShareEnabled: true,
               ),
               verticalSpacing(16),
-              DetailsViewImageWithTitleTile(
-                image: state
-                    .currentPersonalGeneticDiseaseDetails!.otherTestsImage!,
+              DetailsViewImagesWithTitleTile(
+                images: state
+                    .currentPersonalGeneticDiseaseDetails!.otherTestsImages,
                 title: "فحوصات اخري",
                 isShareEnabled: true,
               ),
               verticalSpacing(16),
-              DetailsViewImageWithTitleTile(
-                image:
-                    state.currentPersonalGeneticDiseaseDetails!.medicalReport!,
+              DetailsViewImagesWithTitleTile(
+                images:
+                    state.currentPersonalGeneticDiseaseDetails!.medicalReport,
                 title: "التقرير الطبي",
                 isShareEnabled: true,
+              ),
+              DetailsViewInfoTile(
+                title: "التقرير الطبي",
+                value:
+                    state.currentPersonalGeneticDiseaseDetails!.writtenReport ??
+                        "",
+                icon: 'assets/images/file_icon.png',
+                isExpanded: true,
               ),
             ],
           ),
@@ -194,6 +200,7 @@ Future<void> shareDetails(
 👨‍⚕️ *الطبيب المعالج*: ${details.doctor ?? "غير محدد"}
 🏥 *المستشفى*: ${details.hospital ?? "غير محددة"}
 🌍 *الدولة*: ${details.country ?? "غير محددة"}
+📄 *التقرير الطبي*: ${details.writtenReport ?? "غير محدد"}
 
 📎 *الملفات المرفقة إن وجدت*
 ''';
@@ -201,24 +208,24 @@ Future<void> shareDetails(
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    // ✅ تحميل الصور إن وُجدت
-    if ((details.geneticTestsImage ?? '').startsWith("http")) {
-      final path = await downloadImage(
-          details.geneticTestsImage!, tempDir, "genetic_tests.png");
-      if (path != null) imagePaths.add(path);
-    }
+    // // ✅ تحميل الصور إن وُجدت
+    // if ((details.geneticTestsImage ?? '').startsWith("http")) {
+    //   final path = await downloadImage(
+    //       details.geneticTestsImage!, tempDir, "genetic_tests.png");
+    //   if (path != null) imagePaths.add(path);
+    // }
 
-    if ((details.otherTestsImage ?? '').startsWith("http")) {
-      final path = await downloadImage(
-          details.otherTestsImage!, tempDir, "other_tests.png");
-      if (path != null) imagePaths.add(path);
-    }
+    // if ((details.otherTestsImage ?? '').startsWith("http")) {
+    //   final path = await downloadImage(
+    //       details.otherTestsImage!, tempDir, "other_tests.png");
+    //   if (path != null) imagePaths.add(path);
+    // }
 
-    if ((details.medicalReport ?? '').startsWith("http")) {
-      final path = await downloadImage(
-          details.medicalReport!, tempDir, "medical_report.png");
-      if (path != null) imagePaths.add(path);
-    }
+    // if ((details.medicalReport ?? '').startsWith("http")) {
+    //   final path = await downloadImage(
+    //       details.medicalReport!, tempDir, "medical_report.png");
+    //   if (path != null) imagePaths.add(path);
+    // }
 
     // 📤 مشاركة النص والملفات
     if (imagePaths.isNotEmpty) {

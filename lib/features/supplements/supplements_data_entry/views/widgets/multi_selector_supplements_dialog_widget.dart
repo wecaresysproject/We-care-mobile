@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
+import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
 
 class MultiSelectSupplementsDialog extends StatefulWidget {
   final String dateTitle;
@@ -20,13 +25,17 @@ class MultiSelectSupplementsDialog extends StatefulWidget {
     required List<String> items,
     required ValueChanged<List<String>> onSubmit,
   }) {
+    final cubit = context.read<SupplementsDataEntryCubit>();
     return showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => MultiSelectSupplementsDialog(
-        dateTitle: dateTitle,
-        items: items,
-        onSubmit: onSubmit,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: MultiSelectSupplementsDialog(
+          dateTitle: dateTitle,
+          items: items,
+          onSubmit: onSubmit,
+        ),
       ),
     );
   }
@@ -52,64 +61,82 @@ class _MultiSelectSupplementsDialogState
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        width: double.infinity,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "فيتامينات اليوم ${widget.dateTitle}",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textDirection: TextDirection.rtl,
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 250,
-              child: ListView.builder(
-                itemCount: widget.items.length,
-                itemBuilder: (context, index) {
-                  final item = widget.items[index];
-                  final bool isSelected = _selected.contains(item);
+    return BlocConsumer<SupplementsDataEntryCubit, SupplementsDataEntryState>(
+      listenWhen: (previous, current) =>
+          previous.submitDailySupplementStatus !=
+          current.submitDailySupplementStatus,
+      listener: (context, state) {
+        if (state.submitDailySupplementStatus == RequestStatus.success) {
+          Navigator.pop(context);
+          showSuccess(state.message);
+          context.read<SupplementsDataEntryCubit>().loadExistingPlans();
+        } else if (state.submitDailySupplementStatus == RequestStatus.failure) {
+          showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "فيتامينات اليوم ${widget.dateTitle}",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 250,
+                  child: ListView.builder(
+                    itemCount: widget.items.length,
+                    itemBuilder: (context, index) {
+                      final item = widget.items[index];
+                      final bool isSelected = _selected.contains(item);
 
-                  return ListTile(
-                    title: Text(
-                      item,
-                      textDirection: TextDirection.rtl,
-                    ),
-                    trailing: isSelected
-                        ? Icon(
-                            Icons.check_box,
-                            color: AppColorsManager.mainDarkBlue,
-                          )
-                        : const Icon(
-                            Icons.check_box_outline_blank,
-                          ),
-                    onTap: () => toggleItem(item),
-                  );
-                },
-              ),
+                      return ListTile(
+                        title: Text(
+                          item,
+                          textDirection: TextDirection.rtl,
+                        ),
+                        trailing: isSelected
+                            ? Icon(
+                                Icons.check_box,
+                                color: AppColorsManager.mainDarkBlue,
+                              )
+                            : const Icon(
+                                Icons.check_box_outline_blank,
+                              ),
+                        onTap: () => toggleItem(item),
+                      );
+                    },
+                  ),
+                ),
+                verticalSpacing(20),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppCustomButton(
+                    onPressed: () {
+                      widget.onSubmit(_selected);
+                    },
+                    title: "حفظ",
+                    isEnabled: _selected.isNotEmpty,
+                    isLoading: state.submitDailySupplementStatus ==
+                        RequestStatus.loading,
+                  ),
+                )
+              ],
             ),
-            verticalSpacing(20),
-            SizedBox(
-              width: double.infinity,
-              child: AppCustomButton(
-                onPressed: () {
-                  widget.onSubmit(_selected);
-                  Navigator.pop(context);
-                },
-                title: "حفظ",
-                isEnabled: _selected.isNotEmpty,
-              ),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

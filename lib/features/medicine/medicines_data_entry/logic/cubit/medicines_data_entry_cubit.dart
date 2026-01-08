@@ -711,6 +711,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     emit(state.copyWith(selectedMedicineName: medicineName));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    validateRequiredFieldsForMedicationCompatibility();
     getMedcineIdByName(medicineName!);
     await emitMedicineforms();
   }
@@ -724,18 +725,21 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedDose(String? dose) {
     emit(state.copyWith(selectedDose: dose));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedDoseFrequency(String? noOfDose) {
     emit(state.copyWith(selectedNoOfDose: noOfDose));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedChronicDisease(String? val) {
@@ -769,6 +773,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     emit(state.copyWith(selectedDoseAmount: doseAmount));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   Future<void> emitAllDoseAmounts() async {
@@ -806,11 +811,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     emit(state.copyWith(doseDuration: doseDuration));
     await emitAllDurationsForCategory();
     validateRequiredFields();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedTimePeriod(String? timePeriods) {
     emit(state.copyWith(timePeriods: timePeriods));
     validateRequiredFields();
+    validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedDoctorName(String? value) {
@@ -835,6 +842,28 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       emit(
         state.copyWith(
           isFormValidated: true,
+        ),
+      );
+    }
+  }
+
+  void validateRequiredFieldsForMedicationCompatibility() {
+    if (state.selectedMedicineName == null ||
+        state.selectedMedicalForm == null ||
+        state.selectedDose == null ||
+        state.selectedNoOfDose == null ||
+        state.doseDuration == null ||
+        state.timePeriods == null ||
+        state.selectedDoseAmount == null) {
+      emit(
+        state.copyWith(
+          isMedicationCompatibilityFormValidated: false,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          isMedicationCompatibilityFormValidated: true,
         ),
       );
     }

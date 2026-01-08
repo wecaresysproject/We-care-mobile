@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
+import 'package:we_care/features/supplements/data/models/supplement_follow_up_row_model.dart';
 
 class SupplementsDataEntryState extends Equatable {
   final RequestStatus requestStatus;
@@ -15,6 +16,11 @@ class SupplementsDataEntryState extends Equatable {
   final int supplementFollowUpCurrentTabIndex;
   final String selectedPlanDate;
   final bool isAnyPlanActivated;
+  final List<String> trackedSupplementsAndVitamins;
+  final RequestStatus trackedSupplementsAndVitaminsStatus;
+  final RequestStatus submitDailySupplementStatus;
+  final List<SupplementFollowUpRowModel> supplementTableRows;
+  final RequestStatus supplementTableStatus;
 
   const SupplementsDataEntryState({
     this.message = '',
@@ -28,6 +34,11 @@ class SupplementsDataEntryState extends Equatable {
     this.isAnyPlanActivated = false,
     this.supplementFollowUpCurrentTabIndex = 0,
     this.selectedPlanDate = '',
+    this.trackedSupplementsAndVitamins = const [],
+    this.trackedSupplementsAndVitaminsStatus = RequestStatus.initial,
+    this.submitDailySupplementStatus = RequestStatus.initial,
+    this.supplementTableRows = const [],
+    this.supplementTableStatus = RequestStatus.initial,
   });
 
   factory SupplementsDataEntryState.initial() {
@@ -46,6 +57,11 @@ class SupplementsDataEntryState extends Equatable {
       isAnyPlanActivated: false,
       supplementFollowUpCurrentTabIndex: 0,
       selectedPlanDate: '',
+      trackedSupplementsAndVitamins: const [],
+      trackedSupplementsAndVitaminsStatus: RequestStatus.initial,
+      submitDailySupplementStatus: RequestStatus.initial,
+      supplementTableRows: const [],
+      supplementTableStatus: RequestStatus.initial,
     );
   }
 
@@ -61,6 +77,11 @@ class SupplementsDataEntryState extends Equatable {
     bool? isAnyPlanActivated,
     int? supplementFollowUpCurrentTabIndex,
     String? selectedPlanDate,
+    List<String>? trackedSupplementsAndVitamins,
+    RequestStatus? trackedSupplementsAndVitaminsStatus,
+    RequestStatus? submitDailySupplementStatus,
+    List<SupplementFollowUpRowModel>? supplementTableRows,
+    RequestStatus? supplementTableStatus,
   }) {
     return SupplementsDataEntryState(
       message: message ?? this.message,
@@ -77,6 +98,16 @@ class SupplementsDataEntryState extends Equatable {
       supplementFollowUpCurrentTabIndex: supplementFollowUpCurrentTabIndex ??
           this.supplementFollowUpCurrentTabIndex,
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
+      trackedSupplementsAndVitamins:
+          trackedSupplementsAndVitamins ?? this.trackedSupplementsAndVitamins,
+      trackedSupplementsAndVitaminsStatus:
+          trackedSupplementsAndVitaminsStatus ??
+              this.trackedSupplementsAndVitaminsStatus,
+      submitDailySupplementStatus:
+          submitDailySupplementStatus ?? this.submitDailySupplementStatus,
+      supplementTableRows: supplementTableRows ?? this.supplementTableRows,
+      supplementTableStatus:
+          supplementTableStatus ?? this.supplementTableStatus,
     );
   }
 
@@ -93,5 +124,10 @@ class SupplementsDataEntryState extends Equatable {
         isAnyPlanActivated,
         supplementFollowUpCurrentTabIndex,
         selectedPlanDate,
+        trackedSupplementsAndVitamins,
+        trackedSupplementsAndVitaminsStatus,
+        submitDailySupplementStatus,
+        supplementTableRows,
+        supplementTableStatus,
       ];
 }

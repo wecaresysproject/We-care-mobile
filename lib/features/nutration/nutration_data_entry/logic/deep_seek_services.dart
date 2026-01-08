@@ -506,4 +506,78 @@ $dietInput
 وأخرج JSON فقط بالهيكل المحدد، بدون أي نص إضافي.
 ''';
   }
+
+  static Future<void> getMedicationCompitability() async {
+    try {
+      final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
+      final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
+
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $apiKey',
+        },
+        body: jsonEncode(
+          {
+            'model': 'deepseek-chat',
+            'messages': [
+              {
+                'role': 'system',
+                'content': buildSystemMedicationCompitabilityPrompt(),
+              },
+              {
+                'role': 'user',
+                'content': buildUserMedicationCompitabilityPrompt(),
+              }
+            ],
+            'temperature': 0.1,
+            'max_tokens': 8000, // مهم لتقليل cost ومنع expansion
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        /// ✅ UTF8 safe decoding
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+
+        final content = decoded['choices']?[0]?['message']?['content'];
+        if (content == null) {
+          AppLogger.error('DeepSeek response content is null');
+          return;
+        }
+
+        AppLogger.debug('DeepSeek response (raw): $content');
+
+        final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
+
+        if (jsonMatch == null) {
+          AppLogger.error('❗ JSON not found inside DeepSeek response');
+          return;
+        }
+
+        final jsonString = jsonMatch.group(0)!;
+        final nutritionJson = jsonDecode(jsonString);
+
+        // return NutrationFactsModel.fromJson(nutritionJson);
+      } else {
+        AppLogger.error(
+          'DeepSeek API Error: ${response.statusCode} - ${response.body}',
+        );
+      }
+    } catch (e, stack) {
+      AppLogger.error('Error analyzing diet plan: $e');
+      AppLogger.error('StackTrace: $stack');
+    }
+
+    return;
+  }
+
+  static String buildSystemMedicationCompitabilityPrompt() {
+    return "";
+  }
+
+  static String buildUserMedicationCompitabilityPrompt() {
+    return "";
+  }
 }

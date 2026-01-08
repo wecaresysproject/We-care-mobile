@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/widgets/day_card_widget.dart';
@@ -19,7 +20,7 @@ class WeeklySupplemnetsPlanGridViewWidgt extends StatefulWidget {
 
 class _WeeklySupplemnetsPlanGridViewWidgState
     extends State<WeeklySupplemnetsPlanGridViewWidgt> {
-  String? selectedDay;
+  String? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +79,7 @@ class _WeeklySupplemnetsPlanGridViewWidgState
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
-            final isSelected = selectedDay == day.date;
+            final isSelected = selectedDate == day.date;
 
             // اختر الـ constructor المناسب
             if (state.weeklyActivationStatus == false) {
@@ -113,21 +114,25 @@ class _WeeklySupplemnetsPlanGridViewWidgState
                 onTap: () {
                   setState(
                     () {
-                      selectedDay = day.date;
+                      selectedDate = day.date;
                     },
                   );
                   MultiSelectSupplementsDialog.show(
                     context,
-                    dateTitle: selectedDay!, // Example: 15/01/2025
-                    items: [
-                      "فيتامين C",
-                      "فيتامين D",
-                      "Omega 3",
-                      "Calcium",
-                      "Magnesium",
-                    ], // ← دي هتجيلك من الـ backend لاحقًا
+                    dateTitle: selectedDate!,
+                    items: state.trackedSupplementsAndVitamins,
                     onSubmit: (selectedItems) {
                       AppLogger.debug("Selected: $selectedItems");
+                      context
+                          .read<SupplementsDataEntryCubit>()
+                          .submitDailyUserTakenSupplement(
+                            dailyTakenSupplements:
+                                DailySupplementSubmissionModel(
+                              date: selectedDate!,
+                              hasDocument: true,
+                              vitaminsTaken: selectedItems,
+                            ),
+                          );
                     },
                   );
                 },

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
@@ -29,6 +30,36 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
         emit(
           state.copyWith(
             vitaminsStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getTrackedSupplementsAndVitamins() async {
+    emit(
+      state.copyWith(
+        trackedSupplementsAndVitaminsStatus: RequestStatus.loading,
+      ),
+    );
+    final result =
+        await _supplementsDataEntryRepo.getTrackedSupplementsAndVitamins(
+      language: AppStrings.arabicLang,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            trackedSupplementsAndVitaminsStatus: RequestStatus.success,
+            trackedSupplementsAndVitamins: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            trackedSupplementsAndVitaminsStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );
@@ -288,6 +319,86 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
         emit(
           state.copyWith(
             requestStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitDailyUserTakenSupplement({
+    required DailySupplementSubmissionModel dailyTakenSupplements,
+  }) async {
+    safeEmit(
+        state.copyWith(submitDailySupplementStatus: RequestStatus.loading));
+
+    final result =
+        await _supplementsDataEntryRepo.submitDailyUserTakenSupplement(
+      submission: dailyTakenSupplements,
+    );
+
+    result.when(
+      success: (message) {
+        safeEmit(
+          state.copyWith(
+            submitDailySupplementStatus: RequestStatus.success,
+            message: message,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            submitDailySupplementStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteSubmittedSupplementOnSpecificDate(String date) async {
+    final result =
+        await _supplementsDataEntryRepo.deleteSubmittedSupplementOnSpecificDate(
+      date: date,
+    );
+    result.when(
+      success: (response) async {
+        safeEmit(
+          state.copyWith(
+            message: response,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getSupplementTableData({required String date}) async {
+    safeEmit(state.copyWith(supplementTableStatus: RequestStatus.loading));
+    final result = await _supplementsDataEntryRepo.retrieveDailyFollowUpTable(
+      date: date,
+      language: AppStrings.arabicLang,
+    );
+    result.when(
+      success: (rows) {
+        safeEmit(
+          state.copyWith(
+            supplementTableStatus: RequestStatus.success,
+            supplementTableRows: rows,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            supplementTableStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );
