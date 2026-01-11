@@ -13,12 +13,12 @@ Unlike simple fitness trackers, We Care is designed for **medical depth**, allow
 
 ## 📸 Screenshots (WIP)
 
-| Authentication | Popup / Alerts | Biometrics | Dashboard |
+| Create Account | Login | Contact Support | Home Screen |
 |:---:|:---:|:---:|:---:|
 | ![Reset Password](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.48.44%20PM.jpeg) | ![Popup](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.49.11%20PM.jpeg) | ![Biometrics](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.49.30%20PM.jpeg) | ![Screen 1](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.50.20%20PM.jpeg) |
-| **User Profile** | **Medical Records** | **Laboratory** | **Medications** |
+| **Home Screen** | **Medical Analaysis** | **Laboratory Tests** | **Dental Module** |
 | ![Screen 2](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.50.20%20PM%20(1).jpeg) | ![Screen 3](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.52.52%20PM.jpeg) | ![Screen 4](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.54.16%20PM.jpeg) | ![Screen 5](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.54.42%20PM.jpeg) |
-| **Diagnostics** | **Features** | **Navigation** | **Settings** |
+| **Biometrics tracking** | **Features** | **Navigation** | **Settings** |
 | ![Screen 6](assets/screenshots/WhatsApp%20Image%202026-01-11%20at%2010.59.04%20PM.jpeg) | | | |
 
 *(Note: Screenshots will be updated as UI polishing is finalized.)*
