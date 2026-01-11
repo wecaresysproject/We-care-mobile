@@ -160,14 +160,3 @@ we_care_mobile/
 *   **AI Health Insights**: Deeper analysis of lab reports using LLMs.
 *   **Wearable Sync**: Direct integration with Apple Health / Google Fit.
 
----
-
-## 👨‍💻 CV-Ready Summary
-
-> **Senior Flutter Developer | We Care Mobile App**
->
-> Architected and developed a scalable **Personal Health Record (PHR)** system with over **30+ feature modules**.
-> *   Implemented **Clean Architecture** with **Bloc/Cubit** state management to handle complex medical workflows and data entry.
-> *   Built advanced features including **OCR for medical reports**, **Medication Compatibility Checking**, and **Offline-first Biometrics**.
-> *   Established a robust **CI/CD-ready** environment with **Flavors (Dev/Prod)**, **Dependency Injection**, and rigorous **Unit/Integration Testing**.
-> *   Optimized app performance using `flutter_screenutil` for responsive UI and `Hive` for low-latency local storage.
