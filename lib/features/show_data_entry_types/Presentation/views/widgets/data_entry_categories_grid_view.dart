@@ -11,6 +11,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 
 class DataEntryCategoriesGridView extends StatelessWidget {
@@ -119,6 +120,9 @@ class _CategoryItemState extends State<CategoryItem> {
         ),
         BlocProvider<SupplementsDataEntryCubit>(
           create: (context) => getIt<SupplementsDataEntryCubit>(),
+        ),
+        BlocProvider<PhysicalActivatyDataEntryCubit>(
+          create: (context) => getIt<PhysicalActivatyDataEntryCubit>(),
         ),
       ],
       child: Builder(builder: (context) {
@@ -242,8 +246,30 @@ class _CategoryItemState extends State<CategoryItem> {
       await _handleNutritionFollowUpTap(context);
     } else if (widget.title == "الفيتامينات و\nالمكملات الغذائية") {
       await _handleSupplementsFollowUpTap(context);
+    } else if (widget.title == "النشاط الرياضي") {
+      await _handlePhysicalActivityFollowUpTap(context);
     } else {
       await _navigateTo(context, widget.routeName);
+    }
+  }
+
+  Future<void> _handlePhysicalActivityFollowUpTap(BuildContext context) async {
+    final physicalActivityCubit =
+        context.read<PhysicalActivatyDataEntryCubit>();
+
+    final result = await physicalActivityCubit.getAnyActivePlanStatus();
+
+    if (!context.mounted) return;
+
+    switch (result) {
+      case true:
+        await _navigateTo(context, Routes.physicalActivatyPlansDataEntry);
+        break;
+      case false:
+        await _navigateTo(context, widget.routeName);
+        break;
+      default:
+        await showError("من فضلك حاول مرة اخري");
     }
   }
 

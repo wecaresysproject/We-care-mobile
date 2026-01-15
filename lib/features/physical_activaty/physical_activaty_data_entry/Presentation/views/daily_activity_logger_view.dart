@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -7,10 +11,12 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/physical_activaty/data/models/workout_activity_model.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
 class DailyActivityLogger extends StatefulWidget {
-  const DailyActivityLogger({super.key});
-
+  const DailyActivityLogger({super.key, required this.day});
+  final String day;
   @override
   State<DailyActivityLogger> createState() => _DailyActivityLoggerState();
 }
@@ -269,134 +275,203 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
     },
   ];
 
-  void _submitActivities() {
-    // Here you would send the data to your backend
+  late List<TextEditingController> _durationControllers;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('تم حفظ البيانات بنجاح!'),
-        backgroundColor: Colors.green,
-      ),
+  @override
+  void initState() {
+    super.initState();
+    _durationControllers = List.generate(
+      activityList.length,
+      (_) => TextEditingController(),
     );
-    context.pop(result: true);
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _durationControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  List<WorkoutActivity> _collectActivities() {
+    final List<WorkoutActivity> activities = [];
+    for (int i = 0; i < activityList.length; i++) {
+      final text = _durationControllers[i].text.trim();
+      if (text.isNotEmpty) {
+        final duration = int.tryParse(text);
+        if (duration != null && duration > 0) {
+          final activity = activityList[i];
+          final title = activity['title']!;
+          final subtitle = activity['subtitle'] ?? '';
+          final activityTitle =
+              subtitle.isNotEmpty ? '$title $subtitle' : title;
+          activities.add(
+            WorkoutActivity(
+              activityId: i + 1,
+              activityTitle: activityTitle,
+              durationMinutes: duration,
+            ),
+          );
+        }
+      }
+    }
+    return activities;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                const AppBarWithCenteredTitle(
-                  title: 'النشاط البدنى لليوم',
-                  showActionButtons: false,
-                ),
-                ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: activityList.length,
-                  itemBuilder: (context, index) {
-                    final activity = activityList[index];
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      textBaseline: TextBaseline.alphabetic,
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      children: [
-                        Image.asset(
-                          activity['image']!,
-                          width: 44.w,
-                          height: 50.h,
-                        ),
-                        horizontalSpacing(2),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColorsManager.mainDarkBlue,
-                                  width: 1,
+    return BlocProvider<PhysicalActivatyDataEntryCubit>(
+      create: (context) => getIt<PhysicalActivatyDataEntryCubit>(),
+      child: Scaffold(
+        appBar: AppBar(toolbarHeight: 0),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                children: [
+                  const AppBarWithCenteredTitle(
+                    title: 'النشاط البدنى لليوم',
+                    showActionButtons: false,
+                  ),
+                  ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: activityList.length,
+                    itemBuilder: (context, index) {
+                      final activity = activityList[index];
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        textBaseline: TextBaseline.alphabetic,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        children: [
+                          Image.asset(
+                            activity['image']!,
+                            width: 44.w,
+                            height: 50.h,
+                          ),
+                          horizontalSpacing(2),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: AppColorsManager.mainDarkBlue,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(14.r),
                                 ),
-                                borderRadius: BorderRadius.circular(14.r),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                  vertical: 4.h,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          activity['title']!,
-                                          style: AppTextStyles
-                                              .font18blackWight500
-                                              .copyWith(
-                                            fontWeight: FontWeight.w600,
-                                            color:
-                                                AppColorsManager.mainDarkBlue,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 4.w,
+                                    vertical: 4.h,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            activity['title']!,
+                                            style: AppTextStyles
+                                                .font18blackWight500
+                                                .copyWith(
+                                              fontWeight: FontWeight.w600,
+                                              color:
+                                                  AppColorsManager.mainDarkBlue,
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          activity['subtitle']!,
-                                          style: AppTextStyles
-                                              .font18blackWight500
-                                              .copyWith(
-                                            fontSize: 12.sp,
-                                            color:
-                                                AppColorsManager.mainDarkBlue,
+                                          Text(
+                                            activity['subtitle']!,
+                                            style: AppTextStyles
+                                                .font18blackWight500
+                                                .copyWith(
+                                              fontSize: 12.sp,
+                                              color:
+                                                  AppColorsManager.mainDarkBlue,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    SizedBox(
-                                      width: 90,
-                                      height: 50,
-                                      child: CustomTextField(
-                                        hintText: 'دقيقة',
-                                        validator: (value) {},
-                                        controller: TextEditingController(),
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (value) {},
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      const Spacer(),
+                                      SizedBox(
+                                        width: 90,
+                                        height: 50,
+                                        child: CustomTextField(
+                                          hintText: 'دقيقة',
+                                          validator: (value) {},
+                                          controller:
+                                              _durationControllers[index],
+                                          keyboardType: TextInputType.number,
+                                          onChanged: (value) {},
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                SizedBox(height: 50.h), // عشان تدي مساحة للزر ما يغطي آخر عنصر
-              ],
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(
+                      height: 50.h), // عشان تدي مساحة للزر ما يغطي آخر عنصر
+                ],
+              ),
             ),
-          ),
 
-          /// الزر ثابت في الأسفل
-          Positioned(
-            bottom: 16,
-            left: 16,
-            right: 16,
-            child: AppCustomButton(
-              title: "حفظ",
-              onPressed: _submitActivities,
-              isEnabled: true,
+            /// الزر ثابت في الأسفل
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: _buildSubmitButton(widget.day),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildSubmitButton(String day) {
+    return BlocConsumer<PhysicalActivatyDataEntryCubit,
+        PhysicalActivatyDataEntryState>(
+      listenWhen: (prev, curr) =>
+          curr.submitPhysicalActivityDataStatus == RequestStatus.failure ||
+          curr.submitPhysicalActivityDataStatus == RequestStatus.success,
+      buildWhen: (prev, curr) =>
+          prev.submitPhysicalActivityDataStatus !=
+          curr.submitPhysicalActivityDataStatus,
+      listener: (context, state) async {
+        if (state.submitPhysicalActivityDataStatus == RequestStatus.success) {
+          await showSuccess(state.message);
+          if (!context.mounted) return;
+          context.pop(result: true);
+        } else if (state.submitPhysicalActivityDataStatus ==
+            RequestStatus.failure) {
+          await showError(state.message);
+        }
+      },
+      builder: (context, state) {
+        final activities = _collectActivities();
+        return AppCustomButton(
+          isLoading:
+              state.submitPhysicalActivityDataStatus == RequestStatus.loading,
+          title: "حفظ",
+          onPressed: () async {
+            await context
+                .read<PhysicalActivatyDataEntryCubit>()
+                .postDailyDietPlan(activities, day);
+          },
+          isEnabled: true,
+        );
+      },
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
-import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
-import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/physical_activaty/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/physical_activaty/data/models/workout_activity_model.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_services.dart';
 
 class PhysicalActivatyDataEntryRepo {
@@ -25,21 +25,6 @@ class PhysicalActivatyDataEntryRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getAllChronicDiseases({
-    required String language,
-  }) async {
-    try {
-      final response = await _physicalActivityServices.getAllChronicDiseases(
-        language,
-      );
-      final chronicDiseases =
-          response['data'].map<String>((e) => e as String).toList();
-      return ApiResult.success(chronicDiseases);
-    } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));
-    }
-  }
-
   Future<ApiResult<bool>> getPlanActivationStatus({
     required String language,
     required String planType,
@@ -57,7 +42,7 @@ class PhysicalActivatyDataEntryRepo {
   }
 
   Future<ApiResult<String>> postDailyDietPlan({
-    required NutrationFactsModel requestBody,
+    required List<WorkoutActivity> requestBody,
     required String lanugage,
     required String date,
   }) async {

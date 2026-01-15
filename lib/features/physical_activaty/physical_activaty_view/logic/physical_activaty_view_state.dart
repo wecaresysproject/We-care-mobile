@@ -5,7 +5,7 @@ class PhysicalActivatyViewState extends Equatable {
   final String responseMessage;
   final PhysicalActivityMetricsResponse? physicalActivitySLides;
   final int followUpNutrationViewCurrentTabIndex;
-  final List<String> availableYears;
+  final List<int> availableYears;
   final List<String> availableDates;
 
   const PhysicalActivatyViewState({
@@ -31,7 +31,7 @@ class PhysicalActivatyViewState extends Equatable {
   PhysicalActivatyViewState copyWith({
     String? responseMessage,
     RequestStatus? requestStatus,
-    List<String>? availableYears,
+    List<int>? availableYears,
     List<String>? availableDates,
     PhysicalActivityMetricsResponse? physicalActivitySLides,
     int? followUpNutrationViewCurrentTabIndex,

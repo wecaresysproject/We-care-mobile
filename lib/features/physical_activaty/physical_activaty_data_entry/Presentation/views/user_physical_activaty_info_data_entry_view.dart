@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -33,8 +32,7 @@ class _UserPhysicalActivatyInfoDataEntryViewState
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PhysicalActivatyDataEntryCubit>(
-      create: (context) =>
-          getIt.get<PhysicalActivatyDataEntryCubit>()..getAllChronicDiseases(),
+      create: (context) => getIt.get<PhysicalActivatyDataEntryCubit>(),
       child: Builder(
         builder: (context) => Scaffold(
           appBar: AppBar(
@@ -225,18 +223,8 @@ Widget submitUserInfoEnteredButtonBlocConsumer(GlobalKey<FormState> formKey) {
         onPressed: () async {
           if (formKey.currentState!.validate()) {
             await context
-                .pushReplacementNamed(Routes.physicalActivatyPlansDataEntry);
-            // await Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (context) => const DailyActivityLogger(),
-            //   ),
-            // );
-            // لو كل حاجة صح
-            // await context
-            //     .read<PhysicalActivatyDataEntryCubit>()
-            //     .postPersonalUserInfoData();
-            AppLogger.debug(
-                "✅ البيانات صحيحة - ابعت للسيرفر أو روح للخطوة التالية");
+                .read<PhysicalActivatyDataEntryCubit>()
+                .postPersonalUserInfoData();
           }
         },
         isEnabled: true,

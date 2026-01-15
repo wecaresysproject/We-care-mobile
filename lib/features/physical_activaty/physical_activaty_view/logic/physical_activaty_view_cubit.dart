@@ -59,8 +59,8 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
 
   Future<void> getIntialRequests() async {
     await Future.wait([
-      getPhysicalActivitySlides(),
       getAvailableYears(),
+      getPhysicalActivitySlides(),
     ]);
   }
 
@@ -96,7 +96,7 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
     final response = await physicalActivatyViewRepo.getFilterdDocuments(
       language: AppStrings.arabicLang,
       year: year,
-      date: date,
+      range: date,
     );
     response.when(
       success: (data) {

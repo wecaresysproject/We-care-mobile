@@ -8,14 +8,14 @@ class PhysicalActivatyViewRepo {
 
   PhysicalActivatyViewRepo({required this.physicalActivityServices});
 
-  Future<ApiResult<List<String>>> getAvailableYears({
+  Future<ApiResult<List<int>>> getAvailableYears({
     required String language,
   }) async {
     try {
       final response = await physicalActivityServices.getAvailableYears(
         language,
       );
-      final years = (response['data'] as List).map<String>((e) => e).toList();
+      final years = (response['data'] as List).map<int>((e) => e).toList();
       return ApiResult.success(years);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -60,13 +60,13 @@ class PhysicalActivatyViewRepo {
   Future<ApiResult<PhysicalActivityMetricsResponse>> getFilterdDocuments({
     required String language,
     required String year,
-    required String date,
+    required String range,
   }) async {
     try {
       final response = await physicalActivityServices.getFilterdDocuments(
         language,
         year,
-        date,
+        range,
       );
 
       return ApiResult.success(
