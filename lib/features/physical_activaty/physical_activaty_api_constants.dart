@@ -5,31 +5,21 @@ class PhysicalActivatyApiConstants {
   static const postDailyDietPlan =
       "PhysicalActivityForUser/physical-activities";
   static const getAllCreatedPlans = "PhysicalActivityForUser/generate-plan";
-  static const getPlanActivationStatus =
-      "PhysicalActivityForUser/check"; //! change it later
+  static const getPlanActivationStatus = "PhysicalActivityForUser/check";
 
   static const getAnyActivePlanStatus =
-      "SmartNutritionAnalyzer/check-active"; //! need one specific for this module
+      "PhysicalActivityForUser/check-active"; //! need one specific for this module
   static const deleteDayDietPlan =
       "PhysicalActivityForUser/physical-activities";
 
   //View Entry
-  static const getAllNutrationTableData = "SmartNutritionAnalyzer/result-data";
-  static const getAvailableYears = "SmartNutritionAnalyzer/weekly-plans-years";
-  static const getAvailableYearsForMonthlyPlan =
-      "SmartNutritionAnalyzer/monthly-plans-years";
+  static const getAvailableYears = "PhysicalActivityForUser/plans/years";
   static const getAvailableDatesBasedOnYear =
-      "SmartNutritionAnalyzer/weekly-plans-dates";
-  static const getFilterdDocuments = "SmartNutritionAnalyzer/doc-data-filtered";
+      "PhysicalActivityForUser/plans/ranges";
+  static const getFilterdDocuments =
+      "PhysicalActivityForUser/physical-activity/range";
   static const getPhysicalActivitySlides =
-      "SmartNutritionAnalyzer/getPhysicalActivitySlides";
-  static const getFoodAlternatives = "SmartNutritionAnalyzer/food-alternatives";
-  static const updateNutrientStandard =
-      "SmartNutritionAnalyzer/update-standard";
+      "PhysicalActivityForUser/physical-activity/metrics";
 
-  static const getElementRecommendations =
-      "SmartNutritionAnalyzer/nutrient-status";
-  static const getAffectedOrgansList = "SmartNutritionAnalyzer/organ-names";
-  static const getOrganNutritionalEffects =
-      "SmartNutritionAnalyzer/organ-effects";
+  // static const getAllNutrationTableData = "SmartNutritionAnalyzer/result-data";
 }

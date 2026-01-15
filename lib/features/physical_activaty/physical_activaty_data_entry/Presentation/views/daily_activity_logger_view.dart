@@ -460,19 +460,16 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
       },
       builder: (context, state) {
         final activities = _collectActivities();
-        final isEnabled = activities.isNotEmpty;
         return AppCustomButton(
           isLoading:
               state.submitPhysicalActivityDataStatus == RequestStatus.loading,
           title: "حفظ",
           onPressed: () async {
-            if (isEnabled) {
-              await context
-                  .read<PhysicalActivatyDataEntryCubit>()
-                  .postDailyDietPlan(activities, day);
-            }
+            await context
+                .read<PhysicalActivatyDataEntryCubit>()
+                .postDailyDietPlan(activities, day);
           },
-          isEnabled: isEnabled,
+          isEnabled: true,
         );
       },
     );

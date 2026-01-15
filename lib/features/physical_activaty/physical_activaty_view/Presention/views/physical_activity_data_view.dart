@@ -6,7 +6,8 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/logic/physical_activaty_view_cubit.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/filters_row_bloc_builder_widget.dart'
+    show FiltersRowBlocBuilder;
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class PhysicalActivityDataView extends StatelessWidget {
@@ -15,8 +16,8 @@ class PhysicalActivityDataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PhysicalActivityViewCubit>(
-      create: (context) => getIt<PhysicalActivityViewCubit>(),
-      //..getIntialRequests(),
+      create: (context) =>
+          getIt<PhysicalActivityViewCubit>()..getIntialRequests(),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: Stack(
@@ -89,43 +90,6 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class FiltersRowBlocBuilder extends StatelessWidget {
-  const FiltersRowBlocBuilder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PhysicalActivityViewCubit, PhysicalActivatyViewState>(
-      buildWhen: (previous, current) =>
-          previous.availableYears != current.availableYears ||
-          previous.availableDates != current.availableDates,
-      builder: (context, state) {
-        return DataViewFiltersRow(
-          filters: [
-            FilterConfig(
-              title: 'السنة',
-              options: state.availableYears,
-              isYearFilter: true,
-            ),
-            FilterConfig(
-              title: 'التاريخ',
-              options: state.availableDates,
-              isYearFilter: true,
-            ),
-          ],
-          onApply: (selectedFilters) {
-            // AppLogger.debug("Selected Filters: $selectedFilters");
-            BlocProvider.of<PhysicalActivityViewCubit>(context)
-                .getFilterdDocuments(
-              year: selectedFilters['السنة'].toString(),
-              date: selectedFilters['التاريخ'].toString(),
-            );
-          },
-        );
-      },
     );
   }
 }
@@ -237,11 +201,11 @@ class _MetricRow3 extends StatelessWidget {
                 isHighlight: true,
                 hasGradientBackground: hasGradientBackground),
             _MetricColumn(
-                label: 'تراكمي (فعلي)',
+                label: '( الحد الأدنى )',
                 value: cumulativeValue,
                 hasGradientBackground: hasGradientBackground),
             _MetricColumn(
-                label: 'تراكمي (معياري)',
+                label: '( الحد الأقصى )',
                 value: standardValue,
                 hasGradientBackground: hasGradientBackground),
           ],

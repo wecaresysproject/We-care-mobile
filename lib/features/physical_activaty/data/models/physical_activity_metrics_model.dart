@@ -35,8 +35,8 @@ class PhysicalActivityData {
 
 @JsonSerializable()
 class SportPracticeMinutes {
-  final int? todayActual;
-  final int? accumulativeActual;
+  final num? todayActual;
+  final num? accumulativeActual;
 
   SportPracticeMinutes({
     this.todayActual,
@@ -71,14 +71,14 @@ class Slide {
 @JsonSerializable()
 class Metric {
   final String metricName;
-  final num todayActual;
-  final num accumulativeActual;
+  final num? todayActual;
+  final num? accumulativeActual;
   final num? standardTarget;
 
   Metric({
     required this.metricName,
-    required this.todayActual,
-    required this.accumulativeActual,
+    this.todayActual,
+    this.accumulativeActual,
     this.standardTarget,
   });
 
@@ -89,8 +89,8 @@ class Metric {
 
 @JsonSerializable()
 class MuscularGoals {
-  final String? actual;
-  final String? target;
+  final double? actual;
+  final double? target;
 
   MuscularGoals({
     this.actual,

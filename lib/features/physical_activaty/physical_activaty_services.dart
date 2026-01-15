@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
-import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
-import 'package:we_care/features/nutration/data/models/update_nutrition_value_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/workout_activity_model.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_api_constants.dart';
@@ -51,19 +49,14 @@ abstract class PhysicalActivityServices {
   Future<dynamic> getFilterdDocuments(
     @Query('language') String language,
     @Query('year') String year,
-    @Query('date') String date,
+    @Query('range') String range,
   );
 
   @GET(PhysicalActivatyApiConstants.getPhysicalActivitySlides)
   Future<dynamic> getPhysicalActivitySlides(
     @Query('language') String language,
   );
-  @PUT(PhysicalActivatyApiConstants.updateNutrientStandard)
-  Future<dynamic> updateNutrientStandard(
-    @Query('language') String language,
-    @Body() UpdateNutritionValueModel requestBody,
-    @Query('nutrientName') String nutrientName,
-  );
+
   @GET(PhysicalActivatyApiConstants.getAnyActivePlanStatus)
   Future<dynamic> getAnyActivePlanStatus();
 

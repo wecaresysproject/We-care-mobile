@@ -7,7 +7,6 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
 
 class DayCardWidget extends StatelessWidget {
@@ -64,7 +63,7 @@ class DayCardWidget extends StatelessWidget {
           await showWarningDialog(
             context,
             message: 'هذا اليوم مدخل فيه وجبات بالفعل',
-            confirmText: 'مراجعة تقرير اليوم',
+            // confirmText: 'مراجعة تقرير اليوم',
             onConfirm: () async {
               // await context.pushNamed(
               //   Routes.nutritionFollowUpReportTableView,
@@ -74,13 +73,15 @@ class DayCardWidget extends StatelessWidget {
             hasDelete: true,
             onDelete: () {
               context
-                  .read<NutrationDataEntryCubit>()
+                  .read<PhysicalActivatyDataEntryCubit>()
                   .deleteDayDietPlan(date)
                   .then(
                 (result) {
                   showSuccess("تم حذف الخطة بنجاح");
                   if (!context.mounted) return;
-                  context.read<NutrationDataEntryCubit>().loadExistingPlans();
+                  context
+                      .read<PhysicalActivatyDataEntryCubit>()
+                      .loadExistingPlans();
                 },
               );
             },
