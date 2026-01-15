@@ -74,12 +74,16 @@ class Metric {
   final num? todayActual;
   final num? accumulativeActual;
   final num? standardTarget;
+  final num? minimumStandard;
+  final num? maximumStandard;
 
   Metric({
     required this.metricName,
     this.todayActual,
     this.accumulativeActual,
     this.standardTarget,
+    this.minimumStandard,
+    this.maximumStandard,
   });
 
   factory Metric.fromJson(Map<String, dynamic> json) => _$MetricFromJson(json);
