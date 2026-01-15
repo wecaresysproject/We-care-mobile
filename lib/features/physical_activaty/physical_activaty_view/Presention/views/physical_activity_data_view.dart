@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -257,10 +258,10 @@ class _MetricRow3 extends StatelessWidget {
                 value: cumulativeValue,
                 hasGradientBackground: hasGradientBackground),
             _MetricColumn(
-                label:
-                    isWightDetailsSlide ? '( الحد الأقصى )' : 'تراكمي معياري',
-                value: standardValue,
-                hasGradientBackground: hasGradientBackground),
+              label: isWightDetailsSlide ? '( الحد الأقصى )' : 'تراكمي معياري',
+              value: standardValue,
+              hasGradientBackground: hasGradientBackground,
+            ),
           ],
         ),
         verticalSpacing(8),
@@ -317,7 +318,7 @@ class _MetricColumn extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            fontSize: 30.sp,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: isHighlight ? Colors.cyanAccent : Colors.white,
           ),
@@ -464,32 +465,31 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
             ),
             verticalSpacing(24),
             // Display metrics for this slide
-            ...slide.metrics.asMap().entries.map((entry) {
-              final index = entry.key;
-              final slide = entry.value;
-              final isWeightDetailsSlide =
-                  index == 2; // slide الثالثة (0-based)
-              return Column(
-                children: [
-                  _SectionTitle(
-                    title: entry.value.metricName,
-                    hasGradientBackground: true,
-                  ),
-                  verticalSpacing(8),
-                  _MetricRow3(
-                    isWightDetailsSlide: isWeightDetailsSlide,
-                    todayValue: slide.todayActual?.toInt().toString() ?? '0',
-                    cumulativeValue:
-                        slide.accumulativeActual?.toInt().toString() ?? '0',
-                    standardValue:
-                        slide.standardTarget?.toInt().toString() ?? '0',
-                    subtitle: '',
-                    hasGradientBackground: true,
-                  ),
-                  verticalSpacing(8),
-                ],
-              );
-            }),
+            ...slide.metrics.asMap().entries.map(
+              (entry) {
+                final slide = entry.value;
+                return Column(
+                  children: [
+                    _SectionTitle(
+                      title: entry.value.metricName,
+                      hasGradientBackground: true,
+                    ),
+                    verticalSpacing(8),
+                    _MetricRow3(
+                      todayValue: slide.todayActual?.toInt().toString() ?? '0',
+                      cumulativeValue:
+                          slide.accumulativeActual?.toInt().toString() ?? '0',
+                      standardValue:
+                          '(${slide.minimumStandard?.toInt() ?? 0}) → (${slide.maximumStandard?.toInt() ?? 0})',
+                      //  slide.standardTarget?.toInt().toString() ?? '0',
+                      subtitle: '',
+                      hasGradientBackground: true,
+                    ),
+                    verticalSpacing(8),
+                  ],
+                );
+              },
+            ),
           ],
         );
       }
@@ -497,6 +497,7 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
       // Default slide with metrics only
       return Column(
         children: slide.metrics.map((metric) {
+          AppLogger.info("metric.metricName ${metric.metricName}");
           return Column(
             children: [
               _SectionTitle(
