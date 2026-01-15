@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/day_card_widget.dart';
@@ -25,6 +24,7 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
     return BlocBuilder<PhysicalActivatyDataEntryCubit,
         PhysicalActivatyDataEntryState>(
       builder: (context, state) {
+        final cubit = context.read<PhysicalActivatyDataEntryCubit>();
         if (state.submitPhysicalActivityDataStatus == RequestStatus.loading) {
           return Skeletonizer(
             enabled: true,
@@ -103,7 +103,14 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
                 day: day.dayOfWeek,
                 date: day.date,
                 onTap: () async {
-                  await context.pushNamed(Routes.dailyActivityLogger);
+                  await context.pushNamed(
+                    Routes.dailyActivityLogger,
+                    arguments: {
+                      'day': day.date,
+                    },
+                  ).then((value) {
+                    cubit.loadExistingPlans();
+                  });
                 },
               );
             } else {
@@ -116,14 +123,14 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
                     selectedDay = day.date;
                   });
 
-                  // await Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const DailyActivityLogger(),
-                  //   ),
-                  // );
-                  await context.pushNamed(Routes.dailyActivityLogger);
-
-                  AppLogger.debug("DailyActivityLogger view");
+                  await context.pushNamed(
+                    Routes.dailyActivityLogger,
+                    arguments: {
+                      'day': day.date,
+                    },
+                  ).then((value) {
+                    cubit.loadExistingPlans();
+                  });
                 },
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)

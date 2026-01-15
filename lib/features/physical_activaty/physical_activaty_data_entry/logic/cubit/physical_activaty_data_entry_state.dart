@@ -12,9 +12,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
   final String selectedPlanDate;
   final String? genderType;
   final String? selectedMuscleDesity;
-  final List<String> selectedChronicDiseases;
 
-  final List<String> chronicDiseases;
   final List<Day> days;
 
   final bool monthlyActivationStatus;
@@ -30,8 +28,6 @@ class PhysicalActivatyDataEntryState extends Equatable {
     this.selectedPlanDate = '',
     this.genderType = 'ذكر',
     this.selectedMuscleDesity = 'شخص متوسط الكتلة العضلية (عادي)',
-    this.chronicDiseases = const [],
-    this.selectedChronicDiseases = const [],
     this.monthlyActivationStatus = false,
     this.weeklyActivationStatus = false,
     this.days = const [],
@@ -48,8 +44,6 @@ class PhysicalActivatyDataEntryState extends Equatable {
           selectedPlanDate: '',
           genderType: 'ذكر',
           selectedMuscleDesity: 'شخص متوسط الكتلة العضلية (عادي)',
-          chronicDiseases: const [],
-          selectedChronicDiseases: const [],
           monthlyActivationStatus: false,
           weeklyActivationStatus: false,
           days: const [],
@@ -57,7 +51,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
         );
 
   PhysicalActivatyDataEntryState copyWith({
-    RequestStatus? submitNutrationDataStatus,
+    RequestStatus? submitPhysicalActivityDataStatus,
     bool? isFormValidated,
     String? message,
     bool? isEditMode,
@@ -65,16 +59,14 @@ class PhysicalActivatyDataEntryState extends Equatable {
     String? selectedPlanDate,
     String? genderType,
     String? selectedMuscleDesity,
-    List<String>? chronicDiseases,
-    List<String>? selectedChronicDiseases,
     bool? monthlyActivationStatus,
     bool? weeklyActivationStatus,
     List<Day>? days,
     bool? isAnyPlanActivated,
   }) {
     return PhysicalActivatyDataEntryState(
-      submitPhysicalActivityDataStatus:
-          submitNutrationDataStatus ?? submitPhysicalActivityDataStatus,
+      submitPhysicalActivityDataStatus: submitPhysicalActivityDataStatus ??
+          this.submitPhysicalActivityDataStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -84,9 +76,6 @@ class PhysicalActivatyDataEntryState extends Equatable {
       selectedPlanDate: selectedPlanDate ?? this.selectedPlanDate,
       genderType: genderType ?? this.genderType,
       selectedMuscleDesity: selectedMuscleDesity ?? this.selectedMuscleDesity,
-      chronicDiseases: chronicDiseases ?? this.chronicDiseases,
-      selectedChronicDiseases:
-          selectedChronicDiseases ?? this.selectedChronicDiseases,
       monthlyActivationStatus:
           monthlyActivationStatus ?? this.monthlyActivationStatus,
       weeklyActivationStatus:
@@ -106,8 +95,6 @@ class PhysicalActivatyDataEntryState extends Equatable {
         selectedPlanDate,
         genderType,
         selectedMuscleDesity,
-        chronicDiseases,
-        selectedChronicDiseases,
         monthlyActivationStatus,
         weeklyActivationStatus,
         days,

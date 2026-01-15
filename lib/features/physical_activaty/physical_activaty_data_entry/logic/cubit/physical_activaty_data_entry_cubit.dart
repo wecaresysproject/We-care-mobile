@@ -5,7 +5,8 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
-import 'package:we_care/features/nutration/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/physical_activaty/data/models/post_personal_nutrition_data_model.dart';
+import 'package:we_care/features/physical_activaty/data/models/workout_activity_model.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_data_entry_repo.dart';
 
 part 'physical_activaty_data_entry_state.dart';
@@ -47,33 +48,13 @@ class PhysicalActivatyDataEntryCubit
     emit(state.copyWith(selectedMuscleDesity: val));
   }
 
-  void updateSelectedChronicDiseases(String? value) {
-    if (value == null || value.isEmpty) return;
-
-    List<String> chronicDiseases = List.from(state.selectedChronicDiseases);
-
-    // Toggle selection - if already selected, remove it; otherwise add it
-    if (chronicDiseases.contains(value)) {
-      chronicDiseases.remove(value);
-    } else {
-      chronicDiseases.add(value);
-    }
-
-    emit(state.copyWith(selectedChronicDiseases: chronicDiseases));
-  }
-
-  void removeChronicDisease(String cause) {
-    List<String> chronicDiseases = List.from(state.selectedChronicDiseases);
-    chronicDiseases.remove(cause);
-    emit(state.copyWith(selectedChronicDiseases: chronicDiseases));
-  }
-
   void resetSelectedPlanDate() {
     emit(state.copyWith(selectedPlanDate: ''));
   }
 
   Future<void> postPersonalUserInfoData() async {
-    emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
+    emit(state.copyWith(
+        submitPhysicalActivityDataStatus: RequestStatus.loading));
 
     final result =
         await _physicalActivatyDataEntryRepo.postPersonalUserInfoData(
@@ -83,7 +64,6 @@ class PhysicalActivatyDataEntryCubit
         age: int.parse(ageController.text),
         gender: state.genderType!,
         physicalActivity: state.selectedMuscleDesity!,
-        chronicDisease: state.selectedChronicDiseases,
       ),
       lanugage: AppStrings.arabicLang,
     );
@@ -91,7 +71,7 @@ class PhysicalActivatyDataEntryCubit
       success: (successMessage) {
         emit(
           state.copyWith(
-            submitNutrationDataStatus: RequestStatus.success,
+            submitPhysicalActivityDataStatus: RequestStatus.success,
             message: successMessage,
           ),
         );
@@ -99,7 +79,7 @@ class PhysicalActivatyDataEntryCubit
       failure: (failure) {
         emit(
           state.copyWith(
-            submitNutrationDataStatus: RequestStatus.failure,
+            submitPhysicalActivityDataStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );
@@ -114,7 +94,7 @@ class PhysicalActivatyDataEntryCubit
         ? state.weeklyActivationStatus
         : state.monthlyActivationStatus;
     emit(
-      state.copyWith(submitNutrationDataStatus: RequestStatus.loading),
+      state.copyWith(submitPhysicalActivityDataStatus: RequestStatus.loading),
     );
     final result = await _physicalActivatyDataEntryRepo.getAllCreatedPlans(
       lanugage: AppStrings.arabicLang,
@@ -131,7 +111,7 @@ class PhysicalActivatyDataEntryCubit
             state.copyWith(
               weeklyActivationStatus: response.planStatus,
               days: days,
-              submitNutrationDataStatus: RequestStatus.success,
+              submitPhysicalActivityDataStatus: RequestStatus.success,
             ),
           );
         } else {
@@ -139,7 +119,7 @@ class PhysicalActivatyDataEntryCubit
             state.copyWith(
               monthlyActivationStatus: response.planStatus,
               days: days,
-              submitNutrationDataStatus: RequestStatus.success,
+              submitPhysicalActivityDataStatus: RequestStatus.success,
             ),
           );
         }
@@ -149,7 +129,7 @@ class PhysicalActivatyDataEntryCubit
       failure: (failure) {
         emit(
           state.copyWith(
-            submitNutrationDataStatus: RequestStatus.failure,
+            submitPhysicalActivityDataStatus: RequestStatus.failure,
             message: failure.errors.first,
             days: [],
           ),
@@ -165,7 +145,8 @@ class PhysicalActivatyDataEntryCubit
         ? state.weeklyActivationStatus
         : state.monthlyActivationStatus;
 
-    emit(state.copyWith(submitNutrationDataStatus: RequestStatus.loading));
+    emit(state.copyWith(
+        submitPhysicalActivityDataStatus: RequestStatus.loading));
 
     final result = await _physicalActivatyDataEntryRepo.getAllCreatedPlans(
       lanugage: AppStrings.arabicLang,
@@ -182,7 +163,7 @@ class PhysicalActivatyDataEntryCubit
             state.copyWith(
               weeklyActivationStatus: response.planStatus,
               days: days,
-              submitNutrationDataStatus: RequestStatus.success,
+              submitPhysicalActivityDataStatus: RequestStatus.success,
             ),
           );
         } else {
@@ -190,7 +171,7 @@ class PhysicalActivatyDataEntryCubit
             state.copyWith(
               monthlyActivationStatus: response.planStatus,
               days: days,
-              submitNutrationDataStatus: RequestStatus.success,
+              submitPhysicalActivityDataStatus: RequestStatus.success,
             ),
           );
         }
@@ -201,7 +182,7 @@ class PhysicalActivatyDataEntryCubit
       failure: (failure) {
         emit(
           state.copyWith(
-            submitNutrationDataStatus: RequestStatus.failure,
+            submitPhysicalActivityDataStatus: RequestStatus.failure,
             message: failure.errors.first,
             days: [],
           ),
@@ -244,30 +225,6 @@ class PhysicalActivatyDataEntryCubit
       failure: (failure) {
         AppLogger.error(
             'Error in getPlanActivationStatus: ${failure.errors.first}');
-        safeEmit(
-          state.copyWith(
-            message: failure.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> getAllChronicDiseases() async {
-    final result = await _physicalActivatyDataEntryRepo.getAllChronicDiseases(
-      language: AppStrings.arabicLang,
-    );
-    result.when(
-      success: (diseases) {
-        emit(
-          state.copyWith(
-            chronicDiseases: diseases,
-          ),
-        );
-      },
-      failure: (failure) {
-        AppLogger.error(
-            'Error in getAllChronicDiseases: ${failure.errors.first}');
         safeEmit(
           state.copyWith(
             message: failure.errors.first,
@@ -321,6 +278,35 @@ class PhysicalActivatyDataEntryCubit
       failure: (failure) {
         safeEmit(
           state.copyWith(
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> postDailyDietPlan(
+      List<WorkoutActivity> activities, String date) async {
+    emit(state.copyWith(
+        submitPhysicalActivityDataStatus: RequestStatus.loading));
+    final result = await _physicalActivatyDataEntryRepo.postDailyDietPlan(
+      requestBody: activities,
+      lanugage: AppStrings.arabicLang,
+      date: date,
+    );
+    result.when(
+      success: (response) async {
+        safeEmit(
+          state.copyWith(
+            submitPhysicalActivityDataStatus: RequestStatus.success,
+            message: response,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            submitPhysicalActivityDataStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );

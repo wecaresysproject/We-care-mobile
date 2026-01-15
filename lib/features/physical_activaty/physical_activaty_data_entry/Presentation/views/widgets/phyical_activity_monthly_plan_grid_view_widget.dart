@@ -25,6 +25,7 @@ class _MonthlyMealGridBlocBuilderState
     return BlocBuilder<PhysicalActivatyDataEntryCubit,
         PhysicalActivatyDataEntryState>(
       builder: (context, state) {
+        final cubit = context.read<PhysicalActivatyDataEntryCubit>();
         if (state.submitPhysicalActivityDataStatus == RequestStatus.loading) {
           return Skeletonizer(
             enabled: true,
@@ -107,7 +108,14 @@ class _MonthlyMealGridBlocBuilderState
                   setState(() {
                     selectedDay = day.date;
                   });
-                  await context.pushNamed(Routes.dailyActivityLogger);
+                  await context.pushNamed(
+                    Routes.dailyActivityLogger,
+                    arguments: {
+                      'day': day.date,
+                    },
+                  ).then((value) {
+                    cubit.loadExistingPlans();
+                  });
                 },
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)
@@ -122,7 +130,14 @@ class _MonthlyMealGridBlocBuilderState
                   setState(() {
                     selectedDay = day.date;
                   });
-                  await context.pushNamed(Routes.dailyActivityLogger);
+                  await context.pushNamed(
+                    Routes.dailyActivityLogger,
+                    arguments: {
+                      'day': day.date,
+                    },
+                  ).then((value) {
+                    cubit.loadExistingPlans();
+                  });
                 },
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)

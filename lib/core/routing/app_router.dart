@@ -628,8 +628,10 @@ class AppRouter {
           builder: (_) => const PhysicalActivityDataView(),
         );
       case Routes.dailyActivityLogger:
+        final argumentsMap = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (_) => const DailyActivityLogger(),
+          builder: (_) =>
+              DailyActivityLogger(day: argumentsMap?['day'] as String),
         );
       case Routes.essentialInfoView:
         return MaterialPageRoute(

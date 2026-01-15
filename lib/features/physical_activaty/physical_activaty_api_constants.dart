@@ -1,12 +1,17 @@
 class PhysicalActivatyApiConstants {
   static const baseUrl = "http://147.93.57.70/api/";
   //Data Entry
-  static const postPersonalUserInfoData = "SmartNutritionAnalyzer/calculate";
-  static const postDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
-  static const getAllCreatedPlans = "SmartNutritionAnalyzer/generate-plan";
-  static const getAllChronicDiseases = "SmartNutritionAnalyzer/names";
+  static const postPersonalUserInfoData = "PhysicalActivityForUser/user-data";
+  static const postDailyDietPlan =
+      "PhysicalActivityForUser/physical-activities";
+  static const getAllCreatedPlans = "PhysicalActivityForUser/generate-plan";
   static const getPlanActivationStatus =
-      "SmartNutritionAnalyzer/check"; //! change it later
+      "PhysicalActivityForUser/check"; //! change it later
+
+  static const getAnyActivePlanStatus =
+      "SmartNutritionAnalyzer/check-active"; //! need one specific for this module
+  static const deleteDayDietPlan =
+      "PhysicalActivityForUser/physical-activities";
 
   //View Entry
   static const getAllNutrationTableData = "SmartNutritionAnalyzer/result-data";
@@ -27,6 +32,4 @@ class PhysicalActivatyApiConstants {
   static const getAffectedOrgansList = "SmartNutritionAnalyzer/organ-names";
   static const getOrganNutritionalEffects =
       "SmartNutritionAnalyzer/organ-effects";
-  static const getAnyActivePlanStatus = "SmartNutritionAnalyzer/check-active";
-  static const deleteDayDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
 }
