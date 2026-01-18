@@ -185,19 +185,19 @@ class MetricRow3 extends StatelessWidget {
   final String todayValue;
   final String cumulativeValue;
   final String standardValue;
-  final String subtitle;
 
   final bool hasGradientBackground;
   final bool isWightDetailsSlide;
+  final bool isBMILabel;
 
   const MetricRow3({
     super.key,
     required this.todayValue,
     required this.cumulativeValue,
     required this.standardValue,
-    required this.subtitle,
     this.hasGradientBackground = false,
     this.isWightDetailsSlide = false,
+    this.isBMILabel = false,
   });
 
   @override
@@ -208,7 +208,10 @@ class MetricRow3 extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             MetricColumn(
-                label: 'اليوم (فعلي)',
+                label: handleLabelNaming(
+                  isWightDetailsSlide: isWightDetailsSlide,
+                  isBMILabel: isBMILabel,
+                ),
                 value: todayValue,
                 isHighlight: true,
                 hasGradientBackground: hasGradientBackground),
@@ -224,14 +227,19 @@ class MetricRow3 extends StatelessWidget {
           ],
         ),
         verticalSpacing(8),
-        Text(
-          subtitle,
-          style:
-              AppTextStyles.font14blackWeight400.copyWith(color: Colors.white),
-          textAlign: TextAlign.center,
-        ),
       ],
     );
+  }
+}
+
+String handleLabelNaming(
+    {bool isBMILabel = false, bool isWightDetailsSlide = false}) {
+  if (isBMILabel) {
+    return 'BMI (الفعلي)';
+  } else if (isWightDetailsSlide) {
+    return 'الوزن (الفعلي)';
+  } else {
+    return 'اليوم (فعلي)';
   }
 }
 
@@ -352,12 +360,12 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
               ),
               verticalSpacing(8),
               MetricRow3(
+                isBMILabel: metric.metricName.contains("BMI"),
                 isWightDetailsSlide: isWeightDetailsSlide,
                 todayValue: metric.todayActual?.toInt().toString() ?? '0',
                 cumulativeValue:
                     metric.accumulativeActual?.toInt().toString() ?? '0',
                 standardValue: metric.standardTarget?.toInt().toString() ?? '0',
-                subtitle: '',
                 hasGradientBackground: true,
               ),
               verticalSpacing(16),
