@@ -85,6 +85,7 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
                   todayValue: sportMinutes?.todayActual?.toString() ?? '0',
                   cumulativeValue:
                       sportMinutes?.accumulativeActual?.toString() ?? '0',
+                  valueFontSize: 50,
                 ),
 
                 verticalSpacing(28),
@@ -158,11 +159,13 @@ class SectionTitle extends StatelessWidget {
 class MetricRow extends StatelessWidget {
   final String todayValue;
   final String cumulativeValue;
+  final double valueFontSize;
 
   const MetricRow({
     super.key,
     required this.todayValue,
     required this.cumulativeValue,
+    this.valueFontSize = 16,
   });
 
   @override
@@ -174,8 +177,13 @@ class MetricRow extends StatelessWidget {
           label: 'اليوم (فعلي)',
           value: todayValue,
           isHighlight: true,
+          valueFontSize: valueFontSize,
         ),
-        MetricColumn(label: 'تراكمي (فعلي)', value: cumulativeValue),
+        MetricColumn(
+          label: 'تراكمي (فعلي)',
+          value: cumulativeValue,
+          valueFontSize: valueFontSize,
+        ),
       ],
     );
   }
@@ -189,6 +197,7 @@ class MetricRow3 extends StatelessWidget {
   final bool hasGradientBackground;
   final bool isWightDetailsSlide;
   final bool isBMILabel;
+  final bool isCaloriesSlide;
 
   const MetricRow3({
     super.key,
@@ -198,35 +207,36 @@ class MetricRow3 extends StatelessWidget {
     this.hasGradientBackground = false,
     this.isWightDetailsSlide = false,
     this.isBMILabel = false,
+    this.isCaloriesSlide = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            MetricColumn(
-                label: handleLabelNaming(
-                  isWightDetailsSlide: isWightDetailsSlide,
-                  isBMILabel: isBMILabel,
-                ),
-                value: todayValue,
-                isHighlight: true,
-                hasGradientBackground: hasGradientBackground),
-            MetricColumn(
-                label: isWightDetailsSlide ? '( الحد الأدنى )' : 'تراكمي فعلي',
-                value: cumulativeValue,
-                hasGradientBackground: hasGradientBackground),
-            MetricColumn(
-              label: isWightDetailsSlide ? '( الحد الأقصى )' : 'تراكمي معياري',
-              value: standardValue,
-              hasGradientBackground: hasGradientBackground,
+        MetricColumn(
+            label: handleLabelNaming(
+              isWightDetailsSlide: isWightDetailsSlide,
+              isBMILabel: isBMILabel,
             ),
-          ],
+            valueFontSize: 16,
+            value: todayValue,
+            isHighlight: true,
+            hasGradientBackground: hasGradientBackground),
+        MetricColumn(
+            label: isWightDetailsSlide ? '( الحد الأدنى )' : 'تراكمي فعلي',
+            value: cumulativeValue,
+            valueFontSize: 16,
+            hasGradientBackground: hasGradientBackground),
+        MetricColumn(
+          label: handle3rdLabelNaming(
+              isCaloriesSlide: isCaloriesSlide,
+              isWightDetailsSlide: isWightDetailsSlide),
+          value: standardValue,
+          hasGradientBackground: hasGradientBackground,
+          valueFontSize: 16,
         ),
-        verticalSpacing(8),
       ],
     );
   }
@@ -243,11 +253,23 @@ String handleLabelNaming(
   }
 }
 
+String handle3rdLabelNaming(
+    {bool isCaloriesSlide = false, bool isWightDetailsSlide = false}) {
+  if (isCaloriesSlide) {
+    return 'تراكمي مستهدف';
+  } else if (isWightDetailsSlide) {
+    return '( الحد الأقصى )';
+  } else {
+    return 'تراكمي معياري';
+  }
+}
+
 class MetricColumn extends StatelessWidget {
   final String label;
   final String value;
   final bool isHighlight;
   final bool hasGradientBackground;
+  final double valueFontSize;
 
   const MetricColumn({
     super.key,
@@ -255,11 +277,14 @@ class MetricColumn extends StatelessWidget {
     required this.value,
     this.isHighlight = false,
     this.hasGradientBackground = false,
+    this.valueFontSize = 16,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -283,12 +308,16 @@ class MetricColumn extends StatelessWidget {
           ),
         ),
         verticalSpacing(6),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: isHighlight ? Colors.cyanAccent : Colors.white,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.visible,
+            style: AppTextStyles.font20blackWeight600.copyWith(
+              color: isHighlight ? Colors.cyanAccent : Colors.white,
+              fontSize: valueFontSize.sp,
+            ),
           ),
         ),
       ],
@@ -360,6 +389,8 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
               ),
               verticalSpacing(8),
               MetricRow3(
+                isCaloriesSlide: metric.metricName
+                    .contains("السعرات المحروقة بالنشاط الرياضي"),
                 isBMILabel: metric.metricName.contains("BMI"),
                 isWightDetailsSlide: isWeightDetailsSlide,
                 todayValue: metric.todayActual?.toInt().toString() ?? '0',

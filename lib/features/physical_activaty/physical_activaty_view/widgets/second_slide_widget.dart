@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
@@ -33,13 +34,18 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsBuilding?.target?.toStringAsFixed(1) ?? '0'}%',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          '${slide.muscularGoalsBuilding?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            color: Colors.cyanAccent,
+                            fontSize: 30.sp,
+                          ),
                         ),
                         verticalSpacing(4),
                         Text(
-                          'معياري',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          'فعلي',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            fontSize: 16.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -47,15 +53,17 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsBuilding?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          '${slide.muscularGoalsBuilding?.target?.toStringAsFixed(1) ?? '0'}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
-                            color: Colors.cyanAccent,
+                            fontSize: 30.sp,
                           ),
                         ),
                         verticalSpacing(4),
                         Text(
-                          'فعلي',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          'معياري',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            fontSize: 16.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -77,13 +85,18 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsMaintenance?.target?.toStringAsFixed(1) ?? '0'}%',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          '${slide.muscularGoalsMaintenance?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            color: Colors.cyanAccent,
+                            fontSize: 30.sp,
+                          ),
                         ),
                         verticalSpacing(4),
                         Text(
-                          'معياري',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          'فعلي',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            fontSize: 16.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -91,15 +104,17 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsMaintenance?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          '${slide.muscularGoalsMaintenance?.target?.toStringAsFixed(1) ?? '0'}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
-                            color: Colors.cyanAccent,
+                            fontSize: 30.sp,
                           ),
                         ),
                         verticalSpacing(4),
                         Text(
-                          'فعلي',
-                          style: AppTextStyles.font22WhiteWeight600,
+                          'معياري',
+                          style: AppTextStyles.font22WhiteWeight600.copyWith(
+                            fontSize: 16.sp,
+                          ),
                         ),
                       ],
                     ),
@@ -127,8 +142,6 @@ class SecondSlideWidget extends StatelessWidget {
                       slide.accumulativeActual?.toInt().toString() ?? '0',
                   standardValue:
                       '(${slide.minimumStandard?.toInt() ?? 0}) → (${slide.maximumStandard?.toInt() ?? 0})',
-                  //  slide.standardTarget?.toInt().toString() ?? '0',
-                  subtitle: '',
                   hasGradientBackground: true,
                 ),
                 verticalSpacing(8),
