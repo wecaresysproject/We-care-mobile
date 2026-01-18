@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
-import 'package:we_care/features/physical_activaty/physical_activaty_view/Presention/views/physical_activity_data_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/physical_activity_view_body_widget.dart';
 
 class SecondSlideWidget extends StatelessWidget {
   const SecondSlideWidget({
