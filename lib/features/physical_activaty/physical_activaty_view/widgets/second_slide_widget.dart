@@ -141,8 +141,9 @@ class SecondSlideWidget extends StatelessWidget {
                   cumulativeValue:
                       slide.accumulativeActual?.toInt().toString() ?? '0',
                   standardValue:
-                      '(${slide.minimumStandard?.toInt() ?? 0}) → (${slide.maximumStandard?.toInt() ?? 0})',
+                      '${formatter.format(slide.minimumStandard?.toInt() ?? 0)} ↔️ ${formatter.format(slide.maximumStandard?.toInt() ?? 0)}',
                   hasGradientBackground: true,
+                  valueFontSize: 16,
                 ),
                 verticalSpacing(8),
               ],

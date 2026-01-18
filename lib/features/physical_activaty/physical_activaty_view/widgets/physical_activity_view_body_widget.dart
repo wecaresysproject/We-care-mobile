@@ -198,6 +198,7 @@ class MetricRow3 extends StatelessWidget {
   final bool isWightDetailsSlide;
   final bool isBMILabel;
   final bool isCaloriesSlide;
+  final double valueFontSize;
 
   const MetricRow3({
     super.key,
@@ -208,6 +209,7 @@ class MetricRow3 extends StatelessWidget {
     this.isWightDetailsSlide = false,
     this.isBMILabel = false,
     this.isCaloriesSlide = false,
+    this.valueFontSize = 50,
   });
 
   @override
@@ -220,14 +222,14 @@ class MetricRow3 extends StatelessWidget {
               isWightDetailsSlide: isWightDetailsSlide,
               isBMILabel: isBMILabel,
             ),
-            valueFontSize: 16,
+            valueFontSize: valueFontSize,
             value: todayValue,
             isHighlight: true,
             hasGradientBackground: hasGradientBackground),
         MetricColumn(
             label: isWightDetailsSlide ? '( الحد الأدنى )' : 'تراكمي فعلي',
             value: cumulativeValue,
-            valueFontSize: 16,
+            valueFontSize: valueFontSize,
             hasGradientBackground: hasGradientBackground),
         MetricColumn(
           label: handle3rdLabelNaming(
@@ -235,7 +237,7 @@ class MetricRow3 extends StatelessWidget {
               isWightDetailsSlide: isWightDetailsSlide),
           value: standardValue,
           hasGradientBackground: hasGradientBackground,
-          valueFontSize: 16,
+          valueFontSize: valueFontSize,
         ),
       ],
     );
@@ -398,6 +400,7 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
                     metric.accumulativeActual?.toInt().toString() ?? '0',
                 standardValue: metric.standardTarget?.toInt().toString() ?? '0',
                 hasGradientBackground: true,
+                // valueFontSize: 50,
               ),
               verticalSpacing(16),
             ],
