@@ -11,6 +11,7 @@ import 'package:we_care/features/physical_activaty/data/models/physical_activity
 import 'package:we_care/features/physical_activaty/physical_activaty_view/logic/physical_activaty_view_cubit.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/filters_row_bloc_builder_widget.dart'
     show FiltersRowBlocBuilder;
+import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/second_slide_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class PhysicalActivityDataView extends StatelessWidget {
@@ -122,12 +123,12 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
                 verticalSpacing(24),
 
                 /// 🔹 Section 1: عدد دقائق ممارسة الرياضة لليوم
-                _SectionTitle(
+                SectionTitle(
                   iconPath: 'assets/images/time_icon.png',
-                  title: 'عدد دقائق ممارسة الرياضة لليوم',
+                  title: 'عدد دقائق ممارسة الرياضة',
                 ),
                 verticalSpacing(8),
-                _MetricRow(
+                MetricRow(
                   todayValue: sportMinutes?.todayActual?.toString() ?? '0',
                   cumulativeValue:
                       sportMinutes?.accumulativeActual?.toString() ?? '0',
@@ -147,12 +148,15 @@ class PhysicalActivityDataViewBody extends StatelessWidget {
 
 /// ---- UI Components ----
 
-class _SectionTitle extends StatelessWidget {
+class SectionTitle extends StatelessWidget {
   final String title;
   final String? iconPath;
   final bool hasGradientBackground;
-  const _SectionTitle(
-      {required this.title, this.iconPath, this.hasGradientBackground = false});
+  const SectionTitle(
+      {super.key,
+      required this.title,
+      this.iconPath,
+      this.hasGradientBackground = false});
 
   @override
   Widget build(BuildContext context) {
@@ -198,11 +202,12 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _MetricRow extends StatelessWidget {
+class MetricRow extends StatelessWidget {
   final String todayValue;
   final String cumulativeValue;
 
-  const _MetricRow({
+  const MetricRow({
+    super.key,
     required this.todayValue,
     required this.cumulativeValue,
   });
@@ -212,18 +217,18 @@ class _MetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _MetricColumn(
+        MetricColumn(
           label: 'اليوم (فعلي)',
           value: todayValue,
           isHighlight: true,
         ),
-        _MetricColumn(label: 'تراكمي (فعلي)', value: cumulativeValue),
+        MetricColumn(label: 'تراكمي (فعلي)', value: cumulativeValue),
       ],
     );
   }
 }
 
-class _MetricRow3 extends StatelessWidget {
+class MetricRow3 extends StatelessWidget {
   final String todayValue;
   final String cumulativeValue;
   final String standardValue;
@@ -232,7 +237,8 @@ class _MetricRow3 extends StatelessWidget {
   final bool hasGradientBackground;
   final bool isWightDetailsSlide;
 
-  const _MetricRow3({
+  const MetricRow3({
+    super.key,
     required this.todayValue,
     required this.cumulativeValue,
     required this.standardValue,
@@ -248,16 +254,16 @@ class _MetricRow3 extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _MetricColumn(
+            MetricColumn(
                 label: 'اليوم (فعلي)',
                 value: todayValue,
                 isHighlight: true,
                 hasGradientBackground: hasGradientBackground),
-            _MetricColumn(
+            MetricColumn(
                 label: isWightDetailsSlide ? '( الحد الأدنى )' : 'تراكمي فعلي',
                 value: cumulativeValue,
                 hasGradientBackground: hasGradientBackground),
-            _MetricColumn(
+            MetricColumn(
               label: isWightDetailsSlide ? '( الحد الأقصى )' : 'تراكمي معياري',
               value: standardValue,
               hasGradientBackground: hasGradientBackground,
@@ -276,13 +282,14 @@ class _MetricRow3 extends StatelessWidget {
   }
 }
 
-class _MetricColumn extends StatelessWidget {
+class MetricColumn extends StatelessWidget {
   final String label;
   final String value;
   final bool isHighlight;
   final bool hasGradientBackground;
 
-  const _MetricColumn({
+  const MetricColumn({
+    super.key,
     required this.label,
     required this.value,
     this.isHighlight = false,
@@ -365,133 +372,9 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
           slide.muscularGoalsBuilding != null;
       final isWeightDetailsSlide = index == 2; // slide الثالثة (0-based)
 
+      // 2nd slide البناء العضلي ، الصيانة العضلية
       if (hasMuscularGoals) {
-        return Column(
-          children: [
-            verticalSpacing(12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                /// البناء العضلي
-                Column(
-                  children: [
-                    Text(
-                      'البناء العضلي',
-                      style: AppTextStyles.font22WhiteWeight600,
-                    ),
-                    verticalSpacing(6),
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              '${slide.muscularGoalsBuilding?.target?.toStringAsFixed(1) ?? '0'}%',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              'معياري',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                          ],
-                        ),
-                        horizontalSpacing(12),
-                        Column(
-                          children: [
-                            Text(
-                              '${slide.muscularGoalsBuilding?.actual?.toStringAsFixed(1) ?? '0'}%',
-                              style:
-                                  AppTextStyles.font22WhiteWeight600.copyWith(
-                                color: Colors.cyanAccent,
-                              ),
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              'فعلي',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-
-                /// الصيانة العضلية
-                Column(
-                  children: [
-                    Text(
-                      'الصيانة العضلية',
-                      style: AppTextStyles.font22WhiteWeight600,
-                    ),
-                    verticalSpacing(6),
-                    Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              '${slide.muscularGoalsMaintenance?.target?.toStringAsFixed(1) ?? '0'}%',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              'معياري',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                          ],
-                        ),
-                        horizontalSpacing(12),
-                        Column(
-                          children: [
-                            Text(
-                              '${slide.muscularGoalsMaintenance?.actual?.toStringAsFixed(1) ?? '0'}%',
-                              style:
-                                  AppTextStyles.font22WhiteWeight600.copyWith(
-                                color: Colors.cyanAccent,
-                              ),
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              'فعلي',
-                              style: AppTextStyles.font22WhiteWeight600,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            verticalSpacing(24),
-            // Display metrics for this slide
-            ...slide.metrics.asMap().entries.map(
-              (entry) {
-                final slide = entry.value;
-                return Column(
-                  children: [
-                    _SectionTitle(
-                      title: entry.value.metricName,
-                      hasGradientBackground: true,
-                    ),
-                    verticalSpacing(8),
-                    _MetricRow3(
-                      todayValue: slide.todayActual?.toInt().toString() ?? '0',
-                      cumulativeValue:
-                          slide.accumulativeActual?.toInt().toString() ?? '0',
-                      standardValue:
-                          '(${slide.minimumStandard?.toInt() ?? 0}) → (${slide.maximumStandard?.toInt() ?? 0})',
-                      //  slide.standardTarget?.toInt().toString() ?? '0',
-                      subtitle: '',
-                      hasGradientBackground: true,
-                    ),
-                    verticalSpacing(8),
-                  ],
-                );
-              },
-            ),
-          ],
-        );
+        return SecondSlideWidget(slide: slide);
       }
 
       // Default slide with metrics only
@@ -500,12 +383,12 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
           AppLogger.info("metric.metricName ${metric.metricName}");
           return Column(
             children: [
-              _SectionTitle(
+              SectionTitle(
                 title: metric.metricName,
                 hasGradientBackground: true,
               ),
               verticalSpacing(8),
-              _MetricRow3(
+              MetricRow3(
                 isWightDetailsSlide: isWeightDetailsSlide,
                 todayValue: metric.todayActual?.toInt().toString() ?? '0',
                 cumulativeValue:
