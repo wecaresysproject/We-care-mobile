@@ -27,6 +27,15 @@ class DayCardWidget extends StatelessWidget {
     this.isSelectable = true, // افتراضي قابل للاختيار
   });
 
+  const DayCardWidget.futureDay({
+    super.key,
+    required this.day,
+    required this.date,
+    required this.onTap,
+  })  : haveAdocument = false,
+        isSelectable = false,
+        backgroundColor = const Color(0xffE0E0E0);
+
   const DayCardWidget.planNotActivated({
     super.key,
     this.day = 'اليوم',
