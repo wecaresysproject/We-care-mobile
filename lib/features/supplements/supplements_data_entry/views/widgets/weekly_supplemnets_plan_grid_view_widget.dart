@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_cubit.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
@@ -79,10 +80,11 @@ class _WeeklySupplemnetsPlanGridViewWidgState
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
+            final isFuture = isFutureDay(day.date);
             final isSelected = selectedDate == day.date;
 
             // اختر الـ constructor المناسب
-            if (state.weeklyActivationStatus == false) {
+            if (!state.weeklyActivationStatus) {
               // لو الخطة مش مفعلة خالص
               return DayCard.planNotActivated(
                 day: day.dayOfWeek,
@@ -97,6 +99,17 @@ class _WeeklySupplemnetsPlanGridViewWidgState
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)
                     : const Color(0xffF1F3F6),
+              );
+            } else if (isFuture) {
+              return DayCard.futureDay(
+                day: day.dayOfWeek,
+                date: day.date,
+                onTap: () async {
+                  await showWarningDialog(
+                    context,
+                    message: "هذا اليوم لم يبدأ بعد، يرجى الانتظار حتى موعده.",
+                  );
+                },
               );
             } else if (state.weeklyActivationStatus && day.hasDocument) {
               // لو اليوم له تقرير

@@ -39,6 +39,19 @@ class DayCard extends StatelessWidget {
     this.onViewReport,
     this.dialogTitle,
   });
+  const DayCard.futureDay({
+    super.key,
+    required this.day,
+    required this.date,
+    required this.onTap,
+    this.dietPlan,
+    this.onDateSelected,
+    this.onDelete,
+    this.onViewReport,
+    this.dialogTitle,
+  })  : haveAdocument = false,
+        isSelectable = false,
+        backgroundColor = const Color(0xffE0E0E0);
 
   const DayCard.planNotActivated({
     super.key,

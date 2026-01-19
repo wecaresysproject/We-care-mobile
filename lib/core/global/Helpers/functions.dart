@@ -13,23 +13,52 @@ import 'package:we_care/core/networking/dio_serices.dart';
 ///
 final formatter = NumberFormat.decimalPattern('ar');
 
-///
-DateTime parseApiDate(String date) {
-  final parts = date.split('/');
-  final day = int.parse(parts[0]);
-  final month = int.parse(parts[1]);
-  final year = int.parse(parts[2]);
-
-  return DateTime(year, month, day);
+/// Validates that the date coming from the API is usable by the UI.
+/// Filters out placeholder or invalid values such as "--/--/----"
+/// to avoid parsing errors and unnecessary UI states.
+bool isValidDay(String date) {
+  if (date.trim().isEmpty) return false;
+  if (date.contains('--')) return false;
+  if (date == '--/--/----') return false;
+  return true;
 }
 
+/// Safely parses API dates in the format dd/MM/yyyy.
+/// Returns null for invalid or placeholder dates to prevent crashes
+/// and keep the UI logic stable.
+DateTime? safeParseApiDate(String rawDate) {
+  if (!isValidDay(rawDate)) return null;
+
+  try {
+    final cleaned = rawDate.trim().replaceAll('-', '/');
+    final parts = cleaned.split('/');
+
+    if (parts.length != 3) return null;
+
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+
+    if (day == null || month == null || year == null) return null;
+
+    return DateTime(year, month, day);
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Determines whether a given day is a future day.
+/// Used to control UI behavior for future entries across
+/// Nutrition, Vitamins & Supplements, and Physical Activity modules,
+/// preventing data entry before the actual day starts.
 bool isFutureDay(String dateString) {
-  final dayDate = parseApiDate(dateString);
+  final parsedDate = safeParseApiDate(dateString);
+  if (parsedDate == null) return false;
 
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 
-  return dayDate.isAfter(today);
+  return parsedDate.isAfter(today);
 }
 
 Widget verticalSpacing(double height) => SizedBox(

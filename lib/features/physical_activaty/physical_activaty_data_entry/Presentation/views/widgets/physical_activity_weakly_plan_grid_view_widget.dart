@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/widgets/day_card_widget.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
@@ -78,10 +79,12 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
           itemCount: days.length,
           itemBuilder: (context, index) {
             final day = days[index];
+            final isFuture = isFutureDay(day.date);
+
             final isSelected = selectedDay == day.date;
 
             // اختر الـ constructor المناسب
-            if (state.weeklyActivationStatus == false) {
+            if (!state.weeklyActivationStatus) {
               // لو الخطة مش مفعلة خالص
               return DayCardWidget.planNotActivated(
                 day: day.dayOfWeek,
@@ -96,6 +99,17 @@ class _WeeklyMealGridBLocBuilderState extends State<WeeklyMealGridBLocBuilder> {
                 backgroundColor: isSelected
                     ? const Color(0xffDAE9FA)
                     : const Color(0xffF1F3F6),
+              );
+            } else if (isFuture) {
+              return DayCardWidget.futureDay(
+                day: day.dayOfWeek,
+                date: day.date,
+                onTap: () async {
+                  await showWarningDialog(
+                    context,
+                    message: "هذا اليوم لم يبدأ بعد، يرجى الانتظار حتى موعده.",
+                  );
+                },
               );
             } else if (state.weeklyActivationStatus && day.hasDocument) {
               // لو اليوم له تقرير
