@@ -88,6 +88,7 @@ import 'package:we_care/features/nutration/nutration_view/Presention/views/nutra
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/daily_activity_logger_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/physical_activaty_plans_data_entry_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/Presentation/views/user_physical_activaty_info_data_entry_view.dart';
+import 'package:we_care/features/physical_activaty/physical_activaty_view/Presention/views/calories_follow_up_report_view.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/Presention/views/physical_activity_data_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_details_view.dart';
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
@@ -699,6 +700,13 @@ class AppRouter {
       case Routes.medicationCompatibilityView:
         return MaterialPageRoute(
           builder: (_) => const MedicationCompatibilityView(),
+        );
+      case Routes.caloriesFollowUpReportView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+        return MaterialPageRoute(
+          builder: (_) => CaloriesTableView(
+            date: argumentsMap?['date'] as String?,
+          ),
         );
       case Routes.myMedicalReportsView:
         return MaterialPageRoute(

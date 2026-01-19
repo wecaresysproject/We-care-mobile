@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/filters_row_bloc_builder_widget.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_view/widgets/second_slide_widget.dart';
@@ -363,7 +365,7 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
       final hasMuscularGoals = slide.muscularGoalsMaintenance != null ||
           slide.muscularGoalsBuilding != null;
       final isWeightDetailsSlide = index == 2; // slide الثالثة (0-based)
-
+      final isFirstSlide = index == 0;
       // 2nd slide البناء العضلي ، الصيانة العضلية
       if (hasMuscularGoals) {
         return SecondSlideWidget(slide: slide);
@@ -372,6 +374,8 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
       // Default slide with metrics only
       return Column(
         children: slide.metrics.map((metric) {
+          final secondSection = metric.metricName.contains("السعرات المحروقة");
+
           return Column(
             children: [
               if (slide.metrics.first == metric &&
@@ -384,7 +388,7 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
                     fontSize: 16.sp,
                   ),
                 ),
-              verticalSpacing(16),
+              verticalSpacing(8),
               SectionTitle(
                 title: formatMetricTitle(metric.metricName),
                 hasGradientBackground: true,
@@ -400,9 +404,36 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
                     metric.accumulativeActual?.toInt().toString() ?? '0',
                 standardValue: metric.standardTarget?.toInt().toString() ?? '0',
                 hasGradientBackground: true,
-                // valueFontSize: 50,
               ),
-              verticalSpacing(16),
+              if (isFirstSlide && secondSection) ...[
+                Align(
+                  alignment: AlignmentGeometry.centerRight,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColorsManager.mainDarkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                    ),
+                    onPressed: () {
+                      context.pushNamed(
+                        Routes.caloriesFollowUpReportView,
+                        arguments: {
+                          'date': DateTime.now().toString().split(' ')[0],
+                        },
+                      );
+                    },
+                    child: Text(
+                      'تقرير المتابعة',
+                      style: AppTextStyles.font14whiteWeight600,
+                    ),
+                  ),
+                ),
+              ],
             ],
           );
         }).toList(),
