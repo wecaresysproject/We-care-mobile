@@ -160,3 +160,40 @@ Future<void> showWarningDialog(
     },
   );
 }
+
+void showDeactivatePlanConfirmation({
+  required BuildContext context,
+  required VoidCallback onConfirm,
+}) {
+  showDialog(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        title: const Text('تأكيد إيقاف الخطة'),
+        content: const Text(
+          'هل أنت متأكد من إيقاف الخطة الحالية؟\nسوف تفقد تقدمك الحالي.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop(); // Cancel
+            },
+            child: const Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop(); // Close dialog
+              onConfirm(); // Execute existing logic
+            },
+            child: Text(
+              'تأكيد',
+              style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}

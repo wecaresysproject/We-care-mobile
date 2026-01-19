@@ -181,40 +181,6 @@ class _PhysicalActivatyPlansDataEntryViewState
             ),
           ),
         ),
-
-        // // Fixed bottom section that stays above keyboard
-        // Container(
-        //   padding: EdgeInsets.fromLTRB(
-        //     16.0,
-        //     8.0,
-        //     16.0,
-        //     16.0 + MediaQuery.of(context).viewInsets.bottom,
-        //   ),
-        //   decoration: BoxDecoration(
-        //     color: Colors.white,
-        //     border: Border(
-        //       top: BorderSide(
-        //         color: Colors.grey[200]!,
-        //         width: 1,
-        //       ),
-        //     ),
-        //   ),
-        //   child: Column(
-        //     mainAxisSize: MainAxisSize.max,
-        //     children: [
-        //       verticalSpacing(12),
-        //       AppCustomButton(
-        //         title: 'حفظ',
-        //         isEnabled: true,
-        //         onPressed: () async {
-        //           // await context
-        //           //     .read<PhysicalActivatyDataEntryCubit>()
-        //           //     .analyzeDietPlan();
-        //         },
-        //       ).paddingFrom(right: 200),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }

@@ -63,12 +63,26 @@ class SupplementsPlanActivationToggleBlocBuilder extends StatelessWidget {
                 }
 
                 // If we reach here:
-                // - User is deactivating (value = false) -> Always allowed
-                // - User is activating but no other plan is active -> Allowed
+                // - User is deactivating (value = false)
+                // - OR activating with no conflict
                 AppLogger.debug('Proceeding with plan toggle');
-                context
-                    .read<SupplementsDataEntryCubit>()
-                    .togglePlanActivationAndLoadingExistingPlans();
+
+                if (value == false) {
+                  // User is trying to deactivate the plan → show confirmation dialog
+                  showDeactivatePlanConfirmation(
+                    context: context,
+                    onConfirm: () {
+                      context
+                          .read<SupplementsDataEntryCubit>()
+                          .togglePlanActivationAndLoadingExistingPlans();
+                    },
+                  );
+                } else {
+                  // Normal activation (no confirmation needed)
+                  context
+                      .read<SupplementsDataEntryCubit>()
+                      .togglePlanActivationAndLoadingExistingPlans();
+                }
               },
               trackOutlineColor: WidgetStateProperty.all(
                 AppColorsManager.placeHolderColor.withAlpha(50),
