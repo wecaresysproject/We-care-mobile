@@ -10,6 +10,28 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 
+///
+final formatter = NumberFormat.decimalPattern('ar');
+
+///
+DateTime parseApiDate(String date) {
+  final parts = date.split('/');
+  final day = int.parse(parts[0]);
+  final month = int.parse(parts[1]);
+  final year = int.parse(parts[2]);
+
+  return DateTime(year, month, day);
+}
+
+bool isFutureDay(String dateString) {
+  final dayDate = parseApiDate(dateString);
+
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+
+  return dayDate.isAfter(today);
+}
+
 Widget verticalSpacing(double height) => SizedBox(
       height: height.h,
     );

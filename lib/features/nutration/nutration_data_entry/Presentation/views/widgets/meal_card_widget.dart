@@ -40,6 +40,20 @@ class MealCard extends StatelessWidget {
     this.showDietPlan = true,
     this.dialogTitle,
   });
+  const MealCard.futureDay({
+    super.key,
+    required this.day,
+    required this.date,
+    required this.onTap,
+  })  : dietPlan = null,
+        haveAdocument = false,
+        isSelectable = false,
+        backgroundColor = const Color(0xffE0E0E0),
+        onDateSelected = null,
+        onDelete = null,
+        onViewReport = null,
+        showDietPlan = false,
+        dialogTitle = 'هذا اليوم لم يأتِ بعد';
 
   const MealCard.planNotActivated({
     super.key,

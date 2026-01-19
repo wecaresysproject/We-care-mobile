@@ -33,13 +33,11 @@ class PhysicalActivityDataView extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * 0.6,
               ),
             ),
-            Center(
-              child: Image.asset(
-                'assets/images/shadow.png',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+            Image.asset(
+              'assets/images/shadow.png',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
             const PhysicalActivityDataViewBody(),
           ],
