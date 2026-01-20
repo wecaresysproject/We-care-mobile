@@ -15,7 +15,7 @@ class MedicalReportFilterResponseModel {
     required this.title,
     required this.image,
     required this.selectionType,
-    required this.radioOptions,
+    this.radioOptions = const [],
     this.filterSections,
   });
 
