@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
+import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
-import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
-import 'package:we_care/core/global/theming/color_manager.dart';
 
 class MyMedicalReportsView extends StatefulWidget {
   const MyMedicalReportsView({super.key});
@@ -25,7 +26,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   final Map<int, Set<String>> _selectedOptionValues = {};
   // Map to track selected filters for each category: {categoryIndex: {filterTitle: {selectedValues}}}
   final Map<int, Map<String, Set<String>>> _selectedFilters = {};
-  
+
   bool _isExporting = false;
 
   @override
@@ -74,8 +75,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                       },
                     ),
                     if (isExpanded) ...[
-                      if (category.selectionType == 'selection' ||
-                          category.selectionType == 'selection_and_filters')
+                      if (category.selectionType ==
+                              MedicalSelectionType.selection ||
+                          category.selectionType ==
+                              MedicalSelectionType.selectionAndFilters)
                         MedicalCategorySelectionWidget(
                           options: category.radioOptions,
                           selectedValues: _selectedOptionValues[index] ?? {},
@@ -92,10 +95,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                             });
                           },
                         ),
-                      if (category.selectionType == 'filters' ||
-                          category.selectionType == 'selection_and_filters')
+                      if (category.selectionType ==
+                              MedicalSelectionType.filters ||
+                          category.selectionType ==
+                              MedicalSelectionType.selectionAndFilters)
                         CategoryFiltersWidget(
-                          filterSections: category.filterSections,
+                          filterSections: category.filterSections!,
                           selectedFilters: _selectedFilters[index] ?? {},
                           onFilterToggle: (filterTitle, value) {
                             setState(() {
@@ -131,7 +136,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                 });
 
                 final logic = MedicalReportExportLogic();
-               await logic.exportAndShareReport(context);
+                await logic.exportAndShareReport(context);
 
                 if (mounted) {
                   setState(() {
