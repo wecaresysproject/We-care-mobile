@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
@@ -61,6 +63,60 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
             message: error.errors.firstOrNull ?? 'An error occurred',
           ),
         );
+      },
+    );
+  }
+
+  Future<void> fetchCategoryFilters(String categoryTitle, String language,
+      {String userType = 'patient'}) async {
+    // Avoid redundant calls
+    if (state.categoryFiltersStatus[categoryTitle] == RequestStatus.success) {
+      return;
+    }
+
+    final Map<String, RequestStatus> updatedStatuses =
+        Map.from(state.categoryFiltersStatus);
+    updatedStatuses[categoryTitle] = RequestStatus.loading;
+    emit(state.copyWith(categoryFiltersStatus: updatedStatuses));
+
+    ApiResult<MedicalReportFilterResponseModel>? result;
+
+    // Call relevant API based on category
+    if (categoryTitle == "البيانات الاساسية") {
+      result = await _medicalReportRepo.getPersonalDataFilters(
+        language,
+        userType,
+      );
+    } else {
+      // Placeholder for other categories API calls
+      // For now we will use dummy success for demonstration if requested
+      return;
+    }
+
+    result.when(
+      success: (data) {
+        final Map<String, MedicalReportFilterResponseModel> updatedFilters =
+            Map.from(state.categoryFilters);
+        updatedFilters[categoryTitle] = data;
+
+        final Map<String, RequestStatus> finalStatuses =
+            Map.from(state.categoryFiltersStatus);
+        finalStatuses[categoryTitle] = RequestStatus.success;
+
+        emit(state.copyWith(
+          categoryFilters: updatedFilters,
+          categoryFiltersStatus: finalStatuses,
+        ));
+      },
+      failure: (error) {
+        final Map<String, RequestStatus> finalStatuses =
+            Map.from(state.categoryFiltersStatus);
+        finalStatuses[categoryTitle] = RequestStatus.failure;
+
+        emit(state.copyWith(
+          categoryFiltersStatus: finalStatuses,
+          message: error.errors.firstOrNull ?? 'An error occurred',
+        ));
       },
     );
   }

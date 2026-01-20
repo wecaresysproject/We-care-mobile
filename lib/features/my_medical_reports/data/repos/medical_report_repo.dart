@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/medical_report_api_services.dart';
+import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 
@@ -19,6 +20,21 @@ class MedicalReportRepo {
       //   language,
       // );
       return ApiResult.success(dummyMedicalReportResponse);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getPersonalDataFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getPersonalDataFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

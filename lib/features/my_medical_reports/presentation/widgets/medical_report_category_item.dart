@@ -74,12 +74,26 @@ class MedicalReportCategoryItem extends StatelessWidget {
                   child: Row(
                     children: [
                       // Icon (right side of the tile in RTL)
-                      Image.asset(
-                        iconPath,
-                        width: 28.w,
-                        height: 28.h,
-                        fit: BoxFit.contain,
-                      ),
+                      iconPath.startsWith('http')
+                          ? Image.network(
+                              iconPath,
+                              width: 28.w,
+                              height: 28.h,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset(
+                                "assets/images/pin_edit_icon.png",
+                                width: 28.w,
+                                height: 28.h,
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          : Image.asset(
+                              iconPath,
+                              width: 28.w,
+                              height: 28.h,
+                              fit: BoxFit.contain,
+                            ),
                       horizontalSpacing(8),
                       // Category title
                       Expanded(
