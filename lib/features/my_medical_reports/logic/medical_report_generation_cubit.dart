@@ -92,6 +92,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         language,
         userType,
       );
+    } else if (categoryTitle == "القياسات الحيوية") {
+      result = await _medicalReportRepo.getVitalSignsFilters(
+        language,
+        userType,
+      );
     } else {
       // Placeholder for other categories API calls
       // For now we will use dummy success for demonstration if requested

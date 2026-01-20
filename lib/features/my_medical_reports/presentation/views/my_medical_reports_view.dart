@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -32,7 +33,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   // Map to track selected filters for each category: {categoryIndex: {filterTitle: {selectedValues}}}
   final Map<int, Map<String, Set<String>>> _selectedFilters = {};
 
-  bool _isExporting = false;
+  final bool _isExporting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -231,40 +232,47 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
             );
           },
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: _isExporting
-              ? null
-              : () async {
-                  setState(() {
-                    _isExporting = true;
-                  });
-
-                  final logic = MedicalReportExportLogic();
-                  await logic.exportAndShareReport(context);
-
-                  if (mounted) {
-                    setState(() {
-                      _isExporting = false;
-                    });
-                  }
-                },
-          backgroundColor: AppColorsManager.mainDarkBlue,
-          icon: _isExporting
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
-              : const Icon(Icons.picture_as_pdf, color: Colors.white),
-          label: Text(
-            _isExporting ? 'Generating...' : 'Export as PDF',
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
+        floatingActionButton: buildFloatingActionButtonBlocBuilder(),
       ),
+    );
+  }
+
+  BlocBuilder<MedicalReportGenerationCubit, MedicalReportGenerationState>
+      buildFloatingActionButtonBlocBuilder() {
+    return BlocBuilder<MedicalReportGenerationCubit,
+        MedicalReportGenerationState>(
+      builder: (context, state) {
+        if (state.medicalReportData.isNotNull &&
+            state.status == RequestStatus.success) {
+          return FloatingActionButton.extended(
+            onPressed: state.status == RequestStatus.loading
+                ? null
+                : () async {
+                    final logic = MedicalReportExportLogic();
+                    await logic.exportAndShareReport(context);
+                  },
+            backgroundColor: AppColorsManager.mainDarkBlue,
+            icon: state.status == RequestStatus.loading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Icon(Icons.picture_as_pdf, color: Colors.white),
+            label: Text(
+              state.status == RequestStatus.loading
+                  ? 'Generating...'
+                  : 'Export as PDF',
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        } else {
+          return SizedBox.shrink();
+        }
+      },
     );
   }
 }
