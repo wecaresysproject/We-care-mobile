@@ -183,6 +183,37 @@ class _UserPhysicalActivatyInfoDataEntryViewState
                     searchHintText: "ابحث عن الكثافة العضلية المناسبة",
                   ),
 
+                  verticalSpacing(22),
+
+                  // الوزن
+                  buildInputField(
+                    title: 'إجمالي السعرات المستهدفة',
+                    imagePath: 'assets/images/measure_body_weight.png',
+                    hintText: 'أدخل إجمالي السعرات المستهدفة',
+                    controller: context
+                        .read<PhysicalActivatyDataEntryCubit>()
+                        .targetCaloriesController,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'من فضلك أدخل إجمالي السعرات المستهدفة';
+                      }
+
+                      final calories = int.tryParse(value);
+                      if (calories == null) {
+                        return 'القيمة يجب أن تكون رقمًا صحيحًا';
+                      }
+                      if (calories > 100000) {
+                        return 'الحد الأقصى لإجمالي السعرات هو 100,000';
+                      }
+                      if (calories <= 0) {
+                        return 'القيمة يجب أن تكون أكبر من صفر';
+                      }
+
+                      return null;
+                    },
+                  ),
+
                   verticalSpacing(32),
 
                   submitUserInfoEnteredButtonBlocConsumer(_formKey),

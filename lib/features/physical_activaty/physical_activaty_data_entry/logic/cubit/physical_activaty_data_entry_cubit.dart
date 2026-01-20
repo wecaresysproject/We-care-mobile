@@ -22,6 +22,8 @@ class PhysicalActivatyDataEntryCubit
   final TextEditingController heightController = TextEditingController();
 
   final TextEditingController ageController = TextEditingController();
+  final TextEditingController targetCaloriesController =
+      TextEditingController();
 
   final PhysicalActivatyDataEntryRepo _physicalActivatyDataEntryRepo;
 
@@ -330,6 +332,7 @@ class PhysicalActivatyDataEntryCubit
     weightController.dispose();
     heightController.dispose();
     ageController.dispose();
+    targetCaloriesController.dispose();
     return super.close();
   }
 }

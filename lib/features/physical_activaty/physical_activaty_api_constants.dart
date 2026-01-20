@@ -14,6 +14,8 @@ class PhysicalActivatyApiConstants {
 
   //View Entry
   static const getAvailableYears = "PhysicalActivityForUser/plans/years";
+  static const getFollowUpReports =
+      "PhysicalActivityForUser/physical-activity/table";
   static const getAvailableDatesBasedOnYear =
       "PhysicalActivityForUser/plans/ranges";
   static const getFilterdDocuments =
