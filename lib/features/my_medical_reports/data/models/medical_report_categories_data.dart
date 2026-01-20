@@ -3,7 +3,7 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_category
 final basicInfoCategory = MedicalCategoryModel(
   title: "البيانات الاساسية",
   image: "assets/images/pin_edit_icon.png",
-  selectionType: "selection",
+  selectionType: MedicalSelectionType.selection,
   radioOptions: [
     "الجميع",
     "تاريخ الميلاد",
@@ -21,7 +21,7 @@ final basicInfoCategory = MedicalCategoryModel(
 final vitalSignsCategory = MedicalCategoryModel(
   title: "القياسات الحيوية",
   image: "assets/images/medical_tools_img.png",
-  selectionType: "selection",
+  selectionType: MedicalSelectionType.selection,
   radioOptions: [
     "الضغط",
     "درجة الحرارة",
@@ -37,7 +37,7 @@ final vitalSignsCategory = MedicalCategoryModel(
 final medicinesCategory = MedicalCategoryModel(
   title: "الأدوية",
   image: "assets/images/medicines_icon.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [
@@ -124,7 +124,7 @@ final medicinesCategory = MedicalCategoryModel(
 final chronicDiseasesCategory = MedicalCategoryModel(
   title: "الامراض المزمنه",
   image: "assets/images/time_icon.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [
@@ -144,7 +144,7 @@ final chronicDiseasesCategory = MedicalCategoryModel(
 final urgentComplaintsCategory = MedicalCategoryModel(
   title: "الشكاوى الطارئة",
   image: "assets/images/urgent_icon.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [
@@ -168,7 +168,7 @@ final urgentComplaintsCategory = MedicalCategoryModel(
 final doctorsPrescriptionCategory = MedicalCategoryModel(
   title: "روشتة الأطباء",
   image: "assets/images/doctor_medicines.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق صور الروشتات"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -193,7 +193,7 @@ final doctorsPrescriptionCategory = MedicalCategoryModel(
 final medicalTestsCategory = MedicalCategoryModel(
   title: "التحاليل الطبية",
   image: "assets/images/test_tube.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق صور التحاليل"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -214,7 +214,7 @@ final medicalTestsCategory = MedicalCategoryModel(
 final radiologyCategory = MedicalCategoryModel(
   title: "الأشعة",
   image: "assets/images/x_ray.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق صور الاشعة"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -239,7 +239,7 @@ final radiologyCategory = MedicalCategoryModel(
 final surgeriesCategory = MedicalCategoryModel(
   title: "العمليات الجراحية",
   image: "assets/images/surgery_icon.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -256,17 +256,14 @@ final surgeriesCategory = MedicalCategoryModel(
 final geneticDiseasesCategory = MedicalCategoryModel(
   title: "الأمراض الوراثية",
   image: "assets/images/icon_family.png",
-  selectionType: "selection",
-  radioOptions: [
-    "امراض العائلة الوراثية",
-    "أمراضي الوراثية المتوقعة"
-  ],
+  selectionType: MedicalSelectionType.selection,
+  radioOptions: ["امراض العائلة الوراثية", "أمراضي الوراثية المتوقعة"],
 );
 
 final allergiesCategory = MedicalCategoryModel(
   title: "الحساسية",
   image: "assets/images/hand_icon.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [
@@ -282,7 +279,7 @@ final allergiesCategory = MedicalCategoryModel(
 final eyesCategory = MedicalCategoryModel(
   title: "العيون",
   image: "assets/images/eye_module_pic.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -311,7 +308,7 @@ final eyesCategory = MedicalCategoryModel(
 final dentalCategory = MedicalCategoryModel(
   title: "الأسنان",
   image: "assets/images/teeth_icon.png",
-  selectionType: "selection_and_filters",
+  selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
   filterSections: [
     MedicalFilterSectionModel(
@@ -340,7 +337,7 @@ final dentalCategory = MedicalCategoryModel(
 final mentalHealthCategory = MedicalCategoryModel(
   title: "الأمراض النفسية",
   image: "assets/images/mental_health.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [
@@ -364,21 +361,21 @@ final mentalHealthCategory = MedicalCategoryModel(
 final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
   title: " المحلل الغذائي الذكي",
   image: "assets/images/chemical_medicine.png",
-  selectionType: "selection",
+  selectionType: MedicalSelectionType.selection,
   radioOptions: ["تقرير المتابعة الغذائيه"],
 );
 
 final sportsActivityCategory = MedicalCategoryModel(
   title: "النشاط الرياضي",
   image: "assets/images/physical_exercise.png",
-  selectionType: "selection",
+  selectionType: MedicalSelectionType.selection,
   radioOptions: ["تقرير المتابعة الرياضية"],
 );
 
 final supplementsCategory = MedicalCategoryModel(
   title: "المكملات الغذائية",
   image: "assets/images/vitamin_module_icon.png",
-  selectionType: "filters",
+  selectionType: MedicalSelectionType.filters,
   filterSections: [
     MedicalFilterSectionModel(
       filters: [

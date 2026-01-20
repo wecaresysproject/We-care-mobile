@@ -7,6 +7,7 @@ class PhysicalActivatyViewState extends Equatable {
   final int followUpNutrationViewCurrentTabIndex;
   final List<int> availableYears;
   final List<String> availableDates;
+  final List<PhysicalActivityDayModel> followUpReportsRows;
 
   const PhysicalActivatyViewState({
     this.responseMessage = '',
@@ -15,6 +16,7 @@ class PhysicalActivatyViewState extends Equatable {
     this.physicalActivitySLides,
     this.availableDates = const [],
     this.followUpNutrationViewCurrentTabIndex = 0,
+    this.followUpReportsRows = const [],
   });
 
   factory PhysicalActivatyViewState.initial() {
@@ -25,6 +27,7 @@ class PhysicalActivatyViewState extends Equatable {
       physicalActivitySLides: null,
       availableDates: const [],
       followUpNutrationViewCurrentTabIndex: 0,
+      followUpReportsRows: const [],
     );
   }
 
@@ -35,6 +38,7 @@ class PhysicalActivatyViewState extends Equatable {
     List<String>? availableDates,
     PhysicalActivityMetricsResponse? physicalActivitySLides,
     int? followUpNutrationViewCurrentTabIndex,
+    List<PhysicalActivityDayModel>? followUpReportsRows,
   }) {
     return PhysicalActivatyViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -46,6 +50,7 @@ class PhysicalActivatyViewState extends Equatable {
       followUpNutrationViewCurrentTabIndex:
           followUpNutrationViewCurrentTabIndex ??
               this.followUpNutrationViewCurrentTabIndex,
+      followUpReportsRows: followUpReportsRows ?? this.followUpReportsRows,
     );
   }
 
@@ -57,5 +62,6 @@ class PhysicalActivatyViewState extends Equatable {
         availableYears,
         availableDates,
         followUpNutrationViewCurrentTabIndex,
+        followUpReportsRows,
       ];
 }

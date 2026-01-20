@@ -56,6 +56,8 @@ abstract class PhysicalActivityServices {
   Future<dynamic> getPhysicalActivitySlides(
     @Query('language') String language,
   );
+  @GET(PhysicalActivatyApiConstants.getFollowUpReports)
+  Future<dynamic> getFollowUpReports();
 
   @GET(PhysicalActivatyApiConstants.getAnyActivePlanStatus)
   Future<dynamic> getAnyActivePlanStatus();

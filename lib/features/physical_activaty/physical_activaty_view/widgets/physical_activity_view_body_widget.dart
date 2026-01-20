@@ -419,13 +419,9 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
                         vertical: 12.h,
                       ),
                     ),
-                    onPressed: () {
-                      context.pushNamed(
-                        Routes.caloriesFollowUpReportView,
-                        arguments: {
-                          'date': DateTime.now().toString().split(' ')[0],
-                        },
-                      );
+                    onPressed: () async {
+                      await context
+                          .pushNamed(Routes.caloriesFollowUpReportView);
                     },
                     child: Text(
                       'تقرير المتابعة',

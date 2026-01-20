@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/features/physical_activaty/data/models/physical_activity_day_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
 
@@ -104,6 +105,30 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
           state.copyWith(
             requestStatus: RequestStatus.success,
             physicalActivitySLides: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            responseMessage: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> getFollowUpReports() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await physicalActivatyViewRepo.getFollowUpReports();
+    response.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            requestStatus: RequestStatus.success,
+            followUpReportsRows: data,
           ),
         );
       },

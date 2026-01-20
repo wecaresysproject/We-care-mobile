@@ -702,11 +702,8 @@ class AppRouter {
           builder: (_) => const MedicationCompatibilityView(),
         );
       case Routes.caloriesFollowUpReportView:
-        final argumentsMap = arguments as Map<String, dynamic>?;
         return MaterialPageRoute(
-          builder: (_) => CaloriesTableView(
-            date: argumentsMap?['date'] as String?,
-          ),
+          builder: (_) => const CaloriesFollowUpReportTableView(),
         );
       case Routes.myMedicalReportsView:
         return MaterialPageRoute(

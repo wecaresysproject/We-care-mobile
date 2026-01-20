@@ -69,6 +69,9 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicine_scanner_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
+import 'package:we_care/features/my_medical_reports/data/medical_report_api_services.dart';
+import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
+import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
@@ -405,6 +408,11 @@ void setupAppCubits() {
       getIt<SupplementsDataEntryRepo>(),
     ),
   );
+  getIt.registerFactory<MedicalReportGenerationCubit>(
+    () => MedicalReportGenerationCubit(
+      getIt<MedicalReportRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -656,6 +664,11 @@ void setupAppRepos() {
       services: getIt<SupplementsServices>(),
     ),
   );
+  getIt.registerLazySingleton<MedicalReportRepo>(
+    () => MedicalReportRepo(
+      getIt<MedicalReportApiServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -752,5 +765,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<SupplementsServices>(
     () => SupplementsServices(dio),
+  );
+  getIt.registerLazySingleton<MedicalReportApiServices>(
+    () => MedicalReportApiServices(dio),
   );
 }
