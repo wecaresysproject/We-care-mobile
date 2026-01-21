@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -66,6 +67,7 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
         dividerThickness: 0.83,
         headingTextStyle: _getHeadingTextStyle(),
         showBottomBorder: true,
+        headingRowHeight: 85.h,
         border: TableBorder.all(
           style: BorderStyle.solid,
           borderRadius: BorderRadius.circular(8),
@@ -138,16 +140,19 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
         cells: [
           _buildCell(item.date),
           _buildCell(item.day),
-          _buildCell(item.exerciseMinutes.toString()),
-          _buildCell(item.consumedCalories.toString()),
-          _buildCell(item.burnedCalories.toString()),
-          _buildCell(item.muscleBuildingUnits.toString()),
-          _buildCell(item.muscleMaintenanceUnits.toString()),
-          _buildCell("${item.muscleBuildingPercentage.toStringAsFixed(1)}%"),
-          _buildCell("${item.muscleMaintenancePercentage.toStringAsFixed(1)}%"),
-          _buildCell(item.currentWeight.toString()),
-          _buildCell(item.targetWeightMax.toStringAsFixed(1)),
-          _buildCell(item.targetWeightMin.toStringAsFixed(1)),
+          _buildCell(formatNumber(item.exerciseMinutes)),
+          _buildCell(formatNumber(item.consumedCalories)),
+          _buildCell(formatNumber(item.burnedCalories)),
+          _buildCell(formatNumber(item.muscleBuildingUnits)),
+          _buildCell(formatNumber(item.muscleMaintenanceUnits)),
+
+          // ⬇️ كانت نسبة مئوية → بقت رقم عادي
+          _buildCell(formatNumber(item.muscleBuildingPercentage)),
+          _buildCell(formatNumber(item.muscleMaintenancePercentage)),
+
+          _buildCell(formatNumber(item.currentWeight)),
+          _buildCell(formatNumber(item.targetWeightMax)),
+          _buildCell(formatNumber(item.targetWeightMin)),
         ],
       );
     }).toList();

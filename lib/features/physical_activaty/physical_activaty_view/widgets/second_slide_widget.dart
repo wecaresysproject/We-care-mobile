@@ -34,7 +34,7 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsBuilding?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          '${(slide.muscularGoalsBuilding?.actual ?? 0).toInt()}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
                             color: Colors.cyanAccent,
                             fontSize: 30.sp,
@@ -53,7 +53,7 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsBuilding?.target?.toStringAsFixed(1) ?? '0'}%',
+                          '${(slide.muscularGoalsBuilding?.target ?? 0).toInt()}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
                             fontSize: 30.sp,
                           ),
@@ -85,7 +85,7 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsMaintenance?.actual?.toStringAsFixed(1) ?? '0'}%',
+                          '${(slide.muscularGoalsMaintenance?.actual ?? 0).toInt()}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
                             color: Colors.cyanAccent,
                             fontSize: 30.sp,
@@ -104,7 +104,7 @@ class SecondSlideWidget extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          '${slide.muscularGoalsMaintenance?.target?.toStringAsFixed(1) ?? '0'}%',
+                          '${(slide.muscularGoalsMaintenance?.target ?? 0).toInt()}%',
                           style: AppTextStyles.font22WhiteWeight600.copyWith(
                             fontSize: 30.sp,
                           ),
