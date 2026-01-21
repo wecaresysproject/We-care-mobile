@@ -135,7 +135,7 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
 
   /// Build rows from API data
   List<DataRow> _buildRows(List<PhysicalActivityDayModel> data) {
-    return data.map((item) {
+    final rows = data.map((item) {
       return DataRow(
         cells: [
           _buildCell(item.date),
@@ -145,17 +145,63 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
           _buildCell(formatNumber(item.burnedCalories)),
           _buildCell(formatNumber(item.muscleBuildingUnits)),
           _buildCell(formatNumber(item.muscleMaintenanceUnits)),
-
-          // ⬇️ كانت نسبة مئوية → بقت رقم عادي
           _buildCell(formatNumber(item.muscleBuildingPercentage)),
           _buildCell(formatNumber(item.muscleMaintenancePercentage)),
-
           _buildCell(formatNumber(item.currentWeight)),
           _buildCell(formatNumber(item.targetWeightMax)),
           _buildCell(formatNumber(item.targetWeightMin)),
         ],
       );
     }).toList();
+
+    // ⬇️ إضافة صف المجموع
+    final totals = _calculateTotals(data);
+
+    rows.add(
+      DataRow(
+        color: WidgetStateProperty.all(
+          AppColorsManager.secondaryColor.withOpacity(0.25),
+        ),
+        cells: [
+          _buildCell("—", isBold: true),
+          _buildCell("الإجمالي", isBold: true),
+          _buildCell(formatNumber(totals.exerciseMinutes), isBold: true),
+          _buildCell(formatNumber(totals.consumedCalories), isBold: true),
+          _buildCell(formatNumber(totals.burnedCalories), isBold: true),
+          _buildCell(formatNumber(totals.muscleBuildingUnits), isBold: true),
+          _buildCell(formatNumber(totals.muscleMaintenanceUnits), isBold: true),
+
+          // ❌ لا مجموع للنِسَب
+          _buildCell("—"),
+          _buildCell("—"),
+
+          _buildCell(formatNumber(totals.currentWeight), isBold: true),
+          _buildCell(formatNumber(totals.targetWeightMax), isBold: true),
+          _buildCell(formatNumber(totals.targetWeightMin), isBold: true),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  PhysicalActivityTotals _calculateTotals(List<PhysicalActivityDayModel> data) {
+    return PhysicalActivityTotals(
+      exerciseMinutes: data.fold(0, (sum, e) => sum + e.exerciseMinutes),
+      consumedCalories: data.fold(0, (sum, e) => sum + e.consumedCalories),
+      burnedCalories: data.fold(0, (sum, e) => sum + e.burnedCalories),
+      muscleBuildingUnits:
+          data.fold(0, (sum, e) => sum + e.muscleBuildingUnits),
+      muscleMaintenanceUnits:
+          data.fold(0, (sum, e) => sum + e.muscleMaintenanceUnits),
+
+      // الوزن غالبًا لا يُجمع → آخر قيمة أو متوسط
+      currentWeight: data.isNotEmpty ? data.last.currentWeight : 0,
+
+      // المستهدفات لا تُجمع
+      targetWeightMax: data.isNotEmpty ? data.last.targetWeightMax : 0,
+      targetWeightMin: data.isNotEmpty ? data.last.targetWeightMin : 0,
+    );
   }
 
   /// 🔤 Build individual cell
