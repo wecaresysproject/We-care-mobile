@@ -28,12 +28,41 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateMedicineSelection({
+    bool? getAll,
+    List<String>? currentNames,
+    List<String>? currentYears,
+    List<String>? expiredNames,
+    List<String>? expiredYears,
+  }) {
+    emit(
+      state.copyWith(
+        medicineGetAll: getAll,
+        medicineCurrentNames: currentNames,
+        medicineCurrentYears: currentYears,
+        medicineExpiredNames: expiredNames,
+        medicineExpiredYears: expiredYears,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport(String language) async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
         basicInformation: BasicInformationSelection(
           getAll: state.basicInfoGetAll,
           selectedValues: state.basicInfoSelectedValues,
+        ),
+        medications: MedicineCategorySelectionRequestBody(
+          getAll: state.medicineGetAll,
+          currentMedicines: MedicineDetailsSelection(
+            drugNames: state.medicineCurrentNames,
+            years: state.medicineCurrentYears,
+          ),
+          expiredLast3Months: MedicineDetailsSelection(
+            drugNames: state.medicineExpiredNames,
+            years: state.medicineExpiredYears,
+          ),
         ),
       ),
     );

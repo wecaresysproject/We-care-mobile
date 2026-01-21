@@ -33,8 +33,6 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   // Map to track selected filters for each category: {categoryIndex: {filterTitle: {selectedValues}}}
   final Map<int, Map<String, Set<String>>> _selectedFilters = {};
 
-  final bool _isExporting = false;
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -106,6 +104,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 setState(() {
                                   _selectedStates[index] = !isSelected;
                                 });
+
+                                // Basic Info Selection sync
+                                if (dummyCategory.title ==
+                                    "البيانات الاساسية") {
+                                  _syncBasicInfoSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Medicine Selection sync
+                                if (dummyCategory.title == "الأدوية") {
+                                  _syncMedicineSelectionToCubit(context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -141,19 +151,14 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Basic Info Integration (using dummyTitle for key)
                                       if (dummyCategory.title ==
                                           "البيانات الاساسية") {
-                                        final getAll =
-                                            _selectedOptionValues[index]
-                                                    ?.contains("الجميع") ??
-                                                false;
-                                        context
-                                            .read<
-                                                MedicalReportGenerationCubit>()
-                                            .updateBasicInfoSelection(
-                                              getAll: getAll,
-                                              selectedValues:
-                                                  _selectedOptionValues[index]
-                                                      ?.toList(),
-                                            );
+                                        _syncBasicInfoSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Medicine Selection Integration
+                                      if (dummyCategory.title == "الأدوية") {
+                                        _syncMedicineSelectionToCubit(
+                                            context, index);
                                       }
                                     },
                                   ),
@@ -166,22 +171,30 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                     filterSections: category.filterSections!,
                                     selectedFilters:
                                         _selectedFilters[index] ?? {},
-                                    onFilterToggle: (filterTitle, value) {
+                                    onFilterToggle:
+                                        (sectionIndex, filterTitle, value) {
                                       setState(() {
                                         final categoryFilters =
                                             _selectedFilters[index] ?? {};
+                                        final String key =
+                                            "${sectionIndex}_$filterTitle";
                                         final selectedValues =
-                                            categoryFilters[filterTitle] ?? {};
+                                            categoryFilters[key] ?? {};
                                         if (selectedValues.contains(value)) {
                                           selectedValues.remove(value);
                                         } else {
                                           selectedValues.add(value);
                                         }
-                                        categoryFilters[filterTitle] =
-                                            selectedValues;
+                                        categoryFilters[key] = selectedValues;
                                         _selectedFilters[index] =
                                             categoryFilters;
                                       });
+
+                                      // Medicine Selection Integration
+                                      if (dummyCategory.title == "الأدوية") {
+                                        _syncMedicineSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                               ],
@@ -270,9 +283,33 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
             ),
           );
         } else {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
       },
     );
+  }
+
+  void _syncBasicInfoSelectionToCubit(BuildContext context, int index) {
+    final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateBasicInfoSelection(
+          getAll: getAll,
+          selectedValues: _selectedOptionValues[index]?.toList(),
+        );
+  }
+
+  void _syncMedicineSelectionToCubit(BuildContext context, int index) {
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateMedicineSelection(
+          getAll: _selectedStates[index] ?? false,
+          currentNames: filters["0_اسم الدواء"]?.toList() ?? [],
+          currentYears: filters["0_السنة"]?.toList() ?? [],
+          expiredNames:
+              (filters["1_اسم الدواء"] ?? filters["1_اسم الدواء_expired"])
+                      ?.toList() ??
+                  [],
+          expiredYears:
+              (filters["1_السنة"] ?? filters["1_السنة_expired"])?.toList() ??
+                  [],
+        );
   }
 }

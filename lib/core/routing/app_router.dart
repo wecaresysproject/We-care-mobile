@@ -692,7 +692,6 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const SupplementsDataEntryView(),
         );
-
       case Routes.notificationsScreen:
         return MaterialPageRoute(
           builder: (_) => const NotificationsView(),

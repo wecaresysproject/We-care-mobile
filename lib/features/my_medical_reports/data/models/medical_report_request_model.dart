@@ -19,7 +19,10 @@ class MedicalReportSelections {
   @JsonKey(name: 'basicInformation')
   final BasicInformationSelection? basicInformation;
 
-  MedicalReportSelections({this.basicInformation});
+  @JsonKey(name: 'medications')
+  final MedicineCategorySelectionRequestBody? medications;
+
+  MedicalReportSelections({this.basicInformation, this.medications});
 
   factory MedicalReportSelections.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportSelectionsFromJson(json);
@@ -41,4 +44,40 @@ class BasicInformationSelection {
       _$BasicInformationSelectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$BasicInformationSelectionToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class MedicineCategorySelectionRequestBody {
+  final bool getAll;
+  final MedicineDetailsSelection currentMedicines;
+  final MedicineDetailsSelection expiredLast3Months;
+
+  MedicineCategorySelectionRequestBody({
+    required this.getAll,
+    required this.currentMedicines,
+    required this.expiredLast3Months,
+  });
+
+  factory MedicineCategorySelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$MedicineCategorySelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$MedicineCategorySelectionRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class MedicineDetailsSelection {
+  final List<String> drugNames;
+  final List<String> years;
+
+  MedicineDetailsSelection({
+    required this.drugNames,
+    required this.years,
+  });
+
+  factory MedicineDetailsSelection.fromJson(Map<String, dynamic> json) =>
+      _$MedicineDetailsSelectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicineDetailsSelectionToJson(this);
 }

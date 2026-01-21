@@ -6,6 +6,11 @@ class MedicalReportGenerationState extends Equatable {
   final String message;
   final bool basicInfoGetAll;
   final List<String> basicInfoSelectedValues;
+  final bool medicineGetAll;
+  final List<String> medicineCurrentNames;
+  final List<String> medicineCurrentYears;
+  final List<String> medicineExpiredNames;
+  final List<String> medicineExpiredYears;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -15,6 +20,11 @@ class MedicalReportGenerationState extends Equatable {
     this.message = '',
     this.basicInfoGetAll = false,
     this.basicInfoSelectedValues = const [],
+    this.medicineGetAll = false,
+    this.medicineCurrentNames = const [],
+    this.medicineCurrentYears = const [],
+    this.medicineExpiredNames = const [],
+    this.medicineExpiredYears = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -25,6 +35,11 @@ class MedicalReportGenerationState extends Equatable {
     String? message,
     bool? basicInfoGetAll,
     List<String>? basicInfoSelectedValues,
+    bool? medicineGetAll,
+    List<String>? medicineCurrentNames,
+    List<String>? medicineCurrentYears,
+    List<String>? medicineExpiredNames,
+    List<String>? medicineExpiredYears,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -36,6 +51,11 @@ class MedicalReportGenerationState extends Equatable {
       basicInfoGetAll: basicInfoGetAll ?? this.basicInfoGetAll,
       basicInfoSelectedValues:
           basicInfoSelectedValues ?? this.basicInfoSelectedValues,
+      medicineGetAll: medicineGetAll ?? this.medicineGetAll,
+      medicineCurrentNames: medicineCurrentNames ?? this.medicineCurrentNames,
+      medicineCurrentYears: medicineCurrentYears ?? this.medicineCurrentYears,
+      medicineExpiredNames: medicineExpiredNames ?? this.medicineExpiredNames,
+      medicineExpiredYears: medicineExpiredYears ?? this.medicineExpiredYears,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -48,6 +68,11 @@ class MedicalReportGenerationState extends Equatable {
         message,
         basicInfoGetAll,
         basicInfoSelectedValues,
+        medicineGetAll,
+        medicineCurrentNames,
+        medicineCurrentYears,
+        medicineExpiredNames,
+        medicineExpiredYears,
         medicalReportData,
         categoryFilters,
       ];
