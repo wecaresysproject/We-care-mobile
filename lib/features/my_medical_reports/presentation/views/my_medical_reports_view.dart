@@ -173,22 +173,24 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _selectedFilters[index] ?? {},
                                     onFilterToggle:
                                         (sectionIndex, filterTitle, value) {
-                                      setState(() {
-                                        final categoryFilters =
-                                            _selectedFilters[index] ?? {};
-                                        final String key =
-                                            "${sectionIndex}_$filterTitle";
-                                        final selectedValues =
-                                            categoryFilters[key] ?? {};
-                                        if (selectedValues.contains(value)) {
-                                          selectedValues.remove(value);
-                                        } else {
-                                          selectedValues.add(value);
-                                        }
-                                        categoryFilters[key] = selectedValues;
-                                        _selectedFilters[index] =
-                                            categoryFilters;
-                                      });
+                                      setState(
+                                        () {
+                                          final categoryFilters =
+                                              _selectedFilters[index] ?? {};
+                                          final String key =
+                                              "${sectionIndex}_$filterTitle";
+                                          final selectedValues =
+                                              categoryFilters[key] ?? {};
+                                          if (selectedValues.contains(value)) {
+                                            selectedValues.remove(value);
+                                          } else {
+                                            selectedValues.add(value);
+                                          }
+                                          categoryFilters[key] = selectedValues;
+                                          _selectedFilters[index] =
+                                              categoryFilters;
+                                        },
+                                      );
 
                                       // Medicine Selection Integration
                                       if (dummyCategory.title == "الأدوية") {
