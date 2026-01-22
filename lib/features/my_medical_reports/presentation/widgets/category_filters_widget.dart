@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 
 class CategoryFiltersWidget extends StatelessWidget {
   final List<MedicalFilterSectionModel> filterSections;
   final Map<String, Set<String>> selectedFilters;
-  final Function(String, String) onFilterToggle;
+  final Function(int sectionIndex, String filterTitle, String value)
+      onFilterToggle;
 
   const CategoryFiltersWidget({
     super.key,
@@ -54,6 +54,7 @@ class CategoryFiltersWidget extends StatelessWidget {
                 final String title = filter.title;
                 final String displayTitle = filter.displayTitle ?? title;
                 final List<String> values = filter.values;
+                final int sectionIndex = filterSections.indexOf(section);
                 final bool isLast =
                     filterSections.last == section && filters.last == filter;
 
@@ -62,8 +63,10 @@ class CategoryFiltersWidget extends StatelessWidget {
                   child: _FilterSection(
                     title: displayTitle,
                     values: values,
-                    selectedValues: selectedFilters[title] ?? {},
-                    onToggle: (value) => onFilterToggle(title, value),
+                    selectedValues:
+                        selectedFilters["${sectionIndex}_$title"] ?? {},
+                    onToggle: (value) =>
+                        onFilterToggle(sectionIndex, title, value),
                   ),
                 );
               }),
