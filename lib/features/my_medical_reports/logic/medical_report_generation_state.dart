@@ -8,9 +8,9 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> basicInfoSelectedValues;
   final bool medicineGetAll;
   final List<String> medicineCurrentNames;
-  final List<String> medicineCurrentYears;
   final List<String> medicineExpiredNames;
-  final List<String> medicineExpiredYears;
+  final bool chronicDiseasesGetAll;
+  final List<String> chronicDiseasesSelectedValues;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -22,9 +22,9 @@ class MedicalReportGenerationState extends Equatable {
     this.basicInfoSelectedValues = const [],
     this.medicineGetAll = false,
     this.medicineCurrentNames = const [],
-    this.medicineCurrentYears = const [],
     this.medicineExpiredNames = const [],
-    this.medicineExpiredYears = const [],
+    this.chronicDiseasesGetAll = false,
+    this.chronicDiseasesSelectedValues = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -37,9 +37,9 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? basicInfoSelectedValues,
     bool? medicineGetAll,
     List<String>? medicineCurrentNames,
-    List<String>? medicineCurrentYears,
     List<String>? medicineExpiredNames,
-    List<String>? medicineExpiredYears,
+    bool? chronicDiseasesGetAll,
+    List<String>? chronicDiseasesSelectedValues,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -53,9 +53,11 @@ class MedicalReportGenerationState extends Equatable {
           basicInfoSelectedValues ?? this.basicInfoSelectedValues,
       medicineGetAll: medicineGetAll ?? this.medicineGetAll,
       medicineCurrentNames: medicineCurrentNames ?? this.medicineCurrentNames,
-      medicineCurrentYears: medicineCurrentYears ?? this.medicineCurrentYears,
       medicineExpiredNames: medicineExpiredNames ?? this.medicineExpiredNames,
-      medicineExpiredYears: medicineExpiredYears ?? this.medicineExpiredYears,
+      chronicDiseasesGetAll:
+          chronicDiseasesGetAll ?? this.chronicDiseasesGetAll,
+      chronicDiseasesSelectedValues:
+          chronicDiseasesSelectedValues ?? this.chronicDiseasesSelectedValues,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -70,9 +72,9 @@ class MedicalReportGenerationState extends Equatable {
         basicInfoSelectedValues,
         medicineGetAll,
         medicineCurrentNames,
-        medicineCurrentYears,
         medicineExpiredNames,
-        medicineExpiredYears,
+        chronicDiseasesGetAll,
+        chronicDiseasesSelectedValues,
         medicalReportData,
         categoryFilters,
       ];

@@ -30,6 +30,12 @@ abstract class MedicalReportApiServices {
     @Query('userType') String userType,
   );
 
+  @GET(MedicalReportApiConstants.getChronicDiseasesFilters)
+  Future<MedicalReportFilterResponseModel> getChronicDiseasesFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
   @POST(MedicalReportApiConstants.fetchData)
   Future<MedicalReportResponseModel> fetchMedicalReportData(
     @Body() MedicalReportRequestModel requestBody,

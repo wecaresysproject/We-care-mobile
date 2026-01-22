@@ -22,7 +22,14 @@ class MedicalReportSelections {
   @JsonKey(name: 'medications')
   final MedicineCategorySelectionRequestBody? medications;
 
-  MedicalReportSelections({this.basicInformation, this.medications});
+  @JsonKey(name: 'chronicDiseases')
+  final ChronicDiseasesSelectionRequestBody? chronicDiseases;
+
+  MedicalReportSelections({
+    this.basicInformation,
+    this.medications,
+    this.chronicDiseases,
+  });
 
   factory MedicalReportSelections.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportSelectionsFromJson(json);
@@ -69,15 +76,31 @@ class MedicineCategorySelectionRequestBody {
 @JsonSerializable()
 class MedicineDetailsSelection {
   final List<String> drugNames;
-  final List<String> years;
 
   MedicineDetailsSelection({
     required this.drugNames,
-    required this.years,
   });
 
   factory MedicineDetailsSelection.fromJson(Map<String, dynamic> json) =>
       _$MedicineDetailsSelectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicineDetailsSelectionToJson(this);
+}
+
+@JsonSerializable()
+class ChronicDiseasesSelectionRequestBody {
+  final bool getAll;
+  final List<String> diseases;
+
+  ChronicDiseasesSelectionRequestBody({
+    required this.getAll,
+    required this.diseases,
+  });
+
+  factory ChronicDiseasesSelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$ChronicDiseasesSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$ChronicDiseasesSelectionRequestBodyToJson(this);
 }

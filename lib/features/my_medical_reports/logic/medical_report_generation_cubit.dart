@@ -31,17 +31,25 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
   void updateMedicineSelection({
     bool? getAll,
     List<String>? currentNames,
-    List<String>? currentYears,
     List<String>? expiredNames,
-    List<String>? expiredYears,
   }) {
     emit(
       state.copyWith(
         medicineGetAll: getAll,
         medicineCurrentNames: currentNames,
-        medicineCurrentYears: currentYears,
         medicineExpiredNames: expiredNames,
-        medicineExpiredYears: expiredYears,
+      ),
+    );
+  }
+
+  void updateChronicDiseasesSelection({
+    bool? getAll,
+    List<String>? selectedValues,
+  }) {
+    emit(
+      state.copyWith(
+        chronicDiseasesGetAll: getAll,
+        chronicDiseasesSelectedValues: selectedValues,
       ),
     );
   }
@@ -57,12 +65,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.medicineGetAll,
           currentMedicines: MedicineDetailsSelection(
             drugNames: state.medicineCurrentNames,
-            years: state.medicineCurrentYears,
           ),
           expiredLast3Months: MedicineDetailsSelection(
             drugNames: state.medicineExpiredNames,
-            years: state.medicineExpiredYears,
           ),
+        ),
+        chronicDiseases: ChronicDiseasesSelectionRequestBody(
+          getAll: state.chronicDiseasesGetAll,
+          diseases: state.chronicDiseasesSelectedValues,
         ),
       ),
     );
@@ -123,6 +133,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "القياسات الحيوية") {
       result = await _medicalReportRepo.getVitalSignsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الامراض المزمنه") {
+      result = await _medicalReportRepo.getChronicDiseasesFilters(
         language,
         userType,
       );

@@ -5,7 +5,6 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
@@ -13,6 +12,7 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_report_c
 import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
+import 'package:we_care/features/my_medical_reports/presentation/widgets/generate_button_bloc_consumer_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
 
@@ -116,6 +116,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 if (dummyCategory.title == "الأدوية") {
                                   _syncMedicineSelectionToCubit(context, index);
                                 }
+
+                                // Chronic Diseases Selection sync
+                                if (dummyCategory.title == "الامراض المزمنه") {
+                                  _syncChronicDiseasesSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -207,40 +213,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                     }).toList(),
                   ),
                   verticalSpacing(40),
-                  BlocConsumer<MedicalReportGenerationCubit,
-                      MedicalReportGenerationState>(
-                    listener: (context, state) {
-                      if (state.status == RequestStatus.success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Report generated successfully'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      } else if (state.status == RequestStatus.failure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.message.isNotEmpty
-                                ? state.message
-                                : 'Unknown error'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    builder: (context, state) {
-                      return AppCustomButton(
-                        title: 'Generate Report',
-                        isEnabled: true,
-                        onPressed: () {
-                          context
-                              .read<MedicalReportGenerationCubit>()
-                              .emitGenerateReport('ar');
-                        },
-                        isLoading: state.status == RequestStatus.loading,
-                      );
-                    },
-                  ),
+                  GenerateButtonBlocConsumer(),
                   verticalSpacing(40),
                 ],
               ),
@@ -304,14 +277,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     context.read<MedicalReportGenerationCubit>().updateMedicineSelection(
           getAll: _selectedStates[index] ?? false,
           currentNames: filters["0_اسم الدواء"]?.toList() ?? [],
-          currentYears: filters["0_السنة"]?.toList() ?? [],
           expiredNames:
               (filters["1_اسم الدواء"] ?? filters["1_اسم الدواء_expired"])
                       ?.toList() ??
                   [],
-          expiredYears:
-              (filters["1_السنة"] ?? filters["1_السنة_expired"])?.toList() ??
-                  [],
+        );
+  }
+
+  void _syncChronicDiseasesSelectionToCubit(BuildContext context, int index) {
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateChronicDiseasesSelection(
+          getAll: _selectedStates[index] ?? false,
+          selectedValues: filters["0_المرض المزمن"]?.toList() ?? [],
         );
   }
 }
