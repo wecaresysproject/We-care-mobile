@@ -54,6 +54,22 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateUrgentComplaintsSelection({
+    bool? getAll,
+    List<String>? selectedYears,
+    List<String>? selectedOrgans,
+    List<String>? selectedComplaints,
+  }) {
+    emit(
+      state.copyWith(
+        urgentComplaintsGetAll: getAll,
+        urgentComplaintsSelectedYears: selectedYears,
+        urgentComplaintsSelectedOrgans: selectedOrgans,
+        urgentComplaintsSelectedComplaints: selectedComplaints,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport(String language) async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -73,6 +89,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         chronicDiseases: ChronicDiseasesSelectionRequestBody(
           getAll: state.chronicDiseasesGetAll,
           diseases: state.chronicDiseasesSelectedValues,
+        ),
+        urgentComplaints: UrgentComplaintsSelectionRequestBody(
+          getAll: state.urgentComplaintsGetAll,
+          years: state.urgentComplaintsSelectedYears,
+          organs: state.urgentComplaintsSelectedOrgans,
+          complaints: state.urgentComplaintsSelectedComplaints,
         ),
       ),
     );
@@ -138,6 +160,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الامراض المزمنه") {
       result = await _medicalReportRepo.getChronicDiseasesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الشكاوى الطارئة") {
+      result = await _medicalReportRepo.getUrgentComplaintsFilters(
         language,
         userType,
       );

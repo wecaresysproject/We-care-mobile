@@ -122,6 +122,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncChronicDiseasesSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Urgent Complaints Selection sync
+                                if (dummyCategory.title == "الشكاوى الطارئة") {
+                                  _syncUrgentComplaintsSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -289,6 +295,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     context.read<MedicalReportGenerationCubit>().updateChronicDiseasesSelection(
           getAll: _selectedStates[index] ?? false,
           selectedValues: filters["0_المرض المزمن"]?.toList() ?? [],
+        );
+  }
+
+  void _syncUrgentComplaintsSelectionToCubit(BuildContext context, int index) {
+    final filters = _selectedFilters[index] ?? {};
+    context
+        .read<MedicalReportGenerationCubit>()
+        .updateUrgentComplaintsSelection(
+          getAll: _selectedStates[index] ?? false,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedOrgans: filters["0_العضو"]?.toList() ?? [],
+          selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
         );
   }
 }

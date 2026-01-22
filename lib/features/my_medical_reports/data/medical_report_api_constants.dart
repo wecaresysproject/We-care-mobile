@@ -7,4 +7,6 @@ class MedicalReportApiConstants {
       'MedicalReports/vital-activities/categories';
   static const String getChronicDiseasesFilters =
       'MedicalReports/chronic-diseases/filters';
+  static const String getUrgentComplaintsFilters =
+      'MedicalReports/emergency-complaints/filters';
 }

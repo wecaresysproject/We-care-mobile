@@ -25,10 +25,14 @@ class MedicalReportSelections {
   @JsonKey(name: 'chronicDiseases')
   final ChronicDiseasesSelectionRequestBody? chronicDiseases;
 
+  @JsonKey(name: 'urgentComplaints')
+  final UrgentComplaintsSelectionRequestBody? urgentComplaints;
+
   MedicalReportSelections({
     this.basicInformation,
     this.medications,
     this.chronicDiseases,
+    this.urgentComplaints,
   });
 
   factory MedicalReportSelections.fromJson(Map<String, dynamic> json) =>
@@ -103,4 +107,26 @@ class ChronicDiseasesSelectionRequestBody {
 
   Map<String, dynamic> toJson() =>
       _$ChronicDiseasesSelectionRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class UrgentComplaintsSelectionRequestBody {
+  final bool getAll;
+  final List<String> years;
+  final List<String> organs;
+  final List<String> complaints;
+
+  UrgentComplaintsSelectionRequestBody({
+    required this.getAll,
+    required this.years,
+    required this.organs,
+    required this.complaints,
+  });
+
+  factory UrgentComplaintsSelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$UrgentComplaintsSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$UrgentComplaintsSelectionRequestBodyToJson(this);
 }
