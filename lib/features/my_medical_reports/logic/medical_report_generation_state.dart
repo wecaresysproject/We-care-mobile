@@ -6,6 +6,8 @@ class MedicalReportGenerationState extends Equatable {
   final String message;
   final bool basicInfoGetAll;
   final List<String> basicInfoSelectedValues;
+  final List<String> vitalSignsSelectedValues;
+  final bool vitalSignsGetAll;
   final bool medicineGetAll;
   final List<String> medicineCurrentNames;
   final List<String> medicineExpiredNames;
@@ -30,6 +32,8 @@ class MedicalReportGenerationState extends Equatable {
     this.basicInfoGetAll = false,
     this.basicInfoSelectedValues = const [],
     this.medicineGetAll = false,
+    this.vitalSignsGetAll = false,
+    this.vitalSignsSelectedValues = const [],
     this.medicineCurrentNames = const [],
     this.medicineExpiredNames = const [],
     this.chronicDiseasesGetAll = false,
@@ -54,6 +58,8 @@ class MedicalReportGenerationState extends Equatable {
     bool? basicInfoGetAll,
     List<String>? basicInfoSelectedValues,
     bool? medicineGetAll,
+    bool? vitalSignsGetAll,
+    List<String>? vitalSignsSelectedValues,
     List<String>? medicineCurrentNames,
     List<String>? medicineExpiredNames,
     bool? chronicDiseasesGetAll,
@@ -79,6 +85,9 @@ class MedicalReportGenerationState extends Equatable {
       basicInfoSelectedValues:
           basicInfoSelectedValues ?? this.basicInfoSelectedValues,
       medicineGetAll: medicineGetAll ?? this.medicineGetAll,
+      vitalSignsGetAll: vitalSignsGetAll ?? this.vitalSignsGetAll,
+      vitalSignsSelectedValues:
+          vitalSignsSelectedValues ?? this.vitalSignsSelectedValues,
       medicineCurrentNames: medicineCurrentNames ?? this.medicineCurrentNames,
       medicineExpiredNames: medicineExpiredNames ?? this.medicineExpiredNames,
       chronicDiseasesGetAll:
@@ -115,6 +124,8 @@ class MedicalReportGenerationState extends Equatable {
         basicInfoGetAll,
         basicInfoSelectedValues,
         medicineGetAll,
+        vitalSignsGetAll,
+        vitalSignsSelectedValues,
         medicineCurrentNames,
         medicineExpiredNames,
         chronicDiseasesGetAll,

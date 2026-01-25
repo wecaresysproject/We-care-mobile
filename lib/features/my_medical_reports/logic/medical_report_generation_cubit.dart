@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
@@ -24,6 +25,18 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       state.copyWith(
         basicInfoGetAll: getAll,
         basicInfoSelectedValues: selectedValues,
+      ),
+    );
+  }
+
+  void updateVitalSignsInfoSelection({
+    bool? getAll,
+    List<String>? selectedValues,
+  }) {
+    emit(
+      state.copyWith(
+        vitalSignsGetAll: getAll,
+        vitalSignsSelectedValues: selectedValues,
       ),
     );
   }
@@ -88,12 +101,16 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
-  Future<void> emitGenerateReport(String language) async {
+  Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
         basicInformation: BasicInformationSelection(
           getAll: state.basicInfoGetAll,
           selectedValues: state.basicInfoSelectedValues,
+        ),
+        vitalSigns: VitalSignsSelectionRequestBody(
+          getAll: state.vitalSignsGetAll,
+          selectedValues: state.vitalSignsSelectedValues,
         ),
         medications: MedicineCategorySelectionRequestBody(
           getAll: state.medicineGetAll,
@@ -128,7 +145,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
 
     final result = await _medicalReportRepo.fetchMedicalReportData(
       requestBody,
-      language,
+      AppStrings.arabicLang,
     );
 
     result.when(

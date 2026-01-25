@@ -111,6 +111,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncBasicInfoSelectionToCubit(
                                       context, index);
                                 }
+                                if (dummyCategory.title == "القياسات الحيوية") {
+                                  _syncVitalSignsSelectionToCubit(
+                                    context,
+                                    index,
+                                  );
+                                }
 
                                 // Medicine Selection sync
                                 if (dummyCategory.title == "الأدوية") {
@@ -171,6 +177,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                           "البيانات الاساسية") {
                                         _syncBasicInfoSelectionToCubit(
                                             context, index);
+                                      }
+                                      if (dummyCategory.title ==
+                                          "القياسات الحيوية") {
+                                        _syncVitalSignsSelectionToCubit(
+                                          context,
+                                          index,
+                                        );
                                       }
 
                                       // Medicine Selection Integration
@@ -291,6 +304,14 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   void _syncBasicInfoSelectionToCubit(BuildContext context, int index) {
     final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
     context.read<MedicalReportGenerationCubit>().updateBasicInfoSelection(
+          getAll: getAll,
+          selectedValues: _selectedOptionValues[index]?.toList(),
+        );
+  }
+
+  void _syncVitalSignsSelectionToCubit(BuildContext context, int index) {
+    final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateVitalSignsInfoSelection(
           getAll: getAll,
           selectedValues: _selectedOptionValues[index]?.toList(),
         );
