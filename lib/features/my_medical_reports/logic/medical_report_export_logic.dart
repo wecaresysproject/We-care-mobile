@@ -13,7 +13,7 @@ class MedicalReportExportLogic {
     try {
       // Generate PDF using the new generator
       final pdfBytes =
-          await MedicalReportPdfGenerator().generateMedicalReport(reportData);
+          await MedicalReportPdfGenerator().generateMedicalReport(reportData!);
 
       // Save PDF to temporary file
       final output = await getTemporaryDirectory();
