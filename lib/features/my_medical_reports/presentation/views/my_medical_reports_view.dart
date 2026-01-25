@@ -146,6 +146,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncMedicalTestsSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Doctors Prescription Selection sync
+                                if (dummyCategory.title == "روشتة الأطباء") {
+                                  _syncPrescriptionsSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -210,6 +216,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncMedicalTestsSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Doctors Prescription Selection Integration
+                                      if (dummyCategory.title ==
+                                          "روشتة الأطباء") {
+                                        _syncPrescriptionsSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -258,6 +271,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "التحاليل الطبية") {
                                         _syncMedicalTestsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Doctors Prescription Selection Integration
+                                      if (dummyCategory.title ==
+                                          "روشتة الأطباء") {
+                                        _syncPrescriptionsSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -391,6 +411,19 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           attachImages: attachImages,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedTestGroups: filters["0_مجموعة التحاليل"]?.toList() ?? [],
+        );
+  }
+
+  void _syncPrescriptionsSelectionToCubit(BuildContext context, int index) {
+    final filters = _selectedFilters[index] ?? {};
+    final attachImages =
+        _selectedOptionValues[index]?.contains("ارفاق صور الروشتات") ?? false;
+    context.read<MedicalReportGenerationCubit>().updatePrescriptionsSelection(
+          getAll: _selectedStates[index] ?? false,
+          attachImages: attachImages,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedSpecialties: filters["0_التخصص"]?.toList() ?? [],
+          selectedDoctorNames: filters["0_اسم الطبيب"]?.toList() ?? [],
         );
   }
 }

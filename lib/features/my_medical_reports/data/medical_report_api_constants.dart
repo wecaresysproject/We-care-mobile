@@ -12,4 +12,6 @@ class MedicalReportApiConstants {
   static const String getRadiologyFilters = 'MedicalReports/radiology/filters';
   static const String getMedicalTestsFilters =
       'MedicalReports/lab-tests/filters';
+  static const String getPrescriptionsFilters =
+      'MedicalReports/prescriptions/filters';
 }

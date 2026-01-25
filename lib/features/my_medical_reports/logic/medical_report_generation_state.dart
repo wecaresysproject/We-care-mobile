@@ -26,6 +26,11 @@ class MedicalReportGenerationState extends Equatable {
   final bool medicalTestsAttachImages;
   final List<String> medicalTestsSelectedYears;
   final List<String> medicalTestsSelectedTestGroups;
+  final bool prescriptionsGetAll;
+  final bool prescriptionsAttachImages;
+  final List<String> prescriptionsSelectedYears;
+  final List<String> prescriptionsSelectedSpecialties;
+  final List<String> prescriptionsSelectedDoctorNames;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -55,6 +60,11 @@ class MedicalReportGenerationState extends Equatable {
     this.medicalTestsAttachImages = false,
     this.medicalTestsSelectedYears = const [],
     this.medicalTestsSelectedTestGroups = const [],
+    this.prescriptionsGetAll = false,
+    this.prescriptionsAttachImages = false,
+    this.prescriptionsSelectedYears = const [],
+    this.prescriptionsSelectedSpecialties = const [],
+    this.prescriptionsSelectedDoctorNames = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -85,6 +95,11 @@ class MedicalReportGenerationState extends Equatable {
     bool? medicalTestsAttachImages,
     List<String>? medicalTestsSelectedYears,
     List<String>? medicalTestsSelectedTestGroups,
+    bool? prescriptionsGetAll,
+    bool? prescriptionsAttachImages,
+    List<String>? prescriptionsSelectedYears,
+    List<String>? prescriptionsSelectedSpecialties,
+    List<String>? prescriptionsSelectedDoctorNames,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -130,6 +145,15 @@ class MedicalReportGenerationState extends Equatable {
           medicalTestsSelectedYears ?? this.medicalTestsSelectedYears,
       medicalTestsSelectedTestGroups:
           medicalTestsSelectedTestGroups ?? this.medicalTestsSelectedTestGroups,
+      prescriptionsGetAll: prescriptionsGetAll ?? this.prescriptionsGetAll,
+      prescriptionsAttachImages:
+          prescriptionsAttachImages ?? this.prescriptionsAttachImages,
+      prescriptionsSelectedYears:
+          prescriptionsSelectedYears ?? this.prescriptionsSelectedYears,
+      prescriptionsSelectedSpecialties: prescriptionsSelectedSpecialties ??
+          this.prescriptionsSelectedSpecialties,
+      prescriptionsSelectedDoctorNames: prescriptionsSelectedDoctorNames ??
+          this.prescriptionsSelectedDoctorNames,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -162,6 +186,11 @@ class MedicalReportGenerationState extends Equatable {
         medicalTestsAttachImages,
         medicalTestsSelectedYears,
         medicalTestsSelectedTestGroups,
+        prescriptionsGetAll,
+        prescriptionsAttachImages,
+        prescriptionsSelectedYears,
+        prescriptionsSelectedSpecialties,
+        prescriptionsSelectedDoctorNames,
         medicalReportData,
         categoryFilters,
       ];
