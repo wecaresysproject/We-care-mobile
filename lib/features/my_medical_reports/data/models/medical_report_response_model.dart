@@ -7,12 +7,12 @@ class MedicalReportResponseModel {
   @JsonKey(name: 'data')
   final MedicalReportData data;
   final String message;
-  final int status;
+  final bool success;
 
   MedicalReportResponseModel({
     required this.data,
     required this.message,
-    required this.status,
+    required this.success,
   });
 
   factory MedicalReportResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -24,7 +24,7 @@ class MedicalReportResponseModel {
 @JsonSerializable()
 class MedicalReportData {
   @JsonKey(name: 'basicInformation')
-  final Map<String, BasicInformationData>? basicInformation;
+  final List<BasicInformationData>? basicInformation;
 
   MedicalReportData({this.basicInformation});
 

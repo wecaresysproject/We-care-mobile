@@ -147,39 +147,39 @@ class MedicalReportRepo {
   }
 
   final dummyMedicalReportResponse = MedicalReportResponseModel(
-    status: 200,
+    success: true,
     message: 'تم جلب البيانات الأساسية بنجاح',
     data: MedicalReportData(
-      basicInformation: {
-        'fullName': BasicInformationData(
+      basicInformation: [
+        BasicInformationData(
           label: 'الاسم الكامل',
           value: 'أحمد محمد علي',
         ),
-        'birthDate': BasicInformationData(
+        BasicInformationData(
           label: 'تاريخ الميلاد',
           value: '1990-05-15',
         ),
-        'gender': BasicInformationData(
+        BasicInformationData(
           label: 'النوع',
           value: 'ذكر',
         ),
-        'bloodType': BasicInformationData(
+        BasicInformationData(
           label: 'فصيلة الدم',
           value: 'O+',
         ),
-        'country': BasicInformationData(
+        BasicInformationData(
           label: 'الدولة',
           value: 'مصر',
         ),
-        'city': BasicInformationData(
+        BasicInformationData(
           label: 'المدينة',
           value: 'القاهرة',
         ),
-        'disabilityType': BasicInformationData(
+        BasicInformationData(
           label: 'نوع العجز الجسدي',
           value: null,
         ),
-        'medicalInsurance': BasicInformationData(
+        BasicInformationData(
           label: 'التأمين الطبي',
           value: {
             'provider': 'التعاونية للتأمين',
@@ -187,7 +187,7 @@ class MedicalReportRepo {
             'expiryDate': '2026-12-31',
           },
         ),
-      },
+      ],
     ),
   );
 }

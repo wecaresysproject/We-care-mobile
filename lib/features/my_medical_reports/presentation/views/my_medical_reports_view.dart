@@ -342,7 +342,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncBasicInfoSelectionToCubit(BuildContext context, int index) {
-    final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     context.read<MedicalReportGenerationCubit>().updateBasicInfoSelection(
           getAll: getAll,
           selectedValues: _selectedOptionValues[index]?.toList(),
@@ -350,7 +351,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncVitalSignsSelectionToCubit(BuildContext context, int index) {
-    final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     context.read<MedicalReportGenerationCubit>().updateVitalSignsInfoSelection(
           getAll: getAll,
           selectedValues: _selectedOptionValues[index]?.toList(),
@@ -358,9 +360,11 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncMedicineSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateMedicineSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           currentNames: filters["0_اسم الدواء"]?.toList() ?? [],
           expiredNames:
               (filters["1_اسم الدواء"] ?? filters["1_اسم الدواء_expired"])
@@ -370,19 +374,23 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncChronicDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateChronicDiseasesSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           selectedValues: filters["0_المرض المزمن"]?.toList() ?? [],
         );
   }
 
   void _syncUrgentComplaintsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context
         .read<MedicalReportGenerationCubit>()
         .updateUrgentComplaintsSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedOrgans: filters["0_العضو"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
@@ -390,11 +398,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncRadiologySelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     final attachImages =
         _selectedOptionValues[index]?.contains("ارفاق صور الاشعة") ?? false;
     context.read<MedicalReportGenerationCubit>().updateRadiologySelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           attachImages: attachImages,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedRegions: filters["0_منطقة الأشعة"]?.toList() ?? [],
@@ -403,11 +413,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncMedicalTestsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     final attachImages =
         _selectedOptionValues[index]?.contains("ارفاق صور التحاليل") ?? false;
     context.read<MedicalReportGenerationCubit>().updateMedicalTestsSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           attachImages: attachImages,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedTestGroups: filters["0_مجموعة التحاليل"]?.toList() ?? [],
@@ -415,11 +427,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncPrescriptionsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     final attachImages =
         _selectedOptionValues[index]?.contains("ارفاق صور الروشتات") ?? false;
     context.read<MedicalReportGenerationCubit>().updatePrescriptionsSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           attachImages: attachImages,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedSpecialties: filters["0_التخصص"]?.toList() ?? [],

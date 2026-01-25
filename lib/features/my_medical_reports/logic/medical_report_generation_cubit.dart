@@ -21,6 +21,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     bool? getAll,
     List<String>? selectedValues,
   }) {
+    AppLogger.info("getAll: $getAll");
+    AppLogger.info("selectedValues: $selectedValues");
     emit(
       state.copyWith(
         basicInfoGetAll: getAll,
@@ -46,6 +48,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     List<String>? currentNames,
     List<String>? expiredNames,
   }) {
+    AppLogger.info("updateMedicineSelection getAll: $getAll");
+
     emit(
       state.copyWith(
         medicineGetAll: getAll,
@@ -142,49 +146,49 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.basicInfoGetAll,
           selectedValues: state.basicInfoSelectedValues,
         ),
-        vitalSigns: VitalSignsSelectionRequestBody(
-          getAll: state.vitalSignsGetAll,
-          selectedValues: state.vitalSignsSelectedValues,
-        ),
-        medications: MedicineCategorySelectionRequestBody(
-          getAll: state.medicineGetAll,
-          currentMedicines: MedicineDetailsSelection(
-            drugNames: state.medicineCurrentNames,
-          ),
-          expiredLast3Months: MedicineDetailsSelection(
-            drugNames: state.medicineExpiredNames,
-          ),
-        ),
-        chronicDiseases: ChronicDiseasesSelectionRequestBody(
-          getAll: state.chronicDiseasesGetAll,
-          diseases: state.chronicDiseasesSelectedValues,
-        ),
-        urgentComplaints: UrgentComplaintsSelectionRequestBody(
-          getAll: state.urgentComplaintsGetAll,
-          years: state.urgentComplaintsSelectedYears,
-          organs: state.urgentComplaintsSelectedOrgans,
-          complaints: state.urgentComplaintsSelectedComplaints,
-        ),
-        radiology: RadiologySelectionRequestBody(
-          getAll: state.radiologyGetAll, //! need check later
-          attachImages: state.radiologyAttachImages,
-          years: state.radiologySelectedYears,
-          regions: state.radiologySelectedRegions,
-          types: state.radiologySelectedTypes,
-        ),
-        medicalTests: MedicalTestsSelectionRequestBody(
-          getAll: state.medicalTestsGetAll,
-          attachImages: state.medicalTestsAttachImages,
-          years: state.medicalTestsSelectedYears,
-          testGroups: state.medicalTestsSelectedTestGroups,
-        ),
-        prescriptions: PrescriptionsSelectionRequestBody(
-          getAll: state.prescriptionsGetAll,
-          attachImages: state.prescriptionsAttachImages,
-          years: state.prescriptionsSelectedYears,
-          specialties: state.prescriptionsSelectedSpecialties,
-          doctorNames: state.prescriptionsSelectedDoctorNames,
-        ),
+        // vitalSigns: VitalSignsSelectionRequestBody(
+        //   getAll: state.vitalSignsGetAll,
+        //   selectedValues: state.vitalSignsSelectedValues,
+        // ),
+        // medications: MedicineCategorySelectionRequestBody(
+        //   getAll: state.medicineGetAll,
+        //   currentMedicines: MedicineDetailsSelection(
+        //     drugNames: state.medicineCurrentNames,
+        //   ),
+        //   expiredLast3Months: MedicineDetailsSelection(
+        //     drugNames: state.medicineExpiredNames,
+        //   ),
+        // ),
+        // chronicDiseases: ChronicDiseasesSelectionRequestBody(
+        //   getAll: state.chronicDiseasesGetAll,
+        //   diseases: state.chronicDiseasesSelectedValues,
+        // ),
+        // urgentComplaints: UrgentComplaintsSelectionRequestBody(
+        //   getAll: state.urgentComplaintsGetAll,
+        //   years: state.urgentComplaintsSelectedYears,
+        //   organs: state.urgentComplaintsSelectedOrgans,
+        //   complaints: state.urgentComplaintsSelectedComplaints,
+        // ),
+        // radiology: RadiologySelectionRequestBody(
+        //   getAll: state.radiologyGetAll, //! need check later
+        //   attachImages: state.radiologyAttachImages,
+        //   years: state.radiologySelectedYears,
+        //   regions: state.radiologySelectedRegions,
+        //   types: state.radiologySelectedTypes,
+        // ),
+        // medicalTests: MedicalTestsSelectionRequestBody(
+        //   getAll: state.medicalTestsGetAll,
+        //   attachImages: state.medicalTestsAttachImages,
+        //   years: state.medicalTestsSelectedYears,
+        //   testGroups: state.medicalTestsSelectedTestGroups,
+        // ),
+        // prescriptions: PrescriptionsSelectionRequestBody(
+        //   getAll: state.prescriptionsGetAll,
+        //   attachImages: state.prescriptionsAttachImages,
+        //   years: state.prescriptionsSelectedYears,
+        //   specialties: state.prescriptionsSelectedSpecialties,
+        //   doctorNames: state.prescriptionsSelectedDoctorNames,
+        // ),
       ),
     );
 
@@ -197,8 +201,6 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
 
     result.when(
       success: (data) {
-        AppLogger.info(
-            "Medical report data: ${data.data.basicInformation!.entries.first.value}");
         emit(
           state.copyWith(
             status: RequestStatus.success,
