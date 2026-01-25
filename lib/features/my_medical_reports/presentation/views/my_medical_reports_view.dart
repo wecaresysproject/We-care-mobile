@@ -314,7 +314,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                 ? null
                 : () async {
                     final logic = MedicalReportExportLogic();
-                    await logic.exportAndShareReport(context);
+                    await logic.exportAndShareReport(
+                        context, state.medicalReportData);
                   },
             backgroundColor: AppColorsManager.mainDarkBlue,
             icon: state.status == RequestStatus.loading
