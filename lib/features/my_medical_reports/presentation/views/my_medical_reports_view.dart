@@ -128,6 +128,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncUrgentComplaintsSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Radiology Selection sync
+                                if (dummyCategory.title == "الأشعة") {
+                                  _syncRadiologySelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -172,6 +178,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncMedicineSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Radiology Selection Integration
+                                      if (dummyCategory.title == "الأشعة") {
+                                        _syncRadiologySelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -207,6 +219,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Medicine Selection Integration
                                       if (dummyCategory.title == "الأدوية") {
                                         _syncMedicineSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Radiology Selection Integration
+                                      if (dummyCategory.title == "الأشعة") {
+                                        _syncRadiologySelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -307,6 +325,19 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedOrgans: filters["0_العضو"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
+        );
+  }
+
+  void _syncRadiologySelectionToCubit(BuildContext context, int index) {
+    final filters = _selectedFilters[index] ?? {};
+    final attachImages =
+        _selectedOptionValues[index]?.contains("ارفاق صور الاشعة") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateRadiologySelection(
+          getAll: _selectedStates[index] ?? false,
+          attachImages: attachImages,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedRegions: filters["0_منطقة الأشعة"]?.toList() ?? [],
+          selectedTypes: filters["0_نوع الأشعة"]?.toList() ?? [],
         );
   }
 }
