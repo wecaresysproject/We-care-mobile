@@ -101,6 +101,22 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateMedicalTestsSelection({
+    bool? getAll,
+    bool? attachImages,
+    List<String>? selectedYears,
+    List<String>? selectedTestGroups,
+  }) {
+    emit(
+      state.copyWith(
+        medicalTestsGetAll: getAll,
+        medicalTestsAttachImages: attachImages,
+        medicalTestsSelectedYears: selectedYears,
+        medicalTestsSelectedTestGroups: selectedTestGroups,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -137,6 +153,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.radiologySelectedYears,
           regions: state.radiologySelectedRegions,
           types: state.radiologySelectedTypes,
+        ),
+        medicalTests: MedicalTestsSelectionRequestBody(
+          getAll: state.medicalTestsGetAll,
+          attachImages: state.medicalTestsAttachImages,
+          years: state.medicalTestsSelectedYears,
+          testGroups: state.medicalTestsSelectedTestGroups,
         ),
       ),
     );
@@ -212,6 +234,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الأشعة") {
       result = await _medicalReportRepo.getRadiologyFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "التحاليل الطبية") {
+      result = await _medicalReportRepo.getMedicalTestsFilters(
         language,
         userType,
       );

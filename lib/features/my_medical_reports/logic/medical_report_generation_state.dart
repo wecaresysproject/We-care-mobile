@@ -22,6 +22,10 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> radiologySelectedYears;
   final List<String> radiologySelectedRegions;
   final List<String> radiologySelectedTypes;
+  final bool medicalTestsGetAll;
+  final bool medicalTestsAttachImages;
+  final List<String> medicalTestsSelectedYears;
+  final List<String> medicalTestsSelectedTestGroups;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -47,6 +51,10 @@ class MedicalReportGenerationState extends Equatable {
     this.radiologySelectedYears = const [],
     this.radiologySelectedRegions = const [],
     this.radiologySelectedTypes = const [],
+    this.medicalTestsGetAll = false,
+    this.medicalTestsAttachImages = false,
+    this.medicalTestsSelectedYears = const [],
+    this.medicalTestsSelectedTestGroups = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -73,6 +81,10 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? radiologySelectedYears,
     List<String>? radiologySelectedRegions,
     List<String>? radiologySelectedTypes,
+    bool? medicalTestsGetAll,
+    bool? medicalTestsAttachImages,
+    List<String>? medicalTestsSelectedYears,
+    List<String>? medicalTestsSelectedTestGroups,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -111,6 +123,13 @@ class MedicalReportGenerationState extends Equatable {
           radiologySelectedRegions ?? this.radiologySelectedRegions,
       radiologySelectedTypes:
           radiologySelectedTypes ?? this.radiologySelectedTypes,
+      medicalTestsGetAll: medicalTestsGetAll ?? this.medicalTestsGetAll,
+      medicalTestsAttachImages:
+          medicalTestsAttachImages ?? this.medicalTestsAttachImages,
+      medicalTestsSelectedYears:
+          medicalTestsSelectedYears ?? this.medicalTestsSelectedYears,
+      medicalTestsSelectedTestGroups:
+          medicalTestsSelectedTestGroups ?? this.medicalTestsSelectedTestGroups,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -139,6 +158,10 @@ class MedicalReportGenerationState extends Equatable {
         radiologySelectedYears,
         radiologySelectedRegions,
         radiologySelectedTypes,
+        medicalTestsGetAll,
+        medicalTestsAttachImages,
+        medicalTestsSelectedYears,
+        medicalTestsSelectedTestGroups,
         medicalReportData,
         categoryFilters,
       ];

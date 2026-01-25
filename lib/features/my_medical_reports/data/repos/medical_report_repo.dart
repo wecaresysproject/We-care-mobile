@@ -116,6 +116,21 @@ class MedicalReportRepo {
     }
   }
 
+  Future<ApiResult<MedicalReportFilterResponseModel>> getMedicalTestsFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getMedicalTestsFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   final dummyMedicalReportResponse = MedicalReportResponseModel(
     status: 200,
     message: 'تم جلب البيانات الأساسية بنجاح',
