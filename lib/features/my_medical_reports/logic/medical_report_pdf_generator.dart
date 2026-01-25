@@ -17,9 +17,7 @@ class MedicalReportPdfGenerator {
     final ttfBold = pw.Font.ttf(fontBold);
 
     // Load images
-    final profileImage = await rootBundle.load('assets/images/ai_image.png');
-    final profileImageProvider =
-        pw.MemoryImage(profileImage.buffer.asUint8List());
+    final profileImageProvider = await getUserProfileImage(reportData);
 
     final prescriptionImage = await rootBundle.load('assets/images/report.png');
     final prescriptionImageProvider =
@@ -51,9 +49,9 @@ class MedicalReportPdfGenerator {
             child: pw.Container(color: PdfColors.white),
           ),
         ),
-        header: (context) => _buildHeader(profileImageProvider),
+        header: (context) => _buildHeader(profileImageProvider, reportData),
         build: (context) => [
-          _buildBasicInfoSection(),
+          _buildBasicInfoSection(reportData),
           _buildVitalSignsSection(),
           _buildComplaintsSection(),
           _buildMedicationsSection(),
@@ -144,7 +142,14 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildHeader(pw.ImageProvider profileImage) {
+  pw.Widget _buildHeader(
+      pw.ImageProvider profileImage, MedicalReportResponseModel reportData) {
+    final name = reportData.data.basicInformation
+            ?.firstWhere((info) => info.label == 'الاسم',
+                orElse: () => BasicInformationData(label: '', value: ''))
+            .value ??
+        'غير معروف';
+
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
       padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 15),
@@ -171,12 +176,12 @@ class MedicalReportPdfGenerator {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(
-                    'تاريخ الانشاء: 25/10/2025',
+                    'تاريخ الانشاء: ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
                     style: const pw.TextStyle(
                         color: PdfColors.white, fontSize: 10),
                   ),
                   pw.Text(
-                    'الاسم: أحمد محمد',
+                    'الاسم: $name',
                     style: pw.TextStyle(
                         color: PdfColors.white,
                         fontSize: 14,
@@ -246,7 +251,21 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildBasicInfoSection() {
+  pw.Widget _buildBasicInfoSection(MedicalReportResponseModel reportData) {
+    final basicInfo = reportData.data.basicInformation;
+
+    if (basicInfo == null || basicInfo.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    final displayInfo = basicInfo
+        .where((info) =>
+            info.label != 'الصورة' &&
+            info.value != null &&
+            info.value.toString().isNotEmpty &&
+            info.value.toString() != "لم يتم ادخال بيانات")
+        .toList();
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -257,15 +276,13 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('البيانات الأساسية'),
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-            children: [
-              _buildInfoItem('النوع:', 'ذكر'),
-              _buildInfoItem('السن:', '35 عام'),
-              _buildInfoItem('المحافظة:', 'القاهرة'),
-              _buildInfoItem('البلد:', 'مصر'),
-              _buildInfoItem('فصيلة الدم:', 'B+'),
-            ],
+          pw.SizedBox(height: 10),
+          pw.Wrap(
+            spacing: 20,
+            runSpacing: 10,
+            children: displayInfo.map((info) {
+              return _buildInfoItem('${info.label}:', info.value.toString());
+            }).toList(),
           ),
         ],
       ),
@@ -274,6 +291,7 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildInfoItem(String label, String value) {
     return pw.Row(
+      mainAxisSize: pw.MainAxisSize.min,
       children: [
         pw.Text(label,
             style: pw.TextStyle(
@@ -545,5 +563,29 @@ class MedicalReportPdfGenerator {
             .toList(),
       ),
     );
+  }
+
+  Future<pw.ImageProvider> getUserProfileImage(
+      MedicalReportResponseModel reportData) async {
+    pw.ImageProvider? profileImageProvider;
+    final basicInfo = reportData.data.basicInformation;
+    final imageUrl = basicInfo
+        ?.firstWhere((info) => info.label == 'الصورة',
+            orElse: () => BasicInformationData(label: '', value: ''))
+        .value;
+
+    if (imageUrl != null && imageUrl is String && imageUrl.isNotEmpty) {
+      try {
+        final ByteData data =
+            await NetworkAssetBundle(Uri.parse(imageUrl)).load("");
+        profileImageProvider = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (_) {}
+    }
+
+    if (profileImageProvider == null) {
+      final profileImage = await rootBundle.load('assets/images/ai_image.png');
+      profileImageProvider = pw.MemoryImage(profileImage.buffer.asUint8List());
+    }
+    return profileImageProvider;
   }
 }
