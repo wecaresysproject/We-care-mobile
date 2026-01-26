@@ -19,7 +19,8 @@ class MedicalReportRepo {
       //   requestBody,
       //   language,
       // );
-      return ApiResult.success(dummyMedicalReportResponse);
+      return ApiResult.success(
+          dummyMedicalReportResponse); //dummyMedicalReportResponse);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -227,6 +228,11 @@ final dummyMedicalReportResponse = MedicalReportResponseModel(
             min: "76",
             max: null,
             date: "2025-10-13",
+          ),
+          VitalReadingModel(
+            min: "77",
+            max: null,
+            date: "2025-10-15",
           ),
         ],
       ),

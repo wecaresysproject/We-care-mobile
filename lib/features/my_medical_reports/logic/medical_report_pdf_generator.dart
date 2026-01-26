@@ -52,7 +52,7 @@ class MedicalReportPdfGenerator {
         header: (context) => _buildHeader(profileImageProvider, reportData),
         build: (context) => [
           _buildBasicInfoSection(reportData),
-          _buildVitalSignsSection(),
+          _buildVitalSignsSection(reportData),
           _buildComplaintsSection(),
           _buildMedicationsSection(),
           _buildAllergiesSection(),
@@ -304,7 +304,13 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildVitalSignsSection() {
+  pw.Widget _buildVitalSignsSection(MedicalReportResponseModel reportData) {
+    final vitalSigns = reportData.data.vitalSigns;
+
+    if (vitalSigns == null || vitalSigns.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -315,27 +321,23 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('القياسات الحيوية'),
+          pw.SizedBox(height: 10),
           pw.Wrap(
             spacing: 20,
             runSpacing: 20,
-            children: [
-              _buildVitalCard('سكر عشوائي', '180', '20/12/2012'),
-              _buildVitalCard('الضغط', '120/80', '20/12/2012'),
-              _buildVitalCard('مستوى الأكسجين', '95 %', '23/6/2012'),
-              _buildVitalCard('نبضات القلب', '60', '20/12/2012'),
-              _buildVitalCard('درجة الحرارة', '37.4', '23/12/2012'),
-              _buildVitalCard('مؤشر كتلة الجسم', '22.9', '23/12/2012'),
-            ],
+            children: vitalSigns.map((group) {
+              return _buildVitalGroupCard(group);
+            }).toList(),
           ),
         ],
       ),
     );
   }
 
-  pw.Widget _buildVitalCard(String title, String value, String date) {
+  pw.Widget _buildVitalGroupCard(VitalSignGroupModel group) {
     return pw.Container(
-      width: 130,
-      padding: const pw.EdgeInsets.all(10),
+      width: 250,
+      padding: const pw.EdgeInsets.all(12),
       decoration: pw.BoxDecoration(
         border: pw.Border.all(color: PdfColors.grey200),
         borderRadius: pw.BorderRadius.circular(12),
@@ -343,24 +345,43 @@ class MedicalReportPdfGenerator {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            children: [
-              pw.Expanded(
-                  child: pw.Text(title,
-                      style: pw.TextStyle(
-                          color: PdfColor.fromInt(
-                              AppColorsManager.mainDarkBlue.value),
-                          fontWeight: pw.FontWeight.bold,
-                          fontSize: 9))),
-            ],
+          pw.Text(
+            group.categoryName,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 10,
+            ),
           ),
-          pw.SizedBox(height: 4),
-          pw.Text(value,
-              style:
-                  pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
-          pw.Text(date,
-              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey)),
+          pw.SizedBox(height: 8),
+          pw.Wrap(
+            spacing: 15,
+            runSpacing: 10,
+            children: group.reading.map(
+              (reading) {
+                String value = reading.min;
+
+                // Special case for Blood Pressure (الضغط)
+                final isPressureSection =
+                    group.categoryName == "الضغط" && reading.max != null;
+                if (isPressureSection) {
+                  value = "${reading.min}/${reading.max}";
+                }
+
+                return pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(value,
+                        style: pw.TextStyle(
+                            fontSize: 13, fontWeight: pw.FontWeight.bold)),
+                    pw.Text(reading.date,
+                        style: const pw.TextStyle(
+                            fontSize: 8, color: PdfColors.grey)),
+                  ],
+                );
+              },
+            ).toList(),
+          ),
         ],
       ),
     );

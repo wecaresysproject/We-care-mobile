@@ -261,7 +261,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       requestBody,
       AppStrings.arabicLang,
     );
-
+    AppLogger.info("Medical Report Data: $result");
     result.when(
       success: (data) {
         emit(
