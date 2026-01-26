@@ -42,6 +42,42 @@ abstract class MedicalReportApiServices {
     @Query('userType') String userType,
   );
 
+  @GET(MedicalReportApiConstants.getRadiologyFilters)
+  Future<MedicalReportFilterResponseModel> getRadiologyFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @GET(MedicalReportApiConstants.getMedicalTestsFilters)
+  Future<MedicalReportFilterResponseModel> getMedicalTestsFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @GET(MedicalReportApiConstants.getPrescriptionsFilters)
+  Future<MedicalReportFilterResponseModel> getPrescriptionsFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @GET(MedicalReportApiConstants.getSurgeriesFilters)
+  Future<MedicalReportFilterResponseModel> getSurgeriesFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @GET(MedicalReportApiConstants.getGeneticDiseasesFilters)
+  Future<MedicalReportFilterResponseModel> getGeneticDiseasesFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
+  @GET(MedicalReportApiConstants.getAllergyFilters)
+  Future<MedicalReportFilterResponseModel> getAllergyFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
   @POST(MedicalReportApiConstants.fetchData)
   Future<MedicalReportResponseModel> fetchMedicalReportData(
     @Body() MedicalReportRequestModel requestBody,

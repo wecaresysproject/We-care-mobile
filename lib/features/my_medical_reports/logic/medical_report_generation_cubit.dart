@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
@@ -20,10 +21,24 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     bool? getAll,
     List<String>? selectedValues,
   }) {
+    AppLogger.info("getAll: $getAll");
+    AppLogger.info("selectedValues: $selectedValues");
     emit(
       state.copyWith(
         basicInfoGetAll: getAll,
         basicInfoSelectedValues: selectedValues,
+      ),
+    );
+  }
+
+  void updateVitalSignsInfoSelection({
+    bool? getAll,
+    List<String>? selectedValues,
+  }) {
+    emit(
+      state.copyWith(
+        vitalSignsGetAll: getAll,
+        vitalSignsSelectedValues: selectedValues,
       ),
     );
   }
@@ -33,6 +48,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     List<String>? currentNames,
     List<String>? expiredNames,
   }) {
+    AppLogger.info("updateMedicineSelection getAll: $getAll");
+
     emit(
       state.copyWith(
         medicineGetAll: getAll,
@@ -70,46 +87,183 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
-  Future<void> emitGenerateReport(String language) async {
+  void updateRadiologySelection({
+    bool? getAll,
+    bool? attachImages,
+    List<String>? selectedYears,
+    List<String>? selectedRegions,
+    List<String>? selectedTypes,
+  }) {
+    emit(
+      state.copyWith(
+        radiologyGetAll: getAll,
+        radiologyAttachImages: attachImages,
+        radiologySelectedYears: selectedYears,
+        radiologySelectedRegions: selectedRegions,
+        radiologySelectedTypes: selectedTypes,
+      ),
+    );
+  }
+
+  void updateMedicalTestsSelection({
+    bool? getAll,
+    bool? attachImages,
+    List<String>? selectedYears,
+    List<String>? selectedTestGroups,
+  }) {
+    emit(
+      state.copyWith(
+        medicalTestsGetAll: getAll,
+        medicalTestsAttachImages: attachImages,
+        medicalTestsSelectedYears: selectedYears,
+        medicalTestsSelectedTestGroups: selectedTestGroups,
+      ),
+    );
+  }
+
+  void updatePrescriptionsSelection({
+    bool? getAll,
+    bool? attachImages,
+    List<String>? selectedYears,
+    List<String>? selectedSpecialties,
+    List<String>? selectedDoctorNames,
+  }) {
+    emit(
+      state.copyWith(
+        prescriptionsGetAll: getAll,
+        prescriptionsAttachImages: attachImages,
+        prescriptionsSelectedYears: selectedYears,
+        prescriptionsSelectedSpecialties: selectedSpecialties,
+        prescriptionsSelectedDoctorNames: selectedDoctorNames,
+      ),
+    );
+  }
+
+  void updateSurgeriesSelection({
+    bool? getAll,
+    bool? attachReport,
+    List<String>? selectedYears,
+    List<String>? selectedSurgeryNames,
+  }) {
+    emit(
+      state.copyWith(
+        surgeriesGetAll: getAll,
+        surgeriesAttachReport: attachReport,
+        surgeriesSelectedYears: selectedYears,
+        surgeriesSelectedNames: selectedSurgeryNames,
+      ),
+    );
+  }
+
+  void updateGeneticDiseasesSelection({
+    bool? getAll,
+    List<String>? selectedValues,
+  }) {
+    emit(
+      state.copyWith(
+        geneticDiseasesGetAll: getAll,
+        geneticDiseasesSelectedValues: selectedValues,
+      ),
+    );
+    AppLogger.info(
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
+  }
+
+  void updateAllergiesSelection({
+    bool? getAll,
+    List<String>? selectedTypes,
+  }) {
+    emit(
+      state.copyWith(
+        allergiesGetAll: getAll,
+        allergiesSelectedTypes: selectedTypes,
+      ),
+    );
+  }
+
+  Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
         basicInformation: BasicInformationSelection(
           getAll: state.basicInfoGetAll,
           selectedValues: state.basicInfoSelectedValues,
         ),
-        medications: MedicineCategorySelectionRequestBody(
-          getAll: state.medicineGetAll,
-          currentMedicines: MedicineDetailsSelection(
-            drugNames: state.medicineCurrentNames,
-          ),
-          expiredLast3Months: MedicineDetailsSelection(
-            drugNames: state.medicineExpiredNames,
-          ),
+        vitalSigns: VitalSignsSelectionRequestBody(
+          getAll: state.vitalSignsGetAll,
+          selectedValues: state.vitalSignsSelectedValues,
         ),
-        chronicDiseases: ChronicDiseasesSelectionRequestBody(
-          getAll: state.chronicDiseasesGetAll,
-          diseases: state.chronicDiseasesSelectedValues,
-        ),
-        urgentComplaints: UrgentComplaintsSelectionRequestBody(
-          getAll: state.urgentComplaintsGetAll,
-          years: state.urgentComplaintsSelectedYears,
-          organs: state.urgentComplaintsSelectedOrgans,
-          complaints: state.urgentComplaintsSelectedComplaints,
-        ),
+        // medications: MedicineCategorySelectionRequestBody(
+        //   getAll: state.medicineGetAll,
+        //   currentMedicines: MedicineDetailsSelection(
+        //     drugNames: state.medicineCurrentNames,
+        //   ),
+        //   expiredLast3Months: MedicineDetailsSelection(
+        //     drugNames: state.medicineExpiredNames,
+        //   ),
+        // ),
+        // chronicDiseases: ChronicDiseasesSelectionRequestBody(
+        //   getAll: state.chronicDiseasesGetAll,
+        //   diseases: state.chronicDiseasesSelectedValues,
+        // ),
+        // urgentComplaints: UrgentComplaintsSelectionRequestBody(
+        //   getAll: state.urgentComplaintsGetAll,
+        //   years: state.urgentComplaintsSelectedYears,
+        //   organs: state.urgentComplaintsSelectedOrgans,
+        //   complaints: state.urgentComplaintsSelectedComplaints,
+        // ),
+        // radiology: RadiologySelectionRequestBody(
+        //   getAll: state.radiologyGetAll, //! need check later
+        //   attachImages: state.radiologyAttachImages,
+        //   years: state.radiologySelectedYears,
+        //   regions: state.radiologySelectedRegions,
+        //   types: state.radiologySelectedTypes,
+        // ),
+        // medicalTests: MedicalTestsSelectionRequestBody(
+        //   getAll: state.medicalTestsGetAll,
+        //   attachImages: state.medicalTestsAttachImages,
+        //   years: state.medicalTestsSelectedYears,
+        //   testGroups: state.medicalTestsSelectedTestGroups,
+        // ),
+        // prescriptions: PrescriptionsSelectionRequestBody(
+        //   getAll: state.prescriptionsGetAll,
+        //   attachImages: state.prescriptionsAttachImages,
+        //   years: state.prescriptionsSelectedYears,
+        //   specialties: state.prescriptionsSelectedSpecialties,
+        //   doctorNames: state.prescriptionsSelectedDoctorNames,
+        // ),
+        // surgeries: SurgeriesSelectionRequestBody(
+        //   getAll: state.surgeriesGetAll,
+        //   attachReport: state.surgeriesAttachReport,
+        //   years: state.surgeriesSelectedYears, //! needs getAll here
+        //   surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
+        // ),
+        // geneticDiseases: GeneticDiseasesSelectionRequestBody(
+        //   getAll: state.geneticDiseasesGetAll,
+        //   diseases: state.geneticDiseasesSelectedValues,
+        // ),
+        // allergies: AllergiesSelectionRequestBody(
+        //   getAll: state.allergiesGetAll,
+        //   types: state.allergiesSelectedTypes,
+        // ),
       ),
     );
+    AppLogger.info(
+        "surgeries getAll: ${state.surgeriesGetAll} , attachReport: ${state.surgeriesAttachReport} , years: ${state.surgeriesSelectedYears} , surgeryNames: ${state.surgeriesSelectedNames}");
 
+    AppLogger.info(
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
+
+    AppLogger.info(
+        "allergies getAll: ${state.allergiesGetAll} , types: ${state.allergiesSelectedTypes}");
     emit(state.copyWith(status: RequestStatus.loading));
 
     final result = await _medicalReportRepo.fetchMedicalReportData(
       requestBody,
-      language,
+      AppStrings.arabicLang,
     );
-
+    AppLogger.info("Medical Report Data: $result");
     result.when(
       success: (data) {
-        AppLogger.info(
-            "Medical report data: ${data.data.basicInformation!.entries.first.value}");
         emit(
           state.copyWith(
             status: RequestStatus.success,
@@ -165,6 +319,36 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الشكاوى الطارئة") {
       result = await _medicalReportRepo.getUrgentComplaintsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الأشعة") {
+      result = await _medicalReportRepo.getRadiologyFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "التحاليل الطبية") {
+      result = await _medicalReportRepo.getMedicalTestsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "روشتة الأطباء") {
+      result = await _medicalReportRepo.getPrescriptionsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "العمليات الجراحية") {
+      result = await _medicalReportRepo.getSurgeriesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الأمراض الوراثية") {
+      result = await _medicalReportRepo.getGeneticDiseasesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الحساسية") {
+      result = await _medicalReportRepo.getAllergyFilters(
         language,
         userType,
       );

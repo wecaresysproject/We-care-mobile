@@ -111,6 +111,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncBasicInfoSelectionToCubit(
                                       context, index);
                                 }
+                                if (dummyCategory.title == "القياسات الحيوية") {
+                                  _syncVitalSignsSelectionToCubit(
+                                    context,
+                                    index,
+                                  );
+                                }
 
                                 // Medicine Selection sync
                                 if (dummyCategory.title == "الأدوية") {
@@ -126,6 +132,43 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 // Urgent Complaints Selection sync
                                 if (dummyCategory.title == "الشكاوى الطارئة") {
                                   _syncUrgentComplaintsSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Radiology Selection sync
+                                if (dummyCategory.title == "الأشعة") {
+                                  _syncRadiologySelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Medical Tests Selection sync
+                                if (dummyCategory.title == "التحاليل الطبية") {
+                                  _syncMedicalTestsSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Doctors Prescription Selection sync
+                                if (dummyCategory.title == "روشتة الأطباء") {
+                                  _syncPrescriptionsSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Surgeries Selection sync
+                                if (dummyCategory.title ==
+                                    "العمليات الجراحية") {
+                                  _syncSurgeriesSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Genetic Diseases Selection sync
+                                if (dummyCategory.title == "الأمراض الوراثية") {
+                                  _syncGeneticDiseasesSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Allergies Selection sync
+                                if (dummyCategory.title == "الحساسية") {
+                                  _syncAllergiesSelectionToCubit(
                                       context, index);
                                 }
                               },
@@ -166,10 +209,51 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncBasicInfoSelectionToCubit(
                                             context, index);
                                       }
+                                      if (dummyCategory.title ==
+                                          "القياسات الحيوية") {
+                                        _syncVitalSignsSelectionToCubit(
+                                          context,
+                                          index,
+                                        );
+                                      }
 
                                       // Medicine Selection Integration
                                       if (dummyCategory.title == "الأدوية") {
                                         _syncMedicineSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Radiology Selection Integration
+                                      if (dummyCategory.title == "الأشعة") {
+                                        _syncRadiologySelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Medical Tests Selection Integration
+                                      if (dummyCategory.title ==
+                                          "التحاليل الطبية") {
+                                        _syncMedicalTestsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Doctors Prescription Selection Integration
+                                      if (dummyCategory.title ==
+                                          "روشتة الأطباء") {
+                                        _syncPrescriptionsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Surgeries Selection Integration
+                                      if (dummyCategory.title ==
+                                          "العمليات الجراحية") {
+                                        _syncSurgeriesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Genetic Diseases Selection Integration
+                                      if (dummyCategory.title ==
+                                          "الأمراض الوراثية") {
+                                        _syncGeneticDiseasesSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -209,6 +293,38 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncMedicineSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Radiology Selection Integration
+                                      if (dummyCategory.title == "الأشعة") {
+                                        _syncRadiologySelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Medical Tests Selection Integration
+                                      if (dummyCategory.title ==
+                                          "التحاليل الطبية") {
+                                        _syncMedicalTestsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Doctors Prescription Selection Integration
+                                      if (dummyCategory.title ==
+                                          "روشتة الأطباء") {
+                                        _syncPrescriptionsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Surgeries Selection Integration
+                                      if (dummyCategory.title ==
+                                          "العمليات الجراحية") {
+                                        _syncSurgeriesSelectionToCubit(
+                                            context, index);
+                                      }
+                                      // Allergies Selection sync
+                                      if (dummyCategory.title == "الحساسية") {
+                                        _syncAllergiesSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                               ],
@@ -243,7 +359,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                 ? null
                 : () async {
                     final logic = MedicalReportExportLogic();
-                    await logic.exportAndShareReport(context);
+                    await logic.exportAndShareReport(
+                        context, state.medicalReportData);
                   },
             backgroundColor: AppColorsManager.mainDarkBlue,
             icon: state.status == RequestStatus.loading
@@ -271,17 +388,29 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncBasicInfoSelectionToCubit(BuildContext context, int index) {
-    final getAll = _selectedOptionValues[index]?.contains("الجميع") ?? false;
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     context.read<MedicalReportGenerationCubit>().updateBasicInfoSelection(
           getAll: getAll,
           selectedValues: _selectedOptionValues[index]?.toList(),
         );
   }
 
+  void _syncVitalSignsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    context.read<MedicalReportGenerationCubit>().updateVitalSignsInfoSelection(
+          getAll: getAll,
+          selectedValues: _selectedOptionValues[index]?.toList(),
+        );
+  }
+
   void _syncMedicineSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateMedicineSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           currentNames: filters["0_اسم الدواء"]?.toList() ?? [],
           expiredNames:
               (filters["1_اسم الدواء"] ?? filters["1_اسم الدواء_expired"])
@@ -291,22 +420,103 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   }
 
   void _syncChronicDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateChronicDiseasesSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           selectedValues: filters["0_المرض المزمن"]?.toList() ?? [],
         );
   }
 
   void _syncUrgentComplaintsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     context
         .read<MedicalReportGenerationCubit>()
         .updateUrgentComplaintsSelection(
-          getAll: _selectedStates[index] ?? false,
+          getAll: getAll,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedOrgans: filters["0_العضو"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
+        );
+  }
+
+  void _syncRadiologySelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachImages =
+        _selectedOptionValues[index]?.contains("ارفاق صور الاشعة") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateRadiologySelection(
+          getAll: getAll,
+          attachImages: attachImages,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedRegions: filters["0_منطقة الأشعة"]?.toList() ?? [],
+          selectedTypes: filters["0_نوع الأشعة"]?.toList() ?? [],
+        );
+  }
+
+  void _syncMedicalTestsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachImages =
+        _selectedOptionValues[index]?.contains("ارفاق صور التحاليل") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateMedicalTestsSelection(
+          getAll: getAll,
+          attachImages: attachImages,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedTestGroups: filters["0_مجموعة التحاليل"]?.toList() ?? [],
+        );
+  }
+
+  void _syncPrescriptionsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachImages =
+        _selectedOptionValues[index]?.contains("ارفاق صور الروشتات") ?? false;
+    context.read<MedicalReportGenerationCubit>().updatePrescriptionsSelection(
+          getAll: getAll,
+          attachImages: attachImages,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedSpecialties: filters["0_التخصص"]?.toList() ?? [],
+          selectedDoctorNames: filters["0_اسم الطبيب"]?.toList() ?? [],
+        );
+  }
+
+  void _syncSurgeriesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateSurgeriesSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedSurgeryNames: filters["0_اسم العملية"]?.toList() ?? [],
+        );
+  }
+
+  void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    context.read<MedicalReportGenerationCubit>().updateGeneticDiseasesSelection(
+          getAll: getAll,
+          selectedValues: _selectedOptionValues[index]?.toList(),
+        );
+  }
+
+  void _syncAllergiesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateAllergiesSelection(
+          getAll: getAll,
+          selectedTypes: filters["0_النوع"]?.toList() ?? [],
         );
   }
 }

@@ -15,11 +15,11 @@ class MedicalReportRepo {
     String language,
   ) async {
     try {
-      // final response = await _apiServices.fetchMedicalReportData(
-      //   requestBody,
-      //   language,
-      // );
-      return ApiResult.success(dummyMedicalReportResponse);
+      final response = await _apiServices.fetchMedicalReportData(
+        requestBody,
+        language,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -101,48 +101,170 @@ class MedicalReportRepo {
     }
   }
 
-  final dummyMedicalReportResponse = MedicalReportResponseModel(
-    status: 200,
-    message: 'تم جلب البيانات الأساسية بنجاح',
-    data: MedicalReportData(
-      basicInformation: {
-        'fullName': BasicInformationData(
-          label: 'الاسم الكامل',
-          value: 'أحمد محمد علي',
-        ),
-        'birthDate': BasicInformationData(
-          label: 'تاريخ الميلاد',
-          value: '1990-05-15',
-        ),
-        'gender': BasicInformationData(
-          label: 'النوع',
-          value: 'ذكر',
-        ),
-        'bloodType': BasicInformationData(
-          label: 'فصيلة الدم',
-          value: 'O+',
-        ),
-        'country': BasicInformationData(
-          label: 'الدولة',
-          value: 'مصر',
-        ),
-        'city': BasicInformationData(
-          label: 'المدينة',
-          value: 'القاهرة',
-        ),
-        'disabilityType': BasicInformationData(
-          label: 'نوع العجز الجسدي',
-          value: null,
-        ),
-        'medicalInsurance': BasicInformationData(
-          label: 'التأمين الطبي',
-          value: {
-            'provider': 'التعاونية للتأمين',
-            'policyNumber': 'POL-998877',
-            'expiryDate': '2026-12-31',
-          },
-        ),
-      },
-    ),
-  );
+  Future<ApiResult<MedicalReportFilterResponseModel>> getRadiologyFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getRadiologyFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getMedicalTestsFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getMedicalTestsFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getPrescriptionsFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getPrescriptionsFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getSurgeriesFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getSurgeriesFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getGeneticDiseasesFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getGeneticDiseasesFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getAllergyFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getAllergyFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
+
+final dummyMedicalReportResponse = MedicalReportResponseModel(
+  success: true,
+  message: "تم جلب التقرير الطبي بنجاح",
+  data: MedicalReportData(
+    basicInformation: [
+      BasicInformationData(
+        label: "الاسم",
+        value: "أشرف السيد",
+      ),
+      BasicInformationData(
+        label: "تاريخ الميلاد",
+        value: "2015-12-16",
+      ),
+      BasicInformationData(
+        label: "فصيلة الدم",
+        value: "A+",
+      ),
+      BasicInformationData(
+        label: "الدولة",
+        value: "مصر",
+      ),
+    ],
+    vitalSigns: [
+      VitalSignGroupModel(
+        categoryName: "الوزن",
+        reading: [
+          VitalReadingModel(
+            min: "75",
+            max: null,
+            date: "2025-10-11",
+          ),
+          VitalReadingModel(
+            min: "76",
+            max: null,
+            date: "2025-10-13",
+          ),
+          VitalReadingModel(
+            min: "77",
+            max: null,
+            date: "2025-10-15",
+          ),
+        ],
+      ),
+      VitalSignGroupModel(
+        categoryName: "الضغط",
+        reading: [
+          VitalReadingModel(
+            min: "129",
+            max: "80",
+            date: "2025-11-14",
+          ),
+          VitalReadingModel(
+            min: "150",
+            max: "90",
+            date: "2025-11-16",
+          ),
+        ],
+      ),
+      VitalSignGroupModel(
+        categoryName: "سكر صائم",
+        reading: [
+          VitalReadingModel(
+            min: "110",
+            max: null,
+            date: "2025-10-15",
+          ),
+          VitalReadingModel(
+            min: "125",
+            max: null,
+            date: "2025-11-16",
+          ),
+        ],
+      ),
+    ],
+  ),
+);

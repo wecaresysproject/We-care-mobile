@@ -35,10 +35,10 @@ class GenerateButtonBlocConsumer extends StatelessWidget {
         return AppCustomButton(
           title: 'Generate Report',
           isEnabled: true,
-          onPressed: () {
-            context
+          onPressed: () async {
+            await context
                 .read<MedicalReportGenerationCubit>()
-                .emitGenerateReport('ar');
+                .emitGenerateReport();
           },
           isLoading: state.status == RequestStatus.loading,
         );

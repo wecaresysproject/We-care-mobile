@@ -7,12 +7,12 @@ class MedicalReportResponseModel {
   @JsonKey(name: 'data')
   final MedicalReportData data;
   final String message;
-  final int status;
+  final bool success;
 
   MedicalReportResponseModel({
     required this.data,
     required this.message,
-    required this.status,
+    required this.success,
   });
 
   factory MedicalReportResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -24,9 +24,10 @@ class MedicalReportResponseModel {
 @JsonSerializable()
 class MedicalReportData {
   @JsonKey(name: 'basicInformation')
-  final Map<String, BasicInformationData>? basicInformation;
+  final List<BasicInformationData>? basicInformation;
+  final List<VitalSignGroupModel>? vitalSigns;
 
-  MedicalReportData({this.basicInformation});
+  MedicalReportData({this.basicInformation, this.vitalSigns});
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportDataFromJson(json);
@@ -48,4 +49,54 @@ class BasicInformationData {
       _$BasicInformationDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$BasicInformationDataToJson(this);
+}
+
+@JsonSerializable()
+class VitalSignGroupModel {
+  final String categoryName;
+
+  /// List of all readings for this category
+  final List<VitalReadingModel> reading;
+
+  VitalSignGroupModel({
+    required this.categoryName,
+    required this.reading,
+  });
+
+  factory VitalSignGroupModel.fromJson(Map<String, dynamic> json) =>
+      _$VitalSignGroupModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VitalSignGroupModelToJson(this);
+}
+
+@JsonSerializable()
+class VitalReadingModel {
+  final String min;
+  final String? max; //* needed in case there was pressure reading
+  final String date;
+
+  VitalReadingModel({
+    required this.min,
+    this.max,
+    required this.date,
+  });
+
+  /// ✅ Always return date in DD/MM/YYYY format
+  String get formattedDate {
+    try {
+      final parsed = DateTime.parse(date);
+
+      return "${parsed.day.toString().padLeft(2, '0')} / "
+          "${parsed.month.toString().padLeft(2, '0')} / "
+          "${parsed.year}";
+    } catch (_) {
+      // Already formatted like "16 / 11 / 2025"
+      return date;
+    }
+  }
+
+  factory VitalReadingModel.fromJson(Map<String, dynamic> json) =>
+      _$VitalReadingModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VitalReadingModelToJson(this);
 }
