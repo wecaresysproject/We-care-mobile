@@ -249,6 +249,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncSurgeriesSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Genetic Diseases Selection Integration
+                                      if (dummyCategory.title ==
+                                          "الأمراض الوراثية") {
+                                        _syncGeneticDiseasesSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -311,6 +318,11 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "العمليات الجراحية") {
                                         _syncSurgeriesSelectionToCubit(
+                                            context, index);
+                                      }
+                                      // Allergies Selection sync
+                                      if (dummyCategory.title == "الحساسية") {
+                                        _syncAllergiesSelectionToCubit(
                                             context, index);
                                       }
                                     },

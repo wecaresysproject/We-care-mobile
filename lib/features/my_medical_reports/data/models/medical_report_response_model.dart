@@ -25,8 +25,9 @@ class MedicalReportResponseModel {
 class MedicalReportData {
   @JsonKey(name: 'basicInformation')
   final List<BasicInformationData>? basicInformation;
+  final List<VitalSignGroupModel>? vitalSigns;
 
-  MedicalReportData({this.basicInformation});
+  MedicalReportData({this.basicInformation, this.vitalSigns});
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportDataFromJson(json);
@@ -48,4 +49,40 @@ class BasicInformationData {
       _$BasicInformationDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$BasicInformationDataToJson(this);
+}
+
+@JsonSerializable()
+class VitalSignGroupModel {
+  final String categoryName;
+
+  /// List of all readings for this category
+  final List<VitalReadingModel> reading;
+
+  VitalSignGroupModel({
+    required this.categoryName,
+    required this.reading,
+  });
+
+  factory VitalSignGroupModel.fromJson(Map<String, dynamic> json) =>
+      _$VitalSignGroupModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VitalSignGroupModelToJson(this);
+}
+
+@JsonSerializable()
+class VitalReadingModel {
+  final String min;
+  final String? max; //* needed in case there was pressure reading
+  final String date;
+
+  VitalReadingModel({
+    required this.min,
+    this.max,
+    required this.date,
+  });
+
+  factory VitalReadingModel.fromJson(Map<String, dynamic> json) =>
+      _$VitalReadingModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VitalReadingModelToJson(this);
 }

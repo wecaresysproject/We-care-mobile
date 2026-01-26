@@ -15,11 +15,11 @@ class MedicalReportRepo {
     String language,
   ) async {
     try {
-      final response = await _apiServices.fetchMedicalReportData(
-        requestBody,
-        language,
-      );
-      return ApiResult.success(response);
+      // final response = await _apiServices.fetchMedicalReportData(
+      //   requestBody,
+      //   language,
+      // );
+      return ApiResult.success(dummyMedicalReportResponse);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
@@ -191,3 +191,75 @@ class MedicalReportRepo {
     }
   }
 }
+
+final dummyMedicalReportResponse = MedicalReportResponseModel(
+  success: true,
+  message: "تم جلب التقرير الطبي بنجاح",
+  data: MedicalReportData(
+    basicInformation: [
+      BasicInformationData(
+        label: "الاسم",
+        value: "أشرف السيد",
+      ),
+      BasicInformationData(
+        label: "تاريخ الميلاد",
+        value: "2015-12-16",
+      ),
+      BasicInformationData(
+        label: "فصيلة الدم",
+        value: "A+",
+      ),
+      BasicInformationData(
+        label: "الدولة",
+        value: "مصر",
+      ),
+    ],
+    vitalSigns: [
+      VitalSignGroupModel(
+        categoryName: "الوزن",
+        reading: [
+          VitalReadingModel(
+            min: "75",
+            max: null,
+            date: "2025-10-11",
+          ),
+          VitalReadingModel(
+            min: "76",
+            max: null,
+            date: "2025-10-13",
+          ),
+        ],
+      ),
+      VitalSignGroupModel(
+        categoryName: "الضغط",
+        reading: [
+          VitalReadingModel(
+            min: "129",
+            max: "80",
+            date: "2025-11-14",
+          ),
+          VitalReadingModel(
+            min: "150",
+            max: "90",
+            date: "2025-11-16",
+          ),
+        ],
+      ),
+      VitalSignGroupModel(
+        categoryName: "سكر صائم",
+        reading: [
+          VitalReadingModel(
+            min: "110",
+            max: null,
+            date: "2025-10-15",
+          ),
+          VitalReadingModel(
+            min: "125",
+            max: null,
+            date: "2025-11-16",
+          ),
+        ],
+      ),
+    ],
+  ),
+);

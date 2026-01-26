@@ -165,6 +165,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         geneticDiseasesSelectedValues: selectedValues,
       ),
     );
+    AppLogger.info(
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
   }
 
   void updateAllergiesSelection({
@@ -245,7 +247,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         ),
       ),
     );
+    AppLogger.info(
+        "surgeries getAll: ${state.surgeriesGetAll} , attachReport: ${state.surgeriesAttachReport} , years: ${state.surgeriesSelectedYears} , surgeryNames: ${state.surgeriesSelectedNames}");
 
+    AppLogger.info(
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
+
+    AppLogger.info(
+        "allergies getAll: ${state.allergiesGetAll} , types: ${state.allergiesSelectedTypes}");
     emit(state.copyWith(status: RequestStatus.loading));
 
     final result = await _medicalReportRepo.fetchMedicalReportData(
