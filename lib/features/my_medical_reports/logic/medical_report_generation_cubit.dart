@@ -146,10 +146,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.basicInfoGetAll,
           selectedValues: state.basicInfoSelectedValues,
         ),
-        // vitalSigns: VitalSignsSelectionRequestBody(
-        //   getAll: state.vitalSignsGetAll,
-        //   selectedValues: state.vitalSignsSelectedValues,
-        // ),
+        vitalSigns: VitalSignsSelectionRequestBody(
+          getAll: state.vitalSignsGetAll,
+          selectedValues: state.vitalSignsSelectedValues,
+        ),
         // medications: MedicineCategorySelectionRequestBody(
         //   getAll: state.medicineGetAll,
         //   currentMedicines: MedicineDetailsSelection(
