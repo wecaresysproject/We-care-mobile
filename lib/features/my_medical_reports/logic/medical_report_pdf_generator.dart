@@ -266,26 +266,32 @@ class MedicalReportPdfGenerator {
             info.value.toString() != "لم يتم ادخال بيانات")
         .toList();
 
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(15),
-      decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
-        borderRadius: pw.BorderRadius.circular(16),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader('البيانات الأساسية'),
-          pw.SizedBox(height: 10),
-          pw.Wrap(
-            spacing: 20,
-            runSpacing: 10,
-            children: displayInfo.map((info) {
-              return _buildInfoItem('${info.label}:', info.value.toString());
-            }).toList(),
-          ),
-        ],
-      ),
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.fromLTRB(15, 15, 15, 0),
+          child: _buildSectionHeader('البيانات الأساسية'),
+        ),
+        pw.SizedBox(height: 10),
+        pw.Wrap(
+          spacing: 20,
+          runSpacing: 20,
+          children: List.generate(displayInfo.length, (index) {
+            final info = displayInfo[index];
+
+            if (info.label == 'الاسم') {
+              return pw.SizedBox.shrink();
+            }
+            return pw.Padding(
+              padding: pw.EdgeInsets.only(
+                left: index == 0 ? 0 : 20, // ✅ أول عنصر بدون spacing
+              ),
+              child: _buildInfoItem('${info.label}:', info.value.toString()),
+            );
+          }),
+        )
+      ],
     );
   }
 
@@ -336,7 +342,6 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildVitalGroupCard(VitalSignGroupModel group) {
     return pw.Container(
-      width: 250,
       padding: const pw.EdgeInsets.all(12),
       decoration: pw.BoxDecoration(
         border: pw.Border.all(color: PdfColors.grey200),
@@ -371,12 +376,20 @@ class MedicalReportPdfGenerator {
                 return pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text(value,
-                        style: pw.TextStyle(
-                            fontSize: 13, fontWeight: pw.FontWeight.bold)),
-                    pw.Text(reading.date,
-                        style: const pw.TextStyle(
-                            fontSize: 8, color: PdfColors.grey)),
+                    pw.Text(
+                      value,
+                      style: pw.TextStyle(
+                        fontSize: 15,
+                        fontWeight: pw.FontWeight.bold,
+                      ),
+                    ),
+                    pw.Text(
+                      reading.formattedDate,
+                      style: const pw.TextStyle(
+                        fontSize: 12,
+                        color: PdfColors.grey,
+                      ),
+                    ),
                   ],
                 );
               },

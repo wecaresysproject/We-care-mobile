@@ -15,12 +15,11 @@ class MedicalReportRepo {
     String language,
   ) async {
     try {
-      // final response = await _apiServices.fetchMedicalReportData(
-      //   requestBody,
-      //   language,
-      // );
-      return ApiResult.success(
-          dummyMedicalReportResponse); //dummyMedicalReportResponse);
+      final response = await _apiServices.fetchMedicalReportData(
+        requestBody,
+        language,
+      );
+      return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

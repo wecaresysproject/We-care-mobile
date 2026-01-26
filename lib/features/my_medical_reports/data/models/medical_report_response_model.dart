@@ -81,6 +81,20 @@ class VitalReadingModel {
     required this.date,
   });
 
+  /// ✅ Always return date in DD/MM/YYYY format
+  String get formattedDate {
+    try {
+      final parsed = DateTime.parse(date);
+
+      return "${parsed.day.toString().padLeft(2, '0')} / "
+          "${parsed.month.toString().padLeft(2, '0')} / "
+          "${parsed.year}";
+    } catch (_) {
+      // Already formatted like "16 / 11 / 2025"
+      return date;
+    }
+  }
+
   factory VitalReadingModel.fromJson(Map<String, dynamic> json) =>
       _$VitalReadingModelFromJson(json);
 

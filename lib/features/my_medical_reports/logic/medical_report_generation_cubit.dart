@@ -231,20 +231,20 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   specialties: state.prescriptionsSelectedSpecialties,
         //   doctorNames: state.prescriptionsSelectedDoctorNames,
         // ),
-        surgeries: SurgeriesSelectionRequestBody(
-          getAll: state.surgeriesGetAll,
-          attachReport: state.surgeriesAttachReport,
-          years: state.surgeriesSelectedYears, //! needs getAll here
-          surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
-        ),
-        geneticDiseases: GeneticDiseasesSelectionRequestBody(
-          getAll: state.geneticDiseasesGetAll,
-          diseases: state.geneticDiseasesSelectedValues,
-        ),
-        allergies: AllergiesSelectionRequestBody(
-          getAll: state.allergiesGetAll,
-          types: state.allergiesSelectedTypes,
-        ),
+        // surgeries: SurgeriesSelectionRequestBody(
+        //   getAll: state.surgeriesGetAll,
+        //   attachReport: state.surgeriesAttachReport,
+        //   years: state.surgeriesSelectedYears, //! needs getAll here
+        //   surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
+        // ),
+        // geneticDiseases: GeneticDiseasesSelectionRequestBody(
+        //   getAll: state.geneticDiseasesGetAll,
+        //   diseases: state.geneticDiseasesSelectedValues,
+        // ),
+        // allergies: AllergiesSelectionRequestBody(
+        //   getAll: state.allergiesGetAll,
+        //   types: state.allergiesSelectedTypes,
+        // ),
       ),
     );
     AppLogger.info(
