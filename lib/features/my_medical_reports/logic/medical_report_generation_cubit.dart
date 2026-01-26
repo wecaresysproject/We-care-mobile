@@ -139,6 +139,22 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateSurgeriesSelection({
+    bool? getAll,
+    bool? attachReport,
+    List<String>? selectedYears,
+    List<String>? selectedSurgeryNames,
+  }) {
+    emit(
+      state.copyWith(
+        surgeriesGetAll: getAll,
+        surgeriesAttachReport: attachReport,
+        surgeriesSelectedYears: selectedYears,
+        surgeriesSelectedNames: selectedSurgeryNames,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -189,6 +205,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   specialties: state.prescriptionsSelectedSpecialties,
         //   doctorNames: state.prescriptionsSelectedDoctorNames,
         // ),
+        surgeries: SurgeriesSelectionRequestBody(
+          getAll: state.surgeriesGetAll,
+          attachReport: state.surgeriesAttachReport,
+          years: state.surgeriesSelectedYears, //! needs getAll here
+          surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
+        ),
       ),
     );
 
@@ -271,6 +293,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "روشتة الأطباء") {
       result = await _medicalReportRepo.getPrescriptionsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "العمليات الجراحية") {
+      result = await _medicalReportRepo.getSurgeriesFilters(
         language,
         userType,
       );

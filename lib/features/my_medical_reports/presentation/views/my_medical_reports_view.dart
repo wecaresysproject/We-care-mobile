@@ -152,6 +152,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncPrescriptionsSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Surgeries Selection sync
+                                if (dummyCategory.title ==
+                                    "العمليات الجراحية") {
+                                  _syncSurgeriesSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -223,6 +230,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncPrescriptionsSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Surgeries Selection Integration
+                                      if (dummyCategory.title ==
+                                          "العمليات الجراحية") {
+                                        _syncSurgeriesSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -278,6 +292,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "روشتة الأطباء") {
                                         _syncPrescriptionsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Surgeries Selection Integration
+                                      if (dummyCategory.title ==
+                                          "العمليات الجراحية") {
+                                        _syncSurgeriesSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -439,6 +460,20 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedSpecialties: filters["0_التخصص"]?.toList() ?? [],
           selectedDoctorNames: filters["0_اسم الطبيب"]?.toList() ?? [],
+        );
+  }
+
+  void _syncSurgeriesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateSurgeriesSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedSurgeryNames: filters["0_اسم العملية"]?.toList() ?? [],
         );
   }
 }

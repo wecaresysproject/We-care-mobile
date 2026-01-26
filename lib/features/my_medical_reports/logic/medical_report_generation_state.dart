@@ -31,6 +31,10 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> prescriptionsSelectedYears;
   final List<String> prescriptionsSelectedSpecialties;
   final List<String> prescriptionsSelectedDoctorNames;
+  final bool surgeriesGetAll;
+  final bool surgeriesAttachReport;
+  final List<String> surgeriesSelectedNames;
+  final List<String> surgeriesSelectedYears;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -65,6 +69,10 @@ class MedicalReportGenerationState extends Equatable {
     this.prescriptionsSelectedYears = const [],
     this.prescriptionsSelectedSpecialties = const [],
     this.prescriptionsSelectedDoctorNames = const [],
+    this.surgeriesGetAll = false,
+    this.surgeriesAttachReport = false,
+    this.surgeriesSelectedNames = const [],
+    this.surgeriesSelectedYears = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -100,6 +108,10 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? prescriptionsSelectedYears,
     List<String>? prescriptionsSelectedSpecialties,
     List<String>? prescriptionsSelectedDoctorNames,
+    bool? surgeriesGetAll,
+    bool? surgeriesAttachReport,
+    List<String>? surgeriesSelectedNames,
+    List<String>? surgeriesSelectedYears,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -154,6 +166,13 @@ class MedicalReportGenerationState extends Equatable {
           this.prescriptionsSelectedSpecialties,
       prescriptionsSelectedDoctorNames: prescriptionsSelectedDoctorNames ??
           this.prescriptionsSelectedDoctorNames,
+      surgeriesGetAll: surgeriesGetAll ?? this.surgeriesGetAll,
+      surgeriesAttachReport:
+          surgeriesAttachReport ?? this.surgeriesAttachReport,
+      surgeriesSelectedNames:
+          surgeriesSelectedNames ?? this.surgeriesSelectedNames,
+      surgeriesSelectedYears:
+          surgeriesSelectedYears ?? this.surgeriesSelectedYears,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -191,6 +210,10 @@ class MedicalReportGenerationState extends Equatable {
         prescriptionsSelectedYears,
         prescriptionsSelectedSpecialties,
         prescriptionsSelectedDoctorNames,
+        surgeriesGetAll,
+        surgeriesAttachReport,
+        surgeriesSelectedNames,
+        surgeriesSelectedYears,
         medicalReportData,
         categoryFilters,
       ];
