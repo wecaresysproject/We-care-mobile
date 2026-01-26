@@ -159,6 +159,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncSurgeriesSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Genetic Diseases Selection sync
+                                if (dummyCategory.title == "الأمراض الوراثية") {
+                                  _syncGeneticDiseasesSelectionToCubit(
+                                      context, index);
+                                }
+
+                                // Allergies Selection sync
+                                if (dummyCategory.title == "الحساسية") {
+                                  _syncAllergiesSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -474,6 +486,25 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           attachReport: attachReport,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedSurgeryNames: filters["0_اسم العملية"]?.toList() ?? [],
+        );
+  }
+
+  void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    context.read<MedicalReportGenerationCubit>().updateGeneticDiseasesSelection(
+          getAll: getAll,
+          selectedValues: _selectedOptionValues[index]?.toList(),
+        );
+  }
+
+  void _syncAllergiesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateAllergiesSelection(
+          getAll: getAll,
+          selectedTypes: filters["0_النوع"]?.toList() ?? [],
         );
   }
 }

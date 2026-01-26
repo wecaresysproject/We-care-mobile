@@ -155,6 +155,30 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateGeneticDiseasesSelection({
+    bool? getAll,
+    List<String>? selectedValues,
+  }) {
+    emit(
+      state.copyWith(
+        geneticDiseasesGetAll: getAll,
+        geneticDiseasesSelectedValues: selectedValues,
+      ),
+    );
+  }
+
+  void updateAllergiesSelection({
+    bool? getAll,
+    List<String>? selectedTypes,
+  }) {
+    emit(
+      state.copyWith(
+        allergiesGetAll: getAll,
+        allergiesSelectedTypes: selectedTypes,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -210,6 +234,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           attachReport: state.surgeriesAttachReport,
           years: state.surgeriesSelectedYears, //! needs getAll here
           surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
+        ),
+        geneticDiseases: GeneticDiseasesSelectionRequestBody(
+          getAll: state.geneticDiseasesGetAll,
+          diseases: state.geneticDiseasesSelectedValues,
+        ),
+        allergies: AllergiesSelectionRequestBody(
+          getAll: state.allergiesGetAll,
+          types: state.allergiesSelectedTypes,
         ),
       ),
     );
@@ -298,6 +330,16 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "العمليات الجراحية") {
       result = await _medicalReportRepo.getSurgeriesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الأمراض الوراثية") {
+      result = await _medicalReportRepo.getGeneticDiseasesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الحساسية") {
+      result = await _medicalReportRepo.getAllergyFilters(
         language,
         userType,
       );

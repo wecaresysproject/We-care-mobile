@@ -161,48 +161,33 @@ class MedicalReportRepo {
     }
   }
 
-  final dummyMedicalReportResponse = MedicalReportResponseModel(
-    success: true,
-    message: 'تم جلب البيانات الأساسية بنجاح',
-    data: MedicalReportData(
-      basicInformation: [
-        BasicInformationData(
-          label: 'الاسم الكامل',
-          value: 'أحمد محمد علي',
-        ),
-        BasicInformationData(
-          label: 'تاريخ الميلاد',
-          value: '1990-05-15',
-        ),
-        BasicInformationData(
-          label: 'النوع',
-          value: 'ذكر',
-        ),
-        BasicInformationData(
-          label: 'فصيلة الدم',
-          value: 'O+',
-        ),
-        BasicInformationData(
-          label: 'الدولة',
-          value: 'مصر',
-        ),
-        BasicInformationData(
-          label: 'المدينة',
-          value: 'القاهرة',
-        ),
-        BasicInformationData(
-          label: 'نوع العجز الجسدي',
-          value: null,
-        ),
-        BasicInformationData(
-          label: 'التأمين الطبي',
-          value: {
-            'provider': 'التعاونية للتأمين',
-            'policyNumber': 'POL-998877',
-            'expiryDate': '2026-12-31',
-          },
-        ),
-      ],
-    ),
-  );
+  Future<ApiResult<MedicalReportFilterResponseModel>> getGeneticDiseasesFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getGeneticDiseasesFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getAllergyFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getAllergyFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
