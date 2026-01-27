@@ -181,6 +181,26 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateEyesSelection({
+    bool? getAll,
+    bool? attachReport,
+    List<String>? selectedYears,
+    List<String>? selectedRegions,
+    List<String>? selectedSymptoms,
+    List<String>? selectedMedicalProcedures,
+  }) {
+    emit(
+      state.copyWith(
+        eyesGetAll: getAll,
+        eyesAttachReport: attachReport,
+        eyesSelectedYears: selectedYears,
+        eyesSelectedRegions: selectedRegions,
+        eyesSelectedSymptoms: selectedSymptoms,
+        eyesSelectedMedicalProcedures: selectedMedicalProcedures,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -245,6 +265,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   getAll: state.allergiesGetAll,
         //   types: state.allergiesSelectedTypes,
         // ),
+        eyes: EyesSelectionRequestBody(
+          getAll: state.eyesGetAll,
+          attachReport: state.eyesAttachReport,
+          years: state.eyesSelectedYears,
+          regions: state.eyesSelectedRegions,
+          symptoms: state.eyesSelectedSymptoms,
+          medicalProcedures: state.eyesSelectedMedicalProcedures,
+        ),
       ),
     );
     AppLogger.info(
@@ -349,6 +377,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الحساسية") {
       result = await _medicalReportRepo.getAllergyFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "العيون") {
+      result = await _medicalReportRepo.getEyesFilters(
         language,
         userType,
       );

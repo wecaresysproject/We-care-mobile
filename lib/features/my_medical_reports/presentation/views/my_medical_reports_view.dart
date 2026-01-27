@@ -171,6 +171,11 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncAllergiesSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Eyes Selection sync
+                                if (dummyCategory.title == "العيون") {
+                                  _syncEyesSelectionToCubit(context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -256,6 +261,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncGeneticDiseasesSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Eyes Selection Integration
+                                      if (dummyCategory.title == "العيون") {
+                                        _syncEyesSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -323,6 +334,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Allergies Selection sync
                                       if (dummyCategory.title == "الحساسية") {
                                         _syncAllergiesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Eyes Selection sync
+                                      if (dummyCategory.title == "العيون") {
+                                        _syncEyesSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -517,6 +534,22 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     context.read<MedicalReportGenerationCubit>().updateAllergiesSelection(
           getAll: getAll,
           selectedTypes: filters["0_النوع"]?.toList() ?? [],
+        );
+  }
+
+  void _syncEyesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateEyesSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedRegions: filters["0_المنطقه"]?.toList() ?? [],
+          selectedSymptoms: filters["0_الأعراض"]?.toList() ?? [],
+          selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
         );
   }
 }

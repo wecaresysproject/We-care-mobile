@@ -190,6 +190,21 @@ class MedicalReportRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getEyesFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getEyesFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
 
 final dummyMedicalReportResponse = MedicalReportResponseModel(
