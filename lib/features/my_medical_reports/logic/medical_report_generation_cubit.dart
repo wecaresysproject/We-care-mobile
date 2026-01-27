@@ -201,6 +201,26 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateDentalSelection({
+    bool? getAll,
+    bool? attachReport,
+    List<String>? selectedYears,
+    List<String>? selectedTeethNumbers,
+    List<String>? selectedComplaints,
+    List<String>? selectedMedicalProcedures,
+  }) {
+    emit(
+      state.copyWith(
+        dentalGetAll: getAll,
+        dentalAttachReport: attachReport,
+        dentalSelectedYears: selectedYears,
+        dentalSelectedTeethNumbers: selectedTeethNumbers,
+        dentalSelectedComplaints: selectedComplaints,
+        dentalSelectedMedicalProcedures: selectedMedicalProcedures,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -272,6 +292,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           regions: state.eyesSelectedRegions,
           symptoms: state.eyesSelectedSymptoms,
           medicalProcedures: state.eyesSelectedMedicalProcedures,
+        ),
+        teeth: TeethSelectionRequestBody(
+          getAll: state.dentalGetAll,
+          attachReport: state.dentalAttachReport,
+          years: state.dentalSelectedYears,
+          teethNumbers: state.dentalSelectedTeethNumbers,
+          complaints: state.dentalSelectedComplaints,
+          medicalProcedures: state.dentalSelectedMedicalProcedures,
         ),
       ),
     );
@@ -382,6 +410,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "العيون") {
       result = await _medicalReportRepo.getEyesFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الأسنان") {
+      result = await _medicalReportRepo.getTeethFilters(
         language,
         userType,
       );

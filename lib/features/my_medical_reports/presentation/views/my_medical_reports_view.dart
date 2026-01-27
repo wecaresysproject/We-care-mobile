@@ -176,6 +176,11 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 if (dummyCategory.title == "العيون") {
                                   _syncEyesSelectionToCubit(context, index);
                                 }
+
+                                // Dental Selection sync
+                                if (dummyCategory.title == "الأسنان") {
+                                  _syncDentalSelectionToCubit(context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -267,6 +272,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncEyesSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Dental Selection Integration
+                                      if (dummyCategory.title == "الأسنان") {
+                                        _syncDentalSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -340,6 +351,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Eyes Selection sync
                                       if (dummyCategory.title == "العيون") {
                                         _syncEyesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Dental Selection sync
+                                      if (dummyCategory.title == "الأسنان") {
+                                        _syncDentalSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -549,6 +566,22 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedRegions: filters["0_المنطقه"]?.toList() ?? [],
           selectedSymptoms: filters["0_الأعراض"]?.toList() ?? [],
+          selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
+        );
+  }
+
+  void _syncDentalSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateDentalSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedTeethNumbers: filters["0_رقم السن"]?.toList() ?? [],
+          selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
           selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
         );
   }
