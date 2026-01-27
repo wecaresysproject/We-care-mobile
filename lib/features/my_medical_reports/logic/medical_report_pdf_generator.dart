@@ -314,7 +314,6 @@ class MedicalReportPdfGenerator {
     return pw.Row(
       mainAxisSize: pw.MainAxisSize.min,
       children: [
-        // ✅ Label
         pw.Text(
           label,
           style: pw.TextStyle(
@@ -323,17 +322,11 @@ class MedicalReportPdfGenerator {
             fontSize: 14,
           ),
         ),
-
-        // ✅ Logical spacing between label and value
         pw.SizedBox(width: 4),
-
-        // ✅ Separator
         pw.Text(
           " ",
           style: const pw.TextStyle(fontSize: 14),
         ),
-
-        // ✅ Value
         pw.Text(
           value,
           style: const pw.TextStyle(
