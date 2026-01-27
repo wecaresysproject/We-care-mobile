@@ -388,20 +388,30 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الأمراض المزمنة'),
-          _buildTableHeader(['اسم المرض', 'تاريخ التشخيص', 'الحالة']),
-          pw.Divider(),
-          ...diseases.asMap().entries.expand((entry) {
-            final index = entry.key;
-            final disease = entry.value;
-            return [
-              _buildTableRow([
-                disease.diseaseName,
-                disease.formattedDate,
-                disease.diseaseStatus,
-              ]),
-              if (index != diseases.length - 1) pw.Divider(),
-            ];
-          }),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'حالة المرض المزمن',
+              'اسم المرض المزمن',
+              'تاريخ بداية التشخيص',
+            ],
+            data: diseases
+                .map((disease) => [
+                      disease.diseaseStatus,
+                      disease.diseaseName,
+                      disease.formattedDate,
+                    ])
+                .toList(),
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -478,37 +488,48 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الشكاوى المرضية'),
-          _buildTableHeader([
-            'المنطقة',
-            'الشكوى',
-            'طبيعة الشكوى',
-            'حدة الشكوى',
-            'تاريخ الشكوى'
-          ]),
-          pw.Divider(),
-          _buildTableRow([
-            'اليد',
-            'هذا النص مثال لنص اخر يمكن استبداله',
-            'مستمرة',
-            'خفيف',
-            '22/7/2012'
-          ]),
-          pw.Divider(),
-          _buildTableRow([
-            'الرأس',
-            'هذا النص مثال لنص اخر يمكن استبداله',
-            'مستمرة',
-            'خفيف',
-            '22/7/2012'
-          ]),
-          pw.Divider(),
-          _buildTableRow([
-            'الرأس',
-            'صداع نصفي هذا النص مثال',
-            'مستمرة',
-            'خفيف',
-            '22/7/2012'
-          ]),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'المنطقة',
+              'الشكوى',
+              'طبيعة الشكوى',
+              'حدة الشكوى',
+              'تاريخ الشكوى'
+            ],
+            data: [
+              [
+                'اليد',
+                'هذا النص مثال لنص اخر يمكن استبداله',
+                'مستمرة',
+                'خفيف',
+                '22/7/2012'
+              ],
+              [
+                'الرأس',
+                'هذا النص مثال لنص اخر يمكن استبداله',
+                'مستمرة',
+                'خفيف',
+                '22/7/2012'
+              ],
+              [
+                'الرأس',
+                'صداع نصفي هذا النص مثال',
+                'مستمرة',
+                'خفيف',
+                '22/7/2012'
+              ],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -525,17 +546,28 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الأدوية الحالية المستمرة'),
-          _buildTableHeader([
-            'اسم الدواء',
-            'الجرعة',
-            'عدد مرات الجرعة اليومية',
-            'مدة الاستخدام'
-          ]),
-          pw.Divider(),
-          _buildTableRow(
-              ['الكلورديازيبوكسيد', 'قرصين', 'بعد العشاء', '3 أسابيع']),
-          pw.Divider(),
-          _buildTableRow(['نوردازيام', 'قرص', '3 مرات باليوم', '4 أسابيع']),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'اسم الدواء',
+              'الجرعة',
+              'عدد مرات الجرعة اليومية',
+              'مدة الاستخدام'
+            ],
+            data: [
+              ['الكلورديازيبوكسيد', 'قرصين', 'بعد العشاء', '3 أسابيع'],
+              ['نوردازيام', 'قرص', '3 مرات باليوم', '4 أسابيع'],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -552,11 +584,23 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الحساسية'),
-          _buildTableHeader(['المادة', 'رد الفعل', 'الشدة']),
-          pw.Divider(),
-          _buildTableRow(['البنسلين', 'طفح جلدي', 'متوسطة']),
-          pw.Divider(),
-          _buildTableRow(['الفول السوداني', 'ضيق تنفس', 'شديدة']),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: ['المادة', 'رد الفعل', 'الشدة'],
+            data: [
+              ['البنسلين', 'طفح جلدي', 'متوسطة'],
+              ['الفول السوداني', 'ضيق تنفس', 'شديدة'],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -573,12 +617,23 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('العمليات الجراحية'),
-          _buildTableHeader(['العملية', 'التاريخ', 'المستشفى', 'ملاحظات']),
-          pw.Divider(),
-          _buildTableRow(
-              ['استئصال الزائدة', '15/03/2018', 'مستشفى السلام', 'ناجحة']),
-          pw.Divider(),
-          _buildTableRow(['تصحيح نظر', '10/11/2020', 'مستشفى العيون', 'ليزر']),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: ['العملية', 'التاريخ', 'المستشفى', 'ملاحظات'],
+            data: [
+              ['استئصال الزائدة', '15/03/2018', 'مستشفى السلام', 'ناجحة'],
+              ['تصحيح نظر', '10/11/2020', 'مستشفى العيون', 'ليزر'],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -595,13 +650,23 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('نتائج التحاليل'),
-          _buildTableHeader(
-              ['اسم التحليل', 'النتيجة', 'المعدل الطبيعي', 'التاريخ']),
-          pw.Divider(),
-          _buildTableRow(
-              ['Hemoglobin', '13.5 g/dL', '13.0 - 17.0', '20/12/2012']),
-          pw.Divider(),
-          _buildTableRow(['Cholesterol', '190 mg/dL', '< 200', '20/12/2012']),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: ['اسم التحليل', 'النتيجة', 'المعدل الطبيعي', 'التاريخ'],
+            data: [
+              ['Hemoglobin', '13.5 g/dL', '13.0 - 17.0', '20/12/2012'],
+              ['Cholesterol', '190 mg/dL', '< 200', '20/12/2012'],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
       ),
     );
@@ -618,50 +683,24 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('التطعيمات'),
-          _buildTableHeader(['اللقاح', 'التاريخ', 'الجرعة']),
-          pw.Divider(),
-          _buildTableRow(['Influenza', '01/10/2012', '0.5 ml']),
-          pw.Divider(),
-          _buildTableRow(['COVID-19', '15/05/2021', 'الجرعة الأولى']),
+          pw.SizedBox(height: 8),
+          pw.TableHelper.fromTextArray(
+            headers: ['اللقاح', 'التاريخ', 'الجرعة'],
+            data: [
+              ['Influenza', '01/10/2012', '0.5 ml'],
+              ['COVID-19', '15/05/2021', 'الجرعة الأولى'],
+            ],
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 10),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
         ],
-      ),
-    );
-  }
-
-  pw.Widget _buildTableHeader(List<String> cells) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 8.0),
-      child: pw.Row(
-        children: cells
-            .map((cell) => pw.Expanded(
-                  child: pw.Text(
-                    cell,
-                    style: pw.TextStyle(
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 12),
-                    textAlign: pw.TextAlign.center,
-                  ),
-                ))
-            .toList(),
-      ),
-    );
-  }
-
-  pw.Widget _buildTableRow(List<String> cells) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 8.0),
-      child: pw.Row(
-        children: cells
-            .map((cell) => pw.Expanded(
-                  child: pw.Text(
-                    cell,
-                    style: const pw.TextStyle(fontSize: 10),
-                    textAlign: pw.TextAlign.center,
-                  ),
-                ))
-            .toList(),
       ),
     );
   }
