@@ -285,10 +285,7 @@ class MedicalReportPdfGenerator {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Padding(
-            padding: const pw.EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: _buildSectionHeader('البيانات الأساسية'),
-          ),
+          _buildSectionHeader('البيانات الأساسية'),
           pw.SizedBox(height: 10),
           pw.Wrap(
             spacing: 20,
