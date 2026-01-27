@@ -26,8 +26,13 @@ class MedicalReportData {
   @JsonKey(name: 'basicInformation')
   final List<BasicInformationData>? basicInformation;
   final List<VitalSignGroupModel>? vitalSigns;
+  final List<ChronicDiseaseModel>? chronicDiseases;
 
-  MedicalReportData({this.basicInformation, this.vitalSigns});
+  MedicalReportData({
+    this.basicInformation,
+    this.vitalSigns,
+    this.chronicDiseases,
+  });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportDataFromJson(json);
@@ -110,4 +115,31 @@ class VitalReadingModel {
       _$VitalReadingModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$VitalReadingModelToJson(this);
+}
+
+@JsonSerializable()
+class ChronicDiseaseModel {
+  final String diagnosisStartDate;
+  final String diseaseName;
+  final String diseaseStatus;
+
+  ChronicDiseaseModel({
+    required this.diagnosisStartDate,
+    required this.diseaseName,
+    required this.diseaseStatus,
+  });
+
+  String get formattedDate {
+    try {
+      final parsed = DateTime.parse(diagnosisStartDate);
+      return "${parsed.day.toString().padLeft(2, '0')} / ${parsed.month.toString().padLeft(2, '0')} / ${parsed.year}";
+    } catch (_) {
+      return diagnosisStartDate;
+    }
+  }
+
+  factory ChronicDiseaseModel.fromJson(Map<String, dynamic> json) =>
+      _$ChronicDiseaseModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChronicDiseaseModelToJson(this);
 }

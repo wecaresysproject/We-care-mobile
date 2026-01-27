@@ -60,6 +60,8 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildVitalSignsSection(reportData),
           pw.SizedBox(height: 15),
+          _buildChronicDiseasesSection(reportData),
+          pw.SizedBox(height: 15),
           _buildComplaintsSection(),
           pw.SizedBox(height: 15),
           _buildMedicationsSection(),
@@ -363,6 +365,43 @@ class MedicalReportPdfGenerator {
               return _buildVitalGroupCard(group);
             }).toList(),
           ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildChronicDiseasesSection(
+      MedicalReportResponseModel reportData) {
+    final diseases = reportData.data.chronicDiseases;
+
+    if (diseases == null || diseases.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('الأمراض المزمنة'),
+          _buildTableHeader(['اسم المرض', 'تاريخ التشخيص', 'الحالة']),
+          pw.Divider(),
+          ...diseases.asMap().entries.expand((entry) {
+            final index = entry.key;
+            final disease = entry.value;
+            return [
+              _buildTableRow([
+                disease.diseaseName,
+                disease.formattedDate,
+                disease.diseaseStatus,
+              ]),
+              if (index != diseases.length - 1) pw.Divider(),
+            ];
+          }),
         ],
       ),
     );
