@@ -243,7 +243,7 @@ class MedicalReportPdfGenerator {
       child: pw.Text(
         title,
         style: pw.TextStyle(
-          fontSize: 16,
+          fontSize: 18,
           fontWeight: pw.FontWeight.bold,
           color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
         ),
@@ -303,9 +303,9 @@ class MedicalReportPdfGenerator {
             style: pw.TextStyle(
                 color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 12)),
+                fontSize: 14)),
         pw.SizedBox(width: 8),
-        pw.Text(value, style: const pw.TextStyle(fontSize: 12)),
+        pw.Text(value, style: const pw.TextStyle(fontSize: 14)),
       ],
     );
   }
@@ -355,7 +355,7 @@ class MedicalReportPdfGenerator {
             style: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               fontWeight: pw.FontWeight.bold,
-              fontSize: 10,
+              fontSize: 12,
             ),
           ),
           pw.SizedBox(height: 8),
@@ -387,7 +387,7 @@ class MedicalReportPdfGenerator {
                       reading.formattedDate,
                       style: const pw.TextStyle(
                         fontSize: 12,
-                        color: PdfColors.grey,
+                        color: PdfColors.black,
                       ),
                     ),
                   ],
