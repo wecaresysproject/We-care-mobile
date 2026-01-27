@@ -152,7 +152,7 @@ class MedicalReportPdfGenerator {
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 15),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 25),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
@@ -160,8 +160,8 @@ class MedicalReportPdfGenerator {
           pw.Row(
             children: [
               pw.Container(
-                width: 50,
-                height: 50,
+                width: 70,
+                height: 70,
                 decoration: pw.BoxDecoration(
                   shape: pw.BoxShape.circle,
                   border: pw.Border.all(color: PdfColors.white, width: 2),

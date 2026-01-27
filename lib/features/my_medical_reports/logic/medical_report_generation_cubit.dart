@@ -241,10 +241,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //     drugNames: state.medicineExpiredNames,
         //   ),
         // ),
-        // chronicDiseases: ChronicDiseasesSelectionRequestBody(
-        //   getAll: state.chronicDiseasesGetAll,
-        //   diseases: state.chronicDiseasesSelectedValues,
-        // ),
+        chronicDiseases: ChronicDiseasesSelectionRequestBody(
+          getAll: state.chronicDiseasesGetAll,
+          diseases: state.chronicDiseasesSelectedValues,
+        ),
         // urgentComplaints: UrgentComplaintsSelectionRequestBody(
         //   getAll: state.urgentComplaintsGetAll,
         //   years: state.urgentComplaintsSelectedYears,
@@ -285,22 +285,22 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   getAll: state.allergiesGetAll,
         //   types: state.allergiesSelectedTypes,
         // ),
-        eyes: EyesSelectionRequestBody(
-          getAll: state.eyesGetAll,
-          attachReport: state.eyesAttachReport,
-          years: state.eyesSelectedYears,
-          regions: state.eyesSelectedRegions,
-          symptoms: state.eyesSelectedSymptoms,
-          medicalProcedures: state.eyesSelectedMedicalProcedures,
-        ),
-        teeth: TeethSelectionRequestBody(
-          getAll: state.dentalGetAll,
-          attachReport: state.dentalAttachReport,
-          years: state.dentalSelectedYears,
-          teethNumbers: state.dentalSelectedTeethNumbers,
-          complaints: state.dentalSelectedComplaints,
-          medicalProcedures: state.dentalSelectedMedicalProcedures,
-        ),
+        // eyes: EyesSelectionRequestBody(
+        //   getAll: state.eyesGetAll,
+        //   attachReport: state.eyesAttachReport,
+        //   years: state.eyesSelectedYears,
+        //   regions: state.eyesSelectedRegions,
+        //   symptoms: state.eyesSelectedSymptoms,
+        //   medicalProcedures: state.eyesSelectedMedicalProcedures,
+        // ),
+        // teeth: TeethSelectionRequestBody(
+        //   getAll: state.dentalGetAll,
+        //   attachReport: state.dentalAttachReport,
+        //   years: state.dentalSelectedYears,
+        //   teethNumbers: state.dentalSelectedTeethNumbers,
+        //   complaints: state.dentalSelectedComplaints,
+        //   medicalProcedures: state.dentalSelectedMedicalProcedures,
+        // ),
       ),
     );
     AppLogger.info(
