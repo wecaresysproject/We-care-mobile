@@ -300,7 +300,8 @@ class MedicalReportPdfGenerator {
                 padding: pw.EdgeInsets.only(
                   left: index == 0 ? 0 : 20, // ✅ أول عنصر بدون spacing
                 ),
-                child: _buildInfoItem('${info.label}:', info.value.toString()),
+                child: _buildInfoItem(
+                    '${info.shortLabel} :', info.value.toString()),
               );
             }),
           )
@@ -313,13 +314,32 @@ class MedicalReportPdfGenerator {
     return pw.Row(
       mainAxisSize: pw.MainAxisSize.min,
       children: [
-        pw.Text(label,
-            style: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 14)),
-        pw.SizedBox(width: 8),
-        pw.Text(value, style: const pw.TextStyle(fontSize: 14)),
+        // ✅ Label
+        pw.Text(
+          label,
+          style: pw.TextStyle(
+            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+            fontWeight: pw.FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+
+        // ✅ Logical spacing between label and value
+        pw.SizedBox(width: 4),
+
+        // ✅ Separator
+        pw.Text(
+          " ",
+          style: const pw.TextStyle(fontSize: 14),
+        ),
+
+        // ✅ Value
+        pw.Text(
+          value,
+          style: const pw.TextStyle(
+            fontSize: 14,
+          ),
+        ),
       ],
     );
   }

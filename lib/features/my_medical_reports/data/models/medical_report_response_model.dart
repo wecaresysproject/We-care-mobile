@@ -51,6 +51,17 @@ class BasicInformationData {
   Map<String, dynamic> toJson() => _$BasicInformationDataToJson(this);
 }
 
+extension BasicInfoLabelExtension on BasicInformationData {
+  String get shortLabel {
+    switch (label) {
+      case "نوع العجز الجسدي":
+        return "نوع العجز";
+      default:
+        return label;
+    }
+  }
+}
+
 @JsonSerializable()
 class VitalSignGroupModel {
   final String categoryName;
