@@ -278,6 +278,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncDentalSelectionToCubit(
                                             context, index);
                                       }
+                                      // Urgent Complaints Selection Integration
+                                      if (dummyCategory.title ==
+                                          "الشكاوى الطارئة") {
+                                        _syncUrgentComplaintsSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -357,6 +363,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Dental Selection sync
                                       if (dummyCategory.title == "الأسنان") {
                                         _syncDentalSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Urgent Complaints Selection sync
+                                      if (dummyCategory.title ==
+                                          "الشكاوى الطارئة") {
+                                        _syncUrgentComplaintsSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -474,6 +487,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedOrgans: filters["0_العضو"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
+          selectedOtherComplaints:
+              filters["0_شكاوي إضافية أخرى"]?.toList() ?? [],
         );
   }
 

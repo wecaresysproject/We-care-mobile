@@ -169,12 +169,14 @@ class UrgentComplaintsSelectionRequestBody {
   final List<String> years;
   final List<String> organs;
   final List<String> complaints;
+  final List<String> otherComplaints;
 
   UrgentComplaintsSelectionRequestBody({
     required this.getAll,
     required this.years,
     required this.organs,
     required this.complaints,
+    required this.otherComplaints,
   });
 
   factory UrgentComplaintsSelectionRequestBody.fromJson(
