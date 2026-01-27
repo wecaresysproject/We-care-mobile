@@ -46,20 +46,29 @@ class MedicalReportPdfGenerator {
           textDirection: pw.TextDirection.rtl,
           buildBackground: (context) => pw.FullPage(
             ignoreMargins: true,
-            child: pw.Container(color: PdfColors.white),
+            child: pw.Container(color: PdfColors.grey100),
           ),
         ),
         header: (context) => _buildHeader(profileImageProvider, reportData),
         build: (context) => [
           _buildBasicInfoSection(reportData),
+          pw.SizedBox(height: 15),
           _buildVitalSignsSection(reportData),
+          pw.SizedBox(height: 15),
           _buildComplaintsSection(),
+          pw.SizedBox(height: 15),
           _buildMedicationsSection(),
+          pw.SizedBox(height: 15),
           _buildAllergiesSection(),
+          pw.SizedBox(height: 15),
           _buildSurgeriesSection(),
+          pw.SizedBox(height: 15),
           _buildLabResultsSection(),
+          pw.SizedBox(height: 15),
           _buildVaccinationsSection(),
+          pw.SizedBox(height: 15),
           _buildXRaySection(xRayImages),
+          pw.SizedBox(height: 15),
           _buildPrescriptionsSection(prescriptionImageProvider),
         ],
       ),
@@ -72,7 +81,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -112,7 +121,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -266,32 +275,40 @@ class MedicalReportPdfGenerator {
             info.value.toString() != "لم يتم ادخال بيانات")
         .toList();
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.Padding(
-          padding: const pw.EdgeInsets.fromLTRB(15, 15, 15, 0),
-          child: _buildSectionHeader('البيانات الأساسية'),
-        ),
-        pw.SizedBox(height: 10),
-        pw.Wrap(
-          spacing: 20,
-          runSpacing: 20,
-          children: List.generate(displayInfo.length, (index) {
-            final info = displayInfo[index];
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(top: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Padding(
+            padding: const pw.EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: _buildSectionHeader('البيانات الأساسية'),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            children: List.generate(displayInfo.length, (index) {
+              final info = displayInfo[index];
 
-            if (info.label == 'الاسم') {
-              return pw.SizedBox.shrink();
-            }
-            return pw.Padding(
-              padding: pw.EdgeInsets.only(
-                left: index == 0 ? 0 : 20, // ✅ أول عنصر بدون spacing
-              ),
-              child: _buildInfoItem('${info.label}:', info.value.toString()),
-            );
-          }),
-        )
-      ],
+              if (info.label == 'الاسم') {
+                return pw.SizedBox.shrink();
+              }
+              return pw.Padding(
+                padding: pw.EdgeInsets.only(
+                  left: index == 0 ? 0 : 20, // ✅ أول عنصر بدون spacing
+                ),
+                child: _buildInfoItem('${info.label}:', info.value.toString()),
+              );
+            }),
+          )
+        ],
+      ),
     );
   }
 
@@ -320,7 +337,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -404,7 +421,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -451,7 +468,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -478,7 +495,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -499,7 +516,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -521,7 +538,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
@@ -544,7 +561,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromInt(AppColorsManager.scaffoldBackGroundColor.value),
+        color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
       ),
       child: pw.Column(
