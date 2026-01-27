@@ -19,13 +19,15 @@ class MedicalReportPdfGenerator {
     // Load images
     final profileImageProvider = await getUserProfileImage(reportData);
 
-    final prescriptionImage = await rootBundle.load('assets/images/report.png');
     final prescriptionImageProvider =
-        pw.MemoryImage(prescriptionImage.buffer.asUint8List());
+        await _loadAssetImage('assets/images/report.png');
+
+    final logoImageProvider =
+        await _loadAssetImage('assets/images/we_care_logo.png');
 
     // Load X-Ray images (simulating multiple images)
-    final xRayImage = await rootBundle.load('assets/images/x_ray_sample.png');
-    final xRayImageProvider = pw.MemoryImage(xRayImage.buffer.asUint8List());
+    final xRayImageProvider =
+        await _loadAssetImage('assets/images/x_ray_sample.png');
     final xRayImages = [
       xRayImageProvider,
       xRayImageProvider,
@@ -46,10 +48,13 @@ class MedicalReportPdfGenerator {
           textDirection: pw.TextDirection.rtl,
           buildBackground: (context) => pw.FullPage(
             ignoreMargins: true,
-            child: pw.Container(color: PdfColors.grey100),
+            child: pw.Container(
+              color: PdfColor.fromInt(0xffEBEBEB),
+            ),
           ),
         ),
-        header: (context) => _buildHeader(profileImageProvider, reportData),
+        header: (context) =>
+            _buildHeader(profileImageProvider, logoImageProvider, reportData),
         build: (context) => [
           _buildBasicInfoSection(reportData),
           pw.SizedBox(height: 15),
@@ -151,8 +156,8 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildHeader(
-      pw.ImageProvider profileImage, MedicalReportResponseModel reportData) {
+  pw.Widget _buildHeader(pw.ImageProvider profileImage,
+      pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
     final name = reportData.data.basicInformation
             ?.firstWhere((info) => info.label == 'الاسم',
                 orElse: () => BasicInformationData(label: '', value: ''))
@@ -216,22 +221,18 @@ class MedicalReportPdfGenerator {
             ],
           ),
 
-          // Left Side: Logo (Text for now as icon font might be tricky)
+          // Left Side: Logo
           pw.Container(
-            padding: const pw.EdgeInsets.all(8),
+            padding: const pw.EdgeInsets.all(6),
             decoration: pw.BoxDecoration(
               color: PdfColors.white,
-              borderRadius: pw.BorderRadius.circular(8),
+              borderRadius: pw.BorderRadius.circular(12),
             ),
-            child: pw.Column(
-              children: [
-                pw.Text('WE CARE SYS',
-                    style: pw.TextStyle(
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 8)),
-              ],
+            child: pw.Image(
+              logoImage,
+              width: 50,
+              height: 50,
+              fit: pw.BoxFit.contain,
             ),
           ),
         ],
@@ -643,10 +644,13 @@ class MedicalReportPdfGenerator {
       } catch (_) {}
     }
 
-    if (profileImageProvider == null) {
-      final profileImage = await rootBundle.load('assets/images/ai_image.png');
-      profileImageProvider = pw.MemoryImage(profileImage.buffer.asUint8List());
-    }
+    profileImageProvider ??=
+        await _loadAssetImage('assets/images/ai_image.png');
     return profileImageProvider;
+  }
+
+  Future<pw.ImageProvider> _loadAssetImage(String path) async {
+    final image = await rootBundle.load(path);
+    return pw.MemoryImage(image.buffer.asUint8List());
   }
 }
