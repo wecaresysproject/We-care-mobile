@@ -501,7 +501,7 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // ✅ Title Header
-          _buildSectionHeader('الشكاوي المرضية'),
+          _buildSectionHeader('الشكاوي الطارئة'),
           pw.SizedBox(height: 12),
 
           // ✅ Header Row Titles
@@ -702,11 +702,29 @@ class MedicalReportPdfGenerator {
     return pw.Expanded(
       flex: flex,
       child: pw.Center(
-        child: image != null
-            ? pw.Container(
-                width: 50,
-                height: 50,
-                child: pw.Image(image),
+        child: (imageUrl != null && imageUrl.isNotEmpty)
+            ? pw.Column(
+                mainAxisSize: pw.MainAxisSize.min,
+                children: [
+                  if (image != null)
+                    // pw.Container(
+                    //   width: 40,
+                    //   height: 40,
+                    //   margin: const pw.EdgeInsets.only(bottom: 2),
+                    //   child: pw.Image(image),
+                    // ),
+                    pw.UrlLink(
+                      destination: imageUrl,
+                      child: pw.Text(
+                        "اضغط للتحميل",
+                        style: pw.TextStyle(
+                          fontSize: 10,
+                          color: PdfColors.blue700,
+                          decoration: pw.TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                ],
               )
             : pw.Text(
                 "لا يوجد",
