@@ -18,6 +18,7 @@ class MedicalReportPdfGenerator {
 
     // Load images
     final profileImageProvider = await getUserProfileImage(reportData);
+    final complaintImages = await _loadComplaintImages(reportData);
 
     final prescriptionImageProvider =
         await _loadAssetImage('assets/images/report.png');
@@ -62,7 +63,7 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildChronicDiseasesSection(reportData),
           pw.SizedBox(height: 15),
-          _buildComplaintsSection(reportData),
+          _buildComplaintsSection(reportData, complaintImages),
           pw.SizedBox(height: 15),
           _buildMedicationsSection(),
           pw.SizedBox(height: 15),
@@ -480,7 +481,8 @@ class MedicalReportPdfGenerator {
   }
 // ✅ Complaints Section (NO TABLES)
 
-  pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData) {
+  pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> complaintImages) {
     final module = reportData.data.complaintsModule;
 
     if (module == null ||
@@ -510,7 +512,7 @@ class MedicalReportPdfGenerator {
           ...module.mainComplaints!.map((complaint) {
             return pw.Column(
               children: [
-                _buildComplaintRow(complaint),
+                _buildComplaintRow(complaint, complaintImages),
                 pw.Divider(color: PdfColors.grey300),
               ],
             );
@@ -534,7 +536,7 @@ class MedicalReportPdfGenerator {
             ...module.additionalComplaints!.map((complaint) {
               return pw.Column(
                 children: [
-                  _buildAdditionalComplaintRow(complaint),
+                  _buildAdditionalComplaintRow(complaint, complaintImages),
                   pw.Divider(color: PdfColors.grey300),
                 ],
               );
@@ -559,6 +561,7 @@ class MedicalReportPdfGenerator {
           _buildHeaderCell("العضو", flex: 2),
           _buildHeaderCell("طبيعة الشكوى", flex: 2),
           _buildHeaderCell("حدة الشكوى", flex: 2),
+          _buildHeaderCell("صورة الشكوي", flex: 2),
         ],
       ),
     );
@@ -568,7 +571,8 @@ class MedicalReportPdfGenerator {
 // ✅ Complaint Row (Main Complaints)
 //////////////////////////////////////////////////////////////////
 
-  pw.Widget _buildComplaintRow(MainComplaint complaint) {
+  pw.Widget _buildComplaintRow(
+      MainComplaint complaint, Map<String, pw.MemoryImage> complaintImages) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 8),
       child: pw.Row(
@@ -596,6 +600,7 @@ class MedicalReportPdfGenerator {
             complaint.severity,
             flex: 2,
           ),
+          _buildImageCell(complaint.complaintImage, complaintImages, flex: 2),
         ],
       ),
     );
@@ -612,6 +617,7 @@ class MedicalReportPdfGenerator {
         children: [
           _buildHeaderCell("التاريخ", flex: 2),
           _buildHeaderCell("الشكوى", flex: 6),
+          _buildHeaderCell("صورة الشكوي", flex: 2),
         ],
       ),
     );
@@ -621,7 +627,8 @@ class MedicalReportPdfGenerator {
 // ✅ Complaint Row (Additional Complaints)
 //////////////////////////////////////////////////////////////////
 
-  pw.Widget _buildAdditionalComplaintRow(AdditionalComplaint complaint) {
+  pw.Widget _buildAdditionalComplaintRow(AdditionalComplaint complaint,
+      Map<String, pw.MemoryImage> complaintImages) {
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 8),
       child: pw.Row(
@@ -636,6 +643,7 @@ class MedicalReportPdfGenerator {
             flex: 6,
             alignRight: true,
           ),
+          _buildImageCell(complaint.complaintImage, complaintImages, flex: 2),
         ],
       ),
     );
@@ -682,6 +690,31 @@ class MedicalReportPdfGenerator {
           textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
           softWrap: true,
         ),
+      ),
+    );
+  }
+
+  pw.Widget _buildImageCell(
+      String? imageUrl, Map<String, pw.MemoryImage> complaintImages,
+      {required int flex}) {
+    final image = (imageUrl != null) ? complaintImages[imageUrl] : null;
+
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Center(
+        child: image != null
+            ? pw.Container(
+                width: 50,
+                height: 50,
+                child: pw.Image(image),
+              )
+            : pw.Text(
+                "لا يوجد",
+                style: const pw.TextStyle(
+                  fontSize: 12,
+                  color: PdfColors.grey600,
+                ),
+              ),
       ),
     );
   }
@@ -1044,5 +1077,38 @@ class MedicalReportPdfGenerator {
   Future<pw.ImageProvider> _loadAssetImage(String path) async {
     final image = await rootBundle.load(path);
     return pw.MemoryImage(image.buffer.asUint8List());
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadComplaintImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final module = reportData.data.complaintsModule;
+    if (module == null) return images;
+
+    final urls = <String>{};
+    if (module.mainComplaints != null) {
+      for (var c in module.mainComplaints!) {
+        if (c.complaintImage != null && c.complaintImage!.isNotEmpty) {
+          urls.add(c.complaintImage!);
+        }
+      }
+    }
+    if (module.additionalComplaints != null) {
+      for (var c in module.additionalComplaints!) {
+        if (c.complaintImage != null && c.complaintImage!.isNotEmpty) {
+          urls.add(c.complaintImage!);
+        }
+      }
+    }
+
+    for (var url in urls) {
+      try {
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (_) {
+        // Log image load failure if needed
+      }
+    }
+    return images;
   }
 }
