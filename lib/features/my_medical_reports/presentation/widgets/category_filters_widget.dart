@@ -96,14 +96,6 @@ class _FilterSection extends StatefulWidget {
 }
 
 class _FilterSectionState extends State<_FilterSection> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -111,27 +103,17 @@ class _FilterSectionState extends State<_FilterSection> {
       children: [
         _buildHeader(widget.title),
         verticalSpacing(8),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: 120.h),
-          child: Scrollbar(
-            controller: _scrollController,
-            thumbVisibility: true,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Wrap(
-                spacing: 8.w,
-                runSpacing: 8.h,
-                children: widget.values.map((value) {
-                  final isSelected = widget.selectedValues.contains(value);
-                  return _buildFilterChip(
-                    value,
-                    isSelected,
-                    () => widget.onToggle(value),
-                  );
-                }).toList(),
-              ),
-            ),
-          ),
+        Wrap(
+          spacing: 8.w,
+          runSpacing: 8.h,
+          children: widget.values.map((value) {
+            final isSelected = widget.selectedValues.contains(value);
+            return _buildFilterChip(
+              value,
+              isSelected,
+              () => widget.onToggle(value),
+            );
+          }).toList(),
         ),
       ],
     );
