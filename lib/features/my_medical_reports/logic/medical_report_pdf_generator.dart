@@ -62,7 +62,7 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildChronicDiseasesSection(reportData),
           pw.SizedBox(height: 15),
-          _buildComplaintsSection(),
+          _buildComplaintsSection(reportData),
           pw.SizedBox(height: 15),
           _buildMedicationsSection(),
           pw.SizedBox(height: 15),
@@ -479,60 +479,165 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildComplaintsSection() {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(15),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.white,
-        borderRadius: pw.BorderRadius.circular(16),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader('الشكاوى المرضية'),
+  pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData) {
+    final module = reportData.data.complaintsModule;
+
+    if (module == null ||
+        ((module.mainComplaints == null || module.mainComplaints!.isEmpty) &&
+            (module.additionalComplaints == null ||
+                module.additionalComplaints!.isEmpty))) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('الشكاوي المرضية'),
+        if (module.mainComplaints != null &&
+            module.mainComplaints!.isNotEmpty) ...[
           pw.SizedBox(height: 8),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'المنطقة',
-              'الشكوى',
-              'طبيعة الشكوى',
-              'حدة الشكوى',
-              'تاريخ الشكوى'
-            ],
-            data: [
-              [
-                'اليد',
-                'هذا النص مثال لنص اخر يمكن استبداله',
-                'مستمرة',
-                'خفيف',
-                '22/7/2012'
-              ],
-              [
-                'الرأس',
-                'هذا النص مثال لنص اخر يمكن استبداله',
-                'مستمرة',
-                'خفيف',
-                '22/7/2012'
-              ],
-              [
-                'الرأس',
-                'صداع نصفي هذا النص مثال',
-                'مستمرة',
-                'خفيف',
-                '22/7/2012'
-              ],
-            ],
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          pw.Text(
+            'الشكاوى الرئيسية',
+            style: pw.TextStyle(
+              fontSize: 14,
               fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
+          ),
+          pw.SizedBox(height: 5),
+          pw.Table(
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1.2), // التاريخ
+              1: const pw.FlexColumnWidth(3), // الشكوى
+              2: const pw.FlexColumnWidth(1.5), // العضو
+              // 3: const pw.FlexColumnWidth(1.5), // طبيعة الشكوى
+              // 4: const pw.FlexColumnWidth(1.2), // حدة الشكوي
+            },
+            children: [
+              // Header Row
+              pw.TableRow(
+                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                children: [
+                  'التاريخ',
+                  'الشكوى',
+                  'العضو',
+                  // 'طبيعة الشكوى',
+                  'حدة الشكوي',
+                ]
+                    .map((header) => pw.Padding(
+                          padding: const pw.EdgeInsets.all(6),
+                          child: pw.Center(
+                            child: pw.Text(
+                              header,
+                              style: pw.TextStyle(
+                                color: PdfColor.fromInt(
+                                    AppColorsManager.mainDarkBlue.value),
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+              // Data Rows
+              ...module.mainComplaints!.map((c) {
+                return pw.TableRow(
+                  children: [
+                    _buildTableCell(c.date, maxLines: 1),
+                    _buildTableCell(
+                      c.complaintTitle,
+                      align: pw.Alignment.centerRight,
+                      maxLines: 4, // ✅ أطول حقل
+                    ),
+                    _buildTableCell(c.organ, maxLines: 1),
+                    // _buildTableCell(c.complaintNature, maxLines: 2),
+                    // _buildTableCell(c.severity, maxLines: 1),
+                  ],
+                );
+              }),
+            ],
           ),
         ],
+        if (module.additionalComplaints != null &&
+            module.additionalComplaints!.isNotEmpty) ...[
+          pw.SizedBox(height: 15),
+          pw.Text(
+            'الشكاوى الإضافية',
+            style: pw.TextStyle(
+              fontSize: 14,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+            ),
+          ),
+          pw.SizedBox(height: 5),
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            columnWidths: {
+              0: const pw.FlexColumnWidth(3), // الشكوي
+              1: const pw.FlexColumnWidth(1.2), // التاريخ
+            },
+            children: [
+              // Header Row
+              pw.TableRow(
+                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                children: ['الشكوي', 'التاريخ']
+                    .map(
+                      (header) => pw.Padding(
+                        padding: const pw.EdgeInsets.all(6),
+                        child: pw.Center(
+                          child: pw.Text(
+                            header,
+                            style: pw.TextStyle(
+                              color: PdfColor.fromInt(
+                                  AppColorsManager.mainDarkBlue.value),
+                              fontWeight: pw.FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+              // Data Rows
+              ...module.additionalComplaints!.map((c) {
+                return pw.TableRow(
+                  children: [
+                    _buildTableCell(
+                      c.complaintTitle,
+                      align: pw.Alignment.centerRight,
+                      maxLines: 4, // ✅ أطول حقل
+                    ),
+                    _buildTableCell(c.date, maxLines: 1),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  pw.Widget _buildTableCell(
+    String text, {
+    pw.Alignment align = pw.Alignment.center,
+    int maxLines = 2,
+  }) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Container(
+        alignment: align,
+        child: pw.Text(
+          text,
+          style: const pw.TextStyle(fontSize: 14),
+          maxLines: maxLines, // ✅ الحل الرئيسي
+          // overflow: pw.TextOverflow., // ✅ يمنع الصف يتمدد بلا نهاية
+          overflow: pw.TextOverflow.clip,
+          softWrap: true,
+        ),
       ),
     );
   }

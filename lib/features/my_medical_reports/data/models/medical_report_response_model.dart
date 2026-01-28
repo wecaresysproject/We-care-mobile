@@ -27,11 +27,13 @@ class MedicalReportData {
   final List<BasicInformationData>? basicInformation;
   final List<VitalSignGroupModel>? vitalSigns;
   final List<ChronicDiseaseModel>? chronicDiseases;
+  final ComplaintsModule? complaintsModule;
 
   MedicalReportData({
     this.basicInformation,
     this.vitalSigns,
     this.chronicDiseases,
+    this.complaintsModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -142,4 +144,72 @@ class ChronicDiseaseModel {
       _$ChronicDiseaseModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChronicDiseaseModelToJson(this);
+}
+
+@JsonSerializable()
+class ComplaintsModule {
+  final List<MainComplaint>? mainComplaints;
+  final List<AdditionalComplaint>? additionalComplaints;
+
+  ComplaintsModule({
+    this.mainComplaints,
+    this.additionalComplaints,
+  });
+
+  factory ComplaintsModule.fromJson(Map<String, dynamic> json) =>
+      _$ComplaintsModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ComplaintsModuleToJson(this);
+}
+
+@JsonSerializable()
+class MainComplaint {
+  @JsonKey(name: "dateOfComplaintOnset")
+  final String date;
+  final String? complaintImage;
+  @JsonKey(name: "partOfPlaceOfComplaints")
+  final String organ;
+  @JsonKey(name: "symptoms_Complaint")
+  final String complaintTitle;
+  @JsonKey(name: "natureOfComplaint")
+  final String complaintNature;
+  @JsonKey(name: "severityOfComplaint")
+  final String severity;
+
+  MainComplaint({
+    required this.date,
+    this.complaintImage,
+    required this.organ,
+    required this.complaintTitle,
+    required this.complaintNature,
+    required this.severity,
+  });
+
+  factory MainComplaint.fromJson(Map<String, dynamic> json) =>
+      _$MainComplaintFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MainComplaintToJson(this);
+}
+
+@JsonSerializable()
+class AdditionalComplaint {
+  @JsonKey(name: "dateOfComplaintOnset")
+  final String date;
+
+  @JsonKey(name: "complaintImage")
+  final String? complaintImage;
+
+  @JsonKey(name: "additionalMedicalComplains")
+  final String complaintTitle;
+
+  AdditionalComplaint({
+    required this.date,
+    this.complaintImage,
+    required this.complaintTitle,
+  });
+
+  factory AdditionalComplaint.fromJson(Map<String, dynamic> json) =>
+      _$AdditionalComplaintFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdditionalComplaintToJson(this);
 }

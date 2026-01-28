@@ -25,7 +25,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'chronicDiseases')
   final ChronicDiseasesSelectionRequestBody? chronicDiseases;
 
-  @JsonKey(name: 'urgentComplaints')
+  @JsonKey(name: 'emergencyComplaints')
   final UrgentComplaintsSelectionRequestBody? urgentComplaints;
 
   @JsonKey(name: 'radiology')
