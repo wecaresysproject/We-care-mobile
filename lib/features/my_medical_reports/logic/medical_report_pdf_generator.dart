@@ -478,169 +478,376 @@ class MedicalReportPdfGenerator {
       ),
     );
   }
+// ✅ Complaints Section (NO TABLES)
 
   pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData) {
     final module = reportData.data.complaintsModule;
 
     if (module == null ||
-        ((module.mainComplaints == null || module.mainComplaints!.isEmpty) &&
-            (module.additionalComplaints == null ||
-                module.additionalComplaints!.isEmpty))) {
+        module.mainComplaints == null ||
+        module.mainComplaints!.isEmpty) {
       return pw.SizedBox.shrink();
     }
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader('الشكاوي المرضية'),
-        if (module.mainComplaints != null &&
-            module.mainComplaints!.isNotEmpty) ...[
-          pw.SizedBox(height: 8),
-          pw.Text(
-            'الشكاوى الرئيسية',
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          // ✅ Title Header
+          _buildSectionHeader('الشكاوي المرضية'),
+          pw.SizedBox(height: 12),
+
+          // ✅ Header Row Titles
+          _buildComplaintsHeaderRow(),
+          pw.Divider(color: PdfColors.grey400),
+
+          // ✅ Main Complaints Rows
+          ...module.mainComplaints!.map((complaint) {
+            return pw.Column(
+              children: [
+                _buildComplaintRow(complaint),
+                pw.Divider(color: PdfColors.grey300),
+              ],
+            );
+          }),
+
+          // ✅ Additional Complaints (if exists)
+          if (module.additionalComplaints != null &&
+              module.additionalComplaints!.isNotEmpty) ...[
+            pw.SizedBox(height: 20),
+            pw.Text(
+              "شكاوى إضافية",
+              style: pw.TextStyle(
+                fontSize: 15,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              ),
             ),
-          ),
-          pw.SizedBox(height: 5),
-          pw.Table(
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            columnWidths: {
-              0: const pw.FlexColumnWidth(1.2), // التاريخ
-              1: const pw.FlexColumnWidth(3), // الشكوى
-              2: const pw.FlexColumnWidth(1.5), // العضو
-              // 3: const pw.FlexColumnWidth(1.5), // طبيعة الشكوى
-              // 4: const pw.FlexColumnWidth(1.2), // حدة الشكوي
-            },
-            children: [
-              // Header Row
-              pw.TableRow(
-                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            pw.SizedBox(height: 10),
+            _buildAdditionalComplaintsHeaderRow(),
+            pw.Divider(color: PdfColors.grey400),
+            ...module.additionalComplaints!.map((complaint) {
+              return pw.Column(
                 children: [
-                  'التاريخ',
-                  'الشكوى',
-                  'العضو',
-                  // 'طبيعة الشكوى',
-                  'حدة الشكوي',
-                ]
-                    .map((header) => pw.Padding(
-                          padding: const pw.EdgeInsets.all(6),
-                          child: pw.Center(
-                            child: pw.Text(
-                              header,
-                              style: pw.TextStyle(
-                                color: PdfColor.fromInt(
-                                    AppColorsManager.mainDarkBlue.value),
-                                fontWeight: pw.FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ))
-                    .toList(),
-              ),
-              // Data Rows
-              ...module.mainComplaints!.map((c) {
-                return pw.TableRow(
-                  children: [
-                    _buildTableCell(c.date, maxLines: 1),
-                    _buildTableCell(
-                      c.complaintTitle,
-                      align: pw.Alignment.centerRight,
-                      maxLines: 4, // ✅ أطول حقل
-                    ),
-                    _buildTableCell(c.organ, maxLines: 1),
-                    // _buildTableCell(c.complaintNature, maxLines: 2),
-                    // _buildTableCell(c.severity, maxLines: 1),
-                  ],
-                );
-              }),
-            ],
-          ),
+                  _buildAdditionalComplaintRow(complaint),
+                  pw.Divider(color: PdfColors.grey300),
+                ],
+              );
+            }),
+          ]
         ],
-        if (module.additionalComplaints != null &&
-            module.additionalComplaints!.isNotEmpty) ...[
-          pw.SizedBox(height: 15),
-          pw.Text(
-            'الشكاوى الإضافية',
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            ),
-          ),
-          pw.SizedBox(height: 5),
-          pw.Table(
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            columnWidths: {
-              0: const pw.FlexColumnWidth(3), // الشكوي
-              1: const pw.FlexColumnWidth(1.2), // التاريخ
-            },
-            children: [
-              // Header Row
-              pw.TableRow(
-                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
-                children: ['الشكوي', 'التاريخ']
-                    .map(
-                      (header) => pw.Padding(
-                        padding: const pw.EdgeInsets.all(6),
-                        child: pw.Center(
-                          child: pw.Text(
-                            header,
-                            style: pw.TextStyle(
-                              color: PdfColor.fromInt(
-                                  AppColorsManager.mainDarkBlue.value),
-                              fontWeight: pw.FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-              // Data Rows
-              ...module.additionalComplaints!.map((c) {
-                return pw.TableRow(
-                  children: [
-                    _buildTableCell(
-                      c.complaintTitle,
-                      align: pw.Alignment.centerRight,
-                      maxLines: 4, // ✅ أطول حقل
-                    ),
-                    _buildTableCell(c.date, maxLines: 1),
-                  ],
-                );
-              }),
-            ],
-          ),
-        ],
-      ],
+      ),
     );
   }
 
-  pw.Widget _buildTableCell(
-    String text, {
-    pw.Alignment align = pw.Alignment.center,
-    int maxLines = 2,
-  }) {
+//////////////////////////////////////////////////////////////////
+// ✅ Header Row (Main Complaints)
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildComplaintsHeaderRow() {
     return pw.Padding(
-      padding: const pw.EdgeInsets.all(6),
-      child: pw.Container(
-        alignment: align,
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell("التاريخ", flex: 2),
+          _buildHeaderCell("الشكوى", flex: 5),
+          _buildHeaderCell("العضو", flex: 2),
+          _buildHeaderCell("طبيعة الشكوى", flex: 2),
+          _buildHeaderCell("حدة الشكوى", flex: 2),
+        ],
+      ),
+    );
+  }
+
+//////////////////////////////////////////////////////////////////
+// ✅ Complaint Row (Main Complaints)
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildComplaintRow(MainComplaint complaint) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 8),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(
+            complaint.date,
+            flex: 2,
+          ),
+          // ✅ Longest Field Expected: symptoms_Complaint
+          _buildValueCell(
+            complaint.complaintTitle,
+            flex: 5,
+            alignRight: true,
+          ),
+          _buildValueCell(
+            complaint.organ,
+            flex: 2,
+          ),
+          _buildValueCell(
+            complaint.complaintNature,
+            flex: 2,
+          ),
+          _buildValueCell(
+            complaint.severity,
+            flex: 2,
+          ),
+        ],
+      ),
+    );
+  }
+
+//////////////////////////////////////////////////////////////////
+// ✅ Header Row (Additional Complaints)
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildAdditionalComplaintsHeaderRow() {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell("التاريخ", flex: 2),
+          _buildHeaderCell("الشكوى", flex: 6),
+        ],
+      ),
+    );
+  }
+
+//////////////////////////////////////////////////////////////////
+// ✅ Complaint Row (Additional Complaints)
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildAdditionalComplaintRow(AdditionalComplaint complaint) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 8),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(
+            complaint.date,
+            flex: 2,
+          ),
+          _buildValueCell(
+            complaint.complaintTitle,
+            flex: 6,
+            alignRight: true,
+          ),
+        ],
+      ),
+    );
+  }
+
+//////////////////////////////////////////////////////////////////
+// ✅ Header Cell Styling
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildHeaderCell(String text, {required int flex}) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: 14,
+          fontWeight: pw.FontWeight.bold,
+          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+        ),
+        textAlign: pw.TextAlign.center,
+      ),
+    );
+  }
+
+//////////////////////////////////////////////////////////////////
+// ✅ Value Cell Styling
+//////////////////////////////////////////////////////////////////
+
+  pw.Widget _buildValueCell(
+    String text, {
+    required int flex,
+    bool alignRight = false,
+  }) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(horizontal: 4),
         child: pw.Text(
           text,
-          style: const pw.TextStyle(fontSize: 14),
-          maxLines: maxLines, // ✅ الحل الرئيسي
-          // overflow: pw.TextOverflow., // ✅ يمنع الصف يتمدد بلا نهاية
-          overflow: pw.TextOverflow.clip,
+          style: const pw.TextStyle(
+            fontSize: 14,
+            color: PdfColors.black,
+          ),
+          textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
           softWrap: true,
         ),
       ),
     );
   }
+
+  // pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData) {
+  //   final module = reportData.data.complaintsModule;
+
+  //   if (module == null ||
+  //       ((module.mainComplaints == null || module.mainComplaints!.isEmpty) &&
+  //           (module.additionalComplaints == null ||
+  //               module.additionalComplaints!.isEmpty))) {
+  //     return pw.SizedBox.shrink();
+  //   }
+
+  //   return pw.Column(
+  //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //     children: [
+  //       _buildSectionHeader('الشكاوي المرضية'),
+  //       if (module.mainComplaints != null &&
+  //           module.mainComplaints!.isNotEmpty) ...[
+  //         pw.SizedBox(height: 8),
+  //         pw.Text(
+  //           'الشكاوى الرئيسية',
+  //           style: pw.TextStyle(
+  //             fontSize: 14,
+  //             fontWeight: pw.FontWeight.bold,
+  //             color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+  //           ),
+  //         ),
+  //         pw.SizedBox(height: 5),
+  //         pw.Table(
+  //           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+  //           columnWidths: {
+  //             0: const pw.FlexColumnWidth(1.2), // التاريخ
+  //             1: const pw.FlexColumnWidth(3), // الشكوى
+  //             2: const pw.FlexColumnWidth(1.5), // العضو
+  //             // 3: const pw.FlexColumnWidth(1.5), // طبيعة الشكوى
+  //             // 4: const pw.FlexColumnWidth(1.2), // حدة الشكوي
+  //           },
+  //           children: [
+  //             // Header Row
+  //             pw.TableRow(
+  //               decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+  //               children: [
+  //                 'التاريخ',
+  //                 'الشكوى',
+  //                 'العضو',
+  //                 // 'طبيعة الشكوى',
+  //                 'حدة الشكوي',
+  //               ]
+  //                   .map((header) => pw.Padding(
+  //                         padding: const pw.EdgeInsets.all(6),
+  //                         child: pw.Center(
+  //                           child: pw.Text(
+  //                             header,
+  //                             style: pw.TextStyle(
+  //                               color: PdfColor.fromInt(
+  //                                   AppColorsManager.mainDarkBlue.value),
+  //                               fontWeight: pw.FontWeight.bold,
+  //                               fontSize: 14,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ))
+  //                   .toList(),
+  //             ),
+  //             // Data Rows
+  //             ...module.mainComplaints!.map((c) {
+  //               return pw.TableRow(
+  //                 children: [
+  //                   _buildTableCell(c.date, maxLines: 1),
+  //                   _buildTableCell(
+  //                     c.complaintTitle,
+  //                     align: pw.Alignment.centerRight,
+  //                     maxLines: 4, // ✅ أطول حقل
+  //                   ),
+  //                   _buildTableCell(c.organ, maxLines: 1),
+  //                   // _buildTableCell(c.complaintNature, maxLines: 2),
+  //                   // _buildTableCell(c.severity, maxLines: 1),
+  //                 ],
+  //               );
+  //             }),
+  //           ],
+  //         ),
+  //       ],
+  //       if (module.additionalComplaints != null &&
+  //           module.additionalComplaints!.isNotEmpty) ...[
+  //         pw.SizedBox(height: 15),
+  //         pw.Text(
+  //           'الشكاوى الإضافية',
+  //           style: pw.TextStyle(
+  //             fontSize: 14,
+  //             fontWeight: pw.FontWeight.bold,
+  //             color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+  //           ),
+  //         ),
+  //         pw.SizedBox(height: 5),
+  //         pw.Table(
+  //           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+  //           columnWidths: {
+  //             0: const pw.FlexColumnWidth(3), // الشكوي
+  //             1: const pw.FlexColumnWidth(1.2), // التاريخ
+  //           },
+  //           children: [
+  //             // Header Row
+  //             pw.TableRow(
+  //               decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+  //               children: ['الشكوي', 'التاريخ']
+  //                   .map(
+  //                     (header) => pw.Padding(
+  //                       padding: const pw.EdgeInsets.all(6),
+  //                       child: pw.Center(
+  //                         child: pw.Text(
+  //                           header,
+  //                           style: pw.TextStyle(
+  //                             color: PdfColor.fromInt(
+  //                                 AppColorsManager.mainDarkBlue.value),
+  //                             fontWeight: pw.FontWeight.bold,
+  //                             fontSize: 14,
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   )
+  //                   .toList(),
+  //             ),
+  //             // Data Rows
+  //             ...module.additionalComplaints!.map((c) {
+  //               return pw.TableRow(
+  //                 children: [
+  //                   _buildTableCell(
+  //                     c.complaintTitle,
+  //                     align: pw.Alignment.centerRight,
+  //                     maxLines: 4, // ✅ أطول حقل
+  //                   ),
+  //                   _buildTableCell(c.date, maxLines: 1),
+  //                 ],
+  //               );
+  //             }),
+  //           ],
+  //         ),
+  //       ],
+  //     ],
+  //   );
+  // }
+
+  // pw.Widget _buildTableCell(
+  //   String text, {
+  //   pw.Alignment align = pw.Alignment.center,
+  //   int maxLines = 2,
+  // }) {
+  //   return pw.Padding(
+  //     padding: const pw.EdgeInsets.all(6),
+  //     child: pw.Container(
+  //       alignment: align,
+  //       child: pw.Text(
+  //         text,
+  //         style: const pw.TextStyle(fontSize: 14),
+  //         maxLines: maxLines, // ✅ الحل الرئيسي
+  //         // overflow: pw.TextOverflow., // ✅ يمنع الصف يتمدد بلا نهاية
+  //         overflow: pw.TextOverflow.clip,
+  //         softWrap: true,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   pw.Widget _buildMedicationsSection() {
     return pw.Container(
