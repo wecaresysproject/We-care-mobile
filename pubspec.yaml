@@ -61,7 +61,7 @@ dependencies:
   timezone: ^0.10.0
   uuid: ^4.5.2
   screenshot: ^3.0.0
-  pdf: ^3.10.0
+  pdf: ^3.11.0
   printing: ^5.11.0
   web_socket_channel: ^3.0.3
 

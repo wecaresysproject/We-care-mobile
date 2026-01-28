@@ -171,6 +171,16 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncAllergiesSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Eyes Selection sync
+                                if (dummyCategory.title == "العيون") {
+                                  _syncEyesSelectionToCubit(context, index);
+                                }
+
+                                // Dental Selection sync
+                                if (dummyCategory.title == "الأسنان") {
+                                  _syncDentalSelectionToCubit(context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -256,6 +266,24 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         _syncGeneticDiseasesSelectionToCubit(
                                             context, index);
                                       }
+
+                                      // Eyes Selection Integration
+                                      if (dummyCategory.title == "العيون") {
+                                        _syncEyesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Dental Selection Integration
+                                      if (dummyCategory.title == "الأسنان") {
+                                        _syncDentalSelectionToCubit(
+                                            context, index);
+                                      }
+                                      // Urgent Complaints Selection Integration
+                                      if (dummyCategory.title ==
+                                          "الشكاوى الطارئة") {
+                                        _syncUrgentComplaintsSelectionToCubit(
+                                            context, index);
+                                      }
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -277,6 +305,17 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                               "${sectionIndex}_$filterTitle";
                                           final selectedValues =
                                               categoryFilters[key] ?? {};
+
+                                          final String currentKey =
+                                              "${sectionIndex}_$filterTitle";
+
+                                          _handleFilterMutualExclusion(
+                                            categoryTitle: dummyCategory.title,
+                                            filterTitle: filterTitle,
+                                            value: value,
+                                            categoryFilters: categoryFilters,
+                                            currentKey: currentKey,
+                                          );
                                           if (selectedValues.contains(value)) {
                                             selectedValues.remove(value);
                                           } else {
@@ -323,6 +362,25 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       // Allergies Selection sync
                                       if (dummyCategory.title == "الحساسية") {
                                         _syncAllergiesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Eyes Selection sync
+                                      if (dummyCategory.title == "العيون") {
+                                        _syncEyesSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Dental Selection sync
+                                      if (dummyCategory.title == "الأسنان") {
+                                        _syncDentalSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Urgent Complaints Selection sync
+                                      if (dummyCategory.title ==
+                                          "الشكاوى الطارئة") {
+                                        _syncUrgentComplaintsSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -436,10 +494,15 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     context
         .read<MedicalReportGenerationCubit>()
         .updateUrgentComplaintsSelection(
+          attachImages:
+              _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ??
+                  false,
           getAll: getAll,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedOrgans: filters["0_العضو"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
+          selectedOtherComplaints:
+              filters["0_شكاوي إضافية أخرى"]?.toList() ?? [],
         );
   }
 
@@ -501,6 +564,52 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         );
   }
 
+  void _handleFilterMutualExclusion({
+    required String categoryTitle,
+    required String filterTitle,
+    required String value,
+    required Map<String, Set<String>> categoryFilters,
+    required String currentKey,
+  }) {
+    // --- حالة الشكاوى الطارئة (عضو VS شكوى) ---
+    if (categoryTitle == "الشكاوى الطارئة") {
+      if (filterTitle == "الشكوى" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_العضو"]?.isNotEmpty ?? false) {
+          categoryFilters["0_العضو"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'العضو' لاختيار 'الشكوى'");
+        }
+      } else if (filterTitle == "العضو" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_الشكوى"]?.isNotEmpty ?? false) {
+          categoryFilters["0_الشكوى"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'الشكوى' لاختيار 'العضو'");
+        }
+      }
+    }
+
+    // --- حالة روشتة الأطباء (طبيب VS تخصص) ---
+    if (categoryTitle == "روشتة الأطباء") {
+      if (filterTitle == "اسم الطبيب" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_التخصص"]?.isNotEmpty ?? false) {
+          categoryFilters["0_التخصص"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'التخصص' لاختيار 'اسم الطبيب'");
+        }
+      } else if (filterTitle == "التخصص" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_اسم الطبيب"]?.isNotEmpty ?? false) {
+          categoryFilters["0_اسم الطبيب"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'اسم الطبيب' لاختيار 'التخصص'");
+        }
+      }
+    }
+  }
+
   void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
     final getAll =
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
@@ -519,4 +628,47 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedTypes: filters["0_النوع"]?.toList() ?? [],
         );
   }
+
+  void _syncEyesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateEyesSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedRegions: filters["0_المنطقه"]?.toList() ?? [],
+          selectedSymptoms: filters["0_الأعراض"]?.toList() ?? [],
+          selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
+        );
+  }
+
+  void _syncDentalSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    final attachReport =
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    context.read<MedicalReportGenerationCubit>().updateDentalSelection(
+          getAll: getAll,
+          attachReport: attachReport,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedTeethNumbers: filters["0_رقم السن"]?.toList() ?? [],
+          selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
+          selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
+        );
+  }
+}
+
+void _showAutoClearToast(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).clearSnackBars(); // يمسح أي رسالة قديمة فوراً
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message, style: TextStyle(fontSize: 14.sp)),
+      duration: const Duration(milliseconds: 1500), // تظهر وتختفي بسرعة
+      backgroundColor: AppColorsManager.mainDarkBlue.withAlpha(200),
+    ),
+  );
 }

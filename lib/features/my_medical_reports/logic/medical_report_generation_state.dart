@@ -17,6 +17,8 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> urgentComplaintsSelectedYears;
   final List<String> urgentComplaintsSelectedOrgans;
   final List<String> urgentComplaintsSelectedComplaints;
+  final List<String> urgentComplaintsSelectedOtherComplaints;
+  final bool urgentComplaintsAttachImages;
   final bool radiologyGetAll;
   final bool radiologyAttachImages;
   final List<String> radiologySelectedYears;
@@ -39,6 +41,18 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> geneticDiseasesSelectedValues;
   final bool allergiesGetAll;
   final List<String> allergiesSelectedTypes;
+  final bool eyesGetAll;
+  final bool eyesAttachReport;
+  final List<String> eyesSelectedYears;
+  final List<String> eyesSelectedRegions;
+  final List<String> eyesSelectedSymptoms;
+  final List<String> eyesSelectedMedicalProcedures;
+  final bool dentalGetAll;
+  final bool dentalAttachReport;
+  final List<String> dentalSelectedYears;
+  final List<String> dentalSelectedTeethNumbers;
+  final List<String> dentalSelectedComplaints;
+  final List<String> dentalSelectedMedicalProcedures;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -59,6 +73,8 @@ class MedicalReportGenerationState extends Equatable {
     this.urgentComplaintsSelectedYears = const [],
     this.urgentComplaintsSelectedOrgans = const [],
     this.urgentComplaintsSelectedComplaints = const [],
+    this.urgentComplaintsSelectedOtherComplaints = const [],
+    this.urgentComplaintsAttachImages = false,
     this.radiologyGetAll = false,
     this.radiologyAttachImages = false,
     this.radiologySelectedYears = const [],
@@ -81,6 +97,18 @@ class MedicalReportGenerationState extends Equatable {
     this.geneticDiseasesSelectedValues = const [],
     this.allergiesGetAll = false,
     this.allergiesSelectedTypes = const [],
+    this.eyesGetAll = false,
+    this.eyesAttachReport = false,
+    this.eyesSelectedYears = const [],
+    this.eyesSelectedRegions = const [],
+    this.eyesSelectedSymptoms = const [],
+    this.eyesSelectedMedicalProcedures = const [],
+    this.dentalGetAll = false,
+    this.dentalAttachReport = false,
+    this.dentalSelectedYears = const [],
+    this.dentalSelectedTeethNumbers = const [],
+    this.dentalSelectedComplaints = const [],
+    this.dentalSelectedMedicalProcedures = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -102,6 +130,8 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? urgentComplaintsSelectedYears,
     List<String>? urgentComplaintsSelectedOrgans,
     List<String>? urgentComplaintsSelectedComplaints,
+    List<String>? urgentComplaintsSelectedOtherComplaints,
+    bool? urgentComplaintsAttachImages,
     bool? radiologyGetAll,
     bool? radiologyAttachImages,
     List<String>? radiologySelectedYears,
@@ -124,6 +154,18 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? geneticDiseasesSelectedValues,
     bool? allergiesGetAll,
     List<String>? allergiesSelectedTypes,
+    bool? eyesGetAll,
+    bool? eyesAttachReport,
+    List<String>? eyesSelectedYears,
+    List<String>? eyesSelectedRegions,
+    List<String>? eyesSelectedSymptoms,
+    List<String>? eyesSelectedMedicalProcedures,
+    bool? dentalGetAll,
+    bool? dentalAttachReport,
+    List<String>? dentalSelectedYears,
+    List<String>? dentalSelectedTeethNumbers,
+    List<String>? dentalSelectedComplaints,
+    List<String>? dentalSelectedMedicalProcedures,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -153,6 +195,11 @@ class MedicalReportGenerationState extends Equatable {
           urgentComplaintsSelectedOrgans ?? this.urgentComplaintsSelectedOrgans,
       urgentComplaintsSelectedComplaints: urgentComplaintsSelectedComplaints ??
           this.urgentComplaintsSelectedComplaints,
+      urgentComplaintsSelectedOtherComplaints:
+          urgentComplaintsSelectedOtherComplaints ??
+              this.urgentComplaintsSelectedOtherComplaints,
+      urgentComplaintsAttachImages:
+          urgentComplaintsAttachImages ?? this.urgentComplaintsAttachImages,
       radiologyGetAll: radiologyGetAll ?? this.radiologyGetAll,
       radiologyAttachImages:
           radiologyAttachImages ?? this.radiologyAttachImages,
@@ -192,6 +239,22 @@ class MedicalReportGenerationState extends Equatable {
       allergiesGetAll: allergiesGetAll ?? this.allergiesGetAll,
       allergiesSelectedTypes:
           allergiesSelectedTypes ?? this.allergiesSelectedTypes,
+      eyesGetAll: eyesGetAll ?? this.eyesGetAll,
+      eyesAttachReport: eyesAttachReport ?? this.eyesAttachReport,
+      eyesSelectedYears: eyesSelectedYears ?? this.eyesSelectedYears,
+      eyesSelectedRegions: eyesSelectedRegions ?? this.eyesSelectedRegions,
+      eyesSelectedSymptoms: eyesSelectedSymptoms ?? this.eyesSelectedSymptoms,
+      eyesSelectedMedicalProcedures:
+          eyesSelectedMedicalProcedures ?? this.eyesSelectedMedicalProcedures,
+      dentalGetAll: dentalGetAll ?? this.dentalGetAll,
+      dentalAttachReport: dentalAttachReport ?? this.dentalAttachReport,
+      dentalSelectedYears: dentalSelectedYears ?? this.dentalSelectedYears,
+      dentalSelectedTeethNumbers:
+          dentalSelectedTeethNumbers ?? this.dentalSelectedTeethNumbers,
+      dentalSelectedComplaints:
+          dentalSelectedComplaints ?? this.dentalSelectedComplaints,
+      dentalSelectedMedicalProcedures: dentalSelectedMedicalProcedures ??
+          this.dentalSelectedMedicalProcedures,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -215,6 +278,8 @@ class MedicalReportGenerationState extends Equatable {
         urgentComplaintsSelectedYears,
         urgentComplaintsSelectedOrgans,
         urgentComplaintsSelectedComplaints,
+        urgentComplaintsSelectedOtherComplaints,
+        urgentComplaintsAttachImages,
         radiologyGetAll,
         radiologyAttachImages,
         radiologySelectedYears,
@@ -237,6 +302,18 @@ class MedicalReportGenerationState extends Equatable {
         geneticDiseasesSelectedValues,
         allergiesGetAll,
         allergiesSelectedTypes,
+        eyesGetAll,
+        eyesAttachReport,
+        eyesSelectedYears,
+        eyesSelectedRegions,
+        eyesSelectedSymptoms,
+        eyesSelectedMedicalProcedures,
+        dentalGetAll,
+        dentalAttachReport,
+        dentalSelectedYears,
+        dentalSelectedTeethNumbers,
+        dentalSelectedComplaints,
+        dentalSelectedMedicalProcedures,
         medicalReportData,
         categoryFilters,
       ];
