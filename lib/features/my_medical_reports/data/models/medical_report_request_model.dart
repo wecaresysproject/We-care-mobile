@@ -236,14 +236,12 @@ class MedicalTestsSelectionRequestBody {
 @JsonSerializable()
 class PrescriptionsSelectionRequestBody {
   final bool getAll;
-  final bool attachImages;
   final List<String> years;
   final List<String> specialties;
   final List<String> doctorNames;
 
   PrescriptionsSelectionRequestBody({
     required this.getAll,
-    required this.attachImages,
     required this.years,
     required this.specialties,
     required this.doctorNames,

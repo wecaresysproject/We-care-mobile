@@ -89,6 +89,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         urgentComplaintsAttachImages: attachImages,
       ),
     );
+    AppLogger.info(
+        "urgentComplaints getAll: ${state.urgentComplaintsGetAll} , attachImages: ${state.urgentComplaintsAttachImages} , years: ${state.urgentComplaintsSelectedYears} , organs: ${state.urgentComplaintsSelectedOrgans} , complaints: ${state.urgentComplaintsSelectedComplaints} , otherComplaints: ${state.urgentComplaintsSelectedOtherComplaints}");
   }
 
   void updateRadiologySelection({

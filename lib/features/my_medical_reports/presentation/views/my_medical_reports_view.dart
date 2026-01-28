@@ -305,6 +305,17 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                               "${sectionIndex}_$filterTitle";
                                           final selectedValues =
                                               categoryFilters[key] ?? {};
+
+                                          final String currentKey =
+                                              "${sectionIndex}_$filterTitle";
+
+                                          _handleFilterMutualExclusion(
+                                            categoryTitle: dummyCategory.title,
+                                            filterTitle: filterTitle,
+                                            value: value,
+                                            categoryFilters: categoryFilters,
+                                            currentKey: currentKey,
+                                          );
                                           if (selectedValues.contains(value)) {
                                             selectedValues.remove(value);
                                           } else {
@@ -553,6 +564,52 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         );
   }
 
+  void _handleFilterMutualExclusion({
+    required String categoryTitle,
+    required String filterTitle,
+    required String value,
+    required Map<String, Set<String>> categoryFilters,
+    required String currentKey,
+  }) {
+    // --- حالة الشكاوى الطارئة (عضو VS شكوى) ---
+    if (categoryTitle == "الشكاوى الطارئة") {
+      if (filterTitle == "الشكوى" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_العضو"]?.isNotEmpty ?? false) {
+          categoryFilters["0_العضو"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'العضو' لاختيار 'الشكوى'");
+        }
+      } else if (filterTitle == "العضو" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_الشكوى"]?.isNotEmpty ?? false) {
+          categoryFilters["0_الشكوى"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'الشكوى' لاختيار 'العضو'");
+        }
+      }
+    }
+
+    // --- حالة روشتة الأطباء (طبيب VS تخصص) ---
+    if (categoryTitle == "روشتة الأطباء") {
+      if (filterTitle == "اسم الطبيب" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_التخصص"]?.isNotEmpty ?? false) {
+          categoryFilters["0_التخصص"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'التخصص' لاختيار 'اسم الطبيب'");
+        }
+      } else if (filterTitle == "التخصص" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        if (categoryFilters["0_اسم الطبيب"]?.isNotEmpty ?? false) {
+          categoryFilters["0_اسم الطبيب"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'اسم الطبيب' لاختيار 'التخصص'");
+        }
+      }
+    }
+  }
+
   void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
     final getAll =
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
@@ -603,4 +660,15 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
         );
   }
+}
+
+void _showAutoClearToast(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).clearSnackBars(); // يمسح أي رسالة قديمة فوراً
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message, style: TextStyle(fontSize: 14.sp)),
+      duration: const Duration(milliseconds: 1500), // تظهر وتختفي بسرعة
+      backgroundColor: AppColorsManager.mainDarkBlue.withAlpha(200),
+    ),
+  );
 }
