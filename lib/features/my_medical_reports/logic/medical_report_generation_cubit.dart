@@ -77,6 +77,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     List<String>? selectedOrgans,
     List<String>? selectedComplaints,
     List<String>? selectedOtherComplaints,
+    bool? attachImages,
   }) {
     emit(
       state.copyWith(
@@ -85,6 +86,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         urgentComplaintsSelectedOrgans: selectedOrgans,
         urgentComplaintsSelectedComplaints: selectedComplaints,
         urgentComplaintsSelectedOtherComplaints: selectedOtherComplaints,
+        urgentComplaintsAttachImages: attachImages,
       ),
     );
   }
@@ -248,6 +250,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           diseases: state.chronicDiseasesSelectedValues,
         ),
         urgentComplaints: UrgentComplaintsSelectionRequestBody(
+          attachImages: state.urgentComplaintsAttachImages,
           getAll: state.urgentComplaintsGetAll,
           years: state.urgentComplaintsSelectedYears,
           organs: state.urgentComplaintsSelectedOrgans,

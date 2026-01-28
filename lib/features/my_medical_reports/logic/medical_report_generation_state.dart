@@ -18,6 +18,7 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> urgentComplaintsSelectedOrgans;
   final List<String> urgentComplaintsSelectedComplaints;
   final List<String> urgentComplaintsSelectedOtherComplaints;
+  final bool urgentComplaintsAttachImages;
   final bool radiologyGetAll;
   final bool radiologyAttachImages;
   final List<String> radiologySelectedYears;
@@ -73,6 +74,7 @@ class MedicalReportGenerationState extends Equatable {
     this.urgentComplaintsSelectedOrgans = const [],
     this.urgentComplaintsSelectedComplaints = const [],
     this.urgentComplaintsSelectedOtherComplaints = const [],
+    this.urgentComplaintsAttachImages = false,
     this.radiologyGetAll = false,
     this.radiologyAttachImages = false,
     this.radiologySelectedYears = const [],
@@ -129,6 +131,7 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? urgentComplaintsSelectedOrgans,
     List<String>? urgentComplaintsSelectedComplaints,
     List<String>? urgentComplaintsSelectedOtherComplaints,
+    bool? urgentComplaintsAttachImages,
     bool? radiologyGetAll,
     bool? radiologyAttachImages,
     List<String>? radiologySelectedYears,
@@ -195,6 +198,8 @@ class MedicalReportGenerationState extends Equatable {
       urgentComplaintsSelectedOtherComplaints:
           urgentComplaintsSelectedOtherComplaints ??
               this.urgentComplaintsSelectedOtherComplaints,
+      urgentComplaintsAttachImages:
+          urgentComplaintsAttachImages ?? this.urgentComplaintsAttachImages,
       radiologyGetAll: radiologyGetAll ?? this.radiologyGetAll,
       radiologyAttachImages:
           radiologyAttachImages ?? this.radiologyAttachImages,
@@ -274,6 +279,7 @@ class MedicalReportGenerationState extends Equatable {
         urgentComplaintsSelectedOrgans,
         urgentComplaintsSelectedComplaints,
         urgentComplaintsSelectedOtherComplaints,
+        urgentComplaintsAttachImages,
         radiologyGetAll,
         radiologyAttachImages,
         radiologySelectedYears,

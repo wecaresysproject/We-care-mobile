@@ -405,9 +405,11 @@ class MedicalReportPdfGenerator {
             headerStyle: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
+              fontSize: 14,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
+            cellStyle: const pw.TextStyle(
+              fontSize: 14,
+            ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),

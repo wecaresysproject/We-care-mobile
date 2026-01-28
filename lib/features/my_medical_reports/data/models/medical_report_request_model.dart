@@ -166,6 +166,7 @@ class ChronicDiseasesSelectionRequestBody {
 @JsonSerializable()
 class UrgentComplaintsSelectionRequestBody {
   final bool getAll;
+  final bool attachImages;
   final List<String> years;
   final List<String> organs;
   final List<String> complaints;
@@ -173,6 +174,7 @@ class UrgentComplaintsSelectionRequestBody {
 
   UrgentComplaintsSelectionRequestBody({
     required this.getAll,
+    required this.attachImages,
     required this.years,
     required this.organs,
     required this.complaints,
