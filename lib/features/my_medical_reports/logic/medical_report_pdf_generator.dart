@@ -66,13 +66,13 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildComplaintsSection(reportData, complaintImages),
           pw.SizedBox(height: 15),
-          // _buildMedicationsSection(reportData),
+          _buildMedicationsSection(reportData),
           pw.SizedBox(height: 15),
           _buildAllergiesSection(),
           pw.SizedBox(height: 15),
           _buildSurgeriesSection(),
           pw.SizedBox(height: 15),
-          _buildLabResultsSection(),
+          _buildLabResultsSection(reportData),
           pw.SizedBox(height: 15),
           _buildVaccinationsSection(),
           pw.SizedBox(height: 15),
@@ -882,7 +882,13 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildLabResultsSection() {
+  pw.Widget _buildLabResultsSection(MedicalReportResponseModel reportData) {
+    final tests = reportData.data.medicalTests;
+
+    if (tests == null || tests.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -892,27 +898,98 @@ class MedicalReportPdfGenerator {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('نتائج التحاليل'),
-          pw.SizedBox(height: 8),
+          _buildSectionHeader('التحاليل الطبية'),
+          pw.SizedBox(height: 12),
           pw.TableHelper.fromTextArray(
-            headers: ['اسم التحليل', 'النتيجة', 'المعدل الطبيعي', 'التاريخ'],
-            data: [
-              ['Hemoglobin', '13.5 g/dL', '13.0 - 17.0', '20/12/2012'],
-              ['Cholesterol', '190 mg/dL', '< 200', '20/12/2012'],
+            headers: [
+              'النتيجة',
+              'النتيجة',
+              'النتيجة',
+              'المجموعة',
+              'الرمز',
+              'اسم التحليل',
             ],
+            data: tests.map((test) {
+              final results = test.results ?? [];
+              return [
+                _buildTestResultWidget(results.length > 2 ? results[2] : null),
+                _buildTestResultWidget(results.length > 1 ? results[1] : null),
+                _buildTestResultWidget(results.isNotEmpty ? results[0] : null),
+                test.group ?? "---",
+                test.code ?? "---",
+                test.testName,
+              ];
+            }).toList(),
             headerStyle: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
+            cellStyle: const pw.TextStyle(fontSize: 11),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1.5), // النتيجة 3
+              1: const pw.FlexColumnWidth(1.5), // النتيجة 2
+              2: const pw.FlexColumnWidth(1.5), // النتيجة 1
+              3: const pw.FlexColumnWidth(2), // المجموعة
+              4: const pw.FlexColumnWidth(1.2), // الرمز
+              5: const pw.FlexColumnWidth(2.5), // اسم التحليل
+            },
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            cellPadding: const pw.EdgeInsets.all(6),
           ),
         ],
       ),
     );
+  }
+
+  pw.Widget _buildTestResultWidget(MedicalTestResultModel? result) {
+    final hasValue = result?.value != null;
+    final valueText = hasValue ? result!.value.toString() : "لا يوجد";
+    final dateText =
+        result?.testDate != null ? _formatResultDate(result!.testDate!) : "";
+
+    return pw.Column(
+      mainAxisSize: pw.MainAxisSize.min,
+      children: [
+        pw.Text(
+          valueText,
+          style: pw.TextStyle(
+            fontSize: 11,
+            fontWeight: hasValue ? pw.FontWeight.bold : pw.FontWeight.normal,
+          ),
+        ),
+        if (dateText.isNotEmpty)
+          pw.Text(
+            dateText,
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+          ),
+      ],
+    );
+  }
+
+  String _formatResultDate(String dateStr) {
+    try {
+      final date = DateTime.parse(dateStr);
+      final months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ];
+      return "${date.day}-${months[date.month - 1]}-${date.year.toString().substring(2)}";
+    } catch (_) {
+      return dateStr;
+    }
   }
 
   pw.Widget _buildVaccinationsSection() {

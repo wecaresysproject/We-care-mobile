@@ -33,6 +33,7 @@ class MedicalReportData {
   final List<ChronicDiseaseModel>? chronicDiseases;
   final ComplaintsModule? complaintsModule;
   final MedicationsModule? medicationsModule;
+  final List<MedicalTestModel>? medicalTests;
 
   MedicalReportData({
     this.basicInformation,
@@ -40,6 +41,7 @@ class MedicalReportData {
     this.chronicDiseases,
     this.complaintsModule,
     this.medicationsModule,
+    this.medicalTests,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -238,9 +240,11 @@ class MedicationsModule {
 
 @JsonSerializable()
 class MedicationModel {
+  @JsonKey(name: "startDate")
   final String date;
   final String medicineName;
   final String? dosage;
+  @JsonKey(name: "selectedDoseAmount")
   final String? doseAmount;
   final String? dosageFrequency;
   final String? timeDuration;
@@ -258,4 +262,40 @@ class MedicationModel {
       _$MedicationModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicationModelToJson(this);
+}
+
+@JsonSerializable()
+class MedicalTestModel {
+  final String testName;
+  final String? code;
+  final String? group;
+  final List<MedicalTestResultModel>? results;
+
+  MedicalTestModel({
+    required this.testName,
+    this.code,
+    this.group,
+    this.results,
+  });
+
+  factory MedicalTestModel.fromJson(Map<String, dynamic> json) =>
+      _$MedicalTestModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicalTestModelToJson(this);
+}
+
+@JsonSerializable()
+class MedicalTestResultModel {
+  final double? value;
+  final String? testDate;
+
+  MedicalTestResultModel({
+    this.value,
+    this.testDate,
+  });
+
+  factory MedicalTestResultModel.fromJson(Map<String, dynamic> json) =>
+      _$MedicalTestResultModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicalTestResultModelToJson(this);
 }
