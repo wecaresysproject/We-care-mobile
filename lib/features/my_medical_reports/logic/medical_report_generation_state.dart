@@ -25,7 +25,6 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> radiologySelectedRegions;
   final List<String> radiologySelectedTypes;
   final bool medicalTestsGetAll;
-  final bool medicalTestsAttachImages;
   final List<String> medicalTestsSelectedYears;
   final List<String> medicalTestsSelectedTestGroups;
   final bool prescriptionsGetAll;
@@ -81,7 +80,6 @@ class MedicalReportGenerationState extends Equatable {
     this.radiologySelectedRegions = const [],
     this.radiologySelectedTypes = const [],
     this.medicalTestsGetAll = false,
-    this.medicalTestsAttachImages = false,
     this.medicalTestsSelectedYears = const [],
     this.medicalTestsSelectedTestGroups = const [],
     this.prescriptionsGetAll = false,
@@ -138,7 +136,6 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? radiologySelectedRegions,
     List<String>? radiologySelectedTypes,
     bool? medicalTestsGetAll,
-    bool? medicalTestsAttachImages,
     List<String>? medicalTestsSelectedYears,
     List<String>? medicalTestsSelectedTestGroups,
     bool? prescriptionsGetAll,
@@ -210,8 +207,6 @@ class MedicalReportGenerationState extends Equatable {
       radiologySelectedTypes:
           radiologySelectedTypes ?? this.radiologySelectedTypes,
       medicalTestsGetAll: medicalTestsGetAll ?? this.medicalTestsGetAll,
-      medicalTestsAttachImages:
-          medicalTestsAttachImages ?? this.medicalTestsAttachImages,
       medicalTestsSelectedYears:
           medicalTestsSelectedYears ?? this.medicalTestsSelectedYears,
       medicalTestsSelectedTestGroups:
@@ -286,7 +281,6 @@ class MedicalReportGenerationState extends Equatable {
         radiologySelectedRegions,
         radiologySelectedTypes,
         medicalTestsGetAll,
-        medicalTestsAttachImages,
         medicalTestsSelectedYears,
         medicalTestsSelectedTestGroups,
         prescriptionsGetAll,

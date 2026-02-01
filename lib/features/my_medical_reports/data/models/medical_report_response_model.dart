@@ -8,11 +8,15 @@ class MedicalReportResponseModel {
   final MedicalReportData data;
   final String message;
   final bool success;
+  final String? userName;
+  final String? imageUrl;
 
   MedicalReportResponseModel({
     required this.data,
     required this.message,
     required this.success,
+    this.userName,
+    this.imageUrl,
   });
 
   factory MedicalReportResponseModel.fromJson(Map<String, dynamic> json) =>
@@ -28,12 +32,14 @@ class MedicalReportData {
   final List<VitalSignGroupModel>? vitalSigns;
   final List<ChronicDiseaseModel>? chronicDiseases;
   final ComplaintsModule? complaintsModule;
+  final MedicationsModule? medicationsModule;
 
   MedicalReportData({
     this.basicInformation,
     this.vitalSigns,
     this.chronicDiseases,
     this.complaintsModule,
+    this.medicationsModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -212,4 +218,44 @@ class AdditionalComplaint {
       _$AdditionalComplaintFromJson(json);
 
   Map<String, dynamic> toJson() => _$AdditionalComplaintToJson(this);
+}
+
+@JsonSerializable()
+class MedicationsModule {
+  final List<MedicationModel>? currentMedications;
+  final List<MedicationModel>? expiredLast90Days;
+
+  MedicationsModule({
+    this.currentMedications,
+    this.expiredLast90Days,
+  });
+
+  factory MedicationsModule.fromJson(Map<String, dynamic> json) =>
+      _$MedicationsModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicationsModuleToJson(this);
+}
+
+@JsonSerializable()
+class MedicationModel {
+  final String date;
+  final String medicineName;
+  final String? dosage;
+  final String? doseAmount;
+  final String? dosageFrequency;
+  final String? timeDuration;
+
+  MedicationModel({
+    required this.date,
+    required this.medicineName,
+    this.dosage,
+    this.doseAmount,
+    this.dosageFrequency,
+    this.timeDuration,
+  });
+
+  factory MedicationModel.fromJson(Map<String, dynamic> json) =>
+      _$MedicationModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MedicationModelToJson(this);
 }

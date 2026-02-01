@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 
 import '../../../../core/global/theming/color_manager.dart';
@@ -65,7 +66,7 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildComplaintsSection(reportData, complaintImages),
           pw.SizedBox(height: 15),
-          _buildMedicationsSection(),
+          // _buildMedicationsSection(reportData),
           pw.SizedBox(height: 15),
           _buildAllergiesSection(),
           pw.SizedBox(height: 15),
@@ -161,11 +162,7 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildHeader(pw.ImageProvider profileImage,
       pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
-    final name = reportData.data.basicInformation
-            ?.firstWhere((info) => info.label == 'الاسم',
-                orElse: () => BasicInformationData(label: '', value: ''))
-            .value ??
-        'غير معروف';
+    final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
@@ -736,170 +733,21 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  // pw.Widget _buildComplaintsSection(MedicalReportResponseModel reportData) {
-  //   final module = reportData.data.complaintsModule;
+  pw.Widget _buildMedicationsSection(MedicalReportResponseModel reportData) {
+    final module = reportData.data.medicationsModule;
 
-  //   if (module == null ||
-  //       ((module.mainComplaints == null || module.mainComplaints!.isEmpty) &&
-  //           (module.additionalComplaints == null ||
-  //               module.additionalComplaints!.isEmpty))) {
-  //     return pw.SizedBox.shrink();
-  //   }
+    if (module == null) {
+      return pw.SizedBox.shrink();
+    }
 
-  //   return pw.Column(
-  //     crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //     children: [
-  //       _buildSectionHeader('الشكاوي المرضية'),
-  //       if (module.mainComplaints != null &&
-  //           module.mainComplaints!.isNotEmpty) ...[
-  //         pw.SizedBox(height: 8),
-  //         pw.Text(
-  //           'الشكاوى الرئيسية',
-  //           style: pw.TextStyle(
-  //             fontSize: 14,
-  //             fontWeight: pw.FontWeight.bold,
-  //             color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-  //           ),
-  //         ),
-  //         pw.SizedBox(height: 5),
-  //         pw.Table(
-  //           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-  //           columnWidths: {
-  //             0: const pw.FlexColumnWidth(1.2), // التاريخ
-  //             1: const pw.FlexColumnWidth(3), // الشكوى
-  //             2: const pw.FlexColumnWidth(1.5), // العضو
-  //             // 3: const pw.FlexColumnWidth(1.5), // طبيعة الشكوى
-  //             // 4: const pw.FlexColumnWidth(1.2), // حدة الشكوي
-  //           },
-  //           children: [
-  //             // Header Row
-  //             pw.TableRow(
-  //               decoration: const pw.BoxDecoration(color: PdfColors.grey100),
-  //               children: [
-  //                 'التاريخ',
-  //                 'الشكوى',
-  //                 'العضو',
-  //                 // 'طبيعة الشكوى',
-  //                 'حدة الشكوي',
-  //               ]
-  //                   .map((header) => pw.Padding(
-  //                         padding: const pw.EdgeInsets.all(6),
-  //                         child: pw.Center(
-  //                           child: pw.Text(
-  //                             header,
-  //                             style: pw.TextStyle(
-  //                               color: PdfColor.fromInt(
-  //                                   AppColorsManager.mainDarkBlue.value),
-  //                               fontWeight: pw.FontWeight.bold,
-  //                               fontSize: 14,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ))
-  //                   .toList(),
-  //             ),
-  //             // Data Rows
-  //             ...module.mainComplaints!.map((c) {
-  //               return pw.TableRow(
-  //                 children: [
-  //                   _buildTableCell(c.date, maxLines: 1),
-  //                   _buildTableCell(
-  //                     c.complaintTitle,
-  //                     align: pw.Alignment.centerRight,
-  //                     maxLines: 4, // ✅ أطول حقل
-  //                   ),
-  //                   _buildTableCell(c.organ, maxLines: 1),
-  //                   // _buildTableCell(c.complaintNature, maxLines: 2),
-  //                   // _buildTableCell(c.severity, maxLines: 1),
-  //                 ],
-  //               );
-  //             }),
-  //           ],
-  //         ),
-  //       ],
-  //       if (module.additionalComplaints != null &&
-  //           module.additionalComplaints!.isNotEmpty) ...[
-  //         pw.SizedBox(height: 15),
-  //         pw.Text(
-  //           'الشكاوى الإضافية',
-  //           style: pw.TextStyle(
-  //             fontSize: 14,
-  //             fontWeight: pw.FontWeight.bold,
-  //             color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-  //           ),
-  //         ),
-  //         pw.SizedBox(height: 5),
-  //         pw.Table(
-  //           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-  //           columnWidths: {
-  //             0: const pw.FlexColumnWidth(3), // الشكوي
-  //             1: const pw.FlexColumnWidth(1.2), // التاريخ
-  //           },
-  //           children: [
-  //             // Header Row
-  //             pw.TableRow(
-  //               decoration: const pw.BoxDecoration(color: PdfColors.grey100),
-  //               children: ['الشكوي', 'التاريخ']
-  //                   .map(
-  //                     (header) => pw.Padding(
-  //                       padding: const pw.EdgeInsets.all(6),
-  //                       child: pw.Center(
-  //                         child: pw.Text(
-  //                           header,
-  //                           style: pw.TextStyle(
-  //                             color: PdfColor.fromInt(
-  //                                 AppColorsManager.mainDarkBlue.value),
-  //                             fontWeight: pw.FontWeight.bold,
-  //                             fontSize: 14,
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   )
-  //                   .toList(),
-  //             ),
-  //             // Data Rows
-  //             ...module.additionalComplaints!.map((c) {
-  //               return pw.TableRow(
-  //                 children: [
-  //                   _buildTableCell(
-  //                     c.complaintTitle,
-  //                     align: pw.Alignment.centerRight,
-  //                     maxLines: 4, // ✅ أطول حقل
-  //                   ),
-  //                   _buildTableCell(c.date, maxLines: 1),
-  //                 ],
-  //               );
-  //             }),
-  //           ],
-  //         ),
-  //       ],
-  //     ],
-  //   );
-  // }
+    final current = module.currentMedications;
+    final expired = module.expiredLast90Days;
 
-  // pw.Widget _buildTableCell(
-  //   String text, {
-  //   pw.Alignment align = pw.Alignment.center,
-  //   int maxLines = 2,
-  // }) {
-  //   return pw.Padding(
-  //     padding: const pw.EdgeInsets.all(6),
-  //     child: pw.Container(
-  //       alignment: align,
-  //       child: pw.Text(
-  //         text,
-  //         style: const pw.TextStyle(fontSize: 14),
-  //         maxLines: maxLines, // ✅ الحل الرئيسي
-  //         // overflow: pw.TextOverflow., // ✅ يمنع الصف يتمدد بلا نهاية
-  //         overflow: pw.TextOverflow.clip,
-  //         softWrap: true,
-  //       ),
-  //     ),
-  //   );
-  // }
+    if ((current == null || current.isEmpty) &&
+        (expired == null || expired.isEmpty)) {
+      return pw.SizedBox.shrink();
+    }
 
-  pw.Widget _buildMedicationsSection() {
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -909,31 +757,62 @@ class MedicalReportPdfGenerator {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('الأدوية الحالية المستمرة'),
-          pw.SizedBox(height: 8),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'اسم الدواء',
-              'الجرعة',
-              'عدد مرات الجرعة اليومية',
-              'مدة الاستخدام'
-            ],
-            data: [
-              ['الكلورديازيبوكسيد', 'قرصين', 'بعد العشاء', '3 أسابيع'],
-              ['نوردازيام', 'قرص', '3 مرات باليوم', '4 أسابيع'],
-            ],
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          ),
+          _buildSectionHeader('الأدوية'),
+          if (current != null && current.isNotEmpty) ...[
+            pw.SizedBox(height: 8),
+            pw.Text('الادوية الحالية',
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+            pw.SizedBox(height: 10),
+            _buildMedicationsTable(current),
+          ],
+          if (expired != null && expired.isNotEmpty) ...[
+            pw.SizedBox(height: 20),
+            pw.Text('الأدوية المنتهية خلال 90 يوم',
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
+            pw.SizedBox(height: 10),
+            _buildMedicationsTable(expired, isExpired: true),
+          ],
         ],
       ),
+    );
+  }
+
+  pw.Widget _buildMedicationsTable(
+    List<MedicationModel> medications, {
+    bool isExpired = false,
+  }) {
+    return pw.TableHelper.fromTextArray(
+      headers: [
+        isExpired ? 'تاريخ انتهاء الدواء' : 'تاريخ استخدام الدواء',
+        'اسم الدواء',
+        'الجرعة',
+        'كمية الادوية',
+        'عدد مرات الجرعة',
+        'المدد الزمنية',
+      ],
+      data: medications.map((med) {
+        return [
+          med.date,
+          med.medicineName,
+          med.dosage ?? 'لا يوجد',
+          med.doseAmount ?? 'لا يوجد',
+          med.dosageFrequency ?? 'لا يوجد',
+          med.timeDuration ?? 'لا يوجد',
+        ];
+      }).toList(),
+      headerStyle: pw.TextStyle(
+        color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+        fontWeight: pw.FontWeight.bold,
+        fontSize: 14,
+      ),
+      cellStyle: const pw.TextStyle(
+        fontSize: 14,
+      ),
+      headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+      cellAlignment: pw.Alignment.center,
+      border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
     );
   }
 
@@ -1072,13 +951,9 @@ class MedicalReportPdfGenerator {
   Future<pw.ImageProvider> getUserProfileImage(
       MedicalReportResponseModel reportData) async {
     pw.ImageProvider? profileImageProvider;
-    final basicInfo = reportData.data.basicInformation;
-    final imageUrl = basicInfo
-        ?.firstWhere((info) => info.label == 'الصورة',
-            orElse: () => BasicInformationData(label: '', value: ''))
-        .value;
+    final imageUrl = reportData.imageUrl;
 
-    if (imageUrl != null && imageUrl is String && imageUrl.isNotEmpty) {
+    if (imageUrl.isNotNull && imageUrl!.isNotEmpty) {
       try {
         final ByteData data =
             await NetworkAssetBundle(Uri.parse(imageUrl)).load("");

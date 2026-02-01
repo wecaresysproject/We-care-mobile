@@ -525,11 +525,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     final getAll =
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
-    final attachImages =
-        _selectedOptionValues[index]?.contains("ارفاق صور التحاليل") ?? false;
     context.read<MedicalReportGenerationCubit>().updateMedicalTestsSelection(
           getAll: getAll,
-          attachImages: attachImages,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedTestGroups: filters["0_مجموعة التحاليل"]?.toList() ?? [],
         );
