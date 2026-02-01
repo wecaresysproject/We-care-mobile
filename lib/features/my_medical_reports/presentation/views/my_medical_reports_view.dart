@@ -495,7 +495,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         .read<MedicalReportGenerationCubit>()
         .updateUrgentComplaintsSelection(
           attachImages:
-              _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ??
+              _selectedOptionValues[index]?.contains("ارفاق صورة الشكوي") ??
                   false,
           getAll: getAll,
           selectedYears: filters["0_السنة"]?.toList() ?? [],

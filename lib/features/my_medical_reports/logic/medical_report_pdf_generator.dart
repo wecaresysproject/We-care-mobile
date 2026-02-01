@@ -707,23 +707,22 @@ class MedicalReportPdfGenerator {
                 mainAxisSize: pw.MainAxisSize.min,
                 children: [
                   if (image != null)
-                    // pw.Container(
-                    //   width: 40,
-                    //   height: 40,
-                    //   margin: const pw.EdgeInsets.only(bottom: 2),
-                    //   child: pw.Image(image),
-                    // ),
-                    pw.UrlLink(
-                      destination: imageUrl,
-                      child: pw.Text(
-                        "اضغط للتحميل",
-                        style: pw.TextStyle(
-                          fontSize: 10,
-                          color: PdfColors.blue700,
-                          decoration: pw.TextDecoration.underline,
-                        ),
+                    pw.Container(
+                      child: pw.Image(
+                        image,
                       ),
                     ),
+                  pw.UrlLink(
+                    destination: imageUrl,
+                    child: pw.Text(
+                      "اضغط للتحميل",
+                      style: pw.TextStyle(
+                        fontSize: 10,
+                        color: PdfColors.blue700,
+                        decoration: pw.TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               )
             : pw.Text(
