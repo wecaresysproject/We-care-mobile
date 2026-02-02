@@ -240,6 +240,105 @@ class MedicalReportPdfGenerator {
     );
   }
 
+  pw.Widget _buildFooter(
+      pw.Context context, MedicalReportResponseModel reportData) {
+    final patientName = reportData.userName ?? 'غير معروف';
+    final currentDate = DateTime.now();
+    final formattedDate =
+        '${currentDate.day}/${currentDate.month}/${currentDate.year}';
+
+    return pw.Container(
+      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          // Right Side (RTL): Patient Info
+          pw.Expanded(
+            flex: 3,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              mainAxisSize: pw.MainAxisSize.min,
+              children: [
+                pw.Text(
+                  'اسم المريض: $patientName',
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.white,
+                  ),
+                ),
+                pw.SizedBox(height: 2),
+                pw.Text(
+                  'سري - وثيقة طبية',
+                  style: const pw.TextStyle(
+                    fontSize: 8,
+                    color: PdfColors.grey200,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Center: Page Number
+          pw.Expanded(
+            flex: 2,
+            child: pw.Center(
+              child: pw.Column(
+                mainAxisSize: pw.MainAxisSize.min,
+                children: [
+                  pw.Text(
+                    'صفحة ${context.pageNumber} من ${context.pagesCount}',
+                    style: pw.TextStyle(
+                      fontSize: 11,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.white,
+                    ),
+                  ),
+                  pw.SizedBox(height: 2),
+                  pw.Text(
+                    'تاريخ الإنشاء: $formattedDate',
+                    style: pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey200,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Left Side (RTL): Organization Info
+          pw.Expanded(
+            flex: 3,
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.end,
+              mainAxisSize: pw.MainAxisSize.min,
+              children: [
+                pw.Text(
+                  'نظام We Care الطبي',
+                  style: pw.TextStyle(
+                    fontSize: 10,
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.white,
+                  ),
+                ),
+                pw.SizedBox(height: 2),
+                pw.Text(
+                  'تقرير طبي شامل',
+                  style: pw.TextStyle(
+                    fontSize: 8,
+                    color: PdfColors.grey200,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   pw.Widget _buildSectionHeader(String title) {
     return pw.Container(
       width: double.infinity,
