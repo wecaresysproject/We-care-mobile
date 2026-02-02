@@ -736,17 +736,10 @@ class MedicalReportPdfGenerator {
   pw.Widget _buildMedicationsSection(MedicalReportResponseModel reportData) {
     final module = reportData.data.medicationsModule;
 
-    if (module == null) {
-      return pw.SizedBox.shrink();
-    }
+    if (module == null) return pw.SizedBox.shrink();
 
     final current = module.currentMedications;
     final expired = module.expiredLast90Days;
-
-    if ((current == null || current.isEmpty) &&
-        (expired == null || expired.isEmpty)) {
-      return pw.SizedBox.shrink();
-    }
 
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
@@ -759,57 +752,52 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الأدوية'),
           if (current != null && current.isNotEmpty) ...[
-            pw.SizedBox(height: 8),
-            pw.Text('الادوية الحالية',
-                style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
             pw.SizedBox(height: 10),
-            _buildMedicationsTable(current),
+            pw.Text('الأدوية الحالية',
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13)),
+            pw.SizedBox(height: 8),
+            _buildMedicationTable(current, false),
           ],
           if (expired != null && expired.isNotEmpty) ...[
             pw.SizedBox(height: 20),
             pw.Text('الأدوية المنتهية خلال 90 يوم',
                 style:
-                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 12)),
-            pw.SizedBox(height: 10),
-            _buildMedicationsTable(expired, isExpired: true),
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13)),
+            pw.SizedBox(height: 8),
+            _buildMedicationTable(expired, true),
           ],
         ],
       ),
     );
   }
 
-  pw.Widget _buildMedicationsTable(
-    List<MedicationModel> medications, {
-    bool isExpired = false,
-  }) {
+  pw.Widget _buildMedicationTable(List<MedicationModel> meds, bool isExpired) {
     return pw.TableHelper.fromTextArray(
       headers: [
-        isExpired ? 'تاريخ انتهاء الدواء' : 'تاريخ استخدام الدواء',
-        'اسم الدواء',
-        'الجرعة',
-        'كمية الادوية',
-        'عدد مرات الجرعة',
         'المدد الزمنية',
+        'عدد مرات الجرعة',
+        'كمية الدواء',
+        'الجرعة',
+        'اسم الدواء',
+        isExpired ? 'تاريخ الانتهاء' : 'تاريخ الاستخدام',
       ],
-      data: medications.map((med) {
-        return [
-          med.date,
-          med.medicineName,
-          med.dosage ?? 'لا يوجد',
-          med.doseAmount ?? 'لا يوجد',
-          med.dosageFrequency ?? 'لا يوجد',
-          med.timeDuration ?? 'لا يوجد',
-        ];
-      }).toList(),
+      data: meds
+          .map((med) => [
+                med.timeDuration ?? '---',
+                med.dosageFrequency ?? '---',
+                med.doseAmount ?? '---',
+                med.dosage?.toPdfSafeDosage() ?? '---',
+                med.medicineName,
+                med.date,
+              ])
+          .toList(),
       headerStyle: pw.TextStyle(
         color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
         fontWeight: pw.FontWeight.bold,
-        fontSize: 14,
+        fontSize: 12,
       ),
-      cellStyle: const pw.TextStyle(
-        fontSize: 14,
-      ),
+      cellStyle: const pw.TextStyle(fontSize: 11),
       headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
       cellAlignment: pw.Alignment.center,
       border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),

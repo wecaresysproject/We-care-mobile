@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 
 import '../../../generated/l10n.dart';
@@ -301,5 +302,11 @@ extension NumberFormattingExtension on String {
     final num? number = num.tryParse(replaceAll(',', '').trim());
     if (number == null) return this;
     return NumberFormat.decimalPattern('en').format(number);
+  }
+
+  /// Converts Arabic text to be safe for PDF generation
+  /// example : "½" → "1/2", "¾" → "3/4"
+  String toPdfSafeDosage() {
+    return sanitizeDosageForPdf(this);
   }
 }
