@@ -190,12 +190,12 @@ class MedicalReportPdfGenerator {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   pw.Text(
-                    'تاريخ الانشاء: ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+                    'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
                     style: const pw.TextStyle(
                         color: PdfColors.white, fontSize: 10),
                   ),
                   pw.Text(
-                    'الاسم: $name',
+                    'الاسم : $name',
                     style: pw.TextStyle(
                         color: PdfColors.white,
                         fontSize: 14,
