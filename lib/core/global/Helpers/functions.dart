@@ -128,3 +128,67 @@ Future<void> stopSound() async {
     await _audioPlayer.stop();
   }
 }
+
+String sanitizeDosageForPdf(String? input) {
+  if (input == null || input.trim().isEmpty) {
+    return "لا يوجد";
+  }
+
+  String text = input;
+
+  // ----------------------------
+  // 1️⃣ Replace Unicode Fractions
+  // ----------------------------
+  const fractionMap = {
+    '½': ' 1/2',
+    '¼': ' 1/4',
+    '¾': ' 3/4',
+    '⅓': ' 1/3',
+    '⅔': ' 2/3',
+    '⅛': ' 1/8',
+    '⅜': ' 3/8',
+    '⅝': ' 5/8',
+    '⅞': ' 7/8',
+  };
+
+  fractionMap.forEach((key, value) {
+    text = text.replaceAll(key, value);
+  });
+
+  // ----------------------------------
+  // 2️⃣ Normalize Arabic Numbers → EN
+  // ----------------------------------
+  const arabicNumbers = {
+    '٠': '0',
+    '١': '1',
+    '٢': '2',
+    '٣': '3',
+    '٤': '4',
+    '٥': '5',
+    '٦': '6',
+    '٧': '7',
+    '٨': '8',
+    '٩': '9',
+  };
+
+  arabicNumbers.forEach((key, value) {
+    text = text.replaceAll(key, value);
+  });
+
+  // ----------------------------------
+  // 3️⃣ Fix common mixed patterns
+  // ----------------------------------
+  text = text
+      .replaceAll(RegExp(r'\s+'), ' ') // multiple spaces
+      .replaceAll(' / ', '/') // spacing around fractions
+      .trim();
+
+  // ----------------------------------
+  // 4️⃣ Final PDF-safe fallback
+  // ----------------------------------
+  if (text.isEmpty) {
+    return "لا يوجد";
+  }
+
+  return text;
+}

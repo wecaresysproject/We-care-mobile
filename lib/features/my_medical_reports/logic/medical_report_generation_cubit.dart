@@ -120,7 +120,6 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     emit(
       state.copyWith(
         medicalTestsGetAll: getAll,
-        medicalTestsAttachImages: attachImages,
         medicalTestsSelectedYears: selectedYears,
         medicalTestsSelectedTestGroups: selectedTestGroups,
       ),
@@ -238,15 +237,15 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.vitalSignsGetAll,
           selectedValues: state.vitalSignsSelectedValues,
         ),
-        // medications: MedicineCategorySelectionRequestBody(
-        //   getAll: state.medicineGetAll,
-        //   currentMedicines: MedicineDetailsSelection(
-        //     drugNames: state.medicineCurrentNames,
-        //   ),
-        //   expiredLast3Months: MedicineDetailsSelection(
-        //     drugNames: state.medicineExpiredNames,
-        //   ),
-        // ),
+        medications: MedicineCategorySelectionRequestBody(
+          getAll: state.medicineGetAll,
+          currentMedicines: MedicineDetailsSelection(
+            drugNames: state.medicineCurrentNames,
+          ),
+          expiredLast3Months: MedicineDetailsSelection(
+            drugNames: state.medicineExpiredNames,
+          ),
+        ),
         chronicDiseases: ChronicDiseasesSelectionRequestBody(
           getAll: state.chronicDiseasesGetAll,
           diseases: state.chronicDiseasesSelectedValues,
@@ -266,12 +265,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   regions: state.radiologySelectedRegions,
         //   types: state.radiologySelectedTypes,
         // ),
-        // medicalTests: MedicalTestsSelectionRequestBody(
-        //   getAll: state.medicalTestsGetAll,
-        //   attachImages: state.medicalTestsAttachImages,
-        //   years: state.medicalTestsSelectedYears,
-        //   testGroups: state.medicalTestsSelectedTestGroups,
-        // ),
+        medicalTests: MedicalTestsSelectionRequestBody(
+          getAll: state.medicalTestsGetAll,
+          years: state.medicalTestsSelectedYears,
+          testGroups: state.medicalTestsSelectedTestGroups,
+        ),
         // prescriptions: PrescriptionsSelectionRequestBody(
         //   getAll: state.prescriptionsGetAll,
         //   attachImages: state.prescriptionsAttachImages,
@@ -311,14 +309,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         // ),
       ),
     );
-    AppLogger.info(
-        "surgeries getAll: ${state.surgeriesGetAll} , attachReport: ${state.surgeriesAttachReport} , years: ${state.surgeriesSelectedYears} , surgeryNames: ${state.surgeriesSelectedNames}");
 
-    AppLogger.info(
-        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
-
-    AppLogger.info(
-        "allergies getAll: ${state.allergiesGetAll} , types: ${state.allergiesSelectedTypes}");
     emit(state.copyWith(status: RequestStatus.loading));
 
     final result = await _medicalReportRepo.fetchMedicalReportData(

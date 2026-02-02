@@ -193,7 +193,7 @@ final doctorsPrescriptionCategory = MedicalCategoryModel(
 final medicalTestsCategory = MedicalCategoryModel(
   title: "التحاليل الطبية",
   image: "assets/images/test_tube.png",
-  selectionType: MedicalSelectionType.selectionAndFilters,
+  selectionType: MedicalSelectionType.filters,
   radioOptions: ["ارفاق صور التحاليل"],
   filterSections: [
     MedicalFilterSectionModel(

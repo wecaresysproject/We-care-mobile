@@ -34,7 +34,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'vitalSigns')
   final VitalSignsSelectionRequestBody? vitalSigns;
 
-  @JsonKey(name: 'medicalTests')
+  @JsonKey(name: 'LabTests')
   final MedicalTestsSelectionRequestBody? medicalTests;
 
   @JsonKey(name: 'prescriptions')
@@ -214,13 +214,12 @@ class RadiologySelectionRequestBody {
 @JsonSerializable()
 class MedicalTestsSelectionRequestBody {
   final bool getAll;
-  final bool attachImages;
   final List<String> years;
+  @JsonKey(name: 'GroupName')
   final List<String> testGroups;
 
   MedicalTestsSelectionRequestBody({
     required this.getAll,
-    required this.attachImages,
     required this.years,
     required this.testGroups,
   });
