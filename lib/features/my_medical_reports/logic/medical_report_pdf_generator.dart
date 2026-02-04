@@ -20,6 +20,7 @@ class MedicalReportPdfGenerator {
     // Load images
     final profileImageProvider = await getUserProfileImage(reportData);
     final complaintImages = await _loadComplaintImages(reportData);
+    final surgeryImages = await _loadSurgeryImages(reportData);
 
     final prescriptionImageProvider =
         await _loadAssetImage('assets/images/report.png');
@@ -72,7 +73,7 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildAllergiesSection(),
           pw.SizedBox(height: 15),
-          _buildSurgeriesSection(),
+          _buildSurgeriesSection(reportData, surgeryImages),
           pw.SizedBox(height: 15),
           _buildVaccinationsSection(),
           pw.SizedBox(height: 15),
@@ -936,7 +937,14 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildSurgeriesSection() {
+  pw.Widget _buildSurgeriesSection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> surgeryImages) {
+    final surgeries = reportData.data.surgeryEntries;
+
+    if (surgeries == null || surgeries.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -947,24 +955,165 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('العمليات الجراحية'),
-          pw.SizedBox(height: 8),
-          pw.TableHelper.fromTextArray(
-            headers: ['العملية', 'التاريخ', 'المستشفى', 'ملاحظات'],
-            data: [
-              ['استئصال الزائدة', '15/03/2018', 'مستشفى السلام', 'ناجحة'],
-              ['تصحيح نظر', '10/11/2020', 'مستشفى العيون', 'ليزر'],
-            ],
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          pw.SizedBox(height: 12),
+
+          // Build each surgery entry with its images
+          ...surgeries.asMap().entries.map((entry) {
+            final index = entry.key;
+            final surgery = entry.value;
+            final isLast = index == surgeries.length - 1;
+            final images = surgery.medicalReportImage ?? [];
+            final validImages = images
+                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+                .toList();
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Surgery data row
+                _buildSurgeryDataRow(surgery),
+
+                if (validImages.isNotEmpty)
+                  _buildSurgeryImagesRow(validImages, surgeryImages),
+
+                // Divider between entries (except after last)
+                if (!isLast) ...[
+                  pw.SizedBox(height: 12),
+                  pw.Divider(color: PdfColors.grey300),
+                  pw.SizedBox(height: 12),
+                ],
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildSurgeryDataRow(SurgeryEntry surgery) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(10),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey50,
+        borderRadius: pw.BorderRadius.circular(8),
+        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          // Surgery name (title)
+          pw.Text(
+            surgery.surgeryName,
+            style: pw.TextStyle(
+              fontSize: 14,
               fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          ),
+          pw.SizedBox(height: 8),
+
+          // Details in grid layout
+          pw.Wrap(
+            spacing: 20,
+            runSpacing: 6,
+            children: [
+              _buildSurgeryDetailItem('التاريخ', (surgery.surgeryDate)),
+              _buildSurgeryDetailItem('المنطقة', surgery.surgeryRegion),
+              _buildSurgeryDetailItem('التقنية', surgery.usedTechnique),
+              _buildSurgeryDetailItem('الحالة', surgery.surgeryStatus),
+              _buildSurgeryDetailItem('الجراح', surgery.surgeonName),
+              _buildSurgeryDetailItem('المستشفى', surgery.hospitalCenter),
+              _buildSurgeryDetailItem('الدولة', surgery.country),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  pw.Widget _buildSurgeryDetailItem(String label, String value) {
+    return pw.Container(
+      constraints: const pw.BoxConstraints(minWidth: 150),
+      child: pw.Row(
+        mainAxisSize: pw.MainAxisSize.min,
+        children: [
+          pw.Text(
+            '$label : ',
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          pw.Text(
+            value,
+            style: const pw.TextStyle(
+              fontSize: 14,
+              color: PdfColors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildSurgeryImagesRow(
+      List<String> imageUrls, Map<String, pw.MemoryImage> surgeryImages) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(top: 10),
+      child: pw.Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: imageUrls.map((imageUrl) {
+          final image = surgeryImages[imageUrl];
+
+          return pw.Container(
+            width: 350,
+            padding: const pw.EdgeInsets.all(8),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              border: pw.Border.all(color: PdfColors.grey400, width: 1),
+              borderRadius: pw.BorderRadius.circular(8),
+            ),
+            child: pw.Column(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                if (image != null &&
+                    imageUrl.isNotEmpty &&
+                    imageUrl != "لم يتم ادخال بيانات") ...[
+                  pw.Container(
+                    child: pw.Image(
+                      image,
+                      fit: pw.BoxFit.contain,
+                    ),
+                  ),
+                  pw.SizedBox(height: 4),
+                  pw.UrlLink(
+                    destination: imageUrl,
+                    child: pw.Text(
+                      'اضغط للتحميل',
+                      style: pw.TextStyle(
+                        fontSize: 8,
+                        color: PdfColors.blue700,
+                        decoration: pw.TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ] else
+                  pw.Container(
+                    width: 120,
+                    height: 120,
+                    child: pw.Center(
+                      child: pw.Icon(
+                        pw.IconData(0xe3f4),
+                        size: 40,
+                        color: PdfColors.grey600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -1165,6 +1314,40 @@ class MedicalReportPdfGenerator {
         // Log image load failure if needed
       }
     }
+    return images;
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadSurgeryImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final surgeries = reportData.data.surgeryEntries;
+    if (surgeries == null) return images;
+
+    final urls = <String>{};
+    for (var surgery in surgeries) {
+      if (surgery.medicalReportImage != null) {
+        for (var imageUrl in surgery.medicalReportImage!) {
+          if (imageUrl.isNotEmpty) {
+            urls.add(imageUrl);
+          }
+        }
+      }
+    }
+
+    print('🔍 Loading ${urls.length} surgery images...');
+
+    for (var url in urls) {
+      try {
+        print('📥 Attempting to load: $url');
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+        print('✅ Successfully loaded: $url');
+      } catch (e) {
+        print('❌ Failed to load: $url - Error: $e');
+      }
+    }
+
+    print('✅ Total surgery images loaded: ${images.length}');
     return images;
   }
 }

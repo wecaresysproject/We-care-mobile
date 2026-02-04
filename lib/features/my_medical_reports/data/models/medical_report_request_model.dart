@@ -28,7 +28,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'emergencyComplaints')
   final UrgentComplaintsSelectionRequestBody? urgentComplaints;
 
-  @JsonKey(name: 'radiology')
+  @JsonKey(name: 'Radiology')
   final RadiologySelectionRequestBody? radiology;
 
   @JsonKey(name: 'vitalSigns')
@@ -40,7 +40,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'prescriptions')
   final PrescriptionsSelectionRequestBody? prescriptions;
 
-  @JsonKey(name: 'surgeries')
+  @JsonKey(name: 'SurgeryEntries')
   final SurgeriesSelectionRequestBody? surgeries;
 
   @JsonKey(name: 'geneticDiseases')
@@ -257,13 +257,13 @@ class PrescriptionsSelectionRequestBody {
 @JsonSerializable()
 class SurgeriesSelectionRequestBody {
   final bool getAll;
-  final bool attachReport;
+  final bool attachImages;
   final List<String> years;
   final List<String> surgeryNames;
 
   SurgeriesSelectionRequestBody({
     required this.getAll,
-    required this.attachReport,
+    required this.attachImages,
     required this.years,
     required this.surgeryNames,
   });
