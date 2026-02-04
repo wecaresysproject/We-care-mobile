@@ -52,26 +52,16 @@ class MedicalReportPdfGenerator {
             _buildHeader(profileImageProvider, logoImageProvider, reportData),
         build: (context) => [
           _buildBasicInfoSection(reportData),
-          pw.SizedBox(height: 15),
           _buildVitalSignsSection(reportData),
-          pw.SizedBox(height: 15),
           _buildChronicDiseasesSection(reportData),
-          pw.SizedBox(height: 15),
           _buildComplaintsSection(reportData, complaintImages),
-          pw.SizedBox(height: 15),
           _buildMedicationsSection(reportData),
-          pw.SizedBox(height: 15),
           _buildLabResultsSection(reportData),
-          pw.SizedBox(height: 15),
-          _buildAllergiesSection(),
-          pw.SizedBox(height: 15),
+          // _buildAllergiesSection(),
           _buildSurgeriesSection(reportData, surgeryImages),
-          pw.SizedBox(height: 15),
-          _buildVaccinationsSection(),
-          pw.SizedBox(height: 15),
+          // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
-          pw.SizedBox(height: 15),
-          _buildPrescriptionsSection(prescriptionImageProvider),
+          // _buildPrescriptionsSection(prescriptionImageProvider),
         ],
       ),
     );
@@ -88,6 +78,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -126,11 +117,12 @@ class MedicalReportPdfGenerator {
                 if (validXrayImages.isNotEmpty) ...[
                   pw.SizedBox(height: 8),
                   pw.Text(
-                    'صور الأشعة:',
+                    'صور الأشعة :',
                     style: pw.TextStyle(
-                      fontSize: 10,
+                      fontSize: 14,
                       fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.grey700,
+                      color:
+                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                     ),
                   ),
                   pw.SizedBox(height: 4),
@@ -141,11 +133,12 @@ class MedicalReportPdfGenerator {
                 if (validReportImages.isNotEmpty) ...[
                   pw.SizedBox(height: 8),
                   pw.Text(
-                    'صور التقرير الطبي:',
+                    'صور التقرير الطبي :',
                     style: pw.TextStyle(
-                      fontSize: 10,
+                      fontSize: 14,
                       fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.grey700,
+                      color:
+                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                     ),
                   ),
                   pw.SizedBox(height: 4),
@@ -168,6 +161,7 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildPrescriptionsSection(pw.ImageProvider prescriptionImage) {
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -485,6 +479,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -516,6 +511,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -628,6 +624,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -881,6 +878,7 @@ class MedicalReportPdfGenerator {
     final expired = module.expiredLast90Days;
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -945,6 +943,7 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildAllergiesSection() {
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -985,6 +984,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -1160,6 +1160,7 @@ class MedicalReportPdfGenerator {
   pw.Widget _buildRadiologyDataRow(RadiologyEntry radiology) {
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
+      width: double.infinity,
       decoration: pw.BoxDecoration(
         color: PdfColors.grey50,
         borderRadius: pw.BorderRadius.circular(8),
@@ -1170,44 +1171,27 @@ class MedicalReportPdfGenerator {
         children: [
           // Radiology type and body part (title)
           pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              pw.Text(
-                radiology.radioType,
-                style: pw.TextStyle(
-                  fontSize: 14,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                ),
-              ),
-              pw.Text(
-                radiology.bodyPart,
-                style: pw.TextStyle(
-                  fontSize: 12,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.grey700,
-                ),
-              ),
+              _buildInfoItem("نوع الأشعة :", radiology.radioType),
+              pw.SizedBox(width: 40),
+              _buildInfoItem("منطقة الأشعة :", radiology.bodyPart),
             ],
           ),
           pw.SizedBox(height: 8),
 
           // Date
-          pw.Text(
-            'التاريخ: ${radiology.radiologyDate}',
-            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
-          ),
+          _buildInfoItem("التاريخ :", radiology.radiologyDate),
 
           // Periodic usage (if any)
           if (radiology.periodicUsage != null &&
               radiology.periodicUsage!.isNotEmpty) ...[
             pw.SizedBox(height: 6),
             pw.Text(
-              'الاستخدام الدوري:',
+              'نوعية الاحتياج :',
               style: pw.TextStyle(
-                fontSize: 10,
+                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColors.grey700,
+                fontSize: 14,
               ),
             ),
             pw.SizedBox(height: 2),
@@ -1217,8 +1201,7 @@ class MedicalReportPdfGenerator {
                 child: pw.Text(
                   '• $usage',
                   style: const pw.TextStyle(
-                    fontSize: 9,
-                    color: PdfColors.grey600,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -1240,7 +1223,8 @@ class MedicalReportPdfGenerator {
           final image = radiologyImages[imageUrl];
 
           return pw.Container(
-            width: 350,
+            width: 250,
+            height: 250,
             padding: const pw.EdgeInsets.all(8),
             decoration: pw.BoxDecoration(
               color: PdfColors.white,
@@ -1253,7 +1237,10 @@ class MedicalReportPdfGenerator {
                 if (image != null &&
                     imageUrl.isNotEmpty &&
                     imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Container(child: pw.Image(image, fit: pw.BoxFit.contain)),
+                  pw.Container(
+                      height: 230,
+                      width: 230,
+                      child: pw.Image(image, fit: pw.BoxFit.contain)),
                   pw.SizedBox(height: 4),
                   pw.UrlLink(
                     destination: imageUrl,
@@ -1268,8 +1255,8 @@ class MedicalReportPdfGenerator {
                   ),
                 ] else
                   pw.Container(
-                    width: 120,
-                    height: 120,
+                    width: 100,
+                    height: 100,
                     child: pw.Center(
                       child: pw.Icon(
                         pw.IconData(0xe3f4),
@@ -1294,6 +1281,7 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -1398,6 +1386,7 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildVaccinationsSection() {
     return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
