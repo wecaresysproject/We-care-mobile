@@ -258,13 +258,13 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           complaints: state.urgentComplaintsSelectedComplaints,
           otherComplaints: state.urgentComplaintsSelectedOtherComplaints,
         ),
-        // radiology: RadiologySelectionRequestBody(
-        //   getAll: state.radiologyGetAll, //! need check later
-        //   attachImages: state.radiologyAttachImages,
-        //   years: state.radiologySelectedYears,
-        //   regions: state.radiologySelectedRegions,
-        //   types: state.radiologySelectedTypes,
-        // ),
+        radiology: RadiologySelectionRequestBody(
+          getAll: state.radiologyGetAll,
+          attachImages: state.radiologyAttachImages,
+          years: state.radiologySelectedYears,
+          regions: state.radiologySelectedRegions,
+          types: state.radiologySelectedTypes,
+        ),
         medicalTests: MedicalTestsSelectionRequestBody(
           getAll: state.medicalTestsGetAll,
           years: state.medicalTestsSelectedYears,
@@ -277,12 +277,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   specialties: state.prescriptionsSelectedSpecialties,
         //   doctorNames: state.prescriptionsSelectedDoctorNames,
         // ),
-        // surgeries: SurgeriesSelectionRequestBody(
-        //   getAll: state.surgeriesGetAll,
-        //   attachReport: state.surgeriesAttachReport,
-        //   years: state.surgeriesSelectedYears, //! needs getAll here
-        //   surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
-        // ),
+        surgeries: SurgeriesSelectionRequestBody(
+          getAll: state.surgeriesGetAll,
+          attachImages: state.surgeriesAttachReport,
+          years: state.surgeriesSelectedYears, //! needs getAll here
+          surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
+        ),
         // geneticDiseases: GeneticDiseasesSelectionRequestBody(
         //   getAll: state.geneticDiseasesGetAll,
         //   diseases: state.geneticDiseasesSelectedValues,
