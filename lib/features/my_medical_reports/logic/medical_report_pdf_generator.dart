@@ -1237,10 +1237,12 @@ class MedicalReportPdfGenerator {
                 if (image != null &&
                     imageUrl.isNotEmpty &&
                     imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Container(
-                      height: 230,
+                  pw.Expanded(
+                    child: pw.Container(
                       width: 230,
-                      child: pw.Image(image, fit: pw.BoxFit.contain)),
+                      child: pw.Image(image, fit: pw.BoxFit.contain),
+                    ),
+                  ),
                   pw.SizedBox(height: 4),
                   pw.UrlLink(
                     destination: imageUrl,
