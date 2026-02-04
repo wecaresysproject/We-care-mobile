@@ -194,7 +194,9 @@ class RadiologySelectionRequestBody {
   final bool getAll;
   final bool attachImages;
   final List<String> years;
+  @JsonKey(name: 'BodyParts')
   final List<String> regions;
+  @JsonKey(name: 'RadioTypes')
   final List<String> types;
 
   RadiologySelectionRequestBody({

@@ -35,6 +35,7 @@ class MedicalReportData {
   final MedicationsModule? medicationsModule;
   final List<MedicalTestModel>? medicalTests;
   final List<SurgeryEntry>? surgeryEntries;
+  final List<RadiologyEntry>? radiology;
 
   MedicalReportData({
     this.basicInformation,
@@ -44,6 +45,7 @@ class MedicalReportData {
     this.medicationsModule,
     this.medicalTests,
     this.surgeryEntries,
+    this.radiology,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -330,4 +332,28 @@ class SurgeryEntry {
       _$SurgeryEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$SurgeryEntryToJson(this);
+}
+
+@JsonSerializable()
+class RadiologyEntry {
+  final String radiologyDate;
+  final String bodyPart;
+  final String radioType;
+  final List<String>? xrayImages;
+  final List<String>? reportImages;
+  final List<String>? periodicUsage;
+
+  RadiologyEntry({
+    required this.radiologyDate,
+    required this.bodyPart,
+    required this.radioType,
+    this.xrayImages,
+    this.reportImages,
+    this.periodicUsage,
+  });
+
+  factory RadiologyEntry.fromJson(Map<String, dynamic> json) =>
+      _$RadiologyEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RadiologyEntryToJson(this);
 }

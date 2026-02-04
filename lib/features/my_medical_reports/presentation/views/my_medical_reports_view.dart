@@ -511,7 +511,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
     final filters = _selectedFilters[index] ?? {};
     final attachImages =
-        _selectedOptionValues[index]?.contains("ارفاق صور الاشعة") ?? false;
+        _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
     context.read<MedicalReportGenerationCubit>().updateRadiologySelection(
           getAll: getAll,
           attachImages: attachImages,

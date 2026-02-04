@@ -21,21 +21,13 @@ class MedicalReportPdfGenerator {
     final profileImageProvider = await getUserProfileImage(reportData);
     final complaintImages = await _loadComplaintImages(reportData);
     final surgeryImages = await _loadSurgeryImages(reportData);
+    final radiologyImages = await _loadRadiologyImages(reportData);
 
     final prescriptionImageProvider =
         await _loadAssetImage('assets/images/report.png');
 
     final logoImageProvider =
         await _loadAssetImage('assets/images/we_care_logo.png');
-
-    // Load X-Ray images (simulating multiple images)
-    final xRayImageProvider =
-        await _loadAssetImage('assets/images/x_ray_sample.png');
-    final xRayImages = [
-      xRayImageProvider,
-      xRayImageProvider,
-      xRayImageProvider
-    ]; // Example list
 
     final theme = pw.ThemeData.withFont(
       base: ttfRegular,
@@ -77,7 +69,7 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 15),
           _buildVaccinationsSection(),
           pw.SizedBox(height: 15),
-          _buildXRaySection(xRayImages),
+          _buildXRaySection(reportData, radiologyImages),
           pw.SizedBox(height: 15),
           _buildPrescriptionsSection(prescriptionImageProvider),
         ],
@@ -87,7 +79,14 @@ class MedicalReportPdfGenerator {
     return pdf.save();
   }
 
-  pw.Widget _buildXRaySection(List<pw.ImageProvider> images) {
+  pw.Widget _buildXRaySection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> radiologyImages) {
+    final radiologyEntries = reportData.data.radiology;
+
+    if (radiologyEntries == null || radiologyEntries.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       padding: const pw.EdgeInsets.all(15),
       decoration: pw.BoxDecoration(
@@ -98,30 +97,70 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الأشعة'),
-          pw.SizedBox(height: 8),
-          pw.Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: images.map((image) {
-              return pw.Container(
-                width: 350, // Adjust size as needed
-                height: 250,
-                decoration: pw.BoxDecoration(
-                  border: pw.Border.all(color: PdfColors.grey300),
-                  borderRadius: pw.BorderRadius.circular(8),
-                  image: pw.DecorationImage(
-                    image: image,
-                    fit: pw.BoxFit.cover,
+          pw.SizedBox(height: 12),
+
+          // Build each radiology entry with its images
+          ...radiologyEntries.asMap().entries.map((entry) {
+            final index = entry.key;
+            final radiology = entry.value;
+            final isLast = index == radiologyEntries.length - 1;
+
+            // Filter valid images
+            final xrayImages = radiology.xrayImages ?? [];
+            final validXrayImages = xrayImages
+                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+                .toList();
+
+            final reportImgs = radiology.reportImages ?? [];
+            final validReportImages = reportImgs
+                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+                .toList();
+
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // Radiology data row
+                _buildRadiologyDataRow(radiology),
+
+                // X-ray images underneath (if any)
+                if (validXrayImages.isNotEmpty) ...[
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    'صور الأشعة:',
+                    style: pw.TextStyle(
+                      fontSize: 10,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.grey700,
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
-          pw.SizedBox(height: 8),
-          pw.Text(
-            'صور الأشعة المرفقة (${images.length})',
-            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
-          ),
+                  pw.SizedBox(height: 4),
+                  _buildRadiologyImagesRow(validXrayImages, radiologyImages),
+                ],
+
+                // Report images underneath (if any)
+                if (validReportImages.isNotEmpty) ...[
+                  pw.SizedBox(height: 8),
+                  pw.Text(
+                    'صور التقرير الطبي:',
+                    style: pw.TextStyle(
+                      fontSize: 10,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.grey700,
+                    ),
+                  ),
+                  pw.SizedBox(height: 4),
+                  _buildRadiologyImagesRow(validReportImages, radiologyImages),
+                ],
+
+                // Divider between entries (except after last)
+                if (!isLast) ...[
+                  pw.SizedBox(height: 12),
+                  pw.Divider(color: PdfColors.grey300),
+                  pw.SizedBox(height: 12),
+                ],
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -1118,6 +1157,135 @@ class MedicalReportPdfGenerator {
     );
   }
 
+  pw.Widget _buildRadiologyDataRow(RadiologyEntry radiology) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(10),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey50,
+        borderRadius: pw.BorderRadius.circular(8),
+        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          // Radiology type and body part (title)
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                radiology.radioType,
+                style: pw.TextStyle(
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                ),
+              ),
+              pw.Text(
+                radiology.bodyPart,
+                style: pw.TextStyle(
+                  fontSize: 12,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColors.grey700,
+                ),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 8),
+
+          // Date
+          pw.Text(
+            'التاريخ: ${radiology.radiologyDate}',
+            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+          ),
+
+          // Periodic usage (if any)
+          if (radiology.periodicUsage != null &&
+              radiology.periodicUsage!.isNotEmpty) ...[
+            pw.SizedBox(height: 6),
+            pw.Text(
+              'الاستخدام الدوري:',
+              style: pw.TextStyle(
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.grey700,
+              ),
+            ),
+            pw.SizedBox(height: 2),
+            ...radiology.periodicUsage!.map(
+              (usage) => pw.Padding(
+                padding: const pw.EdgeInsets.only(right: 10, top: 2),
+                child: pw.Text(
+                  '• $usage',
+                  style: const pw.TextStyle(
+                    fontSize: 9,
+                    color: PdfColors.grey600,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildRadiologyImagesRow(
+      List<String> imageUrls, Map<String, pw.MemoryImage> radiologyImages) {
+    return pw.Container(
+      margin: const pw.EdgeInsets.only(top: 10),
+      child: pw.Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: imageUrls.map((imageUrl) {
+          final image = radiologyImages[imageUrl];
+
+          return pw.Container(
+            width: 350,
+            padding: const pw.EdgeInsets.all(8),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              border: pw.Border.all(color: PdfColors.grey400, width: 1),
+              borderRadius: pw.BorderRadius.circular(8),
+            ),
+            child: pw.Column(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                if (image != null &&
+                    imageUrl.isNotEmpty &&
+                    imageUrl != "لم يتم ادخال بيانات") ...[
+                  pw.Container(child: pw.Image(image, fit: pw.BoxFit.contain)),
+                  pw.SizedBox(height: 4),
+                  pw.UrlLink(
+                    destination: imageUrl,
+                    child: pw.Text(
+                      'اضغط للتحميل',
+                      style: pw.TextStyle(
+                        fontSize: 8,
+                        color: PdfColors.blue700,
+                        decoration: pw.TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ] else
+                  pw.Container(
+                    width: 120,
+                    height: 120,
+                    child: pw.Center(
+                      child: pw.Icon(
+                        pw.IconData(0xe3f4),
+                        size: 40,
+                        color: PdfColors.grey600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
   pw.Widget _buildLabResultsSection(MedicalReportResponseModel reportData) {
     final tests = reportData.data.medicalTests;
 
@@ -1348,6 +1516,47 @@ class MedicalReportPdfGenerator {
     }
 
     print('✅ Total surgery images loaded: ${images.length}');
+    return images;
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadRadiologyImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final items = reportData.data.radiology;
+    if (items == null) return images;
+
+    final urls = <String>{};
+    for (var item in items) {
+      if (item.xrayImages != null) {
+        for (var imageUrl in item.xrayImages!) {
+          if (imageUrl.isNotEmpty) {
+            urls.add(imageUrl);
+          }
+        }
+      }
+      if (item.reportImages != null) {
+        for (var imageUrl in item.reportImages!) {
+          if (imageUrl.isNotEmpty) {
+            urls.add(imageUrl);
+          }
+        }
+      }
+    }
+
+    print('🔍 Loading ${urls.length} radiology images...');
+
+    for (var url in urls) {
+      try {
+        print('📥 Attempting to load: $url');
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+        print('✅ Successfully loaded: $url');
+      } catch (e) {
+        print('❌ Failed to load: $url - Error: $e');
+      }
+    }
+
+    print('✅ Total radiology images loaded: ${images.length}');
     return images;
   }
 }
