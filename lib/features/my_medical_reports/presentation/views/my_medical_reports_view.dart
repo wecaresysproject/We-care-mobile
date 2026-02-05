@@ -195,6 +195,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncSupplementsSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Physical Activity Selection sync
+                                if (dummyCategory.title == "النشاط الرياضي") {
+                                  _syncPhysicalActivitySelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -409,6 +415,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "المكملات الغذائية") {
                                         _syncSupplementsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Physical Activity Selection sync
+                                      if (dummyCategory.title ==
+                                          "النشاط الرياضي") {
+                                        _syncPhysicalActivitySelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -705,6 +718,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedNames:
               filters["0_اسم الفيتامين أو المكمل الغذائي"]?.toList() ?? [],
+        );
+  }
+
+  void _syncPhysicalActivitySelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context
+        .read<MedicalReportGenerationCubit>()
+        .updatePhysicalActivitySelection(
+          getAll: getAll,
+          selectedReports: filters["0_تقرير المتابعة الرياضية"]?.toList() ?? [],
         );
   }
 }

@@ -57,6 +57,8 @@ class MedicalReportGenerationState extends Equatable {
   final bool supplementsGetAll;
   final List<String> supplementsSelectedYears;
   final List<String> supplementsSelectedNames;
+  final bool physicalActivityGetAll;
+  final List<String> physicalActivitySelectedReports;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -117,6 +119,8 @@ class MedicalReportGenerationState extends Equatable {
     this.supplementsGetAll = false,
     this.supplementsSelectedYears = const [],
     this.supplementsSelectedNames = const [],
+    this.physicalActivityGetAll = false,
+    this.physicalActivitySelectedReports = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -178,6 +182,8 @@ class MedicalReportGenerationState extends Equatable {
     bool? supplementsGetAll,
     List<String>? supplementsSelectedYears,
     List<String>? supplementsSelectedNames,
+    bool? physicalActivityGetAll,
+    List<String>? physicalActivitySelectedReports,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -273,6 +279,10 @@ class MedicalReportGenerationState extends Equatable {
           supplementsSelectedYears ?? this.supplementsSelectedYears,
       supplementsSelectedNames:
           supplementsSelectedNames ?? this.supplementsSelectedNames,
+      physicalActivityGetAll:
+          physicalActivityGetAll ?? this.physicalActivityGetAll,
+      physicalActivitySelectedReports: physicalActivitySelectedReports ??
+          this.physicalActivitySelectedReports,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -336,6 +346,8 @@ class MedicalReportGenerationState extends Equatable {
         supplementsGetAll,
         supplementsSelectedYears,
         supplementsSelectedNames,
+        physicalActivityGetAll,
+        physicalActivitySelectedReports,
         medicalReportData,
         categoryFilters,
       ];

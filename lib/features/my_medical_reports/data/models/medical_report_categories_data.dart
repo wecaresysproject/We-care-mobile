@@ -368,8 +368,20 @@ final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
 final sportsActivityCategory = MedicalCategoryModel(
   title: "النشاط الرياضي",
   image: "assets/images/physical_exercise.png",
-  selectionType: MedicalSelectionType.selection,
-  radioOptions: ["تقرير المتابعة الرياضية"],
+  selectionType: MedicalSelectionType.filters,
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "تقرير المتابعة الرياضية",
+          values: [
+            "من 29/12/2025 إلى 04/01/2026",
+            "من 06/01/2026 إلى 12/01/2026"
+          ],
+        ),
+      ],
+    ),
+  ],
 );
 
 final supplementsCategory = MedicalCategoryModel(

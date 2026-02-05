@@ -252,6 +252,18 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updatePhysicalActivitySelection({
+    bool? getAll,
+    List<String>? selectedReports,
+  }) {
+    emit(
+      state.copyWith(
+        physicalActivityGetAll: getAll,
+        physicalActivitySelectedReports: selectedReports,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -341,6 +353,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.supplementsGetAll,
           years: state.supplementsSelectedYears,
           names: state.supplementsSelectedNames,
+        ),
+        sportsActivity: PhysicalActivitySelectionRequestBody(
+          getAll: state.physicalActivityGetAll,
+          reports: state.physicalActivitySelectedReports,
         ),
       ),
     );
@@ -459,6 +475,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "المكملات الغذائية") {
       result = await _medicalReportRepo.getSupplementsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "النشاط الرياضي") {
+      result = await _medicalReportRepo.getPhysicalActivityFilters(
         language,
         userType,
       );

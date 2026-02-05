@@ -102,6 +102,12 @@ abstract class MedicalReportApiServices {
     @Query('userType') String userType,
   );
 
+  @GET(MedicalReportApiConstants.getPhysicalActivityFilters)
+  Future<dynamic> getPhysicalActivityFilters(
+    @Query('language') String language,
+    @Query('userType') String userType,
+  );
+
   @POST(MedicalReportApiConstants.fetchData)
   Future<MedicalReportResponseModel> fetchMedicalReportData(
     @Body() MedicalReportRequestModel requestBody,
