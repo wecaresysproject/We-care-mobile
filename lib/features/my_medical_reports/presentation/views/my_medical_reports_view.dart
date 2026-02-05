@@ -188,6 +188,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncSmartNutritionSelectionToCubit(
                                       context, index);
                                 }
+
+                                // Supplements Selection sync
+                                if (dummyCategory.title ==
+                                    "المكملات الغذائية") {
+                                  _syncSupplementsSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -395,6 +402,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "المحلل الغذائي الذكي") {
                                         _syncSmartNutritionSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Supplements Selection sync
+                                      if (dummyCategory.title ==
+                                          "المكملات الغذائية") {
+                                        _syncSupplementsSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -679,6 +693,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     context.read<MedicalReportGenerationCubit>().updateSmartNutritionSelection(
           getAll: getAll,
           selectedReports: filters["0_تقرير المتابعة الغذائيه"]?.toList() ?? [],
+        );
+  }
+
+  void _syncSupplementsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateSupplementsSelection(
+          getAll: getAll,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+          selectedNames:
+              filters["0_اسم الفيتامين أو المكمل الغذائي"]?.toList() ?? [],
         );
   }
 }

@@ -236,6 +236,22 @@ class MedicalReportRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getSupplementsFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getSupplementsFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(
+          MedicalReportFilterResponseModel.fromJson(response["data"]));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
 
 final dummyMedicalReportResponse = MedicalReportResponseModel(

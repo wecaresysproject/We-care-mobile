@@ -380,8 +380,15 @@ final supplementsCategory = MedicalCategoryModel(
     MedicalFilterSectionModel(
       filters: [
         MedicalFilterModel(
+          title: "السنة",
+          values: ["2026", "2025"],
+        ),
+        MedicalFilterModel(
           title: "اسم الفيتامين أو المكمل الغذائي",
-          values: ["فيتامين د", "حديد", "زنك"],
+          values: [
+            "سنتـروم (متعدد فيتامينات ومعادن)",
+            "سولجار فورمولا في إم-75"
+          ],
         ),
       ],
     ),

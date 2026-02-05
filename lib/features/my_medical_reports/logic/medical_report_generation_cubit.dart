@@ -238,6 +238,20 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateSupplementsSelection({
+    bool? getAll,
+    List<String>? selectedYears,
+    List<String>? selectedNames,
+  }) {
+    emit(
+      state.copyWith(
+        supplementsGetAll: getAll,
+        supplementsSelectedYears: selectedYears,
+        supplementsSelectedNames: selectedNames,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -322,6 +336,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
           getAll: state.smartNutritionGetAll,
           reports: state.smartNutritionSelectedReports,
+        ),
+        supplements: SupplementsSelectionRequestBody(
+          getAll: state.supplementsGetAll,
+          years: state.supplementsSelectedYears,
+          names: state.supplementsSelectedNames,
         ),
       ),
     );
@@ -435,6 +454,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "المحلل الغذائي الذكي") {
       result = await _medicalReportRepo.getSmartNutritionFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "المكملات الغذائية") {
+      result = await _medicalReportRepo.getSupplementsFilters(
         language,
         userType,
       );

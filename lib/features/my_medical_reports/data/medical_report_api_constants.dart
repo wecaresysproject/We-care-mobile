@@ -22,4 +22,6 @@ class MedicalReportApiConstants {
   static const String getTeethFilters = 'MedicalReports/Teeth/filters';
   static const String getSmartNutritionFilters =
       'MedicalReports/smart-nutrition/options';
+  static const String getSupplementsFilters =
+      'MedicalReports/supplements-vitamins/filters';
 }

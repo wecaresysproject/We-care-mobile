@@ -54,6 +54,9 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> dentalSelectedMedicalProcedures;
   final bool smartNutritionGetAll;
   final List<String> smartNutritionSelectedReports;
+  final bool supplementsGetAll;
+  final List<String> supplementsSelectedYears;
+  final List<String> supplementsSelectedNames;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -111,6 +114,9 @@ class MedicalReportGenerationState extends Equatable {
     this.dentalSelectedMedicalProcedures = const [],
     this.smartNutritionGetAll = false,
     this.smartNutritionSelectedReports = const [],
+    this.supplementsGetAll = false,
+    this.supplementsSelectedYears = const [],
+    this.supplementsSelectedNames = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -169,6 +175,9 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? dentalSelectedMedicalProcedures,
     bool? smartNutritionGetAll,
     List<String>? smartNutritionSelectedReports,
+    bool? supplementsGetAll,
+    List<String>? supplementsSelectedYears,
+    List<String>? supplementsSelectedNames,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -259,6 +268,11 @@ class MedicalReportGenerationState extends Equatable {
       smartNutritionGetAll: smartNutritionGetAll ?? this.smartNutritionGetAll,
       smartNutritionSelectedReports:
           smartNutritionSelectedReports ?? this.smartNutritionSelectedReports,
+      supplementsGetAll: supplementsGetAll ?? this.supplementsGetAll,
+      supplementsSelectedYears:
+          supplementsSelectedYears ?? this.supplementsSelectedYears,
+      supplementsSelectedNames:
+          supplementsSelectedNames ?? this.supplementsSelectedNames,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -319,6 +333,9 @@ class MedicalReportGenerationState extends Equatable {
         dentalSelectedMedicalProcedures,
         smartNutritionGetAll,
         smartNutritionSelectedReports,
+        supplementsGetAll,
+        supplementsSelectedYears,
+        supplementsSelectedNames,
         medicalReportData,
         categoryFilters,
       ];

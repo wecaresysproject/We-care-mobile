@@ -58,6 +58,9 @@ class MedicalReportSelections {
   @JsonKey(name: 'smartNutrition')
   final SmartNutritionalAnalyzerSelectionRequestBody? smartNutritionalAnalyzer;
 
+  @JsonKey(name: 'supplements')
+  final SupplementsSelectionRequestBody? supplements;
+
   MedicalReportSelections({
     this.basicInformation,
     this.medications,
@@ -73,12 +76,32 @@ class MedicalReportSelections {
     this.eyes,
     this.teeth,
     this.smartNutritionalAnalyzer,
+    this.supplements,
   });
 
   factory MedicalReportSelections.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportSelectionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicalReportSelectionsToJson(this);
+}
+
+@JsonSerializable()
+class SupplementsSelectionRequestBody {
+  final bool getAll;
+  final List<String> years;
+  final List<String> names;
+
+  SupplementsSelectionRequestBody({
+    required this.getAll,
+    required this.years,
+    required this.names,
+  });
+
+  factory SupplementsSelectionRequestBody.fromJson(Map<String, dynamic> json) =>
+      _$SupplementsSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$SupplementsSelectionRequestBodyToJson(this);
 }
 
 // ... existing classes ...
