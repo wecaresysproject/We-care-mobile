@@ -37,6 +37,7 @@ class MedicalReportData {
   final List<SurgeryEntry>? surgeryEntries;
   final List<RadiologyEntry>? radiology;
   final List<AllergyModel>? allergy;
+  final List<PreDescriptionModel>? preDescriptions;
 
   MedicalReportData({
     this.basicInformation,
@@ -48,12 +49,33 @@ class MedicalReportData {
     this.surgeryEntries,
     this.radiology,
     this.allergy,
+    this.preDescriptions,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicalReportDataToJson(this);
+}
+
+@JsonSerializable()
+class PreDescriptionModel {
+  final String preDescriptionDate;
+  final String doctorName;
+  final String doctorSpecialty;
+  final List<String>? preDescriptionPhoto;
+
+  PreDescriptionModel({
+    required this.preDescriptionDate,
+    required this.doctorName,
+    required this.doctorSpecialty,
+    this.preDescriptionPhoto,
+  });
+
+  factory PreDescriptionModel.fromJson(Map<String, dynamic> json) =>
+      _$PreDescriptionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PreDescriptionModelToJson(this);
 }
 
 @JsonSerializable()

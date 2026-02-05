@@ -37,7 +37,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'LabTests')
   final MedicalTestsSelectionRequestBody? medicalTests;
 
-  @JsonKey(name: 'prescriptions')
+  @JsonKey(name: 'PreDescriptions')
   final PrescriptionsSelectionRequestBody? prescriptions;
 
   @JsonKey(name: 'SurgeryEntries')
@@ -307,7 +307,9 @@ class MedicalTestsSelectionRequestBody {
 class PrescriptionsSelectionRequestBody {
   final bool getAll;
   final List<String> years;
+  @JsonKey(name: 'Specialties')
   final List<String> specialties;
+  @JsonKey(name: 'Doctors')
   final List<String> doctorNames;
 
   PrescriptionsSelectionRequestBody({

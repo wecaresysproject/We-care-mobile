@@ -308,13 +308,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.medicalTestsSelectedYears,
           testGroups: state.medicalTestsSelectedTestGroups,
         ),
-        // prescriptions: PrescriptionsSelectionRequestBody(
-        //   getAll: state.prescriptionsGetAll,
-        //   attachImages: state.prescriptionsAttachImages,
-        //   years: state.prescriptionsSelectedYears,
-        //   specialties: state.prescriptionsSelectedSpecialties,
-        //   doctorNames: state.prescriptionsSelectedDoctorNames,
-        // ),
+        prescriptions: PrescriptionsSelectionRequestBody(
+          getAll: state.prescriptionsGetAll,
+          years: state.prescriptionsSelectedYears,
+          specialties: state.prescriptionsSelectedSpecialties,
+          doctorNames: state.prescriptionsSelectedDoctorNames,
+        ),
         surgeries: SurgeriesSelectionRequestBody(
           getAll: state.surgeriesGetAll,
           attachImages: state.surgeriesAttachReport,
@@ -367,9 +366,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       requestBody,
       AppStrings.arabicLang,
     );
-    AppLogger.info("Medical Report Data: $result");
     result.when(
       success: (data) {
+        AppLogger.info("medical report succfulyy returned with data ");
+
         emit(
           state.copyWith(
             status: RequestStatus.success,

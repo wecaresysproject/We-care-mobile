@@ -239,11 +239,11 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   Future<void> uploadPrescriptionImagePicked(
       {required String imagePath}) async {
     // 1) Check limit
-    if (state.prescriptionPictureUploadedUrl.length >= 8) {
+    if (state.prescriptionPictureUploadedUrl.length >= 2) {
       emit(
         state.copyWith(
-          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
           prescriptionImageRequestStatus: UploadImageRequestStatus.failure,
+          message: "لقد وصلت للحد الأقصى لرفع الصور (2) للروشتة الواحدة",
         ),
       );
       return;
