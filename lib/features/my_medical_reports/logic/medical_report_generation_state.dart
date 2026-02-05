@@ -52,6 +52,13 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> dentalSelectedTeethNumbers;
   final List<String> dentalSelectedComplaints;
   final List<String> dentalSelectedMedicalProcedures;
+  final bool smartNutritionGetAll;
+  final List<String> smartNutritionSelectedReports;
+  final bool supplementsGetAll;
+  final List<String> supplementsSelectedYears;
+  final List<String> supplementsSelectedNames;
+  final bool physicalActivityGetAll;
+  final List<String> physicalActivitySelectedReports;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -107,6 +114,13 @@ class MedicalReportGenerationState extends Equatable {
     this.dentalSelectedTeethNumbers = const [],
     this.dentalSelectedComplaints = const [],
     this.dentalSelectedMedicalProcedures = const [],
+    this.smartNutritionGetAll = false,
+    this.smartNutritionSelectedReports = const [],
+    this.supplementsGetAll = false,
+    this.supplementsSelectedYears = const [],
+    this.supplementsSelectedNames = const [],
+    this.physicalActivityGetAll = false,
+    this.physicalActivitySelectedReports = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -163,6 +177,13 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? dentalSelectedTeethNumbers,
     List<String>? dentalSelectedComplaints,
     List<String>? dentalSelectedMedicalProcedures,
+    bool? smartNutritionGetAll,
+    List<String>? smartNutritionSelectedReports,
+    bool? supplementsGetAll,
+    List<String>? supplementsSelectedYears,
+    List<String>? supplementsSelectedNames,
+    bool? physicalActivityGetAll,
+    List<String>? physicalActivitySelectedReports,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -250,6 +271,18 @@ class MedicalReportGenerationState extends Equatable {
           dentalSelectedComplaints ?? this.dentalSelectedComplaints,
       dentalSelectedMedicalProcedures: dentalSelectedMedicalProcedures ??
           this.dentalSelectedMedicalProcedures,
+      smartNutritionGetAll: smartNutritionGetAll ?? this.smartNutritionGetAll,
+      smartNutritionSelectedReports:
+          smartNutritionSelectedReports ?? this.smartNutritionSelectedReports,
+      supplementsGetAll: supplementsGetAll ?? this.supplementsGetAll,
+      supplementsSelectedYears:
+          supplementsSelectedYears ?? this.supplementsSelectedYears,
+      supplementsSelectedNames:
+          supplementsSelectedNames ?? this.supplementsSelectedNames,
+      physicalActivityGetAll:
+          physicalActivityGetAll ?? this.physicalActivityGetAll,
+      physicalActivitySelectedReports: physicalActivitySelectedReports ??
+          this.physicalActivitySelectedReports,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -308,6 +341,13 @@ class MedicalReportGenerationState extends Equatable {
         dentalSelectedTeethNumbers,
         dentalSelectedComplaints,
         dentalSelectedMedicalProcedures,
+        smartNutritionGetAll,
+        smartNutritionSelectedReports,
+        supplementsGetAll,
+        supplementsSelectedYears,
+        supplementsSelectedNames,
+        physicalActivityGetAll,
+        physicalActivitySelectedReports,
         medicalReportData,
         categoryFilters,
       ];

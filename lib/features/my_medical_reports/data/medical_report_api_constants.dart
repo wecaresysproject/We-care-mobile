@@ -20,4 +20,10 @@ class MedicalReportApiConstants {
   static const String getAllergyFilters = 'MedicalReports/Allergy/filters';
   static const String getEyesFilters = 'MedicalReports/Eyes/filters';
   static const String getTeethFilters = 'MedicalReports/Teeth/filters';
+  static const String getSmartNutritionFilters =
+      'MedicalReports/smart-nutrition/options';
+  static const String getSupplementsFilters =
+      'MedicalReports/supplements-vitamins/filters';
+  static const String getPhysicalActivityFilters =
+      'MedicalReports/physical-activity/options';
 }

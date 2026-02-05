@@ -22,6 +22,7 @@ class MedicalReportPdfGenerator {
     final complaintImages = await _loadComplaintImages(reportData);
     final surgeryImages = await _loadSurgeryImages(reportData);
     final radiologyImages = await _loadRadiologyImages(reportData);
+    final prescriptionImages = await _loadPrescriptionImages(reportData);
 
     final prescriptionImageProvider =
         await _loadAssetImage('assets/images/report.png');
@@ -57,11 +58,11 @@ class MedicalReportPdfGenerator {
           _buildComplaintsSection(reportData, complaintImages),
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
-          // _buildAllergiesSection(),
+          _buildAllergiesSection(reportData),
           _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
-          // _buildPrescriptionsSection(prescriptionImageProvider),
+          _buildPrescriptionsSection(reportData, prescriptionImages),
         ],
       ),
     );
@@ -159,7 +160,21 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildPrescriptionsSection(pw.ImageProvider prescriptionImage) {
+  pw.Widget _buildPrescriptionsSection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> prescriptionImages) {
+    final prescriptions = reportData.data.preDescriptions;
+
+    if (prescriptions == null || prescriptions.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    // Split prescriptions into rows of 2 (for the 2-column vertical grid)
+    final rows = <List<PreDescriptionModel>>[];
+    for (var i = 0; i < prescriptions.length; i += 2) {
+      rows.add(prescriptions.sublist(
+          i, i + 2 > prescriptions.length ? prescriptions.length : i + 2));
+    }
+
     return pw.Container(
       margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
@@ -170,28 +185,139 @@ class MedicalReportPdfGenerator {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          _buildSectionHeader('الروشتات الطبية'),
-          pw.SizedBox(height: 8),
-          pw.Container(
-            width: 200,
-            height: 200,
-            decoration: pw.BoxDecoration(
-              border: pw.Border.all(color: PdfColors.grey300),
-              borderRadius: pw.BorderRadius.circular(8),
-              image: pw.DecorationImage(
-                image: prescriptionImage,
-                fit: pw.BoxFit.cover,
+          _buildSectionHeader('روشتة الأطباء'),
+          pw.SizedBox(height: 12),
+          ...rows.map((rowItems) {
+            return pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 20),
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: rowItems.map((prescription) {
+                      return pw.Expanded(
+                        child: pw.Padding(
+                          padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                          child: _buildPrescriptionBlock(
+                              prescription, prescriptionImages),
+                        ),
+                      );
+                    }).toList() +
+                    // Add empty Expanded if only one item in row to maintain 50% width
+                    (rowItems.length == 1
+                        ? [pw.Expanded(child: pw.SizedBox())]
+                        : []),
               ),
-            ),
-          ),
-          pw.SizedBox(height: 8),
-          pw.Text(
-            'صورة الروشتة المرفقة',
-            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
-          ),
+            );
+          }),
         ],
       ),
     );
+  }
+
+  pw.Widget _buildPrescriptionBlock(PreDescriptionModel prescription,
+      Map<String, pw.MemoryImage> prescriptionImages) {
+    final photoUrls = prescription.preDescriptionPhoto ?? [];
+
+    // Determine image layout based on specification
+    pw.Widget imagesWidget;
+    if (photoUrls.isEmpty) {
+      imagesWidget = pw.SizedBox();
+    } else if (photoUrls.length == 1) {
+      final img = prescriptionImages[photoUrls.first];
+      imagesWidget =
+          img != null ? pw.Image(img, fit: pw.BoxFit.contain) : pw.SizedBox();
+    } else {
+      // 2 or more images: Show first two side by side as per spec "side by side each takes 1/2 of column width"
+      final img1 = prescriptionImages[photoUrls[0]];
+      final img2 = prescriptionImages[photoUrls[1]];
+      imagesWidget = pw.Row(
+        children: [
+          pw.Expanded(
+            child: img1 != null
+                ? pw.Padding(
+                    padding: const pw.EdgeInsets.only(left: 2),
+                    child: pw.Image(img1, fit: pw.BoxFit.contain))
+                : pw.SizedBox(),
+          ),
+          pw.Expanded(
+            child: img2 != null
+                ? pw.Padding(
+                    padding: const pw.EdgeInsets.only(right: 2),
+                    child: pw.Image(img2, fit: pw.BoxFit.contain))
+                : pw.SizedBox(),
+          ),
+        ],
+      );
+    }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        // Metadata Table: One row, four columns
+        pw.TableHelper.fromTextArray(
+          headers: [
+            // 'الدولة',
+            'التخصص',
+            'اسم الطبيب',
+            'التاريخ',
+          ],
+          data: [
+            [
+              // _safeText(prescription.country),
+              _safeText(prescription.doctorSpecialty),
+              _safeText(prescription.doctorName),
+              _safeText(prescription.preDescriptionDate),
+            ]
+          ],
+          headerStyle: pw.TextStyle(
+            fontSize: 10,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          ),
+          cellStyle: const pw.TextStyle(fontSize: 10),
+          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+          cellAlignment: pw.Alignment.center,
+          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+        ),
+        pw.SizedBox(height: 8),
+        // Images Area
+        pw.Container(
+          decoration: pw.BoxDecoration(
+            border: pw.Border.all(color: PdfColors.grey200),
+            borderRadius: pw.BorderRadius.circular(4),
+          ),
+          child: imagesWidget,
+        ),
+      ],
+    );
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadPrescriptionImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final prescriptions = reportData.data.preDescriptions;
+    if (prescriptions == null) return images;
+
+    final urls = <String>{};
+    for (var p in prescriptions) {
+      if (p.preDescriptionPhoto != null) {
+        for (var url in p.preDescriptionPhoto!) {
+          if (url.isNotEmpty && url != "string") {
+            urls.add(url);
+          }
+        }
+      }
+    }
+
+    print('🔍 Loading ${urls.length} prescription images...');
+    for (var url in urls) {
+      try {
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (e) {
+        print('❌ Failed to load prescription image: $url - $e');
+      }
+    }
+    return images;
   }
 
   pw.Widget _buildHeader(pw.ImageProvider profileImage,
@@ -941,7 +1067,13 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildAllergiesSection() {
+  pw.Widget _buildAllergiesSection(MedicalReportResponseModel reportData) {
+    final allergies = reportData.data.allergy;
+
+    if (allergies == null || allergies.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
@@ -955,17 +1087,35 @@ class MedicalReportPdfGenerator {
           _buildSectionHeader('الحساسية'),
           pw.SizedBox(height: 8),
           pw.TableHelper.fromTextArray(
-            headers: ['المادة', 'رد الفعل', 'الشدة'],
-            data: [
-              ['البنسلين', 'طفح جلدي', 'متوسطة'],
-              ['الفول السوداني', 'ضيق تنفس', 'شديدة'],
+            headers: [
+              'حمل حقنة الابينفرين',
+              'حدة الاعراض',
+              'مسببات الحساسية (3)',
+              'مسببات الحساسية (2)',
+              'مسببات الحساسية (1)',
+              'نوع الحساسية',
             ],
+            data: allergies.map((allergy) {
+              final triggers = allergy.allergyTriggers ?? [];
+              return [
+                allergy.carryEpinephrine.isNull
+                    ? "--"
+                    : (allergy.carryEpinephrine! ? "نعم" : "لا"),
+                _safeText(allergy.symptomSeverity),
+                _triggerAt(triggers, 2),
+                _triggerAt(triggers, 1),
+                _triggerAt(triggers, 0),
+                _safeText(allergy.allergyType)
+              ];
+            }).toList(),
             headerStyle: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
+            cellStyle: const pw.TextStyle(
+              fontSize: 12,
+            ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
@@ -973,6 +1123,25 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  String _triggerAt(List<String>? triggers, int index) {
+    if (triggers == null || triggers.length <= index) {
+      return "لا يوجد";
+    }
+
+    return _safeText(triggers[index]);
+  }
+
+  String _safeText(String? value, {String fallback = "لا يوجد"}) {
+    if (value == null) return fallback;
+
+    final v = value.trim();
+    if (v.isEmpty || v == "لم يتم ادخال بيانات") {
+      return fallback;
+    }
+
+    return v;
   }
 
   pw.Widget _buildSurgeriesSection(MedicalReportResponseModel reportData,

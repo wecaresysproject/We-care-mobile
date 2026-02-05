@@ -226,6 +226,44 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateSmartNutritionSelection({
+    bool? getAll,
+    List<String>? selectedReports,
+  }) {
+    emit(
+      state.copyWith(
+        smartNutritionGetAll: getAll,
+        smartNutritionSelectedReports: selectedReports,
+      ),
+    );
+  }
+
+  void updateSupplementsSelection({
+    bool? getAll,
+    List<String>? selectedYears,
+    List<String>? selectedNames,
+  }) {
+    emit(
+      state.copyWith(
+        supplementsGetAll: getAll,
+        supplementsSelectedYears: selectedYears,
+        supplementsSelectedNames: selectedNames,
+      ),
+    );
+  }
+
+  void updatePhysicalActivitySelection({
+    bool? getAll,
+    List<String>? selectedReports,
+  }) {
+    emit(
+      state.copyWith(
+        physicalActivityGetAll: getAll,
+        physicalActivitySelectedReports: selectedReports,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -270,13 +308,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.medicalTestsSelectedYears,
           testGroups: state.medicalTestsSelectedTestGroups,
         ),
-        // prescriptions: PrescriptionsSelectionRequestBody(
-        //   getAll: state.prescriptionsGetAll,
-        //   attachImages: state.prescriptionsAttachImages,
-        //   years: state.prescriptionsSelectedYears,
-        //   specialties: state.prescriptionsSelectedSpecialties,
-        //   doctorNames: state.prescriptionsSelectedDoctorNames,
-        // ),
+        prescriptions: PrescriptionsSelectionRequestBody(
+          getAll: state.prescriptionsGetAll,
+          years: state.prescriptionsSelectedYears,
+          specialties: state.prescriptionsSelectedSpecialties,
+          doctorNames: state.prescriptionsSelectedDoctorNames,
+        ),
         surgeries: SurgeriesSelectionRequestBody(
           getAll: state.surgeriesGetAll,
           attachImages: state.surgeriesAttachReport,
@@ -287,10 +324,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   getAll: state.geneticDiseasesGetAll,
         //   diseases: state.geneticDiseasesSelectedValues,
         // ),
-        // allergies: AllergiesSelectionRequestBody(
-        //   getAll: state.allergiesGetAll,
-        //   types: state.allergiesSelectedTypes,
-        // ),
+        allergies: AllergiesSelectionRequestBody(
+          getAll: state.allergiesGetAll,
+          types: state.allergiesSelectedTypes,
+        ),
         // eyes: EyesSelectionRequestBody(
         //   getAll: state.eyesGetAll,
         //   attachReport: state.eyesAttachReport,
@@ -307,6 +344,19 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   complaints: state.dentalSelectedComplaints,
         //   medicalProcedures: state.dentalSelectedMedicalProcedures,
         // ),
+        smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
+          getAll: state.smartNutritionGetAll,
+          reports: state.smartNutritionSelectedReports,
+        ),
+        supplements: SupplementsSelectionRequestBody(
+          getAll: state.supplementsGetAll,
+          years: state.supplementsSelectedYears,
+          names: state.supplementsSelectedNames,
+        ),
+        sportsActivity: PhysicalActivitySelectionRequestBody(
+          getAll: state.physicalActivityGetAll,
+          reports: state.physicalActivitySelectedReports,
+        ),
       ),
     );
 
@@ -316,9 +366,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       requestBody,
       AppStrings.arabicLang,
     );
-    AppLogger.info("Medical Report Data: $result");
     result.when(
       success: (data) {
+        AppLogger.info("medical report succfulyy returned with data ");
+
         emit(
           state.copyWith(
             status: RequestStatus.success,
@@ -414,6 +465,21 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الأسنان") {
       result = await _medicalReportRepo.getTeethFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "المحلل الغذائي الذكي") {
+      result = await _medicalReportRepo.getSmartNutritionFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "المكملات الغذائية") {
+      result = await _medicalReportRepo.getSupplementsFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "النشاط الرياضي") {
+      result = await _medicalReportRepo.getPhysicalActivityFilters(
         language,
         userType,
       );

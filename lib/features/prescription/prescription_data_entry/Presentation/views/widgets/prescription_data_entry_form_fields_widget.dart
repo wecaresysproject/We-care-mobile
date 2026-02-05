@@ -138,6 +138,7 @@ class _PrescriptionDataEntryFormFieldsState
 
               ImageUploaderSection<PrescriptionDataEntryCubit,
                   PrescriptionDataEntryState>(
+                maxImages: 2,
                 statusSelector: (state) => state.prescriptionImageRequestStatus,
                 uploadedSelector: (state) =>
                     state.prescriptionPictureUploadedUrl,
