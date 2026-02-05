@@ -52,6 +52,8 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> dentalSelectedTeethNumbers;
   final List<String> dentalSelectedComplaints;
   final List<String> dentalSelectedMedicalProcedures;
+  final bool smartNutritionGetAll;
+  final List<String> smartNutritionSelectedReports;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -107,6 +109,8 @@ class MedicalReportGenerationState extends Equatable {
     this.dentalSelectedTeethNumbers = const [],
     this.dentalSelectedComplaints = const [],
     this.dentalSelectedMedicalProcedures = const [],
+    this.smartNutritionGetAll = false,
+    this.smartNutritionSelectedReports = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -163,6 +167,8 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? dentalSelectedTeethNumbers,
     List<String>? dentalSelectedComplaints,
     List<String>? dentalSelectedMedicalProcedures,
+    bool? smartNutritionGetAll,
+    List<String>? smartNutritionSelectedReports,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -250,6 +256,9 @@ class MedicalReportGenerationState extends Equatable {
           dentalSelectedComplaints ?? this.dentalSelectedComplaints,
       dentalSelectedMedicalProcedures: dentalSelectedMedicalProcedures ??
           this.dentalSelectedMedicalProcedures,
+      smartNutritionGetAll: smartNutritionGetAll ?? this.smartNutritionGetAll,
+      smartNutritionSelectedReports:
+          smartNutritionSelectedReports ?? this.smartNutritionSelectedReports,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -308,6 +317,8 @@ class MedicalReportGenerationState extends Equatable {
         dentalSelectedTeethNumbers,
         dentalSelectedComplaints,
         dentalSelectedMedicalProcedures,
+        smartNutritionGetAll,
+        smartNutritionSelectedReports,
         medicalReportData,
         categoryFilters,
       ];

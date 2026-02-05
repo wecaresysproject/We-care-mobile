@@ -181,6 +181,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 if (dummyCategory.title == "الأسنان") {
                                   _syncDentalSelectionToCubit(context, index);
                                 }
+
+                                // Smart Nutrition Selection sync
+                                if (dummyCategory.title ==
+                                    "المحلل الغذائي الذكي") {
+                                  _syncSmartNutritionSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -381,6 +388,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "الشكاوى الطارئة") {
                                         _syncUrgentComplaintsSelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Smart Nutrition Selection sync
+                                      if (dummyCategory.title ==
+                                          "المحلل الغذائي الذكي") {
+                                        _syncSmartNutritionSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -655,6 +669,16 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           selectedTeethNumbers: filters["0_رقم السن"]?.toList() ?? [],
           selectedComplaints: filters["0_الشكوى"]?.toList() ?? [],
           selectedMedicalProcedures: filters["0_الإجراء الطبي"]?.toList() ?? [],
+        );
+  }
+
+  void _syncSmartNutritionSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateSmartNutritionSelection(
+          getAll: getAll,
+          selectedReports: filters["0_تقرير المتابعة الغذائيه"]?.toList() ?? [],
         );
   }
 }

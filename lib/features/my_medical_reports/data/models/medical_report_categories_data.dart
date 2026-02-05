@@ -359,7 +359,7 @@ final mentalHealthCategory = MedicalCategoryModel(
 );
 
 final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
-  title: " المحلل الغذائي الذكي",
+  title: "المحلل الغذائي الذكي",
   image: "assets/images/chemical_medicine.png",
   selectionType: MedicalSelectionType.selection,
   radioOptions: ["تقرير المتابعة الغذائيه"],

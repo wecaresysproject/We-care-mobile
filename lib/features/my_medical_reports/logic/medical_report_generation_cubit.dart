@@ -226,6 +226,18 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateSmartNutritionSelection({
+    bool? getAll,
+    List<String>? selectedReports,
+  }) {
+    emit(
+      state.copyWith(
+        smartNutritionGetAll: getAll,
+        smartNutritionSelectedReports: selectedReports,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -307,6 +319,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   complaints: state.dentalSelectedComplaints,
         //   medicalProcedures: state.dentalSelectedMedicalProcedures,
         // ),
+        smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
+          getAll: state.smartNutritionGetAll,
+          reports: state.smartNutritionSelectedReports,
+        ),
       ),
     );
 
@@ -414,6 +430,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "الأسنان") {
       result = await _medicalReportRepo.getTeethFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "المحلل الغذائي الذكي") {
+      result = await _medicalReportRepo.getSmartNutritionFilters(
         language,
         userType,
       );
