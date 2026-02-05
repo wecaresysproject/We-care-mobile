@@ -325,10 +325,10 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   getAll: state.geneticDiseasesGetAll,
         //   diseases: state.geneticDiseasesSelectedValues,
         // ),
-        // allergies: AllergiesSelectionRequestBody(
-        //   getAll: state.allergiesGetAll,
-        //   types: state.allergiesSelectedTypes,
-        // ),
+        allergies: AllergiesSelectionRequestBody(
+          getAll: state.allergiesGetAll,
+          types: state.allergiesSelectedTypes,
+        ),
         // eyes: EyesSelectionRequestBody(
         //   getAll: state.eyesGetAll,
         //   attachReport: state.eyesAttachReport,

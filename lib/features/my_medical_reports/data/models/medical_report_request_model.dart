@@ -46,7 +46,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'geneticDiseases')
   final GeneticDiseasesSelectionRequestBody? geneticDiseases;
 
-  @JsonKey(name: 'allergies')
+  @JsonKey(name: 'Allergy')
   final AllergiesSelectionRequestBody? allergies;
 
   @JsonKey(name: 'eyes')
@@ -366,6 +366,7 @@ class GeneticDiseasesSelectionRequestBody {
 @JsonSerializable()
 class AllergiesSelectionRequestBody {
   final bool getAll;
+  @JsonKey(name: "allergyTypes")
   final List<String> types;
 
   AllergiesSelectionRequestBody({

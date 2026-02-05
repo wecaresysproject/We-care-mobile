@@ -36,6 +36,7 @@ class MedicalReportData {
   final List<MedicalTestModel>? medicalTests;
   final List<SurgeryEntry>? surgeryEntries;
   final List<RadiologyEntry>? radiology;
+  final List<AllergyModel>? allergy;
 
   MedicalReportData({
     this.basicInformation,
@@ -46,12 +47,33 @@ class MedicalReportData {
     this.medicalTests,
     this.surgeryEntries,
     this.radiology,
+    this.allergy,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
       _$MedicalReportDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$MedicalReportDataToJson(this);
+}
+
+@JsonSerializable()
+class AllergyModel {
+  final String allergyType;
+  final List<String>? allergyTriggers;
+  final String symptomSeverity;
+  final bool? carryEpinephrine;
+
+  AllergyModel({
+    required this.allergyType,
+    this.allergyTriggers,
+    required this.symptomSeverity,
+    this.carryEpinephrine,
+  });
+
+  factory AllergyModel.fromJson(Map<String, dynamic> json) =>
+      _$AllergyModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AllergyModelToJson(this);
 }
 
 @JsonSerializable()

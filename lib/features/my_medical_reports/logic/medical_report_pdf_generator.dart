@@ -57,11 +57,11 @@ class MedicalReportPdfGenerator {
           _buildComplaintsSection(reportData, complaintImages),
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
-          // _buildAllergiesSection(),
+          _buildAllergiesSection(reportData),
           _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
-          // _buildPrescriptionsSection(prescriptionImageProvider),
+          _buildPrescriptionsSection(prescriptionImageProvider),
         ],
       ),
     );
@@ -941,7 +941,13 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildAllergiesSection() {
+  pw.Widget _buildAllergiesSection(MedicalReportResponseModel reportData) {
+    final allergies = reportData.data.allergy;
+
+    if (allergies == null || allergies.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
     return pw.Container(
       margin: pw.EdgeInsets.symmetric(vertical: 15),
       padding: const pw.EdgeInsets.all(15),
@@ -955,17 +961,35 @@ class MedicalReportPdfGenerator {
           _buildSectionHeader('الحساسية'),
           pw.SizedBox(height: 8),
           pw.TableHelper.fromTextArray(
-            headers: ['المادة', 'رد الفعل', 'الشدة'],
-            data: [
-              ['البنسلين', 'طفح جلدي', 'متوسطة'],
-              ['الفول السوداني', 'ضيق تنفس', 'شديدة'],
+            headers: [
+              'حمل حقنة الابينفرين',
+              'حدة الاعراض',
+              'مسببات الحساسية (3)',
+              'مسببات الحساسية (2)',
+              'مسببات الحساسية (1)',
+              'نوع الحساسية',
             ],
+            data: allergies.map((allergy) {
+              final triggers = allergy.allergyTriggers ?? [];
+              return [
+                allergy.carryEpinephrine.isNull
+                    ? "--"
+                    : (allergy.carryEpinephrine! ? "نعم" : "لا"),
+                _safeText(allergy.symptomSeverity),
+                _triggerAt(triggers, 2),
+                _triggerAt(triggers, 1),
+                _triggerAt(triggers, 0),
+                _safeText(allergy.allergyType)
+              ];
+            }).toList(),
             headerStyle: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
+            cellStyle: const pw.TextStyle(
+              fontSize: 12,
+            ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
@@ -973,6 +997,25 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  String _triggerAt(List<String>? triggers, int index) {
+    if (triggers == null || triggers.length <= index) {
+      return "لا يوجد";
+    }
+
+    return _safeText(triggers[index]);
+  }
+
+  String _safeText(String? value, {String fallback = "لا يوجد"}) {
+    if (value == null) return fallback;
+
+    final v = value.trim();
+    if (v.isEmpty || v == "لم يتم ادخال بيانات") {
+      return fallback;
+    }
+
+    return v;
   }
 
   pw.Widget _buildSurgeriesSection(MedicalReportResponseModel reportData,
