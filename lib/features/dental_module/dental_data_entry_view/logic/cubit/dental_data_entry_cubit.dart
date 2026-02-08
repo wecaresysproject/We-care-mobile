@@ -557,7 +557,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       documentId: decumentId,
       requestBody: SingleTeethReportRequestBody(
-        dentalCenter: state.selectedDentalCenter!,
+        dentalCenter: state.selectedDentalCenter ?? locale.no_data_entered,
         writtenReport: reportTextController.text,
         teethNumber: teethNumber,
         symptomStartDate: state.startIssueDateSelection!,
@@ -575,7 +575,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         lymphAnalysisImage: state.lymphAnalysisImagesUploadedUrl,
         gumCondition: state.selectedSurroundingGumStatus!,
         treatingDoctor: state.treatingDoctor!,
-        hospital: state.selectedHospitalCenter!,
+        hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
         country: state.selectedCountryName!,
       ),
       language: AppStrings.arabicLang,

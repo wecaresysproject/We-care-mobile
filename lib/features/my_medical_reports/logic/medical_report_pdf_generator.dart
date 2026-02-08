@@ -23,6 +23,7 @@ class MedicalReportPdfGenerator {
     final surgeryImages = await _loadSurgeryImages(reportData);
     final radiologyImages = await _loadRadiologyImages(reportData);
     final prescriptionImages = await _loadPrescriptionImages(reportData);
+    final teethImages = await _loadTeethImages(reportData);
 
     final prescriptionImageProvider =
         await _loadAssetImage('assets/images/report.png');
@@ -59,6 +60,7 @@ class MedicalReportPdfGenerator {
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
           _buildAllergiesSection(reportData),
+          _buildTeethModuleSection(reportData, teethImages),
           _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
@@ -315,6 +317,181 @@ class MedicalReportPdfGenerator {
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
         print('❌ Failed to load prescription image: $url - $e');
+      }
+    }
+    return images;
+  }
+
+  pw.Widget _buildTeethModuleSection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> teethImages) {
+    final teethModule = reportData.data.teethModule;
+    if (teethModule == null) return pw.SizedBox.shrink();
+
+    final hasSymptoms = teethModule.teethSymptoms != null &&
+        teethModule.teethSymptoms!.isNotEmpty;
+    final hasProcedures = teethModule.teethProcedures != null &&
+        teethModule.teethProcedures!.isNotEmpty;
+
+    if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('الأسنان'),
+          pw.SizedBox(height: 12),
+          if (hasSymptoms) ...[
+            pw.Text('أعراض الأسنان',
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.SizedBox(height: 8),
+            pw.TableHelper.fromTextArray(
+              headers: [
+                'حدة الشكوى',
+                'مدة الاعراض',
+                'طبيعة الشكوى',
+                'نوع العرض',
+                'رقم السن',
+                'التاريخ',
+              ],
+              data: teethModule.teethSymptoms!.map((symptom) {
+                return [
+                  _safeText(symptom.painNature),
+                  _safeText(symptom.symptomDuration),
+                  _safeText(symptom.complaintNature),
+                  _safeText(symptom.symptomType),
+                  _safeText(symptom.teethNumber),
+                  _safeText(symptom.symptomStartDate),
+                ];
+              }).toList(),
+              headerStyle: pw.TextStyle(
+                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
+              ),
+              cellStyle: const pw.TextStyle(fontSize: 10),
+              headerDecoration:
+                  const pw.BoxDecoration(color: PdfColors.grey100),
+              cellAlignment: pw.Alignment.center,
+              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            ),
+            pw.SizedBox(height: 20),
+          ],
+          if (hasProcedures) ...[
+            pw.Text('إجراءات الأسنان',
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.SizedBox(height: 12),
+            ...teethModule.teethProcedures!.asMap().entries.map((entry) {
+              final index = entry.key;
+              final procedure = entry.value;
+              final isLast = index == teethModule.teethProcedures!.length - 1;
+
+              return pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.TableHelper.fromTextArray(
+                    headers: [
+                      'الإجراء الطبي الفرعي',
+                      'الإجراء الطبي الرئيسي',
+                      'رقم السن',
+                      'التاريخ',
+                    ],
+                    data: [
+                      [
+                        _safeText(procedure.subProcedure),
+                        _safeText(procedure.primaryProcedure),
+                        _safeText(procedure.teethNumber),
+                        _safeText(procedure.procedureDate),
+                      ]
+                    ],
+                    headerStyle: pw.TextStyle(
+                      color:
+                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                    cellStyle: const pw.TextStyle(fontSize: 10),
+                    headerDecoration:
+                        const pw.BoxDecoration(color: PdfColors.grey100),
+                    cellAlignment: pw.Alignment.center,
+                    border: pw.TableBorder.all(
+                        color: PdfColors.grey300, width: 0.5),
+                  ),
+                  if (procedure.xRayImages != null &&
+                      procedure.xRayImages!.isNotEmpty) ...[
+                    pw.SizedBox(height: 8),
+                    pw.Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: procedure.xRayImages!.map((url) {
+                        final img = teethImages[url];
+                        if (img == null) return pw.SizedBox();
+                        // Occupy roughly 50% width if more than 1 image, else 100%
+                        final width =
+                            procedure.xRayImages!.length == 1 ? 500.0 : 240.0;
+                        return pw.Container(
+                          width: width,
+                          decoration: pw.BoxDecoration(
+                            border: pw.Border.all(color: PdfColors.grey200),
+                            borderRadius: pw.BorderRadius.circular(4),
+                          ),
+                          child: pw.Image(img, fit: pw.BoxFit.contain),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                  if (!isLast)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(vertical: 15),
+                      child:
+                          pw.Divider(color: PdfColors.grey300, thickness: 0.5),
+                    ),
+                ],
+              );
+            }),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadTeethImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final module = reportData.data.teethModule;
+    if (module == null || module.teethProcedures == null) return images;
+
+    final urls = <String>{};
+    for (var p in module.teethProcedures!) {
+      if (p.xRayImages != null) {
+        for (var url in p.xRayImages!) {
+          if (url.isNotEmpty && url != "string") {
+            urls.add(url);
+          }
+        }
+      }
+    }
+
+    print('🔍 Loading ${urls.length} teeth x-ray images...');
+    for (var url in urls) {
+      try {
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (e) {
+        print('❌ Failed to load teeth image: $url - $e');
       }
     }
     return images;

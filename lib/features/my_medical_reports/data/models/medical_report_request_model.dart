@@ -409,10 +409,13 @@ class EyesSelectionRequestBody {
 @JsonSerializable()
 class TeethSelectionRequestBody {
   final bool getAll;
+  @JsonKey(name: "attachImages")
   final bool attachReport;
   final List<String> years;
   final List<String> teethNumbers;
+  @JsonKey(name: "symptomTypes")
   final List<String> complaints;
+  @JsonKey(name: "primaryProcedures")
   final List<String> medicalProcedures;
 
   TeethSelectionRequestBody({

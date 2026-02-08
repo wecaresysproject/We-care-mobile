@@ -38,6 +38,7 @@ class MedicalReportData {
   final List<RadiologyEntry>? radiology;
   final List<AllergyModel>? allergy;
   final List<PreDescriptionModel>? preDescriptions;
+  final TeethModule? teethModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -50,6 +51,7 @@ class MedicalReportData {
     this.radiology,
     this.allergy,
     this.preDescriptions,
+    this.teethModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -64,12 +66,14 @@ class PreDescriptionModel {
   final String doctorName;
   final String doctorSpecialty;
   final List<String>? preDescriptionPhoto;
+  final String? country;
 
   PreDescriptionModel({
     required this.preDescriptionDate,
     required this.doctorName,
     required this.doctorSpecialty,
     this.preDescriptionPhoto,
+    this.country,
   });
 
   factory PreDescriptionModel.fromJson(Map<String, dynamic> json) =>
@@ -400,4 +404,66 @@ class RadiologyEntry {
       _$RadiologyEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$RadiologyEntryToJson(this);
+}
+
+@JsonSerializable()
+class TeethModule {
+  final List<TeethSymptom>? teethSymptoms;
+  final List<TeethProcedure>? teethProcedures;
+
+  TeethModule({
+    this.teethSymptoms,
+    this.teethProcedures,
+  });
+
+  factory TeethModule.fromJson(Map<String, dynamic> json) =>
+      _$TeethModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethModuleToJson(this);
+}
+
+@JsonSerializable()
+class TeethSymptom {
+  final String symptomStartDate;
+  final String teethNumber;
+  final String symptomType;
+  final String complaintNature;
+  final String symptomDuration;
+  final String painNature;
+
+  TeethSymptom({
+    required this.symptomStartDate,
+    required this.teethNumber,
+    required this.symptomType,
+    required this.complaintNature,
+    required this.symptomDuration,
+    required this.painNature,
+  });
+
+  factory TeethSymptom.fromJson(Map<String, dynamic> json) =>
+      _$TeethSymptomFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethSymptomToJson(this);
+}
+
+@JsonSerializable()
+class TeethProcedure {
+  final String procedureDate;
+  final String teethNumber;
+  final String primaryProcedure;
+  final String subProcedure;
+  final List<String>? xRayImages;
+
+  TeethProcedure({
+    required this.procedureDate,
+    required this.teethNumber,
+    required this.primaryProcedure,
+    required this.subProcedure,
+    this.xRayImages,
+  });
+
+  factory TeethProcedure.fromJson(Map<String, dynamic> json) =>
+      _$TeethProcedureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethProcedureToJson(this);
 }

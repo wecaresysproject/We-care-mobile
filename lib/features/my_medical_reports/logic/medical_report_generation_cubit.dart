@@ -336,14 +336,14 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         //   symptoms: state.eyesSelectedSymptoms,
         //   medicalProcedures: state.eyesSelectedMedicalProcedures,
         // ),
-        // teeth: TeethSelectionRequestBody(
-        //   getAll: state.dentalGetAll,
-        //   attachReport: state.dentalAttachReport,
-        //   years: state.dentalSelectedYears,
-        //   teethNumbers: state.dentalSelectedTeethNumbers,
-        //   complaints: state.dentalSelectedComplaints,
-        //   medicalProcedures: state.dentalSelectedMedicalProcedures,
-        // ),
+        teeth: TeethSelectionRequestBody(
+          getAll: state.dentalGetAll,
+          attachReport: state.dentalAttachReport,
+          years: state.dentalSelectedYears,
+          teethNumbers: state.dentalSelectedTeethNumbers,
+          complaints: state.dentalSelectedComplaints,
+          medicalProcedures: state.dentalSelectedMedicalProcedures,
+        ),
         smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
           getAll: state.smartNutritionGetAll,
           reports: state.smartNutritionSelectedReports,
