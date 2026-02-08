@@ -24,9 +24,7 @@ class MedicalReportPdfGenerator {
     final radiologyImages = await _loadRadiologyImages(reportData);
     final prescriptionImages = await _loadPrescriptionImages(reportData);
     final teethImages = await _loadTeethImages(reportData);
-
-    final prescriptionImageProvider =
-        await _loadAssetImage('assets/images/report.png');
+    final eyesImages = await _loadEyeImages(reportData);
 
     final logoImageProvider =
         await _loadAssetImage('assets/images/we_care_logo.png');
@@ -60,6 +58,7 @@ class MedicalReportPdfGenerator {
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
           _buildAllergiesSection(reportData),
+          _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
           _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
@@ -492,6 +491,183 @@ class MedicalReportPdfGenerator {
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
         print('❌ Failed to load teeth image: $url - $e');
+      }
+    }
+    return images;
+  }
+
+  pw.Widget _buildEyesModuleSection(MedicalReportResponseModel reportData,
+      Map<String, pw.MemoryImage> eyeImages) {
+    final eyeModule = reportData.data.eyeModule;
+    if (eyeModule == null) return pw.SizedBox.shrink();
+
+    final hasSymptoms =
+        eyeModule.eyeSymptoms != null && eyeModule.eyeSymptoms!.isNotEmpty;
+    final hasProcedures =
+        eyeModule.eyeProcedures != null && eyeModule.eyeProcedures!.isNotEmpty;
+
+    if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('العيون'),
+          pw.SizedBox(height: 12),
+          if (hasSymptoms) ...[
+            pw.Text('أعراض العيون',
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.SizedBox(height: 8),
+            pw.TableHelper.fromTextArray(
+              headers: [
+                'مدة الأعراض',
+                'الأعراض',
+                'عضو العين',
+                'تاريخ بداية الأعراض',
+              ],
+              data: eyeModule.eyeSymptoms!.map((symptom) {
+                return [
+                  _safeText(symptom.symptomDuration),
+                  _safeText(symptom.symptoms?[0] ?? "--"),
+                  _safeText(symptom.affectedEyePart),
+                  _safeText(symptom.symptomStartDate),
+                ];
+              }).toList(),
+              headerStyle: pw.TextStyle(
+                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
+              ),
+              cellStyle: const pw.TextStyle(fontSize: 10),
+              headerDecoration:
+                  const pw.BoxDecoration(color: PdfColors.grey100),
+              cellAlignment: pw.Alignment.center,
+              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            ),
+            pw.SizedBox(height: 20),
+          ],
+          if (hasProcedures) ...[
+            pw.Text('إجراءات العيون',
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.SizedBox(height: 12),
+            ...eyeModule.eyeProcedures!.asMap().entries.map((entry) {
+              final index = entry.key;
+              final procedure = entry.value;
+              final isLast = index == eyeModule.eyeProcedures!.length - 1;
+
+              final combinedImages = [
+                ...?procedure.medicalExaminationImages,
+                ...?procedure.medicalReportUrl,
+              ].where((url) => url.isNotEmpty && url != "string").toList();
+
+              return pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.TableHelper.fromTextArray(
+                    headers: [
+                      'الإجراء الطبي',
+                      'عضو العين',
+                      'تاريخ الإجراء الطبي',
+                    ],
+                    data: [
+                      [
+                        _safeText(procedure.medicalProcedures?[0] ?? "--"),
+                        _safeText(procedure.affectedEyePart),
+                        _safeText(procedure.medicalReportDate),
+                      ]
+                    ],
+                    headerStyle: pw.TextStyle(
+                      color:
+                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                    cellStyle: const pw.TextStyle(fontSize: 10),
+                    headerDecoration:
+                        const pw.BoxDecoration(color: PdfColors.grey100),
+                    cellAlignment: pw.Alignment.center,
+                    border: pw.TableBorder.all(
+                        color: PdfColors.grey300, width: 0.5),
+                  ),
+                  if (combinedImages.isNotEmpty) ...[
+                    pw.SizedBox(height: 8),
+                    pw.Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      children: combinedImages.asMap().entries.map(
+                        (imgEntry) {
+                          final url = imgEntry.value;
+                          final img = eyeImages[url];
+                          if (img == null) return pw.SizedBox();
+
+                          return pw.Container(
+                            width: 240, // 50% width roughly
+                            decoration: pw.BoxDecoration(
+                              border: pw.Border.all(color: PdfColors.grey200),
+                              borderRadius: pw.BorderRadius.circular(4),
+                            ),
+                            child: pw.Image(img, fit: pw.BoxFit.contain),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                  ],
+                  if (!isLast)
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(vertical: 15),
+                      child:
+                          pw.Divider(color: PdfColors.grey300, thickness: 0.5),
+                    ),
+                ],
+              );
+            }),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<Map<String, pw.MemoryImage>> _loadEyeImages(
+      MedicalReportResponseModel reportData) async {
+    final images = <String, pw.MemoryImage>{};
+    final module = reportData.data.eyeModule;
+    if (module == null || module.eyeProcedures == null) return images;
+
+    final urls = <String>{};
+    for (var p in module.eyeProcedures!) {
+      if (p.medicalExaminationImages != null) {
+        for (var url in p.medicalExaminationImages!) {
+          if (url.isNotEmpty && url != "string") urls.add(url);
+        }
+      }
+      if (p.medicalReportUrl != null) {
+        for (var url in p.medicalReportUrl!) {
+          if (url.isNotEmpty && url != "string") urls.add(url);
+        }
+      }
+    }
+
+    print('🔍 Loading ${urls.length} eye images...');
+    for (var url in urls) {
+      try {
+        final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
+        images[url] = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (e) {
+        print('❌ Failed to load eye image: $url - $e');
       }
     }
     return images;

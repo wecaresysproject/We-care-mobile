@@ -39,6 +39,7 @@ class MedicalReportData {
   final List<AllergyModel>? allergy;
   final List<PreDescriptionModel>? preDescriptions;
   final TeethModule? teethModule;
+  final EyeModule? eyeModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -52,6 +53,7 @@ class MedicalReportData {
     this.allergy,
     this.preDescriptions,
     this.teethModule,
+    this.eyeModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -466,4 +468,64 @@ class TeethProcedure {
       _$TeethProcedureFromJson(json);
 
   Map<String, dynamic> toJson() => _$TeethProcedureToJson(this);
+}
+
+@JsonSerializable()
+class EyeModule {
+  final List<EyeSymptom>? eyeSymptoms;
+  final List<EyeProcedure>? eyeProcedures;
+
+  EyeModule({
+    this.eyeSymptoms,
+    this.eyeProcedures,
+  });
+
+  factory EyeModule.fromJson(Map<String, dynamic> json) =>
+      _$EyeModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeModuleToJson(this);
+}
+
+@JsonSerializable()
+class EyeSymptom {
+  final String symptomStartDate;
+  final String affectedEyePart;
+  final List<String>? symptoms;
+  final String symptomDuration;
+
+  EyeSymptom({
+    required this.symptomStartDate,
+    required this.affectedEyePart,
+    this.symptoms,
+    required this.symptomDuration,
+  });
+
+  factory EyeSymptom.fromJson(Map<String, dynamic> json) =>
+      _$EyeSymptomFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeSymptomToJson(this);
+}
+
+@JsonSerializable()
+class EyeProcedure {
+  final String medicalReportDate;
+  final String affectedEyePart;
+  final List<String>? symptoms;
+  final List<String>? medicalProcedures;
+  final List<String>? medicalExaminationImages;
+  final List<String>? medicalReportUrl;
+
+  EyeProcedure({
+    required this.medicalReportDate,
+    required this.affectedEyePart,
+    this.symptoms,
+    this.medicalProcedures,
+    this.medicalExaminationImages,
+    this.medicalReportUrl,
+  });
+
+  factory EyeProcedure.fromJson(Map<String, dynamic> json) =>
+      _$EyeProcedureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeProcedureToJson(this);
 }

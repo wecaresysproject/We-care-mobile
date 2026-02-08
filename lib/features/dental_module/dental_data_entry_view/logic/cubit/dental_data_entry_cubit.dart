@@ -72,6 +72,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
 
   void updateMedicalProcedureDate(String? date) {
     emit(state.copyWith(medicalProcedureDateSelection: date));
+    validateRequiredFields();
   }
 
   Future<void> updatePrimaryMedicalProcedure(String? val) async {
@@ -501,8 +502,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         symptomDuration: state.selectedSyptomsPeriod!,
         complaintNature: state.natureOfComplaintSelection!,
         complaintDegree: state.complaintDegree!,
-        procedureDate:
-            state.medicalProcedureDateSelection ?? locale.no_data_entered,
+        procedureDate: state.medicalProcedureDateSelection!,
         primaryProcedure:
             state.primaryMedicalProcedureSelection ?? locale.no_data_entered,
         subProcedure:
@@ -655,7 +655,8 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         state.syptomTypeSelection == null ||
         state.selectedSyptomsPeriod == null ||
         state.natureOfComplaintSelection == null ||
-        state.complaintDegree == null) {
+        state.complaintDegree == null ||
+        state.medicalProcedureDateSelection == null) {
       emit(
         state.copyWith(
           isFormValidated: false,
