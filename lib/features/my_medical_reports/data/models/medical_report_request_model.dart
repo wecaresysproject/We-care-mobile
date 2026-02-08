@@ -385,7 +385,10 @@ class AllergiesSelectionRequestBody {
 @JsonSerializable()
 class EyesSelectionRequestBody {
   final bool getAll;
+  @JsonKey(name: "AttachImages")
   final bool attachReport;
+  @JsonKey(name: "needMedicalRecord")
+  final bool attachMedicalTests;
   final List<String> years;
   final List<String> regions;
   final List<String> symptoms;
@@ -394,6 +397,7 @@ class EyesSelectionRequestBody {
   EyesSelectionRequestBody({
     required this.getAll,
     required this.attachReport,
+    required this.attachMedicalTests,
     required this.years,
     required this.regions,
     required this.symptoms,

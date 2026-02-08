@@ -673,9 +673,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     final filters = _selectedFilters[index] ?? {};
     final attachReport =
         _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    final attachMedicalTests =
+        _selectedOptionValues[index]?.contains("ارفاق الفحوصات الطبية") ??
+            false;
     context.read<MedicalReportGenerationCubit>().updateEyesSelection(
           getAll: getAll,
           attachReport: attachReport,
+          attachMedicalTests: attachMedicalTests,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedRegions: filters["0_المنطقه"]?.toList() ?? [],
           selectedSymptoms: filters["0_الأعراض"]?.toList() ?? [],

@@ -189,6 +189,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
   void updateEyesSelection({
     bool? getAll,
     bool? attachReport,
+    bool? attachMedicalTests,
     List<String>? selectedYears,
     List<String>? selectedRegions,
     List<String>? selectedSymptoms,
@@ -198,6 +199,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       state.copyWith(
         eyesGetAll: getAll,
         eyesAttachReport: attachReport,
+        attachEyeMedicalTests: attachMedicalTests,
         eyesSelectedYears: selectedYears,
         eyesSelectedRegions: selectedRegions,
         eyesSelectedSymptoms: selectedSymptoms,
@@ -328,14 +330,15 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           getAll: state.allergiesGetAll,
           types: state.allergiesSelectedTypes,
         ),
-        // eyes: EyesSelectionRequestBody(
-        //   getAll: state.eyesGetAll,
-        //   attachReport: state.eyesAttachReport,
-        //   years: state.eyesSelectedYears,
-        //   regions: state.eyesSelectedRegions,
-        //   symptoms: state.eyesSelectedSymptoms,
-        //   medicalProcedures: state.eyesSelectedMedicalProcedures,
-        // ),
+        eyes: EyesSelectionRequestBody(
+          getAll: state.eyesGetAll,
+          attachReport: state.eyesAttachReport,
+          attachMedicalTests: state.attachEyeMedicalTests,
+          years: state.eyesSelectedYears,
+          regions: state.eyesSelectedRegions,
+          symptoms: state.eyesSelectedSymptoms,
+          medicalProcedures: state.eyesSelectedMedicalProcedures,
+        ),
         teeth: TeethSelectionRequestBody(
           getAll: state.dentalGetAll,
           attachReport: state.dentalAttachReport,
