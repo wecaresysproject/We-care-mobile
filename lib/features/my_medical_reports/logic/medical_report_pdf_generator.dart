@@ -48,6 +48,9 @@ class MedicalReportPdfGenerator {
             ),
           ),
         ),
+        // 👇 أضف ده
+        footer: (context) => _buildFooter(context),
+
         header: (context) =>
             _buildHeader(profileImageProvider, logoImageProvider, reportData),
         build: (context) => [
@@ -722,7 +725,6 @@ class MedicalReportPdfGenerator {
           // Center: Title
           pw.Row(
             children: [
-              // pw.Icon(pw.IconData(0xe9fe), color: PdfColors.white, size: 40), // Icons not directly supported in pdf package without font
               pw.SizedBox(width: 10),
               pw.Text(
                 'تقرير طبي شخصي',
@@ -753,98 +755,42 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildFooter(
-      pw.Context context, MedicalReportResponseModel reportData) {
-    final patientName = reportData.userName ?? 'غير معروف';
-    final currentDate = DateTime.now();
-    final formattedDate =
-        '${currentDate.day}/${currentDate.month}/${currentDate.year}';
-
+  pw.Widget _buildFooter(pw.Context context) {
     return pw.Container(
-      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      margin: const pw.EdgeInsets.only(top: 15),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(
+          top: pw.BorderSide(
+            color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+            width: 1.5,
+          ),
+        ),
+      ),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          // Right Side (RTL): Patient Info
-          pw.Expanded(
-            flex: 3,
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              mainAxisSize: pw.MainAxisSize.min,
-              children: [
-                pw.Text(
-                  'اسم المريض: $patientName',
-                  style: pw.TextStyle(
-                    fontSize: 10,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.white,
-                  ),
-                ),
-                pw.SizedBox(height: 2),
-                pw.Text(
-                  'سري - وثيقة طبية',
-                  style: const pw.TextStyle(
-                    fontSize: 8,
-                    color: PdfColors.grey200,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Center: Page Number
-          pw.Expanded(
-            flex: 2,
-            child: pw.Center(
-              child: pw.Column(
-                mainAxisSize: pw.MainAxisSize.min,
-                children: [
-                  pw.Text(
-                    'صفحة ${context.pageNumber} من ${context.pagesCount}',
-                    style: pw.TextStyle(
-                      fontSize: 11,
-                      fontWeight: pw.FontWeight.bold,
-                      color: PdfColors.white,
-                    ),
-                  ),
-                  pw.SizedBox(height: 2),
-                  pw.Text(
-                    'تاريخ الإنشاء: $formattedDate',
-                    style: pw.TextStyle(
-                      fontSize: 8,
-                      color: PdfColors.grey200,
-                    ),
-                  ),
-                ],
+          // Left: Circular page number
+          pw.Container(
+            width: 32,
+            height: 32,
+            alignment: pw.Alignment.center,
+            child: pw.Text(
+              '${context.pageNumber} / ${context.pagesCount}',
+              style: pw.TextStyle(
+                color: PdfColors.black,
+                fontSize: 12,
+                fontWeight: pw.FontWeight.normal,
               ),
             ),
           ),
 
-          // Left Side (RTL): Organization Info
-          pw.Expanded(
-            flex: 3,
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.end,
-              mainAxisSize: pw.MainAxisSize.min,
-              children: [
-                pw.Text(
-                  'نظام We Care الطبي',
-                  style: pw.TextStyle(
-                    fontSize: 10,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.white,
-                  ),
-                ),
-                pw.SizedBox(height: 2),
-                pw.Text(
-                  'تقرير طبي شامل',
-                  style: pw.TextStyle(
-                    fontSize: 8,
-                    color: PdfColors.grey200,
-                  ),
-                ),
-              ],
+          // Right: subtle text
+          pw.Text(
+            'We Care Medical Report',
+            style: pw.TextStyle(
+              fontSize: 9,
+              color: PdfColors.black,
             ),
           ),
         ],
