@@ -63,6 +63,7 @@ class MedicalReportPdfGenerator {
           _buildAllergiesSection(reportData),
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
+          _buildMentalIlnessSection(reportData),
           _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
@@ -2017,5 +2018,115 @@ class MedicalReportPdfGenerator {
 
     print('✅ Total radiology images loaded: ${images.length}');
     return images;
+  }
+
+  pw.Widget _buildMentalIlnessSection(MedicalReportResponseModel reportData) {
+    final mentalModule = reportData.data.mentalIllnessModule;
+    if (mentalModule == null) return pw.SizedBox.shrink();
+
+    final hasMentalIllnesses = mentalModule.mentalIllnesses != null &&
+        mentalModule.mentalIllnesses!.isNotEmpty;
+    final hasBehavioralDisorders = mentalModule.behavioralDisorders != null &&
+        mentalModule.behavioralDisorders!.isNotEmpty;
+
+    if (!hasMentalIllnesses && !hasBehavioralDisorders) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('الامراض النفسية'),
+          pw.SizedBox(height: 12),
+
+          // Part 1: Mental Illnesses
+          if (hasMentalIllnesses) ...[
+            pw.Text('الامراض النفسية',
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 14,
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.SizedBox(height: 8),
+            pw.TableHelper.fromTextArray(
+              headers: [
+                'مدة المرض',
+                'شدة المرض',
+                'نوع المرض النفسي',
+                'التاريخ',
+              ],
+              data: mentalModule.mentalIllnesses!.map((item) {
+                return [
+                  _safeText(item.illnessDuration),
+                  _safeText(item.illnessSeverity),
+                  _safeText(item.mentalIllnessType),
+                  _safeText(item.diagnosisDate),
+                ];
+              }).toList(),
+              headerStyle: pw.TextStyle(
+                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 10,
+              ),
+              cellStyle: const pw.TextStyle(fontSize: 10),
+              headerDecoration:
+                  const pw.BoxDecoration(color: PdfColors.grey100),
+              cellAlignment: pw.Alignment.center,
+              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            ),
+            pw.SizedBox(height: 20),
+          ],
+
+          // Part 2: Behavioral Disorders
+          if (hasBehavioralDisorders) ...[
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('الاضطرابات النفسية والسلوكية',
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 14,
+                        color: PdfColor.fromInt(
+                            AppColorsManager.mainDarkBlue.value))),
+                pw.SizedBox(height: 8),
+                pw.TableHelper.fromTextArray(
+                  headers: [
+                    'درجة التقييم (المخاطرة)',
+                    'المحور النفسي او السلوكي',
+                    'التاريخ',
+                  ],
+                  data: mentalModule.behavioralDisorders!.map((item) {
+                    return [
+                      _safeText(item.overallLevel),
+                      _safeText(item.axes),
+                      _safeText(item.assessmentDate),
+                    ];
+                  }).toList(),
+                  headerStyle: pw.TextStyle(
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                  cellStyle: const pw.TextStyle(fontSize: 10),
+                  headerDecoration:
+                      const pw.BoxDecoration(color: PdfColors.grey100),
+                  cellAlignment: pw.Alignment.center,
+                  border:
+                      pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }

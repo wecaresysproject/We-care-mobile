@@ -26,4 +26,6 @@ class MedicalReportApiConstants {
       'MedicalReports/supplements-vitamins/filters';
   static const String getPhysicalActivityFilters =
       'MedicalReports/physical-activity/options';
+  static const String getMentalDiseasesFilters =
+      'MedicalReports/MentalDiseases/filters';
 }

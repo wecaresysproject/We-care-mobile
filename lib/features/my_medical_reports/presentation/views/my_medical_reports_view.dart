@@ -201,6 +201,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _syncPhysicalActivitySelectionToCubit(
                                       context, index);
                                 }
+
+                                // Mental Diseases Selection sync
+                                if (dummyCategory.title == "الأمراض النفسية") {
+                                  _syncMentalDiseasesSelectionToCubit(
+                                      context, index);
+                                }
                               },
                             ),
                             if (isExpanded) ...[
@@ -422,6 +428,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "النشاط الرياضي") {
                                         _syncPhysicalActivitySelectionToCubit(
+                                            context, index);
+                                      }
+
+                                      // Mental Diseases Selection sync
+                                      if (dummyCategory.title ==
+                                          "الأمراض النفسية") {
+                                        _syncMentalDiseasesSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -734,6 +747,18 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         .updatePhysicalActivitySelection(
           getAll: getAll,
           selectedReports: filters["0_تقرير المتابعة الرياضية"]?.toList() ?? [],
+        );
+  }
+
+  void _syncMentalDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateMentalDiseasesSelection(
+          getAll: getAll,
+          selectedTypes: filters["0_نوع المرض النفسي"]?.toList() ?? [],
+          selectedMethods:
+              filters["0_المحاور النفسية و السلوكية"]?.toList() ?? [],
         );
   }
 }

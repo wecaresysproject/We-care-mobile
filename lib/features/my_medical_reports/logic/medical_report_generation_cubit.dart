@@ -266,6 +266,20 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateMentalDiseasesSelection({
+    bool? getAll,
+    List<String>? selectedTypes,
+    List<String>? selectedMethods,
+  }) {
+    emit(
+      state.copyWith(
+        mentalDiseasesGetAll: getAll,
+        mentalDiseasesSelectedTypes: selectedTypes,
+        mentalDiseasesSelectedMethods: selectedMethods,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -359,6 +373,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         sportsActivity: PhysicalActivitySelectionRequestBody(
           getAll: state.physicalActivityGetAll,
           reports: state.physicalActivitySelectedReports,
+        ),
+        mentalDiseases: MentalDiseasesSelectionRequestBody(
+          getAll: state.mentalDiseasesGetAll,
+          mentalIllnessTypes: state.mentalDiseasesSelectedTypes,
+          psychologicalEmergencies: state.mentalDiseasesSelectedMethods,
         ),
       ),
     );
@@ -483,6 +502,11 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       );
     } else if (categoryTitle == "النشاط الرياضي") {
       result = await _medicalReportRepo.getPhysicalActivityFilters(
+        language,
+        userType,
+      );
+    } else if (categoryTitle == "الأمراض النفسية") {
+      result = await _medicalReportRepo.getMentalDiseasesFilters(
         language,
         userType,
       );

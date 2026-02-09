@@ -60,6 +60,9 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> supplementsSelectedNames;
   final bool physicalActivityGetAll;
   final List<String> physicalActivitySelectedReports;
+  final bool mentalDiseasesGetAll;
+  final List<String> mentalDiseasesSelectedTypes;
+  final List<String> mentalDiseasesSelectedMethods;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -123,6 +126,9 @@ class MedicalReportGenerationState extends Equatable {
     this.supplementsSelectedNames = const [],
     this.physicalActivityGetAll = false,
     this.physicalActivitySelectedReports = const [],
+    this.mentalDiseasesGetAll = false,
+    this.mentalDiseasesSelectedTypes = const [],
+    this.mentalDiseasesSelectedMethods = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -187,6 +193,9 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? supplementsSelectedNames,
     bool? physicalActivityGetAll,
     List<String>? physicalActivitySelectedReports,
+    bool? mentalDiseasesGetAll,
+    List<String>? mentalDiseasesSelectedTypes,
+    List<String>? mentalDiseasesSelectedMethods,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -288,6 +297,11 @@ class MedicalReportGenerationState extends Equatable {
           physicalActivityGetAll ?? this.physicalActivityGetAll,
       physicalActivitySelectedReports: physicalActivitySelectedReports ??
           this.physicalActivitySelectedReports,
+      mentalDiseasesGetAll: mentalDiseasesGetAll ?? this.mentalDiseasesGetAll,
+      mentalDiseasesSelectedTypes:
+          mentalDiseasesSelectedTypes ?? this.mentalDiseasesSelectedTypes,
+      mentalDiseasesSelectedMethods:
+          mentalDiseasesSelectedMethods ?? this.mentalDiseasesSelectedMethods,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -354,6 +368,9 @@ class MedicalReportGenerationState extends Equatable {
         supplementsSelectedNames,
         physicalActivityGetAll,
         physicalActivitySelectedReports,
+        mentalDiseasesGetAll,
+        mentalDiseasesSelectedTypes,
+        mentalDiseasesSelectedMethods,
         medicalReportData,
         categoryFilters,
       ];

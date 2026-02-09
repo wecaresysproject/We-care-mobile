@@ -40,6 +40,7 @@ class MedicalReportData {
   final List<PreDescriptionModel>? preDescriptions;
   final TeethModule? teethModule;
   final EyeModule? eyeModule;
+  final MentalIllnessModule? mentalIllnessModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -54,6 +55,7 @@ class MedicalReportData {
     this.preDescriptions,
     this.teethModule,
     this.eyeModule,
+    this.mentalIllnessModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -528,4 +530,58 @@ class EyeProcedure {
       _$EyeProcedureFromJson(json);
 
   Map<String, dynamic> toJson() => _$EyeProcedureToJson(this);
+}
+
+@JsonSerializable()
+class MentalIllnessModule {
+  final List<MentalIllness>? mentalIllnesses;
+  final List<BehavioralDisorder>? behavioralDisorders;
+
+  MentalIllnessModule({
+    this.mentalIllnesses,
+    this.behavioralDisorders,
+  });
+
+  factory MentalIllnessModule.fromJson(Map<String, dynamic> json) =>
+      _$MentalIllnessModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MentalIllnessModuleToJson(this);
+}
+
+@JsonSerializable()
+class MentalIllness {
+  final String diagnosisDate;
+  final String mentalIllnessType;
+  final String illnessSeverity;
+  final String illnessDuration;
+
+  MentalIllness({
+    required this.diagnosisDate,
+    required this.mentalIllnessType,
+    required this.illnessSeverity,
+    required this.illnessDuration,
+  });
+
+  factory MentalIllness.fromJson(Map<String, dynamic> json) =>
+      _$MentalIllnessFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MentalIllnessToJson(this);
+}
+
+@JsonSerializable()
+class BehavioralDisorder {
+  final String assessmentDate;
+  final String axes;
+  final String overallLevel;
+
+  BehavioralDisorder({
+    required this.assessmentDate,
+    required this.axes,
+    required this.overallLevel,
+  });
+
+  factory BehavioralDisorder.fromJson(Map<String, dynamic> json) =>
+      _$BehavioralDisorderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BehavioralDisorderToJson(this);
 }
