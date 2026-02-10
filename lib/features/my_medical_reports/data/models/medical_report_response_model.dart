@@ -42,6 +42,7 @@ class MedicalReportData {
   final EyeModule? eyeModule;
   final MentalIllnessModule? mentalIllnessModule;
   final GeneticDiseasesModule? geneticDiseases;
+  final SupplementsModule? supplementsModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -58,6 +59,7 @@ class MedicalReportData {
     this.eyeModule,
     this.mentalIllnessModule,
     this.geneticDiseases,
+    this.supplementsModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -638,4 +640,36 @@ class ExpectedGeneticDisease {
       _$ExpectedGeneticDiseaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ExpectedGeneticDiseaseToJson(this);
+}
+
+@JsonSerializable()
+class SupplementsModule {
+  final List<Supplement>? supplements;
+
+  SupplementsModule({this.supplements});
+
+  factory SupplementsModule.fromJson(Map<String, dynamic> json) =>
+      _$SupplementsModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupplementsModuleToJson(this);
+}
+
+@JsonSerializable()
+class Supplement {
+  final String? date;
+  final String? supplementName;
+  final String? dosage;
+  final String? planType;
+
+  Supplement({
+    this.date,
+    this.supplementName,
+    this.dosage,
+    this.planType,
+  });
+
+  factory Supplement.fromJson(Map<String, dynamic> json) =>
+      _$SupplementFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupplementToJson(this);
 }

@@ -69,7 +69,8 @@ class MedicalReportPdfGenerator {
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
           _buildPrescriptionsSection(reportData, prescriptionImages),
-          _buildGeneticDiseasesSection(reportData),
+          // _buildGeneticDiseasesSection(reportData),
+          _buildSupplementsAndVitaminsSection(reportData),
         ],
       ),
     );
@@ -346,6 +347,76 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  pw.Widget _buildSupplementsAndVitaminsSection(
+      MedicalReportResponseModel reportData) {
+    final supplementsModule = reportData.data.supplementsModule;
+    if (supplementsModule == null ||
+        supplementsModule.supplements == null ||
+        supplementsModule.supplements!.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('متابعة الفيتامينات و المكملات الغذائية'),
+          pw.SizedBox(height: 12),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'الجرعة اليومية',
+              'اسم الفيتامين (المكمل الغذائي)',
+              'نوع الخطة',
+              'التاريخ',
+            ],
+            data: supplementsModule.supplements!.map((supplement) {
+              String planTypeAr = mapPlanTypeName(supplement);
+
+              return [
+                _safeText(supplement.dosage),
+                _safeText(supplement.supplementName),
+                _safeText(planTypeAr),
+                _safeText(supplement.date),
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 11),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            columnWidths: {
+              0: const pw.FlexColumnWidth(1.2), // الجرعة اليومية
+              1: const pw.FlexColumnWidth(3.5), // اسم الفيتامين
+              2: const pw.FlexColumnWidth(1.5), // خطة
+              3: const pw.FlexColumnWidth(1.8), // التاريخ
+            },
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            cellPadding: const pw.EdgeInsets.all(6),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String mapPlanTypeName(Supplement supplement) {
+    String planTypeAr = supplement.planType ?? "--";
+    if (planTypeAr.toLowerCase() == 'monthly') {
+      planTypeAr = 'شهرى';
+    } else if (planTypeAr.toLowerCase() == 'weekly') {
+      planTypeAr = 'أسبوعى';
+    }
+    return planTypeAr;
   }
 
   pw.Widget _buildPrescriptionBlock(PreDescriptionModel prescription,
@@ -1965,7 +2036,8 @@ class MedicalReportPdfGenerator {
   String _formatResultDate(String dateStr) {
     try {
       final date = DateTime.parse(dateStr);
-      final months = [
+
+      const months = [
         "Jan",
         "Feb",
         "Mar",

@@ -135,12 +135,12 @@ class MentalDiseasesSelectionRequestBody {
 class SupplementsSelectionRequestBody {
   final bool getAll;
   final List<String> years;
-  final List<String> names;
+  final List<String> supplementNames;
 
   SupplementsSelectionRequestBody({
     required this.getAll,
     required this.years,
-    required this.names,
+    required this.supplementNames,
   });
 
   factory SupplementsSelectionRequestBody.fromJson(Map<String, dynamic> json) =>
