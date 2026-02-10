@@ -412,9 +412,9 @@ class MedicalReportPdfGenerator {
   String mapPlanTypeName(Supplement supplement) {
     String planTypeAr = supplement.planType ?? "--";
     if (planTypeAr.toLowerCase() == 'monthly') {
-      planTypeAr = 'شهرى';
+      planTypeAr = 'شهرية';
     } else if (planTypeAr.toLowerCase() == 'weekly') {
-      planTypeAr = 'أسبوعى';
+      planTypeAr = 'أسبوعية';
     }
     return planTypeAr;
   }
