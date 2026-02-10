@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 
@@ -71,6 +72,7 @@ class MedicalReportPdfGenerator {
           _buildPrescriptionsSection(reportData, prescriptionImages),
           // _buildGeneticDiseasesSection(reportData),
           _buildSupplementsAndVitaminsSection(reportData),
+          _buildPhysicalActivitySection(reportData),
         ],
       ),
     );
@@ -403,6 +405,80 @@ class MedicalReportPdfGenerator {
             },
             border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             cellPadding: const pw.EdgeInsets.all(6),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildPhysicalActivitySection(
+      MedicalReportResponseModel reportData) {
+    final physicalActivityModule = reportData.data.physicalActivityModule;
+    if (physicalActivityModule == null || physicalActivityModule.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('جدول متابعة النشاط الرياضي'),
+          pw.SizedBox(height: 12),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'وحدات الصيانة\nالعضلية المعيارية',
+              'وحدات الصيانة\nالعضلية الفعلية',
+              'وحدات البناء\nالعضلى المعياري',
+              'وحدات البناء\nالعضلي الفعلي',
+              'عدد دقائق\nممارسة الرياضة',
+              'متوسط\nالدقائق لليوم',
+              'عدد أيام\nممارسة الرياضة',
+              'خطة (أسبوعية/\nشهرية)',
+              'التاريخ',
+            ],
+            data: physicalActivityModule.map((entry) {
+              String planTypeAr = entry.planType ?? "--";
+              if (planTypeAr.toLowerCase() == 'monthly') {
+                planTypeAr = 'شهرية';
+              } else if (planTypeAr.toLowerCase() == 'weekly') {
+                planTypeAr = 'أسبوعية';
+              }
+
+              final dateStr = entry.dateRange != null
+                  ? "${(entry.dateRange!.to)} : ${(entry.dateRange!.from)}"
+                  : "--";
+
+              return [
+                _safeText(
+                    formatter.format(entry.muscleMaintenanceUnitsStandard)),
+                _safeText(formatter.format(entry.muscleMaintenanceUnitsActual)),
+                _safeText(formatter.format(entry.muscleBuildingUnitsStandard)),
+                _safeText(formatter.format(entry.muscleBuildingUnitsActual)),
+                _safeText(formatter.format(entry.totalExerciseMinutes)),
+                _safeText(formatter.format(entry.averageMinutesPerDay)),
+                _safeText(formatter.format(entry.totalExerciseDays)),
+                _safeText(planTypeAr),
+                _safeText(dateStr),
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 10,
+            ),
+            headerAlignment: pw.Alignment.center,
+            headerDirection: pw.TextDirection.rtl,
+            cellStyle: const pw.TextStyle(fontSize: 12),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            cellPadding: const pw.EdgeInsets.all(4),
           ),
         ],
       ),

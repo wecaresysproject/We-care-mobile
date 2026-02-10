@@ -376,8 +376,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           supplementNames: state.supplementsSelectedNames,
         ),
         sportsActivity: PhysicalActivitySelectionRequestBody(
-          getAll: state.physicalActivityGetAll,
-          reports: state.physicalActivitySelectedReports,
+          dateRanges: state.physicalActivitySelectedReports,
         ),
         mentalDiseases: MentalDiseasesSelectionRequestBody(
           getAll: state.mentalDiseasesGetAll,
@@ -510,6 +509,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         language,
         userType,
       );
+      updateStateWithPhysicalActivityFilters(result);
     } else if (categoryTitle == "الأمراض النفسية") {
       result = await _medicalReportRepo.getMentalDiseasesFilters(
         language,
@@ -545,6 +545,30 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           categoryFiltersStatus: finalStatuses,
           message: error.errors.firstOrNull ?? 'An error occurred',
         ));
+      },
+    );
+  }
+
+  void updateStateWithPhysicalActivityFilters(
+      ApiResult<MedicalReportFilterResponseModel> result) {
+    result.when(
+      success: (data) {
+        final filterSectionsTitles = data.filterSections!
+            .map((e) => e.filters.map((e) => e.title).toList())
+            .toList();
+
+        emit(
+          state.copyWith(
+            physicalActivityFilterTitles: filterSectionsTitles[0],
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            physicalActivityFilterTitles: [],
+          ),
+        );
       },
     );
   }

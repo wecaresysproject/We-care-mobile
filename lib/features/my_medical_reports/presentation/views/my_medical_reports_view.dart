@@ -199,7 +199,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 // Physical Activity Selection sync
                                 if (dummyCategory.title == "النشاط الرياضي") {
                                   _syncPhysicalActivitySelectionToCubit(
-                                      context, index);
+                                      context, index, state);
                                 }
 
                                 // Mental Diseases Selection sync
@@ -428,7 +428,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "النشاط الرياضي") {
                                         _syncPhysicalActivitySelectionToCubit(
-                                            context, index);
+                                            context, index, state);
                                       }
 
                                       // Mental Diseases Selection sync
@@ -742,15 +742,21 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         );
   }
 
-  void _syncPhysicalActivitySelectionToCubit(BuildContext context, int index) {
-    final getAll =
-        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+  void _syncPhysicalActivitySelectionToCubit(
+      BuildContext context, int index, MedicalReportGenerationState state) {
+    final getAll = _selectedStates[index] ?? false;
     final filters = _selectedFilters[index] ?? {};
+    final filterTitles = state.physicalActivityFilterTitles ?? [];
+
+    final selectedReports = filterTitles
+        .map((title) => filters["0_$title"]?.toList() ?? [])
+        .toList();
+
     context
         .read<MedicalReportGenerationCubit>()
         .updatePhysicalActivitySelection(
           getAll: getAll,
-          selectedReports: filters["0_تقرير المتابعة الرياضية"]?.toList() ?? [],
+          selectedReports: selectedReports[0],
         );
   }
 

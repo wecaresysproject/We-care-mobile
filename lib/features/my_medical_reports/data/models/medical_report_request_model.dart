@@ -61,7 +61,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'supplements')
   final SupplementsSelectionRequestBody? supplements;
 
-  @JsonKey(name: 'sportsActivity')
+  @JsonKey(name: 'physicalActivity')
   final PhysicalActivitySelectionRequestBody? sportsActivity;
 
   @JsonKey(name: 'mentalDiseases')
@@ -95,12 +95,11 @@ class MedicalReportSelections {
 
 @JsonSerializable()
 class PhysicalActivitySelectionRequestBody {
-  final bool getAll;
-  final List<String> reports;
+  @JsonKey(name: 'dateRange')
+  final List<String> dateRanges;
 
   PhysicalActivitySelectionRequestBody({
-    required this.getAll,
-    required this.reports,
+    required this.dateRanges,
   });
 
   factory PhysicalActivitySelectionRequestBody.fromJson(

@@ -61,6 +61,7 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> supplementsSelectedNames;
   final bool physicalActivityGetAll;
   final List<String> physicalActivitySelectedReports;
+  final List<String>? physicalActivityFilterTitles;
   final bool mentalDiseasesGetAll;
   final List<String> mentalDiseasesSelectedTypes;
   final List<String> mentalDiseasesSelectedMethods;
@@ -128,6 +129,7 @@ class MedicalReportGenerationState extends Equatable {
     this.supplementsSelectedNames = const [],
     this.physicalActivityGetAll = false,
     this.physicalActivitySelectedReports = const [],
+    this.physicalActivityFilterTitles = const [],
     this.mentalDiseasesGetAll = false,
     this.mentalDiseasesSelectedTypes = const [],
     this.mentalDiseasesSelectedMethods = const [],
@@ -196,6 +198,7 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? supplementsSelectedNames,
     bool? physicalActivityGetAll,
     List<String>? physicalActivitySelectedReports,
+    List<String>? physicalActivityFilterTitles,
     bool? mentalDiseasesGetAll,
     List<String>? mentalDiseasesSelectedTypes,
     List<String>? mentalDiseasesSelectedMethods,
@@ -303,6 +306,8 @@ class MedicalReportGenerationState extends Equatable {
           physicalActivityGetAll ?? this.physicalActivityGetAll,
       physicalActivitySelectedReports: physicalActivitySelectedReports ??
           this.physicalActivitySelectedReports,
+      physicalActivityFilterTitles:
+          physicalActivityFilterTitles ?? this.physicalActivityFilterTitles,
       mentalDiseasesGetAll: mentalDiseasesGetAll ?? this.mentalDiseasesGetAll,
       mentalDiseasesSelectedTypes:
           mentalDiseasesSelectedTypes ?? this.mentalDiseasesSelectedTypes,
@@ -375,6 +380,7 @@ class MedicalReportGenerationState extends Equatable {
         supplementsSelectedNames,
         physicalActivityGetAll,
         physicalActivitySelectedReports,
+        physicalActivityFilterTitles,
         mentalDiseasesGetAll,
         mentalDiseasesSelectedTypes,
         mentalDiseasesSelectedMethods,

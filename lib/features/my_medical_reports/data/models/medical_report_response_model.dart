@@ -43,6 +43,7 @@ class MedicalReportData {
   final MentalIllnessModule? mentalIllnessModule;
   final GeneticDiseasesModule? geneticDiseases;
   final SupplementsModule? supplementsModule;
+  final List<PhysicalActivityEntry>? physicalActivityModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -60,6 +61,7 @@ class MedicalReportData {
     this.mentalIllnessModule,
     this.geneticDiseases,
     this.supplementsModule,
+    this.physicalActivityModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -672,4 +674,47 @@ class Supplement {
       _$SupplementFromJson(json);
 
   Map<String, dynamic> toJson() => _$SupplementToJson(this);
+}
+
+@JsonSerializable()
+class PhysicalActivityEntry {
+  final DateRange? dateRange;
+  final String? planType;
+  final int? totalExerciseDays;
+  final num? totalExerciseMinutes;
+  final num? averageMinutesPerDay;
+  final num? muscleBuildingUnitsActual;
+  final num? muscleBuildingUnitsStandard;
+  final num? muscleMaintenanceUnitsActual;
+  final num? muscleMaintenanceUnitsStandard;
+
+  PhysicalActivityEntry({
+    this.dateRange,
+    this.planType,
+    this.totalExerciseDays,
+    this.totalExerciseMinutes,
+    this.averageMinutesPerDay,
+    this.muscleBuildingUnitsActual,
+    this.muscleBuildingUnitsStandard,
+    this.muscleMaintenanceUnitsActual,
+    this.muscleMaintenanceUnitsStandard,
+  });
+
+  factory PhysicalActivityEntry.fromJson(Map<String, dynamic> json) =>
+      _$PhysicalActivityEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PhysicalActivityEntryToJson(this);
+}
+
+@JsonSerializable()
+class DateRange {
+  final String? from;
+  final String? to;
+
+  DateRange({this.from, this.to});
+
+  factory DateRange.fromJson(Map<String, dynamic> json) =>
+      _$DateRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DateRangeToJson(this);
 }
