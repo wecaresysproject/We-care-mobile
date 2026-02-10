@@ -162,16 +162,19 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
 
   void updateGeneticDiseasesSelection({
     bool? getAll,
-    List<String>? selectedValues,
+    List<String>? familyDiseasesSelectedValues,
+    List<String>? expectedGeneticDiseasesSelectedValues,
   }) {
     emit(
       state.copyWith(
         geneticDiseasesGetAll: getAll,
-        geneticDiseasesSelectedValues: selectedValues,
+        geneticDiseasesSelectedValues: familyDiseasesSelectedValues,
+        expectedGeneticDiseasesSelectedValues:
+            expectedGeneticDiseasesSelectedValues,
       ),
     );
     AppLogger.info(
-        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , familyDiseasesSelectedValues: ${state.geneticDiseasesSelectedValues} , expected: ${state.expectedGeneticDiseasesSelectedValues}");
   }
 
   void updateAllergiesSelection({
@@ -189,6 +192,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
   void updateEyesSelection({
     bool? getAll,
     bool? attachReport,
+    bool? attachMedicalTests,
     List<String>? selectedYears,
     List<String>? selectedRegions,
     List<String>? selectedSymptoms,
@@ -198,6 +202,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       state.copyWith(
         eyesGetAll: getAll,
         eyesAttachReport: attachReport,
+        attachEyeMedicalTests: attachMedicalTests,
         eyesSelectedYears: selectedYears,
         eyesSelectedRegions: selectedRegions,
         eyesSelectedSymptoms: selectedSymptoms,
@@ -264,6 +269,20 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateMentalDiseasesSelection({
+    bool? getAll,
+    List<String>? selectedTypes,
+    List<String>? selectedMethods,
+  }) {
+    emit(
+      state.copyWith(
+        mentalDiseasesGetAll: getAll,
+        mentalDiseasesSelectedTypes: selectedTypes,
+        mentalDiseasesSelectedMethods: selectedMethods,
+      ),
+    );
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -320,30 +339,33 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.surgeriesSelectedYears, //! needs getAll here
           surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
         ),
-        // geneticDiseases: GeneticDiseasesSelectionRequestBody(
-        //   getAll: state.geneticDiseasesGetAll,
-        //   diseases: state.geneticDiseasesSelectedValues,
-        // ),
+        geneticDiseases: GeneticDiseasesSelectionRequestBody(
+          getAll: state.geneticDiseasesGetAll,
+          familyGeneticDiseases: state.geneticDiseasesSelectedValues,
+          myExpectedGeneticDiseases:
+              state.expectedGeneticDiseasesSelectedValues,
+        ),
         allergies: AllergiesSelectionRequestBody(
           getAll: state.allergiesGetAll,
           types: state.allergiesSelectedTypes,
         ),
-        // eyes: EyesSelectionRequestBody(
-        //   getAll: state.eyesGetAll,
-        //   attachReport: state.eyesAttachReport,
-        //   years: state.eyesSelectedYears,
-        //   regions: state.eyesSelectedRegions,
-        //   symptoms: state.eyesSelectedSymptoms,
-        //   medicalProcedures: state.eyesSelectedMedicalProcedures,
-        // ),
-        // teeth: TeethSelectionRequestBody(
-        //   getAll: state.dentalGetAll,
-        //   attachReport: state.dentalAttachReport,
-        //   years: state.dentalSelectedYears,
-        //   teethNumbers: state.dentalSelectedTeethNumbers,
-        //   complaints: state.dentalSelectedComplaints,
-        //   medicalProcedures: state.dentalSelectedMedicalProcedures,
-        // ),
+        eyes: EyesSelectionRequestBody(
+          getAll: state.eyesGetAll,
+          attachReport: state.eyesAttachReport,
+          attachMedicalTests: state.attachEyeMedicalTests,
+          years: state.eyesSelectedYears,
+          regions: state.eyesSelectedRegions,
+          symptoms: state.eyesSelectedSymptoms,
+          medicalProcedures: state.eyesSelectedMedicalProcedures,
+        ),
+        teeth: TeethSelectionRequestBody(
+          getAll: state.dentalGetAll,
+          attachReport: state.dentalAttachReport,
+          years: state.dentalSelectedYears,
+          teethNumbers: state.dentalSelectedTeethNumbers,
+          complaints: state.dentalSelectedComplaints,
+          medicalProcedures: state.dentalSelectedMedicalProcedures,
+        ),
         smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
           getAll: state.smartNutritionGetAll,
           reports: state.smartNutritionSelectedReports,
@@ -351,11 +373,15 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         supplements: SupplementsSelectionRequestBody(
           getAll: state.supplementsGetAll,
           years: state.supplementsSelectedYears,
-          names: state.supplementsSelectedNames,
+          supplementNames: state.supplementsSelectedNames,
         ),
         sportsActivity: PhysicalActivitySelectionRequestBody(
-          getAll: state.physicalActivityGetAll,
-          reports: state.physicalActivitySelectedReports,
+          dateRanges: state.physicalActivitySelectedReports,
+        ),
+        mentalDiseases: MentalDiseasesSelectionRequestBody(
+          getAll: state.mentalDiseasesGetAll,
+          mentalIllnessTypes: state.mentalDiseasesSelectedTypes,
+          psychologicalEmergencies: state.mentalDiseasesSelectedMethods,
         ),
       ),
     );
@@ -483,6 +509,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         language,
         userType,
       );
+      updateStateWithPhysicalActivityFilters(result);
+    } else if (categoryTitle == "الأمراض النفسية") {
+      result = await _medicalReportRepo.getMentalDiseasesFilters(
+        language,
+        userType,
+      );
     } else {
       // Placeholder for other categories API calls
       // For now we will use dummy success for demonstration if requested
@@ -513,6 +545,30 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           categoryFiltersStatus: finalStatuses,
           message: error.errors.firstOrNull ?? 'An error occurred',
         ));
+      },
+    );
+  }
+
+  void updateStateWithPhysicalActivityFilters(
+      ApiResult<MedicalReportFilterResponseModel> result) {
+    result.when(
+      success: (data) {
+        final filterSectionsTitles = data.filterSections!
+            .map((e) => e.filters.map((e) => e.title).toList())
+            .toList();
+
+        emit(
+          state.copyWith(
+            physicalActivityFilterTitles: filterSectionsTitles[0],
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            physicalActivityFilterTitles: [],
+          ),
+        );
       },
     );
   }

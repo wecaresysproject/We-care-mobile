@@ -72,6 +72,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
 
   void updateMedicalProcedureDate(String? date) {
     emit(state.copyWith(medicalProcedureDateSelection: date));
+    validateRequiredFields();
   }
 
   Future<void> updatePrimaryMedicalProcedure(String? val) async {
@@ -501,8 +502,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         symptomDuration: state.selectedSyptomsPeriod!,
         complaintNature: state.natureOfComplaintSelection!,
         complaintDegree: state.complaintDegree!,
-        procedureDate:
-            state.medicalProcedureDateSelection ?? locale.no_data_entered,
+        procedureDate: state.medicalProcedureDateSelection!,
         primaryProcedure:
             state.primaryMedicalProcedureSelection ?? locale.no_data_entered,
         subProcedure:
@@ -557,7 +557,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
       userType: UserTypes.patient.name.firstLetterToUpperCase,
       documentId: decumentId,
       requestBody: SingleTeethReportRequestBody(
-        dentalCenter: state.selectedDentalCenter!,
+        dentalCenter: state.selectedDentalCenter ?? locale.no_data_entered,
         writtenReport: reportTextController.text,
         teethNumber: teethNumber,
         symptomStartDate: state.startIssueDateSelection!,
@@ -575,7 +575,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         lymphAnalysisImage: state.lymphAnalysisImagesUploadedUrl,
         gumCondition: state.selectedSurroundingGumStatus!,
         treatingDoctor: state.treatingDoctor!,
-        hospital: state.selectedHospitalCenter!,
+        hospital: state.selectedHospitalCenter ?? locale.no_data_entered,
         country: state.selectedCountryName!,
       ),
       language: AppStrings.arabicLang,
@@ -655,7 +655,8 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
         state.syptomTypeSelection == null ||
         state.selectedSyptomsPeriod == null ||
         state.natureOfComplaintSelection == null ||
-        state.complaintDegree == null) {
+        state.complaintDegree == null ||
+        state.medicalProcedureDateSelection == null) {
       emit(
         state.copyWith(
           isFormValidated: false,

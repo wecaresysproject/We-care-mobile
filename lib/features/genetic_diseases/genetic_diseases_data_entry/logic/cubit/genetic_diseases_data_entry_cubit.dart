@@ -587,7 +587,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   void safeEmit(GeneticDiseasesDataEntryState cubitState) {
-    if (!isClosed) safeEmit(cubitState);
+    if (!isClosed) emit(cubitState);
   }
 
   Future<void> submitPersonalGeneticDiseaseDataEntry(S locale) async {

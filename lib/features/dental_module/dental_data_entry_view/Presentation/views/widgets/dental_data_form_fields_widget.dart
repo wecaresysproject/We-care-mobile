@@ -165,6 +165,9 @@ class _DentalDataFormFieldsWidgetState
             ),
             verticalSpacing(10),
             DateTimePickerContainer(
+              containerBorderColor: state.medicalProcedureDateSelection == null
+                  ? AppColorsManager.warningColor
+                  : AppColorsManager.textfieldOutsideBorderColor,
               placeholderText: state.medicalProcedureDateSelection == null
                   ? isArabic()
                       ? "يوم / شهر / سنة"

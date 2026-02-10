@@ -38,6 +38,12 @@ class MedicalReportData {
   final List<RadiologyEntry>? radiology;
   final List<AllergyModel>? allergy;
   final List<PreDescriptionModel>? preDescriptions;
+  final TeethModule? teethModule;
+  final EyeModule? eyeModule;
+  final MentalIllnessModule? mentalIllnessModule;
+  final GeneticDiseasesModule? geneticDiseases;
+  final SupplementsModule? supplementsModule;
+  final List<PhysicalActivityEntry>? physicalActivityModule;
 
   MedicalReportData({
     this.basicInformation,
@@ -50,6 +56,12 @@ class MedicalReportData {
     this.radiology,
     this.allergy,
     this.preDescriptions,
+    this.teethModule,
+    this.eyeModule,
+    this.mentalIllnessModule,
+    this.geneticDiseases,
+    this.supplementsModule,
+    this.physicalActivityModule,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -64,12 +76,14 @@ class PreDescriptionModel {
   final String doctorName;
   final String doctorSpecialty;
   final List<String>? preDescriptionPhoto;
+  final String? country;
 
   PreDescriptionModel({
     required this.preDescriptionDate,
     required this.doctorName,
     required this.doctorSpecialty,
     this.preDescriptionPhoto,
+    this.country,
   });
 
   factory PreDescriptionModel.fromJson(Map<String, dynamic> json) =>
@@ -400,4 +414,307 @@ class RadiologyEntry {
       _$RadiologyEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$RadiologyEntryToJson(this);
+}
+
+@JsonSerializable()
+class TeethModule {
+  final List<TeethSymptom>? teethSymptoms;
+  final List<TeethProcedure>? teethProcedures;
+
+  TeethModule({
+    this.teethSymptoms,
+    this.teethProcedures,
+  });
+
+  factory TeethModule.fromJson(Map<String, dynamic> json) =>
+      _$TeethModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethModuleToJson(this);
+}
+
+@JsonSerializable()
+class TeethSymptom {
+  final String symptomStartDate;
+  final String teethNumber;
+  final String symptomType;
+  final String complaintNature;
+  final String symptomDuration;
+  final String painNature;
+
+  TeethSymptom({
+    required this.symptomStartDate,
+    required this.teethNumber,
+    required this.symptomType,
+    required this.complaintNature,
+    required this.symptomDuration,
+    required this.painNature,
+  });
+
+  factory TeethSymptom.fromJson(Map<String, dynamic> json) =>
+      _$TeethSymptomFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethSymptomToJson(this);
+}
+
+@JsonSerializable()
+class TeethProcedure {
+  final String procedureDate;
+  final String teethNumber;
+  final String primaryProcedure;
+  final String subProcedure;
+  final List<String>? xRayImages;
+
+  TeethProcedure({
+    required this.procedureDate,
+    required this.teethNumber,
+    required this.primaryProcedure,
+    required this.subProcedure,
+    this.xRayImages,
+  });
+
+  factory TeethProcedure.fromJson(Map<String, dynamic> json) =>
+      _$TeethProcedureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TeethProcedureToJson(this);
+}
+
+@JsonSerializable()
+class EyeModule {
+  final List<EyeSymptom>? eyeSymptoms;
+  final List<EyeProcedure>? eyeProcedures;
+
+  EyeModule({
+    this.eyeSymptoms,
+    this.eyeProcedures,
+  });
+
+  factory EyeModule.fromJson(Map<String, dynamic> json) =>
+      _$EyeModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeModuleToJson(this);
+}
+
+@JsonSerializable()
+class EyeSymptom {
+  final String symptomStartDate;
+  final String affectedEyePart;
+  final List<String>? symptoms;
+  final String symptomDuration;
+
+  EyeSymptom({
+    required this.symptomStartDate,
+    required this.affectedEyePart,
+    this.symptoms,
+    required this.symptomDuration,
+  });
+
+  factory EyeSymptom.fromJson(Map<String, dynamic> json) =>
+      _$EyeSymptomFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeSymptomToJson(this);
+}
+
+@JsonSerializable()
+class EyeProcedure {
+  final String medicalReportDate;
+  final String affectedEyePart;
+  final List<String>? symptoms;
+  final List<String>? medicalProcedures;
+  final List<String>? medicalExaminationImages;
+  final List<String>? medicalReportUrl;
+
+  EyeProcedure({
+    required this.medicalReportDate,
+    required this.affectedEyePart,
+    this.symptoms,
+    this.medicalProcedures,
+    this.medicalExaminationImages,
+    this.medicalReportUrl,
+  });
+
+  factory EyeProcedure.fromJson(Map<String, dynamic> json) =>
+      _$EyeProcedureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EyeProcedureToJson(this);
+}
+
+@JsonSerializable()
+class MentalIllnessModule {
+  final List<MentalIllness>? mentalIllnesses;
+  final List<BehavioralDisorder>? behavioralDisorders;
+
+  MentalIllnessModule({
+    this.mentalIllnesses,
+    this.behavioralDisorders,
+  });
+
+  factory MentalIllnessModule.fromJson(Map<String, dynamic> json) =>
+      _$MentalIllnessModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MentalIllnessModuleToJson(this);
+}
+
+@JsonSerializable()
+class MentalIllness {
+  final String diagnosisDate;
+  final String mentalIllnessType;
+  final String illnessSeverity;
+  final String illnessDuration;
+
+  MentalIllness({
+    required this.diagnosisDate,
+    required this.mentalIllnessType,
+    required this.illnessSeverity,
+    required this.illnessDuration,
+  });
+
+  factory MentalIllness.fromJson(Map<String, dynamic> json) =>
+      _$MentalIllnessFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MentalIllnessToJson(this);
+}
+
+@JsonSerializable()
+class BehavioralDisorder {
+  final String assessmentDate;
+  final String axes;
+  final String overallLevel;
+
+  BehavioralDisorder({
+    required this.assessmentDate,
+    required this.axes,
+    required this.overallLevel,
+  });
+
+  factory BehavioralDisorder.fromJson(Map<String, dynamic> json) =>
+      _$BehavioralDisorderFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BehavioralDisorderToJson(this);
+}
+
+@JsonSerializable()
+class GeneticDiseasesModule {
+  final List<FamilyGeneticDisease>? familyGeneticDiseases;
+  final List<ExpectedGeneticDisease>? myExpectedGeneticDiseases;
+
+  GeneticDiseasesModule({
+    this.familyGeneticDiseases,
+    this.myExpectedGeneticDiseases,
+  });
+
+  factory GeneticDiseasesModule.fromJson(Map<String, dynamic> json) =>
+      _$GeneticDiseasesModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GeneticDiseasesModuleToJson(this);
+}
+
+@JsonSerializable()
+class FamilyGeneticDisease {
+  final String? code;
+  final String? name;
+  final List<String>? geneticDiseases;
+  final List<String>? diseaseStatus;
+
+  FamilyGeneticDisease({
+    this.code,
+    this.name,
+    this.geneticDiseases,
+    this.diseaseStatus,
+  });
+
+  factory FamilyGeneticDisease.fromJson(Map<String, dynamic> json) =>
+      _$FamilyGeneticDiseaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FamilyGeneticDiseaseToJson(this);
+}
+
+@JsonSerializable()
+class ExpectedGeneticDisease {
+  final String? geneticDisease;
+  final String? probabilityLevel;
+
+  ExpectedGeneticDisease({
+    this.geneticDisease,
+    this.probabilityLevel,
+  });
+
+  factory ExpectedGeneticDisease.fromJson(Map<String, dynamic> json) =>
+      _$ExpectedGeneticDiseaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExpectedGeneticDiseaseToJson(this);
+}
+
+@JsonSerializable()
+class SupplementsModule {
+  final List<Supplement>? supplements;
+
+  SupplementsModule({this.supplements});
+
+  factory SupplementsModule.fromJson(Map<String, dynamic> json) =>
+      _$SupplementsModuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupplementsModuleToJson(this);
+}
+
+@JsonSerializable()
+class Supplement {
+  final String? date;
+  final String? supplementName;
+  final String? dosage;
+  final String? planType;
+
+  Supplement({
+    this.date,
+    this.supplementName,
+    this.dosage,
+    this.planType,
+  });
+
+  factory Supplement.fromJson(Map<String, dynamic> json) =>
+      _$SupplementFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupplementToJson(this);
+}
+
+@JsonSerializable()
+class PhysicalActivityEntry {
+  final DateRange? dateRange;
+  final String? planType;
+  final int? totalExerciseDays;
+  final num? totalExerciseMinutes;
+  final num? averageMinutesPerDay;
+  final num? muscleBuildingUnitsActual;
+  final num? muscleBuildingUnitsStandard;
+  final num? muscleMaintenanceUnitsActual;
+  final num? muscleMaintenanceUnitsStandard;
+
+  PhysicalActivityEntry({
+    this.dateRange,
+    this.planType,
+    this.totalExerciseDays,
+    this.totalExerciseMinutes,
+    this.averageMinutesPerDay,
+    this.muscleBuildingUnitsActual,
+    this.muscleBuildingUnitsStandard,
+    this.muscleMaintenanceUnitsActual,
+    this.muscleMaintenanceUnitsStandard,
+  });
+
+  factory PhysicalActivityEntry.fromJson(Map<String, dynamic> json) =>
+      _$PhysicalActivityEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PhysicalActivityEntryToJson(this);
+}
+
+@JsonSerializable()
+class DateRange {
+  final String? from;
+  final String? to;
+
+  DateRange({this.from, this.to});
+
+  factory DateRange.fromJson(Map<String, dynamic> json) =>
+      _$DateRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DateRangeToJson(this);
 }

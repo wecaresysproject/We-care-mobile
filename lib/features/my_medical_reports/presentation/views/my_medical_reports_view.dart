@@ -199,6 +199,12 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                 // Physical Activity Selection sync
                                 if (dummyCategory.title == "النشاط الرياضي") {
                                   _syncPhysicalActivitySelectionToCubit(
+                                      context, index, state);
+                                }
+
+                                // Mental Diseases Selection sync
+                                if (dummyCategory.title == "الأمراض النفسية") {
+                                  _syncMentalDiseasesSelectionToCubit(
                                       context, index);
                                 }
                               },
@@ -422,6 +428,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                       if (dummyCategory.title ==
                                           "النشاط الرياضي") {
                                         _syncPhysicalActivitySelectionToCubit(
+                                            context, index, state);
+                                      }
+
+                                      // Mental Diseases Selection sync
+                                      if (dummyCategory.title ==
+                                          "الأمراض النفسية") {
+                                        _syncMentalDiseasesSelectionToCubit(
                                             context, index);
                                       }
                                     },
@@ -651,9 +664,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
     final getAll =
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateGeneticDiseasesSelection(
           getAll: getAll,
-          selectedValues: _selectedOptionValues[index]?.toList(),
+          expectedGeneticDiseasesSelectedValues:
+              filters["0_أمراضي الوراثية المتوقعة"]?.toList() ?? [],
+          familyDiseasesSelectedValues:
+              filters["0_امراض العائلة الوراثية"]?.toList() ?? [],
         );
   }
 
@@ -673,9 +690,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
     final filters = _selectedFilters[index] ?? {};
     final attachReport =
         _selectedOptionValues[index]?.contains("ارفاق التقرير الطبي") ?? false;
+    final attachMedicalTests =
+        _selectedOptionValues[index]?.contains("ارفاق الفحوصات الطبية") ??
+            false;
     context.read<MedicalReportGenerationCubit>().updateEyesSelection(
           getAll: getAll,
           attachReport: attachReport,
+          attachMedicalTests: attachMedicalTests,
           selectedYears: filters["0_السنة"]?.toList() ?? [],
           selectedRegions: filters["0_المنطقه"]?.toList() ?? [],
           selectedSymptoms: filters["0_الأعراض"]?.toList() ?? [],
@@ -721,15 +742,33 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         );
   }
 
-  void _syncPhysicalActivitySelectionToCubit(BuildContext context, int index) {
-    final getAll =
-        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+  void _syncPhysicalActivitySelectionToCubit(
+      BuildContext context, int index, MedicalReportGenerationState state) {
+    final getAll = _selectedStates[index] ?? false;
     final filters = _selectedFilters[index] ?? {};
+    final filterTitles = state.physicalActivityFilterTitles ?? [];
+
+    final selectedReports = filterTitles
+        .map((title) => filters["0_$title"]?.toList() ?? [])
+        .toList();
+
     context
         .read<MedicalReportGenerationCubit>()
         .updatePhysicalActivitySelection(
           getAll: getAll,
-          selectedReports: filters["0_تقرير المتابعة الرياضية"]?.toList() ?? [],
+          selectedReports: selectedReports[0],
+        );
+  }
+
+  void _syncMentalDiseasesSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateMentalDiseasesSelection(
+          getAll: getAll,
+          selectedTypes: filters["0_نوع المرض النفسي"]?.toList() ?? [],
+          selectedMethods:
+              filters["0_المحاور النفسية و السلوكية"]?.toList() ?? [],
         );
   }
 }

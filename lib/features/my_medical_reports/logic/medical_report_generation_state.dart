@@ -38,10 +38,12 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> surgeriesSelectedYears;
   final bool geneticDiseasesGetAll;
   final List<String> geneticDiseasesSelectedValues;
+  final List<String> expectedGeneticDiseasesSelectedValues;
   final bool allergiesGetAll;
   final List<String> allergiesSelectedTypes;
   final bool eyesGetAll;
   final bool eyesAttachReport;
+  final bool attachEyeMedicalTests;
   final List<String> eyesSelectedYears;
   final List<String> eyesSelectedRegions;
   final List<String> eyesSelectedSymptoms;
@@ -59,6 +61,10 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> supplementsSelectedNames;
   final bool physicalActivityGetAll;
   final List<String> physicalActivitySelectedReports;
+  final List<String>? physicalActivityFilterTitles;
+  final bool mentalDiseasesGetAll;
+  final List<String> mentalDiseasesSelectedTypes;
+  final List<String> mentalDiseasesSelectedMethods;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
 
@@ -100,10 +106,12 @@ class MedicalReportGenerationState extends Equatable {
     this.surgeriesSelectedYears = const [],
     this.geneticDiseasesGetAll = false,
     this.geneticDiseasesSelectedValues = const [],
+    this.expectedGeneticDiseasesSelectedValues = const [],
     this.allergiesGetAll = false,
     this.allergiesSelectedTypes = const [],
     this.eyesGetAll = false,
     this.eyesAttachReport = false,
+    this.attachEyeMedicalTests = false,
     this.eyesSelectedYears = const [],
     this.eyesSelectedRegions = const [],
     this.eyesSelectedSymptoms = const [],
@@ -121,6 +129,10 @@ class MedicalReportGenerationState extends Equatable {
     this.supplementsSelectedNames = const [],
     this.physicalActivityGetAll = false,
     this.physicalActivitySelectedReports = const [],
+    this.physicalActivityFilterTitles = const [],
+    this.mentalDiseasesGetAll = false,
+    this.mentalDiseasesSelectedTypes = const [],
+    this.mentalDiseasesSelectedMethods = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
   });
@@ -163,10 +175,12 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? surgeriesSelectedYears,
     bool? geneticDiseasesGetAll,
     List<String>? geneticDiseasesSelectedValues,
+    List<String>? expectedGeneticDiseasesSelectedValues,
     bool? allergiesGetAll,
     List<String>? allergiesSelectedTypes,
     bool? eyesGetAll,
     bool? eyesAttachReport,
+    bool? attachEyeMedicalTests,
     List<String>? eyesSelectedYears,
     List<String>? eyesSelectedRegions,
     List<String>? eyesSelectedSymptoms,
@@ -184,6 +198,10 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? supplementsSelectedNames,
     bool? physicalActivityGetAll,
     List<String>? physicalActivitySelectedReports,
+    List<String>? physicalActivityFilterTitles,
+    bool? mentalDiseasesGetAll,
+    List<String>? mentalDiseasesSelectedTypes,
+    List<String>? mentalDiseasesSelectedMethods,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
   }) {
@@ -252,11 +270,16 @@ class MedicalReportGenerationState extends Equatable {
           geneticDiseasesGetAll ?? this.geneticDiseasesGetAll,
       geneticDiseasesSelectedValues:
           geneticDiseasesSelectedValues ?? this.geneticDiseasesSelectedValues,
+      expectedGeneticDiseasesSelectedValues:
+          expectedGeneticDiseasesSelectedValues ??
+              this.expectedGeneticDiseasesSelectedValues,
       allergiesGetAll: allergiesGetAll ?? this.allergiesGetAll,
       allergiesSelectedTypes:
           allergiesSelectedTypes ?? this.allergiesSelectedTypes,
       eyesGetAll: eyesGetAll ?? this.eyesGetAll,
       eyesAttachReport: eyesAttachReport ?? this.eyesAttachReport,
+      attachEyeMedicalTests:
+          attachEyeMedicalTests ?? this.attachEyeMedicalTests,
       eyesSelectedYears: eyesSelectedYears ?? this.eyesSelectedYears,
       eyesSelectedRegions: eyesSelectedRegions ?? this.eyesSelectedRegions,
       eyesSelectedSymptoms: eyesSelectedSymptoms ?? this.eyesSelectedSymptoms,
@@ -283,6 +306,13 @@ class MedicalReportGenerationState extends Equatable {
           physicalActivityGetAll ?? this.physicalActivityGetAll,
       physicalActivitySelectedReports: physicalActivitySelectedReports ??
           this.physicalActivitySelectedReports,
+      physicalActivityFilterTitles:
+          physicalActivityFilterTitles ?? this.physicalActivityFilterTitles,
+      mentalDiseasesGetAll: mentalDiseasesGetAll ?? this.mentalDiseasesGetAll,
+      mentalDiseasesSelectedTypes:
+          mentalDiseasesSelectedTypes ?? this.mentalDiseasesSelectedTypes,
+      mentalDiseasesSelectedMethods:
+          mentalDiseasesSelectedMethods ?? this.mentalDiseasesSelectedMethods,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
     );
@@ -327,10 +357,12 @@ class MedicalReportGenerationState extends Equatable {
         surgeriesSelectedYears,
         geneticDiseasesGetAll,
         geneticDiseasesSelectedValues,
+        expectedGeneticDiseasesSelectedValues,
         allergiesGetAll,
         allergiesSelectedTypes,
         eyesGetAll,
         eyesAttachReport,
+        attachEyeMedicalTests,
         eyesSelectedYears,
         eyesSelectedRegions,
         eyesSelectedSymptoms,
@@ -348,6 +380,10 @@ class MedicalReportGenerationState extends Equatable {
         supplementsSelectedNames,
         physicalActivityGetAll,
         physicalActivitySelectedReports,
+        physicalActivityFilterTitles,
+        mentalDiseasesGetAll,
+        mentalDiseasesSelectedTypes,
+        mentalDiseasesSelectedMethods,
         medicalReportData,
         categoryFilters,
       ];
