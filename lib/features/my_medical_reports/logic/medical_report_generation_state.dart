@@ -38,6 +38,7 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> surgeriesSelectedYears;
   final bool geneticDiseasesGetAll;
   final List<String> geneticDiseasesSelectedValues;
+  final List<String> expectedGeneticDiseasesSelectedValues;
   final bool allergiesGetAll;
   final List<String> allergiesSelectedTypes;
   final bool eyesGetAll;
@@ -104,6 +105,7 @@ class MedicalReportGenerationState extends Equatable {
     this.surgeriesSelectedYears = const [],
     this.geneticDiseasesGetAll = false,
     this.geneticDiseasesSelectedValues = const [],
+    this.expectedGeneticDiseasesSelectedValues = const [],
     this.allergiesGetAll = false,
     this.allergiesSelectedTypes = const [],
     this.eyesGetAll = false,
@@ -171,6 +173,7 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? surgeriesSelectedYears,
     bool? geneticDiseasesGetAll,
     List<String>? geneticDiseasesSelectedValues,
+    List<String>? expectedGeneticDiseasesSelectedValues,
     bool? allergiesGetAll,
     List<String>? allergiesSelectedTypes,
     bool? eyesGetAll,
@@ -264,6 +267,9 @@ class MedicalReportGenerationState extends Equatable {
           geneticDiseasesGetAll ?? this.geneticDiseasesGetAll,
       geneticDiseasesSelectedValues:
           geneticDiseasesSelectedValues ?? this.geneticDiseasesSelectedValues,
+      expectedGeneticDiseasesSelectedValues:
+          expectedGeneticDiseasesSelectedValues ??
+              this.expectedGeneticDiseasesSelectedValues,
       allergiesGetAll: allergiesGetAll ?? this.allergiesGetAll,
       allergiesSelectedTypes:
           allergiesSelectedTypes ?? this.allergiesSelectedTypes,
@@ -346,6 +352,7 @@ class MedicalReportGenerationState extends Equatable {
         surgeriesSelectedYears,
         geneticDiseasesGetAll,
         geneticDiseasesSelectedValues,
+        expectedGeneticDiseasesSelectedValues,
         allergiesGetAll,
         allergiesSelectedTypes,
         eyesGetAll,

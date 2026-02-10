@@ -162,16 +162,19 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
 
   void updateGeneticDiseasesSelection({
     bool? getAll,
-    List<String>? selectedValues,
+    List<String>? familyDiseasesSelectedValues,
+    List<String>? expectedGeneticDiseasesSelectedValues,
   }) {
     emit(
       state.copyWith(
         geneticDiseasesGetAll: getAll,
-        geneticDiseasesSelectedValues: selectedValues,
+        geneticDiseasesSelectedValues: familyDiseasesSelectedValues,
+        expectedGeneticDiseasesSelectedValues:
+            expectedGeneticDiseasesSelectedValues,
       ),
     );
     AppLogger.info(
-        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , diseases: ${state.geneticDiseasesSelectedValues}");
+        "geneticDiseases getAll: ${state.geneticDiseasesGetAll} , familyDiseasesSelectedValues: ${state.geneticDiseasesSelectedValues} , expected: ${state.expectedGeneticDiseasesSelectedValues}");
   }
 
   void updateAllergiesSelection({
@@ -336,10 +339,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.surgeriesSelectedYears, //! needs getAll here
           surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
         ),
-        // geneticDiseases: GeneticDiseasesSelectionRequestBody(
-        //   getAll: state.geneticDiseasesGetAll,
-        //   diseases: state.geneticDiseasesSelectedValues,
-        // ),
+        geneticDiseases: GeneticDiseasesSelectionRequestBody(
+          getAll: state.geneticDiseasesGetAll,
+          familyGeneticDiseases: state.geneticDiseasesSelectedValues,
+          myExpectedGeneticDiseases:
+              state.expectedGeneticDiseasesSelectedValues,
+        ),
         allergies: AllergiesSelectionRequestBody(
           getAll: state.allergiesGetAll,
           types: state.allergiesSelectedTypes,

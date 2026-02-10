@@ -374,11 +374,13 @@ class SurgeriesSelectionRequestBody {
 @JsonSerializable()
 class GeneticDiseasesSelectionRequestBody {
   final bool getAll;
-  final List<String> diseases;
+  final List<String> familyGeneticDiseases;
+  final List<String> myExpectedGeneticDiseases;
 
   GeneticDiseasesSelectionRequestBody({
     required this.getAll,
-    required this.diseases,
+    required this.familyGeneticDiseases,
+    required this.myExpectedGeneticDiseases,
   });
 
   factory GeneticDiseasesSelectionRequestBody.fromJson(

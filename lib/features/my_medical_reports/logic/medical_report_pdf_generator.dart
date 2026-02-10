@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 
 import '../../../../core/global/theming/color_manager.dart';
@@ -68,6 +69,7 @@ class MedicalReportPdfGenerator {
           // _buildVaccinationsSection(),
           _buildXRaySection(reportData, radiologyImages),
           _buildPrescriptionsSection(reportData, prescriptionImages),
+          _buildGeneticDiseasesSection(reportData),
         ],
       ),
     );
@@ -213,6 +215,134 @@ class MedicalReportPdfGenerator {
               ),
             );
           }),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildGeneticDiseasesSection(
+      MedicalReportResponseModel reportData) {
+    final geneticModule = reportData.data.geneticDiseases;
+    if (geneticModule == null) return pw.SizedBox.shrink();
+
+    final hasFamilyDiseases = geneticModule.familyGeneticDiseases != null &&
+        geneticModule.familyGeneticDiseases!.isNotEmpty;
+    final hasExpectedRisks = geneticModule.myExpectedGeneticDiseases != null &&
+        geneticModule.myExpectedGeneticDiseases!.isNotEmpty;
+
+    if (!hasFamilyDiseases && !hasExpectedRisks) return pw.SizedBox.shrink();
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('الامراض الوراثية'),
+          pw.SizedBox(height: 12),
+          pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // Family Genetic Diseases (Right side in RTL)
+              pw.Expanded(
+                flex: 3,
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('الامراض الوراثية العائلية',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 14,
+                            color: PdfColor.fromInt(
+                                AppColorsManager.mainDarkBlue.value))),
+                    pw.SizedBox(height: 8),
+                    if (hasFamilyDiseases)
+                      pw.TableHelper.fromTextArray(
+                        headers: [
+                          'حالة المرض',
+                          'المرض الوراثي',
+                          'اسم القريب',
+                        ],
+                        data: geneticModule.familyGeneticDiseases!.map((item) {
+                          return [
+                            _safeText(item.diseaseStatus?.join('\n')),
+                            _safeText(item.geneticDiseases?.join('\n')),
+                            _safeText(
+                                "${getFamilyMemberCode(item.code!)} : ${item.name}"),
+                          ];
+                        }).toList(),
+                        headerStyle: pw.TextStyle(
+                          color: PdfColor.fromInt(
+                              AppColorsManager.mainDarkBlue.value),
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                        cellStyle: const pw.TextStyle(fontSize: 10),
+                        headerDecoration:
+                            const pw.BoxDecoration(color: PdfColors.grey100),
+                        cellAlignment: pw.Alignment.center,
+                        border: pw.TableBorder.all(
+                            color: PdfColors.grey300, width: 0.5),
+                      )
+                    else
+                      pw.Text('لا يوجد بيانات',
+                          style: const pw.TextStyle(fontSize: 10)),
+                  ],
+                ),
+              ),
+              pw.SizedBox(width: 15),
+
+              // Expected Genetic Diseases (Left side in RTL)
+              pw.Expanded(
+                flex: 2,
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text('أمراضي الوراثية المتوقعة',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 14,
+                            color: PdfColor.fromInt(
+                                AppColorsManager.mainDarkBlue.value))),
+                    pw.SizedBox(height: 8),
+                    if (hasExpectedRisks)
+                      pw.TableHelper.fromTextArray(
+                        headers: [
+                          'احتمالية الإصابة',
+                          'الأمراض الوراثية المتوقعة',
+                        ],
+                        data: geneticModule.myExpectedGeneticDiseases!
+                            .map((item) {
+                          return [
+                            _safeText(item.probabilityLevel),
+                            _safeText(item.geneticDisease),
+                          ];
+                        }).toList(),
+                        headerStyle: pw.TextStyle(
+                          color: PdfColor.fromInt(
+                              AppColorsManager.mainDarkBlue.value),
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                        cellStyle: const pw.TextStyle(fontSize: 10),
+                        headerDecoration:
+                            const pw.BoxDecoration(color: PdfColors.grey100),
+                        cellAlignment: pw.Alignment.center,
+                        border: pw.TableBorder.all(
+                            color: PdfColors.grey300, width: 0.5),
+                      )
+                    else
+                      pw.Text('لا يوجد بيانات',
+                          style: const pw.TextStyle(fontSize: 10)),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -664,9 +664,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
     final getAll =
         _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
     context.read<MedicalReportGenerationCubit>().updateGeneticDiseasesSelection(
           getAll: getAll,
-          selectedValues: _selectedOptionValues[index]?.toList(),
+          expectedGeneticDiseasesSelectedValues:
+              filters["0_أمراضي الوراثية المتوقعة"]?.toList() ?? [],
+          familyDiseasesSelectedValues:
+              filters["0_امراض العائلة الوراثية"]?.toList() ?? [],
         );
   }
 
