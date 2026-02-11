@@ -2437,75 +2437,118 @@ class MedicalReportPdfGenerator {
             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
         : "--";
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("جدول المتابعة الغذائية"),
-        pw.SizedBox(height: 12),
-        pw.Text(
-          dateStr,
-          style: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            fontSize: 12,
-            color: PdfColors.black,
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader("جدول المتابعة الغذائية"),
+          pw.SizedBox(height: 12),
+          pw.Text(
+            dateStr,
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+              color: PdfColors.black,
+            ),
           ),
-        ),
-        pw.SizedBox(height: 8),
+          pw.SizedBox(height: 8),
 
-        /// الجدول القابل للانقسام بين الصفحات
-        pw.TableHelper.fromTextArray(
-          headers: [
-            'النسبة',
-            'الفرق',
-            'التراكمى المعيارى',
-            'التراكمى الفعلي',
-            'اليومى المعيارى',
-            'المتوسط اليومى',
-            'اسم العنصر',
-          ],
-          data: entry.nutritionReport!.map((item) {
-            final diff = item.difference ?? 0;
-            final percentage = item.percentage ?? 0;
-
-            return [
-              _safeText("${percentage.toStringAsFixed(0)}%"),
-              _safeText(diff.toInt().toString()),
-              _safeText(item.standardCumulative == null
-                  ? null
-                  : formatter.format(item.standardCumulative!.round())),
-              _safeText(item.actualCumulative == null
-                  ? null
-                  : formatter.format(item.actualCumulative!.round())),
-              _safeText(item.dailyAverageStandard == null
-                  ? null
-                  : formatter.format(item.dailyAverageStandard!.round())),
-              _safeText(item.dailyAverageActual == null
-                  ? null
-                  : formatter.format(item.dailyAverageActual!.round())),
-              _safeText(
-                item.nutrient == "الطاقة (سعر حراري)"
-                    ? "الطاقة (سعر حرارى)"
-                    : item.nutrient,
+          /// الجدول القابل للانقسام بين الصفحات
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            columnWidths: {
+              0: const pw.FlexColumnWidth(0.8), // النسبة
+              1: const pw.FlexColumnWidth(1), // الفرق
+              2: const pw.FlexColumnWidth(1.2), // التراكمى المعيارى
+              3: const pw.FlexColumnWidth(1.2), // التراكمى الفعلي
+              4: const pw.FlexColumnWidth(1.2), // اليومى المعيارى
+              5: const pw.FlexColumnWidth(1.2), // المتوسط اليومى
+              6: const pw.FlexColumnWidth(1.8), // اسم العنصر
+            },
+            children: [
+              // Header Row
+              pw.TableRow(
+                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                children: [
+                  'النسبة',
+                  'الفرق',
+                  'التراكمى\nالمعيارى',
+                  'التراكمى\nالفعلي',
+                  'اليومى\nالمعيارى',
+                  'المتوسط\nاليومى',
+                  'اسم العنصر',
+                ]
+                    .map((text) => pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Center(
+                            child: pw.Text(
+                              text,
+                              style: pw.TextStyle(
+                                color: PdfColor.fromInt(
+                                    AppColorsManager.mainDarkBlue.value),
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 8,
+                              ),
+                              textDirection: pw.TextDirection.rtl,
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
-            ];
-          }).toList(),
-          headerStyle: pw.TextStyle(
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontWeight: pw.FontWeight.bold,
-            fontSize: 9,
+              // Data Rows
+              ...(entry.nutritionReport ?? []).map((item) {
+                final diff = item.difference ?? 0;
+                final percentage = item.percentage ?? 0;
+
+                final rowData = [
+                  _safeText("${percentage.toStringAsFixed(0)} %"),
+                  _safeText(diff.toInt().toString()),
+                  _safeText(item.standardCumulative == null
+                      ? null
+                      : formatter.format(item.standardCumulative!.round())),
+                  _safeText(item.actualCumulative == null
+                      ? null
+                      : formatter.format(item.actualCumulative!.round())),
+                  _safeText(item.dailyAverageStandard == null
+                      ? null
+                      : formatter.format(item.dailyAverageStandard!.round())),
+                  _safeText(item.dailyAverageActual == null
+                      ? null
+                      : formatter.format(item.dailyAverageActual!.round())),
+                  _safeText(
+                    item.nutrient == "الطاقة (سعر حراري)"
+                        ? "الطاقة (سعر حرارى)"
+                        : item.nutrient,
+                  ),
+                ];
+
+                return pw.TableRow(
+                  children: rowData
+                      .map((text) => pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Center(
+                              child: pw.Text(
+                                text,
+                                style: const pw.TextStyle(fontSize: 8),
+                                textDirection: pw.TextDirection.rtl,
+                                textAlign: pw.TextAlign.center,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                );
+              }),
+            ],
           ),
-          cellStyle: const pw.TextStyle(fontSize: 9),
-          headerAlignment: pw.Alignment.center,
-          headerDirection: pw.TextDirection.rtl,
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-          cellAlignment: pw.Alignment.center,
-          border: pw.TableBorder.all(
-            color: PdfColors.grey300,
-            width: 0.5,
-          ),
-          cellPadding: const pw.EdgeInsets.all(4),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
