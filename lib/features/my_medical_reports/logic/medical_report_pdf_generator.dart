@@ -72,8 +72,6 @@ class MedicalReportPdfGenerator {
           // _buildVaccinationsSection(),
           _buildMentalIlnessSection(reportData),
           _buildSmartNutrationAnalysisSection(reportData),
-
-          /// المحلل الذكي
           _buildPhysicalActivitySection(reportData),
           _buildSupplementsAndVitaminsSection(reportData),
         ],
@@ -270,15 +268,15 @@ class MedicalReportPdfGenerator {
                       pw.TableHelper.fromTextArray(
                         headers: [
                           'حالة المرض',
-                          'المرض الوراثي',
                           'اسم القريب',
+                          'المرض الوراثي',
                         ],
                         data: geneticModule.familyGeneticDiseases!.map((item) {
                           return [
                             _safeText(item.diseaseStatus?.join('\n')),
-                            _safeText(item.geneticDiseases?.join('\n')),
                             _safeText(
                                 "${getFamilyMemberCode(item.code!)} : ${item.name}"),
+                            _safeText(item.geneticDiseases?.join('\n')),
                           ];
                         }).toList(),
                         headerStyle: pw.TextStyle(
@@ -2419,8 +2417,51 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildSmartNutrationAnalysisSection(
       MedicalReportResponseModel reportData) {
-    final nutritionModule = reportData.data.nutritionTrackingModule;
-    if (nutritionModule == null || nutritionModule.isEmpty) {
+    // final nutritionModule = reportData.data.nutritionTrackingModule;
+    final nutritionModule = [
+      NutritionTrackingEntry(
+        dateRange: DateRange(from: "2026-01-17", to: "2026-01-20"),
+        nutritionReport: [
+          NutritionReportItem(
+            nutrient: "الطاقة (سعر حراري)",
+            dailyAverageActual: 576,
+            dailyAverageStandard: 2622.6,
+            actualCumulative: 576,
+            standardCumulative: 2622.6,
+            difference: -2046.6,
+            percentage: 21.96,
+          ),
+          NutritionReportItem(
+            nutrient: "البروتين (جم)",
+            dailyAverageActual: 37.6,
+            dailyAverageStandard: 146.4,
+            actualCumulative: 37.6,
+            standardCumulative: 146.4,
+            difference: -108.8,
+            percentage: 25.69,
+          ),
+          NutritionReportItem(
+            nutrient: "الدهون الكلية (جم)",
+            dailyAverageActual: 24.6,
+            dailyAverageStandard: 87.4,
+            actualCumulative: 24.6,
+            standardCumulative: 87.4,
+            difference: -62.7,
+            percentage: 28.2,
+          ),
+          NutritionReportItem(
+            nutrient: "الكربوهيدرات (جم)",
+            dailyAverageActual: 48.7,
+            dailyAverageStandard: 110.5,
+            actualCumulative: 48.7,
+            standardCumulative: 110.5,
+            difference: -61.7,
+            percentage: 44.1,
+          ),
+        ],
+      )
+    ];
+    if (nutritionModule.isEmpty) {
       return pw.SizedBox.shrink();
     }
 
@@ -2442,7 +2483,6 @@ class MedicalReportPdfGenerator {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.end,
                   children: [
                     pw.Text('جدول المتابعة الغذائية',
                         style: pw.TextStyle(
@@ -2454,7 +2494,6 @@ class MedicalReportPdfGenerator {
                 ),
                 pw.SizedBox(height: 8),
                 pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.end,
                   children: [
                     pw.Text(dateStr,
                         style: pw.TextStyle(
@@ -2468,26 +2507,53 @@ class MedicalReportPdfGenerator {
                   headers: [
                     'النسبة',
                     'الفرق',
-                    'التراكمي المعياري',
-                    'التراكمي الفعلي',
-                    'اليومي المعياري',
-                    'المتوسط اليومي',
+                    'التراكمى المعيارى',
+                    'التراكمى الفعلي',
+                    'اليومى المعيارى',
+                    'المتوسط اليومى',
                     'اسم العنصر',
                   ],
-                  data: entry.nutritionReport?.map((item) {
-                        final diff = item.difference ?? 0;
-                        final percentage = item.percentage ?? 0;
+                  data: entry.nutritionReport?.map(
+                        (item) {
+                          final diff = item.difference ?? 0;
+                          final percentage = item.percentage ?? 0;
 
-                        return [
-                          "${percentage.toStringAsFixed(0)}%",
-                          "${diff < 0 ? '' : '+'}${diff.toStringAsFixed(0)}",
-                          item.standardCumulative?.toStringAsFixed(0) ?? "--",
-                          item.actualCumulative?.toStringAsFixed(0) ?? "--",
-                          item.dailyAverageStandard?.toStringAsFixed(0) ?? "--",
-                          item.dailyAverageActual?.toStringAsFixed(0) ?? "--",
-                          item.nutrient ?? "--",
-                        ];
-                      }).toList() ??
+                          return [
+                            _safeText("${percentage.toStringAsFixed(0)}%",
+                                fallback: "--"),
+                            _safeText(diff.toString()),
+                            _safeText(
+                                item.standardCumulative == null
+                                    ? null
+                                    : formatter.format(
+                                        item.standardCumulative!.round()),
+                                fallback: "--"),
+                            _safeText(
+                                item.actualCumulative == null
+                                    ? null
+                                    : formatter
+                                        .format(item.actualCumulative!.round()),
+                                fallback: "--"),
+                            _safeText(
+                                item.dailyAverageStandard == null
+                                    ? null
+                                    : formatter.format(
+                                        item.dailyAverageStandard!.round()),
+                                fallback: "--"),
+                            _safeText(
+                                item.dailyAverageActual == null
+                                    ? null
+                                    : formatter.format(
+                                        item.dailyAverageActual!.round()),
+                                fallback: "--"),
+                            _safeText(
+                                item.nutrient == "الطاقة (سعر حراري)"
+                                    ? "الطاقة (سعر حرارى)"
+                                    : item.nutrient,
+                                fallback: "--"),
+                          ];
+                        },
+                      ).toList() ??
                       [],
                   headerStyle: pw.TextStyle(
                     color:
