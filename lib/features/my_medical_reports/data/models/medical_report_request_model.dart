@@ -55,7 +55,7 @@ class MedicalReportSelections {
   @JsonKey(name: 'teeth')
   final TeethSelectionRequestBody? teeth;
 
-  @JsonKey(name: 'smartNutrition')
+  @JsonKey(name: 'nutritionTracking')
   final SmartNutritionalAnalyzerSelectionRequestBody? smartNutritionalAnalyzer;
 
   @JsonKey(name: 'supplements')
@@ -153,12 +153,11 @@ class SupplementsSelectionRequestBody {
 
 @JsonSerializable()
 class SmartNutritionalAnalyzerSelectionRequestBody {
-  final bool getAll;
-  final List<String> reports;
+  @JsonKey(name: "ranges")
+  final List<String> dateRanges;
 
   SmartNutritionalAnalyzerSelectionRequestBody({
-    required this.getAll,
-    required this.reports,
+    required this.dateRanges,
   });
 
   factory SmartNutritionalAnalyzerSelectionRequestBody.fromJson(

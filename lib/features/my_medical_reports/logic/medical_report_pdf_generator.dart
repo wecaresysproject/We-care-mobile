@@ -38,6 +38,7 @@ class MedicalReportPdfGenerator {
 
     pdf.addPage(
       pw.MultiPage(
+        maxPages: 1000,
         pageTheme: pw.PageTheme(
           theme: theme,
           pageFormat: PdfPageFormat.a3,
@@ -62,17 +63,18 @@ class MedicalReportPdfGenerator {
           _buildComplaintsSection(reportData, complaintImages),
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
+          _buildSurgeriesSection(reportData, surgeryImages),
+          _buildXRaySection(reportData, radiologyImages),
+          _buildPrescriptionsSection(reportData, prescriptionImages),
+          _buildGeneticDiseasesSection(reportData),
           _buildAllergiesSection(reportData),
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
-          _buildMentalIlnessSection(reportData),
-          _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
-          _buildXRaySection(reportData, radiologyImages),
-          _buildPrescriptionsSection(reportData, prescriptionImages),
-          // _buildGeneticDiseasesSection(reportData),
-          _buildSupplementsAndVitaminsSection(reportData),
+          _buildMentalIlnessSection(reportData),
+          _buildSmartNutrationAnalysisSection(reportData),
           _buildPhysicalActivitySection(reportData),
+          _buildSupplementsAndVitaminsSection(reportData),
         ],
       ),
     );
@@ -267,15 +269,15 @@ class MedicalReportPdfGenerator {
                       pw.TableHelper.fromTextArray(
                         headers: [
                           'حالة المرض',
-                          'المرض الوراثي',
                           'اسم القريب',
+                          'المرض الوراثي',
                         ],
                         data: geneticModule.familyGeneticDiseases!.map((item) {
                           return [
                             _safeText(item.diseaseStatus?.join('\n')),
-                            _safeText(item.geneticDiseases?.join('\n')),
                             _safeText(
                                 "${getFamilyMemberCode(item.code!)} : ${item.name}"),
+                            _safeText(item.geneticDiseases?.join('\n')),
                           ];
                         }).toList(),
                         headerStyle: pw.TextStyle(
@@ -455,14 +457,20 @@ class MedicalReportPdfGenerator {
                   : "--";
 
               return [
+                _safeText(formatter.format(
+                    (entry.muscleMaintenanceUnitsStandard ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleMaintenanceUnitsActual ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleBuildingUnitsStandard ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleBuildingUnitsActual ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.totalExerciseMinutes ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.averageMinutesPerDay ?? 0).round())),
                 _safeText(
-                    formatter.format(entry.muscleMaintenanceUnitsStandard)),
-                _safeText(formatter.format(entry.muscleMaintenanceUnitsActual)),
-                _safeText(formatter.format(entry.muscleBuildingUnitsStandard)),
-                _safeText(formatter.format(entry.muscleBuildingUnitsActual)),
-                _safeText(formatter.format(entry.totalExerciseMinutes)),
-                _safeText(formatter.format(entry.averageMinutesPerDay)),
-                _safeText(formatter.format(entry.totalExerciseDays)),
+                    formatter.format((entry.totalExerciseDays ?? 0).round())),
                 _safeText(planTypeAr),
                 _safeText(dateStr),
               ];
@@ -2406,5 +2414,165 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  pw.Widget _buildSmartNutrationAnalysisSection(
+      MedicalReportResponseModel reportData) {
+    final nutritionModule = reportData.data.nutritionTrackingModule;
+
+    if (nutritionModule == null || nutritionModule.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Column(
+      children: [
+        for (final entry in nutritionModule) _buildSingleNutritionBlock(entry),
+      ],
+    );
+  }
+
+  pw.Widget _buildSingleNutritionBlock(NutritionTrackingEntry entry) {
+    final dateStr = entry.dateRange != null
+        ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+            "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+        : "--";
+
+    return pw.Container(
+      margin: pw.EdgeInsets.symmetric(vertical: 15),
+      padding: const pw.EdgeInsets.all(15),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader("جدول المتابعة الغذائية"),
+          pw.SizedBox(height: 12),
+          pw.Text(
+            dateStr,
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+              color: PdfColors.black,
+            ),
+          ),
+          pw.SizedBox(height: 8),
+
+          /// الجدول القابل للانقسام بين الصفحات
+          pw.Table(
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+            columnWidths: {
+              0: const pw.FlexColumnWidth(0.8), // النسبة
+              1: const pw.FlexColumnWidth(1), // الفرق
+              2: const pw.FlexColumnWidth(1.2), // التراكمى المعيارى
+              3: const pw.FlexColumnWidth(1.2), // التراكمى الفعلي
+              4: const pw.FlexColumnWidth(1.2), // اليومى المعيارى
+              5: const pw.FlexColumnWidth(1.2), // المتوسط اليومى
+              6: const pw.FlexColumnWidth(1.8), // اسم العنصر
+            },
+            children: [
+              // Header Row
+              pw.TableRow(
+                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                children: [
+                  'النسبة',
+                  'الفرق',
+                  'التراكمى\nالمعيارى',
+                  'التراكمى\nالفعلي',
+                  'اليومى\nالمعيارى',
+                  'المتوسط\nاليومى',
+                  'اسم العنصر',
+                ]
+                    .map((text) => pw.Padding(
+                          padding: const pw.EdgeInsets.all(4),
+                          child: pw.Center(
+                            child: pw.Text(
+                              text,
+                              style: pw.TextStyle(
+                                color: PdfColor.fromInt(
+                                    AppColorsManager.mainDarkBlue.value),
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 8,
+                              ),
+                              textDirection: pw.TextDirection.rtl,
+                              textAlign: pw.TextAlign.center,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+              // Data Rows
+              ...(entry.nutritionReport ?? []).map((item) {
+                final diff = item.difference ?? 0;
+                final percentage = item.percentage ?? 0;
+
+                final rowData = [
+                  _safeText("${percentage.toStringAsFixed(0)} %"),
+                  _safeText(diff.toInt().toString()),
+                  _safeText(item.standardCumulative == null
+                      ? null
+                      : formatter.format(item.standardCumulative!.round())),
+                  _safeText(item.actualCumulative == null
+                      ? null
+                      : formatter.format(item.actualCumulative!.round())),
+                  _safeText(item.dailyAverageStandard == null
+                      ? null
+                      : formatter.format(item.dailyAverageStandard!.round())),
+                  _safeText(item.dailyAverageActual == null
+                      ? null
+                      : formatter.format(item.dailyAverageActual!.round())),
+                  _safeText(
+                    item.nutrient == "الطاقة (سعر حراري)"
+                        ? "الطاقة (سعر حرارى)"
+                        : item.nutrient,
+                  ),
+                ];
+
+                return pw.TableRow(
+                  children: rowData
+                      .map((text) => pw.Padding(
+                            padding: const pw.EdgeInsets.all(4),
+                            child: pw.Center(
+                              child: pw.Text(
+                                text,
+                                style: const pw.TextStyle(fontSize: 8),
+                                textDirection: pw.TextDirection.rtl,
+                                textAlign: pw.TextAlign.center,
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                );
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatNutritionDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return "--";
+    try {
+      final date = DateTime.parse(dateStr);
+      final months = [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر"
+      ];
+      return "${date.day} ${months[date.month - 1]} ${date.year}";
+    } catch (e) {
+      return dateStr;
+    }
   }
 }

@@ -361,8 +361,17 @@ final mentalHealthCategory = MedicalCategoryModel(
 final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
   title: "المحلل الغذائي الذكي",
   image: "assets/images/chemical_medicine.png",
-  selectionType: MedicalSelectionType.selection,
-  radioOptions: ["تقرير المتابعة الغذائيه"],
+  selectionType: MedicalSelectionType.filters,
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "تقرير المتابعة الغذائيه",
+          values: [],
+        ),
+      ],
+    ),
+  ],
 );
 
 final sportsActivityCategory = MedicalCategoryModel(
