@@ -62,17 +62,19 @@ class MedicalReportPdfGenerator {
           _buildComplaintsSection(reportData, complaintImages),
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
+          _buildSurgeriesSection(reportData, surgeryImages),
+          _buildXRaySection(reportData, radiologyImages),
+          _buildPrescriptionsSection(reportData, prescriptionImages),
+          _buildGeneticDiseasesSection(reportData),
           _buildAllergiesSection(reportData),
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
-          _buildMentalIlnessSection(reportData),
-          _buildSurgeriesSection(reportData, surgeryImages),
           // _buildVaccinationsSection(),
-          _buildXRaySection(reportData, radiologyImages),
-          _buildPrescriptionsSection(reportData, prescriptionImages),
-          // _buildGeneticDiseasesSection(reportData),
-          _buildSupplementsAndVitaminsSection(reportData),
+          _buildMentalIlnessSection(reportData),
+
+          /// المحلل الذكي
           _buildPhysicalActivitySection(reportData),
+          _buildSupplementsAndVitaminsSection(reportData),
         ],
       ),
     );
@@ -455,14 +457,20 @@ class MedicalReportPdfGenerator {
                   : "--";
 
               return [
+                _safeText(formatter.format(
+                    (entry.muscleMaintenanceUnitsStandard ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleMaintenanceUnitsActual ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleBuildingUnitsStandard ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.muscleBuildingUnitsActual ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.totalExerciseMinutes ?? 0).round())),
+                _safeText(formatter
+                    .format((entry.averageMinutesPerDay ?? 0).round())),
                 _safeText(
-                    formatter.format(entry.muscleMaintenanceUnitsStandard)),
-                _safeText(formatter.format(entry.muscleMaintenanceUnitsActual)),
-                _safeText(formatter.format(entry.muscleBuildingUnitsStandard)),
-                _safeText(formatter.format(entry.muscleBuildingUnitsActual)),
-                _safeText(formatter.format(entry.totalExerciseMinutes)),
-                _safeText(formatter.format(entry.averageMinutesPerDay)),
-                _safeText(formatter.format(entry.totalExerciseDays)),
+                    formatter.format((entry.totalExerciseDays ?? 0).round())),
                 _safeText(planTypeAr),
                 _safeText(dateStr),
               ];
