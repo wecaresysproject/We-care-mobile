@@ -659,6 +659,46 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         }
       }
     }
+    // --- حالة الأشعة (منطقة الأشعة VS نوع الأشعة) ---
+    if (categoryTitle == "الأشعة") {
+      if (filterTitle == "نوع الأشعة" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        // إذا اختار نوع الأشعة، امسح منطقة الأشعة
+        if (categoryFilters["0_منطقة الأشعة"]?.isNotEmpty ?? false) {
+          categoryFilters["0_منطقة الأشعة"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'منطقة الأشعة' لاختيار 'نوع الأشعة'");
+        }
+      } else if (filterTitle == "منطقة الأشعة" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        // إذا اختار منطقة الأشعة، امسح نوع الأشعة
+        if (categoryFilters["0_نوع الأشعة"]?.isNotEmpty ?? false) {
+          categoryFilters["0_نوع الأشعة"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'نوع الأشعة' لاختيار 'منطقة الأشعة'");
+        }
+      }
+    }
+    // --- حالة العيون (المنطقه VS الأعراض) ---
+    if (categoryTitle == "العيون") {
+      if (filterTitle == "الأعراض" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        // إذا اختار الأعراض، امسح المنطقه
+        if (categoryFilters["0_المنطقه"]?.isNotEmpty ?? false) {
+          categoryFilters["0_المنطقه"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'المنطقه' لاختيار 'الأعراض'");
+        }
+      } else if (filterTitle == "المنطقه" &&
+          !(categoryFilters[currentKey]?.contains(value) ?? false)) {
+        // إذا اختار المنطقه، امسح الأعراض
+        if (categoryFilters["0_الأعراض"]?.isNotEmpty ?? false) {
+          categoryFilters["0_الأعراض"] = {};
+          _showAutoClearToast(
+              context, "تم إلغاء اختيار 'الأعراض' لاختيار 'المنطقه'");
+        }
+      }
+    }
   }
 
   void _syncGeneticDiseasesSelectionToCubit(BuildContext context, int index) {
@@ -746,17 +786,14 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
       BuildContext context, int index, MedicalReportGenerationState state) {
     final getAll = _selectedStates[index] ?? false;
     final filters = _selectedFilters[index] ?? {};
-    final filterTitles = state.physicalActivityFilterTitles ?? [];
-
-    final selectedReports = filterTitles
-        .map((title) => filters["0_$title"]?.toList() ?? [])
-        .toList();
+    final selectedReports =
+        filters["0_تقرير المتابعة الرياضية"]?.toList() ?? [];
 
     context
         .read<MedicalReportGenerationCubit>()
         .updatePhysicalActivitySelection(
           getAll: getAll,
-          selectedReports: selectedReports[0],
+          selectedReports: selectedReports,
         );
   }
 

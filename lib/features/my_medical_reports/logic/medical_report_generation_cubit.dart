@@ -109,6 +109,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         radiologySelectedTypes: selectedTypes,
       ),
     );
+    AppLogger.info(
+        "years: ${state.radiologySelectedYears} , regions: ${state.radiologySelectedRegions} , types: ${state.radiologySelectedTypes}");
   }
 
   void updateMedicalTestsSelection({
@@ -209,6 +211,8 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         eyesSelectedMedicalProcedures: selectedMedicalProcedures,
       ),
     );
+    AppLogger.info(
+        "eyes getAll: ${state.eyesGetAll} , attachReport: ${state.eyesAttachReport} ,  selectedYears: ${state.eyesSelectedYears} , selectedRegions: ${state.eyesSelectedRegions} , selectedSymptoms: ${state.eyesSelectedSymptoms} , selectedMedicalProcedures: ${state.eyesSelectedMedicalProcedures}");
   }
 
   void updateDentalSelection({
@@ -367,8 +371,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           medicalProcedures: state.dentalSelectedMedicalProcedures,
         ),
         smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
-          getAll: state.smartNutritionGetAll,
-          reports: state.smartNutritionSelectedReports,
+          dateRanges: state.smartNutritionSelectedReports,
         ),
         supplements: SupplementsSelectionRequestBody(
           getAll: state.supplementsGetAll,
@@ -509,7 +512,6 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         language,
         userType,
       );
-      updateStateWithPhysicalActivityFilters(result);
     } else if (categoryTitle == "الأمراض النفسية") {
       result = await _medicalReportRepo.getMentalDiseasesFilters(
         language,
@@ -545,30 +547,6 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           categoryFiltersStatus: finalStatuses,
           message: error.errors.firstOrNull ?? 'An error occurred',
         ));
-      },
-    );
-  }
-
-  void updateStateWithPhysicalActivityFilters(
-      ApiResult<MedicalReportFilterResponseModel> result) {
-    result.when(
-      success: (data) {
-        final filterSectionsTitles = data.filterSections!
-            .map((e) => e.filters.map((e) => e.title).toList())
-            .toList();
-
-        emit(
-          state.copyWith(
-            physicalActivityFilterTitles: filterSectionsTitles[0],
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            physicalActivityFilterTitles: [],
-          ),
-        );
       },
     );
   }
