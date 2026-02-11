@@ -71,6 +71,7 @@ class MedicalReportPdfGenerator {
           _buildTeethModuleSection(reportData, teethImages),
           // _buildVaccinationsSection(),
           _buildMentalIlnessSection(reportData),
+          _buildSmartNutrationAnalysisSection(reportData),
 
           /// المحلل الذكي
           _buildPhysicalActivitySection(reportData),
@@ -2414,5 +2415,132 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  pw.Widget _buildSmartNutrationAnalysisSection(
+      MedicalReportResponseModel reportData) {
+    final nutritionModule = reportData.data.nutritionTrackingModule;
+    if (nutritionModule == null || nutritionModule.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Column(
+      children: nutritionModule.map(
+        (entry) {
+          final dateStr = entry.dateRange != null
+              ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+              : "--";
+
+          return pw.Container(
+            margin: pw.EdgeInsets.symmetric(vertical: 15),
+            padding: const pw.EdgeInsets.all(15),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              borderRadius: pw.BorderRadius.circular(16),
+            ),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                  children: [
+                    pw.Text('جدول المتابعة الغذائية',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 16,
+                            color: PdfColor.fromInt(
+                                AppColorsManager.mainDarkBlue.value))),
+                  ],
+                ),
+                pw.SizedBox(height: 8),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.end,
+                  children: [
+                    pw.Text(dateStr,
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 12,
+                            color: PdfColors.black)),
+                  ],
+                ),
+                pw.SizedBox(height: 12),
+                pw.TableHelper.fromTextArray(
+                  headers: [
+                    'النسبة',
+                    'الفرق',
+                    'التراكمي المعياري',
+                    'التراكمي الفعلي',
+                    'اليومي المعياري',
+                    'المتوسط اليومي',
+                    'اسم العنصر',
+                  ],
+                  data: entry.nutritionReport?.map((item) {
+                        final diff = item.difference ?? 0;
+                        final percentage = item.percentage ?? 0;
+
+                        return [
+                          "${percentage.toStringAsFixed(0)}%",
+                          "${diff < 0 ? '' : '+'}${diff.toStringAsFixed(0)}",
+                          item.standardCumulative?.toStringAsFixed(0) ?? "--",
+                          item.actualCumulative?.toStringAsFixed(0) ?? "--",
+                          item.dailyAverageStandard?.toStringAsFixed(0) ?? "--",
+                          item.dailyAverageActual?.toStringAsFixed(0) ?? "--",
+                          item.nutrient ?? "--",
+                        ];
+                      }).toList() ??
+                      [],
+                  headerStyle: pw.TextStyle(
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 10,
+                  ),
+                  headerDecoration:
+                      const pw.BoxDecoration(color: PdfColors.grey100),
+                  cellAlignment: pw.Alignment.center,
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(1), // النسبة
+                    1: const pw.FlexColumnWidth(1), // الفرق
+                    2: const pw.FlexColumnWidth(1.2), // التراكمي المعياري
+                    3: const pw.FlexColumnWidth(1.2), // التراكمي الفعلي
+                    4: const pw.FlexColumnWidth(1.2), // اليومي المعياري
+                    5: const pw.FlexColumnWidth(1.2), // المتوسط اليومي
+                    6: const pw.FlexColumnWidth(2.5), // اسم العنصر
+                  },
+                  cellStyle: const pw.TextStyle(fontSize: 9),
+                  cellFormat: (index, data) => data.toString(),
+                  border:
+                      pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+                ),
+              ],
+            ),
+          );
+        },
+      ).toList(),
+    );
+  }
+
+  String _formatNutritionDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return "--";
+    try {
+      final date = DateTime.parse(dateStr);
+      final months = [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر"
+      ];
+      return "${date.day} ${months[date.month - 1]} ${date.year}";
+    } catch (e) {
+      return dateStr;
+    }
   }
 }
