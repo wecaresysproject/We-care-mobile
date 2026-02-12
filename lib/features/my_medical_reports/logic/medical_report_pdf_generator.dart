@@ -966,52 +966,43 @@ class MedicalReportPdfGenerator {
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 10),
       child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // Right Side: Patient Info
           pw.Expanded(
             flex: 3,
-            child: pw.Row(
+            child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Container(
-                      width: 70,
-                      height: 70,
-                      decoration: pw.BoxDecoration(
-                        shape: pw.BoxShape.circle,
-                        border: pw.Border.all(color: PdfColors.white, width: 2),
-                        image: pw.DecorationImage(
-                          image: profileImage,
-                          fit: pw.BoxFit.cover,
-                        ),
-                      ),
+                pw.Container(
+                  width: 70,
+                  height: 70,
+                  decoration: pw.BoxDecoration(
+                    shape: pw.BoxShape.circle,
+                    border: pw.Border.all(color: PdfColors.white, width: 2),
+                    image: pw.DecorationImage(
+                      image: profileImage,
+                      fit: pw.BoxFit.cover,
                     ),
-                    pw.SizedBox(height: 6),
-                    pw.Text(
-                      'الاسم : $name',
-                      style: pw.TextStyle(
-                        color: PdfColors.white,
-                        fontSize: 14,
-                        fontWeight: pw.FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-
-                // Date closer to image
-                pw.Padding(
-                  padding: const pw.EdgeInsets.only(top: 6),
-                  child: pw.Text(
-                    'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
-                    style: const pw.TextStyle(
-                      color: PdfColors.white,
-                      fontSize: 10,
-                    ),
+                pw.SizedBox(height: 6),
+                pw.Text(
+                  'الاسم : $name',
+                  style: pw.TextStyle(
+                    color: PdfColors.white,
+                    fontSize: 14,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                  'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+                  style: const pw.TextStyle(
+                    color: PdfColors.white,
+                    fontSize: 10,
                   ),
                 ),
               ],
@@ -1021,7 +1012,8 @@ class MedicalReportPdfGenerator {
           // Center: Title + Subtitle
           pw.Expanded(
             flex: 2,
-            child: pw.Center(
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.only(top: 20),
               child: pw.Column(
                 mainAxisSize: pw.MainAxisSize.min,
                 children: [
@@ -1029,7 +1021,7 @@ class MedicalReportPdfGenerator {
                     'تقرير  طبي شخصي',
                     style: pw.TextStyle(
                       color: PdfColors.white,
-                      fontSize: 22,
+                      fontSize: 22.5,
                       fontWeight: pw.FontWeight.bold,
                     ),
                   ),
@@ -1051,16 +1043,16 @@ class MedicalReportPdfGenerator {
             child: pw.Align(
               alignment: pw.Alignment.centerLeft,
               child: pw.Container(
-                padding: const pw.EdgeInsets.all(6),
+                padding: const pw.EdgeInsets.all(4),
                 decoration: pw.BoxDecoration(
                   color: PdfColors.white,
                   borderRadius: pw.BorderRadius.circular(12),
                 ),
                 child: pw.Image(
                   logoImage,
-                  width: 90,
-                  height: 90,
-                  fit: pw.BoxFit.contain,
+                  width: 100,
+                  height: 100,
+                  fit: pw.BoxFit.cover,
                 ),
               ),
             ),
