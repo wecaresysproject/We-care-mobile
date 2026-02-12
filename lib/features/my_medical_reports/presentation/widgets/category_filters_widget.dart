@@ -26,9 +26,10 @@ class CategoryFiltersWidget extends StatelessWidget {
       margin: EdgeInsets.only(top: 4.h),
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: AppColorsManager.secondaryColor.withOpacity(0.3),
-        border:
-            Border.all(color: AppColorsManager.mainDarkBlue.withOpacity(0.5)),
+        color: AppColorsManager.secondaryColor.withAlpha((0.3 * 255).toInt()),
+        border: Border.all(
+            color:
+                AppColorsManager.mainDarkBlue.withAlpha((0.5 * 255).toInt())),
         borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
@@ -98,10 +99,13 @@ class _FilterSection extends StatefulWidget {
 class _FilterSectionState extends State<_FilterSection> {
   @override
   Widget build(BuildContext context) {
+    final bool isAllSelected = widget.values.isNotEmpty &&
+        widget.selectedValues.length == widget.values.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildHeader(widget.title),
+        _buildHeader(widget.title, isAllSelected),
         verticalSpacing(8),
         Wrap(
           spacing: 8.w,
@@ -119,20 +123,82 @@ class _FilterSectionState extends State<_FilterSection> {
     );
   }
 
-  Widget _buildHeader(String title) {
+  void _handleToggleAll(bool allSelected) {
+    if (allSelected) {
+      // Unselect all: toggle those that are currently selected
+      // Use .toList() to avoid ConcurrentModificationError as we are modifying the set during iteration
+      for (final value in widget.selectedValues.toList()) {
+        widget.onToggle(value);
+      }
+    } else {
+      // Select all: toggle those that are NOT currently selected
+      for (final value in widget.values) {
+        if (!widget.selectedValues.contains(value)) {
+          widget.onToggle(value);
+        }
+      }
+    }
+  }
+
+  Widget _buildHeader(String title, bool isAllSelected) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 12.w),
       decoration: BoxDecoration(
-        color: AppColorsManager.secondaryColor.withOpacity(0.6),
+        color: AppColorsManager.secondaryColor.withAlpha((0.6 * 255).toInt()),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Text(
-        title,
-        style: AppTextStyles.font16BlackSemiBold.copyWith(
-          color: AppColorsManager.mainDarkBlue,
-        ),
-        textAlign: TextAlign.center,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: AppTextStyles.font16BlackSemiBold.copyWith(
+                color: AppColorsManager.mainDarkBlue,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _handleToggleAll(isAllSelected),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "الكل",
+                  style: AppTextStyles.font14BlackMedium.copyWith(
+                    color: AppColorsManager.mainDarkBlue,
+                    fontSize: 12.sp,
+                  ),
+                ),
+                horizontalSpacing(6),
+                Container(
+                  width: 20.w,
+                  height: 20.h,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isAllSelected
+                          ? AppColorsManager.mainDarkBlue
+                          : Colors.grey,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(4.r),
+                    color: isAllSelected
+                        ? AppColorsManager.mainDarkBlue
+                        : Colors.white,
+                  ),
+                  child: isAllSelected
+                      ? Icon(
+                          Icons.check,
+                          size: 14.sp,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

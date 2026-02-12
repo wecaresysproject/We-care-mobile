@@ -343,12 +343,12 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           years: state.surgeriesSelectedYears, //! needs getAll here
           surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
         ),
-        geneticDiseases: GeneticDiseasesSelectionRequestBody(
-          getAll: state.geneticDiseasesGetAll,
-          familyGeneticDiseases: state.geneticDiseasesSelectedValues,
-          myExpectedGeneticDiseases:
-              state.expectedGeneticDiseasesSelectedValues,
-        ),
+        // geneticDiseases: GeneticDiseasesSelectionRequestBody(
+        //   getAll: state.geneticDiseasesGetAll,
+        //   familyGeneticDiseases: state.geneticDiseasesSelectedValues,
+        //   myExpectedGeneticDiseases:
+        //       state.expectedGeneticDiseasesSelectedValues,
+        // ),
         allergies: AllergiesSelectionRequestBody(
           getAll: state.allergiesGetAll,
           types: state.allergiesSelectedTypes,
