@@ -51,9 +51,7 @@ class MedicalReportPdfGenerator {
             ),
           ),
         ),
-        // 👇 أضف ده
         footer: (context) => _buildFooter(context),
-
         header: (context) =>
             _buildHeader(profileImageProvider, logoImageProvider, reportData),
         build: (context) => [
