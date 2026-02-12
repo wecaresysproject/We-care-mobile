@@ -9,6 +9,10 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_report_r
 import '../../../../core/global/theming/color_manager.dart';
 
 class MedicalReportPdfGenerator {
+  static const sectionMargin =
+      pw.EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 10);
+  static const sectionPadding = pw.EdgeInsets.fromLTRB(15, 5, 15, 15);
+
   Future<Uint8List> generateMedicalReport(
       MedicalReportResponseModel reportData) async {
     final pdf = pw.Document();
@@ -42,12 +46,12 @@ class MedicalReportPdfGenerator {
         pageTheme: pw.PageTheme(
           theme: theme,
           pageFormat: PdfPageFormat.a3,
-          margin: const pw.EdgeInsets.all(20),
+          margin: const pw.EdgeInsets.all(0),
           textDirection: pw.TextDirection.rtl,
           buildBackground: (context) => pw.FullPage(
             ignoreMargins: true,
             child: pw.Container(
-              color: PdfColor.fromInt(0xffEBEBEB),
+              color: PdfColor.fromInt(0xffD6D6D6), // darker gray // 0xffEBEBEB
             ),
           ),
         ),
@@ -89,8 +93,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -186,8 +190,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -236,8 +240,8 @@ class MedicalReportPdfGenerator {
     if (!hasFamilyDiseases && !hasExpectedRisks) return pw.SizedBox.shrink();
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -361,8 +365,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -419,8 +423,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -621,8 +625,8 @@ class MedicalReportPdfGenerator {
     if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -796,8 +800,8 @@ class MedicalReportPdfGenerator {
     if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -966,7 +970,7 @@ class MedicalReportPdfGenerator {
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 10),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -997,14 +1001,6 @@ class MedicalReportPdfGenerator {
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
-                pw.SizedBox(height: 4),
-                pw.Text(
-                  'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
-                  style: const pw.TextStyle(
-                    color: PdfColors.white,
-                    fontSize: 10,
-                  ),
-                ),
               ],
             ),
           ),
@@ -1015,7 +1011,7 @@ class MedicalReportPdfGenerator {
             child: pw.Padding(
               padding: const pw.EdgeInsets.only(top: 20),
               child: pw.Column(
-                mainAxisSize: pw.MainAxisSize.min,
+                // mainAxisSize: pw.MainAxisSize.min,
                 children: [
                   pw.Text(
                     'تقرير  طبي شخصي',
@@ -1030,6 +1026,14 @@ class MedicalReportPdfGenerator {
                     style: pw.TextStyle(
                       color: PdfColors.white,
                       fontSize: 12,
+                    ),
+                  ),
+                  pw.Text(
+                    '${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+                    style: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontSize: 10,
+                      fontWeight: pw.FontWeight.bold,
                     ),
                   ),
                 ],
@@ -1050,8 +1054,8 @@ class MedicalReportPdfGenerator {
                 ),
                 child: pw.Image(
                   logoImage,
-                  width: 100,
-                  height: 100,
+                  width: 90,
+                  height: 90,
                   fit: pw.BoxFit.cover,
                 ),
               ),
@@ -1064,8 +1068,8 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildFooter(pw.Context context) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 15),
-      padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      // padding: const pw.EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      padding: pw.EdgeInsets.only(top: 4, left: 15, right: 15),
       decoration: pw.BoxDecoration(
         border: pw.Border(
           top: pw.BorderSide(
@@ -1108,17 +1112,17 @@ class MedicalReportPdfGenerator {
   pw.Widget _buildSectionHeader(String title) {
     return pw.Container(
       width: double.infinity,
-      padding: const pw.EdgeInsets.only(bottom: 8),
       decoration: pw.BoxDecoration(
         border: pw.Border(
             bottom: pw.BorderSide(
-                color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
-                width: 2)),
+          color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+          width: 2,
+        )),
       ),
       child: pw.Text(
         title,
         style: pw.TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: pw.FontWeight.bold,
           color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
         ),
@@ -1142,8 +1146,8 @@ class MedicalReportPdfGenerator {
         .toList();
 
     return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 15),
-      padding: const pw.EdgeInsets.all(15),
+      margin: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      padding: const pw.EdgeInsets.fromLTRB(15, 5, 15, 15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1152,19 +1156,18 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('البيانات الأساسية'),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 12),
           pw.Wrap(
-            spacing: 20,
-            runSpacing: 20,
+            runSpacing: 10,
             children: List.generate(displayInfo.length, (index) {
               final info = displayInfo[index];
 
-              if (info.label == 'الاسم') {
+              if (info.label == 'الاسم' || info.value == 'مش موجود في العرض') {
                 return pw.SizedBox.shrink();
               }
               return pw.Padding(
                 padding: pw.EdgeInsets.only(
-                  left: index == 0 ? 0 : 20, // ✅ أول عنصر بدون spacing
+                  left: 15,
                 ),
                 child: _buildInfoItem(
                     '${info.shortLabel} :', info.value.toString()),
@@ -1177,29 +1180,36 @@ class MedicalReportPdfGenerator {
   }
 
   pw.Widget _buildInfoItem(String label, String value) {
-    return pw.Row(
-      mainAxisSize: pw.MainAxisSize.min,
-      children: [
-        pw.Text(
-          label,
-          style: pw.TextStyle(
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontWeight: pw.FontWeight.bold,
-            fontSize: 14,
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(12),
+      decoration: pw.BoxDecoration(
+        border: pw.Border.all(color: PdfColors.grey200),
+        borderRadius: pw.BorderRadius.circular(12),
+      ),
+      child: pw.Row(
+        mainAxisSize: pw.MainAxisSize.min,
+        children: [
+          pw.Text(
+            label,
+            style: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 14,
+            ),
           ),
-        ),
-        pw.SizedBox(width: 4),
-        pw.Text(
-          " ",
-          style: const pw.TextStyle(fontSize: 14),
-        ),
-        pw.Text(
-          value,
-          style: const pw.TextStyle(
-            fontSize: 14,
+          pw.SizedBox(width: 4),
+          pw.Text(
+            " ",
+            style: const pw.TextStyle(fontSize: 14),
           ),
-        ),
-      ],
+          pw.Text(
+            value,
+            style: const pw.TextStyle(
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1211,8 +1221,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1221,10 +1231,10 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('القياسات الحيوية'),
-          pw.SizedBox(height: 10),
+          pw.SizedBox(height: 12),
           pw.Wrap(
-            spacing: 20,
-            runSpacing: 20,
+            spacing: 15,
+            runSpacing: 15,
             children: vitalSigns.map((group) {
               return _buildVitalGroupCard(group);
             }).toList(),
@@ -1243,8 +1253,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1253,7 +1263,7 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الأمراض المزمنة'),
-          pw.SizedBox(height: 8),
+          pw.SizedBox(height: 12),
           pw.TableHelper.fromTextArray(
             headers: [
               'حالة المرض المزمن',
@@ -1273,7 +1283,7 @@ class MedicalReportPdfGenerator {
               fontSize: 14,
             ),
             cellStyle: const pw.TextStyle(
-              fontSize: 14,
+              fontSize: 13,
             ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
@@ -1288,8 +1298,9 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: const pw.EdgeInsets.all(12),
       decoration: pw.BoxDecoration(
-        border: pw.Border.all(color: PdfColors.grey200),
+        border: pw.Border.all(color: PdfColors.grey300),
         borderRadius: pw.BorderRadius.circular(12),
+        color: PdfColors.grey50,
       ),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -1356,8 +1367,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1366,12 +1377,11 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // ✅ Title Header
-          _buildSectionHeader('الشكاوي الطارئة'),
+          _buildSectionHeader('الشكاوى الطارئة'),
           pw.SizedBox(height: 12),
 
           // ✅ Header Row Titles
           _buildComplaintsHeaderRow(),
-          pw.Divider(color: PdfColors.grey400),
 
           // ✅ Main Complaints Rows
           ...module.mainComplaints!.map((complaint) {
@@ -1395,7 +1405,7 @@ class MedicalReportPdfGenerator {
                 color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
               ),
             ),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 12),
             _buildAdditionalComplaintsHeaderRow(),
             pw.Divider(color: PdfColors.grey400),
             ...module.additionalComplaints!.map((complaint) {
@@ -1417,8 +1427,12 @@ class MedicalReportPdfGenerator {
 //////////////////////////////////////////////////////////////////
 
   pw.Widget _buildComplaintsHeaderRow() {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+    return pw.Container(
+      padding: pw.EdgeInsets.symmetric(vertical: 5),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
       child: pw.Row(
         children: [
           _buildHeaderCell("التاريخ", flex: 2),
@@ -1426,7 +1440,7 @@ class MedicalReportPdfGenerator {
           _buildHeaderCell("العضو", flex: 2),
           _buildHeaderCell("طبيعة الشكوى", flex: 2),
           _buildHeaderCell("حدة الشكوى", flex: 2),
-          _buildHeaderCell("صورة الشكوي", flex: 2),
+          _buildHeaderCell("صورة الشكوى", flex: 2),
         ],
       ),
     );
@@ -1476,8 +1490,12 @@ class MedicalReportPdfGenerator {
 //////////////////////////////////////////////////////////////////
 
   pw.Widget _buildAdditionalComplaintsHeaderRow() {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+    return pw.Container(
+      padding: pw.EdgeInsets.symmetric(vertical: 8),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
       child: pw.Row(
         children: [
           _buildHeaderCell("التاريخ", flex: 2),
@@ -1549,7 +1567,7 @@ class MedicalReportPdfGenerator {
         child: pw.Text(
           text,
           style: const pw.TextStyle(
-            fontSize: 14,
+            fontSize: 13,
             color: PdfColors.black,
           ),
           textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
@@ -1610,8 +1628,8 @@ class MedicalReportPdfGenerator {
     final expired = module.expiredLast90Days;
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1681,8 +1699,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1691,7 +1709,7 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('الحساسية'),
-          pw.SizedBox(height: 8),
+          pw.SizedBox(height: 12),
           pw.TableHelper.fromTextArray(
             headers: [
               'حمل حقنة الابينفرين',
@@ -1759,8 +1777,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -2058,8 +2076,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -2094,7 +2112,9 @@ class MedicalReportPdfGenerator {
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 11),
+            cellStyle: const pw.TextStyle(
+              fontSize: 12,
+            ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
             columnWidths: {
@@ -2132,7 +2152,11 @@ class MedicalReportPdfGenerator {
         if (dateText.isNotEmpty)
           pw.Text(
             dateText,
-            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+            style: pw.TextStyle(
+              fontSize: 9,
+              color: PdfColors.black,
+              fontWeight: pw.FontWeight.bold,
+            ),
           ),
       ],
     );
@@ -2174,7 +2198,7 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           _buildSectionHeader('التطعيمات'),
-          pw.SizedBox(height: 8),
+          pw.SizedBox(height: 12),
           pw.TableHelper.fromTextArray(
             headers: ['اللقاح', 'التاريخ', 'الجرعة'],
             data: [
@@ -2341,8 +2365,8 @@ class MedicalReportPdfGenerator {
     }
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -2459,8 +2483,8 @@ class MedicalReportPdfGenerator {
         : "--";
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
+      padding: sectionPadding,
+      margin: sectionMargin,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
