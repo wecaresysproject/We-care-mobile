@@ -968,76 +968,176 @@ class MedicalReportPdfGenerator {
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
       padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 25),
       child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           // Right Side: Patient Info
-          pw.Row(
-            children: [
-              pw.Container(
-                width: 70,
-                height: 70,
-                decoration: pw.BoxDecoration(
-                  shape: pw.BoxShape.circle,
-                  border: pw.Border.all(color: PdfColors.white, width: 2),
-                  image: pw.DecorationImage(
-                    image: profileImage,
-                    fit: pw.BoxFit.cover,
+          pw.Expanded(
+            flex: 3,
+            child: pw.Row(
+              children: [
+                pw.Container(
+                  width: 70,
+                  height: 70,
+                  decoration: pw.BoxDecoration(
+                    shape: pw.BoxShape.circle,
+                    border: pw.Border.all(color: PdfColors.white, width: 2),
+                    image: pw.DecorationImage(
+                      image: profileImage,
+                      fit: pw.BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              pw.SizedBox(width: 16),
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                pw.SizedBox(width: 16),
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+                      style: const pw.TextStyle(
+                          color: PdfColors.white, fontSize: 10),
+                    ),
+                    pw.Text(
+                      'الاسم : $name',
+                      style: pw.TextStyle(
+                          color: PdfColors.white,
+                          fontSize: 14,
+                          fontWeight: pw.FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // Center: Title + Subtitle
+          pw.Expanded(
+            flex: 2,
+            child: pw.Center(
+              child: pw.Column(
+                mainAxisSize: pw.MainAxisSize.min,
                 children: [
                   pw.Text(
-                    'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
-                    style: const pw.TextStyle(
-                        color: PdfColors.white, fontSize: 10),
+                    'تقرير  طبي شخصي',
+                    style: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontSize: 22,
+                      fontWeight: pw.FontWeight.bold,
+                    ),
                   ),
                   pw.Text(
-                    'الاسم : $name',
+                    'WECARE - Save Your Soul',
                     style: pw.TextStyle(
-                        color: PdfColors.white,
-                        fontSize: 14,
-                        fontWeight: pw.FontWeight.bold),
+                      color: PdfColors.white,
+                      fontSize: 12,
+                      fontWeight: pw.FontWeight.normal,
+                    ),
                   ),
                 ],
               ),
-            ],
-          ),
-
-          // Center: Title
-          pw.Row(
-            children: [
-              pw.SizedBox(width: 10),
-              pw.Text(
-                'تقرير طبي شخصي',
-                style: pw.TextStyle(
-                    color: PdfColors.white,
-                    fontSize: 18,
-                    fontWeight: pw.FontWeight.bold),
-              ),
-            ],
-          ),
-
-          // Left Side: Logo
-          pw.Container(
-            padding: const pw.EdgeInsets.all(6),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.white,
-              borderRadius: pw.BorderRadius.circular(12),
             ),
-            child: pw.Image(
-              logoImage,
-              width: 50,
-              height: 50,
-              fit: pw.BoxFit.contain,
+          ),
+          // Left Side: Logo
+          pw.Expanded(
+            flex: 3,
+            child: pw.Align(
+              alignment: pw.Alignment.centerLeft,
+              child: pw.Container(
+                padding: const pw.EdgeInsets.all(6),
+                decoration: pw.BoxDecoration(
+                  color: PdfColors.white,
+                  borderRadius: pw.BorderRadius.circular(12),
+                ),
+                child: pw.Image(
+                  logoImage,
+                  width: 50,
+                  height: 50,
+                  fit: pw.BoxFit.contain,
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
   }
+  // pw.Widget _buildHeader(pw.ImageProvider profileImage,
+  //     pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
+  //   final name = reportData.userName ?? 'غير معروف';
+
+  //   return pw.Container(
+  //     color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+  //     padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 25),
+  //     child: pw.Row(
+  //       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         // Right Side: Patient Info
+  //         pw.Row(
+  //           children: [
+  //             pw.Container(
+  //               width: 70,
+  //               height: 70,
+  //               decoration: pw.BoxDecoration(
+  //                 shape: pw.BoxShape.circle,
+  //                 border: pw.Border.all(color: PdfColors.white, width: 2),
+  //                 image: pw.DecorationImage(
+  //                   image: profileImage,
+  //                   fit: pw.BoxFit.cover,
+  //                 ),
+  //               ),
+  //             ),
+  //             pw.SizedBox(width: 16),
+  //             pw.Column(
+  //               crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //               children: [
+  //                 pw.Text(
+  //                   'تاريخ الانشاء : ${DateTime.now().year}/${DateTime.now().month}/${DateTime.now().day}',
+  //                   style: const pw.TextStyle(
+  //                       color: PdfColors.white, fontSize: 10),
+  //                 ),
+  //                 pw.Text(
+  //                   'الاسم : $name',
+  //                   style: pw.TextStyle(
+  //                       color: PdfColors.white,
+  //                       fontSize: 14,
+  //                       fontWeight: pw.FontWeight.bold),
+  //                 ),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+
+  //         // Center: Title
+  //         pw.Row(
+  //           children: [
+  //             pw.SizedBox(width: 10),
+  //             pw.Text(
+  //               'تقرير طبي شخصي',
+  //               style: pw.TextStyle(
+  //                   color: PdfColors.white,
+  //                   fontSize: 18,
+  //                   fontWeight: pw.FontWeight.bold),
+  //             ),
+  //           ],
+  //         ),
+
+  //         // Left Side: Logo
+  //         pw.Container(
+  //           padding: const pw.EdgeInsets.all(6),
+  //           decoration: pw.BoxDecoration(
+  //             color: PdfColors.white,
+  //             borderRadius: pw.BorderRadius.circular(12),
+  //           ),
+  //           child: pw.Image(
+  //             logoImage,
+  //             width: 50,
+  //             height: 50,
+  //             fit: pw.BoxFit.contain,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   pw.Widget _buildFooter(pw.Context context) {
     return pw.Container(
