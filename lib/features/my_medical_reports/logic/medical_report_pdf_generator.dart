@@ -276,19 +276,41 @@ class MedicalReportPdfGenerator {
                         ],
                         data: geneticModule.familyGeneticDiseases!.map((item) {
                           return [
-                            _safeText(item.diseaseStatus?.join('\n')),
+                            _safeText(
+                              (item.diseaseStatus != null &&
+                                      item.diseaseStatus!.isNotEmpty)
+                                  ? item.diseaseStatus!
+                                      .map((e) =>
+                                          e.trim() == "لم يتم ادخال بيانات"
+                                              ? e
+                                              : '- $e')
+                                      .join('\n')
+                                  : '--',
+                            ),
                             _safeText(
                                 "${getFamilyMemberCode(item.code!)} : ${item.name}"),
-                            _safeText(item.geneticDiseases?.join('\n')),
+                            _safeText(
+                              (item.geneticDiseases != null &&
+                                      item.geneticDiseases!.isNotEmpty)
+                                  ? item.geneticDiseases!
+                                      .map((e) =>
+                                          e.trim() == "لم يتم ادخال بيانات"
+                                              ? e
+                                              : '- $e')
+                                      .join('\n')
+                                  : '--',
+                            ),
                           ];
                         }).toList(),
                         headerStyle: pw.TextStyle(
                           color: PdfColor.fromInt(
                               AppColorsManager.mainDarkBlue.value),
                           fontWeight: pw.FontWeight.bold,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
-                        cellStyle: const pw.TextStyle(fontSize: 10),
+                        cellStyle: const pw.TextStyle(
+                          fontSize: 12,
+                        ),
                         headerDecoration:
                             const pw.BoxDecoration(color: PdfColors.grey100),
                         cellAlignment: pw.Alignment.center,
@@ -398,16 +420,18 @@ class MedicalReportPdfGenerator {
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
-            cellStyle: const pw.TextStyle(fontSize: 11),
+            cellStyle: const pw.TextStyle(
+              fontSize: 12,
+            ),
             headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
             cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             columnWidths: {
               0: const pw.FlexColumnWidth(1.2), // الجرعة اليومية
               1: const pw.FlexColumnWidth(3.5), // اسم الفيتامين
               2: const pw.FlexColumnWidth(1.5), // خطة
               3: const pw.FlexColumnWidth(1.8), // التاريخ
             },
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             cellPadding: const pw.EdgeInsets.all(6),
           ),
         ],
@@ -547,25 +571,25 @@ class MedicalReportPdfGenerator {
         // Metadata Table: One row, four columns
         pw.TableHelper.fromTextArray(
           headers: [
-            // 'الدولة',
             'التخصص',
             'اسم الطبيب',
             'التاريخ',
           ],
           data: [
             [
-              // _safeText(prescription.country),
               _safeText(prescription.doctorSpecialty),
               _safeText(prescription.doctorName),
               _safeText(prescription.preDescriptionDate),
             ]
           ],
           headerStyle: pw.TextStyle(
-            fontSize: 10,
             fontWeight: pw.FontWeight.bold,
             color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+            fontSize: 12,
           ),
-          cellStyle: const pw.TextStyle(fontSize: 10),
+          cellStyle: const pw.TextStyle(
+            fontSize: 12,
+          ),
           headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
           cellAlignment: pw.Alignment.center,
           border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
@@ -643,7 +667,7 @@ class MedicalReportPdfGenerator {
                     fontSize: 14,
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
                 'حدة الشكوى',
@@ -666,15 +690,17 @@ class MedicalReportPdfGenerator {
               headerStyle: pw.TextStyle(
                 color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 10,
+                fontSize: 12,
               ),
-              cellStyle: const pw.TextStyle(fontSize: 10),
+              cellStyle: const pw.TextStyle(
+                fontSize: 12,
+              ),
               headerDecoration:
                   const pw.BoxDecoration(color: PdfColors.grey100),
               cellAlignment: pw.Alignment.center,
               border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             ),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: 10),
           ],
           if (hasProcedures) ...[
             pw.Text('إجراءات الأسنان',
@@ -683,7 +709,7 @@ class MedicalReportPdfGenerator {
                     fontSize: 14,
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
-            pw.SizedBox(height: 12),
+            pw.SizedBox(height: 2),
             ...teethModule.teethProcedures!.asMap().entries.map((entry) {
               final index = entry.key;
               final procedure = entry.value;
@@ -744,11 +770,7 @@ class MedicalReportPdfGenerator {
                     ),
                   ],
                   if (!isLast)
-                    pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 15),
-                      child:
-                          pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-                    ),
+                    pw.Divider(color: PdfColors.grey300, thickness: 0.5),
                 ],
               );
             }),
@@ -818,7 +840,7 @@ class MedicalReportPdfGenerator {
                     fontSize: 14,
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
                 'مدة الأعراض',
@@ -829,7 +851,14 @@ class MedicalReportPdfGenerator {
               data: eyeModule.eyeSymptoms!.map((symptom) {
                 return [
                   _safeText(symptom.symptomDuration),
-                  _safeText(symptom.symptoms?[0] ?? "--"),
+                  _safeText(
+                    (symptom.symptoms != null && symptom.symptoms!.isNotEmpty)
+                        ? symptom.symptoms!
+                            .map((e) =>
+                                e.trim() == "لم يتم ادخال بيانات" ? e : '- $e')
+                            .join('\n')
+                        : '--',
+                  ),
                   _safeText(symptom.affectedEyePart),
                   _safeText(symptom.symptomStartDate),
                 ];
@@ -837,15 +866,17 @@ class MedicalReportPdfGenerator {
               headerStyle: pw.TextStyle(
                 color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 10,
+                fontSize: 12,
               ),
-              cellStyle: const pw.TextStyle(fontSize: 10),
+              cellStyle: const pw.TextStyle(
+                fontSize: 12,
+              ),
               headerDecoration:
                   const pw.BoxDecoration(color: PdfColors.grey100),
               cellAlignment: pw.Alignment.center,
               border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             ),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: 10),
           ],
           if (hasProcedures) ...[
             pw.Text('إجراءات العيون',
@@ -854,7 +885,7 @@ class MedicalReportPdfGenerator {
                     fontSize: 14,
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
-            pw.SizedBox(height: 12),
+            pw.SizedBox(height: 2),
             ...eyeModule.eyeProcedures!.asMap().entries.map((entry) {
               final index = entry.key;
               final procedure = entry.value;
@@ -876,7 +907,16 @@ class MedicalReportPdfGenerator {
                     ],
                     data: [
                       [
-                        _safeText(procedure.medicalProcedures?[0] ?? "--"),
+                        _safeText(
+                          (procedure.medicalProcedures != null &&
+                                  procedure.medicalProcedures!.isNotEmpty)
+                              ? procedure.medicalProcedures!
+                                  .map((e) => e.trim() == "لم يتم ادخال بيانات"
+                                      ? e
+                                      : '- $e')
+                                  .join('\n')
+                              : '--',
+                        ),
                         _safeText(procedure.affectedEyePart),
                         _safeText(procedure.medicalReportDate),
                       ]
@@ -885,9 +925,11 @@ class MedicalReportPdfGenerator {
                       color:
                           PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                       fontWeight: pw.FontWeight.bold,
-                      fontSize: 10,
+                      fontSize: 12,
                     ),
-                    cellStyle: const pw.TextStyle(fontSize: 10),
+                    cellStyle: const pw.TextStyle(
+                      fontSize: 12,
+                    ),
                     headerDecoration:
                         const pw.BoxDecoration(color: PdfColors.grey100),
                     cellAlignment: pw.Alignment.center,
@@ -918,11 +960,7 @@ class MedicalReportPdfGenerator {
                     ),
                   ],
                   if (!isLast)
-                    pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 15),
-                      child:
-                          pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-                    ),
+                    pw.Divider(color: PdfColors.grey300, thickness: 0.5),
                 ],
               );
             }),
@@ -970,6 +1008,7 @@ class MedicalReportPdfGenerator {
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+      margin: const pw.EdgeInsets.only(bottom: 10),
       padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -1146,7 +1185,7 @@ class MedicalReportPdfGenerator {
         .toList();
 
     return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      margin: pw.EdgeInsets.only(bottom: 10, left: 10, right: 10),
       padding: const pw.EdgeInsets.fromLTRB(15, 5, 15, 15),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
@@ -1779,6 +1818,7 @@ class MedicalReportPdfGenerator {
     return pw.Container(
       padding: sectionPadding,
       margin: sectionMargin,
+      width: double.infinity,
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         borderRadius: pw.BorderRadius.circular(16),
@@ -1809,9 +1849,7 @@ class MedicalReportPdfGenerator {
 
                 // Divider between entries (except after last)
                 if (!isLast) ...[
-                  pw.SizedBox(height: 12),
                   pw.Divider(color: PdfColors.grey300),
-                  pw.SizedBox(height: 12),
                 ],
               ],
             );
@@ -1824,6 +1862,7 @@ class MedicalReportPdfGenerator {
   pw.Widget _buildSurgeryDataRow(SurgeryEntry surgery) {
     return pw.Container(
       padding: const pw.EdgeInsets.all(10),
+      width: double.infinity,
       decoration: pw.BoxDecoration(
         color: PdfColors.grey50,
         borderRadius: pw.BorderRadius.circular(8),
@@ -1846,7 +1885,7 @@ class MedicalReportPdfGenerator {
           // Details in grid layout
           pw.Wrap(
             spacing: 20,
-            runSpacing: 6,
+            runSpacing: 10,
             children: [
               _buildSurgeryDetailItem('التاريخ', (surgery.surgeryDate)),
               _buildSurgeryDetailItem('المنطقة', surgery.surgeryRegion),
@@ -1863,6 +1902,9 @@ class MedicalReportPdfGenerator {
   }
 
   pw.Widget _buildSurgeryDetailItem(String label, String value) {
+    if (value == "لم يتم ادخال بيانات") {
+      return pw.SizedBox.shrink();
+    }
     return pw.Container(
       constraints: const pw.BoxConstraints(minWidth: 150),
       child: pw.Row(
@@ -2385,7 +2427,7 @@ class MedicalReportPdfGenerator {
                     fontSize: 14,
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
                 'مدة المرض',
@@ -2404,15 +2446,17 @@ class MedicalReportPdfGenerator {
               headerStyle: pw.TextStyle(
                 color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                 fontWeight: pw.FontWeight.bold,
-                fontSize: 10,
+                fontSize: 12,
               ),
-              cellStyle: const pw.TextStyle(fontSize: 10),
+              cellStyle: const pw.TextStyle(
+                fontSize: 12,
+              ),
               headerDecoration:
                   const pw.BoxDecoration(color: PdfColors.grey100),
               cellAlignment: pw.Alignment.center,
               border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
             ),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: 10),
           ],
 
           // Part 2: Behavioral Disorders
@@ -2426,7 +2470,7 @@ class MedicalReportPdfGenerator {
                         fontSize: 14,
                         color: PdfColor.fromInt(
                             AppColorsManager.mainDarkBlue.value))),
-                pw.SizedBox(height: 8),
+                pw.SizedBox(height: 2),
                 pw.TableHelper.fromTextArray(
                   headers: [
                     'درجة التقييم (المخاطرة)',
@@ -2444,9 +2488,11 @@ class MedicalReportPdfGenerator {
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
                     fontWeight: pw.FontWeight.bold,
-                    fontSize: 10,
+                    fontSize: 12,
                   ),
-                  cellStyle: const pw.TextStyle(fontSize: 10),
+                  cellStyle: const pw.TextStyle(
+                    fontSize: 12,
+                  ),
                   headerDecoration:
                       const pw.BoxDecoration(color: PdfColors.grey100),
                   cellAlignment: pw.Alignment.center,
