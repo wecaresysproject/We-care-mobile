@@ -2779,7 +2779,7 @@ class MedicalReportPdfGenerator {
       // -------------------------------
       widgets.add(
         pw.Container(
-          padding: sectionPadding,
+          padding: pw.EdgeInsets.fromLTRB(15, 5, 15, 5),
           margin: pw.EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
           decoration: pw.BoxDecoration(
             color: PdfColors.white,
