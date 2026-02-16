@@ -62,7 +62,8 @@ class MedicalReportPdfGenerator {
           _buildBasicInfoSection(reportData),
           _buildVitalSignsSection(reportData),
           _buildChronicDiseasesSection(reportData),
-          _buildComplaintsSection(reportData, complaintImages),
+          _buildComplaintsSection(
+              reportData, complaintImages), // ✅ دن بالشكل اليدوي مع وجود صور
           _buildMedicationsSection(reportData),
           _buildLabResultsSection(reportData),
           _buildSurgeriesSection(reportData, surgeryImages),
@@ -73,7 +74,8 @@ class MedicalReportPdfGenerator {
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
           // _buildVaccinationsSection(),
-          _buildMentalIlnessSection(reportData),
+          _buildMentalIlnessSection(
+              reportData), // ✅ دن بالشكل اليدووي من غير صور
           _buildSmartNutrationAnalysisSection(reportData),
           _buildPhysicalActivitySection(reportData),
           _buildSupplementsAndVitaminsSection(reportData),
