@@ -76,7 +76,7 @@ class MedicalReportPdfGenerator {
           // _buildVaccinationsSection(),
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
-          _buildSmartNutrationAnalysisSection(reportData),
+          ..._buildSmartNutrationAnalysisSection(reportData),
           _buildPhysicalActivitySection(reportData),
           _buildSupplementsAndVitaminsSection(reportData),
         ],
@@ -1632,6 +1632,68 @@ class MedicalReportPdfGenerator {
     );
   }
 
+  pw.Widget _buildNutritionHeaderRow() {
+    return pw.Container(
+      margin: pw.EdgeInsets.zero,
+      padding: pw.EdgeInsets.zero,
+      decoration: const pw.BoxDecoration(
+        color: PdfColors.grey100,
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('اسم العنصر', flex: 12),
+          _buildHeaderCell('المتوسط\nاليومى', flex: 12),
+          _buildHeaderCell('اليومى\nالمعيارى', flex: 12),
+          _buildHeaderCell('التراكمى\nالفعلي', flex: 12),
+          _buildHeaderCell('التراكمى\nالمعيارى', flex: 12),
+          _buildHeaderCell('الفرق', flex: 10),
+          _buildHeaderCell('النسبة', flex: 8),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildNutritionRow(NutritionReportItem item) {
+    final diff = item.difference ?? 0;
+    final percentage = item.percentage ?? 0;
+
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(
+              item.nutrient == "الطاقة (سعر حراري)"
+                  ? "الطاقة (سعر حرارى)"
+                  : (item.nutrient ?? "--"),
+              flex: 12),
+          _buildValueCell(
+              item.dailyAverageActual == null
+                  ? "--"
+                  : formatter.format(item.dailyAverageActual!.round()),
+              flex: 12),
+          _buildValueCell(
+              item.dailyAverageStandard == null
+                  ? "--"
+                  : formatter.format(item.dailyAverageStandard!.round()),
+              flex: 12),
+          _buildValueCell(
+              item.actualCumulative == null
+                  ? "--"
+                  : formatter.format(item.actualCumulative!.round()),
+              flex: 12),
+          _buildValueCell(
+              item.standardCumulative == null
+                  ? "--"
+                  : formatter.format(item.standardCumulative!.round()),
+              flex: 12),
+          _buildValueCell(diff.toInt().toString(), flex: 10),
+          _buildValueCell("${percentage.toStringAsFixed(0)} %", flex: 8),
+        ],
+      ),
+    );
+  }
+
 //////////////////////////////////////////////////////////////////
 // ✅ Value Cell Styling
 //////////////////////////////////////////////////////////////////
@@ -2693,141 +2755,305 @@ class MedicalReportPdfGenerator {
     );
   }
 
-  pw.Widget _buildSmartNutrationAnalysisSection(
+  List<pw.Widget> _buildSmartNutrationAnalysisSection(
       MedicalReportResponseModel reportData) {
     final nutritionModule = reportData.data.nutritionTrackingModule;
 
     if (nutritionModule == null || nutritionModule.isEmpty) {
-      return pw.SizedBox.shrink();
+      return [];
     }
 
-    return pw.Column(
-      children: [
-        for (final entry in nutritionModule) _buildSingleNutritionBlock(entry),
-      ],
-    );
-  }
+    final widgets = <pw.Widget>[];
 
-  pw.Widget _buildSingleNutritionBlock(NutritionTrackingEntry entry) {
-    final dateStr = entry.dateRange != null
-        ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-            "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-        : "--";
+    for (final entry in nutritionModule) {
+      final dateStr = entry.dateRange != null
+          ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+              "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+          : "--";
 
-    return pw.Container(
-      padding: sectionPadding,
-      margin: sectionMargin,
-      decoration: pw.BoxDecoration(
-        color: PdfColors.white,
-        borderRadius: pw.BorderRadius.circular(16),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader("جدول المتابعة الغذائية"),
-          pw.SizedBox(height: 12),
-          pw.Text(
-            dateStr,
-            style: pw.TextStyle(
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-              color: PdfColors.black,
+      final items = entry.nutritionReport ?? [];
+      if (items.isEmpty) continue;
+
+      // -------------------------------
+      // Header container only
+      // -------------------------------
+      widgets.add(
+        pw.Container(
+          padding: sectionPadding,
+          margin: pw.EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 0),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.white,
+            borderRadius: pw.BorderRadius.only(
+              topLeft: pw.Radius.circular(16),
+              topRight: pw.Radius.circular(16),
             ),
           ),
-          pw.SizedBox(height: 8),
-
-          /// الجدول القابل للانقسام بين الصفحات
-          pw.Table(
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            columnWidths: {
-              0: const pw.FlexColumnWidth(0.8), // النسبة
-              1: const pw.FlexColumnWidth(1), // الفرق
-              2: const pw.FlexColumnWidth(1.2), // التراكمى المعيارى
-              3: const pw.FlexColumnWidth(1.2), // التراكمى الفعلي
-              4: const pw.FlexColumnWidth(1.2), // اليومى المعيارى
-              5: const pw.FlexColumnWidth(1.2), // المتوسط اليومى
-              6: const pw.FlexColumnWidth(1.8), // اسم العنصر
-            },
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            mainAxisSize: pw.MainAxisSize.min,
             children: [
-              // Header Row
-              pw.TableRow(
-                decoration: const pw.BoxDecoration(color: PdfColors.grey100),
-                children: [
-                  'النسبة',
-                  'الفرق',
-                  'التراكمى\nالمعيارى',
-                  'التراكمى\nالفعلي',
-                  'اليومى\nالمعيارى',
-                  'المتوسط\nاليومى',
-                  'اسم العنصر',
-                ]
-                    .map((text) => pw.Padding(
-                          padding: const pw.EdgeInsets.all(4),
-                          child: pw.Center(
-                            child: pw.Text(
-                              text,
-                              style: pw.TextStyle(
-                                color: PdfColor.fromInt(
-                                    AppColorsManager.mainDarkBlue.value),
-                                fontWeight: pw.FontWeight.bold,
-                                fontSize: 8,
-                              ),
-                              textDirection: pw.TextDirection.rtl,
-                              textAlign: pw.TextAlign.center,
-                            ),
-                          ),
-                        ))
-                    .toList(),
+              _buildSectionHeader("جدول المتابعة الغذائية"),
+              pw.SizedBox(height: 12),
+              pw.Text(
+                dateStr,
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                  color: PdfColors.black,
+                ),
               ),
-              // Data Rows
-              ...(entry.nutritionReport ?? []).map((item) {
-                final diff = item.difference ?? 0;
-                final percentage = item.percentage ?? 0;
-
-                final rowData = [
-                  _safeText("${percentage.toStringAsFixed(0)} %"),
-                  _safeText(diff.toInt().toString()),
-                  _safeText(item.standardCumulative == null
-                      ? null
-                      : formatter.format(item.standardCumulative!.round())),
-                  _safeText(item.actualCumulative == null
-                      ? null
-                      : formatter.format(item.actualCumulative!.round())),
-                  _safeText(item.dailyAverageStandard == null
-                      ? null
-                      : formatter.format(item.dailyAverageStandard!.round())),
-                  _safeText(item.dailyAverageActual == null
-                      ? null
-                      : formatter.format(item.dailyAverageActual!.round())),
-                  _safeText(
-                    item.nutrient == "الطاقة (سعر حراري)"
-                        ? "الطاقة (سعر حرارى)"
-                        : item.nutrient,
-                  ),
-                ];
-
-                return pw.TableRow(
-                  children: rowData
-                      .map((text) => pw.Padding(
-                            padding: const pw.EdgeInsets.all(4),
-                            child: pw.Center(
-                              child: pw.Text(
-                                text,
-                                style: const pw.TextStyle(fontSize: 8),
-                                textDirection: pw.TextDirection.rtl,
-                                textAlign: pw.TextAlign.center,
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                );
-              }),
+              pw.SizedBox(height: 2),
+              _buildNutritionHeaderRow(),
             ],
           ),
-        ],
-      ),
-    );
+        ),
+      );
+
+      // -------------------------------
+      // All rows visually attached
+      // -------------------------------
+      for (final item in items) {
+        final currentIndex = items.indexOf(item);
+        final isLast = currentIndex == items.length - 1;
+
+        widgets.add(
+          pw.Container(
+            padding: const pw.EdgeInsets.symmetric(horizontal: 15),
+            margin: const pw.EdgeInsets.only(left: 10, right: 10),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.white,
+              borderRadius: isLast
+                  ? pw.BorderRadius.only(
+                      bottomLeft: pw.Radius.circular(16),
+                      bottomRight: pw.Radius.circular(16),
+                    )
+                  : null,
+            ),
+            child: _buildNutritionRow(item),
+          ),
+        );
+
+        widgets.add(
+          pw.Divider(
+            color: PdfColors.grey300,
+            height: 1,
+          ),
+        );
+      }
+    }
+
+    return widgets;
   }
+
+  // pw.Widget _buildSmartNutrationAnalysisSection(
+  //     MedicalReportResponseModel reportData) {
+  //   final nutritionModule = reportData.data.nutritionTrackingModule;
+
+  //   if (nutritionModule == null || nutritionModule.isEmpty) {
+  //     return pw.SizedBox.shrink();
+  //   }
+
+  //   final widgets = <pw.Widget>[];
+
+  //   for (final entry in nutritionModule) {
+  //     final dateStr = entry.dateRange != null
+  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+  //         : "--";
+
+  //     final items = entry.nutritionReport ?? [];
+
+  //     if (items.isEmpty) continue;
+
+  //     // -------------------------------
+  //     // Header + first row together
+  //     // -------------------------------
+  //     widgets.add(
+  //       pw.Container(
+  //         padding: sectionPadding,
+  //         margin: sectionMargin,
+  //         decoration: pw.BoxDecoration(
+  //           color: PdfColors.white,
+  //           borderRadius: pw.BorderRadius.circular(16),
+  //         ),
+  //         child: pw.Column(
+  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //           children: [
+  //             _buildSectionHeader("جدول المتابعة الغذائية"),
+  //             pw.SizedBox(height: 12),
+  //             pw.Text(
+  //               dateStr,
+  //               style: pw.TextStyle(
+  //                 fontWeight: pw.FontWeight.bold,
+  //                 fontSize: 12,
+  //                 color: PdfColors.black,
+  //               ),
+  //             ),
+  //             pw.SizedBox(height: 2),
+  //             _buildNutritionHeaderRow(),
+  //             _buildNutritionRow(items.first),
+  //             pw.Divider(
+  //               color: PdfColors.grey300,
+  //               height: 1,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     );
+
+  //     // -------------------------------
+  //     // Remaining rows (can paginate)
+  //     // -------------------------------
+  //     for (final item in items.skip(1)) {
+  //       widgets.add(
+  //         pw.Container(
+  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
+  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
+  //           color: PdfColors.white,
+  //           child: _buildNutritionRow(item),
+  //         ),
+  //       );
+
+  //       widgets.add(
+  //         pw.Container(
+  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
+  //           child: pw.Divider(
+  //             color: PdfColors.grey300,
+  //             height: 1,
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   }
+
+  //   return pw.Column(children: widgets);
+  // }
+
+  // List<pw.Widget> _buildSmartNutrationAnalysisSection(
+  //     MedicalReportResponseModel reportData) {
+  //   final nutritionModule = reportData.data.nutritionTrackingModule;
+
+  //   if (nutritionModule == null || nutritionModule.isEmpty) {
+  //     return [];
+  //   }
+
+  //   final widgets = <pw.Widget>[];
+
+  //   for (final entry in nutritionModule) {
+  //     final dateStr = entry.dateRange != null
+  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+  //         : "--";
+
+  //     // بداية البلوك
+  //     widgets.add(
+  //       pw.Container(
+  //         padding: sectionPadding,
+  //         margin: sectionMargin,
+  //         decoration: pw.BoxDecoration(
+  //           color: PdfColors.white,
+  //           borderRadius: pw.BorderRadius.circular(16),
+  //         ),
+  //         child: pw.Column(
+  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //           children: [
+  //             _buildSectionHeader("جدول المتابعة الغذائية"),
+  //             pw.SizedBox(height: 12),
+  //             pw.Text(
+  //               dateStr,
+  //               style: pw.TextStyle(
+  //                 fontWeight: pw.FontWeight.bold,
+  //                 fontSize: 12,
+  //                 color: PdfColors.black,
+  //               ),
+  //             ),
+  //             pw.SizedBox(height: 2),
+  //             _buildNutritionHeaderRow(),
+  //           ],
+  //         ),
+  //       ),
+  //     );
+
+  //     // الصفوف خارج الكولمن
+  //     for (final item in (entry.nutritionReport ?? [])) {
+  //       widgets.add(
+  //         pw.Container(
+  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
+  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
+  //           color: PdfColors.white,
+  //           child: _buildNutritionRow(item),
+  //         ),
+  //       );
+
+  //       widgets.add(
+  //         pw.Container(
+  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
+  //           child: pw.Divider(
+  //             color: PdfColors.grey300,
+  //             height: 1,
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   }
+
+  //   return widgets;
+  // }
+
+  // pw.Widget _buildSmartNutrationAnalysisSection(
+  //     MedicalReportResponseModel reportData) {
+  //   final nutritionModule = reportData.data.nutritionTrackingModule;
+
+  //   if (nutritionModule == null || nutritionModule.isEmpty) {
+  //     return pw.SizedBox.shrink();
+  //   }
+
+  //   return pw.Column(
+  //     children: [
+  //       for (final entry in nutritionModule) _buildSingleNutritionBlock(entry),
+  //     ],
+  //   );
+  // }
+
+  // pw.Widget _buildSingleNutritionBlock(NutritionTrackingEntry entry) {
+  //   final dateStr = entry.dateRange != null
+  //       ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+  //           "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+  //       : "--";
+
+  //   return pw.Container(
+  //     padding: sectionPadding,
+  //     margin: sectionMargin,
+  //     decoration: pw.BoxDecoration(
+  //       color: PdfColors.white,
+  //       borderRadius: pw.BorderRadius.circular(16),
+  //     ),
+  //     child: pw.Column(
+  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //       children: [
+  //         _buildSectionHeader("جدول المتابعة الغذائية"),
+  //         pw.SizedBox(height: 12),
+  //         pw.Text(
+  //           dateStr,
+  //           style: pw.TextStyle(
+  //             fontWeight: pw.FontWeight.bold,
+  //             fontSize: 12,
+  //             color: PdfColors.black,
+  //           ),
+  //         ),
+  //         pw.SizedBox(height: 2),
+  //         _buildNutritionHeaderRow(),
+  //         for (final item in (entry.nutritionReport ?? [])) ...[
+  //           _buildNutritionRow(item),
+  //           pw.Divider(
+  //             color: PdfColors.grey300,
+  //             height: 1,
+  //           ),
+  //         ],
+  //       ],
+  //     ),
+  //   );
+  // }
 
   String _formatNutritionDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "--";
