@@ -268,7 +268,7 @@ class MedicalReportPdfGenerator {
                             fontSize: 14,
                             color: PdfColor.fromInt(
                                 AppColorsManager.mainDarkBlue.value))),
-                    pw.SizedBox(height: 8),
+                    pw.SizedBox(height: 2),
                     if (hasFamilyDiseases)
                       pw.TableHelper.fromTextArray(
                         headers: [
@@ -327,7 +327,7 @@ class MedicalReportPdfGenerator {
                   ],
                 ),
               ),
-              pw.SizedBox(width: 15),
+              pw.SizedBox(width: 12),
 
               // Expected Genetic Diseases (Left side in RTL)
               pw.Expanded(
@@ -341,7 +341,7 @@ class MedicalReportPdfGenerator {
                             fontSize: 14,
                             color: PdfColor.fromInt(
                                 AppColorsManager.mainDarkBlue.value))),
-                    pw.SizedBox(height: 8),
+                    pw.SizedBox(height: 2),
                     if (hasExpectedRisks)
                       pw.TableHelper.fromTextArray(
                         headers: [
@@ -359,9 +359,9 @@ class MedicalReportPdfGenerator {
                           color: PdfColor.fromInt(
                               AppColorsManager.mainDarkBlue.value),
                           fontWeight: pw.FontWeight.bold,
-                          fontSize: 10,
+                          fontSize: 12,
                         ),
-                        cellStyle: const pw.TextStyle(fontSize: 10),
+                        cellStyle: const pw.TextStyle(fontSize: 12),
                         headerDecoration:
                             const pw.BoxDecoration(color: PdfColors.grey100),
                         cellAlignment: pw.Alignment.center,
@@ -369,8 +369,7 @@ class MedicalReportPdfGenerator {
                             color: PdfColors.grey300, width: 0.5),
                       )
                     else
-                      pw.Text('لا يوجد بيانات',
-                          style: const pw.TextStyle(fontSize: 10)),
+                      pw.SizedBox.shrink(),
                   ],
                 ),
               ),
