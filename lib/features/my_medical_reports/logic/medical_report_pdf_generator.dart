@@ -64,7 +64,7 @@ class MedicalReportPdfGenerator {
           _buildChronicDiseasesSection(reportData), // ✅
           _buildComplaintsSection(
               reportData, complaintImages), // ✅ دن بالشكل اليدوي مع وجود صور
-          _buildMedicationsSection(reportData),
+          _buildMedicationsSection(reportData), // ✅
           _buildLabResultsSection(reportData),
           _buildSurgeriesSection(reportData, surgeryImages),
           _buildXRaySection(reportData, radiologyImages),
@@ -1658,6 +1658,19 @@ class MedicalReportPdfGenerator {
     );
   }
 
+  pw.Widget _buildValueWidgetCell(
+    pw.Widget child, {
+    required int flex,
+  }) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(horizontal: 4),
+        child: pw.Center(child: child),
+      ),
+    );
+  }
+
   pw.Widget _buildImageCell(
       String? imageUrl, Map<String, pw.MemoryImage> complaintImages,
       {required int flex}) {
@@ -1772,7 +1785,7 @@ class MedicalReportPdfGenerator {
               flex: 2),
           _buildHeaderCell('اسم الدواء', flex: 4),
           _buildHeaderCell('الجرعة', flex: 1),
-          _buildHeaderCell('كمية الدواء', flex: 1),
+          _buildHeaderCell('كمية الدواء', flex: 2),
           _buildHeaderCell('عدد مرات الجرعة', flex: 2),
           _buildHeaderCell('المدد الزمنية', flex: 2),
         ],
@@ -1788,8 +1801,8 @@ class MedicalReportPdfGenerator {
         children: [
           _buildValueCell(_safeText(med.date), flex: 2),
           _buildValueCell(_safeText(med.medicineName), flex: 4),
-          _buildValueCell(_safeText(med.dosage?.toPdfSafeDosage()), flex: 1),
-          _buildValueCell(_safeText(med.doseAmount), flex: 1),
+          _buildValueCell(_safeText(med.dosage?.toPdfSafeDosage()), flex: 2),
+          _buildValueCell(_safeText(med.doseAmount), flex: 2),
           _buildValueCell(_safeText(med.dosageFrequency), flex: 2),
           _buildValueCell(_safeText(med.timeDuration), flex: 2),
         ],
@@ -2196,47 +2209,64 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('التحاليل الطبية'),
           pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'النتيجة',
-              'النتيجة',
-              'النتيجة',
-              'المجموعة',
-              'الرمز',
-              'اسم التحليل',
-            ],
-            data: tests.map((test) {
-              final results = test.results ?? [];
-              return [
-                _buildTestResultWidget(results.length > 2 ? results[2] : null),
-                _buildTestResultWidget(results.length > 1 ? results[1] : null),
-                _buildTestResultWidget(results.isNotEmpty ? results[0] : null),
-                test.group ?? "---",
-                test.code ?? "---",
-                test.testName,
-              ];
-            }).toList(),
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(
-              fontSize: 12,
-            ),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            columnWidths: {
-              0: const pw.FlexColumnWidth(1.5), // النتيجة 3
-              1: const pw.FlexColumnWidth(1.5), // النتيجة 2
-              2: const pw.FlexColumnWidth(1.5), // النتيجة 1
-              3: const pw.FlexColumnWidth(2), // المجموعة
-              4: const pw.FlexColumnWidth(1.2), // الرمز
-              5: const pw.FlexColumnWidth(2.5), // اسم التحليل
+          _buildLabResultHeaderRow(),
+          ...tests.map(
+            (test) {
+              return pw.Column(
+                children: [
+                  _buildLabResultRow(test),
+                  pw.Divider(
+                    color: PdfColors.grey300,
+                    height: 1,
+                  ),
+                ],
+              );
             },
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            cellPadding: const pw.EdgeInsets.all(6),
           ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildLabResultHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('اسم التحليل', flex: 25),
+          _buildHeaderCell('الرمز', flex: 12),
+          _buildHeaderCell('المجموعة', flex: 20),
+          _buildHeaderCell('النتيجة', flex: 15),
+          _buildHeaderCell('النتيجة', flex: 15),
+          _buildHeaderCell('النتيجة', flex: 15),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildLabResultRow(MedicalTestModel test) {
+    final results = test.results ?? [];
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(test.testName), flex: 25),
+          _buildValueCell(_safeText(test.code), flex: 12),
+          _buildValueCell(_safeText(test.group), flex: 20),
+          _buildValueWidgetCell(
+              _buildTestResultWidget(results.isNotEmpty ? results[0] : null),
+              flex: 15),
+          _buildValueWidgetCell(
+              _buildTestResultWidget(results.length > 1 ? results[1] : null),
+              flex: 15),
+          _buildValueWidgetCell(
+              _buildTestResultWidget(results.length > 2 ? results[2] : null),
+              flex: 15),
         ],
       ),
     );
