@@ -61,7 +61,7 @@ class MedicalReportPdfGenerator {
         build: (context) => [
           _buildBasicInfoSection(reportData),
           _buildVitalSignsSection(reportData),
-          _buildChronicDiseasesSection(reportData),
+          _buildChronicDiseasesSection(reportData), // ✅
           _buildComplaintsSection(
               reportData, complaintImages), // ✅ دن بالشكل اليدوي مع وجود صور
           _buildMedicationsSection(reportData),
@@ -1720,19 +1720,19 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الأدوية'),
           if (current != null && current.isNotEmpty) ...[
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 12),
             pw.Text('الأدوية الحالية',
                 style:
                     pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13)),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 2),
             _buildMedicationTable(current, false),
           ],
           if (expired != null && expired.isNotEmpty) ...[
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: 10),
             pw.Text('الأدوية المنتهية خلال 90 يوم',
                 style:
                     pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13)),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 2),
             _buildMedicationTable(expired, true),
           ],
         ],
@@ -1741,34 +1741,59 @@ class MedicalReportPdfGenerator {
   }
 
   pw.Widget _buildMedicationTable(List<MedicationModel> meds, bool isExpired) {
-    return pw.TableHelper.fromTextArray(
-      headers: [
-        'المدد الزمنية',
-        'عدد مرات الجرعة',
-        'كمية الدواء',
-        'الجرعة',
-        'اسم الدواء',
-        isExpired ? 'تاريخ الانتهاء' : 'تاريخ الاستخدام',
+    return pw.Column(
+      children: [
+        _buildMedicationHeaderRow(isExpired),
+        ...meds.map((med) {
+          return pw.Column(
+            children: [
+              _buildMedicationRow(med),
+              pw.Divider(
+                color: PdfColors.grey300,
+                height: 1,
+              ),
+            ],
+          );
+        }),
       ],
-      data: meds
-          .map((med) => [
-                med.timeDuration ?? '---',
-                med.dosageFrequency ?? '---',
-                med.doseAmount ?? '---',
-                med.dosage?.toPdfSafeDosage() ?? '---',
-                med.medicineName,
-                med.date,
-              ])
-          .toList(),
-      headerStyle: pw.TextStyle(
-        color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-        fontWeight: pw.FontWeight.bold,
-        fontSize: 12,
+    );
+  }
+
+  pw.Widget _buildMedicationHeaderRow(bool isExpired) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
       ),
-      cellStyle: const pw.TextStyle(fontSize: 11),
-      headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-      cellAlignment: pw.Alignment.center,
-      border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell(isExpired ? 'تاريخ الانتهاء' : 'تاريخ الاستخدام',
+              flex: 2),
+          _buildHeaderCell('اسم الدواء', flex: 4),
+          _buildHeaderCell('الجرعة', flex: 1),
+          _buildHeaderCell('كمية الدواء', flex: 1),
+          _buildHeaderCell('عدد مرات الجرعة', flex: 2),
+          _buildHeaderCell('المدد الزمنية', flex: 2),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildMedicationRow(MedicationModel med) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(med.date), flex: 2),
+          _buildValueCell(_safeText(med.medicineName), flex: 4),
+          _buildValueCell(_safeText(med.dosage?.toPdfSafeDosage()), flex: 1),
+          _buildValueCell(_safeText(med.doseAmount), flex: 1),
+          _buildValueCell(_safeText(med.dosageFrequency), flex: 2),
+          _buildValueCell(_safeText(med.timeDuration), flex: 2),
+        ],
+      ),
     );
   }
 
