@@ -13,15 +13,17 @@ class GenerateButtonBlocConsumer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MedicalReportGenerationCubit,
         MedicalReportGenerationState>(
+      listenWhen: (previous, current) =>
+          previous.generateReportStatus != current.generateReportStatus,
       listener: (context, state) {
-        if (state.status == RequestStatus.success) {
+        if (state.generateReportStatus == RequestStatus.success) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Report generated successfully'),
               backgroundColor: Colors.green,
             ),
           );
-        } else if (state.status == RequestStatus.failure) {
+        } else if (state.generateReportStatus == RequestStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -40,7 +42,7 @@ class GenerateButtonBlocConsumer extends StatelessWidget {
                 .read<MedicalReportGenerationCubit>()
                 .emitGenerateReport();
           },
-          isLoading: state.status == RequestStatus.loading,
+          isLoading: state.generateReportStatus == RequestStatus.loading,
         );
       },
     );

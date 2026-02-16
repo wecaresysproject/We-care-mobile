@@ -463,11 +463,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
       buildFloatingActionButtonBlocBuilder() {
     return BlocBuilder<MedicalReportGenerationCubit,
         MedicalReportGenerationState>(
+      buildWhen: (previous, current) =>
+          previous.generateReportStatus != current.generateReportStatus,
       builder: (context, state) {
         if (state.medicalReportData.isNotNull &&
-            state.status == RequestStatus.success) {
+            state.generateReportStatus == RequestStatus.success) {
           return FloatingActionButton.extended(
-            onPressed: state.status == RequestStatus.loading
+            onPressed: state.generateReportStatus == RequestStatus.loading
                 ? null
                 : () async {
                     final logic = MedicalReportExportLogic();
@@ -475,7 +477,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                         context, state.medicalReportData);
                   },
             backgroundColor: AppColorsManager.mainDarkBlue,
-            icon: state.status == RequestStatus.loading
+            icon: state.generateReportStatus == RequestStatus.loading
                 ? const SizedBox(
                     width: 24,
                     height: 24,
@@ -486,7 +488,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                   )
                 : const Icon(Icons.picture_as_pdf, color: Colors.white),
             label: Text(
-              state.status == RequestStatus.loading
+              state.generateReportStatus == RequestStatus.loading
                   ? 'Generating...'
                   : 'Export as PDF',
               style: const TextStyle(color: Colors.white),

@@ -2,6 +2,7 @@ part of 'medical_report_generation_cubit.dart';
 
 class MedicalReportGenerationState extends Equatable {
   final RequestStatus status;
+  final RequestStatus generateReportStatus;
   final Map<String, RequestStatus> categoryFiltersStatus;
   final String message;
   final bool basicInfoGetAll;
@@ -70,6 +71,7 @@ class MedicalReportGenerationState extends Equatable {
 
   const MedicalReportGenerationState({
     this.status = RequestStatus.initial,
+    this.generateReportStatus = RequestStatus.initial,
     this.categoryFiltersStatus = const {},
     this.message = '',
     this.basicInfoGetAll = false,
@@ -139,6 +141,7 @@ class MedicalReportGenerationState extends Equatable {
 
   MedicalReportGenerationState copyWith({
     RequestStatus? status,
+    RequestStatus? generateReportStatus,
     Map<String, RequestStatus>? categoryFiltersStatus,
     String? message,
     bool? basicInfoGetAll,
@@ -207,6 +210,7 @@ class MedicalReportGenerationState extends Equatable {
   }) {
     return MedicalReportGenerationState(
       status: status ?? this.status,
+      generateReportStatus: generateReportStatus ?? this.generateReportStatus,
       categoryFiltersStatus:
           categoryFiltersStatus ?? this.categoryFiltersStatus,
       message: message ?? this.message,
@@ -321,6 +325,7 @@ class MedicalReportGenerationState extends Equatable {
   @override
   List<Object?> get props => [
         status,
+        generateReportStatus,
         categoryFiltersStatus,
         message,
         basicInfoGetAll,
