@@ -65,12 +65,12 @@ class MedicalReportPdfGenerator {
           _buildComplaintsSection(
               reportData, complaintImages), // ✅ دن بالشكل اليدوي مع وجود صور
           _buildMedicationsSection(reportData), // ✅
-          _buildLabResultsSection(reportData),
+          _buildLabResultsSection(reportData), // ✅
           _buildSurgeriesSection(reportData, surgeryImages),
           _buildXRaySection(reportData, radiologyImages),
           _buildPrescriptionsSection(reportData, prescriptionImages),
           _buildGeneticDiseasesSection(reportData), // ✅
-          _buildAllergiesSection(reportData),
+          _buildAllergiesSection(reportData), // ✅
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
           // _buildVaccinationsSection(),
@@ -1829,39 +1829,60 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الحساسية'),
           pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'حمل حقنة الابينفرين',
-              'حدة الاعراض',
-              'مسببات الحساسية (3)',
-              'مسببات الحساسية (2)',
-              'مسببات الحساسية (1)',
-              'نوع الحساسية',
-            ],
-            data: allergies.map((allergy) {
-              final triggers = allergy.allergyTriggers ?? [];
-              return [
-                allergy.carryEpinephrine.isNull
-                    ? "--"
-                    : (allergy.carryEpinephrine! ? "نعم" : "لا"),
-                _safeText(allergy.symptomSeverity),
-                _triggerAt(triggers, 2),
-                _triggerAt(triggers, 1),
-                _triggerAt(triggers, 0),
-                _safeText(allergy.allergyType)
-              ];
-            }).toList(),
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(
-              fontSize: 12,
-            ),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          _buildAllergyHeaderRow(),
+          ...allergies.map((allergy) {
+            return pw.Column(
+              children: [
+                _buildAllergyRow(allergy),
+                pw.Divider(
+                  color: PdfColors.grey300,
+                  height: 1,
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildAllergyHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('نوع الحساسية', flex: 20),
+          _buildHeaderCell('مسببات الحساسية (1)', flex: 20),
+          _buildHeaderCell('مسببات الحساسية (2)', flex: 20),
+          _buildHeaderCell('مسببات الحساسية (3)', flex: 20),
+          _buildHeaderCell('حدة الاعراض', flex: 10),
+          _buildHeaderCell('حمل حقنة الابينفرين', flex: 15),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildAllergyRow(AllergyModel allergy) {
+    final triggers = allergy.allergyTriggers ?? [];
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(allergy.allergyType), flex: 20),
+          _buildValueCell(_triggerAt(triggers, 0), flex: 20),
+          _buildValueCell(_triggerAt(triggers, 1), flex: 20),
+          _buildValueCell(_triggerAt(triggers, 2), flex: 20),
+          _buildValueCell(_safeText(allergy.symptomSeverity), flex: 10),
+          _buildValueCell(
+            allergy.carryEpinephrine.isNull
+                ? "--"
+                : (allergy.carryEpinephrine! ? "نعم" : "لا"),
+            flex: 15,
           ),
         ],
       ),
