@@ -69,7 +69,7 @@ class MedicalReportPdfGenerator {
           _buildSurgeriesSection(reportData, surgeryImages),
           _buildXRaySection(reportData, radiologyImages),
           _buildPrescriptionsSection(reportData, prescriptionImages),
-          _buildGeneticDiseasesSection(reportData),
+          _buildGeneticDiseasesSection(reportData), // ✅
           _buildAllergiesSection(reportData),
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
@@ -1358,31 +1358,18 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الأمراض المزمنة'),
           pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'حالة المرض المزمن',
-              'اسم المرض المزمن',
-              'تاريخ بداية التشخيص',
-            ],
-            data: diseases
-                .map((disease) => [
-                      disease.diseaseStatus,
-                      disease.diseaseName,
-                      disease.formattedDate,
-                    ])
-                .toList(),
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 14,
-            ),
-            cellStyle: const pw.TextStyle(
-              fontSize: 13,
-            ),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          ),
+          _buildChronicIllnessHeaderRow(),
+          ...diseases.map((disease) {
+            return pw.Column(
+              children: [
+                _buildChronicIllnessRow(disease),
+                pw.Divider(
+                  color: PdfColors.grey300,
+                  height: 1,
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -2594,6 +2581,37 @@ class MedicalReportPdfGenerator {
             flex: 6,
           ),
           _buildValueCell(_safeText(item.overallLevel), flex: 2),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildChronicIllnessHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('تاريخ بداية التشخيص', flex: 3),
+          _buildHeaderCell('اسم المرض المزمن', flex: 4),
+          _buildHeaderCell('حالة المرض المزمن', flex: 3),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildChronicIllnessRow(ChronicDiseaseModel disease) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(disease.formattedDate), flex: 3),
+          _buildValueCell(_safeText(disease.diseaseName), flex: 4),
+          _buildValueCell(_safeText(disease.diseaseStatus), flex: 3),
         ],
       ),
     );
