@@ -153,10 +153,12 @@ class SupplementsSelectionRequestBody {
 
 @JsonSerializable()
 class SmartNutritionalAnalyzerSelectionRequestBody {
+  final bool getAll;
   @JsonKey(name: "ranges")
   final List<String> dateRanges;
 
   SmartNutritionalAnalyzerSelectionRequestBody({
+    required this.getAll,
     required this.dateRanges,
   });
 

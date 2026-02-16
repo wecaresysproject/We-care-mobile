@@ -371,6 +371,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           medicalProcedures: state.dentalSelectedMedicalProcedures,
         ),
         smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
+          getAll: state.smartNutritionGetAll,
           dateRanges: state.smartNutritionSelectedReports,
         ),
         supplements: SupplementsSelectionRequestBody(
@@ -389,7 +390,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       ),
     );
 
-    emit(state.copyWith(status: RequestStatus.loading));
+    emit(state.copyWith(generateReportStatus: RequestStatus.loading));
 
     final result = await _medicalReportRepo.fetchMedicalReportData(
       requestBody,
@@ -401,7 +402,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
 
         emit(
           state.copyWith(
-            status: RequestStatus.success,
+            generateReportStatus: RequestStatus.success,
             medicalReportData: data,
           ),
         );
@@ -409,7 +410,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       failure: (error) {
         emit(
           state.copyWith(
-            status: RequestStatus.failure,
+            generateReportStatus: RequestStatus.failure,
             message: error.errors.firstOrNull ?? 'An error occurred',
           ),
         );
