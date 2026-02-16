@@ -239,7 +239,9 @@ class MedicalReportPdfGenerator {
     final hasExpectedRisks = geneticModule.myExpectedGeneticDiseases != null &&
         geneticModule.myExpectedGeneticDiseases!.isNotEmpty;
 
-    if (!hasFamilyDiseases && !hasExpectedRisks) return pw.SizedBox.shrink();
+    if (!hasFamilyDiseases && !hasExpectedRisks) {
+      return pw.SizedBox.shrink();
+    }
 
     return pw.Container(
       padding: sectionPadding,
@@ -256,125 +258,175 @@ class MedicalReportPdfGenerator {
           pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Family Genetic Diseases (Right side in RTL)
+              /// ================= FAMILY DISEASES =================
               pw.Expanded(
                 flex: 3,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text('الامراض الوراثية العائلية',
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                            fontSize: 14,
-                            color: PdfColor.fromInt(
-                                AppColorsManager.mainDarkBlue.value))),
+                    pw.Text(
+                      'الامراض الوراثية العائلية',
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 14,
+                        color: PdfColor.fromInt(
+                            AppColorsManager.mainDarkBlue.value),
+                      ),
+                    ),
                     pw.SizedBox(height: 2),
-                    if (hasFamilyDiseases)
-                      pw.TableHelper.fromTextArray(
-                        headers: [
-                          'حالة المريض',
-                          'الأقارب المصابون',
-                          'المرض الوراثي',
-                        ],
-                        data: geneticModule.familyGeneticDiseases!.map((item) {
-                          final membersNames = (item.members ?? []).map((m) {
-                            final memberCode =
-                                (m.code != null && m.code!.isNotEmpty)
-                                    ? getFamilyMemberCode(m.code!)
-                                    : "غير معروف";
-                            final nameStr =
-                                (m.name != null && m.name!.isNotEmpty)
-                                    ? " : ${m.name}"
-                                    : "";
-                            return "- $memberCode$nameStr";
-                          }).join('\n');
+                    if (hasFamilyDiseases) ...[
+                      _buildFamilyGeneticHeaderRow(),
+                      ...geneticModule.familyGeneticDiseases!.map((item) {
+                        final membersNames = (item.members ?? []).map((m) {
+                          final memberCode =
+                              (m.code != null && m.code!.isNotEmpty)
+                                  ? getFamilyMemberCode(m.code!)
+                                  : "غير معروف";
+                          final nameStr = (m.name != null && m.name!.isNotEmpty)
+                              ? " : ${m.name}"
+                              : "";
+                          return "- $memberCode$nameStr";
+                        }).join('\n');
 
-                          final membersStatuses = (item.members ?? []).map((m) {
-                            return (m.diseaseStatus != null &&
-                                    m.diseaseStatus!.isNotEmpty)
-                                ? '- ${m.diseaseStatus}'
-                                : "--";
-                          }).join('\n');
+                        final membersStatuses = (item.members ?? []).map((m) {
+                          return (m.diseaseStatus != null &&
+                                  m.diseaseStatus!.isNotEmpty)
+                              ? '- ${m.diseaseStatus}'
+                              : "--";
+                        }).join('\n');
 
-                          return [
-                            _safeText(membersStatuses.isEmpty
-                                ? "--"
-                                : membersStatuses),
-                            _safeText(
-                                membersNames.isEmpty ? "--" : membersNames),
-                            _safeText(item.geneticDisease),
-                          ];
-                        }).toList(),
-                        headerStyle: pw.TextStyle(
-                          color: PdfColor.fromInt(
-                              AppColorsManager.mainDarkBlue.value),
-                          fontWeight: pw.FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                        cellStyle: const pw.TextStyle(
-                          fontSize: 12,
-                        ),
-                        headerDecoration:
-                            const pw.BoxDecoration(color: PdfColors.grey100),
-                        cellAlignment: pw.Alignment.center,
-                        border: pw.TableBorder.all(
-                            color: PdfColors.grey300, width: 0.5),
-                        headerDirection: pw.TextDirection.rtl,
-                      )
-                    else
-                      pw.Text('لا يوجد بيانات',
-                          style: const pw.TextStyle(fontSize: 10)),
+                        return pw.Column(
+                          children: [
+                            _buildFamilyGeneticRow(
+                              status: membersStatuses,
+                              names: membersNames,
+                              disease: item.geneticDisease,
+                            ),
+                            pw.Divider(
+                              color: PdfColors.grey300,
+                              height: 1,
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
                   ],
                 ),
               ),
+
               pw.SizedBox(width: 12),
 
-              // Expected Genetic Diseases (Left side in RTL)
+              /// ================= EXPECTED DISEASES =================
               pw.Expanded(
                 flex: 2,
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text('أمراضي الوراثية المتوقعة',
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                            fontSize: 14,
-                            color: PdfColor.fromInt(
-                                AppColorsManager.mainDarkBlue.value))),
+                    pw.Text(
+                      'أمراضي الوراثية المتوقعة',
+                      style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold,
+                        fontSize: 14,
+                        color: PdfColor.fromInt(
+                            AppColorsManager.mainDarkBlue.value),
+                      ),
+                    ),
                     pw.SizedBox(height: 2),
-                    if (hasExpectedRisks)
-                      pw.TableHelper.fromTextArray(
-                        headers: [
-                          'احتمالية الإصابة',
-                          'الأمراض الوراثية المتوقعة',
-                        ],
-                        data: geneticModule.myExpectedGeneticDiseases!
-                            .map((item) {
-                          return [
-                            _safeText(item.probabilityLevel),
-                            _safeText(item.geneticDisease),
-                          ];
-                        }).toList(),
-                        headerStyle: pw.TextStyle(
-                          color: PdfColor.fromInt(
-                              AppColorsManager.mainDarkBlue.value),
-                          fontWeight: pw.FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                        cellStyle: const pw.TextStyle(fontSize: 12),
-                        headerDecoration:
-                            const pw.BoxDecoration(color: PdfColors.grey100),
-                        cellAlignment: pw.Alignment.center,
-                        border: pw.TableBorder.all(
-                            color: PdfColors.grey300, width: 0.5),
-                      )
-                    else
-                      pw.SizedBox.shrink(),
+                    if (hasExpectedRisks) ...[
+                      _buildExpectedGeneticHeaderRow(),
+                      ...geneticModule.myExpectedGeneticDiseases!.map((item) {
+                        return pw.Column(
+                          children: [
+                            _buildExpectedGeneticRow(
+                              probability: item.probabilityLevel,
+                              disease: item.geneticDisease,
+                            ),
+                            pw.Divider(
+                              color: PdfColors.grey300,
+                              height: 1,
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
                   ],
                 ),
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildFamilyGeneticHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('المرض الوراثي', flex: 3),
+          _buildHeaderCell('الأقارب المصابون', flex: 4),
+          _buildHeaderCell('حالة المريض', flex: 2),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildFamilyGeneticRow({
+    required String status,
+    required String names,
+    String? disease,
+  }) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(disease), flex: 3),
+          _buildValueCell(
+            _safeText(names),
+            flex: 4,
+          ),
+          _buildValueCell(_safeText(status), flex: 2),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildExpectedGeneticHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('الأمراض الوراثية المتوقعة', flex: 4),
+          _buildHeaderCell('احتمالية الإصابة', flex: 2),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildExpectedGeneticRow({
+    String? probability,
+    String? disease,
+  }) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(
+            _safeText(disease),
+            flex: 4,
+          ),
+          _buildValueCell(_safeText(probability), flex: 2),
         ],
       ),
     );
