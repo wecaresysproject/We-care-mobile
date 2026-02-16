@@ -612,22 +612,36 @@ class GeneticDiseasesModule {
 
 @JsonSerializable()
 class FamilyGeneticDisease {
-  final String? code;
-  final String? name;
-  final List<String>? geneticDiseases;
-  final List<String>? diseaseStatus;
+  final String? geneticDisease;
+  final List<GeneticDiseaseMember>? members;
 
   FamilyGeneticDisease({
-    this.code,
-    this.name,
-    this.geneticDiseases,
-    this.diseaseStatus,
+    this.geneticDisease,
+    this.members,
   });
 
   factory FamilyGeneticDisease.fromJson(Map<String, dynamic> json) =>
       _$FamilyGeneticDiseaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$FamilyGeneticDiseaseToJson(this);
+}
+
+@JsonSerializable()
+class GeneticDiseaseMember {
+  final String? code;
+  final String? name;
+  final String? diseaseStatus;
+
+  GeneticDiseaseMember({
+    this.code,
+    this.name,
+    this.diseaseStatus,
+  });
+
+  factory GeneticDiseaseMember.fromJson(Map<String, dynamic> json) =>
+      _$GeneticDiseaseMemberFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GeneticDiseaseMemberToJson(this);
 }
 
 @JsonSerializable()
