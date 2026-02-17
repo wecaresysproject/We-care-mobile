@@ -59,8 +59,8 @@ class MedicalReportPdfGenerator {
         header: (context) =>
             _buildHeader(profileImageProvider, logoImageProvider, reportData),
         build: (context) => [
-          _buildBasicInfoSection(reportData),
-          _buildVitalSignsSection(reportData),
+          _buildBasicInfoSection(reportData), // ✅
+          _buildVitalSignsSection(reportData), // ✅
           _buildChronicDiseasesSection(reportData), // ✅
           _buildComplaintsSection(
               reportData, complaintImages), // ✅ دن بالشكل اليدوي مع وجود صور
