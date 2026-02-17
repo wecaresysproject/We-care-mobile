@@ -77,8 +77,8 @@ class MedicalReportPdfGenerator {
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
           ..._buildSmartNutrationAnalysisSection(reportData), // ✅
-          _buildPhysicalActivitySection(reportData),
-          _buildSupplementsAndVitaminsSection(reportData),
+          _buildPhysicalActivitySection(reportData), // ✅
+          _buildSupplementsAndVitaminsSection(reportData), // ✅
         ],
       ),
     );
@@ -453,42 +453,18 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('متابعة الفيتامينات و المكملات الغذائية'),
           pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'الجرعة اليومية',
-              'اسم الفيتامين (المكمل الغذائي)',
-              'نوع الخطة',
-              'التاريخ',
-            ],
-            data: supplementsModule.supplements!.map((supplement) {
-              String planTypeAr = mapPlanTypeName(supplement);
-
-              return [
-                _safeText(supplement.dosage),
-                _safeText(supplement.supplementName),
-                _safeText(planTypeAr),
-                _safeText(supplement.date),
-              ];
-            }).toList(),
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(
-              fontSize: 12,
-            ),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            columnWidths: {
-              0: const pw.FlexColumnWidth(1.2), // الجرعة اليومية
-              1: const pw.FlexColumnWidth(3.5), // اسم الفيتامين
-              2: const pw.FlexColumnWidth(1.5), // خطة
-              3: const pw.FlexColumnWidth(1.8), // التاريخ
-            },
-            cellPadding: const pw.EdgeInsets.all(6),
-          ),
+          _buildSupplementsHeaderRow(),
+          ...supplementsModule.supplements!.map((supplement) {
+            return pw.Column(
+              children: [
+                _buildSupplementsRow(supplement),
+                pw.Divider(
+                  color: PdfColors.grey300,
+                  height: 1,
+                ),
+              ],
+            );
+          }),
         ],
       ),
     );
@@ -600,6 +576,38 @@ class MedicalReportPdfGenerator {
           _buildHeaderCell('وحدات البناء\nالعضلى المعيارى', flex: 10),
           _buildHeaderCell('وحدات الصيانة\nالعضلية الفعلية', flex: 10),
           _buildHeaderCell('وحدات الصيانة\nالعضلية المعيارية', flex: 10),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildSupplementsHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.all(6),
+      decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('التاريخ', flex: 18),
+          _buildHeaderCell('نوع الخطة', flex: 15),
+          _buildHeaderCell('اسم الفيتامين (المكمل الغذائي)', flex: 35),
+          _buildHeaderCell('الجرعة اليومية', flex: 12),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildSupplementsRow(dynamic supplement) {
+    String planTypeAr = mapPlanTypeName(supplement);
+
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(supplement.date), flex: 18),
+          _buildValueCell(_safeText(planTypeAr), flex: 15),
+          _buildValueCell(_safeText(supplement.supplementName), flex: 35),
+          _buildValueCell(_safeText(supplement.dosage), flex: 12),
         ],
       ),
     );
