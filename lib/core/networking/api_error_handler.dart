@@ -32,10 +32,16 @@ class ApiErrorHandler {
           return ApiErrorModel(
             errors: ["Receive timeout in connection with the server"],
           );
-        case DioExceptionType.badResponse
-            when error.response?.statusCode == 401 ||
-                error.response?.statusCode == 403:
-          return _handleError(error.response?.data);
+        case DioExceptionType.badResponse:
+          final statusCode = error.response?.statusCode ?? 0;
+
+          if (statusCode >= 400 && statusCode < 500) {
+            return _handleError(error.response?.data);
+          } else {
+            return ApiErrorModel(
+              errors: ["Error model no structuring in right way."],
+            );
+          }
         case DioExceptionType.sendTimeout:
           return ApiErrorModel(
             errors: ["Send timeout in connection with the server"],

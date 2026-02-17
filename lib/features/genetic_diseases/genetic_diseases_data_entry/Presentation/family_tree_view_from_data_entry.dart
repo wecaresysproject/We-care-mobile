@@ -137,7 +137,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
   Widget buildStaticItem(
       BuildContext context, String title, String emoji, FamilyCodes code) {
     return GestureDetector(
-      onDoubleTap: () async {
+      onTap: () async {
         await navigateToNextScreen(context, code, title);
       },
       child: Container(
@@ -190,7 +190,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     FamilyCodes code,
   ) {
     return GestureDetector(
-      onDoubleTap: () async {
+      onTap: () async {
         await navigateToNextScreen(context, code, title);
       },
       child: Container(
@@ -242,7 +242,7 @@ class FamilyTreeViewFromDataEntry extends StatelessWidget {
     return Stack(
       children: [
         GestureDetector(
-          onDoubleTap: () async {
+          onTap: () async {
             await navigateToNextScreen(context, code, title);
           },
           child: Container(
@@ -572,7 +572,7 @@ class _AddFamilyMemberDialogState extends State<AddFamilyMemberDialog> {
                   labelText: 'اختر صلة القرابة',
                   border: OutlineInputBorder(),
                 ),
-                value: _selectedRelation,
+                initialValue: _selectedRelation,
                 items: _familyRelationsMap.keys
                     .map((relation) => DropdownMenuItem<String>(
                           value: relation,
