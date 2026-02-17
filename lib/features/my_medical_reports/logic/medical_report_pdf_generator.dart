@@ -76,7 +76,7 @@ class MedicalReportPdfGenerator {
           // _buildVaccinationsSection(),
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
-          ..._buildSmartNutrationAnalysisSection(reportData),
+          ..._buildSmartNutrationAnalysisSection(reportData), // ✅
           _buildPhysicalActivitySection(reportData),
           _buildSupplementsAndVitaminsSection(reportData),
         ],
@@ -513,62 +513,93 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('جدول متابعة النشاط الرياضي'),
           pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: [
-              'وحدات الصيانة\nالعضلية المعيارية',
-              'وحدات الصيانة\nالعضلية الفعلية',
-              'وحدات البناء\nالعضلى المعياري',
-              'وحدات البناء\nالعضلي الفعلي',
-              'عدد دقائق\nممارسة الرياضة',
-              'متوسط\nالدقائق لليوم',
-              'عدد أيام\nممارسة الرياضة',
-              'خطة (أسبوعية/\nشهرية)',
-              'التاريخ',
-            ],
-            data: physicalActivityModule.map((entry) {
-              String planTypeAr = entry.planType ?? "--";
-              if (planTypeAr.toLowerCase() == 'monthly') {
-                planTypeAr = 'شهرية';
-              } else if (planTypeAr.toLowerCase() == 'weekly') {
-                planTypeAr = 'أسبوعية';
-              }
+          _buildPhysicalActivityHeaderRow(),
+          ...physicalActivityModule.map((entry) {
+            return pw.Column(
+              children: [
+                _buildPhysicalActivityRow(entry),
+                pw.Divider(
+                  color: PdfColors.grey300,
+                  height: 1,
+                ),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
 
-              final dateStr = entry.dateRange != null
-                  ? "${(entry.dateRange!.to)} : ${(entry.dateRange!.from)}"
-                  : "--";
+  pw.Widget _buildPhysicalActivityRow(PhysicalActivityEntry entry) {
+    String planTypeAr = entry.planType ?? "--";
+    if (planTypeAr.toLowerCase() == 'monthly') {
+      planTypeAr = 'شهرية';
+    } else if (planTypeAr.toLowerCase() == 'weekly') {
+      planTypeAr = 'أسبوعية';
+    }
 
-              return [
-                _safeText(formatter.format(
-                    (entry.muscleMaintenanceUnitsStandard ?? 0).round())),
-                _safeText(formatter
-                    .format((entry.muscleMaintenanceUnitsActual ?? 0).round())),
-                _safeText(formatter
-                    .format((entry.muscleBuildingUnitsStandard ?? 0).round())),
-                _safeText(formatter
-                    .format((entry.muscleBuildingUnitsActual ?? 0).round())),
-                _safeText(formatter
-                    .format((entry.totalExerciseMinutes ?? 0).round())),
-                _safeText(formatter
-                    .format((entry.averageMinutesPerDay ?? 0).round())),
-                _safeText(
-                    formatter.format((entry.totalExerciseDays ?? 0).round())),
-                _safeText(planTypeAr),
-                _safeText(dateStr),
-              ];
-            }).toList(),
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 10,
-            ),
-            headerAlignment: pw.Alignment.center,
-            headerDirection: pw.TextDirection.rtl,
-            cellStyle: const pw.TextStyle(fontSize: 12),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            cellPadding: const pw.EdgeInsets.all(4),
-          ),
+    final dateStr = entry.dateRange != null
+        ? "${(entry.dateRange!.to)} : ${(entry.dateRange!.from)}"
+        : "--";
+
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(dateStr), flex: 20),
+          _buildValueCell(_safeText(planTypeAr), flex: 12),
+          _buildValueCell(
+              _safeText(
+                  formatter.format((entry.totalExerciseDays ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(
+                  formatter.format((entry.averageMinutesPerDay ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(
+                  formatter.format((entry.totalExerciseMinutes ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(formatter
+                  .format((entry.muscleBuildingUnitsActual ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(formatter
+                  .format((entry.muscleBuildingUnitsStandard ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(formatter
+                  .format((entry.muscleMaintenanceUnitsActual ?? 0).round())),
+              flex: 10),
+          _buildValueCell(
+              _safeText(formatter
+                  .format((entry.muscleMaintenanceUnitsStandard ?? 0).round())),
+              flex: 10),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildPhysicalActivityHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('التاريخ', flex: 18),
+          _buildHeaderCell('خطة (أسبوعية/\nشهرية)', flex: 12),
+          _buildHeaderCell('عدد أيام\nممارسة الرياضة', flex: 10),
+          _buildHeaderCell('متوسط\nالدقائق لليوم', flex: 10),
+          _buildHeaderCell('عدد دقائق\nممارسة الرياضة', flex: 10),
+          _buildHeaderCell('وحدات البناء\nالعضلي الفعلي', flex: 10),
+          _buildHeaderCell('وحدات البناء\nالعضلى المعيارى', flex: 10),
+          _buildHeaderCell('وحدات الصيانة\nالعضلية الفعلية', flex: 10),
+          _buildHeaderCell('وحدات الصيانة\nالعضلية المعيارية', flex: 10),
         ],
       ),
     );

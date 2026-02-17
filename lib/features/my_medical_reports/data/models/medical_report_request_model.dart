@@ -95,10 +95,12 @@ class MedicalReportSelections {
 
 @JsonSerializable()
 class PhysicalActivitySelectionRequestBody {
+  final bool getAll;
   @JsonKey(name: 'dateRange')
   final List<String> dateRanges;
 
   PhysicalActivitySelectionRequestBody({
+    required this.getAll,
     required this.dateRanges,
   });
 
