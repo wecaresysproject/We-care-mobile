@@ -380,6 +380,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           supplementNames: state.supplementsSelectedNames,
         ),
         sportsActivity: PhysicalActivitySelectionRequestBody(
+          getAll: state.physicalActivityGetAll,
           dateRanges: state.physicalActivitySelectedReports,
         ),
         mentalDiseases: MentalDiseasesSelectionRequestBody(

@@ -53,16 +53,7 @@ class DioServices {
             // Retry logic
             final RequestOptions options = error.requestOptions;
             AppLogger.debug('Retrying...');
-            final response = await dio!.request(
-              options.path,
-              options: Options(
-                method: options.method,
-                headers: options.headers,
-                contentType: options.contentType,
-                receiveTimeout: options.receiveTimeout,
-                sendTimeout: options.sendTimeout,
-              ),
-            );
+            final response = await dio!.fetch(options);
             return handler.resolve(response); // Return the new response
           }
           return handler.next(error); // Propagate error if no retry

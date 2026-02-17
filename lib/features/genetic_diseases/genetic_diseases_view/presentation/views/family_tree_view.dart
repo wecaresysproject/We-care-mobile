@@ -37,7 +37,7 @@ class FamilyTreeView extends StatelessWidget {
   Widget buildStaticItem(
       BuildContext context, String title, String emoji, String code) {
     return GestureDetector(
-      onDoubleTap: isGenericTitle(title)
+      onTap: isGenericTitle(title)
           ? null
           : () async {
               await navigateToNextScreen(context, code, title).then((value) =>
@@ -92,7 +92,7 @@ class FamilyTreeView extends StatelessWidget {
   Widget buildMainItem(BuildContext context, String title, String emoji,
       Color color, String code) {
     return GestureDetector(
-      onDoubleTap: isGenericTitle(title)
+      onTap: isGenericTitle(title)
           ? null
           : () async {
               await navigateToNextScreen(context, code, title);
