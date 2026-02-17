@@ -41,3 +41,25 @@ class PhysicalActivityDayModel {
 
   Map<String, dynamic> toJson() => _$PhysicalActivityDayModelToJson(this);
 }
+
+class PhysicalActivityTotals {
+  final int exerciseMinutes;
+  final int consumedCalories;
+  final int burnedCalories;
+  final int muscleBuildingUnits;
+  final int muscleMaintenanceUnits;
+  final int currentWeight;
+  final double targetWeightMax;
+  final double targetWeightMin;
+
+  PhysicalActivityTotals({
+    required this.exerciseMinutes,
+    required this.consumedCalories,
+    required this.burnedCalories,
+    required this.muscleBuildingUnits,
+    required this.muscleMaintenanceUnits,
+    required this.currentWeight,
+    required this.targetWeightMax,
+    required this.targetWeightMin,
+  });
+}

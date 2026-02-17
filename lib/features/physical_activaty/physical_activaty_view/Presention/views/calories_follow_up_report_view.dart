@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -66,6 +67,7 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
         dividerThickness: 0.83,
         headingTextStyle: _getHeadingTextStyle(),
         showBottomBorder: true,
+        headingRowHeight: 85.h,
         border: TableBorder.all(
           style: BorderStyle.solid,
           borderRadius: BorderRadius.circular(8),
@@ -133,24 +135,73 @@ class CaloriesFollowUpReportTableView extends StatelessWidget {
 
   /// Build rows from API data
   List<DataRow> _buildRows(List<PhysicalActivityDayModel> data) {
-    return data.map((item) {
+    final rows = data.map((item) {
       return DataRow(
         cells: [
           _buildCell(item.date),
           _buildCell(item.day),
-          _buildCell(item.exerciseMinutes.toString()),
-          _buildCell(item.consumedCalories.toString()),
-          _buildCell(item.burnedCalories.toString()),
-          _buildCell(item.muscleBuildingUnits.toString()),
-          _buildCell(item.muscleMaintenanceUnits.toString()),
-          _buildCell("${item.muscleBuildingPercentage.toStringAsFixed(1)}%"),
-          _buildCell("${item.muscleMaintenancePercentage.toStringAsFixed(1)}%"),
-          _buildCell(item.currentWeight.toString()),
-          _buildCell(item.targetWeightMax.toStringAsFixed(1)),
-          _buildCell(item.targetWeightMin.toStringAsFixed(1)),
+          _buildCell(formatNumber(item.exerciseMinutes)),
+          _buildCell(formatNumber(item.consumedCalories)),
+          _buildCell(formatNumber(item.burnedCalories)),
+          _buildCell(formatNumber(item.muscleBuildingUnits)),
+          _buildCell(formatNumber(item.muscleMaintenanceUnits)),
+          _buildCell(formatNumber(item.muscleBuildingPercentage)),
+          _buildCell(formatNumber(item.muscleMaintenancePercentage)),
+          _buildCell(formatNumber(item.currentWeight)),
+          _buildCell(formatNumber(item.targetWeightMax)),
+          _buildCell(formatNumber(item.targetWeightMin)),
         ],
       );
     }).toList();
+
+    // ⬇️ إضافة صف المجموع
+    final totals = _calculateTotals(data);
+
+    rows.add(
+      DataRow(
+        color: WidgetStateProperty.all(
+          AppColorsManager.secondaryColor.withOpacity(0.25),
+        ),
+        cells: [
+          _buildCell("—", isBold: true),
+          _buildCell("الإجمالي", isBold: true),
+          _buildCell(formatNumber(totals.exerciseMinutes), isBold: true),
+          _buildCell(formatNumber(totals.consumedCalories), isBold: true),
+          _buildCell(formatNumber(totals.burnedCalories), isBold: true),
+          _buildCell(formatNumber(totals.muscleBuildingUnits), isBold: true),
+          _buildCell(formatNumber(totals.muscleMaintenanceUnits), isBold: true),
+
+          // ❌ لا مجموع للنِسَب
+          _buildCell("—"),
+          _buildCell("—"),
+
+          _buildCell(formatNumber(totals.currentWeight), isBold: true),
+          _buildCell(formatNumber(totals.targetWeightMax), isBold: true),
+          _buildCell(formatNumber(totals.targetWeightMin), isBold: true),
+        ],
+      ),
+    );
+
+    return rows;
+  }
+
+  PhysicalActivityTotals _calculateTotals(List<PhysicalActivityDayModel> data) {
+    return PhysicalActivityTotals(
+      exerciseMinutes: data.fold(0, (sum, e) => sum + e.exerciseMinutes),
+      consumedCalories: data.fold(0, (sum, e) => sum + e.consumedCalories),
+      burnedCalories: data.fold(0, (sum, e) => sum + e.burnedCalories),
+      muscleBuildingUnits:
+          data.fold(0, (sum, e) => sum + e.muscleBuildingUnits),
+      muscleMaintenanceUnits:
+          data.fold(0, (sum, e) => sum + e.muscleMaintenanceUnits),
+
+      // الوزن غالبًا لا يُجمع → آخر قيمة أو متوسط
+      currentWeight: data.isNotEmpty ? data.last.currentWeight : 0,
+
+      // المستهدفات لا تُجمع
+      targetWeightMax: data.isNotEmpty ? data.last.targetWeightMax : 0,
+      targetWeightMin: data.isNotEmpty ? data.last.targetWeightMin : 0,
+    );
   }
 
   /// 🔤 Build individual cell

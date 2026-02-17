@@ -211,7 +211,7 @@ class MetricRow3 extends StatelessWidget {
     this.isWightDetailsSlide = false,
     this.isBMILabel = false,
     this.isCaloriesSlide = false,
-    this.valueFontSize = 50,
+    this.valueFontSize = 16,
   });
 
   @override
@@ -366,6 +366,7 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
           slide.muscularGoalsBuilding != null;
       final isWeightDetailsSlide = index == 2; // slide الثالثة (0-based)
       final isFirstSlide = index == 0;
+      final thirdSlide = index == 2;
       // 2nd slide البناء العضلي ، الصيانة العضلية
       if (hasMuscularGoals) {
         return SecondSlideWidget(slide: slide);
@@ -404,8 +405,10 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
                     metric.accumulativeActual?.toInt().toString() ?? '0',
                 standardValue: metric.standardTarget?.toInt().toString() ?? '0',
                 hasGradientBackground: true,
+                valueFontSize: thirdSlide ? 50 : 16,
               ),
               if (isFirstSlide && secondSection) ...[
+                verticalSpacing(16),
                 Align(
                   alignment: AlignmentGeometry.centerRight,
                   child: ElevatedButton(

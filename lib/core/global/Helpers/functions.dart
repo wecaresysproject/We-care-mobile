@@ -13,6 +13,20 @@ import 'package:we_care/core/networking/dio_serices.dart';
 ///
 final formatter = NumberFormat.decimalPattern('ar');
 
+/// Formats any numeric value for UI display by:
+/// - Removing all fractions (rounding to the nearest integer)
+/// - Removing percentage symbols (if value was a percentage)
+/// - Applying thousands separator for better readability
+///
+/// Examples:
+/// formatNumber(34.5)    -> "35"
+/// formatNumber(62.3)    -> "62"
+/// formatNumber(10500.7) -> "10,501"
+/// formatNumber(null)    -> "0"
+String formatNumber(num? value) {
+  return formatter.format((value ?? 0).round());
+}
+
 /// Validates that the date coming from the API is usable by the UI.
 /// Filters out placeholder or invalid values such as "--/--/----"
 /// to avoid parsing errors and unnecessary UI states.
