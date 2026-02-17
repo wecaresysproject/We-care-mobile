@@ -77,6 +77,7 @@ class MedicalReportPdfGenerator {
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
           ..._buildSmartNutrationAnalysisSection(reportData), // ✅
+          pw.SizedBox(height: 10),
           _buildPhysicalActivitySection(reportData), // ✅
           _buildSupplementsAndVitaminsSection(reportData), // ✅
         ],

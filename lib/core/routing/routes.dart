@@ -135,4 +135,5 @@ class Routes {
   static const caloriesFollowUpReportView = '/caloriesFollowUpReportView';
 
   static const myMedicalReportsView = '/myMedicalReportsView';
+  static const scheduledMedicinesListView = '/scheduledMedicinesListView';
 }

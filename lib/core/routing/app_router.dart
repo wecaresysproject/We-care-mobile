@@ -75,6 +75,7 @@ import 'package:we_care/features/medicine/medicines_data_entry/Presentation/view
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicine_syptoms_details_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/medicines_data_entry_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/medicine/scheduled_medicines/presentation/views/scheduled_medicines_list_view.dart';
 import 'package:we_care/features/my_medical_reports/presentation/views/my_medical_reports_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/effect_on_body_organs_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
@@ -707,6 +708,10 @@ class AppRouter {
       case Routes.myMedicalReportsView:
         return MaterialPageRoute(
           builder: (_) => const MyMedicalReportsView(),
+        );
+      case Routes.scheduledMedicinesListView:
+        return MaterialPageRoute(
+          builder: (_) => const ScheduledMedicinesListView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());
