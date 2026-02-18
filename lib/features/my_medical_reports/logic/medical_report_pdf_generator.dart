@@ -229,6 +229,7 @@ class MedicalReportPdfGenerator {
     Map<String, pw.MemoryImage> radiologyImages,
   ) {
     final image = radiologyImages[imageUrl];
+    final double quarterHeight = 190 * 2;
 
     return pw.Container(
       decoration: pw.BoxDecoration(
@@ -236,24 +237,30 @@ class MedicalReportPdfGenerator {
         borderRadius: pw.BorderRadius.circular(4),
       ),
       child: image != null
-          ? pw.Column(
-              children: [
-                pw.Image(image, fit: pw.BoxFit.contain),
-                pw.SizedBox(height: 4),
-                pw.UrlLink(
-                  destination: imageUrl,
-                  child: pw.Text(
-                    'اضغط للتحميل',
-                    style: pw.TextStyle(
-                      fontSize: 8,
-                      color: PdfColors.blue700,
-                      decoration: pw.TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              ],
+          ? pw.Image(
+              image,
+              fit: pw.BoxFit.fill,
+              // width: quarterWidth,
+              height: quarterHeight,
             )
-          : pw.SizedBox(height: 50),
+          // ? pw.Column(
+          //     children: [
+
+          //       // pw.SizedBox(height: 2),
+          //       // pw.UrlLink(
+          //       //   destination: imageUrl,
+          //       //   child: pw.Text(
+          //       //     'اضغط للتحميل',
+          //       //     style: pw.TextStyle(
+          //       //       fontSize: 8,
+          //       //       color: PdfColors.blue700,
+          //       //       decoration: pw.TextDecoration.underline,
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //     ],
+          //   )
+          : pw.SizedBox(height: quarterHeight),
     );
   }
 
