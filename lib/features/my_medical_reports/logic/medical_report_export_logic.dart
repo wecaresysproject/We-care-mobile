@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 
 import 'medical_report_pdf_generator.dart';
@@ -26,12 +27,14 @@ class MedicalReportExportLogic {
         text: 'Medical Report',
         subject: 'My Medical Report',
       );
-    } catch (e) {
+    } catch (e, s) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error exporting report: $e')),
         );
       }
+      AppLogger.error("PDF ERROR: $e");
+      AppLogger.error("STACK: $s");
     }
   }
 }
