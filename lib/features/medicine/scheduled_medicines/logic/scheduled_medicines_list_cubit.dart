@@ -11,22 +11,18 @@ import 'package:we_care/features/medicine/scheduled_medicines/logic/scheduled_me
 class ScheduledMedicinesListCubit extends Cubit<ScheduledMedicinesListState> {
   ScheduledMedicinesListCubit() : super(ScheduledMedicinesListState.initial());
 
+  /// Safely reads all medicine alarms from Hive using a stable key.
+  List<MedicineAlarmModel> _getAllAlarms() {
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    return List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
+  }
+
   Future<void> loadScheduledMedicines() async {
     emit(state.copyWith(loadingStatus: RequestStatus.loading));
 
     try {
-      final box = Hive.box<List<MedicineAlarmModel>>(
-          MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
-
-      if (box.isEmpty) {
-        emit(state.copyWith(
-          scheduledMedicines: [],
-          loadingStatus: RequestStatus.success,
-        ));
-        return;
-      }
-
-      final medicineAlarms = box.values.first;
+      final medicineAlarms = _getAllAlarms();
 
       emit(state.copyWith(
         scheduledMedicines: medicineAlarms,
@@ -67,20 +63,14 @@ class ScheduledMedicinesListCubit extends Cubit<ScheduledMedicinesListState> {
   }
 
   List<int> _getAlarmsForMedicine(String medicineName) {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
-
-    if (box.isEmpty) return [];
-
-    final medicineAlarms = box.values.first;
-
-    if (medicineAlarms.isEmpty) return [];
+    final allAlarms = _getAllAlarms();
+    if (allAlarms.isEmpty) return [];
 
     try {
-      final medicineAlarmsId = medicineAlarms.firstWhere(
-        (storedMedicine) => storedMedicine.medicineName == medicineName,
+      final match = allAlarms.firstWhere(
+        (m) => m.medicineName == medicineName,
       );
-      return medicineAlarmsId.alarmId;
+      return match.alarmId;
     } catch (e) {
       return [];
     }
@@ -90,14 +80,10 @@ class ScheduledMedicinesListCubit extends Cubit<ScheduledMedicinesListState> {
     final box = Hive.box<List<MedicineAlarmModel>>(
         MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    if (box.isEmpty) return;
-
-    final key = box.keys.first;
-    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
-
+    final alarms = _getAllAlarms();
     alarms.removeWhere((model) => model.medicineName == medicineName);
 
-    await box.put(key, alarms);
+    await box.put('medicines', alarms);
     log('Removed alarms for $medicineName');
   }
 }

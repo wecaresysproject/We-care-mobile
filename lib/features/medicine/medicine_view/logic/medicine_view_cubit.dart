@@ -171,9 +171,8 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     final box = Hive.box<List<MedicineAlarmModel>>(
         MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    if (box.isEmpty) return [];
-
-    final medicineAlarms = box.values.first;
+    final medicineAlarms =
+        List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 
     if (medicineAlarms.isEmpty) return [];
 
@@ -189,14 +188,11 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     final box = Hive.box<List<MedicineAlarmModel>>(
         MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    if (box.isEmpty) return;
-
-    final key = box.keys.first;
-    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
+    final alarms = List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 
     alarms.removeWhere((model) => model.medicineName == medicineName);
 
-    await box.put(key, alarms);
+    await box.put('medicines', alarms);
     log('Removed alarms for $medicineName');
   }
 }
