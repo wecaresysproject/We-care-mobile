@@ -43,8 +43,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   late bool staircaseFade;
   late String assetAudio;
 
-  /// lustral => 12 , 23 , 45 , etc...
-  List<MedicineAlarmModel> alarmsPerMedicine = [];
+  /// Alarm IDs generated during this save session
   List<int> medicineAlarmIds = [];
 
   @override
@@ -248,20 +247,26 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   }
 
   Future<void> saveAlarmsCreatedPerMedicineInLocalStorage() async {
-    alarmsPerMedicine.add(
+    final box = Hive.box<List<MedicineAlarmModel>>(
+        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+
+    // Read existing alarms safely (empty list if box has no data)
+    final existingAlarms =
+        List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
+
+    // Remove old entry for this medicine to prevent duplicates
+    existingAlarms.removeWhere((m) => m.medicineName == widget.medicineName!);
+
+    // Add the new entry
+    existingAlarms.add(
       MedicineAlarmModel(
         alarmId: medicineAlarmIds,
         medicineName: widget.medicineName!,
       ),
     );
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    if (box.isEmpty) {
-      await box.add(alarmsPerMedicine); // First time: use add
-    } else {
-      await box.putAt(0, alarmsPerMedicine); // Already exists: update
-    }
+    // Write back using a stable key
+    await box.put('medicines', existingAlarms);
 
     log('xxx: saveAlarmsCreatedPerMedicineInLocalStorage successfully with Hive');
   }

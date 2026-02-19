@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 import 'package:we_care/features/medicine/medicine_view/widgets/medicine_table.dart';
@@ -67,9 +70,30 @@ class MedicinesView extends StatelessWidget {
                 ),
                 verticalSpacing(16),
                 Text(
-              "“اضغط على التاريخ لعرض جميع الادوية في ذلك التاريخ”",
+                  "“اضغط على التاريخ لعرض جميع الادوية في ذلك التاريخ”",
                   style: AppTextStyles.customTextStyle,
                   textAlign: TextAlign.center,
+                ),
+                verticalSpacing(16),
+                // Scheduled Medicines Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      await context
+                          .pushNamed(Routes.scheduledMedicinesListView);
+                    },
+                    icon: const Icon(Icons.alarm, size: 20),
+                    label: const Text('الأدوية المجدولة'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColorsManager.mainDarkBlue,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
                 verticalSpacing(16),
                 Expanded(flex: 9, child: MedicineTable()),

@@ -77,6 +77,7 @@ class MedicalReportPdfGenerator {
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
           ..._buildSmartNutrationAnalysisSection(reportData), // ✅
+          pw.SizedBox(height: 10),
           _buildPhysicalActivitySection(reportData), // ✅
           _buildSupplementsAndVitaminsSection(reportData), // ✅
         ],
@@ -94,6 +95,61 @@ class MedicalReportPdfGenerator {
       return pw.SizedBox.shrink();
     }
 
+    // Step 1: Build a flat list of quarters from all radiology tickets
+    final quarters = <pw.Widget>[];
+
+    for (final radiology in radiologyEntries) {
+      // Collect all valid images: xrayImages + reportImages
+      final allImages = <String>[
+        ...(radiology.xrayImages ?? []),
+        ...(radiology.reportImages ?? []),
+      ].where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات").toList();
+
+      if (allImages.isEmpty) {
+        // No images: still show the table in a quarter with no image
+        quarters.add(_buildRadiologyQuarter(radiology, null, radiologyImages));
+      } else {
+        // First quarter: table + first image
+        quarters.add(_buildRadiologyQuarter(
+            radiology, allImages.first, radiologyImages));
+
+        // Remaining images: each gets its own image-only quarter
+        for (var i = 1; i < allImages.length; i++) {
+          quarters.add(_buildImageOnlyQuarter(allImages[i], radiologyImages));
+        }
+      }
+    }
+
+    // Step 2: Pack quarters into rows of 2, and rows into pages of 2 rows (4 quarters per page)
+    final rows = <pw.Widget>[];
+    for (var i = 0; i < quarters.length; i += 2) {
+      final hasSecond = i + 1 < quarters.length;
+      rows.add(
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Expanded(
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                  child: quarters[i],
+                ),
+              ),
+              pw.Expanded(
+                child: hasSecond
+                    ? pw.Padding(
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                        child: quarters[i + 1],
+                      )
+                    : pw.SizedBox(),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return pw.Container(
       padding: sectionPadding,
       margin: sectionMargin,
@@ -106,73 +162,105 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الأشعة'),
           pw.SizedBox(height: 12),
-
-          // Build each radiology entry with its images
-          ...radiologyEntries.asMap().entries.map((entry) {
-            final index = entry.key;
-            final radiology = entry.value;
-            final isLast = index == radiologyEntries.length - 1;
-
-            // Filter valid images
-            final xrayImages = radiology.xrayImages ?? [];
-            final validXrayImages = xrayImages
-                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
-                .toList();
-
-            final reportImgs = radiology.reportImages ?? [];
-            final validReportImages = reportImgs
-                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
-                .toList();
-
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                // Radiology data row
-                _buildRadiologyDataRow(radiology),
-
-                // X-ray images underneath (if any)
-                if (validXrayImages.isNotEmpty) ...[
-                  pw.SizedBox(height: 8),
-                  pw.Text(
-                    'صور الأشعة :',
-                    style: pw.TextStyle(
-                      fontSize: 14,
-                      fontWeight: pw.FontWeight.bold,
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  _buildRadiologyImagesRow(validXrayImages, radiologyImages),
-                ],
-
-                // Report images underneath (if any)
-                if (validReportImages.isNotEmpty) ...[
-                  pw.SizedBox(height: 8),
-                  pw.Text(
-                    'صور التقرير الطبي :',
-                    style: pw.TextStyle(
-                      fontSize: 14,
-                      fontWeight: pw.FontWeight.bold,
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  _buildRadiologyImagesRow(validReportImages, radiologyImages),
-                ],
-
-                // Divider between entries (except after last)
-                if (!isLast) ...[
-                  pw.SizedBox(height: 12),
-                  pw.Divider(color: PdfColors.grey300),
-                  pw.SizedBox(height: 12),
-                ],
-              ],
-            );
-          }),
+          ...rows,
         ],
       ),
+    );
+  }
+
+  /// Builds a quarter with a compact metadata table + one image underneath.
+  pw.Widget _buildRadiologyQuarter(
+    RadiologyEntry radiology,
+    String? imageUrl,
+    Map<String, pw.MemoryImage> radiologyImages,
+  ) {
+    final periodicUsageText =
+        (radiology.periodicUsage != null && radiology.periodicUsage!.isNotEmpty)
+            ? radiology.periodicUsage!.first
+            : '';
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        // Compact metadata table
+        pw.TableHelper.fromTextArray(
+          headers: [
+            if (periodicUsageText.isNotEmpty) 'نوعية الاحتياج',
+            'منطقة الأشعة',
+            'نوع الأشعة',
+            'التاريخ',
+          ],
+          data: [
+            [
+              if (periodicUsageText.isNotEmpty) _safeText(periodicUsageText),
+              _safeText(radiology.bodyPart),
+              _safeText(radiology.radioType),
+              _safeText(radiology.radiologyDate),
+            ]
+          ],
+          headerStyle: pw.TextStyle(
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+            fontSize: 10,
+          ),
+          cellStyle: const pw.TextStyle(fontSize: 10),
+          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+          cellAlignment: pw.Alignment.center,
+          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+        ),
+        pw.SizedBox(height: 8),
+        // Image area
+        if (imageUrl != null) _buildQuarterImage(imageUrl, radiologyImages),
+      ],
+    );
+  }
+
+  /// Builds a quarter with only an image (no table).
+  pw.Widget _buildImageOnlyQuarter(
+    String imageUrl,
+    Map<String, pw.MemoryImage> radiologyImages,
+  ) {
+    return _buildQuarterImage(imageUrl, radiologyImages);
+  }
+
+  /// Renders a single image inside a bordered container, filling the quarter.
+  pw.Widget _buildQuarterImage(
+    String imageUrl,
+    Map<String, pw.MemoryImage> radiologyImages,
+  ) {
+    final image = radiologyImages[imageUrl];
+    final double quarterHeight = 190 * 2;
+
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        border: pw.Border.all(color: PdfColors.grey200),
+        borderRadius: pw.BorderRadius.circular(4),
+      ),
+      child: image != null
+          ? pw.Image(
+              image,
+              fit: pw.BoxFit.fill,
+              // width: quarterWidth,
+              height: quarterHeight,
+            )
+          // ? pw.Column(
+          //     children: [
+
+          //       // pw.SizedBox(height: 2),
+          //       // pw.UrlLink(
+          //       //   destination: imageUrl,
+          //       //   child: pw.Text(
+          //       //     'اضغط للتحميل',
+          //       //     style: pw.TextStyle(
+          //       //       fontSize: 8,
+          //       //       color: PdfColors.blue700,
+          //       //       decoration: pw.TextDecoration.underline,
+          //       //     ),
+          //       //   ),
+          //       // ),
+          //     ],
+          //   )
+          : pw.SizedBox(height: quarterHeight),
     );
   }
 

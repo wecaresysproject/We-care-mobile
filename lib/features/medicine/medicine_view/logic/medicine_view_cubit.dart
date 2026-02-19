@@ -171,28 +171,28 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     final box = Hive.box<List<MedicineAlarmModel>>(
         MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    final medicineAlarms = box.values.first;
+    final medicineAlarms =
+        List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 
     if (medicineAlarms.isEmpty) return [];
 
-    final medicineAlarmsId = medicineAlarms.firstWhere(
-      (storedMedcine) => storedMedcine.medicineName == medicineName,
+    final medicineAlarm = medicineAlarms.firstWhere(
+      (storedMedicine) => storedMedicine.medicineName == medicineName,
+      orElse: () => MedicineAlarmModel(medicineName: '', alarmId: []),
     );
-    return medicineAlarmsId.alarmId;
+
+    return medicineAlarm.alarmId;
   }
 
   Future<void> removeMedicineAlarms(String medicineName) async {
     final box = Hive.box<List<MedicineAlarmModel>>(
         MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
-    if (box.isEmpty) return;
-
-    final key = box.keys.first;
-    final alarms = List<MedicineAlarmModel>.from(box.get(key)!);
+    final alarms = List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 
     alarms.removeWhere((model) => model.medicineName == medicineName);
 
-    await box.put(key, alarms);
+    await box.put('medicines', alarms);
     log('Removed alarms for $medicineName');
   }
 }
