@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
@@ -182,31 +183,45 @@ class MedicalReportPdfGenerator {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // Compact metadata table
-        pw.TableHelper.fromTextArray(
-          headers: [
-            if (periodicUsageText.isNotEmpty) 'نوعية الاحتياج',
-            'منطقة الأشعة',
-            'نوع الأشعة',
-            'التاريخ',
-          ],
-          data: [
-            [
-              if (periodicUsageText.isNotEmpty) _safeText(periodicUsageText),
-              _safeText(radiology.bodyPart),
-              _safeText(radiology.radioType),
-              _safeText(radiology.radiologyDate),
-            ]
-          ],
-          headerStyle: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontSize: 10,
+        // Manual metadata table
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
           ),
-          cellStyle: const pw.TextStyle(fontSize: 10),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-          cellAlignment: pw.Alignment.center,
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          child: pw.Row(
+            children: [
+              _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
+              _buildHeaderCell('نوع الأشعة', flex: 2, fontSize: 10),
+              _buildHeaderCell('منطقة الأشعة', flex: 2, fontSize: 10),
+              if (periodicUsageText.isNotEmpty)
+                _buildHeaderCell('نوعية الاحتياج', flex: 3, fontSize: 10),
+            ],
+          ),
+        ),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(
+              left: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              right: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              bottom: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+            ),
+          ),
+          child: pw.Row(
+            children: [
+              _buildValueCell(_safeText(radiology.radiologyDate),
+                  flex: 2, fontSize: 10),
+              _buildValueCell(_safeText(radiology.radioType),
+                  flex: 2, fontSize: 10),
+              _buildValueCell(_safeText(radiology.bodyPart),
+                  flex: 2, fontSize: 10),
+              if (periodicUsageText.isNotEmpty)
+                _buildValueCell(_safeText(periodicUsageText),
+                    flex: 3, fontSize: 10),
+            ],
+          ),
         ),
         pw.SizedBox(height: 8),
         // Image area
@@ -358,7 +373,7 @@ class MedicalReportPdfGenerator {
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 14,
                         color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
+                            AppColorsManager.mainDarkBlue.toARGB32()),
                       ),
                     ),
                     pw.SizedBox(height: 2),
@@ -416,7 +431,7 @@ class MedicalReportPdfGenerator {
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 14,
                         color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
+                            AppColorsManager.mainDarkBlue.toARGB32()),
                       ),
                     ),
                     pw.SizedBox(height: 2),
@@ -806,13 +821,13 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} prescription images...');
+    AppLogger.debug('🔍 Loading ${urls.length} prescription images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load prescription image: $url - $e');
+        AppLogger.debug('❌ Failed to load prescription image: $url - $e');
       }
     }
     return images;
@@ -847,8 +862,8 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+                    color: PdfColor.fromInt(
+                        AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
@@ -870,7 +885,8 @@ class MedicalReportPdfGenerator {
                 ];
               }).toList(),
               headerStyle: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 12,
               ),
@@ -889,8 +905,8 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+                    color: PdfColor.fromInt(
+                        AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
             ...teethModule.teethProcedures!.asMap().entries.map((entry) {
               final index = entry.key;
@@ -916,8 +932,8 @@ class MedicalReportPdfGenerator {
                       ]
                     ],
                     headerStyle: pw.TextStyle(
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                      color: PdfColor.fromInt(
+                          AppColorsManager.mainDarkBlue.toARGB32()),
                       fontWeight: pw.FontWeight.bold,
                       fontSize: 10,
                     ),
@@ -979,13 +995,13 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} teeth x-ray images...');
+    AppLogger.debug('🔍 Loading ${urls.length} teeth x-ray images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load teeth image: $url - $e');
+        AppLogger.debug('❌ Failed to load teeth image: $url - $e');
       }
     }
     return images;
@@ -1020,8 +1036,8 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+                    color: PdfColor.fromInt(
+                        AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
@@ -1046,7 +1062,8 @@ class MedicalReportPdfGenerator {
                 ];
               }).toList(),
               headerStyle: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 12,
               ),
@@ -1065,8 +1082,8 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+                    color: PdfColor.fromInt(
+                        AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
             ...eyeModule.eyeProcedures!.asMap().entries.map((entry) {
               final index = entry.key;
@@ -1104,8 +1121,8 @@ class MedicalReportPdfGenerator {
                       ]
                     ],
                     headerStyle: pw.TextStyle(
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                      color: PdfColor.fromInt(
+                          AppColorsManager.mainDarkBlue.toARGB32()),
                       fontWeight: pw.FontWeight.bold,
                       fontSize: 12,
                     ),
@@ -1172,13 +1189,13 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} eye images...');
+    AppLogger.debug('🔍 Loading ${urls.length} eye images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load eye image: $url - $e');
+        AppLogger.debug('❌ Failed to load eye image: $url - $e');
       }
     }
     return images;
@@ -1189,7 +1206,7 @@ class MedicalReportPdfGenerator {
     final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
-      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
       margin: const pw.EdgeInsets.only(bottom: 10),
       padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: pw.Row(
@@ -1294,7 +1311,7 @@ class MedicalReportPdfGenerator {
       decoration: pw.BoxDecoration(
         border: pw.Border(
           top: pw.BorderSide(
-            color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+            color: PdfColor.fromInt(AppColorsManager.babyBlueColor.toARGB32()),
             width: 1.5,
           ),
         ),
@@ -1336,7 +1353,7 @@ class MedicalReportPdfGenerator {
       decoration: pw.BoxDecoration(
         border: pw.Border(
             bottom: pw.BorderSide(
-          color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+          color: PdfColor.fromInt(AppColorsManager.babyBlueColor.toARGB32()),
           width: 2,
         )),
       ),
@@ -1345,7 +1362,7 @@ class MedicalReportPdfGenerator {
         style: pw.TextStyle(
           fontSize: 16,
           fontWeight: pw.FontWeight.bold,
-          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
         ),
       ),
     );
@@ -1413,7 +1430,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             label,
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 14,
             ),
@@ -1516,7 +1533,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             group.categoryName,
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
@@ -1610,7 +1627,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontSize: 15,
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 12),
@@ -1744,15 +1762,16 @@ class MedicalReportPdfGenerator {
 // ✅ Header Cell Styling
 //////////////////////////////////////////////////////////////////
 
-  pw.Widget _buildHeaderCell(String text, {required int flex}) {
+  pw.Widget _buildHeaderCell(String text,
+      {required int flex, double fontSize = 14}) {
     return pw.Expanded(
       flex: flex,
       child: pw.Text(
         text,
         style: pw.TextStyle(
-          fontSize: 14,
+          fontSize: fontSize,
           fontWeight: pw.FontWeight.bold,
-          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
         ),
         textAlign: pw.TextAlign.center,
       ),
@@ -1827,17 +1846,19 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildValueCell(
     String text, {
+    double fontSize = 13,
     required int flex,
     bool alignRight = false,
+    double horizentalPadding = 4,
   }) {
     return pw.Expanded(
       flex: flex,
       child: pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 4),
+        padding: pw.EdgeInsets.symmetric(horizontal: horizentalPadding),
         child: pw.Text(
           text,
-          style: const pw.TextStyle(
-            fontSize: 13,
+          style: pw.TextStyle(
+            fontSize: fontSize,
             color: PdfColors.black,
           ),
           textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
@@ -2167,7 +2188,7 @@ class MedicalReportPdfGenerator {
             style: pw.TextStyle(
               fontSize: 14,
               fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
             ),
           ),
           pw.SizedBox(height: 8),
@@ -2203,7 +2224,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             '$label : ',
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 14,
             ),
@@ -2266,124 +2287,6 @@ class MedicalReportPdfGenerator {
                   pw.Container(
                     width: 120,
                     height: 120,
-                    child: pw.Center(
-                      child: pw.Icon(
-                        pw.IconData(0xe3f4),
-                        size: 40,
-                        color: PdfColors.grey600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  pw.Widget _buildRadiologyDataRow(RadiologyEntry radiology) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(10),
-      width: double.infinity,
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey50,
-        borderRadius: pw.BorderRadius.circular(8),
-        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          // Radiology type and body part (title)
-          pw.Row(
-            children: [
-              _buildInfoItem("نوع الأشعة :", radiology.radioType),
-              pw.SizedBox(width: 40),
-              _buildInfoItem("منطقة الأشعة :", radiology.bodyPart),
-            ],
-          ),
-          pw.SizedBox(height: 8),
-
-          // Date
-          _buildInfoItem("التاريخ :", radiology.radiologyDate),
-
-          // Periodic usage (if any)
-          if (radiology.periodicUsage != null &&
-              radiology.periodicUsage!.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
-            pw.Text(
-              'نوعية الاحتياج :',
-              style: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            pw.SizedBox(height: 2),
-            ...radiology.periodicUsage!.map(
-              (usage) => pw.Padding(
-                padding: const pw.EdgeInsets.only(right: 10, top: 2),
-                child: pw.Text(
-                  '• $usage',
-                  style: const pw.TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildRadiologyImagesRow(
-      List<String> imageUrls, Map<String, pw.MemoryImage> radiologyImages) {
-    return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 10),
-      child: pw.Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: imageUrls.map((imageUrl) {
-          final image = radiologyImages[imageUrl];
-
-          return pw.Container(
-            width: 250,
-            height: 250,
-            padding: const pw.EdgeInsets.all(8),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.white,
-              border: pw.Border.all(color: PdfColors.grey400, width: 1),
-              borderRadius: pw.BorderRadius.circular(8),
-            ),
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              children: [
-                if (image != null &&
-                    imageUrl.isNotEmpty &&
-                    imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Expanded(
-                    child: pw.Container(
-                      width: 230,
-                      child: pw.Image(image, fit: pw.BoxFit.contain),
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  pw.UrlLink(
-                    destination: imageUrl,
-                    child: pw.Text(
-                      'اضغط للتحميل',
-                      style: pw.TextStyle(
-                        fontSize: 8,
-                        color: PdfColors.blue700,
-                        decoration: pw.TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ] else
-                  pw.Container(
-                    width: 100,
-                    height: 100,
                     child: pw.Center(
                       child: pw.Icon(
                         pw.IconData(0xe3f4),
@@ -2535,40 +2438,6 @@ class MedicalReportPdfGenerator {
     }
   }
 
-  pw.Widget _buildVaccinationsSection() {
-    return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.white,
-        borderRadius: pw.BorderRadius.circular(16),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader('التطعيمات'),
-          pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: ['اللقاح', 'التاريخ', 'الجرعة'],
-            data: [
-              ['Influenza', '01/10/2012', '0.5 ml'],
-              ['COVID-19', '15/05/2021', 'الجرعة الأولى'],
-            ],
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<pw.ImageProvider> getUserProfileImage(
       MedicalReportResponseModel reportData) async {
     pw.ImageProvider? profileImageProvider;
@@ -2642,20 +2511,20 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} surgery images...');
+    AppLogger.debug('🔍 Loading ${urls.length} surgery images...');
 
     for (var url in urls) {
       try {
-        print('📥 Attempting to load: $url');
+        AppLogger.debug('📥 Attempting to load: $url');
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
-        print('✅ Successfully loaded: $url');
+        AppLogger.debug('✅ Successfully loaded: $url');
       } catch (e) {
-        print('❌ Failed to load: $url - Error: $e');
+        AppLogger.debug('❌ Failed to load: $url - Error: $e');
       }
     }
 
-    print('✅ Total surgery images loaded: ${images.length}');
+    AppLogger.debug('✅ Total surgery images loaded: ${images.length}');
     return images;
   }
 
@@ -2683,20 +2552,20 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} radiology images...');
+    AppLogger.debug('🔍 Loading ${urls.length} radiology images...');
 
     for (var url in urls) {
       try {
-        print('📥 Attempting to load: $url');
+        AppLogger.debug('📥 Attempting to load: $url');
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
-        print('✅ Successfully loaded: $url');
+        AppLogger.debug('✅ Successfully loaded: $url');
       } catch (e) {
-        print('❌ Failed to load: $url - Error: $e');
+        AppLogger.debug('❌ Failed to load: $url - Error: $e');
       }
     }
 
-    print('✅ Total radiology images loaded: ${images.length}');
+    AppLogger.debug('✅ Total radiology images loaded: ${images.length}');
     return images;
   }
 
@@ -2733,7 +2602,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 14,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 2),
@@ -2759,7 +2629,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 14,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 2),
