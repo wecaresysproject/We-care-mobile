@@ -11,6 +11,9 @@ class MedicineViewState extends Equatable {
   final List<String> medicineNameFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final bool isActiveMedicine;
+  final bool isSwitchLoading;
+  final String switchErrorMessage;
 
   const MedicineViewState({
     this.responseMessage = '',
@@ -21,6 +24,9 @@ class MedicineViewState extends Equatable {
     this.selectestMedicineDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.isActiveMedicine = false,
+    this.isSwitchLoading = false,
+    this.switchErrorMessage = '',
   });
 
   factory MedicineViewState.initial() {
@@ -33,6 +39,9 @@ class MedicineViewState extends Equatable {
       selectestMedicineDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      isActiveMedicine: false,
+      isSwitchLoading: false,
+      switchErrorMessage: '',
     );
   }
 
@@ -42,9 +51,12 @@ class MedicineViewState extends Equatable {
     List<int>? yearsFilter,
     List<String>? medicineNameFilter,
     List<MedicineModel>? userMedicines,
-    MedicineModel? selectedSurgeryDetails,
+    MedicineModel? selectedMedicineDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    bool? isActiveMedicine,
+    bool? isSwitchLoading,
+    String? switchErrorMessage,
   }) {
     return MedicineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -52,9 +64,13 @@ class MedicineViewState extends Equatable {
       yearsFilter: yearsFilter ?? this.yearsFilter,
       medicineNameFilter: medicineNameFilter ?? this.medicineNameFilter,
       userMedicines: userMedicines ?? this.userMedicines,
-      selectestMedicineDetails: selectedSurgeryDetails,
+      selectestMedicineDetails:
+          selectedMedicineDetails ?? selectestMedicineDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isActiveMedicine: isActiveMedicine ?? this.isActiveMedicine,
+      isSwitchLoading: isSwitchLoading ?? this.isSwitchLoading,
+      switchErrorMessage: switchErrorMessage ?? this.switchErrorMessage,
     );
   }
 
@@ -67,6 +83,9 @@ class MedicineViewState extends Equatable {
         userMedicines,
         selectestMedicineDetails,
         isDeleteRequest,
-        isLoadingMore
+        isLoadingMore,
+        isActiveMedicine,
+        isSwitchLoading,
+        switchErrorMessage,
       ];
 }

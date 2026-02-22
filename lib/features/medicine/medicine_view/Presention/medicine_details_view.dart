@@ -7,12 +7,14 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
+import 'package:we_care/features/medicine/medicine_view/widgets/medicine_active_status_switch.dart';
 
 import '../../../../core/global/Helpers/share_details_helper.dart';
 
@@ -26,7 +28,7 @@ class MedicineDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<MedicineViewCubit>(
       create: (context) =>
-          getIt<MedicineViewCubit>()..getMedicineDetailsById(documentId),
+          getIt<MedicineViewCubit>()..initialRequests(documentId),
       child: Scaffold(
           appBar: AppBar(
             toolbarHeight: 0.h,
@@ -92,6 +94,8 @@ class MedicineDetailsView extends StatelessWidget {
                         }
                       },
                     ),
+                    verticalSpacing(8),
+                    MedicineActiveStatusSwitch(medicineId: documentId),
                     DetailsViewInfoTile(
                       title: "اسم الدواء",
                       isExpanded: true,

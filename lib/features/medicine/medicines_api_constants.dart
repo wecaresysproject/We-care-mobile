@@ -41,6 +41,11 @@ class MedicinesApiConstants {
   static const deletemedicineById = "MedicineUserEntryPage/DeleteUserMedicine";
   static const getAllUserMedicines = "MedicineUserEntryPage/GetUserMedicines";
 
+  static const getMedicineActiveStatus =
+      "MedicineUserEntryPage/GetMedicineActiveStatus";
+  static const updateMedicineStatus =
+      "MedicineUserEntryPage/UpdateMedicineStatus";
+
   //filters
   static const getFilters = "MedicineUserEntryPage/GetUserMedicineFilters";
   static const getFilteredMedicines =

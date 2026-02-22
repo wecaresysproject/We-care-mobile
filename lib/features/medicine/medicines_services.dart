@@ -130,4 +130,19 @@ abstract class MedicinesServices {
     @Query('medicineId') String medicineId,
     @Query('userType') String userType,
   );
+
+  @GET(MedicinesApiConstants.getMedicineActiveStatus)
+  Future<dynamic> getMedicineActiveStatus(
+    @Query('medicineId') String medicineId,
+    @Query('userType') String userType,
+    @Query('language') String language,
+  );
+
+  @PUT(MedicinesApiConstants.updateMedicineStatus)
+  Future<dynamic> updateMedicineStatus(
+    @Query('medicineId') String medicineId,
+    @Query('userType') String userType,
+    @Query('language') String language,
+    @Body() Map<String, dynamic> body,
+  );
 }
