@@ -287,11 +287,60 @@ class MedicalReportPdfGenerator {
       return pw.SizedBox.shrink();
     }
 
-    // Split prescriptions into rows of 2 (for the 2-column vertical grid)
-    final rows = <List<PreDescriptionModel>>[];
-    for (var i = 0; i < prescriptions.length; i += 2) {
-      rows.add(prescriptions.sublist(
-          i, i + 2 > prescriptions.length ? prescriptions.length : i + 2));
+    // Step 1: Collect all "quarters" (Metadata+Image or Image-only)
+    final quarters = <pw.Widget>[];
+
+    for (final prescription in prescriptions) {
+      // Collect all valid images
+      final allImages = (prescription.preDescriptionPhoto ?? [])
+          .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+          .toList();
+
+      if (allImages.isEmpty) {
+        // No images: still show the table in a quarter with no image
+        quarters.add(
+            _buildPrescriptionQuarter(prescription, null, prescriptionImages));
+      } else {
+        // First quarter: table + first image
+        quarters.add(_buildPrescriptionQuarter(
+            prescription, allImages.first, prescriptionImages));
+
+        // Remaining images: each gets its own image-only quarter
+        for (var i = 1; i < allImages.length; i++) {
+          quarters
+              .add(_buildImageOnlyQuarter(allImages[i], prescriptionImages));
+        }
+      }
+    }
+
+    // Step 2: Pack quarters into rows of 2 (A3 vertical layout / 2 columns)
+    final rows = <pw.Widget>[];
+    for (var i = 0; i < quarters.length; i += 2) {
+      final hasSecond = i + 1 < quarters.length;
+      rows.add(
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Expanded(
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                  child: quarters[i],
+                ),
+              ),
+              pw.Expanded(
+                child: hasSecond
+                    ? pw.Padding(
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                        child: quarters[i + 1],
+                      )
+                    : pw.SizedBox(),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return pw.Container(
@@ -306,27 +355,7 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('روشتة الأطباء'),
           pw.SizedBox(height: 12),
-          ...rows.map((rowItems) {
-            return pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 20),
-              child: pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: rowItems.map((prescription) {
-                      return pw.Expanded(
-                        child: pw.Padding(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 5),
-                          child: _buildPrescriptionBlock(
-                              prescription, prescriptionImages),
-                        ),
-                      );
-                    }).toList() +
-                    // Add empty Expanded if only one item in row to maintain 50% width
-                    (rowItems.length == 1
-                        ? [pw.Expanded(child: pw.SizedBox())]
-                        : []),
-              ),
-            );
-          }),
+          ...rows,
         ],
       ),
     );
@@ -726,80 +755,52 @@ class MedicalReportPdfGenerator {
     return planTypeAr;
   }
 
-  pw.Widget _buildPrescriptionBlock(PreDescriptionModel prescription,
-      Map<String, pw.MemoryImage> prescriptionImages) {
-    final photoUrls = prescription.preDescriptionPhoto ?? [];
-
-    // Determine image layout based on specification
-    pw.Widget imagesWidget;
-    if (photoUrls.isEmpty) {
-      imagesWidget = pw.SizedBox();
-    } else if (photoUrls.length == 1) {
-      final img = prescriptionImages[photoUrls.first];
-      imagesWidget =
-          img != null ? pw.Image(img, fit: pw.BoxFit.contain) : pw.SizedBox();
-    } else {
-      // 2 or more images: Show first two side by side as per spec "side by side each takes 1/2 of column width"
-      final img1 = prescriptionImages[photoUrls[0]];
-      final img2 = prescriptionImages[photoUrls[1]];
-      imagesWidget = pw.Row(
-        children: [
-          pw.Expanded(
-            child: img1 != null
-                ? pw.Padding(
-                    padding: const pw.EdgeInsets.only(left: 2),
-                    child: pw.Image(img1, fit: pw.BoxFit.contain))
-                : pw.SizedBox(),
-          ),
-          pw.Expanded(
-            child: img2 != null
-                ? pw.Padding(
-                    padding: const pw.EdgeInsets.only(right: 2),
-                    child: pw.Image(img2, fit: pw.BoxFit.contain))
-                : pw.SizedBox(),
-          ),
-        ],
-      );
-    }
-
+  pw.Widget _buildPrescriptionQuarter(
+    PreDescriptionModel prescription,
+    String? imageUrl,
+    Map<String, pw.MemoryImage> prescriptionImages,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // Metadata Table: One row, four columns
-        pw.TableHelper.fromTextArray(
-          headers: [
-            'التخصص',
-            'اسم الطبيب',
-            'التاريخ',
-          ],
-          data: [
-            [
-              _safeText(prescription.doctorSpecialty),
-              _safeText(prescription.doctorName),
-              _safeText(prescription.preDescriptionDate),
-            ]
-          ],
-          headerStyle: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontSize: 12,
+        // Manual metadata table
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
           ),
-          cellStyle: const pw.TextStyle(
-            fontSize: 12,
+          child: pw.Row(
+            children: [
+              _buildHeaderCell('التاريخ', flex: 3, fontSize: 10),
+              _buildHeaderCell('اسم الطبيب', flex: 4, fontSize: 10),
+              _buildHeaderCell('التخصص', flex: 3, fontSize: 10),
+            ],
           ),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-          cellAlignment: pw.Alignment.center,
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+        ),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(
+              left: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              right: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              bottom: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+            ),
+          ),
+          child: pw.Row(
+            children: [
+              _buildValueCell(_safeText(prescription.preDescriptionDate),
+                  flex: 3, fontSize: 10),
+              _buildValueCell(_safeText(prescription.doctorName),
+                  flex: 4, fontSize: 10),
+              _buildValueCell(_safeText(prescription.doctorSpecialty),
+                  flex: 3, fontSize: 10),
+            ],
+          ),
         ),
         pw.SizedBox(height: 8),
-        // Images Area
-        pw.Container(
-          decoration: pw.BoxDecoration(
-            border: pw.Border.all(color: PdfColors.grey200),
-            borderRadius: pw.BorderRadius.circular(4),
-          ),
-          child: imagesWidget,
-        ),
+        // Image area
+        if (imageUrl != null) _buildQuarterImage(imageUrl, prescriptionImages),
       ],
     );
   }
