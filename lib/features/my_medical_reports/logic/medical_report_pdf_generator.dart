@@ -866,39 +866,15 @@ class MedicalReportPdfGenerator {
                     color: PdfColor.fromInt(
                         AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
-            pw.TableHelper.fromTextArray(
-              headers: [
-                'حدة الشكوى',
-                'مدة الاعراض',
-                'طبيعة الشكوى',
-                'نوع العرض',
-                'رقم السن',
-                'التاريخ',
-              ],
-              data: teethModule.teethSymptoms!.map((symptom) {
-                return [
-                  _safeText(symptom.painNature),
-                  _safeText(symptom.symptomDuration),
-                  _safeText(symptom.complaintNature),
-                  _safeText(symptom.symptomType),
-                  _safeText(symptom.teethNumber),
-                  _safeText(symptom.symptomStartDate),
-                ];
-              }).toList(),
-              headerStyle: pw.TextStyle(
-                color:
-                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 12,
-              ),
-              cellStyle: const pw.TextStyle(
-                fontSize: 12,
-              ),
-              headerDecoration:
-                  const pw.BoxDecoration(color: PdfColors.grey100),
-              cellAlignment: pw.Alignment.center,
-              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            ),
+            _buildTeethSymptomHeaderRow(),
+            ...teethModule.teethSymptoms!.map((symptom) {
+              return pw.Column(
+                children: [
+                  _buildTeethSymptomRow(symptom),
+                  pw.Divider(color: PdfColors.grey300, height: 1),
+                ],
+              );
+            }),
             pw.SizedBox(height: 10),
           ],
           if (hasProcedures) ...[
@@ -2749,6 +2725,48 @@ class MedicalReportPdfGenerator {
           _buildValueCell(_safeText(disease.formattedDate), flex: 3),
           _buildValueCell(_safeText(disease.diseaseName), flex: 4),
           _buildValueCell(_safeText(disease.diseaseStatus), flex: 3),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildTeethSymptomHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
+          _buildHeaderCell('رقم السن', flex: 1, fontSize: 10),
+          _buildHeaderCell('نوع العرض', flex: 2, fontSize: 10),
+          _buildHeaderCell('طبيعة الشكوى', flex: 2, fontSize: 10),
+          _buildHeaderCell('مدة الاعراض', flex: 2, fontSize: 10),
+          _buildHeaderCell('حدة الشكوى', flex: 2, fontSize: 10),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildTeethSymptomRow(dynamic symptom) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(symptom.symptomStartDate),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.teethNumber),
+              flex: 1, fontSize: 10),
+          _buildValueCell(_safeText(symptom.symptomType),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.complaintNature),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.symptomDuration),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.painNature), flex: 2, fontSize: 10),
         ],
       ),
     );
