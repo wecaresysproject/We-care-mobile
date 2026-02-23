@@ -13,13 +13,11 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/similar_analysis_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/analysis_view_footer_row.dart';
-import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/custom_app_container.dart';
+import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/test_analysis_view_app_bar_widget.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/search_filter_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicalAnalysisView extends StatelessWidget {
   const MedicalAnalysisView({super.key});
@@ -40,7 +38,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 final cubit = context.read<TestAnalysisViewCubit>();
                 return Column(
                   children: [
-                    ViewAppBar(
+                    TestAnalysisViewAppBarWidget(
                       controller: cubit.searchController,
                       onSearchChanged: (query) =>
                           cubit.onSearchChanged(query: query),
@@ -86,14 +84,21 @@ class MedicalAnalysisView extends StatelessWidget {
       return SizedBox.shrink();
     }
 
-    return DataViewFiltersRow(filters:[
-      FilterConfig(title: 'السنة', options: state.yearsFilter, isYearFilter: true),
-      FilterConfig(title: 'المجموعة', options: state.groupNamesFilter?? []),
-      FilterConfig(title: 'الرمز', options: state.codesFilter?? []),
-    ] , onApply: (selectedFilters) {
-      AppLogger.debug("Selected Filters: $selectedFilters");
-      context.read<TestAnalysisViewCubit>().emitFilteredData(selectedFilters['السنة'], selectedFilters['المجموعة'], selectedFilters['الرمز']);
-    },);
+    return DataViewFiltersRow(
+      filters: [
+        FilterConfig(
+            title: 'السنة', options: state.yearsFilter, isYearFilter: true),
+        FilterConfig(title: 'المجموعة', options: state.groupNamesFilter ?? []),
+        FilterConfig(title: 'الرمز', options: state.codesFilter ?? []),
+      ],
+      onApply: (selectedFilters) {
+        AppLogger.debug("Selected Filters: $selectedFilters");
+        context.read<TestAnalysisViewCubit>().emitFilteredData(
+            selectedFilters['السنة'],
+            selectedFilters['المجموعة'],
+            selectedFilters['الرمز']);
+      },
+    );
   }
 
   Widget _buildMainContent(BuildContext context, TestAnalysisViewState state) {
