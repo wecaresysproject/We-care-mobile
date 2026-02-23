@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/xray_filters_bloc_builder.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/xray_list_bloc_builder.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
@@ -30,7 +30,21 @@ class XRayView extends StatelessWidget {
             child: Column(
               spacing: 16.h,
               children: [
-                ViewAppBar(),
+                SharedAppBar(
+                  trailingActions: [
+                    CircleIconButton(
+                      icon: Icons.play_arrow,
+                      color: AppColorsManager.mainDarkBlue,
+                      onTap: () {},
+                    ),
+                    SizedBox(width: 12),
+                    CircleIconButton(
+                      icon: Icons.menu_book_outlined,
+                      color: AppColorsManager.mainDarkBlue,
+                      onTap: () {},
+                    ),
+                  ],
+                ),
                 XrayFiltersBlocBuilder(),
                 Expanded(child: XrayListBlocBuilder()),
                 XRayDataViewFooterRow(),
