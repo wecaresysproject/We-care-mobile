@@ -30,10 +30,10 @@ class PhysicalActivatyDataEntryCubit
   // New method to update the current tab index
   Future<void> updateCurrentTab(int index) async {
     emit(state.copyWith(followUpNutrationViewCurrentTabIndex: index));
-    // await getPlanActivationStatus();
+    await getPlanActivationStatus();
 
     //! Load existing plans without toggling
-    // await loadExistingPlans();
+    await loadExistingPlans();
     // refetch data of the list of days
     resetSelectedPlanDate();
   }
