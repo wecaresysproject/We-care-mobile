@@ -882,8 +882,8 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color: PdfColor.fromInt(
-                        AppColorsManager.mainDarkBlue.toARGB32()))),
+                    color:
+                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
             pw.SizedBox(height: 2),
             ...teethModule.teethProcedures!.asMap().entries.map((entry) {
               final index = entry.key;
@@ -895,9 +895,8 @@ class MedicalReportPdfGenerator {
                       url != "لم يتم ادخال بيانات" &&
                       teethImages.containsKey(url))
                   .toList();
-
               return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   // Manual Table Header
                   pw.Container(
@@ -944,61 +943,34 @@ class MedicalReportPdfGenerator {
                       ],
                     ),
                   ),
+
                   if (images.isNotEmpty) ...[
                     pw.SizedBox(height: 8),
-                    for (var i = 0; i < images.length; i += 2) ...[
-                      if (i > 0) pw.SizedBox(height: 8),
-                      if (i + 1 < images.length)
-                        pw.Row(
-                          children: [
-                            pw.Expanded(
-                              child: pw.Container(
-                                constraints:
-                                    const pw.BoxConstraints(maxHeight: 300),
-                                decoration: pw.BoxDecoration(
-                                  border: pw.Border.all(
-                                      color: PdfColors.grey200, width: 0.5),
-                                  borderRadius: pw.BorderRadius.circular(4),
-                                ),
-                                child: pw.Image(teethImages[images[i]]!,
-                                    fit: pw.BoxFit.fill),
-                              ),
-                            ),
-                            pw.SizedBox(width: 8),
-                            pw.Expanded(
-                              child: pw.Container(
-                                constraints:
-                                    const pw.BoxConstraints(maxHeight: 300),
-                                decoration: pw.BoxDecoration(
-                                  border: pw.Border.all(
-                                      color: PdfColors.grey200, width: 0.5),
-                                  borderRadius: pw.BorderRadius.circular(4),
-                                ),
-                                child: pw.Image(teethImages[images[i + 1]]!,
-                                    fit: pw.BoxFit.fill),
-                              ),
-                            ),
-                          ],
-                        )
-                      else
-                        pw.Center(
-                          child: pw.Container(
-                            constraints:
-                                const pw.BoxConstraints(maxHeight: 400),
+                    pw.Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: procedure.xRayImages!.map(
+                        (url) {
+                          final img = teethImages[url];
+                          if (img == null) return pw.SizedBox();
+                          // Occupy roughly 50% width if more than 1 image, else 100%
+                          final width =
+                              procedure.xRayImages!.length == 1 ? 500.0 : 240.0;
+                          return pw.Container(
+                            width: width,
                             decoration: pw.BoxDecoration(
-                              border: pw.Border.all(
-                                  color: PdfColors.grey200, width: 0.5),
+                              border: pw.Border.all(color: PdfColors.grey200),
                               borderRadius: pw.BorderRadius.circular(4),
                             ),
-                            child: pw.Image(teethImages[images[i]]!,
-                                fit: pw.BoxFit.contain),
-                          ),
-                        ),
-                    ],
+                            child: pw.Image(img, fit: pw.BoxFit.contain),
+                          );
+                        },
+                      ).toList(),
+                    ),
                   ],
                   if (!isLast)
                     pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 8),
+                      padding: const pw.EdgeInsets.symmetric(vertical: 2),
                       child:
                           pw.Divider(color: PdfColors.grey300, thickness: 0.5),
                     ),
@@ -1010,6 +982,183 @@ class MedicalReportPdfGenerator {
       ),
     );
   }
+
+  // pw.Widget _buildTeethModuleSection(MedicalReportResponseModel reportData,
+  //     Map<String, pw.MemoryImage> teethImages) {
+  //   final teethModule = reportData.data.teethModule;
+  //   if (teethModule == null) return pw.SizedBox.shrink();
+
+  //   final hasSymptoms = teethModule.teethSymptoms != null &&
+  //       teethModule.teethSymptoms!.isNotEmpty;
+  //   final hasProcedures = teethModule.teethProcedures != null &&
+  //       teethModule.teethProcedures!.isNotEmpty;
+
+  //   if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
+
+  //   return pw.Container(
+  //     padding: sectionPadding,
+  //     margin: sectionMargin,
+  //     decoration: pw.BoxDecoration(
+  //       color: PdfColors.white,
+  //       borderRadius: pw.BorderRadius.circular(16),
+  //     ),
+  //     child: pw.Column(
+  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
+  //       children: [
+  //         _buildSectionHeader('الأسنان'),
+  //         pw.SizedBox(height: 12),
+  //         if (hasSymptoms) ...[
+  //           pw.Text('أعراض الأسنان',
+  //               style: pw.TextStyle(
+  //                   fontWeight: pw.FontWeight.bold,
+  //                   fontSize: 14,
+  //                   color: PdfColor.fromInt(
+  //                       AppColorsManager.mainDarkBlue.toARGB32()))),
+  //           pw.SizedBox(height: 2),
+  //           _buildTeethSymptomHeaderRow(),
+  //           ...teethModule.teethSymptoms!.map((symptom) {
+  //             return pw.Column(
+  //               children: [
+  //                 _buildTeethSymptomRow(symptom),
+  //                 pw.Divider(color: PdfColors.grey300, height: 1),
+  //               ],
+  //             );
+  //           }),
+  //           pw.SizedBox(height: 10),
+  //         ],
+  //         if (hasProcedures) ...[
+  //           pw.Text('إجراءات الأسنان',
+  //               style: pw.TextStyle(
+  //                   fontWeight: pw.FontWeight.bold,
+  //                   fontSize: 14,
+  //                   color: PdfColor.fromInt(
+  //                       AppColorsManager.mainDarkBlue.toARGB32()))),
+  //           pw.SizedBox(height: 2),
+  //           ...teethModule.teethProcedures!.asMap().entries.map((entry) {
+  //             final index = entry.key;
+  //             final procedure = entry.value;
+  //             final isLast = index == teethModule.teethProcedures!.length - 1;
+  // final images = (procedure.xRayImages ?? [])
+  //     .where((url) =>
+  //         url.isNotEmpty &&
+  //         url != "لم يتم ادخال بيانات" &&
+  //         teethImages.containsKey(url))
+  //     .toList();
+
+  //             return pw.Column(
+  //               crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+  //               children: [
+  //                 // Manual Table Header
+  //                 pw.Container(
+  //                   padding: const pw.EdgeInsets.symmetric(vertical: 4),
+  //                   decoration: pw.BoxDecoration(
+  //                     color: PdfColors.grey100,
+  //                     border:
+  //                         pw.Border.all(color: PdfColors.grey300, width: 0.5),
+  //                   ),
+  //                   child: pw.Row(
+  //                     children: [
+  //                       _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
+  //                       _buildHeaderCell('رقم السن', flex: 1, fontSize: 10),
+  //                       _buildHeaderCell('الإجراء الطبي الرئيسي',
+  //                           flex: 2, fontSize: 10),
+  //                       _buildHeaderCell('الإجراء الطبي الفرعي',
+  //                           flex: 2, fontSize: 10),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 // Manual Table Value
+  //                 pw.Container(
+  //                   padding: const pw.EdgeInsets.symmetric(vertical: 4),
+  //                   decoration: const pw.BoxDecoration(
+  //                     border: pw.Border(
+  //                       left:
+  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+  //                       right:
+  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+  //                       bottom:
+  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+  //                     ),
+  //                   ),
+  //                   child: pw.Row(
+  //                     children: [
+  //                       _buildValueCell(_safeText(procedure.procedureDate),
+  //                           flex: 2, fontSize: 10),
+  //                       _buildValueCell(_safeText(procedure.teethNumber),
+  //                           flex: 1, fontSize: 10),
+  //                       _buildValueCell(_safeText(procedure.primaryProcedure),
+  //                           flex: 2, fontSize: 10),
+  //                       _buildValueCell(_safeText(procedure.subProcedure),
+  //                           flex: 2, fontSize: 10),
+  //                     ],
+  //                   ),
+  //                 ),
+  // if (images.isNotEmpty) ...[
+  //   pw.SizedBox(height: 8),
+  //   for (var i = 0; i < images.length; i += 2) ...[
+  //     if (i > 0) pw.SizedBox(height: 8),
+  //     if (i + 1 < images.length)
+  //       pw.Row(
+  //         children: [
+  //           pw.Expanded(
+  //             child: pw.Container(
+  //               constraints:
+  //                   const pw.BoxConstraints(maxHeight: 300),
+  //               decoration: pw.BoxDecoration(
+  //                 border: pw.Border.all(
+  //                     color: PdfColors.grey200, width: 0.5),
+  //                 borderRadius: pw.BorderRadius.circular(4),
+  //               ),
+  //               child: pw.Image(teethImages[images[i]]!,
+  //                   fit: pw.BoxFit.fill),
+  //             ),
+  //           ),
+  //           pw.SizedBox(width: 8),
+  //           pw.Expanded(
+  //             child: pw.Container(
+  //               constraints:
+  //                   const pw.BoxConstraints(maxHeight: 300),
+  //               decoration: pw.BoxDecoration(
+  //                 border: pw.Border.all(
+  //                     color: PdfColors.grey200, width: 0.5),
+  //                 borderRadius: pw.BorderRadius.circular(4),
+  //               ),
+  //               child: pw.Image(teethImages[images[i + 1]]!,
+  //                   fit: pw.BoxFit.fill),
+  //             ),
+  //           ),
+  //         ],
+  //       )
+  //     else
+  //       pw.Center(
+  //         child: pw.Container(
+  //           constraints:
+  //               const pw.BoxConstraints(maxHeight: 400),
+  //           decoration: pw.BoxDecoration(
+  //             border: pw.Border.all(
+  //                 color: PdfColors.grey200, width: 0.5),
+  //             borderRadius: pw.BorderRadius.circular(4),
+  //           ),
+  //           child: pw.Image(teethImages[images[i]]!,
+  //               fit: pw.BoxFit.contain),
+  //         ),
+  //       ),
+  //   ],
+  // ],
+  //                 if (!isLast)
+  //                   pw.Padding(
+  //                     padding: const pw.EdgeInsets.symmetric(vertical: 8),
+  //                     child:
+  //                         pw.Divider(color: PdfColors.grey300, thickness: 0.5),
+  //                   ),
+  //               ],
+  //             );
+  //           }),
+  //         ],
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Future<Map<String, pw.MemoryImage>> _loadTeethImages(
       MedicalReportResponseModel reportData) async {
