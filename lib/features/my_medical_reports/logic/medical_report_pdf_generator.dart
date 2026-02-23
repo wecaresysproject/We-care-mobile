@@ -953,39 +953,46 @@ class MedicalReportPdfGenerator {
                           children: [
                             pw.Expanded(
                               child: pw.Container(
+                                constraints:
+                                    const pw.BoxConstraints(maxHeight: 300),
                                 decoration: pw.BoxDecoration(
                                   border: pw.Border.all(
                                       color: PdfColors.grey200, width: 0.5),
                                   borderRadius: pw.BorderRadius.circular(4),
                                 ),
                                 child: pw.Image(teethImages[images[i]]!,
-                                    fit: pw.BoxFit.contain),
+                                    fit: pw.BoxFit.fill),
                               ),
                             ),
                             pw.SizedBox(width: 8),
                             pw.Expanded(
                               child: pw.Container(
+                                constraints:
+                                    const pw.BoxConstraints(maxHeight: 300),
                                 decoration: pw.BoxDecoration(
                                   border: pw.Border.all(
                                       color: PdfColors.grey200, width: 0.5),
                                   borderRadius: pw.BorderRadius.circular(4),
                                 ),
                                 child: pw.Image(teethImages[images[i + 1]]!,
-                                    fit: pw.BoxFit.contain),
+                                    fit: pw.BoxFit.fill),
                               ),
                             ),
                           ],
                         )
                       else
-                        pw.Container(
-                          width: double.infinity,
-                          decoration: pw.BoxDecoration(
-                            border: pw.Border.all(
-                                color: PdfColors.grey200, width: 0.5),
-                            borderRadius: pw.BorderRadius.circular(4),
+                        pw.Center(
+                          child: pw.Container(
+                            constraints:
+                                const pw.BoxConstraints(maxHeight: 400),
+                            decoration: pw.BoxDecoration(
+                              border: pw.Border.all(
+                                  color: PdfColors.grey200, width: 0.5),
+                              borderRadius: pw.BorderRadius.circular(4),
+                            ),
+                            child: pw.Image(teethImages[images[i]]!,
+                                fit: pw.BoxFit.contain),
                           ),
-                          child: pw.Image(teethImages[images[i]]!,
-                              fit: pw.BoxFit.contain),
                         ),
                     ],
                   ],
