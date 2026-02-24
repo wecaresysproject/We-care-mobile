@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/xray_filters_bloc_builder.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/xray_list_bloc_builder.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
@@ -30,7 +31,45 @@ class XRayView extends StatelessWidget {
             child: Column(
               spacing: 16.h,
               children: [
-                ViewAppBar(),
+                SharedAppBar(
+                  trailingActions: [
+                    CircleIconButton(
+                      icon: Icons.play_arrow,
+                      color: AppColorsManager.mainDarkBlue,
+                      onTap: () {},
+                    ),
+                    SizedBox(width: 12),
+                    CircleIconButton(
+                      icon: Icons.menu_book_outlined,
+                      color: AppColorsManager.mainDarkBlue,
+                      onTap: () {
+                        ModuleGuidanceAlertDialog.show(
+                          context,
+                          title: "الأشعة",
+                          description: """
+🩻 أسنان • 🦷 عظام الفك • 🔎 جذور الأسنان • 🛡️ كشف مبكر
+
+الأشعة التشخيصية هي وسيلة تصوير طبي تُستخدم لإظهار التفاصيل الداخلية
+التي لا يمكن رؤيتها بالفحص السريري العادي.
+
+تساعد الأشعة الطبيب في تقييم حالة الأسنان، الجذور، عظام الفك،
+والأنسجة المحيطة بدقة عالية.
+
+1️⃣ الكشف عن المشكلات غير المرئية:
+- التسوس العميق
+- التهابات الجذور
+- فقدان العظم
+
+2️⃣ التخطيط العلاجي:
+تساعد في تحديد أفضل إجراء علاجي آمن ودقيق.
+
+الأشعة السنية آمنة وتُستخدم بجرعات منخفضة جداً مع اتخاذ جميع الاحتياطات.
+""",
+                        );
+                      },
+                    ),
+                  ],
+                ),
                 XrayFiltersBlocBuilder(),
                 Expanded(child: XrayListBlocBuilder()),
                 XRayDataViewFooterRow(),

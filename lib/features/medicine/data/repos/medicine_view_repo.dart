@@ -93,4 +93,44 @@ class MedicinesViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<bool>> getMedicineActiveStatus({
+    required String medicineId,
+    required String userType,
+    required String language,
+  }) async {
+    try {
+      final response = await _medicinesServices.getMedicineActiveStatus(
+        medicineId,
+        userType,
+        language,
+      );
+      return ApiResult.success(response["isActiveMedicine"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<bool>> updateMedicineStatus({
+    required String medicineId,
+    required String userType,
+    required String language,
+    required bool isActiveMedicine,
+    required String date,
+  }) async {
+    try {
+      final response = await _medicinesServices.updateMedicineStatus(
+        medicineId,
+        userType,
+        language,
+        {
+          "startDate": date,
+          "isActiveMedicine": isActiveMedicine,
+        },
+      );
+      return ApiResult.success(response["isActiveMedicine"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

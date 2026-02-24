@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/family_member_genetic_diesases.dart';
@@ -182,31 +183,45 @@ class MedicalReportPdfGenerator {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // Compact metadata table
-        pw.TableHelper.fromTextArray(
-          headers: [
-            if (periodicUsageText.isNotEmpty) 'نوعية الاحتياج',
-            'منطقة الأشعة',
-            'نوع الأشعة',
-            'التاريخ',
-          ],
-          data: [
-            [
-              if (periodicUsageText.isNotEmpty) _safeText(periodicUsageText),
-              _safeText(radiology.bodyPart),
-              _safeText(radiology.radioType),
-              _safeText(radiology.radiologyDate),
-            ]
-          ],
-          headerStyle: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontSize: 10,
+        // Manual metadata table
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
           ),
-          cellStyle: const pw.TextStyle(fontSize: 10),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-          cellAlignment: pw.Alignment.center,
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+          child: pw.Row(
+            children: [
+              _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
+              _buildHeaderCell('نوع الأشعة', flex: 2, fontSize: 10),
+              _buildHeaderCell('منطقة الأشعة', flex: 2, fontSize: 10),
+              if (periodicUsageText.isNotEmpty)
+                _buildHeaderCell('نوعية الاحتياج', flex: 3, fontSize: 10),
+            ],
+          ),
+        ),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(
+              left: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              right: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              bottom: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+            ),
+          ),
+          child: pw.Row(
+            children: [
+              _buildValueCell(_safeText(radiology.radiologyDate),
+                  flex: 2, fontSize: 10),
+              _buildValueCell(_safeText(radiology.radioType),
+                  flex: 2, fontSize: 10),
+              _buildValueCell(_safeText(radiology.bodyPart),
+                  flex: 2, fontSize: 10),
+              if (periodicUsageText.isNotEmpty)
+                _buildValueCell(_safeText(periodicUsageText),
+                    flex: 3, fontSize: 10),
+            ],
+          ),
         ),
         pw.SizedBox(height: 8),
         // Image area
@@ -272,11 +287,60 @@ class MedicalReportPdfGenerator {
       return pw.SizedBox.shrink();
     }
 
-    // Split prescriptions into rows of 2 (for the 2-column vertical grid)
-    final rows = <List<PreDescriptionModel>>[];
-    for (var i = 0; i < prescriptions.length; i += 2) {
-      rows.add(prescriptions.sublist(
-          i, i + 2 > prescriptions.length ? prescriptions.length : i + 2));
+    // Step 1: Collect all "quarters" (Metadata+Image or Image-only)
+    final quarters = <pw.Widget>[];
+
+    for (final prescription in prescriptions) {
+      // Collect all valid images
+      final allImages = (prescription.preDescriptionPhoto ?? [])
+          .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+          .toList();
+
+      if (allImages.isEmpty) {
+        // No images: still show the table in a quarter with no image
+        quarters.add(
+            _buildPrescriptionQuarter(prescription, null, prescriptionImages));
+      } else {
+        // First quarter: table + first image
+        quarters.add(_buildPrescriptionQuarter(
+            prescription, allImages.first, prescriptionImages));
+
+        // Remaining images: each gets its own image-only quarter
+        for (var i = 1; i < allImages.length; i++) {
+          quarters
+              .add(_buildImageOnlyQuarter(allImages[i], prescriptionImages));
+        }
+      }
+    }
+
+    // Step 2: Pack quarters into rows of 2 (A3 vertical layout / 2 columns)
+    final rows = <pw.Widget>[];
+    for (var i = 0; i < quarters.length; i += 2) {
+      final hasSecond = i + 1 < quarters.length;
+      rows.add(
+        pw.Padding(
+          padding: const pw.EdgeInsets.only(bottom: 10),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Expanded(
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                  child: quarters[i],
+                ),
+              ),
+              pw.Expanded(
+                child: hasSecond
+                    ? pw.Padding(
+                        padding: const pw.EdgeInsets.symmetric(horizontal: 5),
+                        child: quarters[i + 1],
+                      )
+                    : pw.SizedBox(),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return pw.Container(
@@ -291,27 +355,7 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('روشتة الأطباء'),
           pw.SizedBox(height: 12),
-          ...rows.map((rowItems) {
-            return pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 20),
-              child: pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: rowItems.map((prescription) {
-                      return pw.Expanded(
-                        child: pw.Padding(
-                          padding: const pw.EdgeInsets.symmetric(horizontal: 5),
-                          child: _buildPrescriptionBlock(
-                              prescription, prescriptionImages),
-                        ),
-                      );
-                    }).toList() +
-                    // Add empty Expanded if only one item in row to maintain 50% width
-                    (rowItems.length == 1
-                        ? [pw.Expanded(child: pw.SizedBox())]
-                        : []),
-              ),
-            );
-          }),
+          ...rows,
         ],
       ),
     );
@@ -358,7 +402,7 @@ class MedicalReportPdfGenerator {
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 14,
                         color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
+                            AppColorsManager.mainDarkBlue.toARGB32()),
                       ),
                     ),
                     pw.SizedBox(height: 2),
@@ -416,7 +460,7 @@ class MedicalReportPdfGenerator {
                         fontWeight: pw.FontWeight.bold,
                         fontSize: 14,
                         color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.value),
+                            AppColorsManager.mainDarkBlue.toARGB32()),
                       ),
                     ),
                     pw.SizedBox(height: 2),
@@ -711,80 +755,52 @@ class MedicalReportPdfGenerator {
     return planTypeAr;
   }
 
-  pw.Widget _buildPrescriptionBlock(PreDescriptionModel prescription,
-      Map<String, pw.MemoryImage> prescriptionImages) {
-    final photoUrls = prescription.preDescriptionPhoto ?? [];
-
-    // Determine image layout based on specification
-    pw.Widget imagesWidget;
-    if (photoUrls.isEmpty) {
-      imagesWidget = pw.SizedBox();
-    } else if (photoUrls.length == 1) {
-      final img = prescriptionImages[photoUrls.first];
-      imagesWidget =
-          img != null ? pw.Image(img, fit: pw.BoxFit.contain) : pw.SizedBox();
-    } else {
-      // 2 or more images: Show first two side by side as per spec "side by side each takes 1/2 of column width"
-      final img1 = prescriptionImages[photoUrls[0]];
-      final img2 = prescriptionImages[photoUrls[1]];
-      imagesWidget = pw.Row(
-        children: [
-          pw.Expanded(
-            child: img1 != null
-                ? pw.Padding(
-                    padding: const pw.EdgeInsets.only(left: 2),
-                    child: pw.Image(img1, fit: pw.BoxFit.contain))
-                : pw.SizedBox(),
-          ),
-          pw.Expanded(
-            child: img2 != null
-                ? pw.Padding(
-                    padding: const pw.EdgeInsets.only(right: 2),
-                    child: pw.Image(img2, fit: pw.BoxFit.contain))
-                : pw.SizedBox(),
-          ),
-        ],
-      );
-    }
-
+  pw.Widget _buildPrescriptionQuarter(
+    PreDescriptionModel prescription,
+    String? imageUrl,
+    Map<String, pw.MemoryImage> prescriptionImages,
+  ) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // Metadata Table: One row, four columns
-        pw.TableHelper.fromTextArray(
-          headers: [
-            'التخصص',
-            'اسم الطبيب',
-            'التاريخ',
-          ],
-          data: [
-            [
-              _safeText(prescription.doctorSpecialty),
-              _safeText(prescription.doctorName),
-              _safeText(prescription.preDescriptionDate),
-            ]
-          ],
-          headerStyle: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-            fontSize: 12,
+        // Manual metadata table
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: pw.BoxDecoration(
+            color: PdfColors.grey100,
+            border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
           ),
-          cellStyle: const pw.TextStyle(
-            fontSize: 12,
+          child: pw.Row(
+            children: [
+              _buildHeaderCell('التاريخ', flex: 3, fontSize: 10),
+              _buildHeaderCell('اسم الطبيب', flex: 4, fontSize: 10),
+              _buildHeaderCell('التخصص', flex: 3, fontSize: 10),
+            ],
           ),
-          headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-          cellAlignment: pw.Alignment.center,
-          border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+        ),
+        pw.Container(
+          padding: const pw.EdgeInsets.symmetric(vertical: 4),
+          decoration: const pw.BoxDecoration(
+            border: pw.Border(
+              left: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              right: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+              bottom: pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+            ),
+          ),
+          child: pw.Row(
+            children: [
+              _buildValueCell(_safeText(prescription.preDescriptionDate),
+                  flex: 3, fontSize: 10),
+              _buildValueCell(_safeText(prescription.doctorName),
+                  flex: 4, fontSize: 10),
+              _buildValueCell(_safeText(prescription.doctorSpecialty),
+                  flex: 3, fontSize: 10),
+            ],
+          ),
         ),
         pw.SizedBox(height: 8),
-        // Images Area
-        pw.Container(
-          decoration: pw.BoxDecoration(
-            border: pw.Border.all(color: PdfColors.grey200),
-            borderRadius: pw.BorderRadius.circular(4),
-          ),
-          child: imagesWidget,
-        ),
+        // Image area
+        if (imageUrl != null) _buildQuarterImage(imageUrl, prescriptionImages),
       ],
     );
   }
@@ -806,16 +822,33 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} prescription images...');
+    AppLogger.debug('🔍 Loading ${urls.length} prescription images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load prescription image: $url - $e');
+        AppLogger.debug('❌ Failed to load prescription image: $url - $e');
       }
     }
     return images;
+  }
+
+  pw.Widget _buildTableCell(String text, {bool isHeader = false}) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: 10,
+          fontWeight: isHeader ? pw.FontWeight.bold : pw.FontWeight.normal,
+          color: isHeader
+              ? PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32())
+              : PdfColors.black,
+        ),
+        textAlign: pw.TextAlign.center,
+      ),
+    );
   }
 
   pw.Widget _buildTeethModuleSection(MedicalReportResponseModel reportData,
@@ -847,41 +880,18 @@ class MedicalReportPdfGenerator {
                 style: pw.TextStyle(
                     fontWeight: pw.FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+                    color: PdfColor.fromInt(
+                        AppColorsManager.mainDarkBlue.toARGB32()))),
             pw.SizedBox(height: 2),
-            pw.TableHelper.fromTextArray(
-              headers: [
-                'حدة الشكوى',
-                'مدة الاعراض',
-                'طبيعة الشكوى',
-                'نوع العرض',
-                'رقم السن',
-                'التاريخ',
-              ],
-              data: teethModule.teethSymptoms!.map((symptom) {
-                return [
-                  _safeText(symptom.painNature),
-                  _safeText(symptom.symptomDuration),
-                  _safeText(symptom.complaintNature),
-                  _safeText(symptom.symptomType),
-                  _safeText(symptom.teethNumber),
-                  _safeText(symptom.symptomStartDate),
-                ];
-              }).toList(),
-              headerStyle: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 12,
-              ),
-              cellStyle: const pw.TextStyle(
-                fontSize: 12,
-              ),
-              headerDecoration:
-                  const pw.BoxDecoration(color: PdfColors.grey100),
-              cellAlignment: pw.Alignment.center,
-              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-            ),
+            _buildTeethSymptomHeaderRow(),
+            ...teethModule.teethSymptoms!.map((symptom) {
+              return pw.Column(
+                children: [
+                  _buildTeethSymptomRow(symptom),
+                  pw.Divider(color: PdfColors.grey300, height: 1),
+                ],
+              );
+            }),
             pw.SizedBox(height: 10),
           ],
           if (hasProcedures) ...[
@@ -892,69 +902,112 @@ class MedicalReportPdfGenerator {
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
             pw.SizedBox(height: 2),
-            ...teethModule.teethProcedures!.asMap().entries.map((entry) {
+            ...teethModule.teethProcedures!.asMap().entries.expand((entry) {
               final index = entry.key;
               final procedure = entry.value;
               final isLast = index == teethModule.teethProcedures!.length - 1;
 
-              return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.TableHelper.fromTextArray(
-                    headers: [
-                      'الإجراء الطبي الفرعي',
-                      'الإجراء الطبي الرئيسي',
-                      'رقم السن',
-                      'التاريخ',
-                    ],
-                    data: [
-                      [
-                        _safeText(procedure.subProcedure),
-                        _safeText(procedure.primaryProcedure),
-                        _safeText(procedure.teethNumber),
-                        _safeText(procedure.procedureDate),
-                      ]
-                    ],
-                    headerStyle: pw.TextStyle(
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 10,
-                    ),
-                    cellStyle: const pw.TextStyle(fontSize: 10),
-                    headerDecoration:
-                        const pw.BoxDecoration(color: PdfColors.grey100),
-                    cellAlignment: pw.Alignment.center,
-                    border: pw.TableBorder.all(
-                        color: PdfColors.grey300, width: 0.5),
+              final images = (procedure.xRayImages ?? [])
+                  .where((url) =>
+                      url.isNotEmpty &&
+                      url != "لم يتم ادخال بيانات" &&
+                      teethImages.containsKey(url))
+                  .toList();
+
+              return [
+                /// ===== TABLE =====
+                pw.Table(
+                  border: pw.TableBorder.all(
+                    color: PdfColors.grey300,
+                    width: 0.5,
                   ),
-                  if (procedure.xRayImages != null &&
-                      procedure.xRayImages!.isNotEmpty) ...[
-                    pw.SizedBox(height: 8),
-                    pw.Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: procedure.xRayImages!.map((url) {
-                        final img = teethImages[url];
-                        if (img == null) return pw.SizedBox();
-                        // Occupy roughly 50% width if more than 1 image, else 100%
-                        final width =
-                            procedure.xRayImages!.length == 1 ? 500.0 : 240.0;
-                        return pw.Container(
-                          width: width,
-                          decoration: pw.BoxDecoration(
-                            border: pw.Border.all(color: PdfColors.grey200),
-                            borderRadius: pw.BorderRadius.circular(4),
-                          ),
-                          child: pw.Image(img, fit: pw.BoxFit.contain),
-                        );
-                      }).toList(),
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(2),
+                    1: const pw.FlexColumnWidth(2),
+                    2: const pw.FlexColumnWidth(1),
+                    3: const pw.FlexColumnWidth(2),
+                  },
+                  children: [
+                    pw.TableRow(
+                      decoration: const pw.BoxDecoration(
+                        color: PdfColors.grey100,
+                      ),
+                      children: [
+                        _buildTableCell('الإجراء الطبي الفرعي', isHeader: true),
+                        _buildTableCell('الإجراء الطبي الرئيسي',
+                            isHeader: true),
+                        _buildTableCell('رقم السن', isHeader: true),
+                        _buildTableCell('التاريخ', isHeader: true),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        _buildTableCell(_safeText(procedure.subProcedure)),
+                        _buildTableCell(_safeText(procedure.primaryProcedure)),
+                        _buildTableCell(_safeText(procedure.teethNumber)),
+                        _buildTableCell(_safeText(procedure.procedureDate)),
+                      ],
                     ),
                   ],
-                  if (!isLast)
-                    pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-                ],
-              );
+                ),
+
+                /// ===== IMAGES =====
+                if (images.isNotEmpty)
+                  ...images.asMap().entries.expand((imgEntry) {
+                    final i = imgEntry.key;
+
+                    // كل صف فيه صورتين
+                    if (i.isOdd) return [];
+
+                    return [
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        children: [
+                          pw.Expanded(
+                            child: pw.Container(
+                              height: 400,
+                              decoration: pw.BoxDecoration(
+                                border: pw.Border.all(color: PdfColors.grey200),
+                                borderRadius: pw.BorderRadius.circular(6),
+                              ),
+                              child: pw.Image(
+                                teethImages[images[i]]!,
+                                fit: pw.BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          pw.SizedBox(width: 10),
+                          if (i + 1 < images.length)
+                            pw.Expanded(
+                              child: pw.Container(
+                                height: 400,
+                                decoration: pw.BoxDecoration(
+                                  border:
+                                      pw.Border.all(color: PdfColors.grey200),
+                                  borderRadius: pw.BorderRadius.circular(6),
+                                ),
+                                child: pw.Image(
+                                  teethImages[images[i + 1]]!,
+                                  fit: pw.BoxFit.fill,
+                                ),
+                              ),
+                            )
+                          else
+                            pw.Expanded(child: pw.SizedBox()),
+                        ],
+                      ),
+                    ];
+                  }),
+
+                if (!isLast)
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 2),
+                    child: pw.Divider(
+                      color: PdfColors.grey300,
+                      thickness: 0.5,
+                    ),
+                  ),
+              ];
             }),
           ],
         ],
@@ -979,20 +1032,22 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} teeth x-ray images...');
+    AppLogger.debug('🔍 Loading ${urls.length} teeth x-ray images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load teeth image: $url - $e');
+        AppLogger.debug('❌ Failed to load teeth image: $url - $e');
       }
     }
     return images;
   }
 
-  pw.Widget _buildEyesModuleSection(MedicalReportResponseModel reportData,
-      Map<String, pw.MemoryImage> eyeImages) {
+  pw.Widget _buildEyesModuleSection(
+    MedicalReportResponseModel reportData,
+    Map<String, pw.MemoryImage> eyeImages,
+  ) {
     final eyeModule = reportData.data.eyeModule;
     if (eyeModule == null) return pw.SizedBox.shrink();
 
@@ -1015,13 +1070,18 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('العيون'),
           pw.SizedBox(height: 12),
+
+          /// ==================== SYMPTOMS ====================
           if (hasSymptoms) ...[
-            pw.Text('أعراض العيون',
-                style: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.Text(
+              'أعراض العيون',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              ),
+            ),
             pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
@@ -1046,106 +1106,159 @@ class MedicalReportPdfGenerator {
                 ];
               }).toList(),
               headerStyle: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 12,
               ),
-              cellStyle: const pw.TextStyle(
-                fontSize: 12,
-              ),
+              cellStyle: const pw.TextStyle(fontSize: 12),
               headerDecoration:
                   const pw.BoxDecoration(color: PdfColors.grey100),
               cellAlignment: pw.Alignment.center,
-              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+              border: pw.TableBorder.all(
+                color: PdfColors.grey300,
+                width: 0.5,
+              ),
             ),
             pw.SizedBox(height: 10),
           ],
+
+          /// ==================== PROCEDURES ====================
           if (hasProcedures) ...[
-            pw.Text('إجراءات العيون',
-                style: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
-                    color:
-                        PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
+            pw.Text(
+              'إجراءات العيون',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              ),
+            ),
             pw.SizedBox(height: 2),
-            ...eyeModule.eyeProcedures!.asMap().entries.map((entry) {
-              final index = entry.key;
-              final procedure = entry.value;
-              final isLast = index == eyeModule.eyeProcedures!.length - 1;
+            ...eyeModule.eyeProcedures!.asMap().entries.expand(
+              (entry) {
+                final index = entry.key;
+                final procedure = entry.value;
+                final isLast = index == eyeModule.eyeProcedures!.length - 1;
 
-              final combinedImages = [
-                ...?procedure.medicalExaminationImages,
-                ...?procedure.medicalReportUrl,
-              ].where((url) => url.isNotEmpty && url != "string").toList();
+                final combinedImages = [
+                  ...?procedure.medicalExaminationImages,
+                  ...?procedure.medicalReportUrl,
+                ]
+                    .where((url) =>
+                        url.isNotEmpty &&
+                        url != "لم يتم ادخال بيانات" &&
+                        eyeImages.containsKey(url))
+                    .toList();
 
-              return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.TableHelper.fromTextArray(
-                    headers: [
-                      'الإجراء الطبي',
-                      'عضو العين',
-                      'تاريخ الإجراء الطبي',
-                    ],
-                    data: [
-                      [
-                        _safeText(
-                          (procedure.medicalProcedures != null &&
-                                  procedure.medicalProcedures!.isNotEmpty)
-                              ? procedure.medicalProcedures!
-                                  .map((e) => e.trim() == "لم يتم ادخال بيانات"
-                                      ? e
-                                      : '- $e')
-                                  .join('\n')
-                              : '--',
-                        ),
-                        _safeText(procedure.affectedEyePart),
-                        _safeText(procedure.medicalReportDate),
-                      ]
-                    ],
-                    headerStyle: pw.TextStyle(
-                      color:
-                          PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    cellStyle: const pw.TextStyle(
-                      fontSize: 12,
-                    ),
-                    headerDecoration:
-                        const pw.BoxDecoration(color: PdfColors.grey100),
-                    cellAlignment: pw.Alignment.center,
+                return [
+                  /// ===== TABLE =====
+                  pw.Table(
                     border: pw.TableBorder.all(
-                        color: PdfColors.grey300, width: 0.5),
-                  ),
-                  if (combinedImages.isNotEmpty) ...[
-                    pw.SizedBox(height: 8),
-                    pw.Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: combinedImages.asMap().entries.map(
-                        (imgEntry) {
-                          final url = imgEntry.value;
-                          final img = eyeImages[url];
-                          if (img == null) return pw.SizedBox();
-
-                          return pw.Container(
-                            width: 240, // 50% width roughly
-                            decoration: pw.BoxDecoration(
-                              border: pw.Border.all(color: PdfColors.grey200),
-                              borderRadius: pw.BorderRadius.circular(4),
-                            ),
-                            child: pw.Image(img, fit: pw.BoxFit.contain),
-                          );
-                        },
-                      ).toList(),
+                      color: PdfColors.grey300,
+                      width: 0.5,
                     ),
-                  ],
+                    columnWidths: {
+                      0: const pw.FlexColumnWidth(2),
+                      1: const pw.FlexColumnWidth(2),
+                      2: const pw.FlexColumnWidth(2),
+                    },
+                    children: [
+                      pw.TableRow(
+                        decoration: const pw.BoxDecoration(
+                          color: PdfColors.grey100,
+                        ),
+                        children: [
+                          _buildTableCell('الإجراء الطبي', isHeader: true),
+                          _buildTableCell('عضو العين', isHeader: true),
+                          _buildTableCell('تاريخ الإجراء الطبي',
+                              isHeader: true),
+                        ],
+                      ),
+                      pw.TableRow(
+                        children: [
+                          _buildTableCell(
+                            _safeText(
+                              (procedure.medicalProcedures != null &&
+                                      procedure.medicalProcedures!.isNotEmpty)
+                                  ? procedure.medicalProcedures!
+                                      .map((e) =>
+                                          e.trim() == "لم يتم ادخال بيانات"
+                                              ? e
+                                              : '- $e')
+                                      .join('\n')
+                                  : '--',
+                            ),
+                          ),
+                          _buildTableCell(_safeText(procedure.affectedEyePart)),
+                          _buildTableCell(
+                              _safeText(procedure.medicalReportDate)),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  /// ===== IMAGES (نفس نظام الأسنان بالظبط) =====
+                  if (combinedImages.isNotEmpty)
+                    ...combinedImages.asMap().entries.expand(
+                      (imgEntry) {
+                        final i = imgEntry.key;
+
+                        if (i.isOdd) return [];
+
+                        return [
+                          pw.SizedBox(height: 10),
+                          pw.Row(
+                            children: [
+                              pw.Expanded(
+                                child: pw.Container(
+                                  height: 400,
+                                  decoration: pw.BoxDecoration(
+                                    border:
+                                        pw.Border.all(color: PdfColors.grey200),
+                                    borderRadius: pw.BorderRadius.circular(6),
+                                  ),
+                                  child: pw.Image(
+                                    eyeImages[combinedImages[i]]!,
+                                    fit: pw.BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              pw.SizedBox(width: 10),
+                              if (i + 1 < combinedImages.length)
+                                pw.Expanded(
+                                  child: pw.Container(
+                                    height: 400,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(
+                                          color: PdfColors.grey200),
+                                      borderRadius: pw.BorderRadius.circular(6),
+                                    ),
+                                    child: pw.Image(
+                                      eyeImages[combinedImages[i + 1]]!,
+                                      fit: pw.BoxFit.fill,
+                                    ),
+                                  ),
+                                )
+                              else
+                                pw.Expanded(child: pw.SizedBox()),
+                            ],
+                          ),
+                        ];
+                      },
+                    ),
+
                   if (!isLast)
-                    pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-                ],
-              );
-            }),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+                      child: pw.Divider(
+                        color: PdfColors.grey300,
+                        thickness: 0.5,
+                      ),
+                    ),
+                ];
+              },
+            ),
           ],
         ],
       ),
@@ -1172,13 +1285,13 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} eye images...');
+    AppLogger.debug('🔍 Loading ${urls.length} eye images...');
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
       } catch (e) {
-        print('❌ Failed to load eye image: $url - $e');
+        AppLogger.debug('❌ Failed to load eye image: $url - $e');
       }
     }
     return images;
@@ -1189,7 +1302,7 @@ class MedicalReportPdfGenerator {
     final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
-      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+      color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
       margin: const pw.EdgeInsets.only(bottom: 10),
       padding: const pw.EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: pw.Row(
@@ -1294,7 +1407,7 @@ class MedicalReportPdfGenerator {
       decoration: pw.BoxDecoration(
         border: pw.Border(
           top: pw.BorderSide(
-            color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+            color: PdfColor.fromInt(AppColorsManager.babyBlueColor.toARGB32()),
             width: 1.5,
           ),
         ),
@@ -1336,7 +1449,7 @@ class MedicalReportPdfGenerator {
       decoration: pw.BoxDecoration(
         border: pw.Border(
             bottom: pw.BorderSide(
-          color: PdfColor.fromInt(AppColorsManager.babyBlueColor.value),
+          color: PdfColor.fromInt(AppColorsManager.babyBlueColor.toARGB32()),
           width: 2,
         )),
       ),
@@ -1345,7 +1458,7 @@ class MedicalReportPdfGenerator {
         style: pw.TextStyle(
           fontSize: 16,
           fontWeight: pw.FontWeight.bold,
-          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
         ),
       ),
     );
@@ -1413,7 +1526,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             label,
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 14,
             ),
@@ -1516,7 +1629,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             group.categoryName,
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 12,
             ),
@@ -1610,7 +1723,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontSize: 15,
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 12),
@@ -1744,15 +1858,16 @@ class MedicalReportPdfGenerator {
 // ✅ Header Cell Styling
 //////////////////////////////////////////////////////////////////
 
-  pw.Widget _buildHeaderCell(String text, {required int flex}) {
+  pw.Widget _buildHeaderCell(String text,
+      {required int flex, double fontSize = 14}) {
     return pw.Expanded(
       flex: flex,
       child: pw.Text(
         text,
         style: pw.TextStyle(
-          fontSize: 14,
+          fontSize: fontSize,
           fontWeight: pw.FontWeight.bold,
-          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+          color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
         ),
         textAlign: pw.TextAlign.center,
       ),
@@ -1827,17 +1942,19 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildValueCell(
     String text, {
+    double fontSize = 13,
     required int flex,
     bool alignRight = false,
+    double horizentalPadding = 4,
   }) {
     return pw.Expanded(
       flex: flex,
       child: pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(horizontal: 4),
+        padding: pw.EdgeInsets.symmetric(horizontal: horizentalPadding),
         child: pw.Text(
           text,
-          style: const pw.TextStyle(
-            fontSize: 13,
+          style: pw.TextStyle(
+            fontSize: fontSize,
             color: PdfColors.black,
           ),
           textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
@@ -2167,7 +2284,7 @@ class MedicalReportPdfGenerator {
             style: pw.TextStyle(
               fontSize: 14,
               fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
             ),
           ),
           pw.SizedBox(height: 8),
@@ -2203,7 +2320,7 @@ class MedicalReportPdfGenerator {
           pw.Text(
             '$label : ',
             style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
               fontSize: 14,
             ),
@@ -2266,124 +2383,6 @@ class MedicalReportPdfGenerator {
                   pw.Container(
                     width: 120,
                     height: 120,
-                    child: pw.Center(
-                      child: pw.Icon(
-                        pw.IconData(0xe3f4),
-                        size: 40,
-                        color: PdfColors.grey600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  pw.Widget _buildRadiologyDataRow(RadiologyEntry radiology) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(10),
-      width: double.infinity,
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey50,
-        borderRadius: pw.BorderRadius.circular(8),
-        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          // Radiology type and body part (title)
-          pw.Row(
-            children: [
-              _buildInfoItem("نوع الأشعة :", radiology.radioType),
-              pw.SizedBox(width: 40),
-              _buildInfoItem("منطقة الأشعة :", radiology.bodyPart),
-            ],
-          ),
-          pw.SizedBox(height: 8),
-
-          // Date
-          _buildInfoItem("التاريخ :", radiology.radiologyDate),
-
-          // Periodic usage (if any)
-          if (radiology.periodicUsage != null &&
-              radiology.periodicUsage!.isNotEmpty) ...[
-            pw.SizedBox(height: 6),
-            pw.Text(
-              'نوعية الاحتياج :',
-              style: pw.TextStyle(
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
-            pw.SizedBox(height: 2),
-            ...radiology.periodicUsage!.map(
-              (usage) => pw.Padding(
-                padding: const pw.EdgeInsets.only(right: 10, top: 2),
-                child: pw.Text(
-                  '• $usage',
-                  style: const pw.TextStyle(
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildRadiologyImagesRow(
-      List<String> imageUrls, Map<String, pw.MemoryImage> radiologyImages) {
-    return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 10),
-      child: pw.Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: imageUrls.map((imageUrl) {
-          final image = radiologyImages[imageUrl];
-
-          return pw.Container(
-            width: 250,
-            height: 250,
-            padding: const pw.EdgeInsets.all(8),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.white,
-              border: pw.Border.all(color: PdfColors.grey400, width: 1),
-              borderRadius: pw.BorderRadius.circular(8),
-            ),
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              children: [
-                if (image != null &&
-                    imageUrl.isNotEmpty &&
-                    imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Expanded(
-                    child: pw.Container(
-                      width: 230,
-                      child: pw.Image(image, fit: pw.BoxFit.contain),
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  pw.UrlLink(
-                    destination: imageUrl,
-                    child: pw.Text(
-                      'اضغط للتحميل',
-                      style: pw.TextStyle(
-                        fontSize: 8,
-                        color: PdfColors.blue700,
-                        decoration: pw.TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ] else
-                  pw.Container(
-                    width: 100,
-                    height: 100,
                     child: pw.Center(
                       child: pw.Icon(
                         pw.IconData(0xe3f4),
@@ -2535,40 +2534,6 @@ class MedicalReportPdfGenerator {
     }
   }
 
-  pw.Widget _buildVaccinationsSection() {
-    return pw.Container(
-      margin: pw.EdgeInsets.symmetric(vertical: 15),
-      padding: const pw.EdgeInsets.all(15),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.white,
-        borderRadius: pw.BorderRadius.circular(16),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildSectionHeader('التطعيمات'),
-          pw.SizedBox(height: 12),
-          pw.TableHelper.fromTextArray(
-            headers: ['اللقاح', 'التاريخ', 'الجرعة'],
-            data: [
-              ['Influenza', '01/10/2012', '0.5 ml'],
-              ['COVID-19', '15/05/2021', 'الجرعة الأولى'],
-            ],
-            headerStyle: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 12,
-            ),
-            cellStyle: const pw.TextStyle(fontSize: 10),
-            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
-            cellAlignment: pw.Alignment.center,
-            border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-          ),
-        ],
-      ),
-    );
-  }
-
   Future<pw.ImageProvider> getUserProfileImage(
       MedicalReportResponseModel reportData) async {
     pw.ImageProvider? profileImageProvider;
@@ -2642,20 +2607,20 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} surgery images...');
+    AppLogger.debug('🔍 Loading ${urls.length} surgery images...');
 
     for (var url in urls) {
       try {
-        print('📥 Attempting to load: $url');
+        AppLogger.debug('📥 Attempting to load: $url');
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
-        print('✅ Successfully loaded: $url');
+        AppLogger.debug('✅ Successfully loaded: $url');
       } catch (e) {
-        print('❌ Failed to load: $url - Error: $e');
+        AppLogger.debug('❌ Failed to load: $url - Error: $e');
       }
     }
 
-    print('✅ Total surgery images loaded: ${images.length}');
+    AppLogger.debug('✅ Total surgery images loaded: ${images.length}');
     return images;
   }
 
@@ -2683,20 +2648,20 @@ class MedicalReportPdfGenerator {
       }
     }
 
-    print('🔍 Loading ${urls.length} radiology images...');
+    AppLogger.debug('🔍 Loading ${urls.length} radiology images...');
 
     for (var url in urls) {
       try {
-        print('📥 Attempting to load: $url');
+        AppLogger.debug('📥 Attempting to load: $url');
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
         images[url] = pw.MemoryImage(data.buffer.asUint8List());
-        print('✅ Successfully loaded: $url');
+        AppLogger.debug('✅ Successfully loaded: $url');
       } catch (e) {
-        print('❌ Failed to load: $url - Error: $e');
+        AppLogger.debug('❌ Failed to load: $url - Error: $e');
       }
     }
 
-    print('✅ Total radiology images loaded: ${images.length}');
+    AppLogger.debug('✅ Total radiology images loaded: ${images.length}');
     return images;
   }
 
@@ -2733,7 +2698,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 14,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 2),
@@ -2759,7 +2725,8 @@ class MedicalReportPdfGenerator {
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 14,
-                color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.value),
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
             pw.SizedBox(height: 2),
@@ -2877,6 +2844,48 @@ class MedicalReportPdfGenerator {
           _buildValueCell(_safeText(disease.formattedDate), flex: 3),
           _buildValueCell(_safeText(disease.diseaseName), flex: 4),
           _buildValueCell(_safeText(disease.diseaseStatus), flex: 3),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildTeethSymptomHeaderRow() {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
+          _buildHeaderCell('رقم السن', flex: 1, fontSize: 10),
+          _buildHeaderCell('نوع العرض', flex: 2, fontSize: 10),
+          _buildHeaderCell('طبيعة الشكوى', flex: 2, fontSize: 10),
+          _buildHeaderCell('مدة الاعراض', flex: 2, fontSize: 10),
+          _buildHeaderCell('حدة الشكوى', flex: 2, fontSize: 10),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildTeethSymptomRow(dynamic symptom) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 3),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(symptom.symptomStartDate),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.teethNumber),
+              flex: 1, fontSize: 10),
+          _buildValueCell(_safeText(symptom.symptomType),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.complaintNature),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.symptomDuration),
+              flex: 2, fontSize: 10),
+          _buildValueCell(_safeText(symptom.painNature), flex: 2, fontSize: 10),
         ],
       ),
     );

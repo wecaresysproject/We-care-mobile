@@ -99,6 +99,13 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     await getUserMedicinesList(page: currentPage + 1);
   }
 
+  Future<void> initialRequests(String documentId) async {
+    await Future.wait([
+      getMedicineDetailsById(documentId),
+      fetchMedicineActiveStatus(documentId),
+    ]);
+  }
+
   Future<void> getMedicineDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _medicinesViewRepo.getMedicineById(
@@ -107,7 +114,7 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
     result.when(success: (response) {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        selectedSurgeryDetails: response,
+        selectedMedicineDetails: response,
       ));
     }, failure: (error) {
       emit(state.copyWith(requestStatus: RequestStatus.failure));
@@ -157,6 +164,73 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
         responseMessage: error.errors.first,
       ));
     });
+  }
+
+  Future<void> fetchMedicineActiveStatus(String medicineId) async {
+    emit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
+    final result = await _medicinesViewRepo.getMedicineActiveStatus(
+      medicineId: medicineId,
+      userType: 'Patient',
+      language: AppStrings.arabicLang,
+    );
+    result.when(
+      success: (isActive) {
+        emit(
+          state.copyWith(
+            isSwitchLoading: false,
+            isActiveMedicine: isActive,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          isSwitchLoading: false,
+          switchErrorMessage: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  Future<void> updateMedicineActiveStatus(
+      String medicineId, bool isActive) async {
+    final originalState = state.isActiveMedicine;
+    emit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
+
+    final date = DateTime.now().toIso8601String().split('T').first;
+
+    final result = await _medicinesViewRepo.updateMedicineStatus(
+      medicineId: medicineId,
+      userType: 'Patient',
+      language: AppStrings.arabicLang,
+      isActiveMedicine: isActive,
+      date: date,
+    );
+
+    result.when(
+      success: (newStatus) {
+        emit(
+          state.copyWith(
+            isSwitchLoading: false,
+            isActiveMedicine: newStatus,
+          ),
+        );
+        newStatus == false
+            ? cancelAlarmsCreatedBeforePerMedicine(
+                state.selectestMedicineDetails!.medicineName)
+            : null;
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            isSwitchLoading: false,
+            isActiveMedicine: originalState,
+            switchErrorMessage: error.errors.first,
+          ),
+        );
+        cancelAlarmsCreatedBeforePerMedicine(
+            state.selectestMedicineDetails!.medicineName);
+      },
+    );
   }
 
   Future<void> cancelAlarmsCreatedBeforePerMedicine(String medicineName) async {

@@ -22,6 +22,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     this.isMedicineModule = false,
     this.hasVideoIcon = false,
     this.onVideoTap,
+    this.trailingActions, // 👈 الجديد
   });
 
   final String title;
@@ -37,6 +38,9 @@ class AppBarWithCenteredTitle extends StatelessWidget
   final bool hasVideoIcon;
   final Function()? onVideoTap;
 
+  /// 👇 NEW
+  final List<Widget>? trailingActions;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -48,7 +52,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the title row with back arrow, title, video icon, and medicine info
+  /// ================= TITLE ROW =================
   Widget _buildTitleRow() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -76,7 +80,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the video icon button
+  /// ================= VIDEO ICON =================
   Widget _buildVideoIcon() {
     return InkWell(
       onTap: onVideoTap,
@@ -88,7 +92,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the medicine module info text
+  /// ================= MEDICINE INFO =================
   Widget _buildMedicineInfo() {
     return Text(
       "معلومات عن الدواء",
@@ -101,7 +105,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the action buttons row (delete, share, edit)
+  /// ================= ACTION BUTTONS =================
   Widget _buildActionButtons(BuildContext context) {
     if (!showActionButtons) {
       return const SizedBox.shrink();
@@ -110,6 +114,13 @@ class AppBarWithCenteredTitle extends StatelessWidget
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        /// 👇 Trailing Circle Buttons (Play / Book etc)
+        if (trailingActions != null) ...[
+          horizontalSpacing(12.w),
+          ...trailingActions!,
+        ],
+        const Spacer(),
+
         if (!showShareButtonOnly) _buildDeleteButton(context),
         if (!showShareButtonOnly) horizontalSpacing(8.w),
         _buildShareButton(),
@@ -119,7 +130,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the delete button with confirmation dialog
+  /// ================= DELETE =================
   Widget _buildDeleteButton(BuildContext context) {
     return CustomActionButton(
       onTap: () => _showDeleteConfirmationDialog(context),
@@ -129,7 +140,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the share button
+  /// ================= SHARE =================
   Widget _buildShareButton() {
     return CustomActionButton(
       onTap: shareFunction,
@@ -138,7 +149,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Builds the edit button
+  /// ================= EDIT =================
   Widget _buildEditButton() {
     return CustomActionButton(
       onTap: editFunction,
@@ -148,7 +159,7 @@ class AppBarWithCenteredTitle extends StatelessWidget
     );
   }
 
-  /// Shows the delete confirmation dialog
+  /// ================= DELETE DIALOG =================
   void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
