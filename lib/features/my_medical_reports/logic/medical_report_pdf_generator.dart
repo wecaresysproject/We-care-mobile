@@ -951,8 +951,6 @@ class MedicalReportPdfGenerator {
                   ],
                 ),
 
-                pw.SizedBox(height: 8),
-
                 /// ===== IMAGES =====
                 if (images.isNotEmpty)
                   ...images.asMap().entries.expand((imgEntry) {
@@ -997,13 +995,12 @@ class MedicalReportPdfGenerator {
                             pw.Expanded(child: pw.SizedBox()),
                         ],
                       ),
-                      pw.SizedBox(height: 10),
                     ];
                   }),
 
                 if (!isLast)
                   pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 6),
+                    padding: const pw.EdgeInsets.symmetric(vertical: 2),
                     child: pw.Divider(
                       color: PdfColors.grey300,
                       thickness: 0.5,
