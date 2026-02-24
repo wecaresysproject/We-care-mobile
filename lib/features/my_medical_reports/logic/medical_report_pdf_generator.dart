@@ -960,18 +960,19 @@ class MedicalReportPdfGenerator {
                     if (i.isOdd) return [];
 
                     return [
+                      pw.SizedBox(height: 10),
                       pw.Row(
                         children: [
                           pw.Expanded(
                             child: pw.Container(
-                              height: 260,
+                              height: 370,
                               decoration: pw.BoxDecoration(
                                 border: pw.Border.all(color: PdfColors.grey200),
                                 borderRadius: pw.BorderRadius.circular(6),
                               ),
                               child: pw.Image(
                                 teethImages[images[i]]!,
-                                fit: pw.BoxFit.cover,
+                                fit: pw.BoxFit.fill,
                               ),
                             ),
                           ),
@@ -979,7 +980,7 @@ class MedicalReportPdfGenerator {
                           if (i + 1 < images.length)
                             pw.Expanded(
                               child: pw.Container(
-                                height: 260,
+                                height: 370,
                                 decoration: pw.BoxDecoration(
                                   border:
                                       pw.Border.all(color: PdfColors.grey200),
@@ -987,7 +988,7 @@ class MedicalReportPdfGenerator {
                                 ),
                                 child: pw.Image(
                                   teethImages[images[i + 1]]!,
-                                  fit: pw.BoxFit.cover,
+                                  fit: pw.BoxFit.fill,
                                 ),
                               ),
                             )
