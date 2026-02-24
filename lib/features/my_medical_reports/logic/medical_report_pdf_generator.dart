@@ -834,6 +834,23 @@ class MedicalReportPdfGenerator {
     return images;
   }
 
+  pw.Widget _buildTableCell(String text, {bool isHeader = false}) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: 10,
+          fontWeight: isHeader ? pw.FontWeight.bold : pw.FontWeight.normal,
+          color: isHeader
+              ? PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32())
+              : PdfColors.black,
+        ),
+        textAlign: pw.TextAlign.center,
+      ),
+    );
+  }
+
   pw.Widget _buildTeethModuleSection(MedicalReportResponseModel reportData,
       Map<String, pw.MemoryImage> teethImages) {
     final teethModule = reportData.data.teethModule;
@@ -885,77 +902,71 @@ class MedicalReportPdfGenerator {
                     color:
                         PdfColor.fromInt(AppColorsManager.mainDarkBlue.value))),
             pw.SizedBox(height: 2),
-            ...teethModule.teethProcedures!.asMap().entries.map((entry) {
+            ...teethModule.teethProcedures!.asMap().entries.expand((entry) {
               final index = entry.key;
               final procedure = entry.value;
               final isLast = index == teethModule.teethProcedures!.length - 1;
+
               final images = (procedure.xRayImages ?? [])
                   .where((url) =>
                       url.isNotEmpty &&
                       url != "لم يتم ادخال بيانات" &&
                       teethImages.containsKey(url))
                   .toList();
-              return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  // Manual Table Header
-                  pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 4),
-                    decoration: pw.BoxDecoration(
-                      color: PdfColors.grey100,
-                      border:
-                          pw.Border.all(color: PdfColors.grey300, width: 0.5),
-                    ),
-                    child: pw.Row(
-                      children: [
-                        _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
-                        _buildHeaderCell('رقم السن', flex: 1, fontSize: 10),
-                        _buildHeaderCell('الإجراء الطبي الرئيسي',
-                            flex: 2, fontSize: 10),
-                        _buildHeaderCell('الإجراء الطبي الفرعي',
-                            flex: 2, fontSize: 10),
-                      ],
-                    ),
+
+              return [
+                /// ===== TABLE =====
+                pw.Table(
+                  border: pw.TableBorder.all(
+                    color: PdfColors.grey300,
+                    width: 0.5,
                   ),
-                  // Manual Table Value
-                  pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 4),
-                    decoration: const pw.BoxDecoration(
-                      border: pw.Border(
-                        left:
-                            pw.BorderSide(color: PdfColors.grey300, width: 0.5),
-                        right:
-                            pw.BorderSide(color: PdfColors.grey300, width: 0.5),
-                        bottom:
-                            pw.BorderSide(color: PdfColors.grey300, width: 0.5),
+                  columnWidths: {
+                    0: const pw.FlexColumnWidth(2),
+                    1: const pw.FlexColumnWidth(2),
+                    2: const pw.FlexColumnWidth(1),
+                    3: const pw.FlexColumnWidth(2),
+                  },
+                  children: [
+                    pw.TableRow(
+                      decoration: const pw.BoxDecoration(
+                        color: PdfColors.grey100,
                       ),
-                    ),
-                    child: pw.Row(
                       children: [
-                        _buildValueCell(_safeText(procedure.procedureDate),
-                            flex: 2, fontSize: 10),
-                        _buildValueCell(_safeText(procedure.teethNumber),
-                            flex: 1, fontSize: 10),
-                        _buildValueCell(_safeText(procedure.primaryProcedure),
-                            flex: 2, fontSize: 10),
-                        _buildValueCell(_safeText(procedure.subProcedure),
-                            flex: 2, fontSize: 10),
+                        _buildTableCell('الإجراء الطبي الفرعي', isHeader: true),
+                        _buildTableCell('الإجراء الطبي الرئيسي',
+                            isHeader: true),
+                        _buildTableCell('رقم السن', isHeader: true),
+                        _buildTableCell('التاريخ', isHeader: true),
                       ],
                     ),
-                  ),
+                    pw.TableRow(
+                      children: [
+                        _buildTableCell(_safeText(procedure.subProcedure)),
+                        _buildTableCell(_safeText(procedure.primaryProcedure)),
+                        _buildTableCell(_safeText(procedure.teethNumber)),
+                        _buildTableCell(_safeText(procedure.procedureDate)),
+                      ],
+                    ),
+                  ],
+                ),
 
-                  if (images.isNotEmpty) ...[
-                    pw.SizedBox(height: 8),
+                pw.SizedBox(height: 8),
 
-                    // عرض الصور صفين صفين
-                    for (int i = 0; i < images.length; i += 2) ...[
+                /// ===== IMAGES =====
+                if (images.isNotEmpty)
+                  ...images.asMap().entries.expand((imgEntry) {
+                    final i = imgEntry.key;
+
+                    // كل صف فيه صورتين
+                    if (i.isOdd) return [];
+
+                    return [
                       pw.Row(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          /// الصورة الأولى
                           pw.Expanded(
                             child: pw.Container(
-                              height: 260, // مناسب لـ A3
+                              height: 260,
                               decoration: pw.BoxDecoration(
                                 border: pw.Border.all(color: PdfColors.grey200),
                                 borderRadius: pw.BorderRadius.circular(6),
@@ -966,10 +977,7 @@ class MedicalReportPdfGenerator {
                               ),
                             ),
                           ),
-
                           pw.SizedBox(width: 10),
-
-                          /// الصورة الثانية (لو موجودة)
                           if (i + 1 < images.length)
                             pw.Expanded(
                               child: pw.Container(
@@ -990,199 +998,24 @@ class MedicalReportPdfGenerator {
                         ],
                       ),
                       pw.SizedBox(height: 10),
-                    ],
-                  ],
-                  if (!isLast)
-                    pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 2),
-                      child:
-                          pw.Divider(color: PdfColors.grey300, thickness: 0.5),
+                    ];
+                  }),
+
+                if (!isLast)
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 6),
+                    child: pw.Divider(
+                      color: PdfColors.grey300,
+                      thickness: 0.5,
                     ),
-                ],
-              );
+                  ),
+              ];
             }),
           ],
         ],
       ),
     );
   }
-
-  // pw.Widget _buildTeethModuleSection(MedicalReportResponseModel reportData,
-  //     Map<String, pw.MemoryImage> teethImages) {
-  //   final teethModule = reportData.data.teethModule;
-  //   if (teethModule == null) return pw.SizedBox.shrink();
-
-  //   final hasSymptoms = teethModule.teethSymptoms != null &&
-  //       teethModule.teethSymptoms!.isNotEmpty;
-  //   final hasProcedures = teethModule.teethProcedures != null &&
-  //       teethModule.teethProcedures!.isNotEmpty;
-
-  //   if (!hasSymptoms && !hasProcedures) return pw.SizedBox.shrink();
-
-  //   return pw.Container(
-  //     padding: sectionPadding,
-  //     margin: sectionMargin,
-  //     decoration: pw.BoxDecoration(
-  //       color: PdfColors.white,
-  //       borderRadius: pw.BorderRadius.circular(16),
-  //     ),
-  //     child: pw.Column(
-  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //       children: [
-  //         _buildSectionHeader('الأسنان'),
-  //         pw.SizedBox(height: 12),
-  //         if (hasSymptoms) ...[
-  //           pw.Text('أعراض الأسنان',
-  //               style: pw.TextStyle(
-  //                   fontWeight: pw.FontWeight.bold,
-  //                   fontSize: 14,
-  //                   color: PdfColor.fromInt(
-  //                       AppColorsManager.mainDarkBlue.toARGB32()))),
-  //           pw.SizedBox(height: 2),
-  //           _buildTeethSymptomHeaderRow(),
-  //           ...teethModule.teethSymptoms!.map((symptom) {
-  //             return pw.Column(
-  //               children: [
-  //                 _buildTeethSymptomRow(symptom),
-  //                 pw.Divider(color: PdfColors.grey300, height: 1),
-  //               ],
-  //             );
-  //           }),
-  //           pw.SizedBox(height: 10),
-  //         ],
-  //         if (hasProcedures) ...[
-  //           pw.Text('إجراءات الأسنان',
-  //               style: pw.TextStyle(
-  //                   fontWeight: pw.FontWeight.bold,
-  //                   fontSize: 14,
-  //                   color: PdfColor.fromInt(
-  //                       AppColorsManager.mainDarkBlue.toARGB32()))),
-  //           pw.SizedBox(height: 2),
-  //           ...teethModule.teethProcedures!.asMap().entries.map((entry) {
-  //             final index = entry.key;
-  //             final procedure = entry.value;
-  //             final isLast = index == teethModule.teethProcedures!.length - 1;
-  // final images = (procedure.xRayImages ?? [])
-  //     .where((url) =>
-  //         url.isNotEmpty &&
-  //         url != "لم يتم ادخال بيانات" &&
-  //         teethImages.containsKey(url))
-  //     .toList();
-
-  //             return pw.Column(
-  //               crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-  //               children: [
-  //                 // Manual Table Header
-  //                 pw.Container(
-  //                   padding: const pw.EdgeInsets.symmetric(vertical: 4),
-  //                   decoration: pw.BoxDecoration(
-  //                     color: PdfColors.grey100,
-  //                     border:
-  //                         pw.Border.all(color: PdfColors.grey300, width: 0.5),
-  //                   ),
-  //                   child: pw.Row(
-  //                     children: [
-  //                       _buildHeaderCell('التاريخ', flex: 2, fontSize: 10),
-  //                       _buildHeaderCell('رقم السن', flex: 1, fontSize: 10),
-  //                       _buildHeaderCell('الإجراء الطبي الرئيسي',
-  //                           flex: 2, fontSize: 10),
-  //                       _buildHeaderCell('الإجراء الطبي الفرعي',
-  //                           flex: 2, fontSize: 10),
-  //                     ],
-  //                   ),
-  //                 ),
-  //                 // Manual Table Value
-  //                 pw.Container(
-  //                   padding: const pw.EdgeInsets.symmetric(vertical: 4),
-  //                   decoration: const pw.BoxDecoration(
-  //                     border: pw.Border(
-  //                       left:
-  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
-  //                       right:
-  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
-  //                       bottom:
-  //                           pw.BorderSide(color: PdfColors.grey300, width: 0.5),
-  //                     ),
-  //                   ),
-  //                   child: pw.Row(
-  //                     children: [
-  //                       _buildValueCell(_safeText(procedure.procedureDate),
-  //                           flex: 2, fontSize: 10),
-  //                       _buildValueCell(_safeText(procedure.teethNumber),
-  //                           flex: 1, fontSize: 10),
-  //                       _buildValueCell(_safeText(procedure.primaryProcedure),
-  //                           flex: 2, fontSize: 10),
-  //                       _buildValueCell(_safeText(procedure.subProcedure),
-  //                           flex: 2, fontSize: 10),
-  //                     ],
-  //                   ),
-  //                 ),
-  // if (images.isNotEmpty) ...[
-  //   pw.SizedBox(height: 8),
-  //   for (var i = 0; i < images.length; i += 2) ...[
-  //     if (i > 0) pw.SizedBox(height: 8),
-  //     if (i + 1 < images.length)
-  //       pw.Row(
-  //         children: [
-  //           pw.Expanded(
-  //             child: pw.Container(
-  //               constraints:
-  //                   const pw.BoxConstraints(maxHeight: 300),
-  //               decoration: pw.BoxDecoration(
-  //                 border: pw.Border.all(
-  //                     color: PdfColors.grey200, width: 0.5),
-  //                 borderRadius: pw.BorderRadius.circular(4),
-  //               ),
-  //               child: pw.Image(teethImages[images[i]]!,
-  //                   fit: pw.BoxFit.fill),
-  //             ),
-  //           ),
-  //           pw.SizedBox(width: 8),
-  //           pw.Expanded(
-  //             child: pw.Container(
-  //               constraints:
-  //                   const pw.BoxConstraints(maxHeight: 300),
-  //               decoration: pw.BoxDecoration(
-  //                 border: pw.Border.all(
-  //                     color: PdfColors.grey200, width: 0.5),
-  //                 borderRadius: pw.BorderRadius.circular(4),
-  //               ),
-  //               child: pw.Image(teethImages[images[i + 1]]!,
-  //                   fit: pw.BoxFit.fill),
-  //             ),
-  //           ),
-  //         ],
-  //       )
-  //     else
-  //       pw.Center(
-  //         child: pw.Container(
-  //           constraints:
-  //               const pw.BoxConstraints(maxHeight: 400),
-  //           decoration: pw.BoxDecoration(
-  //             border: pw.Border.all(
-  //                 color: PdfColors.grey200, width: 0.5),
-  //             borderRadius: pw.BorderRadius.circular(4),
-  //           ),
-  //           child: pw.Image(teethImages[images[i]]!,
-  //               fit: pw.BoxFit.contain),
-  //         ),
-  //       ),
-  //   ],
-  // ],
-  //                 if (!isLast)
-  //                   pw.Padding(
-  //                     padding: const pw.EdgeInsets.symmetric(vertical: 8),
-  //                     child:
-  //                         pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-  //                   ),
-  //               ],
-  //             );
-  //           }),
-  //         ],
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Future<Map<String, pw.MemoryImage>> _loadTeethImages(
       MedicalReportResponseModel reportData) async {
