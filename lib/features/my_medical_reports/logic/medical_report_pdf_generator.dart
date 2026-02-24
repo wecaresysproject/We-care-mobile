@@ -1044,8 +1044,10 @@ class MedicalReportPdfGenerator {
     return images;
   }
 
-  pw.Widget _buildEyesModuleSection(MedicalReportResponseModel reportData,
-      Map<String, pw.MemoryImage> eyeImages) {
+  pw.Widget _buildEyesModuleSection(
+    MedicalReportResponseModel reportData,
+    Map<String, pw.MemoryImage> eyeImages,
+  ) {
     final eyeModule = reportData.data.eyeModule;
     if (eyeModule == null) return pw.SizedBox.shrink();
 
@@ -1068,13 +1070,18 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('العيون'),
           pw.SizedBox(height: 12),
+
+          /// ==================== SYMPTOMS ====================
           if (hasSymptoms) ...[
-            pw.Text('أعراض العيون',
-                style: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
-                    color: PdfColor.fromInt(
-                        AppColorsManager.mainDarkBlue.toARGB32()))),
+            pw.Text(
+              'أعراض العيون',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              ),
+            ),
             pw.SizedBox(height: 2),
             pw.TableHelper.fromTextArray(
               headers: [
@@ -1104,102 +1111,154 @@ class MedicalReportPdfGenerator {
                 fontWeight: pw.FontWeight.bold,
                 fontSize: 12,
               ),
-              cellStyle: const pw.TextStyle(
-                fontSize: 12,
-              ),
+              cellStyle: const pw.TextStyle(fontSize: 12),
               headerDecoration:
                   const pw.BoxDecoration(color: PdfColors.grey100),
               cellAlignment: pw.Alignment.center,
-              border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
+              border: pw.TableBorder.all(
+                color: PdfColors.grey300,
+                width: 0.5,
+              ),
             ),
             pw.SizedBox(height: 10),
           ],
+
+          /// ==================== PROCEDURES ====================
           if (hasProcedures) ...[
-            pw.Text('إجراءات العيون',
-                style: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 14,
-                    color: PdfColor.fromInt(
-                        AppColorsManager.mainDarkBlue.toARGB32()))),
+            pw.Text(
+              'إجراءات العيون',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              ),
+            ),
             pw.SizedBox(height: 2),
-            ...eyeModule.eyeProcedures!.asMap().entries.map((entry) {
-              final index = entry.key;
-              final procedure = entry.value;
-              final isLast = index == eyeModule.eyeProcedures!.length - 1;
+            ...eyeModule.eyeProcedures!.asMap().entries.expand(
+              (entry) {
+                final index = entry.key;
+                final procedure = entry.value;
+                final isLast = index == eyeModule.eyeProcedures!.length - 1;
 
-              final combinedImages = [
-                ...?procedure.medicalExaminationImages,
-                ...?procedure.medicalReportUrl,
-              ].where((url) => url.isNotEmpty && url != "string").toList();
+                final combinedImages = [
+                  ...?procedure.medicalExaminationImages,
+                  ...?procedure.medicalReportUrl,
+                ]
+                    .where((url) =>
+                        url.isNotEmpty &&
+                        url != "لم يتم ادخال بيانات" &&
+                        eyeImages.containsKey(url))
+                    .toList();
 
-              return pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.TableHelper.fromTextArray(
-                    headers: [
-                      'الإجراء الطبي',
-                      'عضو العين',
-                      'تاريخ الإجراء الطبي',
-                    ],
-                    data: [
-                      [
-                        _safeText(
-                          (procedure.medicalProcedures != null &&
-                                  procedure.medicalProcedures!.isNotEmpty)
-                              ? procedure.medicalProcedures!
-                                  .map((e) => e.trim() == "لم يتم ادخال بيانات"
-                                      ? e
-                                      : '- $e')
-                                  .join('\n')
-                              : '--',
-                        ),
-                        _safeText(procedure.affectedEyePart),
-                        _safeText(procedure.medicalReportDate),
-                      ]
-                    ],
-                    headerStyle: pw.TextStyle(
-                      color: PdfColor.fromInt(
-                          AppColorsManager.mainDarkBlue.toARGB32()),
-                      fontWeight: pw.FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                    cellStyle: const pw.TextStyle(
-                      fontSize: 12,
-                    ),
-                    headerDecoration:
-                        const pw.BoxDecoration(color: PdfColors.grey100),
-                    cellAlignment: pw.Alignment.center,
+                return [
+                  /// ===== TABLE =====
+                  pw.Table(
                     border: pw.TableBorder.all(
-                        color: PdfColors.grey300, width: 0.5),
-                  ),
-                  if (combinedImages.isNotEmpty) ...[
-                    pw.SizedBox(height: 8),
-                    pw.Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: combinedImages.asMap().entries.map(
-                        (imgEntry) {
-                          final url = imgEntry.value;
-                          final img = eyeImages[url];
-                          if (img == null) return pw.SizedBox();
-
-                          return pw.Container(
-                            width: 240, // 50% width roughly
-                            decoration: pw.BoxDecoration(
-                              border: pw.Border.all(color: PdfColors.grey200),
-                              borderRadius: pw.BorderRadius.circular(4),
-                            ),
-                            child: pw.Image(img, fit: pw.BoxFit.contain),
-                          );
-                        },
-                      ).toList(),
+                      color: PdfColors.grey300,
+                      width: 0.5,
                     ),
-                  ],
+                    columnWidths: {
+                      0: const pw.FlexColumnWidth(2),
+                      1: const pw.FlexColumnWidth(2),
+                      2: const pw.FlexColumnWidth(2),
+                    },
+                    children: [
+                      pw.TableRow(
+                        decoration: const pw.BoxDecoration(
+                          color: PdfColors.grey100,
+                        ),
+                        children: [
+                          _buildTableCell('الإجراء الطبي', isHeader: true),
+                          _buildTableCell('عضو العين', isHeader: true),
+                          _buildTableCell('تاريخ الإجراء الطبي',
+                              isHeader: true),
+                        ],
+                      ),
+                      pw.TableRow(
+                        children: [
+                          _buildTableCell(
+                            _safeText(
+                              (procedure.medicalProcedures != null &&
+                                      procedure.medicalProcedures!.isNotEmpty)
+                                  ? procedure.medicalProcedures!
+                                      .map((e) =>
+                                          e.trim() == "لم يتم ادخال بيانات"
+                                              ? e
+                                              : '- $e')
+                                      .join('\n')
+                                  : '--',
+                            ),
+                          ),
+                          _buildTableCell(_safeText(procedure.affectedEyePart)),
+                          _buildTableCell(
+                              _safeText(procedure.medicalReportDate)),
+                        ],
+                      ),
+                    ],
+                  ),
+
+                  /// ===== IMAGES (نفس نظام الأسنان بالظبط) =====
+                  if (combinedImages.isNotEmpty)
+                    ...combinedImages.asMap().entries.expand(
+                      (imgEntry) {
+                        final i = imgEntry.key;
+
+                        if (i.isOdd) return [];
+
+                        return [
+                          pw.SizedBox(height: 10),
+                          pw.Row(
+                            children: [
+                              pw.Expanded(
+                                child: pw.Container(
+                                  height: 400,
+                                  decoration: pw.BoxDecoration(
+                                    border:
+                                        pw.Border.all(color: PdfColors.grey200),
+                                    borderRadius: pw.BorderRadius.circular(6),
+                                  ),
+                                  child: pw.Image(
+                                    eyeImages[combinedImages[i]]!,
+                                    fit: pw.BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              pw.SizedBox(width: 10),
+                              if (i + 1 < combinedImages.length)
+                                pw.Expanded(
+                                  child: pw.Container(
+                                    height: 400,
+                                    decoration: pw.BoxDecoration(
+                                      border: pw.Border.all(
+                                          color: PdfColors.grey200),
+                                      borderRadius: pw.BorderRadius.circular(6),
+                                    ),
+                                    child: pw.Image(
+                                      eyeImages[combinedImages[i + 1]]!,
+                                      fit: pw.BoxFit.fill,
+                                    ),
+                                  ),
+                                )
+                              else
+                                pw.Expanded(child: pw.SizedBox()),
+                            ],
+                          ),
+                        ];
+                      },
+                    ),
+
                   if (!isLast)
-                    pw.Divider(color: PdfColors.grey300, thickness: 0.5),
-                ],
-              );
-            }),
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(vertical: 2),
+                      child: pw.Divider(
+                        color: PdfColors.grey300,
+                        thickness: 0.5,
+                      ),
+                    ),
+                ];
+              },
+            ),
           ],
         ],
       ),
