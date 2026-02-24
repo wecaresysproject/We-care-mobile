@@ -946,27 +946,51 @@ class MedicalReportPdfGenerator {
 
                   if (images.isNotEmpty) ...[
                     pw.SizedBox(height: 8),
-                    pw.Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: procedure.xRayImages!.map(
-                        (url) {
-                          final img = teethImages[url];
-                          if (img == null) return pw.SizedBox();
-                          // Occupy roughly 50% width if more than 1 image, else 100%
-                          final width =
-                              procedure.xRayImages!.length == 1 ? 500.0 : 240.0;
-                          return pw.Container(
-                            width: width,
-                            decoration: pw.BoxDecoration(
-                              border: pw.Border.all(color: PdfColors.grey200),
-                              borderRadius: pw.BorderRadius.circular(4),
+
+                    // عرض الصور صفين صفين
+                    for (int i = 0; i < images.length; i += 2) ...[
+                      pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          /// الصورة الأولى
+                          pw.Expanded(
+                            child: pw.Container(
+                              height: 260, // مناسب لـ A3
+                              decoration: pw.BoxDecoration(
+                                border: pw.Border.all(color: PdfColors.grey200),
+                                borderRadius: pw.BorderRadius.circular(6),
+                              ),
+                              child: pw.Image(
+                                teethImages[images[i]]!,
+                                fit: pw.BoxFit.cover,
+                              ),
                             ),
-                            child: pw.Image(img, fit: pw.BoxFit.contain),
-                          );
-                        },
-                      ).toList(),
-                    ),
+                          ),
+
+                          pw.SizedBox(width: 10),
+
+                          /// الصورة الثانية (لو موجودة)
+                          if (i + 1 < images.length)
+                            pw.Expanded(
+                              child: pw.Container(
+                                height: 260,
+                                decoration: pw.BoxDecoration(
+                                  border:
+                                      pw.Border.all(color: PdfColors.grey200),
+                                  borderRadius: pw.BorderRadius.circular(6),
+                                ),
+                                child: pw.Image(
+                                  teethImages[images[i + 1]]!,
+                                  fit: pw.BoxFit.cover,
+                                ),
+                              ),
+                            )
+                          else
+                            pw.Expanded(child: pw.SizedBox()),
+                        ],
+                      ),
+                      pw.SizedBox(height: 10),
+                    ],
                   ],
                   if (!isLast)
                     pw.Padding(
