@@ -965,7 +965,7 @@ class MedicalReportPdfGenerator {
                         children: [
                           pw.Expanded(
                             child: pw.Container(
-                              height: 370,
+                              height: 400,
                               decoration: pw.BoxDecoration(
                                 border: pw.Border.all(color: PdfColors.grey200),
                                 borderRadius: pw.BorderRadius.circular(6),
@@ -980,7 +980,7 @@ class MedicalReportPdfGenerator {
                           if (i + 1 < images.length)
                             pw.Expanded(
                               child: pw.Container(
-                                height: 370,
+                                height: 400,
                                 decoration: pw.BoxDecoration(
                                   border:
                                       pw.Border.all(color: PdfColors.grey200),
