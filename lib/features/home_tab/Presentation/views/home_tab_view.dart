@@ -177,7 +177,7 @@ class HomeTabView extends StatelessWidget {
 
                   verticalSpacing(30),
 
-                  const VideoGridSection(),
+                  const ModulesGuidanceVideosGridSection(),
                   verticalSpacing(32),
 
                   /// Frequently asked questions

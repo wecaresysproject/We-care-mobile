@@ -27,8 +27,12 @@ class XRayView extends StatelessWidget {
             toolbarHeight: 0.h,
           ),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 2.h,
+            ),
             child: Column(
+              spacing: 10,
               children: [
                 SharedAppBar(
                   trailingActions: [
@@ -37,7 +41,7 @@ class XRayView extends StatelessWidget {
                       color: AppColorsManager.mainDarkBlue,
                       onTap: () {},
                     ),
-                    SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     CircleIconButton(
                       icon: Icons.menu_book_outlined,
                       color: AppColorsManager.mainDarkBlue,

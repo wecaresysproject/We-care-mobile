@@ -2236,165 +2236,122 @@ class MedicalReportPdfGenerator {
           _buildSectionHeader('العمليات الجراحية'),
           pw.SizedBox(height: 12),
 
-          // Build each surgery entry with its images
-          ...surgeries.asMap().entries.map((entry) {
+          // Build each surgery entry matching the Teeth Module implementation
+          ...surgeries.asMap().entries.expand((entry) {
             final index = entry.key;
             final surgery = entry.value;
             final isLast = index == surgeries.length - 1;
             final images = surgery.medicalReportImage ?? [];
             final validImages = images
-                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+                .where((url) =>
+                    url.isNotEmpty &&
+                    url != "لم يتم ادخال بيانات" &&
+                    surgeryImages.containsKey(url))
                 .toList();
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                // Surgery data row
-                _buildSurgeryDataRow(surgery),
 
-                if (validImages.isNotEmpty)
-                  _buildSurgeryImagesRow(validImages, surgeryImages),
-
-                // Divider between entries (except after last)
-                if (!isLast) ...[
-                  pw.Divider(color: PdfColors.grey300),
+            return [
+              /// ===== TABLE =====
+              pw.Table(
+                border: pw.TableBorder.all(
+                  color: PdfColors.grey300,
+                  width: 0.5,
+                ),
+                columnWidths: {
+                  0: const pw.FlexColumnWidth(1),
+                  1: const pw.FlexColumnWidth(1),
+                  2: const pw.FlexColumnWidth(1),
+                  3: const pw.FlexColumnWidth(1),
+                  4: const pw.FlexColumnWidth(1),
+                  5: const pw.FlexColumnWidth(1),
+                  6: const pw.FlexColumnWidth(1),
+                },
+                children: [
+                  pw.TableRow(
+                    decoration: const pw.BoxDecoration(
+                      color: PdfColors.grey100,
+                    ),
+                    children: [
+                      _buildTableCell('الدولة', isHeader: true),
+                      _buildTableCell('المستشفي', isHeader: true),
+                      _buildTableCell('اسم الجراح', isHeader: true),
+                      _buildTableCell('حالة العملية', isHeader: true),
+                      _buildTableCell('التقنية المستخدمة', isHeader: true),
+                      _buildTableCell('اسم العملية', isHeader: true),
+                      _buildTableCell('التاريخ', isHeader: true),
+                    ],
+                  ),
+                  pw.TableRow(
+                    children: [
+                      _buildTableCell(_safeText(surgery.country)),
+                      _buildTableCell(_safeText(surgery.hospitalCenter)),
+                      _buildTableCell(_safeText(surgery.surgeonName)),
+                      _buildTableCell(_safeText(surgery.surgeryStatus)),
+                      _buildTableCell(_safeText(surgery.usedTechnique)),
+                      _buildTableCell(_safeText(surgery.surgeryName)),
+                      _buildTableCell(_safeText(surgery.surgeryDate)),
+                    ],
+                  ),
                 ],
-              ],
-            );
+              ),
+
+              /// ===== IMAGES =====
+              if (validImages.isNotEmpty)
+                ...validImages.asMap().entries.expand((imgEntry) {
+                  final i = imgEntry.key;
+
+                  // Each row has two images
+                  if (i.isOdd) return [];
+
+                  return [
+                    pw.SizedBox(height: 10),
+                    pw.Row(
+                      children: [
+                        pw.Expanded(
+                          child: pw.Container(
+                            height: 400,
+                            decoration: pw.BoxDecoration(
+                              border: pw.Border.all(color: PdfColors.grey200),
+                              borderRadius: pw.BorderRadius.circular(6),
+                            ),
+                            child: pw.Image(
+                              surgeryImages[validImages[i]]!,
+                              fit: pw.BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        pw.SizedBox(width: 10),
+                        if (i + 1 < validImages.length)
+                          pw.Expanded(
+                            child: pw.Container(
+                              height: 400,
+                              decoration: pw.BoxDecoration(
+                                border: pw.Border.all(color: PdfColors.grey200),
+                                borderRadius: pw.BorderRadius.circular(6),
+                              ),
+                              child: pw.Image(
+                                surgeryImages[validImages[i + 1]]!,
+                                fit: pw.BoxFit.fill,
+                              ),
+                            ),
+                          )
+                        else
+                          pw.Expanded(child: pw.SizedBox()),
+                      ],
+                    ),
+                  ];
+                }),
+
+              if (!isLast)
+                pw.Padding(
+                  padding: const pw.EdgeInsets.symmetric(vertical: 2),
+                  child: pw.Divider(
+                    color: PdfColors.grey300,
+                    thickness: 0.5,
+                  ),
+                ),
+            ];
           }),
         ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryDataRow(SurgeryEntry surgery) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(10),
-      width: double.infinity,
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey50,
-        borderRadius: pw.BorderRadius.circular(8),
-        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          // Surgery name (title)
-          pw.Text(
-            surgery.surgeryName,
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-            ),
-          ),
-          pw.SizedBox(height: 8),
-
-          // Details in grid layout
-          pw.Wrap(
-            spacing: 20,
-            runSpacing: 10,
-            children: [
-              _buildSurgeryDetailItem('التاريخ', (surgery.surgeryDate)),
-              _buildSurgeryDetailItem('المنطقة', surgery.surgeryRegion),
-              _buildSurgeryDetailItem('التقنية', surgery.usedTechnique),
-              _buildSurgeryDetailItem('الحالة', surgery.surgeryStatus),
-              _buildSurgeryDetailItem('الجراح', surgery.surgeonName),
-              _buildSurgeryDetailItem('المستشفى', surgery.hospitalCenter),
-              _buildSurgeryDetailItem('الدولة', surgery.country),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryDetailItem(String label, String value) {
-    if (value == "لم يتم ادخال بيانات") {
-      return pw.SizedBox.shrink();
-    }
-    return pw.Container(
-      constraints: const pw.BoxConstraints(minWidth: 150),
-      child: pw.Row(
-        mainAxisSize: pw.MainAxisSize.min,
-        children: [
-          pw.Text(
-            '$label : ',
-            style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          pw.Text(
-            value,
-            style: const pw.TextStyle(
-              fontSize: 14,
-              color: PdfColors.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryImagesRow(
-      List<String> imageUrls, Map<String, pw.MemoryImage> surgeryImages) {
-    return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 10),
-      child: pw.Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: imageUrls.map((imageUrl) {
-          final image = surgeryImages[imageUrl];
-
-          return pw.Container(
-            width: 350,
-            padding: const pw.EdgeInsets.all(8),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.white,
-              border: pw.Border.all(color: PdfColors.grey400, width: 1),
-              borderRadius: pw.BorderRadius.circular(8),
-            ),
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              children: [
-                if (image != null &&
-                    imageUrl.isNotEmpty &&
-                    imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Container(
-                    child: pw.Image(
-                      image,
-                      fit: pw.BoxFit.contain,
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  pw.UrlLink(
-                    destination: imageUrl,
-                    child: pw.Text(
-                      'اضغط للتحميل',
-                      style: pw.TextStyle(
-                        fontSize: 8,
-                        color: PdfColors.blue700,
-                        decoration: pw.TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ] else
-                  pw.Container(
-                    width: 120,
-                    height: 120,
-                    child: pw.Center(
-                      child: pw.Icon(
-                        pw.IconData(0xe3f4),
-                        size: 40,
-                        color: PdfColors.grey600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }).toList(),
       ),
     );
   }

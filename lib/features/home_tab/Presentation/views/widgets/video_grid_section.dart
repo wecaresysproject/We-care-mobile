@@ -6,13 +6,15 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/models/video_model.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/section_header_widget.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_state.dart';
 
-class VideoGridSection extends StatelessWidget {
-  const VideoGridSection({super.key});
+class ModulesGuidanceVideosGridSection extends StatelessWidget {
+  const ModulesGuidanceVideosGridSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,64 +23,106 @@ class VideoGridSection extends StatelessWidget {
         const SectionHeaderWidget(title: "فيديوهات توضيحية"),
         verticalSpacing(5),
         BlocBuilder<HomeCubit, HomeState>(
+          buildWhen: (previous, current) =>
+              previous.videoRequestStatus != current.videoRequestStatus ||
+              previous.videos != current.videos,
           builder: (context, state) {
-            if (state.videoRequestStatus == RequestStatus.loading) {
-              return _buildSkeletonGrid();
-            } else if (state.videoRequestStatus == RequestStatus.success) {
-              if (state.videos.isEmpty) {
-                return const Center(child: Text("لا توجد فيديوهات حالياً"));
-              }
-              return _buildVideoGrid(state.videos);
-            } else if (state.videoRequestStatus == RequestStatus.failure) {
+            if (state.videoRequestStatus == RequestStatus.failure) {
+              return buildErrorWidget(state, context);
+            }
+
+            final bool isLoading =
+                state.videoRequestStatus == RequestStatus.loading;
+            final List<VideoModel> displayVideos = isLoading
+                ? List.generate(
+                    4, (_) => VideoModel(videoLink: '', videoCoverImage: ''))
+                : state.videos;
+
+            if (!isLoading && displayVideos.isEmpty) {
               return Center(
-                child: Text(state.errorMessage ?? "حدث خطأ ما"),
+                child: Text(
+                  "لا توجد فيديوهات حالياً",
+                  style: AppTextStyles.font14whiteWeight600.copyWith(
+                    color: AppColorsManager.textColor,
+                  ),
+                ),
               );
             }
-            return const SizedBox.shrink();
+
+            return Skeletonizer(
+              enabled: isLoading,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: displayVideos.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16.w,
+                  mainAxisSpacing: 16.h,
+                  childAspectRatio: 1.89,
+                ),
+                itemBuilder: (context, index) {
+                  return VideoItemWidget(video: displayVideos[index]);
+                },
+              ),
+            );
           },
         ),
       ],
     );
   }
 
-  Widget _buildVideoGrid(List<VideoModel> videos) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: videos.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-        childAspectRatio: 1.89,
-      ),
-      itemBuilder: (context, index) {
-        return VideoItemWidget(video: videos[index]);
-      },
-    );
-  }
-
-  Widget _buildSkeletonGrid() {
-    return Skeletonizer(
-      enabled: true,
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: 4,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16.w,
-          mainAxisSpacing: 16.h,
-          childAspectRatio: 1.89,
+  Container buildErrorWidget(HomeState state, BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 6.w),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.red.withValues(alpha: 0.3),
         ),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(16.r),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.error_outline_rounded,
+            color: Colors.redAccent,
+            size: 40,
+          ),
+          Text(
+            state.errorMessage ?? "حدث خطأ أثناء تحميل الفيديوهات",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.font14whiteWeight600.copyWith(
+              color: AppColorsManager.textColor,
             ),
-          );
-        },
+          ),
+          verticalSpacing(14),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () =>
+                  context.read<HomeCubit>().getModulesGuidanceVideos(),
+              icon: const Icon(
+                Icons.refresh,
+                size: 24,
+                color: Colors.white,
+              ),
+              label: Text(
+                "إعادة المحاولة",
+                style: AppTextStyles.font14whiteWeight600,
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
