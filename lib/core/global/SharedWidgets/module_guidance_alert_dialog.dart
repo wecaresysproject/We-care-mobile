@@ -59,7 +59,7 @@ class ModuleGuidanceAlertDialog extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Text(
                     description,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.justify,
                     style: AppTextStyles.font14blackWeight400.copyWith(
                       height: 1.5,
                     ),

@@ -27,9 +27,8 @@ class XRayView extends StatelessWidget {
             toolbarHeight: 0.h,
           ),
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 2.h),
             child: Column(
-              spacing: 16.h,
               children: [
                 SharedAppBar(
                   trailingActions: [
