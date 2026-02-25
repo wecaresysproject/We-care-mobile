@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 
@@ -308,5 +309,177 @@ extension NumberFormattingExtension on String {
   /// example : "½" → "1/2", "¾" → "3/4"
   String toPdfSafeDosage() {
     return sanitizeDosageForPdf(this);
+  }
+}
+
+extension WeCareMedicalModulesExtension on WeCareMedicalModules {
+  String get titleEn {
+    switch (this) {
+      case WeCareMedicalModules.profile:
+        return "Profile";
+      case WeCareMedicalModules.vitalSigns:
+        return "Vital Signs";
+      case WeCareMedicalModules.medications:
+        return "Medications";
+      case WeCareMedicalModules.emergenciesComplaints:
+        return "Emergencies Complaints";
+      case WeCareMedicalModules.prescriptions:
+        return "Prescriptions";
+      case WeCareMedicalModules.labTests:
+        return "Lab Tests";
+      case WeCareMedicalModules.imagingAndRadiology:
+        return "Imaging & Radiology";
+      case WeCareMedicalModules.surgeries:
+        return "Surgeries";
+      case WeCareMedicalModules.chronicDiseases:
+        return "Chronic Diseases";
+      case WeCareMedicalModules.geneticDiseases:
+        return "Genetic Diseases";
+      case WeCareMedicalModules.allergies:
+        return "Allergies";
+      case WeCareMedicalModules.ophthalmology:
+        return "Ophthalmology";
+      case WeCareMedicalModules.dentistry:
+        return "Dentistry";
+      case WeCareMedicalModules.vaccinations:
+        return "Vaccinations";
+      case WeCareMedicalModules.mentalHealth:
+        return "Mental Health";
+      case WeCareMedicalModules.nutrition:
+        return "Nutrition";
+      case WeCareMedicalModules.physicalActivity:
+        return "Physical Activity";
+      case WeCareMedicalModules.vitaminsAndSupplements:
+        return "Vitamins and Supplements";
+      case WeCareMedicalModules.endoscopy:
+        return "Endoscopy";
+      case WeCareMedicalModules.oncology:
+        return "Oncology";
+      case WeCareMedicalModules.renalDialysis:
+        return "Renal Dialysis";
+      case WeCareMedicalModules.physicalTherapy:
+        return "Physical Therapy";
+      case WeCareMedicalModules.pregnancyMonitoring:
+        return "Pregnancy Monitoring";
+      case WeCareMedicalModules.infertility:
+        return "Infertility";
+      case WeCareMedicalModules.burns:
+        return "Burns";
+      case WeCareMedicalModules.cosmeticSurgery:
+        return "Cosmetic Surgery";
+      case WeCareMedicalModules.highRiskBehaviors:
+        return "High-Risk Behaviors";
+      case WeCareMedicalModules.publicHealth:
+        return "Public Health";
+      case WeCareMedicalModules.drugCheck:
+        return "Drug Check";
+      case WeCareMedicalModules.homeVisit:
+        return "Home Visit";
+      case WeCareMedicalModules.onlineDoctorConsultation:
+        return "Online Doctor Consultation";
+      case WeCareMedicalModules.aiConsult:
+        return "AI Consult";
+      case WeCareMedicalModules.myGenetics:
+        return "My Genetics";
+      case WeCareMedicalModules.patientSupport:
+        return "Patient Support";
+      case WeCareMedicalModules.myMedicalReports:
+        return "My Medical Reports";
+      case WeCareMedicalModules.lifeQuality:
+        return "Life Quality";
+      case WeCareMedicalModules.findADoctor:
+        return "Find a Doctor";
+      case WeCareMedicalModules.doctorRatings:
+        return "Doctor Ratings";
+      case WeCareMedicalModules.dataCompletion:
+        return "Data Completion";
+      case WeCareMedicalModules.healthRiskIndicators:
+        return "Health Risk Indicators";
+    }
+  }
+
+  String get titleAr {
+    switch (this) {
+      case WeCareMedicalModules.profile:
+        return "البيانات الأساسية";
+      case WeCareMedicalModules.vitalSigns:
+        return "القياسات الحيوية";
+      case WeCareMedicalModules.medications:
+        return "الأدوية";
+      case WeCareMedicalModules.emergenciesComplaints:
+        return "الشكاوى الطارئة";
+      case WeCareMedicalModules.prescriptions:
+        return "روشتة الأطباء";
+      case WeCareMedicalModules.labTests:
+        return "التحاليل الطبية";
+      case WeCareMedicalModules.imagingAndRadiology:
+        return "الأشعة";
+      case WeCareMedicalModules.surgeries:
+        return "العمليات الجراحية";
+      case WeCareMedicalModules.chronicDiseases:
+        return "الأمراض المزمنة";
+      case WeCareMedicalModules.geneticDiseases:
+        return "الأمراض الوراثية";
+      case WeCareMedicalModules.allergies:
+        return "الحساسية";
+      case WeCareMedicalModules.ophthalmology:
+        return "العيون";
+      case WeCareMedicalModules.dentistry:
+        return "الأسنان";
+      case WeCareMedicalModules.vaccinations:
+        return "التطعيمات";
+      case WeCareMedicalModules.mentalHealth:
+        return "الأمراض النفسية";
+      case WeCareMedicalModules.nutrition:
+        return "المتابعة الغذائية";
+      case WeCareMedicalModules.physicalActivity:
+        return "النشاط الرياضي";
+      case WeCareMedicalModules.vitaminsAndSupplements:
+        return "الفيتامينات و المكملات الغذائية";
+      case WeCareMedicalModules.endoscopy:
+        return "المناظير الطبية";
+      case WeCareMedicalModules.oncology:
+        return "الأورام";
+      case WeCareMedicalModules.renalDialysis:
+        return "الغسيل الكلوي";
+      case WeCareMedicalModules.physicalTherapy:
+        return "العلاج الطبيعي";
+      case WeCareMedicalModules.pregnancyMonitoring:
+        return "متابعة الحمل";
+      case WeCareMedicalModules.infertility:
+        return "علاج مشاكل الإنجاب";
+      case WeCareMedicalModules.burns:
+        return "الحروق";
+      case WeCareMedicalModules.cosmeticSurgery:
+        return "الجراحات التجميلية";
+      case WeCareMedicalModules.highRiskBehaviors:
+        return "السلوكيات الخطرة";
+      case WeCareMedicalModules.publicHealth:
+        return "الصحة العامة";
+      case WeCareMedicalModules.drugCheck:
+        return "اختبار توافق ادويتي";
+      case WeCareMedicalModules.homeVisit:
+        return "زيارة طبية للمنزل";
+      case WeCareMedicalModules.onlineDoctorConsultation:
+        return "طبيبك أونلاين";
+      case WeCareMedicalModules.aiConsult:
+        return "استشر الـ AI";
+      case WeCareMedicalModules.myGenetics:
+        return "أمراضي الوراثية";
+      case WeCareMedicalModules.patientSupport:
+        return "لست وحدك";
+      case WeCareMedicalModules.myMedicalReports:
+        return "تقاريري الطبية";
+      case WeCareMedicalModules.lifeQuality:
+        return "جودة الحياة";
+      case WeCareMedicalModules.findADoctor:
+        return "بحث عن طبيب";
+      case WeCareMedicalModules.doctorRatings:
+        return "تقييم الأطباء";
+      case WeCareMedicalModules.dataCompletion:
+        return "اكتمال البيانات";
+      case WeCareMedicalModules.healthRiskIndicators:
+        return "مؤشرات المخاطر الصحية";
+    }
   }
 }

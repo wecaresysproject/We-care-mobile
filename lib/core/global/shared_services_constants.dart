@@ -12,4 +12,5 @@ class SharedServicesConstants {
   static const eyeMedicalCenters = "/DoctorUser/doctor/eye-centers";
   static const uploadImageEndpoint = "/FileUpload/upload-image";
   static const uploadReportEndpoint = "/FileUpload/upload-report";
+  static const videoSearch = "/UserGuide/videos/search";
 }

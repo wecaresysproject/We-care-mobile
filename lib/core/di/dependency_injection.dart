@@ -391,6 +391,7 @@ void setupAppCubits() {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(
       getIt<HomeRepository>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<ContactSupportCubit>(

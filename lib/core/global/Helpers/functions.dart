@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -205,4 +206,22 @@ String sanitizeDosageForPdf(String? input) {
   }
 
   return text;
+}
+
+Future<void> launchYouTubeVideo(String? url) async {
+  if (url == null || url.trim().isEmpty) {
+    AppLogger.error("YouTube URL is null or empty");
+    return;
+  }
+
+  final Uri uri = Uri.parse(url);
+  try {
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      AppLogger.error("Could not launch YouTube URL: $url");
+    }
+  } catch (e) {
+    AppLogger.error("Error launching YouTube URL: $e");
+  }
 }
