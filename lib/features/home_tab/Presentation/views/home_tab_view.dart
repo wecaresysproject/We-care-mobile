@@ -13,6 +13,7 @@ import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_home
 import 'package:we_care/features/home_tab/Presentation/views/widgets/faq_section_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_crausal_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/home_second_category_widget.dart';
+import 'package:we_care/features/home_tab/Presentation/views/widgets/video_grid_section.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 
 class HomeTabView extends StatelessWidget {
@@ -173,8 +174,8 @@ class HomeTabView extends StatelessWidget {
                   ),
 
                   verticalSpacing(30),
-                  Image.asset("assets/images/home_screen_videos.png"),
 
+                  const ModulesGuidanceVideosGridSection(),
                   verticalSpacing(32),
 
                   /// Frequently asked questions

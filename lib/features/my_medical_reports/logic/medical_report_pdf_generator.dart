@@ -368,10 +368,8 @@ class MedicalReportPdfGenerator {
 
     final hasFamilyDiseases = geneticModule.familyGeneticDiseases != null &&
         geneticModule.familyGeneticDiseases!.isNotEmpty;
-    final hasExpectedRisks = geneticModule.myExpectedGeneticDiseases != null &&
-        geneticModule.myExpectedGeneticDiseases!.isNotEmpty;
 
-    if (!hasFamilyDiseases && !hasExpectedRisks) {
+    if (!hasFamilyDiseases) {
       return pw.SizedBox.shrink();
     }
 
@@ -387,178 +385,87 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الامراض الوراثية'),
           pw.SizedBox(height: 12),
-          pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              /// ================= FAMILY DISEASES =================
-              pw.Expanded(
-                flex: 3,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'الامراض الوراثية العائلية',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 14,
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.toARGB32()),
-                      ),
-                    ),
-                    pw.SizedBox(height: 2),
-                    if (hasFamilyDiseases) ...[
-                      _buildFamilyGeneticHeaderRow(),
-                      ...geneticModule.familyGeneticDiseases!.map((item) {
-                        final membersNames = (item.members ?? []).map((m) {
-                          final memberCode =
-                              (m.code != null && m.code!.isNotEmpty)
-                                  ? getFamilyMemberCode(m.code!)
-                                  : "غير معروف";
-                          final nameStr = (m.name != null && m.name!.isNotEmpty)
-                              ? " : ${m.name}"
-                              : "";
-                          return "- $memberCode$nameStr";
-                        }).join('\n');
 
-                        final membersStatuses = (item.members ?? []).map((m) {
-                          return (m.diseaseStatus != null &&
-                                  m.diseaseStatus!.isNotEmpty)
-                              ? '- ${m.diseaseStatus}'
-                              : "--";
-                        }).join('\n');
+          /// ================= FAMILY DISEASES TABLE =================
+          pw.Text(
+            'الامراض الوراثية العائلية',
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 14,
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+            ),
+          ),
 
-                        return pw.Column(
-                          children: [
-                            _buildFamilyGeneticRow(
-                              status: membersStatuses,
-                              names: membersNames,
-                              disease: item.geneticDisease,
-                            ),
-                            pw.Divider(
-                              color: PdfColors.grey300,
-                              height: 1,
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ],
-                ),
+          pw.SizedBox(height: 6),
+
+          /// Header Row
+          pw.Container(
+            padding: const pw.EdgeInsets.symmetric(vertical: 6),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.grey100,
+              border: pw.TableBorder.all(
+                color: PdfColors.grey300,
+                width: 0.5,
               ),
+            ),
+            child: pw.Row(
+              children: [
+                _buildHeaderCell('المرض الوراثي', flex: 3),
+                _buildHeaderCell('الأقارب المصابون', flex: 3),
+                _buildHeaderCell('حالة المريض', flex: 3),
+                _buildHeaderCell('احتمالية الإصابة', flex: 3),
+              ],
+            ),
+          ),
 
-              pw.SizedBox(width: 12),
+          ...geneticModule.familyGeneticDiseases!.map(
+            (item) {
+              final expectedMap = {
+                for (var e in geneticModule.myExpectedGeneticDiseases ?? [])
+                  e.geneticDisease: e.probabilityLevel
+              };
 
-              /// ================= EXPECTED DISEASES =================
-              pw.Expanded(
-                flex: 2,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'أمراضي الوراثية المتوقعة',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 14,
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.toARGB32()),
-                      ),
+              final probability = expectedMap[item.geneticDisease] ?? "--";
+
+              final membersNames = (item.members ?? []).map((m) {
+                final memberCode = (m.code != null && m.code!.isNotEmpty)
+                    ? getFamilyMemberCode(m.code!)
+                    : "غير معروف";
+                final nameStr = (m.name != null && m.name!.isNotEmpty)
+                    ? " : ${m.name}"
+                    : "";
+                return "- $memberCode$nameStr";
+              }).join('\n');
+
+              final membersStatuses = (item.members ?? []).map((m) {
+                return (m.diseaseStatus != null && m.diseaseStatus!.isNotEmpty)
+                    ? '- ${m.diseaseStatus}'
+                    : "--";
+              }).join('\n');
+
+              return pw.Column(
+                children: [
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 4),
+                    child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        _buildValueCell(_safeText(item.geneticDisease),
+                            flex: 3),
+                        _buildValueCell(_safeText(membersNames), flex: 3),
+                        _buildValueCell(_safeText(membersStatuses), flex: 3),
+                        _buildValueCell(_safeText(probability), flex: 3),
+                      ],
                     ),
-                    pw.SizedBox(height: 2),
-                    if (hasExpectedRisks) ...[
-                      _buildExpectedGeneticHeaderRow(),
-                      ...geneticModule.myExpectedGeneticDiseases!.map((item) {
-                        return pw.Column(
-                          children: [
-                            _buildExpectedGeneticRow(
-                              probability: item.probabilityLevel,
-                              disease: item.geneticDisease,
-                            ),
-                            pw.Divider(
-                              color: PdfColors.grey300,
-                              height: 1,
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                  pw.Divider(
+                    color: PdfColors.grey300,
+                    height: 1,
+                  ),
+                ],
+              );
+            },
           ),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildFamilyGeneticHeaderRow() {
-    return pw.Container(
-      padding: const pw.EdgeInsets.symmetric(vertical: 6),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey100,
-        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Row(
-        children: [
-          _buildHeaderCell('المرض الوراثي', flex: 3),
-          _buildHeaderCell('الأقارب المصابون', flex: 4),
-          _buildHeaderCell('حالة المريض', flex: 2),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildFamilyGeneticRow({
-    required String status,
-    required String names,
-    String? disease,
-  }) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 3),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildValueCell(_safeText(disease), flex: 3),
-          _buildValueCell(
-            _safeText(names),
-            flex: 4,
-          ),
-          _buildValueCell(_safeText(status), flex: 2),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildExpectedGeneticHeaderRow() {
-    return pw.Container(
-      padding: const pw.EdgeInsets.symmetric(vertical: 6),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey100,
-        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Row(
-        children: [
-          _buildHeaderCell('الأمراض الوراثية المتوقعة', flex: 4),
-          _buildHeaderCell('احتمالية الإصابة', flex: 2),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildExpectedGeneticRow({
-    String? probability,
-    String? disease,
-  }) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 3),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildValueCell(
-            _safeText(disease),
-            flex: 4,
-          ),
-          _buildValueCell(_safeText(probability), flex: 2),
         ],
       ),
     );
@@ -2236,165 +2143,116 @@ class MedicalReportPdfGenerator {
           _buildSectionHeader('العمليات الجراحية'),
           pw.SizedBox(height: 12),
 
-          // Build each surgery entry with its images
-          ...surgeries.asMap().entries.map((entry) {
+          // Build each surgery entry matching the Teeth Module implementation
+          ...surgeries.asMap().entries.expand((entry) {
             final index = entry.key;
             final surgery = entry.value;
             final isLast = index == surgeries.length - 1;
             final images = surgery.medicalReportImage ?? [];
             final validImages = images
-                .where((url) => url.isNotEmpty && url != "لم يتم ادخال بيانات")
+                .where((url) =>
+                    url.isNotEmpty &&
+                    url != "لم يتم ادخال بيانات" &&
+                    surgeryImages.containsKey(url))
                 .toList();
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                // Surgery data row
-                _buildSurgeryDataRow(surgery),
 
-                if (validImages.isNotEmpty)
-                  _buildSurgeryImagesRow(validImages, surgeryImages),
-
-                // Divider between entries (except after last)
-                if (!isLast) ...[
-                  pw.Divider(color: PdfColors.grey300),
+            return [
+              /// ===== TABLE =====
+              pw.Table(
+                border: pw.TableBorder.all(
+                  color: PdfColors.grey300,
+                  width: 0.5,
+                ),
+                columnWidths: {
+                  0: const pw.FlexColumnWidth(1),
+                  1: const pw.FlexColumnWidth(1),
+                  2: const pw.FlexColumnWidth(1),
+                  3: const pw.FlexColumnWidth(1),
+                  4: const pw.FlexColumnWidth(1),
+                  5: const pw.FlexColumnWidth(1),
+                  6: const pw.FlexColumnWidth(1),
+                },
+                children: [
+                  pw.TableRow(
+                    decoration: const pw.BoxDecoration(
+                      color: PdfColors.grey100,
+                    ),
+                    children: [
+                      _buildTableCell('الدولة', isHeader: true),
+                      _buildTableCell('المستشفي', isHeader: true),
+                      _buildTableCell('اسم الجراح', isHeader: true),
+                      _buildTableCell('حالة العملية', isHeader: true),
+                      _buildTableCell('التقنية المستخدمة', isHeader: true),
+                      _buildTableCell('اسم العملية', isHeader: true),
+                      _buildTableCell('التاريخ', isHeader: true),
+                    ],
+                  ),
+                  pw.TableRow(
+                    children: [
+                      _buildTableCell(_safeText(surgery.country)),
+                      _buildTableCell(_safeText(surgery.hospitalCenter)),
+                      _buildTableCell(_safeText(surgery.surgeonName)),
+                      _buildTableCell(_safeText(surgery.surgeryStatus)),
+                      _buildTableCell(_safeText(surgery.usedTechnique)),
+                      _buildTableCell(_safeText(surgery.surgeryName)),
+                      _buildTableCell(_safeText(surgery.surgeryDate)),
+                    ],
+                  ),
                 ],
-              ],
-            );
+              ),
+
+              /// ===== IMAGES =====
+              if (validImages.isNotEmpty)
+                ...validImages.asMap().entries.expand(
+                  (imgEntry) {
+                    final i = imgEntry.key;
+
+                    // Each row has two images
+                    if (i.isOdd) return [];
+
+                    return [
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        children: [
+                          pw.Expanded(
+                            child: pw.Container(
+                              height: 400,
+                              decoration: pw.BoxDecoration(
+                                border: pw.Border.all(color: PdfColors.grey200),
+                                borderRadius: pw.BorderRadius.circular(6),
+                              ),
+                              child: pw.Image(
+                                surgeryImages[validImages[i]]!,
+                                fit: pw.BoxFit.fill,
+                              ),
+                            ),
+                          ),
+                          pw.SizedBox(width: 10),
+                          if (i + 1 < validImages.length)
+                            pw.Expanded(
+                              child: pw.Container(
+                                height: 400,
+                                decoration: pw.BoxDecoration(
+                                  border:
+                                      pw.Border.all(color: PdfColors.grey200),
+                                  borderRadius: pw.BorderRadius.circular(6),
+                                ),
+                                child: pw.Image(
+                                  surgeryImages[validImages[i + 1]]!,
+                                  fit: pw.BoxFit.fill,
+                                ),
+                              ),
+                            )
+                          else
+                            pw.Expanded(child: pw.SizedBox()),
+                        ],
+                      ),
+                    ];
+                  },
+                ),
+            ];
           }),
         ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryDataRow(SurgeryEntry surgery) {
-    return pw.Container(
-      padding: const pw.EdgeInsets.all(10),
-      width: double.infinity,
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey50,
-        borderRadius: pw.BorderRadius.circular(8),
-        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          // Surgery name (title)
-          pw.Text(
-            surgery.surgeryName,
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-            ),
-          ),
-          pw.SizedBox(height: 8),
-
-          // Details in grid layout
-          pw.Wrap(
-            spacing: 20,
-            runSpacing: 10,
-            children: [
-              _buildSurgeryDetailItem('التاريخ', (surgery.surgeryDate)),
-              _buildSurgeryDetailItem('المنطقة', surgery.surgeryRegion),
-              _buildSurgeryDetailItem('التقنية', surgery.usedTechnique),
-              _buildSurgeryDetailItem('الحالة', surgery.surgeryStatus),
-              _buildSurgeryDetailItem('الجراح', surgery.surgeonName),
-              _buildSurgeryDetailItem('المستشفى', surgery.hospitalCenter),
-              _buildSurgeryDetailItem('الدولة', surgery.country),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryDetailItem(String label, String value) {
-    if (value == "لم يتم ادخال بيانات") {
-      return pw.SizedBox.shrink();
-    }
-    return pw.Container(
-      constraints: const pw.BoxConstraints(minWidth: 150),
-      child: pw.Row(
-        mainAxisSize: pw.MainAxisSize.min,
-        children: [
-          pw.Text(
-            '$label : ',
-            style: pw.TextStyle(
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 14,
-            ),
-          ),
-          pw.Text(
-            value,
-            style: const pw.TextStyle(
-              fontSize: 14,
-              color: PdfColors.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  pw.Widget _buildSurgeryImagesRow(
-      List<String> imageUrls, Map<String, pw.MemoryImage> surgeryImages) {
-    return pw.Container(
-      margin: const pw.EdgeInsets.only(top: 10),
-      child: pw.Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: imageUrls.map((imageUrl) {
-          final image = surgeryImages[imageUrl];
-
-          return pw.Container(
-            width: 350,
-            padding: const pw.EdgeInsets.all(8),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.white,
-              border: pw.Border.all(color: PdfColors.grey400, width: 1),
-              borderRadius: pw.BorderRadius.circular(8),
-            ),
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              children: [
-                if (image != null &&
-                    imageUrl.isNotEmpty &&
-                    imageUrl != "لم يتم ادخال بيانات") ...[
-                  pw.Container(
-                    child: pw.Image(
-                      image,
-                      fit: pw.BoxFit.contain,
-                    ),
-                  ),
-                  pw.SizedBox(height: 4),
-                  pw.UrlLink(
-                    destination: imageUrl,
-                    child: pw.Text(
-                      'اضغط للتحميل',
-                      style: pw.TextStyle(
-                        fontSize: 8,
-                        color: PdfColors.blue700,
-                        decoration: pw.TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ] else
-                  pw.Container(
-                    width: 120,
-                    height: 120,
-                    child: pw.Center(
-                      child: pw.Icon(
-                        pw.IconData(0xe3f4),
-                        size: 40,
-                        color: PdfColors.grey600,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }).toList(),
       ),
     );
   }
@@ -2980,216 +2838,6 @@ class MedicalReportPdfGenerator {
 
     return widgets;
   }
-
-  // pw.Widget _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return pw.SizedBox.shrink();
-  //   }
-
-  //   final widgets = <pw.Widget>[];
-
-  //   for (final entry in nutritionModule) {
-  //     final dateStr = entry.dateRange != null
-  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //         : "--";
-
-  //     final items = entry.nutritionReport ?? [];
-
-  //     if (items.isEmpty) continue;
-
-  //     // -------------------------------
-  //     // Header + first row together
-  //     // -------------------------------
-  //     widgets.add(
-  //       pw.Container(
-  //         padding: sectionPadding,
-  //         margin: sectionMargin,
-  //         decoration: pw.BoxDecoration(
-  //           color: PdfColors.white,
-  //           borderRadius: pw.BorderRadius.circular(16),
-  //         ),
-  //         child: pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             _buildSectionHeader("جدول المتابعة الغذائية"),
-  //             pw.SizedBox(height: 12),
-  //             pw.Text(
-  //               dateStr,
-  //               style: pw.TextStyle(
-  //                 fontWeight: pw.FontWeight.bold,
-  //                 fontSize: 12,
-  //                 color: PdfColors.black,
-  //               ),
-  //             ),
-  //             pw.SizedBox(height: 2),
-  //             _buildNutritionHeaderRow(),
-  //             _buildNutritionRow(items.first),
-  //             pw.Divider(
-  //               color: PdfColors.grey300,
-  //               height: 1,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-
-  //     // -------------------------------
-  //     // Remaining rows (can paginate)
-  //     // -------------------------------
-  //     for (final item in items.skip(1)) {
-  //       widgets.add(
-  //         pw.Container(
-  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           color: PdfColors.white,
-  //           child: _buildNutritionRow(item),
-  //         ),
-  //       );
-
-  //       widgets.add(
-  //         pw.Container(
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           child: pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   }
-
-  //   return pw.Column(children: widgets);
-  // }
-
-  // List<pw.Widget> _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return [];
-  //   }
-
-  //   final widgets = <pw.Widget>[];
-
-  //   for (final entry in nutritionModule) {
-  //     final dateStr = entry.dateRange != null
-  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //         : "--";
-
-  //     // بداية البلوك
-  //     widgets.add(
-  //       pw.Container(
-  //         padding: sectionPadding,
-  //         margin: sectionMargin,
-  //         decoration: pw.BoxDecoration(
-  //           color: PdfColors.white,
-  //           borderRadius: pw.BorderRadius.circular(16),
-  //         ),
-  //         child: pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             _buildSectionHeader("جدول المتابعة الغذائية"),
-  //             pw.SizedBox(height: 12),
-  //             pw.Text(
-  //               dateStr,
-  //               style: pw.TextStyle(
-  //                 fontWeight: pw.FontWeight.bold,
-  //                 fontSize: 12,
-  //                 color: PdfColors.black,
-  //               ),
-  //             ),
-  //             pw.SizedBox(height: 2),
-  //             _buildNutritionHeaderRow(),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-
-  //     // الصفوف خارج الكولمن
-  //     for (final item in (entry.nutritionReport ?? [])) {
-  //       widgets.add(
-  //         pw.Container(
-  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           color: PdfColors.white,
-  //           child: _buildNutritionRow(item),
-  //         ),
-  //       );
-
-  //       widgets.add(
-  //         pw.Container(
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           child: pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   }
-
-  //   return widgets;
-  // }
-
-  // pw.Widget _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return pw.SizedBox.shrink();
-  //   }
-
-  //   return pw.Column(
-  //     children: [
-  //       for (final entry in nutritionModule) _buildSingleNutritionBlock(entry),
-  //     ],
-  //   );
-  // }
-
-  // pw.Widget _buildSingleNutritionBlock(NutritionTrackingEntry entry) {
-  //   final dateStr = entry.dateRange != null
-  //       ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //           "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //       : "--";
-
-  //   return pw.Container(
-  //     padding: sectionPadding,
-  //     margin: sectionMargin,
-  //     decoration: pw.BoxDecoration(
-  //       color: PdfColors.white,
-  //       borderRadius: pw.BorderRadius.circular(16),
-  //     ),
-  //     child: pw.Column(
-  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //       children: [
-  //         _buildSectionHeader("جدول المتابعة الغذائية"),
-  //         pw.SizedBox(height: 12),
-  //         pw.Text(
-  //           dateStr,
-  //           style: pw.TextStyle(
-  //             fontWeight: pw.FontWeight.bold,
-  //             fontSize: 12,
-  //             color: PdfColors.black,
-  //           ),
-  //         ),
-  //         pw.SizedBox(height: 2),
-  //         _buildNutritionHeaderRow(),
-  //         for (final item in (entry.nutritionReport ?? [])) ...[
-  //           _buildNutritionRow(item),
-  //           pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ],
-  //       ],
-  //     ),
-  //   );
-  // }
 
   String _formatNutritionDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "--";

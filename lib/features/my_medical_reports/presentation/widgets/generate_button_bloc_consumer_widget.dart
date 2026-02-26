@@ -35,7 +35,7 @@ class GenerateButtonBlocConsumer extends StatelessWidget {
       },
       builder: (context, state) {
         return AppCustomButton(
-          title: 'Generate Report',
+          title: 'إعداد تقريري',
           isEnabled: true,
           onPressed: () async {
             await context

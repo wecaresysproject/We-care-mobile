@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/shared_services.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
+import 'package:we_care/core/models/video_model.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/dental_module/data/models/doctor_model.dart';
@@ -207,6 +208,18 @@ class AppSharedRepo {
         language,
       );
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<VideoModel>>> getModulesGuidanceVideos() async {
+    try {
+      final response = await _sharedServices.getModulesGuidanceVideos();
+      final videos = (response['data'] as List)
+          .map((e) => VideoModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+      return ApiResult.success(videos);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

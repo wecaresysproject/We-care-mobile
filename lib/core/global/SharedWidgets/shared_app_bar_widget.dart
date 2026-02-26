@@ -23,7 +23,7 @@ class SharedAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 16.h, bottom: 24.h),
+      padding: EdgeInsets.only(top: 16.h, bottom: 12.h),
       child: Row(
         children: [
           const CustomBackArrow(),

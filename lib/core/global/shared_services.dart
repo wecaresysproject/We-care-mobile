@@ -83,4 +83,6 @@ abstract class SharedServices {
     @Header("Content-Type") String contentType,
     @Query("language") String language,
   );
+  @GET(SharedServicesConstants.videoSearch)
+  Future<dynamic> getModulesGuidanceVideos();
 }
