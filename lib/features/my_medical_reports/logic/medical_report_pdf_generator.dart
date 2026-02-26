@@ -2296,31 +2296,17 @@ class MedicalReportPdfGenerator {
 
               /// ===== IMAGES =====
               if (validImages.isNotEmpty)
-                ...validImages.asMap().entries.expand((imgEntry) {
-                  final i = imgEntry.key;
+                ...validImages.asMap().entries.expand(
+                  (imgEntry) {
+                    final i = imgEntry.key;
 
-                  // Each row has two images
-                  if (i.isOdd) return [];
+                    // Each row has two images
+                    if (i.isOdd) return [];
 
-                  return [
-                    pw.SizedBox(height: 10),
-                    pw.Row(
-                      children: [
-                        pw.Expanded(
-                          child: pw.Container(
-                            height: 400,
-                            decoration: pw.BoxDecoration(
-                              border: pw.Border.all(color: PdfColors.grey200),
-                              borderRadius: pw.BorderRadius.circular(6),
-                            ),
-                            child: pw.Image(
-                              surgeryImages[validImages[i]]!,
-                              fit: pw.BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        pw.SizedBox(width: 10),
-                        if (i + 1 < validImages.length)
+                    return [
+                      pw.SizedBox(height: 10),
+                      pw.Row(
+                        children: [
                           pw.Expanded(
                             child: pw.Container(
                               height: 400,
@@ -2329,25 +2315,33 @@ class MedicalReportPdfGenerator {
                                 borderRadius: pw.BorderRadius.circular(6),
                               ),
                               child: pw.Image(
-                                surgeryImages[validImages[i + 1]]!,
+                                surgeryImages[validImages[i]]!,
                                 fit: pw.BoxFit.fill,
                               ),
                             ),
-                          )
-                        else
-                          pw.Expanded(child: pw.SizedBox()),
-                      ],
-                    ),
-                  ];
-                }),
-
-              if (!isLast)
-                pw.Padding(
-                  padding: const pw.EdgeInsets.symmetric(vertical: 2),
-                  child: pw.Divider(
-                    color: PdfColors.grey300,
-                    thickness: 0.5,
-                  ),
+                          ),
+                          pw.SizedBox(width: 10),
+                          if (i + 1 < validImages.length)
+                            pw.Expanded(
+                              child: pw.Container(
+                                height: 400,
+                                decoration: pw.BoxDecoration(
+                                  border:
+                                      pw.Border.all(color: PdfColors.grey200),
+                                  borderRadius: pw.BorderRadius.circular(6),
+                                ),
+                                child: pw.Image(
+                                  surgeryImages[validImages[i + 1]]!,
+                                  fit: pw.BoxFit.fill,
+                                ),
+                              ),
+                            )
+                          else
+                            pw.Expanded(child: pw.SizedBox()),
+                        ],
+                      ),
+                    ];
+                  },
                 ),
             ];
           }),
@@ -2937,216 +2931,6 @@ class MedicalReportPdfGenerator {
 
     return widgets;
   }
-
-  // pw.Widget _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return pw.SizedBox.shrink();
-  //   }
-
-  //   final widgets = <pw.Widget>[];
-
-  //   for (final entry in nutritionModule) {
-  //     final dateStr = entry.dateRange != null
-  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //         : "--";
-
-  //     final items = entry.nutritionReport ?? [];
-
-  //     if (items.isEmpty) continue;
-
-  //     // -------------------------------
-  //     // Header + first row together
-  //     // -------------------------------
-  //     widgets.add(
-  //       pw.Container(
-  //         padding: sectionPadding,
-  //         margin: sectionMargin,
-  //         decoration: pw.BoxDecoration(
-  //           color: PdfColors.white,
-  //           borderRadius: pw.BorderRadius.circular(16),
-  //         ),
-  //         child: pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             _buildSectionHeader("جدول المتابعة الغذائية"),
-  //             pw.SizedBox(height: 12),
-  //             pw.Text(
-  //               dateStr,
-  //               style: pw.TextStyle(
-  //                 fontWeight: pw.FontWeight.bold,
-  //                 fontSize: 12,
-  //                 color: PdfColors.black,
-  //               ),
-  //             ),
-  //             pw.SizedBox(height: 2),
-  //             _buildNutritionHeaderRow(),
-  //             _buildNutritionRow(items.first),
-  //             pw.Divider(
-  //               color: PdfColors.grey300,
-  //               height: 1,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-
-  //     // -------------------------------
-  //     // Remaining rows (can paginate)
-  //     // -------------------------------
-  //     for (final item in items.skip(1)) {
-  //       widgets.add(
-  //         pw.Container(
-  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           color: PdfColors.white,
-  //           child: _buildNutritionRow(item),
-  //         ),
-  //       );
-
-  //       widgets.add(
-  //         pw.Container(
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           child: pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   }
-
-  //   return pw.Column(children: widgets);
-  // }
-
-  // List<pw.Widget> _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return [];
-  //   }
-
-  //   final widgets = <pw.Widget>[];
-
-  //   for (final entry in nutritionModule) {
-  //     final dateStr = entry.dateRange != null
-  //         ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //             "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //         : "--";
-
-  //     // بداية البلوك
-  //     widgets.add(
-  //       pw.Container(
-  //         padding: sectionPadding,
-  //         margin: sectionMargin,
-  //         decoration: pw.BoxDecoration(
-  //           color: PdfColors.white,
-  //           borderRadius: pw.BorderRadius.circular(16),
-  //         ),
-  //         child: pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             _buildSectionHeader("جدول المتابعة الغذائية"),
-  //             pw.SizedBox(height: 12),
-  //             pw.Text(
-  //               dateStr,
-  //               style: pw.TextStyle(
-  //                 fontWeight: pw.FontWeight.bold,
-  //                 fontSize: 12,
-  //                 color: PdfColors.black,
-  //               ),
-  //             ),
-  //             pw.SizedBox(height: 2),
-  //             _buildNutritionHeaderRow(),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-
-  //     // الصفوف خارج الكولمن
-  //     for (final item in (entry.nutritionReport ?? [])) {
-  //       widgets.add(
-  //         pw.Container(
-  //           padding: const pw.EdgeInsets.symmetric(horizontal: 15),
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           color: PdfColors.white,
-  //           child: _buildNutritionRow(item),
-  //         ),
-  //       );
-
-  //       widgets.add(
-  //         pw.Container(
-  //           margin: const pw.EdgeInsets.only(left: 10, right: 10),
-  //           child: pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ),
-  //       );
-  //     }
-  //   }
-
-  //   return widgets;
-  // }
-
-  // pw.Widget _buildSmartNutrationAnalysisSection(
-  //     MedicalReportResponseModel reportData) {
-  //   final nutritionModule = reportData.data.nutritionTrackingModule;
-
-  //   if (nutritionModule == null || nutritionModule.isEmpty) {
-  //     return pw.SizedBox.shrink();
-  //   }
-
-  //   return pw.Column(
-  //     children: [
-  //       for (final entry in nutritionModule) _buildSingleNutritionBlock(entry),
-  //     ],
-  //   );
-  // }
-
-  // pw.Widget _buildSingleNutritionBlock(NutritionTrackingEntry entry) {
-  //   final dateStr = entry.dateRange != null
-  //       ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-  //           "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
-  //       : "--";
-
-  //   return pw.Container(
-  //     padding: sectionPadding,
-  //     margin: sectionMargin,
-  //     decoration: pw.BoxDecoration(
-  //       color: PdfColors.white,
-  //       borderRadius: pw.BorderRadius.circular(16),
-  //     ),
-  //     child: pw.Column(
-  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //       children: [
-  //         _buildSectionHeader("جدول المتابعة الغذائية"),
-  //         pw.SizedBox(height: 12),
-  //         pw.Text(
-  //           dateStr,
-  //           style: pw.TextStyle(
-  //             fontWeight: pw.FontWeight.bold,
-  //             fontSize: 12,
-  //             color: PdfColors.black,
-  //           ),
-  //         ),
-  //         pw.SizedBox(height: 2),
-  //         _buildNutritionHeaderRow(),
-  //         for (final item in (entry.nutritionReport ?? [])) ...[
-  //           _buildNutritionRow(item),
-  //           pw.Divider(
-  //             color: PdfColors.grey300,
-  //             height: 1,
-  //           ),
-  //         ],
-  //       ],
-  //     ),
-  //   );
-  // }
 
   String _formatNutritionDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "--";

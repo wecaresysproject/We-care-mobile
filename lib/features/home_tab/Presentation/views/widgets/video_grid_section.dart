@@ -179,8 +179,9 @@ class VideoItemWidget extends StatelessWidget {
               imageUrl: video.videoCoverImage ?? '',
               width: double.infinity,
               height: double.infinity,
+              memCacheHeight: 400,
+              memCacheWidth: 400,
               fit: BoxFit.cover,
-              placeholder: (context, url) => Container(color: Colors.grey[200]),
               errorWidget: (context, url, error) => Image.asset(
                 "assets/images/home_screen_videos.png",
                 fit: BoxFit.cover,
@@ -188,7 +189,7 @@ class VideoItemWidget extends StatelessWidget {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
               ),
             ),
             Icon(
