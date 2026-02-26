@@ -411,9 +411,9 @@ class MedicalReportPdfGenerator {
             child: pw.Row(
               children: [
                 _buildHeaderCell('المرض الوراثي', flex: 3),
-                _buildHeaderCell('الأقارب المصابون', flex: 4),
-                _buildHeaderCell('حالة المريض', flex: 2),
-                _buildHeaderCell('احتمالية الإصابة', flex: 2),
+                _buildHeaderCell('الأقارب المصابون', flex: 3),
+                _buildHeaderCell('حالة المريض', flex: 3),
+                _buildHeaderCell('احتمالية الإصابة', flex: 3),
               ],
             ),
           ),
@@ -452,9 +452,9 @@ class MedicalReportPdfGenerator {
                       children: [
                         _buildValueCell(_safeText(item.geneticDisease),
                             flex: 3),
-                        _buildValueCell(_safeText(membersNames), flex: 4),
-                        _buildValueCell(_safeText(membersStatuses), flex: 2),
-                        _buildValueCell(_safeText(probability), flex: 2),
+                        _buildValueCell(_safeText(membersNames), flex: 3),
+                        _buildValueCell(_safeText(membersStatuses), flex: 3),
+                        _buildValueCell(_safeText(probability), flex: 3),
                       ],
                     ),
                   ),
@@ -1212,14 +1212,6 @@ class MedicalReportPdfGenerator {
       return pw.SizedBox.shrink();
     }
 
-    final displayInfo = basicInfo
-        .where((info) =>
-            info.label != 'الصورة' &&
-            info.value != null &&
-            info.value.toString().isNotEmpty &&
-            info.value.toString() != "لم يتم ادخال بيانات")
-        .toList();
-
     final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
@@ -1878,6 +1870,7 @@ class MedicalReportPdfGenerator {
             fontSize: fontSize,
             color: PdfColors.black,
           ),
+          textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
           softWrap: true,
         ),
       ),
