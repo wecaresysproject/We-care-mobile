@@ -368,10 +368,8 @@ class MedicalReportPdfGenerator {
 
     final hasFamilyDiseases = geneticModule.familyGeneticDiseases != null &&
         geneticModule.familyGeneticDiseases!.isNotEmpty;
-    final hasExpectedRisks = geneticModule.myExpectedGeneticDiseases != null &&
-        geneticModule.myExpectedGeneticDiseases!.isNotEmpty;
 
-    if (!hasFamilyDiseases && !hasExpectedRisks) {
+    if (!hasFamilyDiseases) {
       return pw.SizedBox.shrink();
     }
 
@@ -387,104 +385,86 @@ class MedicalReportPdfGenerator {
         children: [
           _buildSectionHeader('الامراض الوراثية'),
           pw.SizedBox(height: 12),
-          pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              /// ================= FAMILY DISEASES =================
-              pw.Expanded(
-                flex: 3,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'الامراض الوراثية العائلية',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 14,
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.toARGB32()),
-                      ),
-                    ),
-                    pw.SizedBox(height: 2),
-                    if (hasFamilyDiseases) ...[
-                      _buildFamilyGeneticHeaderRow(),
-                      ...geneticModule.familyGeneticDiseases!.map((item) {
-                        final membersNames = (item.members ?? []).map((m) {
-                          final memberCode =
-                              (m.code != null && m.code!.isNotEmpty)
-                                  ? getFamilyMemberCode(m.code!)
-                                  : "غير معروف";
-                          final nameStr = (m.name != null && m.name!.isNotEmpty)
-                              ? " : ${m.name}"
-                              : "";
-                          return "- $memberCode$nameStr";
-                        }).join('\n');
 
-                        final membersStatuses = (item.members ?? []).map((m) {
-                          return (m.diseaseStatus != null &&
-                                  m.diseaseStatus!.isNotEmpty)
-                              ? '- ${m.diseaseStatus}'
-                              : "--";
-                        }).join('\n');
+          /// ================= FAMILY DISEASES TABLE =================
+          pw.Text(
+            'الامراض الوراثية العائلية',
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 14,
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+            ),
+          ),
 
-                        return pw.Column(
-                          children: [
-                            _buildFamilyGeneticRow(
-                              status: membersStatuses,
-                              names: membersNames,
-                              disease: item.geneticDisease,
-                            ),
-                            pw.Divider(
-                              color: PdfColors.grey300,
-                              height: 1,
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ],
-                ),
+          pw.SizedBox(height: 6),
+
+          /// Header Row
+          pw.Container(
+            padding: const pw.EdgeInsets.symmetric(vertical: 6),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.grey100,
+              border: pw.TableBorder.all(
+                color: PdfColors.grey300,
+                width: 0.5,
               ),
+            ),
+            child: pw.Row(
+              children: [
+                _buildHeaderCell('المرض الوراثي', flex: 3),
+                _buildHeaderCell('الأقارب المصابون', flex: 4),
+                _buildHeaderCell('حالة المريض', flex: 2),
+                _buildHeaderCell('احتمالية الإصابة', flex: 2),
+              ],
+            ),
+          ),
 
-              pw.SizedBox(width: 12),
+          ...geneticModule.familyGeneticDiseases!.map(
+            (item) {
+              final expectedMap = {
+                for (var e in geneticModule.myExpectedGeneticDiseases ?? [])
+                  e.geneticDisease: e.probabilityLevel
+              };
 
-              /// ================= EXPECTED DISEASES =================
-              pw.Expanded(
-                flex: 2,
-                child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      'أمراضي الوراثية المتوقعة',
-                      style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        fontSize: 14,
-                        color: PdfColor.fromInt(
-                            AppColorsManager.mainDarkBlue.toARGB32()),
-                      ),
+              final probability = expectedMap[item.geneticDisease] ?? "--";
+
+              final membersNames = (item.members ?? []).map((m) {
+                final memberCode = (m.code != null && m.code!.isNotEmpty)
+                    ? getFamilyMemberCode(m.code!)
+                    : "غير معروف";
+                final nameStr = (m.name != null && m.name!.isNotEmpty)
+                    ? " : ${m.name}"
+                    : "";
+                return "- $memberCode$nameStr";
+              }).join('\n');
+
+              final membersStatuses = (item.members ?? []).map((m) {
+                return (m.diseaseStatus != null && m.diseaseStatus!.isNotEmpty)
+                    ? '- ${m.diseaseStatus}'
+                    : "--";
+              }).join('\n');
+
+              return pw.Column(
+                children: [
+                  pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 4),
+                    child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        _buildValueCell(_safeText(item.geneticDisease),
+                            flex: 3),
+                        _buildValueCell(_safeText(membersNames), flex: 4),
+                        _buildValueCell(_safeText(membersStatuses), flex: 2),
+                        _buildValueCell(_safeText(probability), flex: 2),
+                      ],
                     ),
-                    pw.SizedBox(height: 2),
-                    if (hasExpectedRisks) ...[
-                      _buildExpectedGeneticHeaderRow(),
-                      ...geneticModule.myExpectedGeneticDiseases!.map((item) {
-                        return pw.Column(
-                          children: [
-                            _buildExpectedGeneticRow(
-                              probability: item.probabilityLevel,
-                              disease: item.geneticDisease,
-                            ),
-                            pw.Divider(
-                              color: PdfColors.grey300,
-                              height: 1,
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+                  ),
+                  pw.Divider(
+                    color: PdfColors.grey300,
+                    height: 1,
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -1299,6 +1279,20 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildHeader(pw.ImageProvider profileImage,
       pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
+    final basicInfo = reportData.data.basicInformation;
+
+    if (basicInfo == null || basicInfo.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    final displayInfo = basicInfo
+        .where((info) =>
+            info.label != 'الصورة' &&
+            info.value != null &&
+            info.value.toString().isNotEmpty &&
+            info.value.toString() != "لم يتم ادخال بيانات")
+        .toList();
+
     final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
@@ -1957,7 +1951,6 @@ class MedicalReportPdfGenerator {
             fontSize: fontSize,
             color: PdfColors.black,
           ),
-          textAlign: alignRight ? pw.TextAlign.right : pw.TextAlign.center,
           softWrap: true,
         ),
       ),
