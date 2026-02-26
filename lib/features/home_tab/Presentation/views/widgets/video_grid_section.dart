@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -13,119 +14,148 @@ import 'package:we_care/features/home_tab/Presentation/views/widgets/section_hea
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_state.dart';
 
-class ModulesGuidanceVideosGridSection extends StatelessWidget {
+class ModulesGuidanceVideosGridSection extends StatefulWidget {
   const ModulesGuidanceVideosGridSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SectionHeaderWidget(title: "فيديوهات توضيحية"),
-        verticalSpacing(5),
-        BlocBuilder<HomeCubit, HomeState>(
-          buildWhen: (previous, current) =>
-              previous.videoRequestStatus != current.videoRequestStatus ||
-              previous.videos != current.videos,
-          builder: (context, state) {
-            if (state.videoRequestStatus == RequestStatus.failure) {
-              return buildErrorWidget(state, context);
-            }
+  State<ModulesGuidanceVideosGridSection> createState() =>
+      _ModulesGuidanceVideosGridSectionState();
+}
 
-            final bool isLoading =
-                state.videoRequestStatus == RequestStatus.loading;
-            final List<VideoModel> displayVideos = isLoading
-                ? List.generate(
-                    4, (_) => VideoModel(videoLink: '', videoCoverImage: ''))
-                : state.videos;
+class _ModulesGuidanceVideosGridSectionState
+    extends State<ModulesGuidanceVideosGridSection> {
+  bool _hasRequested = false;
 
-            if (!isLoading && displayVideos.isEmpty) {
-              return Center(
-                child: Text(
-                  "لا توجد فيديوهات حالياً",
-                  style: AppTextStyles.font14whiteWeight600.copyWith(
-                    color: AppColorsManager.textColor,
-                  ),
-                ),
-              );
-            }
+  void _handleVisibility(BuildContext context) {
+    if (_hasRequested) return;
 
-            return Skeletonizer(
-              enabled: isLoading,
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: displayVideos.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.w,
-                  mainAxisSpacing: 16.h,
-                  childAspectRatio: 1.89,
-                ),
-                itemBuilder: (context, index) {
-                  return VideoItemWidget(video: displayVideos[index]);
-                },
-              ),
-            );
-          },
-        ),
-      ],
-    );
+    final cubit = context.read<HomeCubit>();
+
+    if (cubit.state.videoRequestStatus == RequestStatus.initial) {
+      _hasRequested = true;
+      cubit.getModulesGuidanceVideos();
+    }
   }
 
-  Container buildErrorWidget(HomeState state, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 6.w),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.red.withValues(alpha: 0.3),
-        ),
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return VisibilityDetector(
+      key: const Key('modules-guidance-videos-section'),
+      onVisibilityChanged: (visibilityInfo) {
+        if (visibilityInfo.visibleFraction > 0.2) {
+          _handleVisibility(context);
+        }
+      },
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.redAccent,
-            size: 40,
-          ),
-          Text(
-            state.errorMessage ?? "حدث خطأ أثناء تحميل الفيديوهات",
-            textAlign: TextAlign.center,
-            style: AppTextStyles.font14whiteWeight600.copyWith(
-              color: AppColorsManager.textColor,
-            ),
-          ),
-          verticalSpacing(14),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () =>
-                  context.read<HomeCubit>().getModulesGuidanceVideos(),
-              icon: const Icon(
-                Icons.refresh,
-                size: 24,
-                color: Colors.white,
-              ),
-              label: Text(
-                "إعادة المحاولة",
-                style: AppTextStyles.font14whiteWeight600,
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+          const SectionHeaderWidget(title: "فيديوهات توضيحية"),
+          verticalSpacing(5),
+          BlocBuilder<HomeCubit, HomeState>(
+            buildWhen: (previous, current) =>
+                previous.videoRequestStatus != current.videoRequestStatus ||
+                previous.videos != current.videos,
+            builder: (context, state) {
+              if (state.videoRequestStatus == RequestStatus.failure) {
+                return buildErrorWidget(state, context);
+              }
+
+              final bool isLoading =
+                  state.videoRequestStatus == RequestStatus.loading;
+
+              final List<VideoModel> displayVideos = isLoading
+                  ? List.generate(
+                      4, (_) => VideoModel(videoLink: '', videoCoverImage: ''))
+                  : state.videos;
+
+              if (!isLoading && displayVideos.isEmpty) {
+                return Center(
+                  child: Text(
+                    "لا توجد فيديوهات حالياً",
+                    style: AppTextStyles.font14whiteWeight600.copyWith(
+                      color: AppColorsManager.textColor,
+                    ),
+                  ),
+                );
+              }
+
+              return Skeletonizer(
+                enabled: isLoading,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: displayVideos.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16.w,
+                    mainAxisSpacing: 16.h,
+                    childAspectRatio: 1.89,
+                  ),
+                  itemBuilder: (context, index) {
+                    return VideoItemWidget(video: displayVideos[index]);
+                  },
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),
     );
   }
+}
+
+Container buildErrorWidget(HomeState state, BuildContext context) {
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 6.w),
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white.withValues(alpha: 0.05),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: Colors.red.withValues(alpha: 0.3),
+      ),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(
+          Icons.error_outline_rounded,
+          color: Colors.redAccent,
+          size: 40,
+        ),
+        Text(
+          state.errorMessage ?? "حدث خطأ أثناء تحميل الفيديوهات",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font14whiteWeight600.copyWith(
+            color: AppColorsManager.textColor,
+          ),
+        ),
+        verticalSpacing(14),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () =>
+                context.read<HomeCubit>().getModulesGuidanceVideos(),
+            icon: const Icon(
+              Icons.refresh,
+              size: 24,
+              color: Colors.white,
+            ),
+            label: Text(
+              "إعادة المحاولة",
+              style: AppTextStyles.font14whiteWeight600,
+            ),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class VideoItemWidget extends StatelessWidget {

@@ -22,9 +22,7 @@ class HomeTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => getIt<HomeCubit>()
-          ..getMessageNotifications()
-          ..getModulesGuidanceVideos(),
+        create: (context) => getIt<HomeCubit>()..getMessageNotifications(),
         child: SafeArea(
           child: DecoratedBox(
             decoration: ShapeDecoration(
