@@ -1206,12 +1206,6 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildHeader(pw.ImageProvider profileImage,
       pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
-    final basicInfo = reportData.data.basicInformation;
-
-    if (basicInfo == null || basicInfo.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
-
     final name = reportData.userName ?? 'غير معروف';
 
     return pw.Container(
