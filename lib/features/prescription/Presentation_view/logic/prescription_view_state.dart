@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 
 class PrescriptionViewState extends Equatable {
@@ -12,7 +13,7 @@ class PrescriptionViewState extends Equatable {
   final List<String> specificationsFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
-  
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const PrescriptionViewState({
     this.responseMessage = '',
@@ -24,6 +25,7 @@ class PrescriptionViewState extends Equatable {
     this.selectedPrescriptionDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory PrescriptionViewState.initial() {
@@ -37,6 +39,7 @@ class PrescriptionViewState extends Equatable {
       selectedPrescriptionDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -50,6 +53,7 @@ class PrescriptionViewState extends Equatable {
     PrescriptionModel? selectedPrescriptionDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return PrescriptionViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -62,6 +66,7 @@ class PrescriptionViewState extends Equatable {
           selectedPrescriptionDetails ?? this.selectedPrescriptionDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -75,6 +80,7 @@ class PrescriptionViewState extends Equatable {
         userPrescriptions,
         selectedPrescriptionDetails,
         isDeleteRequest,
-        isLoadingMore
+        isLoadingMore,
+        moduleGuidanceData,
       ];
 }

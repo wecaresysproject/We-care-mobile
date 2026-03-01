@@ -215,6 +215,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (context) => PrescriptionDetailsView(
             documentId: arguments?['id'] ?? "",
+            guidanceData: arguments?['guidanceData'],
           ),
         );
       case Routes.medicalAnalysisView:

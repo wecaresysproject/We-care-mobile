@@ -1,19 +1,27 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 
 class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
-  PrescriptionViewCubit(this._prescriptionRepo)
+  PrescriptionViewCubit(this._prescriptionRepo, this._sharedRepo)
       : super(PrescriptionViewState.initial());
   final PrescriptionViewRepo _prescriptionRepo;
+  final AppSharedRepo _sharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
-    Future<void> getUserPrescriptionList({int? page, int? pageSize}) async {
+  Future<void> init() async {
+    await getPrescriptionFilters();
+    await getUserPrescriptionList();
+    await emitModuleGuidance();
+  }
+
+  Future<void> getUserPrescriptionList({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -24,27 +32,26 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
     }
 
     final result = await _prescriptionRepo.getUserPrescriptionList(
-      language: AppStrings.arabicLang, 
-      userType: 'Patient', 
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        language: AppStrings.arabicLang,
+        userType: 'Patient',
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newPrescriptionList = response.prescriptionList;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newPrescriptionList.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userPrescriptions: page == 1 || page == null 
-          ? newPrescriptionList 
-          : [...state.userPrescriptions, ...newPrescriptionList],
+        userPrescriptions: page == 1 || page == null
+            ? newPrescriptionList
+            : [...state.userPrescriptions, ...newPrescriptionList],
         responseMessage: response.message,
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -61,10 +68,9 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await getUserPrescriptionList(page: currentPage + 1);
   }
-
 
   Future<void> getPrescriptionFilters() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -82,7 +88,6 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
       emit(state.copyWith(requestStatus: RequestStatus.failure));
     });
   }
-
 
   Future<void> getUserPrescriptionDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -139,5 +144,28 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
           requestStatus: RequestStatus.failure,
           responseMessage: error.errors.first));
     });
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.prescriptions.name,
+    );
+
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 }

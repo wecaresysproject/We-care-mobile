@@ -215,6 +215,7 @@ void setupAppCubits() {
   getIt.registerFactory<PrescriptionViewCubit>(
     () => PrescriptionViewCubit(
       getIt<PrescriptionViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<EmergencyComplaintsDataEntryCubit>(
