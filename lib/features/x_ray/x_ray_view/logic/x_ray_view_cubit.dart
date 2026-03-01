@@ -1,23 +1,45 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/x_ray/data/repos/x_ray_view_repo.dart';
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_state.dart';
 
 class XRayViewCubit extends Cubit<XRayViewState> {
-  XRayViewCubit(this._xRayRepo) : super(XRayViewState.initial());
+  XRayViewCubit(this._xRayRepo, this._sharedRepo)
+      : super(XRayViewState.initial());
   final XRayViewRepo _xRayRepo;
+  final AppSharedRepo _sharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
-    Future<void> init()async{
+  Future<void> init() async {
     await emitUserRadiologyData();
     await emitFilters();
+    await emitModuleGuidance();
   }
 
-    Future<void> emitUserRadiologyData({int? page, int? pageSize}) async {
+  Future<void> emitModuleGuidance() async {
+    final result = await _sharedRepo.getModuleGuidance("Profile");
+
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        // We can choose to silent the error for guidance
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitUserRadiologyData({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -28,26 +50,25 @@ class XRayViewCubit extends Cubit<XRayViewState> {
     }
 
     final result = await _xRayRepo.getUserRadiologyData(
-      userType: 'Patient',
-      language: AppStrings.arabicLang,
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        userType: 'Patient',
+        language: AppStrings.arabicLang,
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newXrayList = response.radiologyData;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newXrayList.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userRadiologyData: page == 1 || page == null 
-          ? newXrayList 
-          : [...state.userRadiologyData, ...newXrayList],
+        userRadiologyData: page == 1 || page == null
+            ? newXrayList
+            : [...state.userRadiologyData, ...newXrayList],
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -63,7 +84,7 @@ class XRayViewCubit extends Cubit<XRayViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await emitUserRadiologyData(page: currentPage + 1);
   }
 
@@ -84,7 +105,7 @@ class XRayViewCubit extends Cubit<XRayViewState> {
         requestStatus: RequestStatus.failure,
       ));
     });
-    return null;
+    return;
   }
 
   Future<void> emitFilters() async {

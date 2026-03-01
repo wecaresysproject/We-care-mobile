@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/global/shared_services_constants.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 
@@ -85,4 +86,8 @@ abstract class SharedServices {
   );
   @GET(SharedServicesConstants.videoSearch)
   Future<dynamic> getModulesGuidanceVideos();
+  @GET(SharedServicesConstants.moduleGuidance)
+  Future<ModuleGuidanceResponseModel> getModuleGuidance(
+    @Query("moduleName") String moduleName,
+  );
 }

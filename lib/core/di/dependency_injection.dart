@@ -181,7 +181,10 @@ void setupAppCubits() {
   );
 
   getIt.registerFactory<XRayViewCubit>(
-    () => XRayViewCubit(getIt<XRayViewRepo>()),
+    () => XRayViewCubit(
+      getIt<XRayViewRepo>(),
+      getIt<AppSharedRepo>(),
+    ),
   );
   getIt.registerFactory<SurgeryDataEntryCubit>(
     () => SurgeryDataEntryCubit(

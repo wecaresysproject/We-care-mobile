@@ -34,44 +34,43 @@ class XRayView extends StatelessWidget {
             child: Column(
               spacing: 10,
               children: [
-                SharedAppBar(
-                  trailingActions: [
-                    CircleIconButton(
-                      icon: Icons.play_arrow,
-                      color: AppColorsManager.mainDarkBlue,
-                      onTap: () {},
-                    ),
-                    SizedBox(width: 12.w),
-                    CircleIconButton(
-                      icon: Icons.menu_book_outlined,
-                      color: AppColorsManager.mainDarkBlue,
-                      onTap: () {
-                        ModuleGuidanceAlertDialog.show(
-                          context,
-                          title: "الأشعة",
-                          description: """
-🩻 أسنان • 🦷 عظام الفك • 🔎 جذور الأسنان • 🛡️ كشف مبكر
+                BlocBuilder<XRayViewCubit, XRayViewState>(
+                  builder: (context, state) {
+                    final guidance = state.moduleGuidanceData;
+                    final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                    final hasText =
+                        guidance?.moduleGuidanceText?.isNotEmpty == true;
 
-الأشعة التشخيصية هي وسيلة تصوير طبي تُستخدم لإظهار التفاصيل الداخلية
-التي لا يمكن رؤيتها بالفحص السريري العادي.
-
-تساعد الأشعة الطبيب في تقييم حالة الأسنان، الجذور، عظام الفك،
-والأنسجة المحيطة بدقة عالية.
-
-1️⃣ الكشف عن المشكلات غير المرئية:
-- التسوس العميق
-- التهابات الجذور
-- فقدان العظم
-
-2️⃣ التخطيط العلاجي:
-تساعد في تحديد أفضل إجراء علاجي آمن ودقيق.
-
-الأشعة السنية آمنة وتُستخدم بجرعات منخفضة جداً مع اتخاذ جميع الاحتياطات.
-""",
-                        );
-                      },
-                    ),
-                  ],
+                    return SharedAppBar(
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color: hasVideo
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: hasVideo
+                              ? () => launchYouTubeVideo(guidance!.videoLink)
+                              : null,
+                        ),
+                        SizedBox(width: 12.w),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: hasText
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: hasText
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "الأشعة",
+                                    description: guidance!.moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 XrayFiltersBlocBuilder(),
                 Expanded(child: XrayListBlocBuilder()),

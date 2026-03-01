@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 
 class XRayViewState extends Equatable {
@@ -12,6 +13,7 @@ class XRayViewState extends Equatable {
   final List<String> bodyPartFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const XRayViewState({
     this.responseMessage = '',
@@ -23,6 +25,7 @@ class XRayViewState extends Equatable {
     this.bodyPartFilter = const ['الكل'],
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory XRayViewState.initial() {
@@ -36,6 +39,7 @@ class XRayViewState extends Equatable {
       bodyPartFilter: const ['الكل'],
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -49,6 +53,7 @@ class XRayViewState extends Equatable {
     List<String>? bodyPartFilter,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return XRayViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -61,6 +66,7 @@ class XRayViewState extends Equatable {
       bodyPartFilter: bodyPartFilter ?? this.bodyPartFilter,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -75,5 +81,6 @@ class XRayViewState extends Equatable {
         bodyPartFilter,
         isDeleteRequest,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }
