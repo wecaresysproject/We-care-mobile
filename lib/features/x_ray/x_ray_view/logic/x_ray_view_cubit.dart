@@ -22,7 +22,9 @@ class XRayViewCubit extends Cubit<XRayViewState> {
   }
 
   Future<void> emitModuleGuidance() async {
-    final result = await _sharedRepo.getModuleGuidance("Profile");
+    final result = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.imagingAndRadiology.name,
+    );
 
     result.when(
       success: (data) {

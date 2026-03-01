@@ -375,6 +375,7 @@ void setupAppCubits() {
   getIt.registerFactory<EssentialInfoViewCubit>(
     () => EssentialInfoViewCubit(
       getIt<EssentialInfoViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 

@@ -6,17 +6,20 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/essential_info/data/repos/essential_info_view_repo.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
 
 class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
   final EssentialInfoViewRepo _essentialInfoRepo;
+  final AppSharedRepo _sharedRepo;
 
-  EssentialInfoViewCubit(this._essentialInfoRepo)
+  EssentialInfoViewCubit(this._essentialInfoRepo, this._sharedRepo)
       : super(EssentialInfoViewState.initial());
 
   Future<void> init() async {
     await getUserEssentialInfo();
+    await emitModuleGuidance();
     await calculateCompletionPercentage();
   }
 
@@ -162,9 +165,7 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
         info.nationalID!.isFilled) {
       percentage += 12;
     }
-    if (info.email != null &&
-        info.email!.isNotEmpty &&
-        info.email!.isFilled) {
+    if (info.email != null && info.email!.isNotEmpty && info.email!.isFilled) {
       percentage += 3;
     }
     if (info.personalPhotoUrl != null &&
@@ -234,5 +235,28 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     }
 
     emit(state.copyWith(profileCompletionPercentage: percentage));
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.profile.name,
+    );
+
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: data,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 }
