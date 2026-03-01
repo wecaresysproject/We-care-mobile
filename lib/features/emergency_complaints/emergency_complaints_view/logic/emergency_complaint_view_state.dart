@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 
 class EmergencyComplaintViewState extends Equatable {
@@ -11,6 +12,7 @@ class EmergencyComplaintViewState extends Equatable {
   final List<String> bodyPartFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const EmergencyComplaintViewState({
     this.responseMessage = '',
@@ -21,6 +23,7 @@ class EmergencyComplaintViewState extends Equatable {
     this.selectedEmergencyComplaint,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory EmergencyComplaintViewState.initial() {
@@ -33,6 +36,7 @@ class EmergencyComplaintViewState extends Equatable {
       selectedEmergencyComplaint: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -45,6 +49,7 @@ class EmergencyComplaintViewState extends Equatable {
     DetailedComplaintModel? selectedEmergencyComplaint,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return EmergencyComplaintViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -56,6 +61,7 @@ class EmergencyComplaintViewState extends Equatable {
           selectedEmergencyComplaint ?? this.selectedEmergencyComplaint,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -69,5 +75,6 @@ class EmergencyComplaintViewState extends Equatable {
         selectedEmergencyComplaint,
         isDeleteRequest,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }

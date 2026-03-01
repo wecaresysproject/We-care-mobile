@@ -227,6 +227,7 @@ void setupAppCubits() {
   getIt.registerFactory<EmergencyComplaintsViewCubit>(
     () => EmergencyComplaintsViewCubit(
       getIt<EmergencyComplaintsViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 

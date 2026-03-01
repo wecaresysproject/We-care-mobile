@@ -1,13 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
 
 class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
-  EmergencyComplaintsViewCubit(this._emergencyComplaintsViewRepo)
+  EmergencyComplaintsViewCubit(
+      this._emergencyComplaintsViewRepo, this._appSharedRepo)
       : super(EmergencyComplaintViewState.initial());
   final EmergencyComplaintsViewRepo _emergencyComplaintsViewRepo;
+  final AppSharedRepo _appSharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
@@ -16,7 +19,23 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
     await Future.wait([
       getUserEmergencyComplaintsList(),
       getFilters(),
+      emitModuleGuidance(),
     ]);
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _appSharedRepo
+        .getModuleGuidance(WeCareMedicalModules.emergenciesComplaints.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          moduleGuidanceData: null,
+        ));
+      },
+    );
   }
 
   Future<void> getUserEmergencyComplaintsList(
