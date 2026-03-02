@@ -281,6 +281,7 @@ void setupAppCubits() {
   getIt.registerFactory<DentalViewCubit>(
     () => DentalViewCubit(
       dentalRepository: getIt<DentalRepo>(),
+      sharedRepo: getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<GeneticDiseasesDataEntryCubit>(
@@ -337,6 +338,7 @@ void setupAppCubits() {
   getIt.registerFactory<MentalIllnessDataViewCubit>(
     () => MentalIllnessDataViewCubit(
       getIt<MentalIllnessesViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<ChronicDiseaseDataEntryCubit>(
@@ -376,6 +378,7 @@ void setupAppCubits() {
   getIt.registerFactory<PhysicalActivityViewCubit>(
     () => PhysicalActivityViewCubit(
       getIt<PhysicalActivatyViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<EssentialInfoViewCubit>(

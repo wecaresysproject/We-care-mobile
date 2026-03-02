@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 
@@ -14,11 +15,12 @@ class DentalViewState extends Equatable {
   final bool? isLoadingMore;
   final bool? hasMore;
   final int? currentPage;
-  final ToothOperationDetails ? selectedToothOperationDetails;
+  final ToothOperationDetails? selectedToothOperationDetails;
   final bool isDeleteRequest;
   final List<int>? yearsFilter;
   final List<String>? toothNumberFilter;
   final List<String>? procedureTypeFilter;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const DentalViewState({
     this.requestStatus = RequestStatus.initial,
@@ -34,6 +36,7 @@ class DentalViewState extends Equatable {
     this.toothNumberFilter,
     this.procedureTypeFilter,
     this.filteredDefectedToothList,
+    this.moduleGuidanceData,
   });
   const DentalViewState.initial()
       : requestStatus = RequestStatus.initial,
@@ -48,13 +51,25 @@ class DentalViewState extends Equatable {
         isDeleteRequest = false,
         selectedToothList = null,
         filteredDefectedToothList = null,
-        defectedToothList = null;
+        defectedToothList = null,
+        moduleGuidanceData = null;
 
-        
-  
   @override
-  List<Object?> get props => [message, defectedToothList, requestStatus, selectedToothList, isLoadingMore,  
-   hasMore, currentPage, selectedToothOperationDetails, isDeleteRequest, yearsFilter, toothNumberFilter, procedureTypeFilter];
+  List<Object?> get props => [
+        message,
+        defectedToothList,
+        requestStatus,
+        selectedToothList,
+        isLoadingMore,
+        hasMore,
+        currentPage,
+        selectedToothOperationDetails,
+        isDeleteRequest,
+        yearsFilter,
+        toothNumberFilter,
+        procedureTypeFilter,
+        moduleGuidanceData,
+      ];
 
   DentalViewState copyWith({
     String? message,
@@ -64,12 +79,13 @@ class DentalViewState extends Equatable {
     bool? isLoadingMore,
     bool? hasMore,
     int? currentPage,
-    ToothOperationDetails ? selectedToothOperationDetails,
+    ToothOperationDetails? selectedToothOperationDetails,
     bool? isDeleteRequest,
     List<int>? yearsFilter,
     List<String>? toothNumberFilter,
     List<int>? filteredDefectedToothList,
     List<String>? procedureTypeFilter,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return DentalViewState(
       message: message ?? this.message,
@@ -80,12 +96,14 @@ class DentalViewState extends Equatable {
       hasMore: hasMore ?? this.hasMore,
       currentPage: currentPage ?? this.currentPage,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
-      selectedToothOperationDetails: selectedToothOperationDetails ?? this.selectedToothOperationDetails,
+      selectedToothOperationDetails:
+          selectedToothOperationDetails ?? this.selectedToothOperationDetails,
       yearsFilter: yearsFilter ?? this.yearsFilter,
       toothNumberFilter: toothNumberFilter ?? this.toothNumberFilter,
       procedureTypeFilter: procedureTypeFilter ?? this.procedureTypeFilter,
-      filteredDefectedToothList: filteredDefectedToothList?? this.filteredDefectedToothList,
+      filteredDefectedToothList:
+          filteredDefectedToothList ?? this.filteredDefectedToothList,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
-
-} 
+}

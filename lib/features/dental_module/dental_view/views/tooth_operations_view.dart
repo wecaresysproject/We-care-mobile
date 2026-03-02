@@ -4,13 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operation_details_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/widgets/tooth_card_item_widget.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class ToothOperationsView extends StatelessWidget {
   const ToothOperationsView({super.key, required this.selectedTooth});
@@ -20,85 +21,119 @@ class ToothOperationsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: getIt<DentalViewCubit>()
+        ..emitModuleGuidance()
         ..getDocumentsByToothNumber(toothNumber: selectedTooth.toString()),
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0.h,
-        ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Column(
-            children: [
-              ViewAppBar(),
-              verticalSpacing(16),
-              BlocBuilder<DentalViewCubit, DentalViewState>(
-                buildWhen: (previous, current) =>
-                    previous.selectedToothList != current.selectedToothList,
-                builder: (context, state) {
-                  if (state.requestStatus == RequestStatus.loading) {
-                    return Expanded(
+        appBar: AppBar(toolbarHeight: 0.h),
+        body: BlocBuilder<DentalViewCubit, DentalViewState>(
+          builder: (context, state) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              child: Column(
+                children: [
+                  SharedAppBar(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "الأشعة",
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                  ),
+                  if (state.requestStatus == RequestStatus.loading)
+                    Expanded(
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
-                    );
-                  } else if (state.requestStatus == RequestStatus.failure) {
-                    return Expanded(
+                    )
+                  else if (state.requestStatus == RequestStatus.failure)
+                    Expanded(
                       child: Center(
                         child: Text(
                           state.message ?? "حدث خطأ",
                           style: AppTextStyles.font16DarkGreyWeight400,
                         ),
                       ),
-                    );
-                  } else if (state.selectedToothList == null ||
-                      state.selectedToothList!.isEmpty) {
-                    return Expanded(
+                    )
+                  else if (state.selectedToothList == null ||
+                      state.selectedToothList!.isEmpty)
+                    Expanded(
                       child: Center(
                         child: Text(
                           "لا توجد بيانات",
                           style: AppTextStyles.font22MainBlueWeight700,
                         ),
                       ),
-                    );
-                  }
-
-                  return Expanded(
-                    child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      itemCount: state.selectedToothList!.length,
-                      itemBuilder: (context, index) {
-                        final doc = state.selectedToothList![index];
-                        return ToothCardItemWidget(
-                          item: doc,
-                          onArrowTap: () async {
-                            Navigator.push<bool>(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      DentalOperationDetailsView(
-                                    documentId: doc.id!,
-                                    toothNumber: selectedTooth.toString(),
-                                  ),
-                                )).then(
-                              (value) async {
-                                if (!context.mounted) return;
-                                await context
-                                    .read<DentalViewCubit>()
-                                    .getDocumentsByToothNumber(
-                                        toothNumber: selectedTooth.toString());
-                              },
-                            );
-                          },
-                        );
-                      },
+                    )
+                  else
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: state.selectedToothList!.length,
+                        itemBuilder: (context, index) {
+                          final doc = state.selectedToothList![index];
+                          return ToothCardItemWidget(
+                            item: doc,
+                            onArrowTap: () async {
+                              Navigator.push<bool>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DentalOperationDetailsView(
+                                      documentId: doc.id!,
+                                      toothNumber: selectedTooth.toString(),
+                                    ),
+                                  )).then(
+                                (value) async {
+                                  if (!context.mounted) return;
+                                  await context
+                                      .read<DentalViewCubit>()
+                                      .getDocumentsByToothNumber(
+                                          toothNumber:
+                                              selectedTooth.toString());
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  );
-                },
+                  verticalSpacing(16),
+                  const ToothOperationsFooterRow(),
+                ],
               ),
-              verticalSpacing(16),
-              ToothOperationsFooterRow(),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

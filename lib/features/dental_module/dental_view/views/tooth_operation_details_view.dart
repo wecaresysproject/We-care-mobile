@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -12,6 +11,8 @@ import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.da
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -98,10 +99,51 @@ class DentalOperationDetailsView extends StatelessWidget {
                     },
                     shareFunction: () => shareDentalDetails(context, state),
                     title: state.selectedToothOperationDetails!.procedure
-                            .primaryProcedure != null && state.selectedToothOperationDetails!.procedure.primaryProcedure!.isNotFilled ?
-                         "تفاصيل الإجراء السني": state.selectedToothOperationDetails!.procedure
+                                    .primaryProcedure !=
+                                null &&
+                            state.selectedToothOperationDetails!.procedure
+                                .primaryProcedure!.isNotFilled
+                        ? "تفاصيل الإجراء السني"
+                        : state.selectedToothOperationDetails!.procedure
                             .primaryProcedure!,
                     showActionButtons: true,
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "الأشعة",
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
                   ),
                   verticalSpacing(16),
                   SymptomContainer(
@@ -183,7 +225,7 @@ class DentalOperationDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "المستشفي",
-                    value: state.selectedToothOperationDetails!.hospital??"",
+                    value: state.selectedToothOperationDetails!.hospital ?? "",
                     icon: 'assets/images/hospital_icon.png',
                     isExpanded: true,
                   ),
@@ -325,7 +367,7 @@ class MedicalOperationsComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-if (operationStartDate.isNotFilled &&
+    if (operationStartDate.isNotFilled &&
         mainMedicalOperation.isNotFilled &&
         secendoryMedicalOperation.isNotFilled &&
         operationDetailedDescription.isNotFilled &&
@@ -467,7 +509,6 @@ Future<void> shareDentalDetails(
 ''';
 
     // تحميل الصور
-    final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
     // if (dentalData.medicalReportImage.startsWith("http")) {
