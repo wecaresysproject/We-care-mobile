@@ -10,6 +10,10 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_cubit.dart';
@@ -22,8 +26,10 @@ class MedicineDetailsView extends StatelessWidget {
   const MedicineDetailsView({
     super.key,
     required this.documentId,
+    this.guidanceData,
   });
   final String documentId;
+  final ModuleGuidanceDataModel? guidanceData;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MedicineViewCubit>(
@@ -64,6 +70,37 @@ class MedicineDetailsView extends StatelessWidget {
                 child: Column(
                   children: [
                     AppBarWithCenteredTitle(
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color: guidanceData?.videoLink?.isNotEmpty == true
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: guidanceData?.videoLink?.isNotEmpty == true
+                              ? () =>
+                                  launchYouTubeVideo(guidanceData!.videoLink)
+                              : null,
+                        ),
+                        SizedBox(width: 12.w),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: guidanceData?.moduleGuidanceText?.isNotEmpty ==
+                                  true
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: guidanceData?.moduleGuidanceText?.isNotEmpty ==
+                                  true
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "الأدوية",
+                                    description:
+                                        guidanceData!.moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
                       isMedicineModule: true,
                       title: 'الدواء',
                       deleteFunction: () async {
@@ -94,7 +131,7 @@ class MedicineDetailsView extends StatelessWidget {
                         }
                       },
                     ),
-                    verticalSpacing(8),
+                    verticalSpacing(16),
                     MedicineActiveStatusSwitch(medicineId: documentId),
                     DetailsViewInfoTile(
                       title: "اسم الدواء",

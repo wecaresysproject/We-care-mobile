@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -95,33 +93,34 @@ class MedicineTable extends StatelessWidget {
                       child: Text(
                     "امراض\n مزمنة",
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.font14whiteWeight600.copyWith(fontSize: 13.sp),
+                    style: AppTextStyles.font14whiteWeight600
+                        .copyWith(fontSize: 13.sp),
                   ))),
             ],
             rows: state.userMedicines.map((data) {
               return DataRow(cells: [
                 DataCell(
-                  Center(
-                    child: Text(data.startDate,
+                    Center(
+                      child: Text(
+                        data.startDate,
                         maxLines: 1,
                         textAlign: TextAlign.center,
-                          style: AppTextStyles.font14whiteWeight600.copyWith(
-                          color: AppColorsManager.mainDarkBlue,
-                          decoration: TextDecoration.underline),),
-                  ),
-                   onTap: () async {
-                   final sameDateMedicines= await context
-                          .read<MedicineViewCubit>()
-                          .getMedicinesByDate( data.startDate);
+                        style: AppTextStyles.font14whiteWeight600.copyWith(
+                            color: AppColorsManager.mainDarkBlue,
+                            decoration: TextDecoration.underline),
+                      ),
+                    ), onTap: () async {
+                  final sameDateMedicines = context
+                      .read<MedicineViewCubit>()
+                      .getMedicinesByDate(data.startDate);
                   await Navigator.push(context,
                       MaterialPageRoute(builder: (context) {
                     return SameDateMedicineDetailsView(
                       medicines: sameDateMedicines,
                       date: data.startDate,
                     );
-                  }));            
-                }
-                ),
+                  }));
+                }),
                 DataCell(
                     Center(
                       child: Text(
@@ -136,6 +135,7 @@ class MedicineTable extends StatelessWidget {
                       MaterialPageRoute(builder: (context) {
                     return MedicineDetailsView(
                       documentId: data.id,
+                      guidanceData: state.moduleGuidanceData,
                     );
                   }));
                   if (context.mounted) {
@@ -152,8 +152,8 @@ class MedicineTable extends StatelessWidget {
                   child: Text(data.timeDuration,
                       maxLines: 3,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.font14whiteWeight600
-                          .copyWith(color: AppColorsManager.textColor,fontSize: 12.sp)),
+                      style: AppTextStyles.font14whiteWeight600.copyWith(
+                          color: AppColorsManager.textColor, fontSize: 12.sp)),
                 )),
                 DataCell(Center(
                   child: Text(

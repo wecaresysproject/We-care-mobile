@@ -5,6 +5,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
@@ -12,7 +14,6 @@ import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_c
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 import 'package:we_care/features/surgeries/surgeries_view/views/surgery_details_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class SurgeriesView extends StatelessWidget {
   const SurgeriesView({super.key});
@@ -20,9 +21,7 @@ class SurgeriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SurgeriesViewCubit>(
-      create: (context) => getIt<SurgeriesViewCubit>()
-        ..getUserSurgeriesList()
-        ..getSurgeriesFilters(),
+      create: (context) => getIt<SurgeriesViewCubit>()..init(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
@@ -31,7 +30,44 @@ class SurgeriesView extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Column(
             children: [
-              ViewAppBar(),
+              BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
+                builder: (context, state) {
+                  final guidance = state.moduleGuidanceData;
+                  final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                  final hasText =
+                      guidance?.moduleGuidanceText?.isNotEmpty == true;
+
+                  return SharedAppBar(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color: hasVideo
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasVideo
+                            ? () => launchYouTubeVideo(guidance!.videoLink)
+                            : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: hasText
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasText
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "العمليات",
+                                  description: guidance!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
+              ),
               BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
                 buildWhen: (previous, current) =>
                     previous.yearsFilter != current.yearsFilter ||
@@ -95,6 +131,7 @@ class SurgeriesView extends StatelessWidget {
                                 MaterialPageRoute(builder: (_) {
                               return SurgeryDetailsView(
                                 documentId: doc.id,
+                                guidanceData: state.moduleGuidanceData,
                               );
                             }));
                             if (context.mounted) {

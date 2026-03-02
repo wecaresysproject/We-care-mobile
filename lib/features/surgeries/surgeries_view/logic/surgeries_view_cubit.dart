@@ -1,20 +1,29 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_repo.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 
 class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
-  SurgeriesViewCubit(this._surgeriesViewRepo)
+  SurgeriesViewCubit(this._surgeriesViewRepo, this._appSharedRepo)
       : super(SurgeriesViewState.initial());
   final SurgeriesViewRepo _surgeriesViewRepo;
+  final AppSharedRepo _appSharedRepo;
 
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
+  Future<void> init() async {
+    Future.wait([
+      getUserSurgeriesList(),
+      getSurgeriesFilters(),
+      emitModuleGuidance(),
+    ]);
+  }
 
-    Future<void> getUserSurgeriesList({int? page, int? pageSize}) async {
+  Future<void> getUserSurgeriesList({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -25,25 +34,24 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
     }
 
     final result = await _surgeriesViewRepo.getUserSurgeriesList(
-      language: AppStrings.arabicLang,
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        language: AppStrings.arabicLang,
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newSurgeriesList = response.surgeries;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newSurgeriesList.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userSurgeries: page == 1 || page == null 
-          ? newSurgeriesList 
-          : [...state.userSurgeries, ...newSurgeriesList],
+        userSurgeries: page == 1 || page == null
+            ? newSurgeriesList
+            : [...state.userSurgeries, ...newSurgeriesList],
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -59,7 +67,7 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await getUserSurgeriesList(page: currentPage + 1);
   }
 
@@ -121,7 +129,6 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
       surgeryName: surgeryName,
       year: year,
     );
-
     result.when(success: (response) {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
@@ -133,5 +140,19 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
           requestStatus: RequestStatus.failure,
           responseMessage: error.errors.first));
     });
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _appSharedRepo
+        .getModuleGuidance(WeCareMedicalModules.surgeries.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        // Handle error if needed
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

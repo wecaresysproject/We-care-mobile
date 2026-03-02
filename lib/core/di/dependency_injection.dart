@@ -248,9 +248,10 @@ void setupAppCubits() {
       getIt<AppSharedRepo>(),
     ),
   );
-  getIt.registerFactory(
+  getIt.registerFactory<SurgeriesViewCubit>(
     () => SurgeriesViewCubit(
       getIt<SurgeriesViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicationSymptomsFormCubit>(
@@ -262,6 +263,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicineViewCubit>(
     () => MedicineViewCubit(
       getIt<MedicinesViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicineScannerCubit>(
