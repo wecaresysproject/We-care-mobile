@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/follow_up_record_model.dart';
@@ -22,6 +23,7 @@ class MentalIllnessDataViewState extends Equatable {
   final EyeGlassesDetailsModel? selectedEyeGlassesDetails;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const MentalIllnessDataViewState({
     this.requestStatus = RequestStatus.initial,
@@ -37,6 +39,7 @@ class MentalIllnessDataViewState extends Equatable {
     this.mentalIllnessAnsweredQuestions = const [],
     this.followUpRecords = const [],
     this.followUpSectionsDetailsContent = const [],
+    this.moduleGuidanceData,
   });
 
   MentalIllnessDataViewState copyWith({
@@ -53,6 +56,7 @@ class MentalIllnessDataViewState extends Equatable {
     List<AnsweredQuestionModel>? mentalIllnessAnsweredQuestions,
     List<FollowUpRecordModel>? followUpRecords,
     List<GetFollowUpReportSectionModel>? followUpSectionsDetailsContent,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return MentalIllnessDataViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -76,6 +80,7 @@ class MentalIllnessDataViewState extends Equatable {
       followUpRecords: followUpRecords ?? this.followUpRecords,
       followUpSectionsDetailsContent:
           followUpSectionsDetailsContent ?? this.followUpSectionsDetailsContent,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -94,5 +99,6 @@ class MentalIllnessDataViewState extends Equatable {
         mentalIllnessAnsweredQuestions,
         followUpRecords,
         followUpSectionsDetailsContent,
+        moduleGuidanceData,
       ];
 }
