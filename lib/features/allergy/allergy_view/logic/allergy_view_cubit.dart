@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/allergy/data/models/allergy_disease_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_view_repo.dart';
@@ -9,13 +11,24 @@ import 'package:we_care/features/allergy/data/repos/allergy_view_repo.dart';
 part 'allergy_view_state.dart';
 
 class AllergyViewCubit extends Cubit<AllergyViewState> {
-  AllergyViewCubit(this.allergyViewRepo) : super(AllergyViewState.initial());
+  AllergyViewCubit(this.allergyViewRepo, this._appSharedRepo)
+      : super(AllergyViewState.initial());
   final AllergyViewRepo allergyViewRepo;
+  final AppSharedRepo _appSharedRepo;
 
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
+
+  Future<void> init() async {
+    Future.wait(
+      [
+        getAllergyDiseases(),
+        emitModuleGuidance(),
+      ],
+    );
+  }
 
   Future<void> getAllergyDiseases({int? page, int? pageSize}) async {
     // If loading more, set the flag
@@ -130,24 +143,16 @@ class AllergyViewCubit extends Cubit<AllergyViewState> {
     );
   }
 
-  // Future<void> getFilteredSurgeryList({int? year, String? surgeryName}) async {
-  //   emit(state.copyWith(requestStatus: RequestStatus.loading));
-  //   final result = await allergyViewRepo.getFilteredSurgeries(
-  //     language: AppStrings.arabicLang,
-  //     surgeryName: surgeryName,
-  //     year: year,
-  //   );
-
-  //   result.when(success: (response) {
-  //     emit(state.copyWith(
-  //       requestStatus: RequestStatus.success,
-  //       userSurgeries: response.surgeries,
-  //       responseMessage: response.message,
-  //     ));
-  //   }, failure: (error) {
-  //     emit(state.copyWith(
-  //         requestStatus: RequestStatus.failure,
-  //         responseMessage: error.errors.first));
-  //   });
-  // }
+  Future<void> emitModuleGuidance() async {
+    final result = await _appSharedRepo
+        .getModuleGuidance(WeCareMedicalModules.allergies.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        // Handle error if needed
+      },
+    );
+  }
 }

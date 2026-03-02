@@ -9,6 +9,7 @@ class AllergyViewState extends Equatable {
   final List<String> surgeryNameFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const AllergyViewState({
     this.responseMessage = '',
@@ -19,6 +20,7 @@ class AllergyViewState extends Equatable {
     this.selectedAllergyDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory AllergyViewState.initial() {
@@ -31,6 +33,7 @@ class AllergyViewState extends Equatable {
       selectedAllergyDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -43,6 +46,7 @@ class AllergyViewState extends Equatable {
     AllergyDetailsData? selectedAllergyDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return AllergyViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -54,6 +58,7 @@ class AllergyViewState extends Equatable {
           selectedAllergyDetails ?? this.selectedAllergyDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -67,5 +72,6 @@ class AllergyViewState extends Equatable {
         selectedAllergyDetails,
         isDeleteRequest,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }

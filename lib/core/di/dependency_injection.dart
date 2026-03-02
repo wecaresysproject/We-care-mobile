@@ -348,6 +348,7 @@ void setupAppCubits() {
   getIt.registerFactory<ChronicDiseaseViewCubit>(
     () => ChronicDiseaseViewCubit(
       getIt<ChronicDiseaseViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<AllergyDataEntryCubit>(
@@ -359,6 +360,7 @@ void setupAppCubits() {
   getIt.registerFactory<AllergyViewCubit>(
     () => AllergyViewCubit(
       getIt<AllergyViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<NutrationViewCubit>(

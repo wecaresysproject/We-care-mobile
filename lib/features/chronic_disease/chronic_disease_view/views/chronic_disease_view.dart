@@ -5,12 +5,13 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/widgets/chronic_disease_item_card_widget.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class ChronicDiseaseView extends StatelessWidget {
   const ChronicDiseaseView({super.key});
@@ -18,18 +19,53 @@ class ChronicDiseaseView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ChronicDiseaseViewCubit>(
-      create: (context) =>
-          getIt<ChronicDiseaseViewCubit>()..getAllChronicDiseasesDocuments(),
+      create: (context) => getIt<ChronicDiseaseViewCubit>()..init(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
           child: Column(
             children: [
-              ViewAppBar(),
-              verticalSpacing(16),
+              BlocBuilder<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
+                builder: (context, state) {
+                  final guidance = state.moduleGuidanceData;
+                  final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                  final hasText =
+                      guidance?.moduleGuidanceText?.isNotEmpty == true;
+
+                  return SharedAppBar(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color: hasVideo
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasVideo
+                            ? () => launchYouTubeVideo(guidance!.videoLink)
+                            : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: hasText
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasText
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "الأمراض المزمنة",
+                                  description: guidance!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
+              ),
               ChronicDiseaseViewListBuilder(),
               verticalSpacing(16),
               ChronicDiseaseViewFooterRow(),
@@ -92,48 +128,6 @@ class ChronicDiseaseViewListBuilder extends StatelessWidget {
     );
   }
 }
-
-// class PrescriptionsViewFilersRow extends StatelessWidget {
-//   const PrescriptionsViewFilersRow({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<ChronicDiseaseViewCubit, ChronicDiseaseViewState>(
-//       buildWhen: (previous, current) {
-//         return previous.yearsFilter != current.yearsFilter ||
-//             previous.specificationsFilter != current.specificationsFilter ||
-//             previous.doctorNameFilter != current.doctorNameFilter;
-//       },
-//       builder: (context, state) {
-//         return DataViewFiltersRow(
-//           filters: [
-//             FilterConfig(
-//                 title: 'السنة', options: state.yearsFilter, isYearFilter: true),
-//             FilterConfig(
-//               title: 'التخصص',
-//               options: state.specificationsFilter,
-//             ),
-//             FilterConfig(
-//               title: 'الطبيب',
-//               options: state.doctorNameFilter,
-//             ),
-//           ],
-//           onApply: (selectedFilters) async {
-//             print("Selected Filters: $selectedFilters");
-//             await context
-//                 .read<ChronicDiseaseViewCubit>()
-//                 .getFilteredPrescriptionList(
-//                     year: selectedFilters['السنة'],
-//                     specification: selectedFilters['التخصص'],
-//                     doctorName: selectedFilters['الطبيب']);
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
 
 class ChronicDiseaseViewFooterRow extends StatelessWidget {
   const ChronicDiseaseViewFooterRow({super.key});
