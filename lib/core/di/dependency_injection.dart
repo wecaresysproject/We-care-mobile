@@ -419,6 +419,7 @@ void setupAppCubits() {
   getIt.registerFactory<SupplementsViewCubit>(
     () => SupplementsViewCubit(
       getIt<SupplementsViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<SupplementsDataEntryCubit>(

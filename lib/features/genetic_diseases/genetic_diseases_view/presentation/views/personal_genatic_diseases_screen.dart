@@ -99,53 +99,6 @@ class _PersonalGenaticDiseasesScreenState
                       );
                     },
                   ),
-                  // BlocBuilder<GeneticsDiseasesViewCubit,
-                  //     GeneticsDiseasesViewState>(
-                  //   buildWhen: (previous, current) =>
-                  //       previous.moduleGuidanceData !=
-                  //       current.moduleGuidanceData,
-                  //   builder: (context, state) {
-                  //     final guidance = state.moduleGuidanceData;
-                  //     final hasVideo = guidance?.videoLink?.isNotEmpty == true;
-                  //     final hasText =
-                  //         guidance?.moduleGuidanceText?.isNotEmpty == true;
-
-                  //     return AppBarWithCenteredTitle(
-                  //       title: 'الامراض الوراثية',
-                  //       showActionButtons: true,
-                  //       showShareButtonOnly: true,
-                  //       shareFunction: () {},
-                  //       trailingActions: [
-                  //         CircleIconButton(
-                  //           icon: Icons.play_arrow,
-                  //           color: hasVideo
-                  //               ? AppColorsManager.mainDarkBlue
-                  //               : Colors.grey,
-                  //           onTap: hasVideo
-                  //               ? () => launchYouTubeVideo(guidance!.videoLink)
-                  //               : null,
-                  //         ),
-                  //         SizedBox(width: 12.w),
-                  //         CircleIconButton(
-                  //           icon: Icons.menu_book_outlined,
-                  //           color: hasText
-                  //               ? AppColorsManager.mainDarkBlue
-                  //               : Colors.grey,
-                  //           onTap: hasText
-                  //               ? () {
-                  //                   ModuleGuidanceAlertDialog.show(
-                  //                     context,
-                  //                     title: "الأمراض الوراثية",
-                  //                     description:
-                  //                         guidance!.moduleGuidanceText!,
-                  //                   );
-                  //                 }
-                  //               : null,
-                  //         ),
-                  //       ],
-                  //     );
-                  //   },
-                  // ),
                   verticalSpacing(20),
                 ],
               ),

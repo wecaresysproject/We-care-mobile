@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/supplements/data/models/effects_on_nutrients_model.dart';
 import 'package:we_care/features/supplements/data/models/vitamins_and_supplements_models.dart';
 
@@ -11,6 +12,7 @@ class SupplementsViewState extends Equatable {
   final RequestStatus effectsOnNutrientsStatus;
   final VitaminsAndSupplementsModel? vitaminsAndSupplementsData;
   final RequestStatus vitaminsAndSupplementsStatus;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const SupplementsViewState({
     this.responseMessage = '',
@@ -20,6 +22,7 @@ class SupplementsViewState extends Equatable {
     this.effectsOnNutrientsStatus = RequestStatus.initial,
     this.vitaminsAndSupplementsData,
     this.vitaminsAndSupplementsStatus = RequestStatus.initial,
+    this.moduleGuidanceData,
   });
 
   factory SupplementsViewState.initial() {
@@ -31,6 +34,7 @@ class SupplementsViewState extends Equatable {
       effectsOnNutrientsStatus: RequestStatus.initial,
       vitaminsAndSupplementsData: null,
       vitaminsAndSupplementsStatus: RequestStatus.initial,
+      moduleGuidanceData: null,
     );
   }
 
@@ -42,6 +46,7 @@ class SupplementsViewState extends Equatable {
     RequestStatus? effectsOnNutrientsStatus,
     VitaminsAndSupplementsModel? vitaminsAndSupplementsData,
     RequestStatus? vitaminsAndSupplementsStatus,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return SupplementsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -55,6 +60,7 @@ class SupplementsViewState extends Equatable {
           vitaminsAndSupplementsData ?? this.vitaminsAndSupplementsData,
       vitaminsAndSupplementsStatus:
           vitaminsAndSupplementsStatus ?? this.vitaminsAndSupplementsStatus,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -67,5 +73,6 @@ class SupplementsViewState extends Equatable {
         effectsOnNutrientsStatus,
         vitaminsAndSupplementsData,
         vitaminsAndSupplementsStatus,
+        moduleGuidanceData,
       ];
 }
