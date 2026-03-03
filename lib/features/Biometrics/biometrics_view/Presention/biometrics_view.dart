@@ -7,6 +7,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/current_biometrics_results_view.dart';
@@ -192,7 +194,6 @@ class _BiometricsViewState extends State<BiometricsView>
                     // Chart
                     BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
                       builder: (context, state) {
-                        
                         if (state.requestStatus == RequestStatus.loading) {
                           return const Center(
                             child: CircularProgressIndicator(
@@ -242,9 +243,7 @@ class _BiometricsViewState extends State<BiometricsView>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<BiometricsViewCubit>(
-      create: (context) => getIt<BiometricsViewCubit>()
-        ..getAllAvailableBiometrics()
-        ..getAllFilters(),
+      create: (context) => getIt<BiometricsViewCubit>()..initialRequests(),
       child: RefreshIndicator(
         onRefresh: () async {
           await getIt<BiometricsViewCubit>().getAllAvailableBiometrics();
@@ -257,27 +256,68 @@ class _BiometricsViewState extends State<BiometricsView>
             toolbarHeight: 0,
             backgroundColor: backgroundColor,
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                CustomAppBarWidget(
-                  haveBackArrow: true,
+          body: BlocBuilder<BiometricsViewCubit, BiometricsViewState>(
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    CustomAppBarWidget(
+                      haveBackArrow: true,
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                          onTap:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? () => launchYouTubeVideo(
+                                      state.moduleGuidanceData!.videoLink)
+                                  : null,
+                        ),
+                        horizontalSpacing(8),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "القياسات الحيوية",
+                                    description: state.moduleGuidanceData!
+                                        .moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
+                    ),
+                    verticalSpacing(12),
+                    _buildTabBar(),
+                    verticalSpacing(6),
+                    Expanded(
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          buildBiometricsHistoryTab(),
+                          const CurrentBiometricsResultsTab(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                verticalSpacing(12),
-                _buildTabBar(),
-                verticalSpacing(6),
-                Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      buildBiometricsHistoryTab(),
-                      CurrentBiometricsResultsTab(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),
@@ -485,7 +525,8 @@ class _BiometricsViewState extends State<BiometricsView>
       },
     );
   }
-Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
+
+  Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
     if (selectedMetrics.isEmpty) return const SizedBox();
     final currentMetricId = selectedMetrics.elementAt(currentGraphIndex);
     final currentMetric =
@@ -497,12 +538,12 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
         .data;
 
     final formattedData = data
-    .map((d) => BiometricData(
-          originalDate: formatDateTime(d.originalDate),
-          value: d.value,
-          secondaryValue: d.secondaryValue,
-        ))
-    .toList();
+        .map((d) => BiometricData(
+              originalDate: formatDateTime(d.originalDate),
+              value: d.value,
+              secondaryValue: d.secondaryValue,
+            ))
+        .toList();
 
     final double minY = 0; // Force starting from 0
     final double maxDataY = formattedData
@@ -575,11 +616,13 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 reservedSize: 50,
                 interval: 1,
                 getTitlesWidget: (double value, TitleMeta meta) {
-                  if (value.toInt() >= 0 && value.toInt() < formattedData.length) {
+                  if (value.toInt() >= 0 &&
+                      value.toInt() < formattedData.length) {
                     return SideTitleWidget(
                       meta: meta,
                       child: Container(
-                          padding: const EdgeInsets.only(top: 12, bottom: 4, left: 4, right: 4),
+                          padding: const EdgeInsets.only(
+                              top: 12, bottom: 4, left: 4, right: 4),
                           child: Transform.rotate(
                             angle: -90 * (pi / 180),
                             child: Text(
@@ -625,14 +668,16 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
           minX: 0,
           maxX: (formattedData.length - 1).toDouble(),
           minY: minY,
-          maxY: formattedData.map((e) => double.tryParse(e.value.toString()) ?? 0.0).reduce((a, b) => a > b ? a : b) +
+          maxY: formattedData
+                  .map((e) => double.tryParse(e.value.toString()) ?? 0.0)
+                  .reduce((a, b) => a > b ? a : b) +
               10,
           lineBarsData: [
             // Primary line
             LineChartBarData(
               spots: formattedData.asMap().entries.map((entry) {
-                return FlSpot(
-                    entry.key.toDouble(), double.tryParse(entry.value.value.toString()) ?? 0.0);
+                return FlSpot(entry.key.toDouble(),
+                    double.tryParse(entry.value.value.toString()) ?? 0.0);
               }).toList(),
               isCurved: true,
               curveSmoothness: 0.3,
@@ -645,7 +690,8 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                 end: Alignment.centerRight,
               ),
               barWidth: 2,
-              showingIndicators: List.generate(formattedData.length, (index) => index),
+              showingIndicators:
+                  List.generate(formattedData.length, (index) => index),
               dotData: FlDotData(
                 show: true,
                 getDotPainter: (spot, percent, barData, index) {
@@ -675,14 +721,17 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
               LineChartBarData(
                 color: primaryColor,
                 spots: formattedData.asMap().entries.map((entry) {
-                  return FlSpot(entry.key.toDouble(),
-                      double.tryParse(entry.value.secondaryValue.toString()) ?? 0.0);
+                  return FlSpot(
+                      entry.key.toDouble(),
+                      double.tryParse(entry.value.secondaryValue.toString()) ??
+                          0.0);
                 }).toList(),
                 isCurved: true,
                 curveSmoothness: 0.3,
                 barWidth: 2,
                 isStrokeCapRound: true,
-                showingIndicators: List.generate(formattedData.length, (index) => index),
+                showingIndicators:
+                    List.generate(formattedData.length, (index) => index),
                 dotData: FlDotData(
                   show: true,
                   getDotPainter: (spot, percent, barData, index) {
@@ -724,10 +773,10 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
               getTooltipItems: (spots) => spots.map((spot) {
                 final index = spot.x.toInt();
                 final primary = spot.y;
-                final secondary =
-                    currentMetric.hasSecondaryValue && formattedData.length > index
-                        ? formattedData[index].secondaryValue
-                        : null;
+                final secondary = currentMetric.hasSecondaryValue &&
+                        formattedData.length > index
+                    ? formattedData[index].secondaryValue
+                    : null;
 
                 final tooltipText = secondary != null
                     ? '${primary.toInt()}/$secondary'
@@ -754,8 +803,10 @@ Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
                           spots: formattedData
                               .asMap()
                               .entries
-                              .map((e) => FlSpot(e.key.toDouble(),
-                                  double.tryParse(e.value.value.toString()) ?? 0.0))
+                              .map((e) => FlSpot(
+                                  e.key.toDouble(),
+                                  double.tryParse(e.value.value.toString()) ??
+                                      0.0))
                               .toList()),
                       0,
                       FlSpot(
@@ -790,6 +841,7 @@ int _calculateNiceInterval(double yRange) {
   if (normalized < 7.5) return (5 * magnitude).toInt();
   return (10 * magnitude).toInt();
 }
+
 String formatDateTime(String isoString) {
   final dateTime = DateTime.tryParse(isoString);
   if (dateTime == null) return isoString; // fallback if parse fails
@@ -803,7 +855,6 @@ String formatDateTime(String isoString) {
 
   return '$day/$month \n $hour:$minute $period';
 }
-
 
 class BiometricType {
   final String id;

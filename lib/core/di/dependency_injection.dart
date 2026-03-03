@@ -310,6 +310,7 @@ void setupAppCubits() {
   getIt.registerFactory<BiometricsViewCubit>(
     () => BiometricsViewCubit(
       getIt<BiometricsViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<EyesDataEntryCubit>(
