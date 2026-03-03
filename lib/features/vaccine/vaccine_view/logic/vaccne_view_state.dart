@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
 
 class VaccineViewState extends Equatable {
@@ -11,6 +12,7 @@ class VaccineViewState extends Equatable {
   final UserVaccineModel? selectedVaccine;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const VaccineViewState({
     this.responseMessage = '',
@@ -21,6 +23,7 @@ class VaccineViewState extends Equatable {
     this.selectedVaccine,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory VaccineViewState.initial() {
@@ -33,6 +36,7 @@ class VaccineViewState extends Equatable {
       selectedVaccine: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -45,6 +49,7 @@ class VaccineViewState extends Equatable {
     UserVaccineModel? selectedVaccine,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return VaccineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -55,6 +60,7 @@ class VaccineViewState extends Equatable {
       selectedVaccine: selectedVaccine ?? this.selectedVaccine,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -68,5 +74,6 @@ class VaccineViewState extends Equatable {
         selectedVaccine,
         isDeleteRequest,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }

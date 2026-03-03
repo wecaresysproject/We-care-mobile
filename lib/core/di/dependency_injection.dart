@@ -240,6 +240,7 @@ void setupAppCubits() {
   getIt.registerFactory<VaccineViewCubit>(
     () => VaccineViewCubit(
       getIt<VaccineViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicinesDataEntryCubit>(

@@ -1,18 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_view_repo.dart';
 import 'package:we_care/features/vaccine/vaccine_view/logic/vaccne_view_state.dart';
 
 class VaccineViewCubit extends Cubit<VaccineViewState> {
-  VaccineViewCubit(this._vaccinesRepo) : super(VaccineViewState.initial());
+  VaccineViewCubit(this._vaccinesRepo, this._sharedRepo)
+      : super(VaccineViewState.initial());
   final VaccineViewRepo _vaccinesRepo;
+  final AppSharedRepo _sharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
-    Future<void> emitUserVaccinesData({int? page, int? pageSize}) async {
+  Future<void> emitUserVaccinesData({int? page, int? pageSize}) async {
     // If loading more, set the flag
     if (page != null && page > 1) {
       emit(state.copyWith(isLoadingMore: true));
@@ -23,27 +26,26 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
     }
 
     final result = await _vaccinesRepo.getUserVaccines(
-      language: AppStrings.arabicLang, 
-      userType: 'Patient', 
-      page: page ?? currentPage, 
-      pageSize: pageSize ?? this.pageSize
-    );
+        language: AppStrings.arabicLang,
+        userType: 'Patient',
+        page: page ?? currentPage,
+        pageSize: pageSize ?? this.pageSize);
 
     result.when(success: (response) {
       final newVaccines = response.userVaccines;
-      
+
       // Update hasMore based on whether we got a full page of results
       hasMore = newVaccines.length >= (pageSize ?? this.pageSize);
-      
+
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        userVaccines: page == 1 || page == null 
-          ? newVaccines 
-          : [...state.userVaccines, ...newVaccines],
+        userVaccines: page == 1 || page == null
+            ? newVaccines
+            : [...state.userVaccines, ...newVaccines],
         responseMessage: response.message,
         isLoadingMore: false,
       ));
-      
+
       if (page == null || page == 1) {
         currentPage = 1;
       } else {
@@ -60,10 +62,9 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
 
   Future<void> loadMoreMedicines() async {
     if (!hasMore || isLoadingMore) return;
-    
+
     await emitUserVaccinesData(page: currentPage + 1);
   }
-
 
   Future<void> emitVaccineById(String vaccineId) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -142,5 +143,36 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
         requestStatus: RequestStatus.failure,
       ));
     });
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.vaccinations.name,
+    );
+
+    result.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> initialRequests() async {
+    await Future.wait([
+      emitUserVaccinesData(),
+      emitVaccinesFilters(),
+      emitModuleGuidance(),
+    ]);
   }
 }
