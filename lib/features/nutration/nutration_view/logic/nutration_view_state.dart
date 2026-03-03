@@ -16,6 +16,7 @@ class NutrationViewState extends Equatable {
   final NutritionDefinitionModel? nutritionDefinition;
 
   final List<AlternativeFoodCategoryModel> foodAlternatives;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const NutrationViewState({
     this.responseMessage = '',
@@ -32,6 +33,7 @@ class NutrationViewState extends Equatable {
     this.affectedOrgansList = const [],
     this.organNutritionalEffectsData,
     this.nutritionDefinition,
+    this.moduleGuidanceData,
   });
 
   factory NutrationViewState.initial() {
@@ -50,6 +52,7 @@ class NutrationViewState extends Equatable {
       affectedOrgansList: const [],
       organNutritionalEffectsData: null,
       nutritionDefinition: null,
+      moduleGuidanceData: null,
     );
   }
 
@@ -68,6 +71,7 @@ class NutrationViewState extends Equatable {
     List<String>? affectedOrgansList,
     OrganNutritionalEffectsData? organNutritionalEffectsData,
     NutritionDefinitionModel? nutritionDefinition,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return NutrationViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -94,6 +98,7 @@ class NutrationViewState extends Equatable {
       organNutritionalEffectsData:
           organNutritionalEffectsData ?? this.organNutritionalEffectsData,
       nutritionDefinition: nutritionDefinition ?? this.nutritionDefinition,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -113,5 +118,6 @@ class NutrationViewState extends Equatable {
         affectedOrgansList,
         organNutritionalEffectsData,
         nutritionDefinition,
+        moduleGuidanceData,
       ];
 }

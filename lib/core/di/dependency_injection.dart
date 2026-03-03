@@ -372,6 +372,7 @@ void setupAppCubits() {
   getIt.registerFactory<NutrationViewCubit>(
     () => NutrationViewCubit(
       getIt<NutrationViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<PhysicalActivatyDataEntryCubit>(

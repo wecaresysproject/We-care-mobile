@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/nutration/data/models/element_recommendation_response_model.dart';
 import 'package:we_care/features/nutration/data/models/food_alternative_category_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_document_model.dart';
@@ -13,9 +15,10 @@ import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 part 'nutration_view_state.dart';
 
 class NutrationViewCubit extends Cubit<NutrationViewState> {
-  NutrationViewCubit(this.nutrationViewRepo)
+  NutrationViewCubit(this.nutrationViewRepo, this.appSharedRepo)
       : super(NutrationViewState.initial());
   final NutrationViewRepo nutrationViewRepo;
+  final AppSharedRepo appSharedRepo;
   Future<void> getAvailableYearsForWeeklyPlan() async {
     final response = await nutrationViewRepo.getAvailableYearsForWeeklyPlan(
       language: AppStrings.arabicLang,
@@ -101,7 +104,30 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
       getNutrationDocuments(),
       getAvailableYearsForWeeklyPlan(),
       getAvailableYearsForMonthlyPlan(),
+      emitModuleGuidance(),
     ]);
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await appSharedRepo.getModuleGuidance(
+      WeCareMedicalModules.nutrition.name,
+    );
+    result.when(
+      success: (data) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 
   String _getPlanTypeNameRelativeToCurrentActiveTab() {
