@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_repo.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 
 class DentalViewCubit extends Cubit<DentalViewState> {
   final DentalRepo dentalRepository;
+  final AppSharedRepo sharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
@@ -12,7 +14,31 @@ class DentalViewCubit extends Cubit<DentalViewState> {
 
   DentalViewCubit({
     required this.dentalRepository,
+    required this.sharedRepo,
   }) : super(const DentalViewState.initial());
+
+  Future<void> emitModuleGuidance() async {
+    final result =
+        await sharedRepo.getModuleGuidance(WeCareMedicalModules.dentistry.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
+  }
+
+  Future<void> initialRequests() async {
+    await Future.wait(
+      [
+        getDefectedTooth(),
+        getToothFilters(),
+        emitModuleGuidance(),
+      ],
+    );
+  }
 
   Future<void> getDefectedTooth() async {
     emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));

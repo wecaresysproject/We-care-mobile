@@ -54,6 +54,7 @@ class XrayListBlocBuilder extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => XRayDetailsView(
                         documentId: doc.id!,
+                        guidanceData: state.moduleGuidanceData,
                       ),
                     ),
                   );

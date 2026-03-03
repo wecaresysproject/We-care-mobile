@@ -10,6 +10,7 @@ class ChronicDiseaseViewState extends Equatable {
   final List<String> specificationsFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const ChronicDiseaseViewState({
     this.responseMessage = '',
@@ -21,6 +22,7 @@ class ChronicDiseaseViewState extends Equatable {
     this.selectedChronicDiseaseDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory ChronicDiseaseViewState.initial() {
@@ -34,6 +36,7 @@ class ChronicDiseaseViewState extends Equatable {
       selectedChronicDiseaseDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -47,6 +50,7 @@ class ChronicDiseaseViewState extends Equatable {
     PostChronicDiseaseModel? selectedChronicDiseaseDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return ChronicDiseaseViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -59,6 +63,7 @@ class ChronicDiseaseViewState extends Equatable {
           selectedChronicDiseaseDetails ?? this.selectedChronicDiseaseDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -72,6 +77,7 @@ class ChronicDiseaseViewState extends Equatable {
         userChronicDisease,
         selectedChronicDiseaseDetails,
         isDeleteRequest,
-        isLoadingMore
+        isLoadingMore,
+        moduleGuidanceData
       ];
 }

@@ -5,9 +5,13 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/Helpers/share_details_helper.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/widgets/medicine_details_template_widget.dart';
@@ -48,6 +52,45 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الامراض المزمنة',
+                    trailingActions: [
+                      CircleIconButton(
+                        size: 30.w,
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      horizontalSpacing(8.w),
+                      CircleIconButton(
+                        size: 30.w,
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "الأمراض المزمنة",
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
                     editFunction: () async {
                       final result = await context.pushNamed(
                         Routes.chronicDiseaseDataEntry,
@@ -96,6 +139,7 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                           .deleteUserChronicDiseaseById(documentId);
                     },
                   ),
+                  verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "تاريخ بداية التشخيص",
                     value:

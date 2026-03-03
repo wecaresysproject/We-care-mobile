@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/Biometrics/data/models/biometrics_dataset_model.dart';
 import 'package:we_care/features/Biometrics/data/models/current_biometrics_data.dart';
 
@@ -13,7 +14,8 @@ class BiometricsViewState extends Equatable {
   final List<int> daysFilter;
   final List<int> monthFilter;
   final List<BiometricsDatasetModel> biometricsData;
- final CurrentBioMetricsData? currentBiometricsData;
+  final CurrentBioMetricsData? currentBiometricsData;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const BiometricsViewState({
     this.responseMessage = '',
@@ -26,24 +28,22 @@ class BiometricsViewState extends Equatable {
     this.currentBiometricsData,
     this.deleteRequestStatus = RequestStatus.initial,
     this.editRequestStatus = RequestStatus.initial,
+    this.moduleGuidanceData,
   });
 
   factory BiometricsViewState.initial() {
     return BiometricsViewState(
       responseMessage: '',
       requestStatus: RequestStatus.initial,
-      yearsFilter: const [
-      ],
-      availableBiometricNames: const [
-  ],
-      daysFilter: const [
-      ],
-      monthFilter: const [
-      ],
+      yearsFilter: const [],
+      availableBiometricNames: const [],
+      daysFilter: const [],
+      monthFilter: const [],
       biometricsData: const [],
       currentBiometricsData: null,
       deleteRequestStatus: RequestStatus.initial,
       editRequestStatus: RequestStatus.initial,
+      moduleGuidanceData: null,
     );
   }
 
@@ -58,31 +58,35 @@ class BiometricsViewState extends Equatable {
     CurrentBioMetricsData? currentBiometricsData,
     RequestStatus? deleteRequestStatus,
     RequestStatus? editRequestStatus,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return BiometricsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
       yearsFilter: yearsFilter ?? this.yearsFilter,
-      availableBiometricNames: availableBiometricNames ?? this.availableBiometricNames,
+      availableBiometricNames:
+          availableBiometricNames ?? this.availableBiometricNames,
       daysFilter: daysFilter ?? this.daysFilter,
       monthFilter: monthFilter ?? this.monthFilter,
       biometricsData: biometricsData ?? this.biometricsData,
-      currentBiometricsData: currentBiometricsData ?? this.currentBiometricsData,
+      currentBiometricsData:
+          currentBiometricsData ?? this.currentBiometricsData,
       deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
       editRequestStatus: editRequestStatus ?? this.editRequestStatus,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
-
   @override
   List<Object?> get props => [
-    requestStatus,
-    responseMessage,
-    availableBiometricNames,
-    yearsFilter,
-    daysFilter,
-    monthFilter,  
-    biometricsData,
-    currentBiometricsData,
+        requestStatus,
+        responseMessage,
+        availableBiometricNames,
+        yearsFilter,
+        daysFilter,
+        monthFilter,
+        biometricsData,
+        currentBiometricsData,
+        moduleGuidanceData,
       ];
 }

@@ -136,4 +136,5 @@ class Routes {
 
   static const myMedicalReportsView = '/myMedicalReportsView';
   static const scheduledMedicinesListView = '/scheduledMedicinesListView';
+  static const aiConsultation = '/aiConsultation';
 }

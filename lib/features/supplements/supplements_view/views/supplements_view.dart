@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_with_guidance.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/supplements/supplements_view/logic/supplements_view_cubit.dart';
@@ -46,6 +48,7 @@ class _SupplementsViewState extends State<SupplementsView>
         cubit.getAvailableDateRanges();
         cubit.fetchEffectsOnNutrients();
         cubit.fetchVitaminsAndSupplements();
+        cubit.emitModuleGuidance();
         return cubit;
       },
       child: Scaffold(
@@ -60,10 +63,45 @@ class _SupplementsViewState extends State<SupplementsView>
                 // Header
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: const AppBarWithCenteredTitle(
+                  child: CustomAppBarWithCenteredTitleWithGuidance(
                     title: 'المكملات الغذائية',
-                    showActionButtons: false,
-                    hasVideoIcon: true,
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      horizontalSpacing(8),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "المكملات الغذائية",
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
                   ),
                 ),
 

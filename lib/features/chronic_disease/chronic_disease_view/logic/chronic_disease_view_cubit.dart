@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_view_repo.dart';
@@ -9,13 +11,23 @@ import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_view
 part 'chronic_disease_view_state.dart';
 
 class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
-  ChronicDiseaseViewCubit(this._diseaseViewRepo)
+  ChronicDiseaseViewCubit(this._diseaseViewRepo, this._appSharedRepo)
       : super(ChronicDiseaseViewState.initial());
   final ChronicDiseaseViewRepo _diseaseViewRepo;
+  final AppSharedRepo _appSharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
+
+  Future<void> init() async {
+    Future.wait(
+      [
+        getAllChronicDiseasesDocuments(),
+        emitModuleGuidance(),
+      ],
+    );
+  }
 
   Future<void> getAllChronicDiseasesDocuments(
       {int? page, int? pageSize}) async {
@@ -104,5 +116,18 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
           responseMessage: error.errors.first,
           isDeleteRequest: true));
     });
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _appSharedRepo
+        .getModuleGuidance(WeCareMedicalModules.chronicDiseases.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

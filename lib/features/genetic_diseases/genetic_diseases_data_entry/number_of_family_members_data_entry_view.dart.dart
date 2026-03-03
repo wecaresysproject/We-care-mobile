@@ -35,7 +35,7 @@ class NumberOfFamilyMembersView extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16.w),
                   child: Column(
                     children: [
-                      CustomAppBarWidget(
+                      AppBarWithImageAndActionButtons(
                         haveBackArrow: true,
                       ),
                       verticalSpacing(32),

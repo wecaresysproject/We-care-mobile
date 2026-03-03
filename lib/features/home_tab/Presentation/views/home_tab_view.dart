@@ -85,9 +85,13 @@ class HomeTabView extends StatelessWidget {
                     crossAxisSpacing: 13.w,
                     children: [
                       HomeSecondCategoryItem(
-                        categoryName: "استشر الذكاء\nالاصطناعي",
+                        categoryName: "استشر ال AI",
                         imagePath: "assets/images/ai_image.png",
-                        onTap: () {},
+                        onTap: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.aiConsultation,
+                          );
+                        },
                       ),
                       HomeSecondCategoryItem(
                         categoryName: "امراضى\nالوراثيه",

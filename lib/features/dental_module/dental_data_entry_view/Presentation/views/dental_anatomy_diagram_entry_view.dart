@@ -26,7 +26,7 @@ class DentalAnatomyDiagramEntryView extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 16.h),
           child: Column(
             children: [
-              CustomAppBarWidget(
+              AppBarWithImageAndActionButtons(
                 haveBackArrow: true,
               ).paddingSymmetricHorizontal(16),
               verticalSpacing(16),

@@ -134,7 +134,7 @@ class _MentalIllnessesUmbrellRecordsViewState
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Column(
                 children: [
-                  CustomAppBarWidget(
+                  AppBarWithImageAndActionButtons(
                     haveBackArrow: true,
                   ),
                   verticalSpacing(40),

@@ -6,6 +6,8 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -13,7 +15,6 @@ import 'package:we_care/features/prescription/Presentation_view/logic/prescripti
 import 'package:we_care/features/prescription/Presentation_view/logic/prescription_view_state.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class PrescriptionView extends StatelessWidget {
   const PrescriptionView({super.key});
@@ -21,22 +22,59 @@ class PrescriptionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PrescriptionViewCubit>(
-      create: (context) => getIt<PrescriptionViewCubit>()
-        ..getPrescriptionFilters()
-        ..getUserPrescriptionList(),
+      create: (context) => getIt<PrescriptionViewCubit>()..init(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 2.h,
+          ),
           child: Column(
+            spacing: 10,
             children: [
-              ViewAppBar(),
+              BlocBuilder<PrescriptionViewCubit, PrescriptionViewState>(
+                builder: (context, state) {
+                  final guidance = state.moduleGuidanceData;
+                  final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                  final hasText =
+                      guidance?.moduleGuidanceText?.isNotEmpty == true;
+
+                  return SharedAppBar(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color: hasVideo
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasVideo
+                            ? () => launchYouTubeVideo(guidance!.videoLink)
+                            : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: hasText
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: hasText
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "الروشتة",
+                                  description: guidance!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
+              ),
               PrescriptionsViewFilersRow(),
-              verticalSpacing(16),
               PrescriptionViewListBuilder(),
-              verticalSpacing(16),
               PrescriptionViewFooterRow(),
             ],
           ),
@@ -82,6 +120,10 @@ class PrescriptionViewListBuilder extends StatelessWidget {
                   final result = await context
                       .pushNamed(Routes.prescriptionDetailsView, arguments: {
                     'id': doc.id,
+                    'guidanceData': context
+                        .read<PrescriptionViewCubit>()
+                        .state
+                        .moduleGuidanceData,
                   });
                   if (result != null && result as bool && context.mounted) {
                     await context

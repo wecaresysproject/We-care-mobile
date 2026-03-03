@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -12,7 +15,6 @@ import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_stat
 import 'package:we_care/features/medicine/medicine_view/widgets/medicine_table.dart';
 import 'package:we_care/features/medicine/medicine_view/widgets/medicine_view_footer_row.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MedicinesView extends StatelessWidget {
   const MedicinesView({super.key});
@@ -34,7 +36,44 @@ class MedicinesView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Column(
               children: [
-                ViewAppBar(),
+                BlocBuilder<MedicineViewCubit, MedicineViewState>(
+                  builder: (context, state) {
+                    final guidance = state.moduleGuidanceData;
+                    final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                    final hasText =
+                        guidance?.moduleGuidanceText?.isNotEmpty == true;
+
+                    return SharedAppBar(
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color: hasVideo
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: hasVideo
+                              ? () => launchYouTubeVideo(guidance!.videoLink)
+                              : null,
+                        ),
+                        SizedBox(width: 12.w),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: hasText
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: hasText
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "الأدوية",
+                                    description: guidance!.moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
+                    );
+                  },
+                ),
                 BlocBuilder<MedicineViewCubit, MedicineViewState>(
                   buildWhen: (previous, current) =>
                       previous.yearsFilter != current.yearsFilter ||

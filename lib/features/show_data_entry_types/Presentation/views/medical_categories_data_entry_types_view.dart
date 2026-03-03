@@ -18,7 +18,7 @@ class MedicalDataEntryCategoryTypesView extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          CustomAppBarWidget(
+          AppBarWithImageAndActionButtons(
             haveBackArrow: true,
             onNavigateToBack: () {
               stopSound();

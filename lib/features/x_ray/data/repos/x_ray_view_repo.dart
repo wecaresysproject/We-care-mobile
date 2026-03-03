@@ -10,12 +10,14 @@ class XRayViewRepo {
   XRayViewRepo(this.xRayApiServices);
 
   Future<ApiResult<UserRadiologyDataResponse>> getUserRadiologyData(
-      {required String language, required String userType,
-      int? page, int? pageSize}) async {
+      {required String language,
+      required String userType,
+      int? page,
+      int? pageSize}) async {
     try {
-      final response =
-          await xRayApiServices.getUserRadiologyData(language, userType,
-              page: page ?? 1, pageSize: pageSize ?? 10);
+      final response = await xRayApiServices.getUserRadiologyData(
+          language, userType,
+          page: page ?? 1, pageSize: pageSize ?? 10);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

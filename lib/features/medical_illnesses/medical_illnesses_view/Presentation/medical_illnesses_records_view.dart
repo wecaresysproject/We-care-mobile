@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/medical_illness_footer_row.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/Presentation/widgets/mental_illness_card_horizontal_widget.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class MentalIllnessRecordsView extends StatelessWidget {
   const MentalIllnessRecordsView({
@@ -41,7 +44,45 @@ class MentalIllnessRecordsView extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 18),
                     child: Column(
                       children: [
-                        ViewAppBar(),
+                        SharedAppBar(
+                          trailingActions: [
+                            CircleIconButton(
+                              icon: Icons.play_arrow,
+                              color: state.moduleGuidanceData?.videoLink
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                              onTap: state.moduleGuidanceData?.videoLink
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? () => launchYouTubeVideo(
+                                      state.moduleGuidanceData!.videoLink)
+                                  : null,
+                            ),
+                            SizedBox(width: 12.w),
+                            CircleIconButton(
+                              icon: Icons.menu_book_outlined,
+                              color: state.moduleGuidanceData
+                                          ?.moduleGuidanceText?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                              onTap: state.moduleGuidanceData
+                                          ?.moduleGuidanceText?.isNotEmpty ==
+                                      true
+                                  ? () {
+                                      ModuleGuidanceAlertDialog.show(
+                                        context,
+                                        title: "الأشعة",
+                                        description: state.moduleGuidanceData!
+                                            .moduleGuidanceText!,
+                                      );
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        ),
                         DataViewFiltersRow(
                           filters: [
                             FilterConfig(

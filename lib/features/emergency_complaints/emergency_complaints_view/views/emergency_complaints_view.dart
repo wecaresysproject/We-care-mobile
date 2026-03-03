@@ -5,6 +5,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
@@ -12,7 +14,6 @@ import 'package:we_care/features/emergency_complaints/emergency_complaints_view/
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/emergency_complaints_details_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/views/widget/complain_card_item_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
-import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_view_app_bar.dart';
 
 class EmergencyComplaintsView extends StatelessWidget {
   const EmergencyComplaintsView({super.key});
@@ -20,20 +21,65 @@ class EmergencyComplaintsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<EmergencyComplaintsViewCubit>()
-        ..getUserEmergencyComplaintsList()
-        ..getFilters(),
+      create: (context) =>
+          getIt<EmergencyComplaintsViewCubit>()..intialRequests(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0.h,
         ),
         body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 2.h,
+          ),
           child: Column(
+            spacing: 10,
             children: [
-              ViewAppBar(),
+              BlocBuilder<EmergencyComplaintsViewCubit,
+                  EmergencyComplaintViewState>(
+                builder: (context, state) {
+                  return SharedAppBar(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: 'الشكاوى المرضية الطارئة',
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                  );
+                },
+              ),
               EmergencyComplaintsFiltersRow(),
-              verticalSpacing(16),
               EmergencyComplaintsViewListBuilder(),
               verticalSpacing(16),
               EmergencyComplaintsFooterRow(),
@@ -88,6 +134,7 @@ class EmergencyComplaintsViewListBuilder extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => EmergencyComplaintsDetailsView(
                         documentId: doc.id,
+                        guidanceData: state.moduleGuidanceData,
                       ),
                     ),
                   );
@@ -118,17 +165,17 @@ class EmergencyComplaintsFiltersRow extends StatelessWidget {
           previous.bodyPartFilter != current.bodyPartFilter,
       builder: (context, state) {
         return DataViewFiltersRow(
-         filters: [
-    FilterConfig(
-      title: 'السنة',
-      options: ['الكل', ...state.yearsFilter],
-      isYearFilter: true,
-    ),
-    FilterConfig(
-      title: 'مكان الشكوى',
-      options: ['الكل', ...state.bodyPartFilter],
-    ),
-  ],
+          filters: [
+            FilterConfig(
+              title: 'السنة',
+              options: ['الكل', ...state.yearsFilter],
+              isYearFilter: true,
+            ),
+            FilterConfig(
+              title: 'مكان الشكوى',
+              options: ['الكل', ...state.bodyPartFilter],
+            ),
+          ],
           onApply: (selectedFilters) async {
             AppLogger.debug("Selected Filters: $selectedFilters");
             await context

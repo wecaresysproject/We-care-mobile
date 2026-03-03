@@ -5,16 +5,26 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 
 class SurgeryDetailsView extends StatelessWidget {
-  const SurgeryDetailsView({super.key, required this.documentId});
+  const SurgeryDetailsView({
+    super.key,
+    required this.documentId,
+    this.guidanceData,
+  });
   final String documentId;
+  final ModuleGuidanceDataModel? guidanceData;
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +56,42 @@ class SurgeryDetailsView extends StatelessWidget {
             }
 
             return SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+              ),
               child: Column(
                 children: [
                   AppBarWithCenteredTitle(
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color: guidanceData?.videoLink?.isNotEmpty == true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: guidanceData?.videoLink?.isNotEmpty == true
+                            ? () => launchYouTubeVideo(guidanceData!.videoLink)
+                            : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color:
+                            guidanceData?.moduleGuidanceText?.isNotEmpty == true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            guidanceData?.moduleGuidanceText?.isNotEmpty == true
+                                ? () {
+                                    ModuleGuidanceAlertDialog.show(
+                                      context,
+                                      title: "العمليات",
+                                      description:
+                                          guidanceData!.moduleGuidanceText!,
+                                    );
+                                  }
+                                : null,
+                      ),
+                    ],
                     title: 'العمليات',
                     deleteFunction: () async => await context
                         .read<SurgeriesViewCubit>()
@@ -68,6 +110,7 @@ class SurgeryDetailsView extends StatelessWidget {
                       // }
                     },
                   ),
+                  verticalSpacing(16),
                   Row(children: [
                     DetailsViewInfoTile(
                       title: "كود ICHI",

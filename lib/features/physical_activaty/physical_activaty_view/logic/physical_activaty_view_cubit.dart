@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_day_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/physical_activity_metrics_model.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
@@ -9,11 +11,27 @@ import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_
 part 'physical_activaty_view_state.dart';
 
 class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
-  PhysicalActivityViewCubit(this.physicalActivatyViewRepo)
+  final PhysicalActivatyViewRepo _physicalActivatyViewRepo;
+  final AppSharedRepo sharedRepo;
+
+  PhysicalActivityViewCubit(this._physicalActivatyViewRepo, this.sharedRepo)
       : super(PhysicalActivatyViewState.initial());
-  final PhysicalActivatyViewRepo physicalActivatyViewRepo;
+
+  Future<void> emitModuleGuidance() async {
+    final result = await sharedRepo
+        .getModuleGuidance(WeCareMedicalModules.physicalActivity.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
+  }
+
   Future<void> getAvailableYears() async {
-    final response = await physicalActivatyViewRepo.getAvailableYears(
+    final response = await _physicalActivatyViewRepo.getAvailableYears(
       language: AppStrings.arabicLang,
     );
     response.when(
@@ -36,7 +54,7 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
 
   Future<void> getAvailableDatesBasedOnYear(String selectedYear) async {
     final response =
-        await physicalActivatyViewRepo.getAvailableDatesBasedOnYear(
+        await _physicalActivatyViewRepo.getAvailableDatesBasedOnYear(
       language: AppStrings.arabicLang,
       year: selectedYear,
     );
@@ -62,13 +80,14 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
     await Future.wait([
       getAvailableYears(),
       getPhysicalActivitySlides(),
+      emitModuleGuidance(),
     ]);
   }
 
   Future<void> getPhysicalActivitySlides() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await physicalActivatyViewRepo.getPhysicalActivitySlides(
+    final response = await _physicalActivatyViewRepo.getPhysicalActivitySlides(
       language: AppStrings.arabicLang,
     );
     response.when(
@@ -94,7 +113,7 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
       {required String year, required String date}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await physicalActivatyViewRepo.getFilterdDocuments(
+    final response = await _physicalActivatyViewRepo.getFilterdDocuments(
       language: AppStrings.arabicLang,
       year: year,
       range: date,
@@ -122,7 +141,7 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
   Future<void> getFollowUpReports() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await physicalActivatyViewRepo.getFollowUpReports();
+    final response = await _physicalActivatyViewRepo.getFollowUpReports();
     response.when(
       success: (data) {
         emit(

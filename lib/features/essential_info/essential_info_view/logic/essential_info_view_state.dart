@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 
 class EssentialInfoViewState extends Equatable {
@@ -8,6 +9,7 @@ class EssentialInfoViewState extends Equatable {
   final String responseMessage;
   final UserEssentialInfoData? userEssentialInfo;
   final double profileCompletionPercentage;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const EssentialInfoViewState({
     this.requestStatus = RequestStatus.initial,
@@ -15,6 +17,7 @@ class EssentialInfoViewState extends Equatable {
     this.responseMessage = '',
     this.userEssentialInfo,
     this.profileCompletionPercentage = 0.0,
+    this.moduleGuidanceData,
   });
 
   factory EssentialInfoViewState.initial() {
@@ -24,6 +27,7 @@ class EssentialInfoViewState extends Equatable {
       userEssentialInfo: null,
       deleteRequestStatus: RequestStatus.initial,
       profileCompletionPercentage: 0.0,
+      moduleGuidanceData: null,
     );
   }
 
@@ -33,6 +37,7 @@ class EssentialInfoViewState extends Equatable {
     UserEssentialInfoData? userEssentialInfo,
     RequestStatus? deleteRequestStatus,
     double? profileCompletionPercentage,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return EssentialInfoViewState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -41,6 +46,7 @@ class EssentialInfoViewState extends Equatable {
       deleteRequestStatus: deleteRequestStatus ?? this.deleteRequestStatus,
       profileCompletionPercentage:
           profileCompletionPercentage ?? this.profileCompletionPercentage,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -51,5 +57,6 @@ class EssentialInfoViewState extends Equatable {
         userEssentialInfo,
         deleteRequestStatus,
         profileCompletionPercentage,
+        moduleGuidanceData,
       ];
 }

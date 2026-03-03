@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 
 class SurgeriesViewState extends Equatable {
@@ -12,6 +12,7 @@ class SurgeriesViewState extends Equatable {
   final List<String> surgeryNameFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const SurgeriesViewState({
     this.responseMessage = '',
@@ -22,6 +23,7 @@ class SurgeriesViewState extends Equatable {
     this.selectedSurgeryDetails,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
+    this.moduleGuidanceData,
   });
 
   factory SurgeriesViewState.initial() {
@@ -34,6 +36,7 @@ class SurgeriesViewState extends Equatable {
       selectedSurgeryDetails: null,
       isDeleteRequest: false,
       isLoadingMore: false,
+      moduleGuidanceData: null,
     );
   }
 
@@ -46,6 +49,7 @@ class SurgeriesViewState extends Equatable {
     SurgeryModel? selectedSurgeryDetails,
     bool? isDeleteRequest,
     bool? isLoadingMore,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return SurgeriesViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -56,6 +60,7 @@ class SurgeriesViewState extends Equatable {
       selectedSurgeryDetails: selectedSurgeryDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -69,5 +74,6 @@ class SurgeriesViewState extends Equatable {
         selectedSurgeryDetails,
         isDeleteRequest,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }

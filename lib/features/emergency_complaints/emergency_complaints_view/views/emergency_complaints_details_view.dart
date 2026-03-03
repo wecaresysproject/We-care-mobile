@@ -14,15 +14,23 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaint_view_state.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_view/logic/emergency_complaints_view_cubit.dart';
 
 class EmergencyComplaintsDetailsView extends StatelessWidget {
-  const EmergencyComplaintsDetailsView({super.key, required this.documentId});
+  const EmergencyComplaintsDetailsView({
+    super.key,
+    required this.documentId,
+    this.guidanceData,
+  });
   final String documentId;
+  final ModuleGuidanceDataModel? guidanceData;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +63,36 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الشكاوى المرضية الطارئة',
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color: guidanceData?.videoLink?.isNotEmpty == true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: guidanceData?.videoLink?.isNotEmpty == true
+                            ? () => launchYouTubeVideo(guidanceData!.videoLink)
+                            : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color:
+                            guidanceData?.moduleGuidanceText?.isNotEmpty == true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            guidanceData?.moduleGuidanceText?.isNotEmpty == true
+                                ? () {
+                                    ModuleGuidanceAlertDialog.show(
+                                      context,
+                                      title: 'الشكاوى المرضية الطارئة',
+                                      description:
+                                          guidanceData!.moduleGuidanceText!,
+                                    );
+                                  }
+                                : null,
+                      ),
+                    ],
                     editFunction: () async {
                       await context.pushNamed(
                         Routes.emergenciesComplaintDataEntryView,
@@ -75,6 +113,7 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                           .deleteEmergencyComplaintById(documentId);
                     },
                   ),
+                  verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "تاريخ ظهور الشكوى",
                     value: complaint.date,

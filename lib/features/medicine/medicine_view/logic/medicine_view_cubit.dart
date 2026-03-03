@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
@@ -12,17 +13,23 @@ import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_stat
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
 class MedicineViewCubit extends Cubit<MedicineViewState> {
-  MedicineViewCubit(this._medicinesViewRepo)
+  MedicineViewCubit(this._medicinesViewRepo, this._appSharedRepo)
       : super(MedicineViewState.initial());
   final MedicinesViewRepo _medicinesViewRepo;
+  final AppSharedRepo _appSharedRepo;
   int currentPage = 1;
   final int pageSize = 10;
   bool hasMore = true;
   bool isLoadingMore = false;
 
   Future<void> init() async {
-    await getMedicinesFilters();
-    await getUserMedicinesList(page: 1, pageSize: 10);
+    Future.wait(
+      [
+        getMedicinesFilters(),
+        getUserMedicinesList(page: 1, pageSize: 10),
+        emitModuleGuidance(),
+      ],
+    );
   }
 
   List<MedicineModel> getMedicinesByDate(String targetDate) {
@@ -104,6 +111,19 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
       getMedicineDetailsById(documentId),
       fetchMedicineActiveStatus(documentId),
     ]);
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _appSharedRepo
+        .getModuleGuidance(WeCareMedicalModules.medications.name);
+    result.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 
   Future<void> getMedicineDetailsById(String id) async {

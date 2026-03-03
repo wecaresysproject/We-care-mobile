@@ -46,13 +46,13 @@ enum PlanType {
 }
 
 enum WeCareMedicalModules {
-  profile,
+  profile, // البيانات الاساسيه
   vitalSigns,
   medications,
   emergenciesComplaints,
   prescriptions,
   labTests,
-  imagingAndRadiology,
+  imagingAndRadiology, //الاشعه ✅
   surgeries,
   chronicDiseases,
   geneticDiseases,

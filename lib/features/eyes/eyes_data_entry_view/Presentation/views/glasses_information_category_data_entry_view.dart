@@ -75,7 +75,7 @@ class _GlassesInformationCategoryDataEntryViewState
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    CustomAppBarWidget(
+                    AppBarWithImageAndActionButtons(
                       haveBackArrow: true,
                     ),
                     verticalSpacing(20),

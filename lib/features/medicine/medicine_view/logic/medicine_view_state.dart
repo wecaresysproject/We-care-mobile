@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 
 class MedicineViewState extends Equatable {
@@ -14,6 +15,7 @@ class MedicineViewState extends Equatable {
   final bool isActiveMedicine;
   final bool isSwitchLoading;
   final String switchErrorMessage;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const MedicineViewState({
     this.responseMessage = '',
@@ -27,6 +29,7 @@ class MedicineViewState extends Equatable {
     this.isActiveMedicine = false,
     this.isSwitchLoading = false,
     this.switchErrorMessage = '',
+    this.moduleGuidanceData,
   });
 
   factory MedicineViewState.initial() {
@@ -42,6 +45,7 @@ class MedicineViewState extends Equatable {
       isActiveMedicine: false,
       isSwitchLoading: false,
       switchErrorMessage: '',
+      moduleGuidanceData: null,
     );
   }
 
@@ -57,6 +61,7 @@ class MedicineViewState extends Equatable {
     bool? isActiveMedicine,
     bool? isSwitchLoading,
     String? switchErrorMessage,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return MedicineViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -71,6 +76,7 @@ class MedicineViewState extends Equatable {
       isActiveMedicine: isActiveMedicine ?? this.isActiveMedicine,
       isSwitchLoading: isSwitchLoading ?? this.isSwitchLoading,
       switchErrorMessage: switchErrorMessage ?? this.switchErrorMessage,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -87,5 +93,6 @@ class MedicineViewState extends Equatable {
         isActiveMedicine,
         isSwitchLoading,
         switchErrorMessage,
+        moduleGuidanceData,
       ];
 }

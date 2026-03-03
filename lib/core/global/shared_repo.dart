@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/shared_services.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/models/upload_image_response_model.dart';
 import 'package:we_care/core/models/upload_report_response_model.dart';
 import 'package:we_care/core/models/video_model.dart';
@@ -220,6 +221,16 @@ class AppSharedRepo {
           .map((e) => VideoModel.fromJson(e as Map<String, dynamic>))
           .toList();
       return ApiResult.success(videos);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<ModuleGuidanceDataModel?>> getModuleGuidance(
+      String moduleName) async {
+    try {
+      final response = await _sharedServices.getModuleGuidance(moduleName);
+      return ApiResult.success(response.data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

@@ -46,7 +46,7 @@ class BiometricsDataEntryView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CustomAppBarWidget(
+                      AppBarWithImageAndActionButtons(
                         haveBackArrow: true,
                       ),
                       verticalSpacing(24),
