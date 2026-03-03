@@ -11,7 +11,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
-import 'package:we_care/core/routing/routes.dart';
 
 class HomeCustomAppBarWidget extends StatelessWidget {
   const HomeCustomAppBarWidget({super.key});
@@ -154,7 +153,8 @@ class HomeCustomAppBarWidget extends StatelessWidget {
           /// ---------------- Logo ----------------
           CircleAvatar(
             radius: 28.r,
-            backgroundImage: const AssetImage("assets/images/we_care_logo.png"),
+            backgroundImage:
+                const AssetImage("assets/images/wecare_sys_home_logo.png"),
           ),
         ],
       ),
