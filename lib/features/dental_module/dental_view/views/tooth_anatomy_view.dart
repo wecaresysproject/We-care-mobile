@@ -7,6 +7,8 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
@@ -21,9 +23,7 @@ class ToothAnatomyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DentalViewCubit>(
-      create: (context) => getIt<DentalViewCubit>()
-        ..getDefectedTooth()
-        ..getToothFilters(),
+      create: (context) => getIt<DentalViewCubit>()..emitModuleGuidance(),
       child: DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -34,9 +34,51 @@ class ToothAnatomyView extends StatelessWidget {
               child: Column(
                 children: [
                   verticalSpacing(10.h),
-                  AppBarWithImageAndActionButtons(
-                    haveBackArrow: true,
+                  BlocBuilder<DentalViewCubit, DentalViewState>(
+                    builder: (context, state) {
+                      return AppBarWithImageAndActionButtons(
+                        haveBackArrow: true,
+                        trailingActions: [
+                          CircleIconButton(
+                            icon: Icons.play_arrow,
+                            color: state.moduleGuidanceData?.videoLink
+                                        ?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: state.moduleGuidanceData?.videoLink
+                                        ?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                          ),
+                          horizontalSpacing(8),
+                          CircleIconButton(
+                            icon: Icons.menu_book_outlined,
+                            color: state.moduleGuidanceData?.moduleGuidanceText
+                                        ?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                        ?.isNotEmpty ==
+                                    true
+                                ? () {
+                                    ModuleGuidanceAlertDialog.show(
+                                      context,
+                                      title: "القياسات الحيوية",
+                                      description: state.moduleGuidanceData!
+                                          .moduleGuidanceText!,
+                                    );
+                                  }
+                                : null,
+                          ),
+                        ],
+                      );
+                    },
                   ),
+                  verticalSpacing(6),
                   // TabBar
                   Material(
                     color: Colors.white,

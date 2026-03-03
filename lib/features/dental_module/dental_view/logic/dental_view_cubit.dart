@@ -30,6 +30,16 @@ class DentalViewCubit extends Cubit<DentalViewState> {
     );
   }
 
+  Future<void> initialRequests() async {
+    await Future.wait(
+      [
+        getDefectedTooth(),
+        getToothFilters(),
+        emitModuleGuidance(),
+      ],
+    );
+  }
+
   Future<void> getDefectedTooth() async {
     emit(state.copyWith(message: null, requestStatus: RequestStatus.loading));
     final result = await dentalRepository.getDefectedTooth(
@@ -205,14 +215,6 @@ class DentalViewCubit extends Cubit<DentalViewState> {
             message: error.errors.first,
             isDeleteRequest: true));
       },
-    );
-  }
-
-  Future<void> initialRequests() async {
-    await Future.wait(
-      [
-        emitModuleGuidance(),
-      ],
     );
   }
 }
