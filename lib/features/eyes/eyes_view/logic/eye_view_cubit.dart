@@ -2,13 +2,15 @@ import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/eyes/data/repos/eyes_view_repo.dart';
 
 import 'eye_view_state.dart';
 
 class EyeViewCubit extends Cubit<EyeViewState> {
-  EyeViewCubit(this._repo) : super(const EyeViewState());
+  EyeViewCubit(this._repo, this._sharedRepo) : super(const EyeViewState());
   final EyesViewRepo _repo;
+  final AppSharedRepo _sharedRepo;
 
   int currentPage = 1;
   final int pageSize = 10;
@@ -212,11 +214,11 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     await getEyeGlassesRecords(page: currentPage + 1);
   }
 
-    Future<List<String>> getEffectedEyeParts() async {
+  Future<List<String>> getEffectedEyeParts() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _repo.getEffectedEyeParts(
-      language: AppStrings.arabicLang,   
-      userType: UserTypes.patient.name.firstLetterToUpperCase, 
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     result.when(
       success: (data) => emit(state.copyWith(
@@ -231,6 +233,20 @@ class EyeViewCubit extends Cubit<EyeViewState> {
     return result.when(
       success: (data) => data,
       failure: (error) => [],
+    );
+  }
+
+  Future<void> emitModuleGuidance() async {
+    final result = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.ophthalmology.name,
+    );
+    result.when(
+      success: (data) {
+        emit(state.copyWith(
+          moduleGuidanceData: data,
+        ));
+      },
+      failure: (error) {},
     );
   }
 }

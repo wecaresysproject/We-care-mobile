@@ -329,6 +329,7 @@ void setupAppCubits() {
   getIt.registerFactory<EyeViewCubit>(
     () => EyeViewCubit(
       getIt<EyesViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicalIllnessesDataEntryCubit>(
