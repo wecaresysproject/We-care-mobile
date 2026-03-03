@@ -6,7 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -170,7 +170,10 @@ class FamilyTreeView extends StatelessWidget {
           ),
           child: Column(
             children: [
-              FamilyTreeViewCustomAppBar(),
+              AppBarWithCenteredTitle(
+                title: "شجرة العائلة",
+                showActionButtons: false,
+              ),
               verticalSpacing(24),
               Align(
                 alignment: Alignment.topLeft,
@@ -353,36 +356,6 @@ class FamilyTreeView extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class FamilyTreeViewCustomAppBar extends StatelessWidget {
-  const FamilyTreeViewCustomAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        // Back arrow on the left
-        CustomBackArrow(),
-
-        // Manually spaced center text
-        SizedBox(
-          width: MediaQuery.of(context).size.width *
-              0.25, // Adjust this width as needed
-        ), // Adjust this width as needed
-        Text(
-          "شجرة العائلة",
-          textAlign: TextAlign.center,
-          style: AppTextStyles.font18blackWight500.copyWith(
-            color: AppColorsManager.textColor,
-          ),
-        ),
-
-        // Spacer to push the row to the right end
-        Spacer(),
-      ],
     );
   }
 }
