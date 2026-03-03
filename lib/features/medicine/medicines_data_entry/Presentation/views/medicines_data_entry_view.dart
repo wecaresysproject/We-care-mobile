@@ -5,8 +5,8 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
-import 'package:we_care/features/medicine/shared/widgets/medicine_form_fields_widget.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
+import 'package:we_care/features/medicine/shared/widgets/medicine_form_fields_widget.dart';
 
 class MedicinesDataEntryView extends StatelessWidget {
   const MedicinesDataEntryView({
@@ -35,7 +35,7 @@ class MedicinesDataEntryView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomAppBarWidget(
+                AppBarWithImageAndActionButtons(
                   haveBackArrow: true,
                 ),
                 verticalSpacing(24),

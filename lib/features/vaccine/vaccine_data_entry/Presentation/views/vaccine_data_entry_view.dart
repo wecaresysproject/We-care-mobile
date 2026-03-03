@@ -36,7 +36,7 @@ class VaccineDataEntryView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomAppBarWidget(
+                AppBarWithImageAndActionButtons(
                   haveBackArrow: true,
                 ),
                 verticalSpacing(24),

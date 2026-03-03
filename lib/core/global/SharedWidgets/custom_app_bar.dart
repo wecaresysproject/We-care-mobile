@@ -5,8 +5,8 @@ import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 
-class CustomAppBarWidget extends StatefulWidget {
-  const CustomAppBarWidget(
+class AppBarWithImageAndActionButtons extends StatefulWidget {
+  const AppBarWithImageAndActionButtons(
       {super.key,
       this.haveBackArrow = false,
       this.onNavigateToBack,
@@ -19,10 +19,12 @@ class CustomAppBarWidget extends StatefulWidget {
   final List<Widget>? trailingActions;
 
   @override
-  State<CustomAppBarWidget> createState() => _CustomAppBarWidgetState();
+  State<AppBarWithImageAndActionButtons> createState() =>
+      _AppBarWithImageAndActionButtonsState();
 }
 
-class _CustomAppBarWidgetState extends State<CustomAppBarWidget> {
+class _AppBarWithImageAndActionButtonsState
+    extends State<AppBarWithImageAndActionButtons> {
   String userName = "";
   String userPhoto = "";
 

@@ -262,7 +262,7 @@ class _BiometricsViewState extends State<BiometricsView>
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    CustomAppBarWidget(
+                    AppBarWithImageAndActionButtons(
                       haveBackArrow: true,
                       trailingActions: [
                         CircleIconButton(

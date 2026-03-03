@@ -47,7 +47,7 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CustomAppBarWidget(
+                  AppBarWithImageAndActionButtons(
                     haveBackArrow: true,
                   ),
 

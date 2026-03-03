@@ -34,7 +34,7 @@ class ToothAnatomyView extends StatelessWidget {
               child: Column(
                 children: [
                   verticalSpacing(10.h),
-                  CustomAppBarWidget(
+                  AppBarWithImageAndActionButtons(
                     haveBackArrow: true,
                   ),
                   // TabBar

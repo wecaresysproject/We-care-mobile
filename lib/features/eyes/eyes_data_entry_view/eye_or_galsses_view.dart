@@ -29,7 +29,7 @@ class EyeOrGlassesView extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Column(
               children: [
-                CustomAppBarWidget(
+                AppBarWithImageAndActionButtons(
                   haveBackArrow: true,
                 ),
                 verticalSpacing(113),
@@ -40,8 +40,8 @@ class EyeOrGlassesView extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => BlocProvider(
-                              create: (context) => getIt<EyeViewCubit>()
-                                ..getEffectedEyeParts(),
+                              create: (context) =>
+                                  getIt<EyeViewCubit>()..getEffectedEyeParts(),
                               child: EyePartsViewDataEntry(
                                 isDataEntryPage: true,
                                 pageTitle: 'اضغط على جزء العين الذى تشتكى منه',

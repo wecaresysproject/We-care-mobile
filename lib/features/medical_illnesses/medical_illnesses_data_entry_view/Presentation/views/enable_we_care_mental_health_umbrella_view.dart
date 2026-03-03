@@ -25,7 +25,7 @@ class EnableViewForWeCareMentalHealthUmbrella extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomAppBarWidget(
+              AppBarWithImageAndActionButtons(
                 haveBackArrow: true,
               ),
               verticalSpacing(77.5),
