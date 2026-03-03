@@ -299,6 +299,7 @@ void setupAppCubits() {
   getIt.registerFactory<GeneticsDiseasesViewCubit>(
     () => GeneticsDiseasesViewCubit(
       geneticDiseasesViewRepo: getIt<GeneticDiseasesViewRepo>(),
+      sharedRepo: getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<BiometricsDataEntryCubit>(

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/current_personal_genetic_diseases.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatic_disease_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
@@ -25,6 +26,7 @@ class GeneticsDiseasesViewState extends Equatable {
   final List<PersonalGenaticDisease>? expextedPersonalGeneticDiseases;
   final List<CurrentPersonalGeneticDiseasesResponseModel>?
       currentPersonalGeneticDiseases;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const GeneticsDiseasesViewState(
       {this.requestStatus = RequestStatus.initial,
@@ -39,7 +41,8 @@ class GeneticsDiseasesViewState extends Equatable {
       this.familyMemberGeneticDiseases,
       this.familyMemberGeneticDiseaseDetails,
       this.expextedPersonalGeneticDiseases,
-      this.currentPersonalGeneticDiseaseDetails});
+      this.currentPersonalGeneticDiseaseDetails,
+      this.moduleGuidanceData});
   const GeneticsDiseasesViewState.initial()
       : requestStatus = RequestStatus.initial,
         message = null,
@@ -53,6 +56,7 @@ class GeneticsDiseasesViewState extends Equatable {
         expextedPersonalGeneticDiseases = null,
         currentPersonalGeneticDiseases = null,
         familyMembersNames = null,
+        moduleGuidanceData = null,
         isDeleteRequest = false;
 
   @override
@@ -70,24 +74,29 @@ class GeneticsDiseasesViewState extends Equatable {
         familyMemberGeneticDiseaseDetails,
         currentPersonalGeneticDiseaseDetails,
         expextedPersonalGeneticDiseases,
+        moduleGuidanceData,
       ];
 
-  GeneticsDiseasesViewState copyWith(
-      {String? message,
-      RequestStatus? requestStatus,
-      bool? isLoadingMore,
-      bool? hasMore,
-      int? currentPage,
-      bool? isDeleteRequest,
-      List<int>? yearsFilter,
-      GetFamilyMembersNames? familyMembersNames,
-      FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
-      List<CurrentPersonalGeneticDiseasesResponseModel>?
-          currentPersonalGeneticDiseases,
-      List<PersonalGenaticDisease>? personalGeneticDiseases,
-      FamilyNameGeneticDiseaseDetialsResponseModel?
-          familyMemberGeneticDiseaseDetails,
-      PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails}) {
+  GeneticsDiseasesViewState copyWith({
+    String? message,
+    RequestStatus? requestStatus,
+    bool? isLoadingMore,
+    bool? hasMore,
+    int? currentPage,
+    bool? isDeleteRequest,
+    List<int>? yearsFilter,
+    GetFamilyMembersNames? familyMembersNames,
+    FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
+    List<CurrentPersonalGeneticDiseasesResponseModel>?
+        currentPersonalGeneticDiseases,
+    List<PersonalGenaticDisease>? personalGeneticDiseases,
+    FamilyNameGeneticDiseaseDetialsResponseModel?
+        familyMemberGeneticDiseaseDetails,
+    ModuleGuidanceDataModel? moduleGuidanceData,
+    PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails,
+    PersonalGeneticDiseasDetails? currentPersonalGeneticDiseaseDetails,
+    List<PersonalGenaticDisease>? expextedPersonalGeneticDiseases,
+  }) {
     return GeneticsDiseasesViewState(
       message: message ?? this.message,
       requestStatus: requestStatus ?? this.requestStatus,
@@ -100,13 +109,15 @@ class GeneticsDiseasesViewState extends Equatable {
           familyMemberGeneticDiseases ?? this.familyMemberGeneticDiseases,
       familyMembersNames: familyMembersNames ?? this.familyMembersNames,
       currentPersonalGeneticDiseaseDetails:
-          personalGeneticDiseaseDetails ?? this.currentPersonalGeneticDiseaseDetails,
+          currentPersonalGeneticDiseaseDetails ??
+              this.currentPersonalGeneticDiseaseDetails,
       familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ??
           this.familyMemberGeneticDiseaseDetails,
-      expextedPersonalGeneticDiseases:
-          personalGeneticDiseases ?? this.expextedPersonalGeneticDiseases,
+      expextedPersonalGeneticDiseases: expextedPersonalGeneticDiseases ??
+          this.expextedPersonalGeneticDiseases,
       currentPersonalGeneticDiseases:
           currentPersonalGeneticDiseases ?? this.currentPersonalGeneticDiseases,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 }
