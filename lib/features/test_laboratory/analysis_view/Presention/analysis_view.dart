@@ -8,6 +8,8 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/empty_state_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_details_view.dart';
@@ -45,6 +47,43 @@ class MedicalAnalysisView extends StatelessWidget {
                       onSearchCleared: () {
                         cubit.onSearchChanged(query: "");
                       },
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                          onTap:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? () => launchYouTubeVideo(
+                                      state.moduleGuidanceData!.videoLink)
+                                  : null,
+                        ),
+                        horizontalSpacing(8),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "القياسات الحيوية",
+                                    description: state.moduleGuidanceData!
+                                        .moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
                     ),
                     _buildFilterAndCountSection(context, state),
                     verticalSpacing(8),

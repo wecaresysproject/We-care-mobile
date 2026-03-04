@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/data/models/prescription_request_body_model.dart';
 import 'package:we_care/features/prescription/data/repos/prescription_data_entry_repo.dart';
@@ -144,11 +145,14 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForPrescriptionDataEntry() async {
-    await emitDoctorNames();
-    await emitDiseasesData();
-    await emitCountriesData();
-    await emitCitiesData();
-    await emitDoctorsSpecializations();
+    Future.wait([
+      emitModuleGuidanceData(),
+      emitDoctorNames(),
+      emitDiseasesData(),
+      emitCountriesData(),
+      emitCitiesData(),
+      emitDoctorsSpecializations(),
+    ]);
   }
 
   Future<void> emitDoctorNames() async {
@@ -400,6 +404,29 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         ),
       );
     }
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.prescriptions.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 
   @override

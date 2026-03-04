@@ -2,17 +2,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/Biometrics/biometrics_data_entry/logic/cubit/biometrics_data_entry_state.dart';
 import 'package:we_care/features/Biometrics/data/models/post_biometric_data_of_specifc_category_model.dart';
 import 'package:we_care/features/Biometrics/data/repos/biometrics_data_entry_repo.dart';
 
 class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
-  BiometricsDataEntryCubit(this.biometricsDataEntryRepo)
+  BiometricsDataEntryCubit(this.biometricsDataEntryRepo, this.appSharedRepo)
       : super(
           BiometricsDataEntryState.initialState(),
         );
 
   final BiometricsDataEntryRepo biometricsDataEntryRepo;
+  final AppSharedRepo appSharedRepo;
 
   Future<void> postBiometricsDataEntry({
     required String categoryName,
@@ -31,20 +33,50 @@ class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
       lanugage: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
-    result.when(success: (successMessage) {
-      emit(
-        state.copyWith(
-          submitBiometricDataStatus: RequestStatus.success,
-          message: successMessage,
-        ),
-      );
-    }, failure: (failure) {
-      emit(
-        state.copyWith(
-          submitBiometricDataStatus: RequestStatus.failure,
-          message: failure.errors.first,
-        ),
-      );
-    });
+    result.when(
+      success: (successMessage) {
+        emit(
+          state.copyWith(
+            submitBiometricDataStatus: RequestStatus.success,
+            message: successMessage,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            submitBiometricDataStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> initialRequest() async {
+    await emitModuleGuidanceData();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await appSharedRepo.getModuleGuidance(
+      WeCareMedicalModules.vitalSigns.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 }

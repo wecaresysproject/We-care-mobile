@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_with_guidance.dart';
 import 'package:we_care/core/global/SharedWidgets/loading_state_view.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/widgets/analysis_line_cart.dart';
@@ -78,17 +81,53 @@ class SimilarAnalysisView extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Column(
                   children: [
-                    AppBarWithCenteredTitle(
+                    CustomAppBarWithCenteredTitleWithGuidance(
                       title: 'التحاليل المماثلة',
-                      showActionButtons: false,
+                      trailingActions: [
+                        CircleIconButton(
+                          icon: Icons.play_arrow,
+                          color:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                          onTap:
+                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                      true
+                                  ? () => launchYouTubeVideo(
+                                      state.moduleGuidanceData!.videoLink)
+                                  : null,
+                        ),
+                        SizedBox(width: 12.w),
+                        CircleIconButton(
+                          icon: Icons.menu_book_outlined,
+                          color: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? AppColorsManager.mainDarkBlue
+                              : Colors.grey,
+                          onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                      ?.isNotEmpty ==
+                                  true
+                              ? () {
+                                  ModuleGuidanceAlertDialog.show(
+                                    context,
+                                    title: "العمليات",
+                                    description: state.moduleGuidanceData!
+                                        .moduleGuidanceText!,
+                                  );
+                                }
+                              : null,
+                        ),
+                      ],
                     ),
                     verticalSpacing(24),
                     CustomAnalysisContainer(
-                        iconPath: 'assets/images/test_tube.png',
-                        label: similarTestsResponse.testDetails.code,
-                        title: similarTestsResponse.testDetails.nameTest,
-                        description:
-                            similarTestsResponse.testDetails.description),
+                      iconPath: 'assets/images/test_tube.png',
+                      label: similarTestsResponse.testDetails.code,
+                      title: similarTestsResponse.testDetails.nameTest,
+                      description: similarTestsResponse.testDetails.description,
+                    ),
                     verticalSpacing(16),
                     ListView.builder(
                         shrinkWrap: true,
@@ -96,29 +135,29 @@ class SimilarAnalysisView extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return SimilarAnalysisCard(
-                              id: similarTestsResponse.similarTests[index].id,
-                              testName: similarTestsResponse
-                                  .similarTests[index].testName,
-                              date: [
-                                similarTestsResponse
-                                    .similarTests[index].testDate
-                              ],
-                              names: [
-                                similarTestsResponse.similarTests[index].code
-                              ],
-                              ranges: [
-                                similarTestsResponse
-                                    .similarTests[index].standardRate
-                              ],
-                              results: [
-                                similarTestsResponse
-                                    .similarTests[index].writtenPercent
-                                    .toString()
-                              ],
-                              interpretation: similarTestsResponse
-                                  .similarTests[index].interpretation,
-                              recommendation: similarTestsResponse
-                                  .similarTests[index].recommendation);
+                            id: similarTestsResponse.similarTests[index].id,
+                            testName: similarTestsResponse
+                                .similarTests[index].testName,
+                            date: [
+                              similarTestsResponse.similarTests[index].testDate
+                            ],
+                            names: [
+                              similarTestsResponse.similarTests[index].code
+                            ],
+                            ranges: [
+                              similarTestsResponse
+                                  .similarTests[index].standardRate
+                            ],
+                            results: [
+                              similarTestsResponse
+                                  .similarTests[index].writtenPercent
+                                  .toString()
+                            ],
+                            interpretation: similarTestsResponse
+                                .similarTests[index].interpretation,
+                            recommendation: similarTestsResponse
+                                .similarTests[index].recommendation,
+                          );
                         }),
                     verticalSpacing(12),
                     if (dynamicChartData.isNotEmpty &&

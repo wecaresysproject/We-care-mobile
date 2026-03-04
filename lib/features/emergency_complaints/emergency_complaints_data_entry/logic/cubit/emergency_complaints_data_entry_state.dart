@@ -31,6 +31,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final String updatedDocumentId; // تاريخ التدخل
   final List<String> uploadedComplainsImages;
   final UploadImageRequestStatus uploadImageRequestStatus;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
@@ -55,6 +56,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.updatedDocumentId = '',
     this.uploadedComplainsImages = const [],
     this.uploadImageRequestStatus = UploadImageRequestStatus.initial,
+    this.moduleGuidanceData,
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -81,6 +83,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           updatedDocumentId: '',
           uploadedComplainsImages: const [],
           uploadImageRequestStatus: UploadImageRequestStatus.initial,
+          moduleGuidanceData: null,
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -111,6 +114,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     List<String>? medicines,
     List<String>? uploadedComplainsImages,
     UploadImageRequestStatus? uploadImageRequestStatus,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -145,6 +149,7 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           uploadedComplainsImages ?? this.uploadedComplainsImages,
       uploadImageRequestStatus:
           uploadImageRequestStatus ?? this.uploadImageRequestStatus,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -172,5 +177,6 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         medicines,
         uploadedComplainsImages,
         uploadImageRequestStatus,
+        moduleGuidanceData,
       ];
 }

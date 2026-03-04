@@ -2,6 +2,7 @@ import 'package:alarm/model/alarm_settings.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
@@ -52,6 +53,7 @@ class MedicinesDataEntryState extends Equatable {
   final bool isNewMedicineAddedSuccefuly;
   final bool isEditingNewMedicineSuccess;
   final bool isEditingAddedMedicine;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
@@ -97,6 +99,7 @@ class MedicinesDataEntryState extends Equatable {
         OptionsLoadingState.loading,
     this.doctorNames = const [],
     this.dosageAmounts = const [],
+    this.moduleGuidanceData,
   }) : super();
 
   const MedicinesDataEntryState.initialState()
@@ -144,6 +147,7 @@ class MedicinesDataEntryState extends Equatable {
               OptionsLoadingState.loading,
           doctorNames: const [],
           dosageAmounts: const [],
+          moduleGuidanceData: null,
         );
 
   MedicinesDataEntryState copyWith({
@@ -190,6 +194,7 @@ class MedicinesDataEntryState extends Equatable {
     OptionsLoadingState? allDurationsBasedOnCategoryOptionsLoadingState,
     List<String>? doctorNames,
     List<String>? dosageAmounts,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
@@ -253,6 +258,7 @@ class MedicinesDataEntryState extends Equatable {
               this.allDurationsBasedOnCategoryOptionsLoadingState,
       doctorNames: doctorNames ?? this.doctorNames,
       dosageAmounts: dosageAmounts ?? this.dosageAmounts,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -300,5 +306,6 @@ class MedicinesDataEntryState extends Equatable {
         allDurationsBasedOnCategoryOptionsLoadingState,
         doctorNames,
         dosageAmounts,
+        moduleGuidanceData,
       ];
 }

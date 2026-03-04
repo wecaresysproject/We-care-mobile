@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/emergency_complain_request_body.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart'
     as model;
@@ -26,7 +27,9 @@ class EmergencyComplaintsDataEntryCubit
           EmergencyComplaintsDataEntryState.initialState(),
         ) {
     additionalMedicalComplains.addListener(validateRequiredFields);
+    emitModuleGuidanceData();
   }
+
   // ignore: unused_field
   final EmergencyComplaintsDataEntryRepo _emergencyDataEntryRepo;
   final AppSharedRepo _appSharedRepo;
@@ -278,6 +281,7 @@ class EmergencyComplaintsDataEntryCubit
         emergencyComplaint.additionalMedicalComplains == locale.no_data_entered
             ? ''
             : emergencyComplaint.additionalMedicalComplains ?? '';
+    await emitModuleGuidanceData();
   }
 
   Future<void> storeTempUserPastComplaints(
@@ -477,5 +481,28 @@ class EmergencyComplaintsDataEntryCubit
     additionalMedicalComplains.dispose();
     await clearAllAddedComplaints();
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await _appSharedRepo.getModuleGuidance(
+      WeCareMedicalModules.emergenciesComplaints.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 }

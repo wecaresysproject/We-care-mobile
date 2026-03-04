@@ -35,7 +35,9 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       },
     );
     notifications = LocalNotificationService();
+    emitModuleGuidanceData();
   }
+
   final AppSharedRepo sharedRepo;
 
   Future<void> loadAlarms() async {
@@ -215,7 +217,31 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       getAllUsageCategories(),
       getChronicDiseasesNames(),
       emitDoctorNames(),
+      emitModuleGuidanceData(),
     ]);
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.medications.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> emitAllMedicinesNames() async {

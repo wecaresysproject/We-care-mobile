@@ -22,6 +22,7 @@ class PrescriptionDataEntryState extends Equatable {
   final List<String> prescriptionPictureUploadedUrl;
 
   final UploadImageRequestStatus prescriptionImageRequestStatus;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const PrescriptionDataEntryState({
     this.preceriptionDataEntryStatus = RequestStatus.initial,
@@ -42,6 +43,7 @@ class PrescriptionDataEntryState extends Equatable {
     this.prescribtionEditedModel,
     this.diseasesNames = const [],
     this.doctorSpecialities = const [],
+    this.moduleGuidanceData,
   }) : super();
 
   const PrescriptionDataEntryState.initialState()
@@ -64,6 +66,7 @@ class PrescriptionDataEntryState extends Equatable {
           doctorNames: const [],
           diseasesNames: const [],
           doctorSpecialities: const [],
+          moduleGuidanceData: null,
         );
 
   PrescriptionDataEntryState copyWith({
@@ -86,6 +89,7 @@ class PrescriptionDataEntryState extends Equatable {
     List<String>? doctorNames,
     List<String>? diseasesNames,
     List<String>? doctorSpecialities,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return PrescriptionDataEntryState(
       preceriptionDataEntryStatus:
@@ -112,6 +116,7 @@ class PrescriptionDataEntryState extends Equatable {
       doctorNames: doctorNames ?? this.doctorNames,
       diseasesNames: diseasesNames ?? this.diseasesNames,
       doctorSpecialities: doctorSpecialities ?? this.doctorSpecialities,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -135,5 +140,6 @@ class PrescriptionDataEntryState extends Equatable {
         doctorNames,
         diseasesNames,
         doctorSpecialities,
+        moduleGuidanceData
       ];
 }

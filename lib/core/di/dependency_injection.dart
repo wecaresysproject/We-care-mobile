@@ -202,6 +202,7 @@ void setupAppCubits() {
   getIt.registerFactory<TestAnalysisViewCubit>(
     () => TestAnalysisViewCubit(
       getIt<TestAnalysisViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -306,6 +307,7 @@ void setupAppCubits() {
   getIt.registerFactory<BiometricsDataEntryCubit>(
     () => BiometricsDataEntryCubit(
       getIt<BiometricsDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 

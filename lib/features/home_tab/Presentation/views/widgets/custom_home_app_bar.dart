@@ -153,8 +153,7 @@ class HomeCustomAppBarWidget extends StatelessWidget {
           /// ---------------- Logo ----------------
           CircleAvatar(
             radius: 28.r,
-            backgroundImage:
-                const AssetImage("assets/images/wecare_sys_home_logo.png"),
+            backgroundImage: const AssetImage("assets/images/we_care_logo.png"),
           ),
         ],
       ),
