@@ -42,6 +42,8 @@ class EssentialDataEntryState extends Equatable {
   final bool isEditMode;
   final bool? isPictureSelected;
 
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   const EssentialDataEntryState({
     required this.birthDate,
     required this.nationalIdIssueDate,
@@ -74,6 +76,7 @@ class EssentialDataEntryState extends Equatable {
     this.profileImageUploadStatus,
     this.insuranceImageUploadStatus,
     this.selectedFamilyDoctorName,
+    this.moduleGuidanceData,
   });
 
   factory EssentialDataEntryState.initial() {
@@ -109,6 +112,7 @@ class EssentialDataEntryState extends Equatable {
       isPictureSelected: null,
       insuranceCardPhotoUrl: null,
       selectedFamilyDoctorName: null,
+      moduleGuidanceData: null,
     );
   }
 
@@ -144,6 +148,7 @@ class EssentialDataEntryState extends Equatable {
     bool? isPictureSelected,
     String? insuranceCardPhotoUrl,
     String? selectedFamilyDoctorName,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return EssentialDataEntryState(
       birthDate: birthDate ?? this.birthDate,
@@ -185,6 +190,7 @@ class EssentialDataEntryState extends Equatable {
           insuranceImageUploadStatus ?? this.insuranceImageUploadStatus,
       selectedFamilyDoctorName:
           selectedFamilyDoctorName ?? this.selectedFamilyDoctorName,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -221,5 +227,6 @@ class EssentialDataEntryState extends Equatable {
         profileImageUploadStatus,
         insuranceImageUploadStatus,
         selectedFamilyDoctorName,
+        moduleGuidanceData,
       ];
 }

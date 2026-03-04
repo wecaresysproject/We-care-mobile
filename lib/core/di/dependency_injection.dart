@@ -307,6 +307,7 @@ void setupAppCubits() {
   getIt.registerFactory<BiometricsDataEntryCubit>(
     () => BiometricsDataEntryCubit(
       getIt<BiometricsDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 

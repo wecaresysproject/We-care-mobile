@@ -66,6 +66,7 @@ dependencies:
   printing: ^5.11.0
   web_socket_channel: ^3.0.3
   visibility_detector: ^0.4.0+2 # for lazy loading ex: calling getModulesGuidanceVideos in homeTabView
+  appcheck: ^1.7.0
 
 dev_dependencies:
   build_runner: ^2.4.9

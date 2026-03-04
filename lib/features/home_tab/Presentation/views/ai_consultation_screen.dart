@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:appcheck/appcheck.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -22,7 +24,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
   final TextEditingController _complaintController = TextEditingController();
   String? _selectedDate;
   String? _selectedModel;
-  final bool _isHandoffInProgress = false;
+  bool _isHandoffInProgress = false;
 
   final List<String> _reportDates = [
     '2024-05-20',
@@ -56,6 +58,53 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     await file.writeAsBytes(byteData.buffer
         .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
     return file;
+  }
+
+  Future<void> _handleHandoff() async {
+    if (_selectedModel == null) return;
+
+    setState(() {
+      _isHandoffInProgress = true;
+    });
+
+    final packageName = _aiModels[_selectedModel!];
+    final isInstalled = await _checkIfAppInstalled(packageName!);
+
+    if (isInstalled) {
+      try {
+        final pdfFile = await _getTemporaryFileFromAsset();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "سيتم نقلك الآن لمتابعة استشارتك في تطبيق $_selectedModel",
+              textAlign: TextAlign.right,
+            ),
+          ),
+        );
+
+        await Share.shareXFiles(
+          [XFile(pdfFile.path, mimeType: 'application/pdf')],
+          text: _complaintController.text,
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Error attaching PDF. Please try again."),
+          ),
+        );
+      }
+    } else {
+      _showNotInstalledDialog(_selectedModel!, packageName);
+    }
+
+    setState(() {
+      _isHandoffInProgress = false;
+    });
+  }
+
+  Future<bool> _checkIfAppInstalled(String packageName) async {
+    return await AppCheck().isAppInstalled(packageName);
   }
 
   // Future<void> _handleHandoff() async {
@@ -294,7 +343,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                 title: "المتابعة في ${_selectedModel ?? '...'}",
                 isEnabled: _isButtonEnabled,
                 isLoading: _isHandoffInProgress,
-                onPressed: () {},
+                onPressed: _handleHandoff,
               ),
             ],
           ),

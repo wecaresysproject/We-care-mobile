@@ -72,6 +72,9 @@
     </application>
     
         <queries>
+        <package android:name="com.openai.chatgpt"/>
+        <package android:name="com.google.android.apps.bard"/>
+
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>

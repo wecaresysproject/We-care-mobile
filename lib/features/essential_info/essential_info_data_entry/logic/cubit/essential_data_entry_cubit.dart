@@ -10,6 +10,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/essential_info/data/models/get_user_essential_info_response_model.dart';
 import 'package:we_care/features/essential_info/data/models/user_essential_info_request_body_model.dart';
 import 'package:we_care/features/essential_info/data/repos/essential_info_data_entry_repo.dart';
@@ -217,7 +218,31 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
       [
         emitCountriesData(),
         emitDoctorNames(),
+        emitModuleGuidanceData(),
       ],
+    );
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await _sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.profile.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
     );
   }
 
