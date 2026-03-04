@@ -3,13 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/debouncer.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 
 class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
-  TestAnalysisViewCubit(this.testAnalysisViewRepo)
+  TestAnalysisViewCubit(this.testAnalysisViewRepo, this.appSharedRepo)
       : super(TestAnalysisViewState.initial());
   final TestAnalysisViewRepo testAnalysisViewRepo;
+  final AppSharedRepo appSharedRepo;
   final resultEditingController = TextEditingController();
   final searchController = TextEditingController();
 
@@ -23,6 +25,22 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     await emitYearsFilter();
     await emitGroupNamesFilter();
     await emitTestCodesFilter();
+    await emitModuleGuidanceData();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await appSharedRepo.getModuleGuidance(
+      WeCareMedicalModules.labTests.name,
+    );
+    response.when(success: (response) async {
+      emit(state.copyWith(
+        moduleGuidanceData: response,
+      ));
+    }, failure: (error) {
+      emit(state.copyWith(
+        moduleGuidanceData: null,
+      ));
+    });
   }
 
   Future<void> emitTests({int? page, int? pageSize}) async {
@@ -116,7 +134,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-    Future<void> emitGroupNamesFilter() async {
+  Future<void> emitGroupNamesFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await testAnalysisViewRepo.getGroupNamesFilter();
@@ -131,7 +149,8 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
       ));
     });
   }
-    Future<void> emitTestCodesFilter() async {
+
+  Future<void> emitTestCodesFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await testAnalysisViewRepo.getTestCodesFilter();
@@ -150,7 +169,8 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
   Future<void> emitFilteredData(int? year, String? group, String? code) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await testAnalysisViewRepo.getFilteredTests(year, groupName: group, testCode: code);
+    final response = await testAnalysisViewRepo.getFilteredTests(year,
+        groupName: group, testCode: code);
 
     response.when(success: (response) async {
       emit(state.copyWith(

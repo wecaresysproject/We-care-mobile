@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_similar_tests_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_user_analysis_response_model.dart';
@@ -20,6 +21,8 @@ class TestAnalysisViewState extends Equatable {
   final List<String>? groupNamesFilter;
   final List<String>? codesFilter;
 
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   const TestAnalysisViewState({
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
@@ -35,6 +38,7 @@ class TestAnalysisViewState extends Equatable {
     this.isLoadingMore = false,
     this.groupNamesFilter,
     this.codesFilter,
+    this.moduleGuidanceData,
   });
 
   factory TestAnalysisViewState.initial() {
@@ -53,40 +57,47 @@ class TestAnalysisViewState extends Equatable {
       isLoadingMore: false,
       groupNamesFilter: null,
       codesFilter: null,
+      moduleGuidanceData: null,
     );
   }
 
-  TestAnalysisViewState copyWith(
-      {RequestStatus? requestStatus,
-      List<int>? yearsFilter,
-      List<AnalysisSummarizedData>? analysisSummarizedDataList,
-      List<AnalysisSummarizedData>? originalList,
-      AnalysisDetailedData? selectedAnalysisDetails,
-      String? message,
-      bool? isDeleteRequest,
-      GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
-      bool? isEditing,
-      String? editingId,
-      bool? isLoadingMore,
-      String? currentResult, List<String>? groupNamesFilter, List<String>? codesFilter}) {
+  TestAnalysisViewState copyWith({
+    RequestStatus? requestStatus,
+    List<int>? yearsFilter,
+    List<AnalysisSummarizedData>? analysisSummarizedDataList,
+    List<AnalysisSummarizedData>? originalList,
+    AnalysisDetailedData? selectedAnalysisDetails,
+    String? message,
+    bool? isDeleteRequest,
+    GetSimilarTestsResponseModel? getSimilarTestsResponseModel,
+    bool? isEditing,
+    String? editingId,
+    bool? isLoadingMore,
+    String? currentResult,
+    List<String>? groupNamesFilter,
+    List<String>? codesFilter,
+    ModuleGuidanceDataModel? moduleGuidanceData,
+  }) {
     return TestAnalysisViewState(
-        requestStatus: requestStatus ?? this.requestStatus,
-        yearsFilter: yearsFilter ?? this.yearsFilter,
-        analysisSummarizedDataList:
-            analysisSummarizedDataList ?? this.analysisSummarizedDataList,
-        originalList: originalList ?? this.originalList,
-        selectedAnalysisDetails:
-            selectedAnalysisDetails ?? this.selectedAnalysisDetails,
-        message: message ?? this.message,
-        isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
-        getSimilarTestsResponseModel:
-            getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
-        isEditing: isEditing ?? this.isEditing,
-        editingId: editingId ?? this.editingId,
-        isLoadingMore: isLoadingMore ?? this.isLoadingMore,
-        groupNamesFilter: groupNamesFilter ?? this.groupNamesFilter,
-        codesFilter: codesFilter ?? this.codesFilter,
-        currentResult: currentResult ?? this.currentResult);
+      requestStatus: requestStatus ?? this.requestStatus,
+      yearsFilter: yearsFilter ?? this.yearsFilter,
+      analysisSummarizedDataList:
+          analysisSummarizedDataList ?? this.analysisSummarizedDataList,
+      originalList: originalList ?? this.originalList,
+      selectedAnalysisDetails:
+          selectedAnalysisDetails ?? this.selectedAnalysisDetails,
+      message: message ?? this.message,
+      isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
+      getSimilarTestsResponseModel:
+          getSimilarTestsResponseModel ?? this.getSimilarTestsResponseModel,
+      isEditing: isEditing ?? this.isEditing,
+      editingId: editingId ?? this.editingId,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      groupNamesFilter: groupNamesFilter ?? this.groupNamesFilter,
+      codesFilter: codesFilter ?? this.codesFilter,
+      currentResult: currentResult ?? this.currentResult,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+    );
   }
 
   @override
@@ -105,5 +116,6 @@ class TestAnalysisViewState extends Equatable {
         editingId,
         currentResult,
         isLoadingMore,
+        moduleGuidanceData,
       ];
 }

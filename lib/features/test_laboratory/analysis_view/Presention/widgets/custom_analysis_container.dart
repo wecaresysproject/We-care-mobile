@@ -38,6 +38,7 @@ class CustomAnalysisContainer extends StatelessWidget {
                 title,
                 style: AppTextStyles.font20blackWeight600.copyWith(
                   color: AppColorsManager.mainDarkBlue,
+                  fontSize: 17.sp,
                 ),
                 maxLines: 2,
               ),
@@ -47,6 +48,7 @@ class CustomAnalysisContainer extends StatelessWidget {
               label,
               style: AppTextStyles.font20blackWeight600.copyWith(
                 color: AppColorsManager.mainDarkBlue,
+                fontSize: 17.sp,
               ),
             ),
           ],
@@ -56,6 +58,7 @@ class CustomAnalysisContainer extends StatelessWidget {
 
         // The Container with border & background
         Container(
+          width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           decoration: BoxDecoration(
             // If you want a gradient background

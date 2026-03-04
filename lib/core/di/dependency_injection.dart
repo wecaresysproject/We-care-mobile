@@ -202,6 +202,7 @@ void setupAppCubits() {
   getIt.registerFactory<TestAnalysisViewCubit>(
     () => TestAnalysisViewCubit(
       getIt<TestAnalysisViewRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
