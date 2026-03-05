@@ -2,6 +2,8 @@ part of 'chronic_disease_data_entry_cubit.dart';
 
 @immutable
 class ChronicDiseaseDataEntryState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   final RequestStatus chronicDiseaseDataEntryStatus;
   final bool isFormValidated;
   final String? diagnosisStartDate;
@@ -40,6 +42,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
     this.addedNewMedicines = const [],
     this.documentId = '',
     this.doctorNames = const [],
+    this.moduleGuidanceData,
   }) : super();
 
   const ChronicDiseaseDataEntryState.initialState()
@@ -58,6 +61,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
           chronicDiseaseNames: const [],
           documentId: '',
           doctorNames: const [],
+          moduleGuidanceData: null,
         );
 
   ChronicDiseaseDataEntryState copyWith({
@@ -78,6 +82,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
     String? prescriptionPictureUploadedUrl,
     UploadImageRequestStatus? prescriptionImageRequestStatus,
     List<String>? doctorNames,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return ChronicDiseaseDataEntryState(
       chronicDiseaseDataEntryStatus:
@@ -103,6 +108,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
       prescriptionImageRequestStatus:
           prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
       doctorNames: doctorNames ?? this.doctorNames,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -124,6 +130,7 @@ class ChronicDiseaseDataEntryState extends Equatable {
         isPrescriptionPictureSelected,
         prescriptionPictureUploadedUrl,
         prescriptionImageRequestStatus,
-        doctorNames
+        doctorNames,
+        moduleGuidanceData,
       ];
 }

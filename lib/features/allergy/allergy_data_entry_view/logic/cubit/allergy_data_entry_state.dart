@@ -26,6 +26,7 @@ class AllergyDataEntryState extends Equatable {
   final String? selectedMedicineName;
   final bool isEditMode;
   final String updatedDocId;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const AllergyDataEntryState({
     this.allergyDataEntryStatus = RequestStatus.initial,
@@ -50,6 +51,7 @@ class AllergyDataEntryState extends Equatable {
     this.selectedMedicineName,
     this.isEditMode = false,
     this.updatedDocId = '',
+    this.moduleGuidanceData,
   }) : super();
 
   const AllergyDataEntryState.initialState()
@@ -76,6 +78,7 @@ class AllergyDataEntryState extends Equatable {
           selectedMedicineName: null,
           isEditMode: false,
           updatedDocId: '',
+          moduleGuidanceData: null,
         );
 
   AllergyDataEntryState copyWith({
@@ -102,6 +105,7 @@ class AllergyDataEntryState extends Equatable {
     String? selectedMedicineName,
     bool? isEditMode,
     String? updatedDocId,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return AllergyDataEntryState(
       allergyDataEntryStatus:
@@ -134,6 +138,7 @@ class AllergyDataEntryState extends Equatable {
       selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
       isEditMode: isEditMode ?? this.isEditMode,
       updatedDocId: updatedDocId ?? this.updatedDocId,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -161,5 +166,6 @@ class AllergyDataEntryState extends Equatable {
         selectedMedicineName,
         isEditMode,
         updatedDocId,
+        moduleGuidanceData,
       ];
 }

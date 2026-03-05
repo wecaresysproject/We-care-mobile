@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_operation_details_by_id.dart';
 import 'package:we_care/features/dental_module/data/models/single_teeth_report_post_request.dart';
 import 'package:we_care/features/dental_module/data/repos/dental_data_entry_repo.dart';
@@ -18,7 +19,10 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
   DentalDataEntryCubit(this._dentalDataEntryRepo, this.sharedRepo)
       : super(
           DentalDataEntryState.initialState(),
-        );
+        ) {
+    emitModuleGuidanceData();
+  }
+
   final DentalDataEntryRepo _dentalDataEntryRepo;
   final AppSharedRepo sharedRepo;
 
@@ -676,5 +680,19 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
     additionalNotesController.dispose();
     reportTextController.dispose();
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.dentistry.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

@@ -185,8 +185,11 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForVaccineDataEntry() async {
-    await emitVaccineCategories();
-    await emitCountriesData();
+    Future.wait([
+      emitVaccineCategories(),
+      emitCountriesData(),
+      emitModuleGuidanceData(),
+    ]);
   }
 
   Future<void> emitVaccineResultsByCategoryName() async {
@@ -306,5 +309,19 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     personalNotesController.dispose();
     vaccinationLocationController.dispose();
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.vaccinations.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

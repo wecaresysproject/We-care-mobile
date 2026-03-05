@@ -2,6 +2,8 @@ part of 'dental_data_entry_cubit.dart';
 
 @immutable
 class DentalDataEntryState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   final RequestStatus dentalDataEntryStatus;
   final ToothOperationDetails? pastEditedToothData;
   final bool isFormValidated;
@@ -83,6 +85,7 @@ class DentalDataEntryState extends Equatable {
     this.treatingDoctor,
     this.hospitals = const [],
     this.dentalCenters = const [],
+    this.moduleGuidanceData,
   }) : super();
 
   const DentalDataEntryState.initialState()
@@ -125,6 +128,7 @@ class DentalDataEntryState extends Equatable {
           treatingDoctor: null,
           hospitals: const [],
           dentalCenters: const [],
+          moduleGuidanceData: null,
         );
 
   DentalDataEntryState copyWith({
@@ -166,6 +170,7 @@ class DentalDataEntryState extends Equatable {
     String? treatingDoctor,
     List<String>? hospitals,
     List<String>? dentalCenters,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return DentalDataEntryState(
       dentalDataEntryStatus:
@@ -222,6 +227,7 @@ class DentalDataEntryState extends Equatable {
       treatingDoctor: treatingDoctor ?? this.treatingDoctor,
       hospitals: hospitals ?? this.hospitals,
       dentalCenters: dentalCenters ?? this.dentalCenters,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -265,5 +271,6 @@ class DentalDataEntryState extends Equatable {
         treatingDoctor,
         hospitals,
         dentalCenters,
+        moduleGuidanceData,
       ];
 }

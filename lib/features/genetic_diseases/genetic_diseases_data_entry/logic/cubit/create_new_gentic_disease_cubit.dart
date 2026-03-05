@@ -2,16 +2,23 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/genetic_diseases/data/repos/genetic_diseases_data_entry_repo.dart';
 
 part 'create_new_genetic_disease_state.dart';
 
 class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
-  CreateNewGenticDiseaseCubit(this._geneticDiseasesDataEntryRepo)
-      : super(CreateNewGeneticDiseaseState.initial());
+  CreateNewGenticDiseaseCubit(
+      this._geneticDiseasesDataEntryRepo, this.sharedRepo)
+      : super(CreateNewGeneticDiseaseState.initial()) {
+    emitModuleGuidanceData();
+  }
   final GeneticDiseasesDataEntryRepo _geneticDiseasesDataEntryRepo;
+  final AppSharedRepo sharedRepo;
 
   Future<void> saveNewGeneticDisease() async {
     final newGeneticDisease = NewGeneticDiseaseModel(
@@ -336,4 +343,18 @@ class CreateNewGenticDiseaseCubit extends Cubit<CreateNewGeneticDiseaseState> {
 //       }
 //     }
 //   }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.geneticDiseases.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
+  }
 }

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/post_personal_nutrition_data_model.dart';
 import 'package:we_care/features/physical_activaty/data/models/workout_activity_model.dart';
@@ -13,10 +15,14 @@ part 'physical_activaty_data_entry_state.dart';
 
 class PhysicalActivatyDataEntryCubit
     extends Cubit<PhysicalActivatyDataEntryState> {
-  PhysicalActivatyDataEntryCubit(this._physicalActivatyDataEntryRepo)
+  PhysicalActivatyDataEntryCubit(
+      this._physicalActivatyDataEntryRepo, this.sharedRepo)
       : super(
           PhysicalActivatyDataEntryState.initialState(),
-        );
+        ) {
+    emitModuleGuidanceData();
+  }
+
   final TextEditingController weightController = TextEditingController();
 
   final TextEditingController heightController = TextEditingController();
@@ -26,6 +32,7 @@ class PhysicalActivatyDataEntryCubit
       TextEditingController();
 
   final PhysicalActivatyDataEntryRepo _physicalActivatyDataEntryRepo;
+  final AppSharedRepo sharedRepo;
 
   // New method to update the current tab index
   Future<void> updateCurrentTab(int index) async {
@@ -334,5 +341,19 @@ class PhysicalActivatyDataEntryCubit
     ageController.dispose();
     targetCaloriesController.dispose();
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.physicalActivity.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

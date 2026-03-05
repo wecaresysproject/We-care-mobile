@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 
 @immutable
@@ -22,6 +23,7 @@ class VaccineDataEntryState extends Equatable {
   final List<String> doseArrangementData;
   final String? vaccinePerfectAge;
   final String? editedVaccineId;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const VaccineDataEntryState({
     this.countriesNames = const [],
@@ -39,6 +41,7 @@ class VaccineDataEntryState extends Equatable {
     this.selectedDoseArrangement,
     this.vaccinePerfectAge,
     this.editedVaccineId,
+    this.moduleGuidanceData,
     this.isEditMode = false,
   }) : super();
 
@@ -55,6 +58,7 @@ class VaccineDataEntryState extends Equatable {
           selectedVaccineCategory: null,
           vaccinePerfectAge: null,
           editedVaccineId: null,
+          moduleGuidanceData: null,
         );
 
   VaccineDataEntryState copyWith({
@@ -74,6 +78,7 @@ class VaccineDataEntryState extends Equatable {
     List<String>? doseArrangementData,
     String? vaccinePerfectAge,
     String? editedVaccineId,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
@@ -95,6 +100,7 @@ class VaccineDataEntryState extends Equatable {
       doseArrangementData: doseArrangementData ?? this.doseArrangementData,
       vaccinePerfectAge: vaccinePerfectAge ?? this.vaccinePerfectAge,
       editedVaccineId: editedVaccineId ?? this.editedVaccineId,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -116,5 +122,6 @@ class VaccineDataEntryState extends Equatable {
         doseArrangementData,
         vaccinePerfectAge,
         editedVaccineId,
+        moduleGuidanceData,
       ];
 }

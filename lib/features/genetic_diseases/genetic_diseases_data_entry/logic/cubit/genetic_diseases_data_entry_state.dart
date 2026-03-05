@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_count_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
@@ -56,6 +57,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
   final String noOfAunts; // عدد العمات
   final String noOfMaternalAunts; // عدد الخالات
   final String noOfMaternalUncles; // عدد الاخوال
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   final bool isFirstTimeAnsweringFamilyMemberQuestions;
   final RequestStatus addNewUserToFamilyTreeStatus;
@@ -109,6 +111,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     this.noOfMaternalUncles = '0',
     this.noOfMaternalAunts = '0',
     this.familyMemberName = '',
+    this.moduleGuidanceData,
     this.isFirstTimeAnsweringFamilyMemberQuestions =
         false, // اول مره يشوف الاسئله ؟ لو اه ، هنظهرلله البوتون ، لو لا
     this.hospitalNames = const [],
@@ -166,6 +169,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
           familyMemberName: '',
           isFirstTimeAnsweringFamilyMemberQuestions: false,
           hospitalNames: const [],
+          moduleGuidanceData: null,
         );
 
   GeneticDiseasesDataEntryState copyWith({
@@ -220,6 +224,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
     String? familyMemberName,
     bool? isFirstTimeAnsweringFamilyMemberQuestions,
     List<String>? hospitalNames,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return GeneticDiseasesDataEntryState(
       submitFamilyMemebersNumberStatus: submitFamilyMemebersNumberStatus ??
@@ -288,6 +293,7 @@ class GeneticDiseasesDataEntryState extends Equatable {
       addNewUserToFamilyTreeStatus:
           addNewUserToFamilyTreeStatus ?? this.addNewUserToFamilyTreeStatus,
       hospitalNames: hospitalNames ?? this.hospitalNames,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -343,5 +349,6 @@ class GeneticDiseasesDataEntryState extends Equatable {
         isFirstTimeAnsweringFamilyMemberQuestions,
         addNewUserToFamilyTreeStatus,
         hospitalNames,
+        moduleGuidanceData,
       ];
 }

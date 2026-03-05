@@ -2,6 +2,8 @@ part of 'physical_activaty_data_entry_cubit.dart';
 
 @immutable
 class PhysicalActivatyDataEntryState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   final RequestStatus submitPhysicalActivityDataStatus;
 
   final bool isFormValidated;
@@ -32,6 +34,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
     this.weeklyActivationStatus = false,
     this.days = const [],
     this.isAnyPlanActivated = false,
+    this.moduleGuidanceData,
   }) : super();
 
   const PhysicalActivatyDataEntryState.initialState()
@@ -48,6 +51,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
           weeklyActivationStatus: false,
           days: const [],
           isAnyPlanActivated: false,
+          moduleGuidanceData: null,
         );
 
   PhysicalActivatyDataEntryState copyWith({
@@ -63,6 +67,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
     bool? weeklyActivationStatus,
     List<Day>? days,
     bool? isAnyPlanActivated,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return PhysicalActivatyDataEntryState(
       submitPhysicalActivityDataStatus: submitPhysicalActivityDataStatus ??
@@ -82,6 +87,7 @@ class PhysicalActivatyDataEntryState extends Equatable {
           weeklyActivationStatus ?? this.weeklyActivationStatus,
       days: days ?? this.days,
       isAnyPlanActivated: isAnyPlanActivated ?? this.isAnyPlanActivated,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -99,5 +105,6 @@ class PhysicalActivatyDataEntryState extends Equatable {
         weeklyActivationStatus,
         days,
         isAnyPlanActivated,
+        moduleGuidanceData,
       ];
 }

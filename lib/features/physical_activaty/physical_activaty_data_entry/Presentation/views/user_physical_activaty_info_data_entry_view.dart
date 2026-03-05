@@ -9,6 +9,8 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -45,9 +47,55 @@ class _UserPhysicalActivatyInfoDataEntryViewState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppBarWithImageAndActionButtons(
-                    haveBackArrow: true,
+                  BlocBuilder<PhysicalActivatyDataEntryCubit,
+                      PhysicalActivatyDataEntryState>(
+                    buildWhen: (previous, current) =>
+                        previous.moduleGuidanceData !=
+                        current.moduleGuidanceData,
+                    builder: (context, state) {
+                      return AppBarWithImageAndActionButtons(
+                        haveBackArrow: true,
+                        trailingActions: [
+                          CircleIconButton(
+                            icon: Icons.play_arrow,
+                            color: state.moduleGuidanceData?.videoLink
+                                        ?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: state.moduleGuidanceData?.videoLink
+                                        ?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                          ),
+                          SizedBox(width: 8.w),
+                          CircleIconButton(
+                            icon: Icons.menu_book_outlined,
+                            color: state.moduleGuidanceData?.moduleGuidanceText
+                                        ?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                        ?.isNotEmpty ==
+                                    true
+                                ? () {
+                                    ModuleGuidanceAlertDialog.show(
+                                      context,
+                                      title: "النشاط البدني",
+                                      description: state.moduleGuidanceData!
+                                          .moduleGuidanceText!,
+                                    );
+                                  }
+                                : null,
+                          ),
+                        ],
+                      );
+                    },
                   ),
+
                   verticalSpacing(24),
                   Align(
                     alignment: Alignment.center,

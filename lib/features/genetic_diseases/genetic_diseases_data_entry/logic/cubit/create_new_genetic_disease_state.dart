@@ -2,6 +2,8 @@ part of 'create_new_gentic_disease_cubit.dart';
 
 @immutable
 class CreateNewGeneticDiseaseState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   final String? selectedDiseaseCategory;
   final List<String> diseasesClassfications;
   final List<String> diseasesStatuses; // حالة المرض
@@ -29,6 +31,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
     this.isEditingGeneticDiseaseSuccess = false,
     this.isNewDiseaseAddedSuccefully = false,
     this.isEditingGeneticDisease = false,
+    this.moduleGuidanceData,
   });
 
   const CreateNewGeneticDiseaseState.initial()
@@ -45,7 +48,9 @@ class CreateNewGeneticDiseaseState extends Equatable {
           isEditingGeneticDiseaseSuccess: false,
           isNewDiseaseAddedSuccefully: false,
           isEditingGeneticDisease: false,
+          moduleGuidanceData: null,
         );
+
   CreateNewGeneticDiseaseState copyWith({
     String? selectedDiseaseCategory,
     List<String>? diseasesClassfications,
@@ -59,6 +64,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
     bool? isEditingGeneticDiseaseSuccess,
     bool? isNewDiseaseAddedSuccefully,
     bool? isEditingGeneticDisease,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return CreateNewGeneticDiseaseState(
       selectedDiseaseCategory:
@@ -81,6 +87,7 @@ class CreateNewGeneticDiseaseState extends Equatable {
           isNewDiseaseAddedSuccefully ?? this.isNewDiseaseAddedSuccefully,
       isEditingGeneticDisease:
           isEditingGeneticDisease ?? this.isEditingGeneticDisease,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -98,5 +105,6 @@ class CreateNewGeneticDiseaseState extends Equatable {
         isEditingGeneticDiseaseSuccess,
         isNewDiseaseAddedSuccefully,
         isEditingGeneticDisease,
+        moduleGuidanceData,
       ];
 }
