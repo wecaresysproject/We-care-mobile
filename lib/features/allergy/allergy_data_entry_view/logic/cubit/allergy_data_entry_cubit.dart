@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/allergy/data/models/post_allergy_module_data_model.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
@@ -20,6 +21,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
       : super(
           AllergyDataEntryState.initialState(),
         );
+
   final AllergyDataEntryRepo _allergyDataEntryRepo;
   final AppSharedRepo _appSharedRepo;
   final effectedFamilyMembers = TextEditingController();
@@ -135,6 +137,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
 
   Future<void> intialRequestsForDataEntry() async {
     await emitGetAllAllergyTypes();
+    await emitModuleGuidanceData();
   }
 
   void removeUploadedReport(String url) {
@@ -391,6 +394,20 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
             allergyDataEntryStatus: RequestStatus.failure,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await _appSharedRepo.getModuleGuidance(
+      WeCareMedicalModules.allergies.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
       },
     );
   }

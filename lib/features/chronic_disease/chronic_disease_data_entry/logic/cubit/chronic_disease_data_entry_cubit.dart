@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/chronic_disease/data/models/post_chronic_disease_model.dart';
 import 'package:we_care/features/chronic_disease/data/repos/chronic_disease_data_entry_repo.dart';
@@ -17,7 +18,10 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
   ChronicDiseaseDataEntryCubit(this.dataEntryRepo, this.sharedRepo)
       : super(
           ChronicDiseaseDataEntryState.initialState(),
-        );
+        ) {
+    emitModuleGuidanceData();
+  }
+
   final ChronicDiseaseDataEntryRepo dataEntryRepo;
   final AppSharedRepo sharedRepo;
   final personalNotesController = TextEditingController();
@@ -286,5 +290,19 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
     await clearAllMedicines();
     formKey.currentState?.reset();
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.chronicDiseases.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

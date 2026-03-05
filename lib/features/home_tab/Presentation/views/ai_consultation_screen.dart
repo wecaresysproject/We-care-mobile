@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -35,8 +36,9 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
   final Map<String, String> _aiModels = {
     'ChatGPT': 'com.openai.chatgpt',
     'Gemini': 'com.google.android.apps.bard',
+    'DeepSeek': 'com.deepseek.chat',
+    'Perplexity': 'ai.perplexity.app.android',
   };
-
   @override
   void dispose() {
     _complaintController.dispose();
@@ -82,6 +84,8 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
             ),
           ),
         );
+        await _copyComplaintToClipboard();
+        await Future.delayed(const Duration(seconds: 50));
 
         await Share.shareXFiles(
           [XFile(pdfFile.path, mimeType: 'application/pdf')],
@@ -103,55 +107,34 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     });
   }
 
+  Future<void> _copyComplaintToClipboard() async {
+    final text = _complaintController.text.trim();
+
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("يرجى كتابة الشكوى أولاً"),
+        ),
+      );
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: text));
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(
+            "تم نسخ نص الشكوى. يمكنك لصقه داخل المحادثة مع التقرير الطبي."),
+      ),
+    );
+  }
+
   Future<bool> _checkIfAppInstalled(String packageName) async {
     return await AppCheck().isAppInstalled(packageName);
   }
-
-  // Future<void> _handleHandoff() async {
-  //   if (_selectedModel == null) return;
-
-  //   setState(() {
-  //     _isHandoffInProgress = true;
-  //   });
-
-  //   final packageName = _aiModels[_selectedModel!];
-  //   final isInstalled = await DeviceApps.isAppInstalled(packageName!);
-
-  //   if (isInstalled) {
-  //     try {
-  //       final pdfFile = await _getTemporaryFileFromAsset();
-
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text(
-  //             "سيتم نقلك الآن لمتابعة استشارتك في تطبيق $_selectedModel",
-  //             textAlign: TextAlign.right,
-  //             style: const TextStyle(fontFamily: 'Cairo'),
-  //           ),
-  //           backgroundColor: AppColorsManager.mainDarkBlue,
-  //         ),
-  //       );
-
-  //       await Share.shareXFiles(
-  //         [XFile(pdfFile.path, mimeType: 'application/pdf')],
-  //         text: _complaintController.text,
-  //       );
-  //     } catch (e) {
-  //       if (mounted) {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //               content: Text("Error attaching PDF. Please try again.")),
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     _showNotInstalledDialog(_selectedModel!, packageName);
-  //   }
-
-  //   setState(() {
-  //     _isHandoffInProgress = false;
-  //   });
-  // }
 
   void _showNotInstalledDialog(String modelName, String packageName) {
     showDialog(
@@ -286,61 +269,105 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                 style: AppTextStyles.font16BlackSemiBold,
               ),
               SizedBox(height: 12.h),
-              Row(
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 16.w,
+                mainAxisSpacing: 16.h,
+                childAspectRatio: 1.6,
                 children: _aiModels.keys.map((model) {
                   final isSelected = _selectedModel == model;
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedModel = model),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        margin: EdgeInsets.symmetric(horizontal: 4.w),
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColorsManager.mainDarkBlue
-                              : AppColorsManager.textfieldInsideColor,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: isSelected
-                              ? null
-                              : Border.all(
-                                  color: AppColorsManager
-                                      .textfieldOutsideBorderColor
-                                      .withOpacity(0.3)),
-                        ),
-                        child: Column(
-                          children: [
-                            Icon(
-                              model == 'ChatGPT'
-                                  ? Icons.chat_bubble_outline
-                                  : Icons.auto_awesome,
+
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedModel = model),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? AppColorsManager.mainDarkBlue
+                            : AppColorsManager.textfieldInsideColor,
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: isSelected
+                            ? null
+                            : Border.all(
+                                color: AppColorsManager
+                                    .textfieldOutsideBorderColor
+                                    .withOpacity(0.3),
+                              ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            model == 'ChatGPT'
+                                ? Icons.chat_bubble_outline
+                                : Icons.auto_awesome,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColorsManager.mainDarkBlue,
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            model,
+                            style: AppTextStyles.font14blackWeight400.copyWith(
                               color: isSelected
                                   ? Colors.white
-                                  : AppColorsManager.mainDarkBlue,
+                                  : AppColorsManager.textColor,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              model,
-                              style:
-                                  AppTextStyles.font14blackWeight400.copyWith(
-                                color: isSelected
-                                    ? Colors.white
-                                    : AppColorsManager.textColor,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   );
                 }).toList(),
               ),
-              SizedBox(height: 40.h),
+              if (_selectedModel != null) ...[
+                SizedBox(height: 16.h),
+                Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: AppColorsManager.secondaryColor,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.privacy_tip_outlined,
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              "سيتم تحويلك إلى تطبيق الذكاء الاصطناعي المختار لإكمال الاستشارة. "
+                              "تتم المحادثة بالكامل خارج تطبيق WECARE حفاظًا على خصوصية بياناتك الطبية.",
+                              style: AppTextStyles.font14blackWeight400,
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        "سيتم أيضًا نسخ نص الشكوى تلقائيًا لتتمكن من لصقه داخل المحادثة مع التقرير الطبي.",
+                        style: AppTextStyles.font14blackWeight400,
+                        textAlign: TextAlign.justify,
+                      ).paddingRight(32),
+                    ],
+                  ),
+                ),
+              ],
+              SizedBox(height: 24.h),
               AppCustomButton(
-                title: "المتابعة في ${_selectedModel ?? '...'}",
+                title: "متابعة الإستشارة مع ${_selectedModel ?? '...'}",
                 isEnabled: _isButtonEnabled,
                 isLoading: _isHandoffInProgress,
                 onPressed: _handleHandoff,

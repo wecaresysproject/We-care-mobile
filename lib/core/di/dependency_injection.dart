@@ -292,9 +292,11 @@ void setupAppCubits() {
       getIt<AppSharedRepo>(),
     ),
   );
+
   getIt.registerFactory<CreateNewGenticDiseaseCubit>(
     () => CreateNewGenticDiseaseCubit(
       getIt<GeneticDiseasesDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -380,6 +382,7 @@ void setupAppCubits() {
   getIt.registerFactory<PhysicalActivatyDataEntryCubit>(
     () => PhysicalActivatyDataEntryCubit(
       getIt<PhysicalActivatyDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<PhysicalActivityViewCubit>(

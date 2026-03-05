@@ -25,7 +25,10 @@ class GeneticDiseasesDataEntryCubit
       this._geneticDiseasesDataEntryRepo, this.sharedRepo)
       : super(
           GeneticDiseasesDataEntryState.initialState(),
-        );
+        ) {
+    emitModuleGuidanceData();
+  }
+
   final AppSharedRepo sharedRepo;
   final reportTextController = TextEditingController();
 
@@ -87,6 +90,7 @@ class GeneticDiseasesDataEntryCubit
     reportTextController.text = pastGeneticDisease.writtenReport ?? "";
 
     validateRequiredFields();
+    initialDataEntryRequests();
   }
 
   Future<void> loadGeneticDiseasesDataEnteredForEditing(
@@ -580,10 +584,13 @@ class GeneticDiseasesDataEntryCubit
   }
 
   Future<void> initialDataEntryRequests() async {
-    await getAllGeneticDiseasesClassfications();
-    await emitCountriesData();
-    await emitDoctorNames();
-    await emitHospitalNames();
+    Future.wait([
+      emitModuleGuidanceData(),
+      getAllGeneticDiseasesClassfications(),
+      emitCountriesData(),
+      emitDoctorNames(),
+      emitHospitalNames(),
+    ]);
   }
 
   void safeEmit(GeneticDiseasesDataEntryState cubitState) {
@@ -794,6 +801,20 @@ class GeneticDiseasesDataEntryCubit
             secondImageRequestStatus: UploadImageRequestStatus.failure,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.geneticDiseases.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
       },
     );
   }
