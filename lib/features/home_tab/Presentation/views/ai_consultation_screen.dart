@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -83,6 +84,8 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
             ),
           ),
         );
+        await _copyComplaintToClipboard();
+        await Future.delayed(const Duration(seconds: 50));
 
         await Share.shareXFiles(
           [XFile(pdfFile.path, mimeType: 'application/pdf')],
@@ -102,6 +105,31 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     setState(() {
       _isHandoffInProgress = false;
     });
+  }
+
+  Future<void> _copyComplaintToClipboard() async {
+    final text = _complaintController.text.trim();
+
+    if (text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("يرجى كتابة الشكوى أولاً"),
+        ),
+      );
+      return;
+    }
+
+    await Clipboard.setData(ClipboardData(text: text));
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        duration: Duration(seconds: 3),
+        content: Text(
+            "تم نسخ نص الشكوى. يمكنك لصقه داخل المحادثة مع التقرير الطبي."),
+      ),
+    );
   }
 
   Future<bool> _checkIfAppInstalled(String packageName) async {
@@ -306,22 +334,33 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                     color: AppColorsManager.secondaryColor,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  child: Row(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.privacy_tip_outlined,
-                        color: AppColorsManager.mainDarkBlue,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.privacy_tip_outlined,
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              "سيتم تحويلك إلى تطبيق الذكاء الاصطناعي المختار لإكمال الاستشارة. "
+                              "تتم المحادثة بالكامل خارج تطبيق WECARE حفاظًا على خصوصية بياناتك الطبية.",
+                              style: AppTextStyles.font14blackWeight400,
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Text(
-                          "سيتم تحويلك إلى تطبيق الذكاء الاصطناعي المختار لإكمال الاستشارة. "
-                          "تتم المحادثة بالكامل خارج تطبيق WECARE حفاظًا على خصوصية بياناتك الطبية، "
-                          "ولا يمكن للتطبيق الاطلاع على ردود الذكاء الاصطناعي.",
-                          style: AppTextStyles.font14blackWeight400,
-                        ),
-                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        "سيتم أيضًا نسخ نص الشكوى تلقائيًا لتتمكن من لصقه داخل المحادثة مع التقرير الطبي.",
+                        style: AppTextStyles.font14blackWeight400,
+                        textAlign: TextAlign.justify,
+                      ).paddingRight(32),
                     ],
                   ),
                 ),
