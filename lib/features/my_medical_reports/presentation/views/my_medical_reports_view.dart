@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -11,7 +10,6 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_category
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
-import 'package:we_care/features/my_medical_reports/presentation/widgets/export_report_dialog.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/generate_button_bloc_consumer_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
@@ -454,48 +452,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
             );
           },
         ),
-        floatingActionButton: buildFloatingActionButtonBlocBuilder(),
       ),
-    );
-  }
-
-  BlocBuilder<MedicalReportGenerationCubit, MedicalReportGenerationState>
-      buildFloatingActionButtonBlocBuilder() {
-    return BlocBuilder<MedicalReportGenerationCubit,
-        MedicalReportGenerationState>(
-      buildWhen: (previous, current) =>
-          previous.generateReportStatus != current.generateReportStatus,
-      builder: (context, state) {
-        if (state.medicalReportData.isNotNull &&
-            state.generateReportStatus == RequestStatus.success) {
-          return FloatingActionButton.extended(
-            onPressed: state.generateReportStatus == RequestStatus.loading
-                ? null
-                : () {
-                    showExportPdfDialog(context, state.medicalReportData);
-                  },
-            backgroundColor: AppColorsManager.mainDarkBlue,
-            icon: state.generateReportStatus == RequestStatus.loading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.picture_as_pdf, color: Colors.white),
-            label: Text(
-              state.generateReportStatus == RequestStatus.loading
-                  ? 'Generating...'
-                  : 'Export as PDF',
-              style: const TextStyle(color: Colors.white),
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
     );
   }
 
