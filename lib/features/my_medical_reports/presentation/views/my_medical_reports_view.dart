@@ -9,9 +9,9 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_t
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
-import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
+import 'package:we_care/features/my_medical_reports/presentation/widgets/export_report_dialog.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/generate_button_bloc_consumer_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_category_selection_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/medical_report_category_item.dart';
@@ -471,10 +471,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
           return FloatingActionButton.extended(
             onPressed: state.generateReportStatus == RequestStatus.loading
                 ? null
-                : () async {
-                    final logic = MedicalReportExportLogic();
-                    await logic.exportAndShareReport(
-                        context, state.medicalReportData);
+                : () {
+                    showExportPdfDialog(context, state.medicalReportData);
                   },
             backgroundColor: AppColorsManager.mainDarkBlue,
             icon: state.generateReportStatus == RequestStatus.loading

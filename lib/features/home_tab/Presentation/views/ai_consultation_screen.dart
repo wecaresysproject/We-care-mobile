@@ -85,7 +85,6 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
           ),
         );
         await _copyComplaintToClipboard();
-        await Future.delayed(const Duration(seconds: 50));
 
         await Share.shareXFiles(
           [XFile(pdfFile.path, mimeType: 'application/pdf')],

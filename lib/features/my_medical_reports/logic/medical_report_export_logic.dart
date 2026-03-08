@@ -10,7 +10,10 @@ import 'medical_report_pdf_generator.dart';
 
 class MedicalReportExportLogic {
   Future<void> exportAndShareReport(
-      BuildContext context, MedicalReportResponseModel? reportData) async {
+      BuildContext context,
+      MedicalReportResponseModel? reportData,
+      String fileName,
+      bool attachToBackend) async {
     try {
       // Generate PDF using the new generator
       final pdfBytes =
@@ -18,8 +21,15 @@ class MedicalReportExportLogic {
 
       // Save PDF to temporary file
       final output = await getTemporaryDirectory();
-      final file = File('${output.path}/medical_report.pdf');
+      final file = File('${output.path}/$fileName.pdf');
       await file.writeAsBytes(pdfBytes);
+
+      // Simulate backend upload if requested
+      if (attachToBackend) {
+        AppLogger.info("Simulating upload of PDF report to backend...");
+        await Future.delayed(const Duration(seconds: 2));
+        AppLogger.info("PDF uploaded to backend successfully (simulated)");
+      }
 
       // Share PDF
       await Share.shareXFiles(
