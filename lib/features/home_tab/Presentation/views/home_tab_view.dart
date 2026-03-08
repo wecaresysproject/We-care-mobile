@@ -68,10 +68,12 @@ class HomeTabView extends StatelessWidget {
                       CustomElevatedButton(
                         text: "زيارة طبية للمنزل",
                         onPressed: () {},
+                        isInactive: true,
                       ),
                       CustomElevatedButton(
                         text: "طبيبك أونلاين",
                         onPressed: () {},
+                        isInactive: true,
                       ),
                     ],
                   ),
@@ -85,25 +87,6 @@ class HomeTabView extends StatelessWidget {
                     crossAxisSpacing: 13.w,
                     children: [
                       HomeSecondCategoryItem(
-                        categoryName: "استشر \n ال AI",
-                        imagePath: "assets/images/ai_image.png",
-                        onTap: () async {
-                          await context.pushNamedWithSettingRootNavigator(
-                            Routes.aiConsultation,
-                          );
-                        },
-                      ),
-                      HomeSecondCategoryItem(
-                        categoryName: "امراضى\nالوراثيه",
-                        imagePath: "assets/images/icon_family.png",
-                        onTap: () {},
-                      ),
-                      HomeSecondCategoryItem(
-                        categoryName: "لست\nوحدك",
-                        imagePath: "assets/images/support_rooms_icon.png",
-                        onTap: () {},
-                      ),
-                      HomeSecondCategoryItem(
                         categoryName: "تقاريرى\nالطبية",
                         imagePath: "assets/images/medical_file_icon.png",
                         onTap: () async {
@@ -113,19 +96,13 @@ class HomeTabView extends StatelessWidget {
                         },
                       ),
                       HomeSecondCategoryItem(
-                        categoryName: "جودة\nالحياة",
-                        imagePath: "assets/images/quality_of_life.png",
-                        onTap: () {},
-                      ),
-                      HomeSecondCategoryItem(
-                        categoryName: "بحث عن\nطبيب",
-                        imagePath: "assets/images/search_for_doctor_icon.png",
-                        onTap: () {},
-                      ),
-                      HomeSecondCategoryItem(
-                        categoryName: "تقييم\nالاطباء",
-                        imagePath: "assets/images/doctors_evaluation.png",
-                        onTap: () {},
+                        categoryName: "استشر \n ال AI",
+                        imagePath: "assets/images/ai_image.png",
+                        onTap: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.aiConsultation,
+                          );
+                        },
                       ),
                       HomeSecondCategoryItem(
                         categoryName: "مفكرتي\n الطبية",
@@ -135,6 +112,36 @@ class HomeTabView extends StatelessWidget {
                             Routes.medicalNotesView,
                           );
                         },
+                      ),
+                      HomeSecondCategoryItem(
+                        categoryName: "امراضى\nالوراثيه",
+                        imagePath: "assets/images/icon_family.png",
+                        onTap: () {},
+                        isInactive: true,
+                      ),
+                      HomeSecondCategoryItem(
+                        categoryName: "لست\nوحدك",
+                        imagePath: "assets/images/support_rooms_icon.png",
+                        onTap: () {},
+                        isInactive: true,
+                      ),
+                      HomeSecondCategoryItem(
+                        categoryName: "جودة\nالحياة",
+                        imagePath: "assets/images/quality_of_life.png",
+                        onTap: () {},
+                        isInactive: true,
+                      ),
+                      HomeSecondCategoryItem(
+                        categoryName: "بحث عن\nطبيب",
+                        imagePath: "assets/images/search_for_doctor_icon.png",
+                        onTap: () {},
+                        isInactive: true,
+                      ),
+                      HomeSecondCategoryItem(
+                        categoryName: "تقييم\nالاطباء",
+                        imagePath: "assets/images/doctors_evaluation.png",
+                        onTap: () {},
+                        isInactive: true,
                       ),
                     ],
                   ),

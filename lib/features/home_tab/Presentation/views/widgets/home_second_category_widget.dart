@@ -10,60 +10,72 @@ class HomeSecondCategoryItem extends StatelessWidget {
     required this.categoryName,
     required this.imagePath,
     required this.onTap,
+    this.isInactive = false,
   });
   final String categoryName;
   final String imagePath;
   final void Function()? onTap;
+  final bool isInactive;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 76.w,
-            height: 56.h,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFCDE1F8),
-                  Color(0xFFE7E9EB),
-                ],
+    return IgnorePointer(
+      ignoring: isInactive,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              width: 76.w,
+              height: 56.h,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFFCDE1F8),
+                    Color(0xFFE7E9EB),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(60),
               ),
-              borderRadius: BorderRadius.circular(60),
-            ),
-            padding: EdgeInsets.only(
-              top: 14,
-              right: 18,
-              bottom: 14,
-              left: 18,
-            ),
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                fit: BoxFit.contain,
-                height: 32.h,
-                width: 38.w,
+              foregroundDecoration: isInactive
+                  ? BoxDecoration(
+                      color: Colors.grey.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(60),
+                    )
+                  : null,
+              padding: const EdgeInsets.only(
+                top: 14,
+                right: 18,
+                bottom: 14,
+                left: 18,
+              ),
+              child: Center(
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                  height: 32.h,
+                  width: 38.w,
+                ),
               ),
             ),
           ),
-        ),
-        Text(
-          categoryName,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 2,
-          style: AppTextStyles.font22WhiteWeight600.copyWith(
-            fontSize: 14.sp,
-            color: AppColorsManager.textColor,
-          ),
-        )
-      ],
+          Text(
+            categoryName,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: AppTextStyles.font22WhiteWeight600.copyWith(
+              fontSize: 14.sp,
+              color: isInactive ? Colors.grey : AppColorsManager.textColor,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
