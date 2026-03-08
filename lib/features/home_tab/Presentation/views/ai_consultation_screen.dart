@@ -15,7 +15,14 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class AIConsultationScreen extends StatefulWidget {
-  const AIConsultationScreen({super.key});
+  final File? preAttachedReport;
+  final String? preAttachedFileName;
+
+  const AIConsultationScreen({
+    super.key,
+    this.preAttachedReport,
+    this.preAttachedFileName,
+  });
 
   @override
   State<AIConsultationScreen> createState() => _AIConsultationScreenState();
@@ -45,8 +52,12 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     super.dispose();
   }
 
+  bool get _isUsingPreAttachedReport => widget.preAttachedReport != null;
+
+  bool get _isPdfSelected => _isUsingPreAttachedReport || _selectedDate != null;
+
   bool get _isButtonEnabled {
-    return _selectedDate != null &&
+    return _isPdfSelected &&
         _complaintController.text.trim().isNotEmpty &&
         _selectedModel != null &&
         !_isHandoffInProgress;
@@ -74,7 +85,10 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
 
     if (isInstalled) {
       try {
-        final pdfFile = await _getTemporaryFileFromAsset();
+        // Use pre-attached report if available, otherwise load from assets
+        final pdfFile = _isUsingPreAttachedReport
+            ? widget.preAttachedReport!
+            : await _getTemporaryFileFromAsset();
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -188,36 +202,60 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                 showActionButtons: false,
               ),
               verticalSpacing(16),
-              Text(
-                "اختر التقرير الطبي",
-                style: AppTextStyles.font16BlackSemiBold,
-              ),
-              SizedBox(height: 8.h),
-              DropdownButtonFormField<String>(
-                initialValue: _selectedDate,
-                hint: Text("اختر التاريخ",
-                    style: AppTextStyles.font14blackWeight400),
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: AppColorsManager.textfieldInsideColor,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              // --- Report selection section ---
+              if (!_isUsingPreAttachedReport) ...[
+                Text(
+                  "اختر التقرير الطبي",
+                  style: AppTextStyles.font16BlackSemiBold,
                 ),
-                items: _reportDates.map((date) {
-                  return DropdownMenuItem(
-                    value: date,
-                    child:
-                        Text(date, style: AppTextStyles.font14blackWeight400),
-                  );
-                }).toList(),
-                onChanged: (val) => setState(() => _selectedDate = val),
-              ),
-              if (_selectedDate != null) ...[
-                SizedBox(height: 12.h),
+                SizedBox(height: 8.h),
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedDate,
+                  hint: Text("اختر التاريخ",
+                      style: AppTextStyles.font14blackWeight400),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColorsManager.textfieldInsideColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  ),
+                  items: _reportDates.map((date) {
+                    return DropdownMenuItem(
+                      value: date,
+                      child:
+                          Text(date, style: AppTextStyles.font14blackWeight400),
+                    );
+                  }).toList(),
+                  onChanged: (val) => setState(() => _selectedDate = val),
+                ),
+                if (_selectedDate != null) ...[
+                  SizedBox(height: 12.h),
+                  Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: AppColorsManager.secondaryColor,
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.picture_as_pdf, color: Colors.red),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            "تم إرفاق: My Medical Report.pdf",
+                            style: AppTextStyles.font14blackWeight400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ] else ...[
+                // Pre-attached report chip
                 Container(
                   padding: EdgeInsets.all(12.w),
                   decoration: BoxDecoration(
@@ -230,10 +268,12 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                       SizedBox(width: 8.w),
                       Expanded(
                         child: Text(
-                          "تم إرفاق: My Medical Report.pdf",
+                          "تم إرفاق: ${widget.preAttachedFileName ?? 'medical_report.pdf'}",
                           style: AppTextStyles.font14blackWeight400,
                         ),
                       ),
+                      const Icon(Icons.check_circle,
+                          color: Colors.green, size: 18),
                     ],
                   ),
                 ),
@@ -366,6 +406,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
               ],
               SizedBox(height: 24.h),
               AppCustomButton(
+                textFontSize: 16.sp,
                 title: "متابعة الإستشارة مع ${_selectedModel ?? '...'}",
                 isEnabled: _isButtonEnabled,
                 isLoading: _isHandoffInProgress,

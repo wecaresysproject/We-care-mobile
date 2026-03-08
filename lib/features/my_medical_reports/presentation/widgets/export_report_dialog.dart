@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/home_tab/Presentation/views/ai_consultation_screen.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 
@@ -28,11 +29,54 @@ class ExportReportDialog extends StatefulWidget {
 class _ExportReportDialogState extends State<ExportReportDialog> {
   final _nameController = TextEditingController();
   bool _attachToBackend = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     super.dispose();
+  }
+
+  String get _resolvedFileName {
+    final name = _nameController.text.trim();
+    return name.isEmpty ? "medical_report" : name;
+  }
+
+  Future<void> _onExport() async {
+    Navigator.of(context).pop();
+    MedicalReportExportLogic().exportAndShareReport(
+      context,
+      widget.reportData,
+      _resolvedFileName,
+      _attachToBackend,
+    );
+  }
+
+  Future<void> _onConsultAI(BuildContext dialogContext) async {
+    setState(() => _isLoading = true);
+
+    final fileName = _resolvedFileName;
+
+    // Generate the PDF file first
+    final pdfFile = await MedicalReportExportLogic().generatePdfFile(
+      dialogContext,
+      widget.reportData,
+      fileName,
+    );
+
+    if (!dialogContext.mounted) return;
+    Navigator.of(dialogContext).pop();
+
+    if (pdfFile != null) {
+      Navigator.of(dialogContext).push(
+        MaterialPageRoute(
+          builder: (_) => AIConsultationScreen(
+            preAttachedReport: pdfFile,
+            preAttachedFileName: '$fileName.pdf',
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -98,33 +142,26 @@ class _ExportReportDialogState extends State<ExportReportDialog> {
               ],
             ),
             SizedBox(height: 24.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: CustomElevatedButton(
-                    text: "اصدار التقرير",
-                    onPressed: () {
-                      String fileName = _nameController.text.trim();
-                      if (fileName.isEmpty) {
-                        fileName = "medical_report";
-                      }
-
-                      // Pop the dialog first
-                      Navigator.of(context).pop();
-
-                      // Call the export logic
-                      MedicalReportExportLogic().exportAndShareReport(
-                        context,
-                        widget.reportData,
-                        fileName,
-                        _attachToBackend,
-                      );
-                    },
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomElevatedButton(
+                      text: "اصدار التقرير",
+                      onPressed: _onExport,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: CustomElevatedButton(
+                      text: "استشارة ال Ai",
+                      onPressed: () => _onConsultAI(context),
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

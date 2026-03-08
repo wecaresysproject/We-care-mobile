@@ -47,4 +47,26 @@ class MedicalReportExportLogic {
       AppLogger.error("STACK: $s");
     }
   }
+
+  /// Generates the PDF as a [File] without sharing. Used for AI consultation handoff.
+  Future<File?> generatePdfFile(BuildContext context,
+      MedicalReportResponseModel? reportData, String fileName) async {
+    try {
+      final pdfBytes =
+          await MedicalReportPdfGenerator().generateMedicalReport(reportData!);
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/$fileName.pdf');
+      await file.writeAsBytes(pdfBytes);
+      return file;
+    } catch (e, s) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error generating report: $e')),
+        );
+      }
+      AppLogger.error("PDF ERROR: $e");
+      AppLogger.error("STACK: $s");
+      return null;
+    }
+  }
 }
