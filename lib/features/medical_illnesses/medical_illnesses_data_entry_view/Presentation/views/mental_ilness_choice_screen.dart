@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -28,6 +30,7 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
         context
             .read<MedicalIllnessesDataEntryCubit>()
             .getActivationStatusOfUmbrella();
+        context.read<MedicalIllnessesDataEntryCubit>().emitModuleGuidanceData();
       },
     );
   }
@@ -42,13 +45,54 @@ class _MentalIllnessChoiceScreenState extends State<MentalIllnessChoiceScreen> {
               MedicalIllnessesDataEntryState>(
             buildWhen: (previous, current) =>
                 previous.umbrellaActivationStatus !=
-                current.umbrellaActivationStatus,
+                    current.umbrellaActivationStatus ||
+                previous.moduleGuidanceData != current.moduleGuidanceData,
             builder: (context, state) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   AppBarWithImageAndActionButtons(
                     haveBackArrow: true,
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap: () {
+                          if (state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                              true) {
+                            launchYouTubeVideo(
+                                state.moduleGuidanceData!.videoLink!);
+                          }
+                        },
+                      ),
+                      horizontalSpacing(8),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: () {
+                          if (state.moduleGuidanceData?.moduleGuidanceText
+                                  ?.isNotEmpty ==
+                              true) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ModuleGuidanceAlertDialog(
+                                title: "إرشادات",
+                                description: state
+                                    .moduleGuidanceData!.moduleGuidanceText!,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
 
                   verticalSpacing(72),

@@ -5,6 +5,7 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
@@ -60,6 +61,7 @@ class _ViewAndEditDietPlanViewState extends State<ViewAndEditDietPlanView> {
       create: (context) => NutrationDataEntryCubit(
         getIt<NutrationDataEntryRepo>(),
         context,
+        getIt<AppSharedRepo>(),
       ),
       child: BlocConsumer<NutrationDataEntryCubit, NutrationDataEntryState>(
         listener: (context, state) {

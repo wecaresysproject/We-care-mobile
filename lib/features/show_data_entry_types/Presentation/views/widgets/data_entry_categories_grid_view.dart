@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
@@ -115,8 +116,8 @@ class _CategoryItemState extends State<CategoryItem> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<NutrationDataEntryCubit>(
-          create: (context) =>
-              NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context),
+          create: (context) => NutrationDataEntryCubit(
+              getIt<NutrationDataEntryRepo>(), context, getIt<AppSharedRepo>()),
         ),
         BlocProvider<SupplementsDataEntryCubit>(
           create: (context) => getIt<SupplementsDataEntryCubit>(),

@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_request_body.dart';
@@ -99,36 +100,6 @@ class MedicalIllnessesDataEntryCubit
     );
   }
 
-  // Future<void> loadPastEyeDataEnteredForEditing({
-  //   required EyeProceduresAndSymptomsDetailsModel pastEyeData,
-  //   required String id,
-  // }) async {
-  //   emit(
-  //     state.copyWith(
-  //       syptomStartDate: pastEyeData.symptomStartDate,
-  //       selectedHospitalCenter: pastEyeData.centerHospitalName,
-  //       selectedCountryName: pastEyeData.country,
-  //       eyePartSyptomsAndProcedures: EyePartSyptomsAndProceduresResponseModel(
-  //         procedures: pastEyeData.medicalProcedures,
-  //         symptoms: pastEyeData.symptoms,
-  //       ),
-  //       symptomDuration: pastEyeData.symptomDuration,
-  //       medicalExaminationImageUploadedUrl:
-  //           pastEyeData.medicalExaminationImages,
-  //       doctorName: pastEyeData.doctorName,
-  //       isEditMode: true,
-  //       editDecumentId: id,
-  //       affectedEyePart: pastEyeData.affectedEyePart,
-  //       reportImageUploadedUrl: pastEyeData.medicalReportUrl,
-  //       procedureDateSelection: pastEyeData.medicalReportDate,
-  //     ),
-  //   );
-  //   personalNotesController.text =
-  //       pastEyeData.additionalNotes == '--' ? '' : pastEyeData.additionalNotes;
-
-  //   validateRequiredFields();
-  //   await getInitialRequests();
-  // }
   Future<void> initialRequests() async {
     //! check comments later
     await Future.wait([
@@ -141,6 +112,7 @@ class MedicalIllnessesDataEntryCubit
       getPreferredActivitiesForPsychologicalImprovement(),
       emitDoctorNames(),
       emitHospitalNames(),
+      emitModuleGuidanceData(),
     ]);
   }
 
@@ -742,5 +714,20 @@ class MedicalIllnessesDataEntryCubit
     }
 
     return super.close();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.mentalHealth.name,
+    );
+
+    response.when(
+      success: (data) {
+        emit(state.copyWith(moduleGuidanceData: data));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 }

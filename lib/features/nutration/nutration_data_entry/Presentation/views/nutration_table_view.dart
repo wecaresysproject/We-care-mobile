@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -25,9 +26,9 @@ class NutritionFollowUpReportView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<NutrationDataEntryCubit>(
-      create: (context) =>
-          NutrationDataEntryCubit(getIt<NutrationDataEntryRepo>(), context)
-            ..getAllNutrationTableData(date: date),
+      create: (context) => NutrationDataEntryCubit(
+          getIt<NutrationDataEntryRepo>(), context, getIt<AppSharedRepo>())
+        ..getAllNutrationTableData(date: date),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: SingleChildScrollView(
