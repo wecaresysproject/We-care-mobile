@@ -2,15 +2,46 @@ import 'package:bloc/bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/supplements/data/models/daily_supplement_submission_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/logic/supplements_data_entry_state.dart';
 
 class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
-  SupplementsDataEntryCubit(this._supplementsDataEntryRepo)
+  SupplementsDataEntryCubit(this._supplementsDataEntryRepo, this.sharedRepo)
       : super(SupplementsDataEntryState.initial());
   final SupplementsDataEntryRepo _supplementsDataEntryRepo;
+  final AppSharedRepo sharedRepo;
+
+  Future<void> initialRequests() async {
+    await Future.wait([
+      fetchAvailableVitamins(),
+      emitModuleGuidanceData(),
+    ]);
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final result = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.vitaminsAndSupplements.name,
+    );
+    result.when(
+      success: (data) {
+        safeEmit(
+          state.copyWith(
+            moduleGuidanceData: data,
+          ),
+        );
+      },
+      failure: (failure) {
+        safeEmit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> fetchAvailableVitamins() async {
     emit(state.copyWith(vitaminsStatus: RequestStatus.loading));

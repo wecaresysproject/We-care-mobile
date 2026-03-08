@@ -431,6 +431,7 @@ void setupAppCubits() {
   getIt.registerFactory<SupplementsDataEntryCubit>(
     () => SupplementsDataEntryCubit(
       getIt<SupplementsDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicalReportGenerationCubit>(

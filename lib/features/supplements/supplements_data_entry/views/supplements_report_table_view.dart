@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/supplements/data/models/supplement_follow_up_row_model.dart';
@@ -20,9 +21,10 @@ class SupplementsReportTableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SupplementsDataEntryCubit>(
-      create: (context) =>
-          SupplementsDataEntryCubit(getIt<SupplementsDataEntryRepo>())
-            ..getSupplementTableData(date: date),
+      create: (context) => SupplementsDataEntryCubit(
+        getIt<SupplementsDataEntryRepo>(),
+        getIt<AppSharedRepo>(),
+      )..getSupplementTableData(date: date),
       child: Scaffold(
         appBar: AppBar(toolbarHeight: 0),
         body: SingleChildScrollView(
