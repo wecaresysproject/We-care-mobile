@@ -99,21 +99,11 @@ class _ExportReportDialogState extends State<ExportReportDialog> {
             ),
             SizedBox(height: 24.h),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(
-                      "الغاء",
-                      style: AppTextStyles.font16DarkGreyWeight400,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
                   child: CustomElevatedButton(
-                    text: "تصدير التقرير",
+                    text: "اصدار التقرير",
                     onPressed: () {
                       String fileName = _nameController.text.trim();
                       if (fileName.isEmpty) {
