@@ -86,4 +86,5 @@ enum WeCareMedicalModules {
   doctorRatings,
   dataCompletion,
   healthRiskIndicators,
+  medicalNotes,
 }

@@ -51,6 +51,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/lo
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
+import 'package:we_care/features/home_tab/cubits/ai_consultation_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
 import 'package:we_care/features/home_tab/services/home_service.dart';
@@ -408,12 +409,18 @@ void setupAppCubits() {
   getIt.registerFactory<MedicalNotesCubit>(
     () => MedicalNotesCubit(
       getIt<MedicalNotesRepository>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(
       getIt<HomeRepository>(),
+      getIt<AppSharedRepo>(),
+    ),
+  );
+  getIt.registerFactory<AIConsultationCubit>(
+    () => AIConsultationCubit(
       getIt<AppSharedRepo>(),
     ),
   );

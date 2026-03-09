@@ -395,6 +395,8 @@ extension WeCareMedicalModulesExtension on WeCareMedicalModules {
         return "Data Completion";
       case WeCareMedicalModules.healthRiskIndicators:
         return "Health Risk Indicators";
+      case WeCareMedicalModules.medicalNotes:
+        return "Medical Notes";
     }
   }
 
@@ -480,6 +482,8 @@ extension WeCareMedicalModulesExtension on WeCareMedicalModules {
         return "اكتمال البيانات";
       case WeCareMedicalModules.healthRiskIndicators:
         return "مؤشرات المخاطر الصحية";
+      case WeCareMedicalModules.medicalNotes:
+        return "ملاحظات طبية";
     }
   }
 }

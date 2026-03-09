@@ -660,7 +660,7 @@ class AppRouter {
       case Routes.medicalNotesView:
         return MaterialPageRoute(
           builder: (_) => BlocProvider<MedicalNotesCubit>(
-            create: (context) => getIt<MedicalNotesCubit>()..loadNotes(),
+            create: (context) => getIt<MedicalNotesCubit>()..initialRequests(),
             child: const MedicalNotesView(),
           ),
         );
