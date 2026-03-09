@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
@@ -13,9 +15,33 @@ part 'medical_report_generation_state.dart';
 
 class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
   final MedicalReportRepo _medicalReportRepo;
+  final AppSharedRepo sharedRepo;
 
-  MedicalReportGenerationCubit(this._medicalReportRepo)
+  MedicalReportGenerationCubit(this._medicalReportRepo, this.sharedRepo)
       : super(const MedicalReportGenerationState());
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.myMedicalReports.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
+  }
 
   void updateBasicInfoSelection({
     bool? getAll,

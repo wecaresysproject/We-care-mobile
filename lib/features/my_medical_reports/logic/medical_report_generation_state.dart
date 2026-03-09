@@ -68,6 +68,7 @@ class MedicalReportGenerationState extends Equatable {
   final List<String> mentalDiseasesSelectedMethods;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const MedicalReportGenerationState({
     this.status = RequestStatus.initial,
@@ -137,6 +138,7 @@ class MedicalReportGenerationState extends Equatable {
     this.mentalDiseasesSelectedMethods = const [],
     this.medicalReportData,
     this.categoryFilters = const {},
+    this.moduleGuidanceData,
   });
 
   MedicalReportGenerationState copyWith({
@@ -207,6 +209,7 @@ class MedicalReportGenerationState extends Equatable {
     List<String>? mentalDiseasesSelectedMethods,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return MedicalReportGenerationState(
       status: status ?? this.status,
@@ -319,6 +322,7 @@ class MedicalReportGenerationState extends Equatable {
           mentalDiseasesSelectedMethods ?? this.mentalDiseasesSelectedMethods,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -391,5 +395,6 @@ class MedicalReportGenerationState extends Equatable {
         mentalDiseasesSelectedMethods,
         medicalReportData,
         categoryFilters,
+        moduleGuidanceData,
       ];
 }

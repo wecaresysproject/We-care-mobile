@@ -437,6 +437,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicalReportGenerationCubit>(
     () => MedicalReportGenerationCubit(
       getIt<MedicalReportRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 }
