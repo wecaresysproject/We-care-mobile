@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
+import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
 
 import 'medical_report_pdf_generator.dart';
 
 class MedicalReportExportLogic {
+  final MedicalReportRepo _repo;
+
+  MedicalReportExportLogic(this._repo);
+
   Future<void> exportAndShareReport(
       BuildContext context,
       MedicalReportResponseModel? reportData,
@@ -24,11 +30,23 @@ class MedicalReportExportLogic {
       final file = File('${output.path}/$fileName.pdf');
       await file.writeAsBytes(pdfBytes);
 
-      // Simulate backend upload if requested
+      // Upload to backend if requested
       if (attachToBackend) {
-        AppLogger.info("Simulating upload of PDF report to backend...");
-        await Future.delayed(const Duration(seconds: 2));
-        AppLogger.info("PDF uploaded to backend successfully (simulated)");
+        final generatedAt = DateTime.now().toUtc().toIso8601String();
+        final result = await _repo.uploadReport(file, fileName, generatedAt);
+
+        result.when(
+          success: (response) {
+            AppLogger.info("PDF uploaded successfully: ${response.url ?? ''}");
+            showSuccess("تم رفع التقرير بنجاح");
+          },
+          failure: (error) {
+            AppLogger.error("PDF upload failed: ${error.errors.join(', ')}");
+            showError(error.errors.isNotEmpty
+                ? error.errors.first
+                : "حدث خطأ أثناء رفع التقرير");
+          },
+        );
       }
 
       // Share PDF
@@ -39,9 +57,7 @@ class MedicalReportExportLogic {
       );
     } catch (e, s) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error exporting report: $e')),
-        );
+        showError("حدث خطأ أثناء تصدير التقرير");
       }
       AppLogger.error("PDF ERROR: $e");
       AppLogger.error("STACK: $s");
@@ -60,9 +76,7 @@ class MedicalReportExportLogic {
       return file;
     } catch (e, s) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error generating report: $e')),
-        );
+        showError("حدث خطأ أثناء إنشاء التقرير");
       }
       AppLogger.error("PDF ERROR: $e");
       AppLogger.error("STACK: $s");

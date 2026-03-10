@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/Presentation/views/ai_consultation_screen.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
+import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 
 void showExportPdfDialog(
@@ -43,8 +45,14 @@ class _ExportReportDialogState extends State<ExportReportDialog> {
   }
 
   Future<void> _onExport() async {
+    setState(() => _isLoading = true);
+    final repo = getIt<MedicalReportRepo>();
+    final exportLogic = MedicalReportExportLogic(repo);
+
+    if (!mounted) return;
     Navigator.of(context).pop();
-    MedicalReportExportLogic().exportAndShareReport(
+
+    await exportLogic.exportAndShareReport(
       context,
       widget.reportData,
       _resolvedFileName,
@@ -56,9 +64,11 @@ class _ExportReportDialogState extends State<ExportReportDialog> {
     setState(() => _isLoading = true);
 
     final fileName = _resolvedFileName;
+    final repo = getIt<MedicalReportRepo>();
+    final exportLogic = MedicalReportExportLogic(repo);
 
     // Generate the PDF file first
-    final pdfFile = await MedicalReportExportLogic().generatePdfFile(
+    final pdfFile = await exportLogic.generatePdfFile(
       dialogContext,
       widget.reportData,
       fileName,

@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/my_medical_reports/data/medical_report_api_constants.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
+import 'package:we_care/features/my_medical_reports/data/models/upload_medical_report_response_model.dart'
+    show UploadMedicalReportResponseModel;
 
 part 'medical_report_api_services.g.dart';
 
@@ -118,5 +122,13 @@ abstract class MedicalReportApiServices {
   Future<MedicalReportResponseModel> fetchMedicalReportData(
     @Body() MedicalReportRequestModel requestBody,
     @Query('language') String language,
+  );
+
+  @MultiPart()
+  @POST(MedicalReportApiConstants.uploadReport)
+  Future<UploadMedicalReportResponseModel> uploadReport(
+    @Part(name: 'fileName') String fileName,
+    @Part(name: 'reportFile') File reportFile,
+    @Part(name: 'generatedAt') String generatedAt,
   );
 }

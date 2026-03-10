@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/medical_report_api_services.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
+import 'package:we_care/features/my_medical_reports/data/models/upload_report_response_model.dart';
 
 class MedicalReportRepo {
   final MedicalReportApiServices _apiServices;
@@ -278,6 +281,23 @@ class MedicalReportRepo {
       final response = await _apiServices.getMentalDiseasesFilters(
         language,
         userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadMedicalReportResponseModel>> uploadReport(
+    File reportFile,
+    String fileName,
+    String generatedAt,
+  ) async {
+    try {
+      final response = await _apiServices.uploadReport(
+        fileName,
+        reportFile,
+        generatedAt,
       );
       return ApiResult.success(response);
     } catch (error) {
