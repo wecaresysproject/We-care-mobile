@@ -177,21 +177,13 @@ class MedicineDetailsView extends StatelessWidget {
                       icon: 'assets/images/time_icon.png',
                       isExpanded: true,
                     ),
-                    Row(children: [
-                      DetailsViewInfoTile(
-                          title: "تاريخ بدء الدواء",
-                          value: state.selectestMedicineDetails!.startDate,
-                          icon: 'assets/images/date_icon.png'),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: "مستمر/متوقف",
-                        value: calculateMedicineStatus(
-                          state.selectestMedicineDetails!.startDate,
-                          state.selectestMedicineDetails!.timeDuration,
-                        ),
-                        icon: 'assets/images/doctor_name.png',
-                      ),
-                    ]),
+                    DetailsViewInfoTile(
+                      title: "تاريخ بدء الدواء",
+                      value: state.selectestMedicineDetails!.startDate,
+                      icon: 'assets/images/date_icon.png',
+                      isExpanded: true,
+                    ),
+
                     DetailsViewInfoTile(
                       title: "اسم الطبيب ",
                       value: state.selectestMedicineDetails!.doctorName,
@@ -367,47 +359,47 @@ String calculateMedicineStatus(String startDateStr, String durationStr) {
 Future<void> _shareMedicineDetails(BuildContext context) async {
   final medicine =
       context.read<MedicineViewCubit>().state.selectestMedicineDetails;
+
   if (medicine == null) return;
 
-  // 🧠 نحول القيم البوليان إلى نص عربي
-  String boolToText(bool? value) => value == true ? 'نعم' : 'لا';
+  String boolToText(bool? value) => value == true ? 'مفعل' : 'غير مفعل';
 
-  // 🧾 تفاصيل الدواء الأساسية
   final detailsMap = {
-    '💊 *اسم الدواء*:': medicine.medicineName,
-    '🧪 *الشكل الدوائي*:': 'أقراص',
-    '📏 *الجرعة*:': medicine.dosage,
-    '🔁 *عدد مرات الجرعة*:': medicine.dosageFrequency,
-    '⏳ *المدد الزمنية*:': medicine.timeDuration,
-    '🔄 *مستمر/متوقف*:':
-        (medicine.chronicDiseaseMedicine == 'نعم') ? 'مستمر' : 'متوقف',
-    '📅 *تاريخ بدء الدواء*:': medicine.startDate,
-    '🧬 *دواء مرض مزمن*:': medicine.chronicDiseaseMedicine,
-    '👨‍⚕️ *اسم الطبيب*:': medicine.doctorName,
-    '📝 *الملاحظات الشخصية*:': (medicine.personalNotes.isNotEmpty ?? false)
-        ? medicine.personalNotes
-        : 'لا توجد',
-    '⏰ *التنبيهات*:': boolToText(medicine.reminderStatus),
-    '🕒 *وقت التنبيه*:': medicine.reminder,
+    '💊 اسم الدواء:': medicine.medicineName,
+    '🧪 الشكل الدوائي:': 'أقراص',
+    '📏 الجرعة:': medicine.dosage,
+    '🔁 عدد مرات الجرعة:': medicine.dosageFrequency,
+    '⏳ مدة العلاج:': medicine.timeDuration,
+    '💊 كمية الدواء:': medicine.selectedDoseAmount,
+    '📅 تاريخ بدء الدواء:': medicine.startDate,
+    '👨‍⚕️ اسم الطبيب:': medicine.doctorName,
+    '🧬 مرض مزمن:': medicine.chronicDiseaseMedicine,
+    '📝 الملاحظات الشخصية:':
+        medicine.personalNotes.isNotEmpty ? medicine.personalNotes : 'لا توجد',
+    '⏰ التنبيهات:': boolToText(medicine.reminderStatus),
+    if (medicine.reminderStatus) '🕒 وقت التنبيه:': medicine.reminder,
   };
 
-  // 🌟 الأعراض المرضية (قائمة فرعية)
-  final symptomsList = (medicine.mainSymptoms ?? []).map((s) {
-    final index = medicine.mainSymptoms.indexOf(s);
+  final symptoms = medicine.mainSymptoms ?? [];
+
+  final symptomsList = symptoms.asMap().entries.map((entry) {
+    final index = entry.key;
+    final s = entry.value;
+
     return {
-      '${index == 0 ? "🌟 (رئيسي)" : "🔹"} *منطقة:*': s.symptomsRegion,
-      '🩺 *الشكوى:*': s.sypmptomsComplaintIssue,
-      '⚙️ *طبيعة الشكوى:*': s.natureOfComplaint,
-      '📊 *الشدة:*': s.severityOfComplaint,
+      index == 0 ? "🌟 العرض الرئيسي - المنطقة:" : "🔹 المنطقة:":
+          s.symptomsRegion,
+      '🩺 الشكوى:': s.sypmptomsComplaintIssue,
+      '⚙️ طبيعة الشكوى:': s.natureOfComplaint,
+      '📊 حدة الشكوى:': s.severityOfComplaint,
     };
   }).toList();
 
-  // 🚀 نستخدم الميثود الجينيريك
   await shareDetails(
-    title: '🩺 *تفاصيل الدواء*',
+    title: '🩺 تفاصيل الدواء',
     details: detailsMap,
     subLists: symptomsList,
-    subListTitle: '🧠 *الأعراض المرضية:*',
+    subListTitle: '🧠 الأعراض المرضية:',
     errorMessage: '❌ حدث خطأ أثناء مشاركة تفاصيل الدواء',
   );
 }
