@@ -17,6 +17,8 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_cubit.dart';
 import 'package:we_care/features/surgeries/surgeries_view/logic/surgeries_view_state.dart';
 
+import '../../../../core/global/Helpers/share_details_helper.dart';
+
 class SurgeryDetailsView extends StatelessWidget {
   const SurgeryDetailsView({
     super.key,
@@ -232,32 +234,34 @@ Future<void> _shareSurgeryDetails(
   try {
     final surgery = state.selectedSurgeryDetails!;
 
-    // 🧾 نجهّز البيانات الأساسية
     final detailsMap = {
-      '📅 *التاريخ*:': surgery.surgeryDate,
-      '🏥 *المستشفى*:': surgery.hospitalCenter,
-      '🌍 *الدولة*:': surgery.country,
-      '🧑‍⚕️ *الجراح*:': surgery.surgeonName,
-      '⚕️ *طبيب الباطنة*:': surgery.anesthesiologistName,
-      '🌤 *الحالة*:': surgery.surgeryStatus,
-      '💪 *التقنية المستخدمة*:': surgery.usedTechnique,
-      '📃 *التوصيف*:': surgery.surgeryDescription,
-      '📕 *التعليمات بعد العملية*:': surgery.postSurgeryInstructions,
+      '🔢 كود ICHI:': surgery.ichiCode ?? "-",
+      '📅 التاريخ:': surgery.surgeryDate,
+      '🫀 العضو:': surgery.surgeryRegion,
+      '📍 المنطقة الفرعية:': surgery.subSurgeryRegion,
+      '🩺 اسم العملية:': surgery.surgeryName,
+      '🎯 الهدف من الإجراء:': surgery.purpose ?? "لم يتم تحديده",
+      '⚙️ التقنية المستخدمة:': surgery.usedTechnique,
+      '📊 حالة العملية:': surgery.surgeryStatus,
+      '📝 وصف إضافي للعملية:': surgery.surgeryDescription,
+      '👨‍⚕️ الجراح:': surgery.surgeonName,
+      '👨‍⚕️ طبيب الباطنة:': surgery.anesthesiologistName,
+      '🌍 الدولة:': surgery.country,
+      '🏥 المستشفى:': surgery.hospitalCenter,
+      '📋 تعليمات بعد العملية:': surgery.postSurgeryInstructions,
+      '📄 توصيف العملية:': surgery.description ?? "لم يتم تحديده",
+      '📝 ملاحظات شخصية:': surgery.additionalNotes,
+      '📑 التقرير الطبي المكتوب:': surgery.writtenReport ?? "",
     };
 
-    // 📷 الصور (التقرير الطبي فقط إن وُجد)
-    // final imageUrls = <String>[];
-    // if (surgery.medicalReportImage.startsWith("http")) {
-    //   imageUrls.add(surgery.medicalReportImage);
-    // }
+    final imageUrls = surgery.medicalReportImage ?? [];
 
-    // // 🚀 استدعاء الميثود الجينيريك
-    // await shareDetails(
-    //   title: '⚕️ *تفاصيل العملية* ⚕️',
-    //   details: detailsMap,
-    //   imageUrls: imageUrls,
-    //   errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل العملية",
-    // );
+    await shareDetails(
+      title: '⚕️ تفاصيل العملية',
+      details: detailsMap,
+      imageUrls: imageUrls,
+      errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل العملية",
+    );
   } catch (e) {
     await showError("❌ حدث خطأ أثناء المشاركة");
   }
