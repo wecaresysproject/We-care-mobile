@@ -142,6 +142,7 @@ class XRayDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                     title: "الأعراض",
                     value: radiologyData.symptoms == null ||
+                            radiologyData.symptoms!.isEmpty ||
                             radiologyData.symptoms!.first ==
                                 context.translate.no_data_entered
                         ? ""
@@ -210,8 +211,10 @@ class XRayDetailsView extends StatelessWidget {
 }
 
 //share x-ray details
-
-Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
+Future<void> shareXRayDetails(
+  BuildContext context,
+  XRayViewState state,
+) async {
   final radiologyData = state.selectedRadiologyDocument;
 
   if (radiologyData == null) {
@@ -219,34 +222,73 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     return;
   }
 
-  // 🧾 نص المشاركة
+  final periodicUsage = radiologyData.periodicUsage == null
+      ? ""
+      : radiologyData.periodicUsage!
+          .asMap()
+          .entries
+          .map((e) => "${e.key + 1}. ${e.value}")
+          .join("\n");
+
+  final symptoms = radiologyData.symptoms == null ||
+          radiologyData.symptoms!.isEmpty ||
+          radiologyData.symptoms!.first == context.translate.no_data_entered
+      ? ""
+      : radiologyData.symptoms!
+          .asMap()
+          .entries
+          .map((e) => "${e.key + 1}. ${e.value}")
+          .join("\n");
+
   final shareContent = '''
 🩺 تفاصيل الأشعة
-التاريخ: ${radiologyData.radiologyDate}
-المنطقة: ${radiologyData.bodyPart}
-النوع: ${radiologyData.radioType}
-نوعية الاحتياج: ${radiologyData.periodicUsage ?? ""}
-الأعراض: ${radiologyData.symptoms ?? ""}
-الطبيب المعالج: ${radiologyData.doctor ?? ""}
-طبيب الأشعة: ${radiologyData.radiologyDoctor ?? ""}
-المستشفى: ${radiologyData.hospital ?? ""}
-مركز الأشاعة: ${radiologyData.radiologyCenter ?? ""}
-الدولة: ${radiologyData.country ?? ""}
-ملاحظات: ${radiologyData.radiologyNote ?? ""}
-التقرير الطبي: ${radiologyData.writtenReport ?? ""}
+
+📅 التاريخ: ${radiologyData.radiologyDate}
+
+🦴 المنطقة: ${radiologyData.bodyPart}
+
+🔬 النوع: ${radiologyData.radioType}
+
+📌 نوعية الاحتياج:
+$periodicUsage
+
+🩹 الأعراض:
+$symptoms
+
+📄 التقرير الطبي:
+${radiologyData.writtenReport ?? ""}
+
+👨‍⚕️ الطبيب المعالج:
+${radiologyData.doctor ?? ""}
+
+👨‍⚕️ طبيب الأشعة:
+${radiologyData.radiologyDoctor ?? ""}
+
+🏥 مركز الأشعة / المستشفى:
+${radiologyData.hospital ?? radiologyData.radiologyCenter ?? ""}
+
+🌍 الدولة:
+${radiologyData.country ?? ""}
+
+📝 ملاحظات:
+${radiologyData.radiologyNote ?? ""}
 ''';
 
   final tempDir = await getTemporaryDirectory();
   List<XFile> filesToShare = [];
 
-  // 🖼️ تحميل صور الأشعة
-  if (radiologyData.radiologyPhotos != null &&
-      radiologyData.radiologyPhotos!.isNotEmpty) {
+  // تحميل صور الأشعة
+  if (radiologyData.radiologyPhotos != null) {
     for (int i = 0; i < radiologyData.radiologyPhotos!.length; i++) {
       final url = radiologyData.radiologyPhotos![i];
+
       if (url.startsWith("http")) {
-        final imagePath =
-            await downloadImage(url, tempDir, 'x_ray_image_$i.png');
+        final imagePath = await downloadImage(
+          url,
+          tempDir,
+          'صورة_الأشعة_${i + 1}.png',
+        );
+
         if (imagePath != null) {
           filesToShare.add(XFile(imagePath));
         }
@@ -254,13 +296,18 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     }
   }
 
-  // 📄 تحميل التقارير
-  if (radiologyData.reports != null && radiologyData.reports!.isNotEmpty) {
+  // تحميل صور التقرير
+  if (radiologyData.reports != null) {
     for (int i = 0; i < radiologyData.reports!.length; i++) {
       final url = radiologyData.reports![i];
+
       if (url.startsWith("http")) {
-        final reportPath =
-            await downloadImage(url, tempDir, 'x_ray_report_$i.png');
+        final reportPath = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التقرير_${i + 1}.png',
+        );
+
         if (reportPath != null) {
           filesToShare.add(XFile(reportPath));
         }
@@ -268,11 +315,9 @@ Future<void> shareXRayDetails(BuildContext context, XRayViewState state) async {
     }
   }
 
-  // 📤 1) مشاركة الصور فقط
   if (filesToShare.isNotEmpty) {
-    await Share.shareXFiles(filesToShare);
+    await Share.shareXFiles(filesToShare, text: shareContent);
+  } else {
+    await Share.share(shareContent);
   }
-
-  // 📤 2) مشاركة البيانات مرة واحدة فقط
-  await Share.share(shareContent);
 }

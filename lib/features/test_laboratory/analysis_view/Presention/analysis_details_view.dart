@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -16,8 +18,6 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
-
-import '../../../../core/global/Helpers/share_details_helper.dart';
 
 class AnalysisDetailsView extends StatelessWidget {
   final String documentId;
@@ -54,97 +54,71 @@ class AnalysisDetailsView extends StatelessWidget {
               child: Column(
                 children: [
                   AppBarWithCenteredTitle(
-                      title: 'التحليل',
-                      trailingActions: [
-                        CircleIconButton(
-                          icon: Icons.play_arrow,
-                          color:
-                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
-                                      true
-                                  ? AppColorsManager.mainDarkBlue
-                                  : Colors.grey,
-                          onTap:
-                              state.moduleGuidanceData?.videoLink?.isNotEmpty ==
-                                      true
-                                  ? () => launchYouTubeVideo(
-                                      state.moduleGuidanceData!.videoLink)
-                                  : null,
-                        ),
-                        SizedBox(width: 12.w),
-                        CircleIconButton(
-                          icon: Icons.menu_book_outlined,
-                          color: state.moduleGuidanceData?.moduleGuidanceText
-                                      ?.isNotEmpty ==
-                                  true
-                              ? AppColorsManager.mainDarkBlue
-                              : Colors.grey,
-                          onTap: state.moduleGuidanceData?.moduleGuidanceText
-                                      ?.isNotEmpty ==
-                                  true
-                              ? () {
-                                  ModuleGuidanceAlertDialog.show(
-                                    context,
-                                    title: "العمليات",
-                                    description: state.moduleGuidanceData!
-                                        .moduleGuidanceText!,
-                                  );
-                                }
-                              : null,
-                        ),
-                      ],
-                      editFunction: () async {
-                        final result = await context.pushNamed(
-                          Routes.testAnalsisDataEntryView,
-                          arguments: state.selectedAnalysisDetails,
-                        );
-                        if (result != null && result) {
-                          if (!context.mounted) return;
-                          context
-                              .read<TestAnalysisViewCubit>()
-                              .emitTestbyId(documentId);
-                        }
-                      },
-                      deleteFunction: () async {
-                        await context
-                            .read<TestAnalysisViewCubit>()
-                            .emitDeleteTest(
-                              documentId,
-                              testName,
-                            );
-                        await showSuccess('تم حذف التحليل بنجاح');
+                    title: 'التحليل',
+                    trailingActions: [
+                      CircleIconButton(
+                        icon: Icons.play_arrow,
+                        color:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                        onTap:
+                            state.moduleGuidanceData?.videoLink?.isNotEmpty ==
+                                    true
+                                ? () => launchYouTubeVideo(
+                                    state.moduleGuidanceData!.videoLink)
+                                : null,
+                      ),
+                      SizedBox(width: 12.w),
+                      CircleIconButton(
+                        icon: Icons.menu_book_outlined,
+                        color: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? AppColorsManager.mainDarkBlue
+                            : Colors.grey,
+                        onTap: state.moduleGuidanceData?.moduleGuidanceText
+                                    ?.isNotEmpty ==
+                                true
+                            ? () {
+                                ModuleGuidanceAlertDialog.show(
+                                  context,
+                                  title: "العمليات",
+                                  description: state
+                                      .moduleGuidanceData!.moduleGuidanceText!,
+                                );
+                              }
+                            : null,
+                      ),
+                    ],
+                    editFunction: () async {
+                      final result = await context.pushNamed(
+                        Routes.testAnalsisDataEntryView,
+                        arguments: state.selectedAnalysisDetails,
+                      );
+                      if (result != null && result) {
                         if (!context.mounted) return;
-                        Navigator.pop(context, true);
-                      },
-                      shareFunction: () async {
-                        final analysis = state.selectedAnalysisDetails!;
-
-                        // 🧩 نجهّز البيانات الأساسية
-                        final detailsMap = {
-                          '📅 *التاريخ*:': analysis.testDate,
-                          '🔬 *نوع التحليل*:': analysis.groupName,
-                          '👨‍⚕️ *الطبيب المعالج*:': analysis.doctor,
-                          '🏥 *المستشفى/المعمل*:': analysis.hospital,
-                          '🌍 *الدولة*:': analysis.country,
-                          '🏷 *نوعية الاحتياج*:': "دورية",
-                          '🤒 *الأعراض المستدعية للإجراء*:':
-                              analysis.symptomsRequiringIntervention,
-                          '📝 *توصيف التقرير الطبي*:':
-                              analysis.writtenReport ?? "لم يتم ادخال بيانات",
-                        };
-                        // 🧾 الصور (من analysis.imageBase64 + analysis.reportBase64)
-                        final allImages = [
-                          ...(analysis.imageBase64),
-                          ...(analysis.reportBase64),
-                        ];
-
-                        // 🩺 مشاركة باستخدام الميثود الـgeneric
-                        await shareDetails(
-                          title: '🩺 *تفاصيل التحليل* 🩺',
-                          details: detailsMap,
-                          imageUrls: allImages,
-                          errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل التحليل",
-                        );
-                      }),
+                        context
+                            .read<TestAnalysisViewCubit>()
+                            .emitTestbyId(documentId);
+                      }
+                    },
+                    deleteFunction: () async {
+                      await context
+                          .read<TestAnalysisViewCubit>()
+                          .emitDeleteTest(
+                            documentId,
+                            testName,
+                          );
+                      await showSuccess('تم حذف التحليل بنجاح');
+                      if (!context.mounted) return;
+                      Navigator.pop(context, true);
+                    },
+                    shareFunction: () async {
+                      await shareAnalysisDetails(context, state);
+                    },
+                  ),
                   verticalSpacing(16),
                   DetailsViewInfoTile(
                     title: "التاريخ",
@@ -225,5 +199,103 @@ class AnalysisDetailsView extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+Future<void> shareAnalysisDetails(
+  BuildContext context,
+  TestAnalysisViewState state,
+) async {
+  final analysis = state.selectedAnalysisDetails;
+
+  if (analysis == null) {
+    showError("لا توجد بيانات تحليل للمشاركة.");
+    return;
+  }
+
+  final symptoms = analysis.symptomsRequiringIntervention == null
+      ? ""
+      : analysis.symptomsRequiringIntervention!
+          .asMap()
+          .entries
+          .map((e) => "${e.key + 1}. ${e.value}")
+          .join("\n");
+
+  final shareContent = '''
+🧪 تفاصيل التحليل
+
+📅 التاريخ:
+${analysis.testDate}
+
+🔬 نوع التحليل:
+${analysis.groupName}
+
+📄 توصيف التقرير الطبي:
+${analysis.writtenReport ?? ""}
+
+🏷 نوعية الاحتياج:
+${analysis.testNeedType ?? ""}
+
+🤒 الأعراض المستدعية للإجراء:
+$symptoms
+
+👨‍⚕️ الطبيب المعالج:
+${analysis.doctor}
+
+🏥 المستشفى:
+${analysis.hospital}
+
+🧫 المعمل:
+${analysis.radiologyCenter ?? ""}
+
+🌍 الدولة:
+${analysis.country}
+''';
+
+  final tempDir = await getTemporaryDirectory();
+  List<XFile> filesToShare = [];
+
+  // صور التحليل
+  if (analysis.imageBase64.isNotEmpty) {
+    for (int i = 0; i < analysis.imageBase64.length; i++) {
+      final url = analysis.imageBase64[i];
+
+      if (url.startsWith("http")) {
+        final imagePath = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التحليل_${i + 1}.png',
+        );
+
+        if (imagePath != null) {
+          filesToShare.add(XFile(imagePath));
+        }
+      }
+    }
+  }
+
+  // صور التقرير
+  if (analysis.reportBase64.isNotEmpty) {
+    for (int i = 0; i < analysis.reportBase64.length; i++) {
+      final url = analysis.reportBase64[i];
+
+      if (url.startsWith("http")) {
+        final reportPath = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التقرير_${i + 1}.png',
+        );
+
+        if (reportPath != null) {
+          filesToShare.add(XFile(reportPath));
+        }
+      }
+    }
+  }
+
+  if (filesToShare.isNotEmpty) {
+    await Share.shareXFiles(filesToShare, text: shareContent);
+  } else {
+    await Share.share(shareContent);
   }
 }
