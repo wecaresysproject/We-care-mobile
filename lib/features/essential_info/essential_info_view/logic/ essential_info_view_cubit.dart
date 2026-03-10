@@ -81,57 +81,75 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     final info = state.userEssentialInfo!;
     final tempDir = await getTemporaryDirectory();
 
-    // ✅ تحميل الصور (إن وُجدت)
+    final hasInsurance = info.insuranceStatus == true;
+
+    // تحميل الصورة الشخصية إن وجدت
     final personalPhotoPath =
         info.personalPhotoUrl != null && info.personalPhotoUrl!.isNotEmpty
             ? await downloadImage(
                 info.personalPhotoUrl!, tempDir, 'personal_photo.jpg')
             : null;
 
-    final insuranceCardPath = info.insuranceCardPhotoUrl != null &&
+    // تحميل صورة التأمين فقط لو التأمين موجود
+    final insuranceCardPath = hasInsurance &&
+            info.insuranceCardPhotoUrl != null &&
             info.insuranceCardPhotoUrl!.isNotEmpty
         ? await downloadImage(
             info.insuranceCardPhotoUrl!, tempDir, 'insurance_card.jpg')
         : null;
 
-    // ✅ النص الذي سيتم مشاركته
     final shareText = '''
-🩺 بياناتي الأساسية:
+🩺 البيانات الأساسية
 ---------------------
+
 👤 الاسم: ${info.fullName ?? '-'}
+🎂 تاريخ الميلاد: ${info.dateOfBirth ?? '-'}
 🪪 الرقم الوطني: ${info.nationalID ?? '-'}
+⚧ النوع: ${info.gender ?? '-'}
+
 📧 البريد الإلكتروني: ${info.email ?? '-'}
-📷 صورة شخصية: ${info.personalPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
-🔎 تفاصيل الإعاقة: ${info.disabilityDetails ?? '-'}
-👤 الحالة الاجتماعية: ${info.socialStatus ?? '-'}
-👶 عدد الأبناء: ${info.numberOfChildren ?? '-'}
+
+📷 الصورة الشخصية: 
+${info.personalPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
+
 🌍 الدولة: ${info.country ?? '-'}
 🏙️ المدينة: ${info.city ?? '-'}
+📍 الحي / المنطقة: ${info.areaOrDistrict ?? '-'}
+
+❤️ فصيلة الدم: ${info.bloodType ?? '-'}
+⏰ ساعات العمل: ${info.workHours ?? '-'}
+
+${hasInsurance ? '''
+🏥 معلومات التأمين
+---------------------
+🏢 شركة التأمين: ${info.insuranceCompany ?? '-'}
+📅 انتهاء التغطية: ${info.insuranceCoverageExpiryDate ?? '-'}
+📝 شروط إضافية: ${info.additionalTerms ?? '-'}
+📷 صورة بطاقة التأمين: ${info.insuranceCardPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
+''' : ''}
+
+♿ نوع الإعاقة: ${info.disabilityType ?? '-'}
+📝 تفاصيل الإعاقة: ${info.disabilityDetails ?? '-'}
+
+👨‍👩‍👧‍👦 الحالة الاجتماعية: ${info.socialStatus ?? '-'}
+👶 عدد الأطفال: ${info.numberOfChildren ?? '-'}
+
 📞 هاتف الطوارئ 1: ${info.emergencyContact1 ?? '-'}
 📞 هاتف الطوارئ 2: ${info.emergencyContact2 ?? '-'}
-❤️ فصيلة الدم: ${info.bloodType ?? '-'}
-🏢 شركة التأمين: ${info.insuranceCompany ?? '-'}
-📅 تاريخ انتهاء التأمين: ${info.insuranceCoverageExpiryDate ?? '-'}
-📝 شروط التأمين: ${info.additionalTerms ?? '-'}
-📷 صورة التأمين: ${info.insuranceCardPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
 
-📌 الحي: ${info.areaOrDistrict ?? '-'}
-👨‍⚕️ طبيب العائلة: ${info.familyDoctorName ?? '-'}
-📞 هاتف الطبيب: ${info.familyDoctorPhoneNumber ?? '-'}
-🔎 نوع الإعاقة: ${info.disabilityType ?? '-'}
+👨‍⚕️ طبيب الأسرة: ${info.familyDoctorName ?? '-'}
+📞 هاتف طبيب الأسرة: ${info.familyDoctorPhoneNumber ?? '-'}
+
 ---------------------
 تمت المشاركة من تطبيق WeCare 💙
 ''';
 
-    // ✅ تحضير قائمة الصور المرفقة
     final imagePaths = [
       if (personalPhotoPath != null) personalPhotoPath,
       if (insuranceCardPath != null) insuranceCardPath,
     ];
 
-// ✅ مشاركة النص + الصور
     if (imagePaths.isNotEmpty) {
-      // نحول المسارات إلى XFile objects
       final xFiles = imagePaths.map((path) => XFile(path)).toList();
       await Share.shareXFiles(xFiles, text: shareText);
     } else {

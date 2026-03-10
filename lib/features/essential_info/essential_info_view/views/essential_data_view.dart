@@ -165,7 +165,7 @@ class EssentialDataView extends StatelessWidget {
                       title: "صورة شخصية (4×6)",
                       isShareEnabled: true,
                     ),
-
+                  verticalSpacing(16),
                   // Country & City
                   Row(
                     children: [
