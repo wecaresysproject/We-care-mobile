@@ -383,9 +383,15 @@ ${filtered.join("\n")}
 // ============================
 // 🔵 3) تحميل الصور
 // ============================
-Future<List<XFile>> downloadImages(List<String> urls) async {
+Future<List<XFile>> downloadImages(
+  List<String> urls,
+  String imageLabel,
+) async {
   final client = HttpClient();
+  final tempDir = await getTemporaryDirectory();
+
   List<XFile> files = [];
+  int index = 1;
 
   for (final url in urls) {
     try {
@@ -394,14 +400,16 @@ Future<List<XFile>> downloadImages(List<String> urls) async {
 
       if (response.statusCode == 200) {
         final bytes = await consolidateHttpClientResponseBytes(response);
-        final tempDir = await getTemporaryDirectory();
 
         final file = File(
-          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg',
+          '${tempDir.path}/صورة_${imageLabel}_$index.jpg',
         );
 
         await file.writeAsBytes(bytes);
+
         files.add(XFile(file.path));
+
+        index++;
       }
     } catch (_) {}
   }
@@ -516,8 +524,10 @@ $notesBlock
     // 🔥 Share images if available
     // ---------------------------------------------------
     if (c.complainsImages != null && c.complainsImages!.isNotEmpty) {
-      final files = await downloadImages(c.complainsImages!);
-
+      final files = await downloadImages(
+        c.complainsImages!,
+        "الشكوى",
+      );
       if (files.isNotEmpty) {
         await Share.shareXFiles(files, text: text);
         return;
