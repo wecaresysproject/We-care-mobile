@@ -245,25 +245,55 @@ class FamilyMemberGeneticDiseaseDetailsView extends StatelessWidget {
 }
 
 void shareDetails(GenaticDiseaseDetails diseaseDetails) {
+  String formatList(List<String>? items) {
+    if (items == null || items.isEmpty) return 'لا يوجد';
+
+    return items
+        .asMap()
+        .entries
+        .map((e) => "${e.key + 1}. ${e.value}")
+        .join('\n');
+  }
+
   final String shareText = '''
-📌 المرض الوراثي: ${diseaseDetails.geneticDisease}
-📂 التصنيف الطبي المرضي: ${diseaseDetails.medicalClassification}
-🧬 نوع الوراثة: ${diseaseDetails.inheritanceType}
-📝 الوصف التفصيلي: ${diseaseDetails.detailedDescription ?? 'لا يوجد'}
-🧬 الجين المسؤول: ${diseaseDetails.responsibleGene}
-📊 معدل الانتشار: ${diseaseDetails.prevalenceRate}
-⏳ العمر النموذجي للظهور: ${diseaseDetails.typicalOnsetAge}
-🚻 الجنس المعني: ${diseaseDetails.affectedGender}
-⚠️ مستوى المخاطرة: ${diseaseDetails.riskLevel?.join(', ') ?? 'غير متوفر'}
+🧬 تفاصيل المرض الوراثي
+
+📌 المرض الوراثي:
+${diseaseDetails.geneticDisease}
+
+📂 التصنيف الطبي المرضي:
+${diseaseDetails.medicalClassification}
+
+🧬 نوع الوراثة:
+${diseaseDetails.inheritanceType}
+
+📝 الوصف التفصيلي:
+${diseaseDetails.detailedDescription ?? 'لا يوجد'}
+
+🧬 الجين المسؤول:
+${diseaseDetails.responsibleGene}
+
+📊 معدل الانتشار:
+${diseaseDetails.prevalenceRate}
+
+⏳ العمر النموذجي للظهور:
+${diseaseDetails.typicalOnsetAge}
+
+🚻 الجنس المعني:
+${diseaseDetails.affectedGender}
+
+⚠️ مستوى المخاطرة:
+${diseaseDetails.riskLevel?.join(', ') ?? 'غير متوفر'}
 
 🩺 الأعراض الرئيسية:
-${diseaseDetails.mainSymptoms?.map((s) => '• $s').join('\n') ?? 'لا يوجد'}
+${formatList(diseaseDetails.mainSymptoms)}
 
 🔬 الفحوصات التشخيصية:
-${diseaseDetails.diagnosticTests?.map((t) => '• $t').join('\n') ?? 'لا يوجد'}
+${formatList(diseaseDetails.diagnosticTests)}
 
 💊 العلاجات المتاحة:
-${diseaseDetails.availableTreatments?.map((t) => '• $t').join('\n') ?? 'لا يوجد'}
+${formatList(diseaseDetails.availableTreatments)}
 ''';
+
   Share.share(shareText);
 }
