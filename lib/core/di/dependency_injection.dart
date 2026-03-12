@@ -422,6 +422,7 @@ void setupAppCubits() {
   getIt.registerFactory<AIConsultationCubit>(
     () => AIConsultationCubit(
       getIt<AppSharedRepo>(),
+      getIt<MedicalReportRepo>(),
     ),
   );
   getIt.registerFactory<ContactSupportCubit>(

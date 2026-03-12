@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
@@ -38,12 +39,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
   String? _selectedDate;
   String? _selectedModel;
   bool _isHandoffInProgress = false;
-
-  final List<String> _reportDates = [
-    '2024-05-20',
-    '2024-03-15',
-    '2024-01-10',
-  ];
+  File? _downloadedPdf;
 
   final Map<String, String> _aiModels = {
     'ChatGPT': 'com.openai.chatgpt',
@@ -51,6 +47,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     'DeepSeek': 'com.deepseek.chat',
     'Perplexity': 'ai.perplexity.app.android',
   };
+
   @override
   void dispose() {
     _complaintController.dispose();
@@ -59,23 +56,15 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
 
   bool get _isUsingPreAttachedReport => widget.preAttachedReport != null;
 
-  bool get _isPdfSelected => _isUsingPreAttachedReport || _selectedDate != null;
+  bool get _isPdfAvailable =>
+      _isUsingPreAttachedReport ||
+      (_selectedDate != null && _downloadedPdf != null);
 
   bool get _isButtonEnabled {
-    return _isPdfSelected &&
+    return _isPdfAvailable &&
         _complaintController.text.trim().isNotEmpty &&
         _selectedModel != null &&
         !_isHandoffInProgress;
-  }
-
-  Future<File> _getTemporaryFileFromAsset() async {
-    final byteData = await rootBundle
-        .load('assets/medical_report_pdf/My Medical Report.pdf');
-    final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/medical_report.pdf');
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    return file;
   }
 
   Future<void> _handleHandoff() async {
@@ -90,10 +79,14 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
 
     if (isInstalled) {
       try {
-        // Use pre-attached report if available, otherwise load from assets
+        // Use pre-attached report if available, otherwise use downloaded PDF
         final pdfFile = _isUsingPreAttachedReport
             ? widget.preAttachedReport!
-            : await _getTemporaryFileFromAsset();
+            : _downloadedPdf;
+
+        if (pdfFile == null) {
+          throw Exception("No PDF available for handoff.");
+        }
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -188,26 +181,61 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     );
   }
 
+  Future<void> _onDateChanged(String? val, AIConsultationCubit cubit) async {
+    if (val == null) return;
+    setState(() {
+      _selectedDate = val;
+      _downloadedPdf = null;
+    });
+    await cubit.getSpecificPdf(val);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          getIt<AIConsultationCubit>()..emitModuleGuidanceData(),
-      child: Scaffold(
-        backgroundColor: AppColorsManager.backGroundColor,
-        appBar: AppBar(
-          toolbarHeight: 0.h,
-        ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder<AIConsultationCubit, AIConsultationState>(
-                  builder: (context, state) {
-                    return CustomAppBarWithCenteredTitleWithGuidance(
+      create: (context) => getIt<AIConsultationCubit>()
+        ..emitModuleGuidanceData()
+        ..getPdfDates(),
+      child: BlocConsumer<AIConsultationCubit, AIConsultationState>(
+        listenWhen: (previous, current) =>
+            previous.fetchPdfStatus != current.fetchPdfStatus,
+        listener: (context, state) async {
+          if (state.fetchPdfStatus == RequestStatus.success &&
+              state.selectedPdf?.url != null) {
+            final tempDir = await getTemporaryDirectory();
+            final fileName = state.selectedPdf!.fileName ?? 'medical_report';
+            final filePath = await downloadFile(
+              state.selectedPdf!.url!.trim(),
+              tempDir,
+              '$fileName.pdf',
+            );
+            if (filePath != null) {
+              setState(() {
+                _downloadedPdf = File(filePath);
+              });
+            }
+          } else if (state.fetchPdfStatus == RequestStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        builder: (context, state) {
+          final cubit = context.read<AIConsultationCubit>();
+
+          return Scaffold(
+            backgroundColor: AppColorsManager.backGroundColor,
+            appBar: AppBar(
+              toolbarHeight: 0.h,
+            ),
+            body: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomAppBarWithCenteredTitleWithGuidance(
                       title: "استشر ال AI",
                       trailingActions: [
                         CircleIconButton(
@@ -246,225 +274,244 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                               : null,
                         ),
                       ],
-                    );
-                  },
-                ),
-                verticalSpacing(16),
-                // --- Report selection section ---
-                if (!_isUsingPreAttachedReport) ...[
-                  Text(
-                    "اختر التقرير الطبي",
-                    style: AppTextStyles.font16BlackSemiBold,
-                  ),
-                  SizedBox(height: 8.h),
-                  DropdownButtonFormField<String>(
-                    initialValue: _selectedDate,
-                    hint: Text("اختر التاريخ",
-                        style: AppTextStyles.font14blackWeight400),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColorsManager.textfieldInsideColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16.w, vertical: 12.h),
                     ),
-                    items: _reportDates.map((date) {
-                      return DropdownMenuItem(
-                        value: date,
-                        child: Text(date,
-                            style: AppTextStyles.font14blackWeight400),
-                      );
-                    }).toList(),
-                    onChanged: (val) => setState(() => _selectedDate = val),
-                  ),
-                  if (_selectedDate != null) ...[
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        color: AppColorsManager.secondaryColor,
-                        borderRadius: BorderRadius.circular(10.r),
+                    verticalSpacing(16),
+                    // --- Report selection section ---
+                    if (!_isUsingPreAttachedReport) ...[
+                      Text(
+                        "اختر التقرير الطبي",
+                        style: AppTextStyles.font16BlackSemiBold,
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.picture_as_pdf, color: Colors.red),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: Text(
-                              "تم إرفاق: My Medical Report.pdf",
-                              style: AppTextStyles.font14blackWeight400,
-                            ),
+                      SizedBox(height: 8.h),
+                      DropdownButtonFormField<String>(
+                        initialValue: _selectedDate,
+                        hint: state.pdfDatesStatus == RequestStatus.loading
+                            ? const Text("جاري تحميل التواريخ...")
+                            : Text("اختر التاريخ",
+                                style: AppTextStyles.font14blackWeight400),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: AppColorsManager.textfieldInsideColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                            borderSide: BorderSide.none,
                           ),
-                        ],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 12.h),
+                        ),
+                        items: state.reportDates.map((date) {
+                          return DropdownMenuItem(
+                            value: date,
+                            child: Text(date,
+                                style: AppTextStyles.font14blackWeight400),
+                          );
+                        }).toList(),
+                        onChanged: (val) => _onDateChanged(val, cubit),
                       ),
-                    ),
-                  ],
-                ] else ...[
-                  // Pre-attached report chip
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColorsManager.secondaryColor,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.picture_as_pdf, color: Colors.red),
-                        SizedBox(width: 8.w),
-                        Expanded(
-                          child: Text(
-                            "تم إرفاق: ${widget.preAttachedFileName ?? 'medical_report.pdf'}",
-                            style: AppTextStyles.font14blackWeight400,
+                      if (_selectedDate != null) ...[
+                        SizedBox(height: 12.h),
+                        Container(
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: AppColorsManager.secondaryColor,
+                            borderRadius: BorderRadius.circular(10.r),
                           ),
-                        ),
-                        const Icon(Icons.check_circle,
-                            color: Colors.green, size: 18),
-                      ],
-                    ),
-                  ),
-                ],
-                SizedBox(height: 24.h),
-                Text(
-                  "اكتب الشكوى أو استفسارك",
-                  style: AppTextStyles.font16BlackSemiBold,
-                ),
-                SizedBox(height: 8.h),
-                TextFormField(
-                  controller: _complaintController,
-                  maxLines: 5,
-                  style: AppTextStyles.font14blackWeight400,
-                  onChanged: (val) => setState(() {}),
-                  decoration: InputDecoration(
-                    hintText:
-                        "اكتب الشكوى أو السؤال الذي تريد مناقشته بناءً على البيانات\nمثال: ألم المعدة مستمر منذ أسبوع، هل العلاج مناسب؟",
-                    hintStyle: AppTextStyles.font14blackWeight400
-                        .copyWith(color: AppColorsManager.placeHolderColor),
-                    filled: true,
-                    fillColor: AppColorsManager.textfieldInsideColor,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.h),
-                Text(
-                  "اختر نموذج الذكاء الاصطناعي",
-                  style: AppTextStyles.font16BlackSemiBold,
-                ),
-                SizedBox(height: 12.h),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 16.w,
-                  mainAxisSpacing: 16.h,
-                  childAspectRatio: 1.6,
-                  children: _aiModels.keys.map((model) {
-                    final isSelected = _selectedModel == model;
-
-                    return GestureDetector(
-                      onTap: () => setState(() => _selectedModel = model),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColorsManager.mainDarkBlue
-                              : AppColorsManager.textfieldInsideColor,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: isSelected
-                              ? null
-                              : Border.all(
-                                  color: AppColorsManager
-                                      .textfieldOutsideBorderColor
-                                      .withOpacity(0.3),
-                                ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              model == 'ChatGPT'
-                                  ? Icons.chat_bubble_outline
-                                  : Icons.auto_awesome,
-                              color: isSelected
-                                  ? Colors.white
-                                  : AppColorsManager.mainDarkBlue,
-                            ),
-                            SizedBox(height: 8.h),
-                            Text(
-                              model,
-                              style:
-                                  AppTextStyles.font14blackWeight400.copyWith(
-                                color: isSelected
-                                    ? Colors.white
-                                    : AppColorsManager.textColor,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.picture_as_pdf,
+                                  color: Colors.red),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: state.fetchPdfStatus ==
+                                        RequestStatus.loading
+                                    ? const Text("جاري تجهيز التقرير...")
+                                    : Text(
+                                        _downloadedPdf != null
+                                            ? "تم إرفاق: ${state.selectedPdf?.fileName ?? 'medical_report'}.pdf"
+                                            : "فشل تحميل التقرير",
+                                        style:
+                                            AppTextStyles.font14blackWeight400,
+                                      ),
                               ),
-                            ),
-                          ],
+                              if (state.fetchPdfStatus == RequestStatus.loading)
+                                SizedBox(
+                                  width: 15.w,
+                                  height: 15.h,
+                                  child: const CircularProgressIndicator(
+                                      strokeWidth: 2),
+                                )
+                              else if (_downloadedPdf != null)
+                                const Icon(Icons.check_circle,
+                                    color: Colors.green, size: 18),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                if (_selectedModel != null) ...[
-                  SizedBox(height: 16.h),
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                      color: AppColorsManager.secondaryColor,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      ],
+                    ] else ...[
+                      // Pre-attached report chip
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: AppColorsManager.secondaryColor,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Row(
                           children: [
-                            Icon(
-                              Icons.privacy_tip_outlined,
-                              color: AppColorsManager.mainDarkBlue,
-                            ),
+                            const Icon(Icons.picture_as_pdf, color: Colors.red),
                             SizedBox(width: 8.w),
                             Expanded(
                               child: Text(
-                                "سيتم تحويلك إلى تطبيق الذكاء الاصطناعي المختار لإكمال الاستشارة. "
-                                "تتم المحادثة بالكامل خارج تطبيق WECARE حفاظًا على خصوصية بياناتك الطبية.",
+                                "تم إرفاق: ${widget.preAttachedFileName ?? 'medical_report.pdf'}",
                                 style: AppTextStyles.font14blackWeight400,
-                                textAlign: TextAlign.justify,
                               ),
                             ),
+                            const Icon(Icons.check_circle,
+                                color: Colors.green, size: 18),
                           ],
                         ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          "سيتم أيضًا نسخ نص الشكوى تلقائيًا لتتمكن من لصقه داخل المحادثة مع التقرير الطبي.",
-                          style: AppTextStyles.font14blackWeight400,
-                          textAlign: TextAlign.justify,
-                        ).paddingRight(32),
-                      ],
+                      ),
+                    ],
+                    SizedBox(height: 24.h),
+                    Text(
+                      "اكتب الشكوى أو استفسارك",
+                      style: AppTextStyles.font16BlackSemiBold,
                     ),
-                  ),
-                ],
-                SizedBox(height: 24.h),
-                AppCustomButton(
-                  textFontSize: 16.sp,
-                  title: "متابعة الإستشارة مع ${_selectedModel ?? '...'}",
-                  isEnabled: _isButtonEnabled,
-                  isLoading: _isHandoffInProgress,
-                  onPressed: _handleHandoff,
+                    SizedBox(height: 8.h),
+                    TextFormField(
+                      controller: _complaintController,
+                      maxLines: 5,
+                      style: AppTextStyles.font14blackWeight400,
+                      onChanged: (val) => setState(() {}),
+                      decoration: InputDecoration(
+                        hintText:
+                            "اكتب الشكوى أو السؤال الذي تريد مناقشته بناءً على البيانات\nمثال: ألم المعدة مستمر منذ أسبوع، هل العلاج مناسب؟",
+                        hintStyle: AppTextStyles.font14blackWeight400
+                            .copyWith(color: AppColorsManager.placeHolderColor),
+                        filled: true,
+                        fillColor: AppColorsManager.textfieldInsideColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+                    Text(
+                      "اختر نموذج الذكاء الاصطناعي",
+                      style: AppTextStyles.font16BlackSemiBold,
+                    ),
+                    SizedBox(height: 12.h),
+                    GridView.count(
+                      crossAxisCount: 2,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisSpacing: 16.w,
+                      mainAxisSpacing: 16.h,
+                      childAspectRatio: 1.6,
+                      children: _aiModels.keys.map((model) {
+                        final isSelected = _selectedModel == model;
+
+                        return GestureDetector(
+                          onTap: () => setState(() => _selectedModel = model),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? AppColorsManager.mainDarkBlue
+                                  : AppColorsManager.textfieldInsideColor,
+                              borderRadius: BorderRadius.circular(12.r),
+                              border: isSelected
+                                  ? null
+                                  : Border.all(
+                                      color: AppColorsManager
+                                          .textfieldOutsideBorderColor
+                                          .withOpacity(0.3),
+                                    ),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  model == 'ChatGPT'
+                                      ? Icons.chat_bubble_outline
+                                      : Icons.auto_awesome,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColorsManager.mainDarkBlue,
+                                ),
+                                SizedBox(height: 8.h),
+                                Text(
+                                  model,
+                                  style: AppTextStyles.font14blackWeight400
+                                      .copyWith(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : AppColorsManager.textColor,
+                                    fontWeight: isSelected
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    if (_selectedModel != null) ...[
+                      SizedBox(height: 16.h),
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: AppColorsManager.secondaryColor,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.privacy_tip_outlined,
+                                  color: AppColorsManager.mainDarkBlue,
+                                ),
+                                SizedBox(width: 8.w),
+                                Expanded(
+                                  child: Text(
+                                    "سيتم تحويلك إلى تطبيق الذكاء الاصطناعي المختار لإكمال الاستشارة. "
+                                    "تتم المحادثة بالكامل خارج تطبيق WECARE حفاظًا على خصوصية بياناتك الطبية.",
+                                    style: AppTextStyles.font14blackWeight400,
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.h),
+                            Text(
+                              "سيتم أيضًا نسخ نص الشكوى تلقائيًا لتتمكن من لصقه داخل المحادثة مع التقرير الطبي.",
+                              style: AppTextStyles.font14blackWeight400,
+                              textAlign: TextAlign.justify,
+                            ).paddingRight(32),
+                          ],
+                        ),
+                      ),
+                    ],
+                    SizedBox(height: 24.h),
+                    AppCustomButton(
+                      textFontSize: 16.sp,
+                      title: "متابعة الإستشارة مع ${_selectedModel ?? '...'}",
+                      isEnabled: _isButtonEnabled,
+                      isLoading: _isHandoffInProgress,
+                      onPressed: _handleHandoff,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

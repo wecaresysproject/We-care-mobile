@@ -6,8 +6,7 @@ import 'package:we_care/features/my_medical_reports/data/medical_report_api_cons
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
-import 'package:we_care/features/my_medical_reports/data/models/upload_medical_report_response_model.dart'
-    show UploadMedicalReportResponseModel;
+import 'package:we_care/features/my_medical_reports/data/models/upload_medical_report_response_model.dart';
 
 part 'medical_report_api_services.g.dart';
 
@@ -130,5 +129,13 @@ abstract class MedicalReportApiServices {
     @Part(name: 'fileName') String fileName,
     @Part(name: 'reportFile') File reportFile,
     @Part(name: 'generatedAt') String generatedAt,
+  );
+
+  @GET(MedicalReportApiConstants.getPdfDates)
+  Future<dynamic> getPdfDates();
+
+  @GET(MedicalReportApiConstants.getSpecificPdf)
+  Future<UploadMedicalReportResponseModel> getSpecificPdf(
+    @Query('date') String date,
   );
 }
