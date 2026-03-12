@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
@@ -59,6 +62,8 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
                     deleteFunction: () => context
                         .read<EyeViewCubit>()
                         .deleteEyePartDocument(documentId),
+                    shareFunction: () =>
+                        shareEyePartDetails(title, context, details),
                     editFunction: () async {
                       final result = await context.pushNamed(
                         Routes.eyeDataEntry,
@@ -175,5 +180,74 @@ class EyePartsProcedureAndSymptomsDetailsView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Future<void> shareEyePartDetails(
+    String title, BuildContext context, dynamic details) async {
+  final shareContent = '''
+👁️ تفاصيل $title
+
+📅 تاريخ الأعراض: ${details.symptomStartDate}
+🤒 الأعراض: ${details.symptoms.join(', ')}
+⏳ مدة الأعراض: ${details.symptomDuration}
+
+🩺 الإجراء الطبي
+📅 تاريخ الإجراء: ${details.medicalReportDate}
+🔬 الإجراء الطبي: ${details.medicalProcedures.join(', ')}
+
+📄 التقرير الطبي المكتوب
+${details.writtenReport}
+
+🏥 المركز / المستشفى: ${details.centerHospitalName ?? details.eyeMedicalCenter ?? ''}
+👨‍⚕️ الطبيب: ${details.doctorName}
+🌍 الدولة: ${details.country}
+
+📝 ملاحظات إضافية:
+${details.additionalNotes}
+''';
+
+  final tempDir = await getTemporaryDirectory();
+  List<XFile> filesToShare = [];
+
+  int reportIndex = 1;
+  int examIndex = 1;
+
+  /// صور التقرير الطبي
+  if (details.medicalReportUrl != null) {
+    for (final url in details.medicalReportUrl) {
+      if (url.startsWith("http")) {
+        final path = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التقرير_${reportIndex++}.jpg',
+        );
+        if (path != null) {
+          filesToShare.add(XFile(path));
+        }
+      }
+    }
+  }
+
+  /// صور الفحص الطبي
+  if (details.medicalExaminationImages != null) {
+    for (final url in details.medicalExaminationImages) {
+      if (url.startsWith("http")) {
+        final path = await downloadImage(
+          url,
+          tempDir,
+          'صورة_الفحص_${examIndex++}.jpg',
+        );
+        if (path != null) {
+          filesToShare.add(XFile(path));
+        }
+      }
+    }
+  }
+
+  if (filesToShare.isNotEmpty) {
+    await Share.shareXFiles(filesToShare, text: shareContent);
+  } else {
+    await Share.share(shareContent);
   }
 }
