@@ -408,46 +408,54 @@ class MentalIllnessDetailsView extends StatelessWidget {
   Future<void> _shareMentalIllnessDetails(
       BuildContext context, MentalIllnessRequestBody state) async {
     try {
-      // When you have real data, use this instead:
-
       final text = '''
-    🧠 *تفاصيل الحالة النفسية* 🧠
+🧠 تفاصيل الحالة النفسية
 
-    📅 *تاريخ التشخيص*: ${state.diagnosisDate}
-    🏷️ *نوع المرض*: ${state.mentalIllnessType}
+📅 تاريخ التشخيص: ${state.diagnosisDate}
+🏷️ نوع المرض: ${state.mentalIllnessType}
 
-    💡 *الأعراض*:
-    ${state.symptomsList.map((symptom) => "🔹 $symptom").join('\n')}
+🤒 الأعراض:
+${state.symptomsList.asMap().entries.map((e) => "${e.key + 1}. ${e.value}").join('\n')}
 
-    ⚠️ *شدة المرض*: ${state.illnessSeverity}
-    ⏳ *مدة المرض*: ${state.illnessDuration}
+⚠️ شدة المرض: ${state.illnessSeverity}
+⏳ مدة المرض: ${state.illnessDuration}
 
-    🚨 *حالات الطوارئ النفسية*: ${state.selectedPsychologicalEmergencies ?? "لا توجد"}
-    👨‍👩‍👧‍👦 *الدعم الاجتماعي*: ${state.socialSupport ?? "غير محدد"}
+🚨 حالات الطوارئ النفسية: ${state.selectedPsychologicalEmergencies ?? "لا توجد"}
+👨‍👩‍👧‍👦 الدعم الاجتماعي: ${state.socialSupport ?? "غير محدد"}
 
-    💊 *التأثيرات الجانبية للدواء*: 
-    ${state.selectedMedicationSideEffects ?? "لا توجد"}
+💊 التأثيرات الجانبية للدواء:
+${state.selectedMedicationSideEffects ?? "لا توجد"}
 
-    🏋️ *الأنشطة المساندة*: 
-    ${state.preferredActivitiesForImprovement ?? "غير محدد"}
+🏃 الأنشطة المساندة للصحة النفسية:
+${state.preferredActivitiesForImprovement ?? "غير محدد"}
 
-    ${state.hasImpactfulIncident.answer == true ? '🚑 *حادث مؤثر*:\n- النوع: ${state.hasImpactfulIncident.incidentType}\n- التاريخ: ${state.hasImpactfulIncident.incidentDate}\n- التأثير: ${state.hasImpactfulIncident.incidentPsychologicalImpact}' : '🚑 *حادث مؤثر*: لا'}
+🚑 وجود حادث مؤثر:
+${state.hasImpactfulIncident.answer == true ? "نعم" : "لا"}
+${state.hasImpactfulIncident.answer == true ? '''
+نوع الموقف: ${state.hasImpactfulIncident.incidentType ?? "غير محدد"}
+تاريخ الموقف: ${state.hasImpactfulIncident.incidentDate ?? "غير محدد"}
+تأثير الحادث: ${state.hasImpactfulIncident.incidentPsychologicalImpact ?? "غير محدد"}
+''' : ""}
 
-    👪 *حالات عائلية مشابهة*: 
-    ${state.hasFamilySimilarMentalIllnessCases.answer == true ? 'نعم (${state.hasFamilySimilarMentalIllnessCases.relationship})' : 'لا'}
+👪 حالات نفسية مشابهة في العائلة:
+${state.hasFamilySimilarMentalIllnessCases.answer == true ? "نعم" : "لا"}
+${state.hasFamilySimilarMentalIllnessCases.answer == true ? '''
+صلة القرابة: ${state.hasFamilySimilarMentalIllnessCases.relationship ?? "غير محدد"}
+''' : ""}
 
-    🏥 *العلاج النفسي*: 
-    ${state.isReceivingPsychologicalTreatment.answer == true ? '''
-    - الأدوية: ${state.isReceivingPsychologicalTreatment.medicationsUsed}
-    - تأثير الأدوية: ${state.isReceivingPsychologicalTreatment.medicationEffectOnDailyLife}
-    - نوع العلاج: ${state.isReceivingPsychologicalTreatment.previousTherapyType}
-    - عدد الجلسات: ${state.isReceivingPsychologicalTreatment.numberOfSessions}
-    - الرضا عن العلاج: ${state.isReceivingPsychologicalTreatment.therapySatisfaction}
-    - الطبيب: ${state.isReceivingPsychologicalTreatment.doctorOrSpecialist}
-    - المركز: ${state.isReceivingPsychologicalTreatment.hospitalOrCenter}
-    - الدولة: ${state.isReceivingPsychologicalTreatment.country}
-    ''' : 'لا'}
-    ''';
+🩺 تلقي علاج نفسي:
+${state.isReceivingPsychologicalTreatment.answer == true ? "نعم" : "لا"}
+${state.isReceivingPsychologicalTreatment.answer == true ? '''
+الأدوية المستخدمة: ${state.isReceivingPsychologicalTreatment.medicationsUsed ?? "غير محدد"}
+تأثير الدواء على الحياة اليومية: ${state.isReceivingPsychologicalTreatment.medicationEffectOnDailyLife ?? "غير محدد"}
+نوع العلاج النفسي: ${state.isReceivingPsychologicalTreatment.previousTherapyType ?? "غير محدد"}
+عدد الجلسات: ${state.isReceivingPsychologicalTreatment.numberOfSessions ?? "غير محدد"}
+الرضا عن نتيجة الجلسات: ${state.isReceivingPsychologicalTreatment.therapySatisfaction ?? "غير محدد"}
+الطبيب / الأخصائي: ${state.isReceivingPsychologicalTreatment.doctorOrSpecialist ?? "غير محدد"}
+المستشفى / المركز: ${state.isReceivingPsychologicalTreatment.hospitalOrCenter ?? "غير محدد"}
+الدولة: ${state.isReceivingPsychologicalTreatment.country ?? "غير محدد"}
+''' : ""}
+''';
 
       await Share.share(text);
     } catch (e) {
