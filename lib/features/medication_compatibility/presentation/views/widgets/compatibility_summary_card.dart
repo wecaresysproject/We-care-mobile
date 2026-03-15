@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 
 class CompatibilitySummaryCard extends StatelessWidget {
-  const CompatibilitySummaryCard({super.key});
+  const CompatibilitySummaryCard({super.key, required this.analysis});
+  final CompatibilityAnalysisModel analysis;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class CompatibilitySummaryCard extends StatelessWidget {
             const Divider(color: AppColorsManager.mainDarkBlue, thickness: 0.5),
             const SizedBox(height: 8),
             Text(
-              "تم تحليل التوافق بين الدواء الجديد والملف الطبي للمريض. تم اكتشاف بعض التداخلات الدوائية التي تتطلب الانتباه والمتابعة مع الطبيب.",
+              analysis.analysisSummary,
               style: AppTextStyles.font14blackWeight400.copyWith(
                 height: 1.5,
               ),

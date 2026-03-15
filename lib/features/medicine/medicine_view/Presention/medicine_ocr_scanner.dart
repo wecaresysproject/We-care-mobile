@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/widgets/matched_medicines_results_list.dart';
@@ -26,6 +29,9 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   String medicineNameOnly = "";
   final StreamController<String> controller = StreamController<String>();
+  final GlobalKey _previewKey = GlobalKey(); // لقياس مساحة عرض الكاميرا
+  final GlobalKey _scanBoxKey = GlobalKey(); // لقياس المربع الأزرق
+
   bool torchOn = false;
   bool loading = false;
 
@@ -129,7 +135,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
 
     _cameraController = CameraController(
       cameras![0],
-      ResolutionPreset.high,
+      ResolutionPreset.medium,
       enableAudio: false,
     );
 
@@ -168,6 +174,69 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
     }
   }
 
+  Future<File?> _cropToScanBox(String imagePath) async {
+    try {
+      if (_previewKey.currentContext == null ||
+          _scanBoxKey.currentContext == null) {
+        return null;
+      }
+
+      final RenderBox previewBox =
+          _previewKey.currentContext!.findRenderObject() as RenderBox;
+
+      final RenderBox scanBox =
+          _scanBoxKey.currentContext!.findRenderObject() as RenderBox;
+
+      final previewPosition = previewBox.localToGlobal(Offset.zero);
+      final scanPosition = scanBox.localToGlobal(Offset.zero);
+
+      final previewSize = previewBox.size;
+      final scanSize = scanBox.size;
+
+      final double relativeX = scanPosition.dx - previewPosition.dx;
+      final double relativeY = scanPosition.dy - previewPosition.dy;
+
+      final bytes = await File(imagePath).readAsBytes();
+      final img.Image original = img.decodeImage(bytes)!;
+
+      final double scaleX = original.width / previewSize.width;
+      final double scaleY = original.height / previewSize.height;
+
+      int cropX = (relativeX * scaleX).toInt();
+      int cropY = (relativeY * scaleY).toInt();
+      int cropWidth = (scanSize.width * scaleX).toInt();
+      int cropHeight = (scanSize.height * scaleY).toInt();
+
+      // حماية من الحدود
+      cropX = math.max(0, cropX);
+      cropY = math.max(0, cropY);
+
+      if (cropX + cropWidth > original.width) {
+        cropWidth = original.width - cropX;
+      }
+
+      if (cropY + cropHeight > original.height) {
+        cropHeight = original.height - cropY;
+      }
+
+      final img.Image cropped = img.copyCrop(
+        original,
+        x: cropX,
+        y: cropY,
+        width: cropWidth,
+        height: cropHeight,
+      );
+
+      final croppedFile = File("${imagePath}_crop.jpg");
+      await croppedFile.writeAsBytes(img.encodeJpg(cropped));
+
+      return croppedFile;
+    } catch (e) {
+      log("Crop error: $e");
+      return null;
+    }
+  }
+
   Future<void> _scanImage() async {
     if (loading ||
         _cameraController == null ||
@@ -189,7 +258,11 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
 
     try {
       final pictureFile = await _cameraController!.takePicture();
-      final inputImage = InputImage.fromFilePath(pictureFile.path);
+      // قص الصورة حسب المربع الأزرق
+      final croppedFile = await _cropToScanBox(pictureFile.path);
+      final inputImage = InputImage.fromFilePath(
+        croppedFile?.path ?? pictureFile.path,
+      );
       final recognizedText = await _textRecognizer!.processImage(inputImage);
       final extractedMedicineName = _extractMedicineName(recognizedText.text);
 
@@ -209,134 +282,110 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
   }
 
   String _extractMedicineName(String fullText) {
-    if (fullText.isEmpty) return "";
+    if (fullText.trim().isEmpty) return "";
 
-    final allLines = fullText.split('\n');
-    List<String> allWords = [];
-    Map<String, int> wordScores = {};
+    final lines = fullText.split('\n');
 
-    for (var line in allLines) {
-      final words = line
-          .split(' ')
-          .where((word) =>
-              word.trim().length >= 3 && RegExp(r'[A-Za-z]').hasMatch(word))
-          .map((word) => word.trim())
-          .toList();
-      allWords.addAll(words);
+    List<String> candidates = [];
+
+    for (var line in lines) {
+      String cleaned = line
+          .replaceAll(
+              RegExp(r'[0-9]+ ?(mg|ml|g|mcg|%)', caseSensitive: false), '')
+          .replaceAll(RegExp(r'[^A-Za-z ]'), '')
+          .trim();
+
+      if (cleaned.length < 3) continue;
+
+      final words = cleaned.split(' ').where((w) => w.length >= 3).toList();
+
+      if (words.isEmpty) continue;
+
+      // كلمة واحدة
+      candidates.add(words.first);
+
+      // كلمتين (اسم مركب)
+      if (words.length >= 2) {
+        candidates.add("${words[0]} ${words[1]}");
+      }
     }
 
-    if (allWords.isEmpty) return "";
+    if (candidates.isEmpty) return "";
 
-    for (var word in allWords) {
+    Map<String, int> scores = {};
+
+    final pharmaSuffixes = [
+      'cin',
+      'zole',
+      'pril',
+      'zepam',
+      'olol',
+      'mide',
+      'sone',
+      'zine',
+      'tine',
+      'dine',
+      'pine',
+      'cillin',
+      'mycin'
+    ];
+
+    final stopWords = [
+      'tablet',
+      'tablets',
+      'capsule',
+      'capsules',
+      'dose',
+      'daily',
+      'warning',
+      'storage',
+      'keep',
+      'ingredients',
+      'contains'
+    ];
+
+    for (var candidate in candidates) {
       int score = 0;
 
-      if (word == word.toUpperCase() && word.length >= 4) {
-        score += 10 + word.length;
-      } else if (word[0] == word[0].toUpperCase() &&
-          word.substring(1) == word.substring(1).toLowerCase() &&
-          word.length >= 5) {
-        score += 7;
+      final lower = candidate.toLowerCase();
+
+      if (stopWords.contains(lower)) continue;
+
+      // الطول
+      score += candidate.length;
+
+      // uppercase
+      if (candidate == candidate.toUpperCase()) {
+        score += 10;
       }
 
-      score += (word.length >= 8)
-          ? 5
-          : (word.length >= 6)
-              ? 3
-              : 0;
-
-      if (RegExp(r'[^aeiouAEIOU]{3,}').hasMatch(word)) {
-        score += 2;
+      // capitalized
+      if (candidate[0].toUpperCase() == candidate[0]) {
+        score += 5;
       }
 
-      final pharmaSuffixes = [
-        'cin',
-        'xin',
-        'zole',
-        'pine',
-        'pril',
-        'sone',
-        'zine',
-        'zide',
-        'pam',
-        'lol',
-        'tin',
-        'tide',
-        'dryl',
-        'mide',
-        'zepam',
-        'caine',
-        'micin'
-      ];
-
+      // suffix شائع للأدوية
       for (var suffix in pharmaSuffixes) {
-        if (word.toLowerCase().endsWith(suffix)) {
-          score += 5;
+        if (lower.endsWith(suffix)) {
+          score += 8;
           break;
         }
       }
 
-      final commonWords = [
-        'tablet',
-        'capsule',
-        'dose',
-        'daily',
-        'take',
-        'with',
-        'water',
-        'food',
-        'before',
-        'after',
-        'adult',
-        'child',
-        'store',
-        'keep',
-        'contains',
-        'ingredients',
-        'warning',
-        'caution',
-        'date'
-      ];
-
-      if (commonWords.contains(word.toLowerCase())) {
-        score -= 5;
+      // وجود حروف كثيرة بدون حركات (غالباً اسم علمي)
+      if (RegExp(r'[^aeiou]{4,}', caseSensitive: false).hasMatch(candidate)) {
+        score += 4;
       }
 
-      final int lineIndex = allLines.indexWhere((line) => line.contains(word));
-      if (lineIndex == 0) {
-        score += 3;
-      } else if (lineIndex == 1) {
-        score += 1;
-      }
-
-      wordScores[word] = score;
+      scores[candidate] = score;
     }
 
-    String bestCandidate = "";
-    int highestScore = -1;
+    if (scores.isEmpty) return "";
 
-    wordScores.forEach((word, score) {
-      if (score > highestScore) {
-        highestScore = score;
-        bestCandidate = word;
-      }
-    });
+    final sorted = scores.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
-    if (bestCandidate.isNotEmpty && wordScores[bestCandidate]! > 0) {
-      return bestCandidate;
-    }
-
-    final upperCaseWords = allWords
-        .where((w) => w == w.toUpperCase() && RegExp(r'[A-Z]').hasMatch(w))
-        .toList();
-    if (upperCaseWords.isNotEmpty) {
-      return upperCaseWords.reduce((a, b) => a.length > b.length ? a : b);
-    }
-
-    if (allWords.isNotEmpty) {
-      return allWords.reduce((a, b) => a.length > b.length ? a : b);
-    }
-
-    return allLines.first.trim();
+    return sorted.first.key;
   }
 
   void setText(value) {
@@ -375,13 +424,14 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
           children: [
             // Camera Preview (1/6 of screen height)
             SizedBox(
+              key: _previewKey,
               height: MediaQuery.of(context).size.height / 7,
               child: Stack(
                 children: [
                   if (_isCameraInitialized && !loading)
                     SizedBox.expand(
                       child: FittedBox(
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                         child: SizedBox(
                           width: _cameraController!.value.previewSize!.width,
                           height: _cameraController!.value.previewSize!.height,
@@ -390,16 +440,20 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                       ),
                     )
                   else
-                    Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color.fromARGB(153, 102, 160, 241),
-                        width: 4.0,
+                    const Center(child: CircularProgressIndicator()),
+
+                  // المربع الأزرق (منطقة الـ scan)
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      key: _scanBoxKey,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height / 15,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color.fromARGB(153, 102, 160, 241),
+                          width: 4,
+                        ),
                       ),
                     ),
                   ),

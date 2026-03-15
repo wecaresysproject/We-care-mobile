@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
-import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_result_view.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/simulated_medical_modules_checklist_loader.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -16,26 +15,22 @@ class MedicationCompatibilityActionButton extends StatelessWidget {
     return BlocConsumer<MedicinesDataEntryCubit, MedicinesDataEntryState>(
       listenWhen: (prev, curr) =>
           prev.analyzeMedicalCompatibilityStatus !=
-              curr.analyzeMedicalCompatibilityStatus ||
-          prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
+          curr.analyzeMedicalCompatibilityStatus,
       buildWhen: (prev, curr) =>
           prev.isMedicationCompatibilityFormValidated !=
               curr.isMedicationCompatibilityFormValidated ||
-          prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus ||
           prev.analyzeMedicalCompatibilityStatus !=
               curr.analyzeMedicalCompatibilityStatus,
       listener: (context, state) async {
         if (state.analyzeMedicalCompatibilityStatus == RequestStatus.success) {
           if (!context.mounted) return;
-          AppLogger.info(
-              "xxx: Navigating to medication compatibility result view");
           final cubit = context.read<MedicinesDataEntryCubit>();
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (_) => BlocProvider.value(
                 value: cubit,
-                child: const MedicationCompatibilityResultView(),
+                child: const SimulatedMedicalModulesChecklistLoader(),
               ),
             ),
           );
@@ -49,14 +44,12 @@ class MedicationCompatibilityActionButton extends StatelessWidget {
           isLoading:
               state.analyzeMedicalCompatibilityStatus == RequestStatus.loading,
           title: "تحليل التوافق",
-          onPressed: state.isMedicationCompatibilityFormValidated
-              ? () async {
-                  await context
-                      .read<MedicinesDataEntryCubit>()
-                      .analyzeMedicalCompatibility();
-                }
-              : null,
-          isEnabled: state.isMedicationCompatibilityFormValidated,
+          onPressed: () async {
+            await context
+                .read<MedicinesDataEntryCubit>()
+                .analyzeMedicalCompatibility();
+          },
+          isEnabled: true, // state.isMedicationCompatibilityFormValidated,
         );
       },
     );

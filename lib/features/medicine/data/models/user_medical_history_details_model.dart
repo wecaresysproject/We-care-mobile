@@ -280,7 +280,7 @@ class MedicalTestModel extends Equatable {
 
 @JsonSerializable()
 class MedicalTestResultModel extends Equatable {
-  final dynamic value;
+  final num? value;
   final String? testDate;
 
   const MedicalTestResultModel({this.value, this.testDate});

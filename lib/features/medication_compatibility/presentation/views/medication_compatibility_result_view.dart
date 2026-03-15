@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_summary_card.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/simulated_medical_modules_checklist_loader.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -32,11 +33,7 @@ class MedicationCompatibilityResultView extends StatelessWidget {
               builder: (context, state) {
                 if (state.analyzeMedicalCompatibilityStatus ==
                     RequestStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColorsManager.mainDarkBlue,
-                    ),
-                  );
+                  return const SimulatedMedicalModulesChecklistLoader();
                 }
 
                 if (state.analyzeMedicalCompatibilityStatus ==
@@ -67,7 +64,7 @@ class MedicationCompatibilityResultView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CompatibilitySummaryCard(),
+                        CompatibilitySummaryCard(analysis: analysis),
                         const SizedBox(height: 24),
                         if (analysis.issues.isEmpty)
                           _buildNoIssuesState()
