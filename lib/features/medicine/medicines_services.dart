@@ -145,4 +145,7 @@ abstract class MedicinesServices {
     @Query('language') String language,
     @Body() Map<String, dynamic> body,
   );
+
+  @GET(MedicinesApiConstants.getUserMedicalHistoryDetails)
+  Future<dynamic> getUserMedicalHistoryDetails();
 }

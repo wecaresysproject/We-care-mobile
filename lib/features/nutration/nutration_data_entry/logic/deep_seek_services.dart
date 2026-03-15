@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 
 class DeepSeekService {
@@ -507,7 +509,9 @@ $dietInput
 ''';
   }
 
-  static Future<void> getMedicationCompitability() async {
+  static Future<CompatibilityAnalysisModel?> analyzeMedicalCompatibility({
+    required String userPrompt,
+  }) async {
     try {
       final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
       final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
@@ -528,56 +532,162 @@ $dietInput
               },
               {
                 'role': 'user',
-                'content': buildUserMedicationCompitabilityPrompt(),
+                'content': userPrompt,
               }
             ],
             'temperature': 0.1,
-            'max_tokens': 8000, // مهم لتقليل cost ومنع expansion
+            'max_tokens': 4000,
           },
         ),
       );
 
       if (response.statusCode == 200) {
-        /// ✅ UTF8 safe decoding
+        /// decode UTF8 safely
         final decoded = jsonDecode(utf8.decode(response.bodyBytes));
 
         final content = decoded['choices']?[0]?['message']?['content'];
+
         if (content == null) {
           AppLogger.error('DeepSeek response content is null');
-          return;
+          return null;
         }
 
-        AppLogger.debug('DeepSeek response (raw): $content');
+        AppLogger.debug('DeepSeek response raw: $content');
 
+        /// extract JSON from response
         final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
 
         if (jsonMatch == null) {
-          AppLogger.error('❗ JSON not found inside DeepSeek response');
-          return;
+          AppLogger.error('JSON not found in DeepSeek response');
+          return null;
         }
 
         final jsonString = jsonMatch.group(0)!;
-        final nutritionJson = jsonDecode(jsonString);
 
-        // return NutrationFactsModel.fromJson(nutritionJson);
+        AppLogger.debug('Parsed JSON: $jsonString');
+
+        final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+
+        /// parse using json_serializable model
+        return CompatibilityAnalysisModel.fromJson(jsonMap);
       } else {
         AppLogger.error(
           'DeepSeek API Error: ${response.statusCode} - ${response.body}',
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error analyzing diet plan: $e');
+      AppLogger.error('Error analyzing medical compatibility: $e');
       AppLogger.error('StackTrace: $stack');
     }
 
-    return;
+    return null;
   }
 
   static String buildSystemMedicationCompitabilityPrompt() {
-    return "";
+    return '''
+أنت نظام تحليل طبي متخصص في تقييم توافق الأدوية.
+
+مهمتك تحليل التداخل بين دواء جديد وبين الملف الطبي الكامل للمريض
+وفق بروتوكول "توافق أدويتي".
+
+يجب تحليل التداخل مع:
+
+- الأدوية الحالية
+- الأدوية المتوقفة حديثاً
+- الأمراض المزمنة
+- القياسات الحيوية
+- التحاليل الطبية
+- الحساسية
+- النظام الغذائي
+- المكملات الغذائية
+- النشاط الرياضي
+- الشكاوى الطبية الأخرى
+
+إذا كان أحد المحاور لا يحتوي بيانات يجب تجاهله.
+
+================================================
+تعريف مستويات الخطورة (Risk Levels)
+================================================
+
+L1 - Critical  
+خطر حرج قد يسبب مضاعفات خطيرة أو مهددة للحياة مثل:
+- تداخل دوائي قاتل
+- فشل عضوي حاد
+- نزيف خطير
+- توقف القلب أو التنفس
+
+L2 - High  
+خطر مرتفع يتطلب تدخل طبي أو تعديل في الجرعة مثل:
+- تداخل دوائي قوي
+- زيادة شديدة في الآثار الجانبية
+- احتمال تسمم دوائي
+
+L3 - Moderate  
+خطر متوسط قد يؤثر على فعالية العلاج أو يسبب أعراض جانبية ملحوظة.
+
+L4 - Low  
+تداخل بسيط لا يشكل خطراً كبيراً لكنه قد يحتاج مراقبة.
+
+L5 - Cautionary  
+لا يوجد تعارض مباشر لكن توجد نصيحة احترازية أو توجيه صحي.
+
+================================================
+هيكل الإخراج المطلوب (Output JSON Structure)
+================================================
+
+يجب أن يكون الإخراج JSON فقط بدون أي نص خارجه بالشكل التالي:
+
+{
+  "analysisSummary": "string",
+  "issues": [
+    {
+      "title": "string",
+      "scientificReason": "string",
+      "riskLevel": "L1 | L2 | L3 | L4 | L5",
+      "doctorQuestion": "string"
+    }
+  ]
+}
+
+قواعد الإخراج:
+
+- أرجع JSON فقط
+- لا تضف أي نص خارج JSON
+- كل issue يجب أن يحتوي على:
+  title
+  scientificReason
+  riskLevel
+  doctorQuestion
+- النص باللغة العربية الطبية المبسطة
+''';
   }
 
-  static String buildUserMedicationCompitabilityPrompt() {
-    return "";
+  static String buildUserMedicationCompitabilityPrompt({
+    required String medicineName,
+    required String form,
+    required String dose,
+    required String doseAmount,
+    required String frequency,
+    required String duration,
+    UserMedicalHistoryDetailsModel? medicalProfile,
+  }) {
+    return '''
+أنا الآن بصدد تناول دواء جديد.
+
+بيانات الدواء الجديد:
+
+اسم الدواء: $medicineName
+طريقة الاستخدام: $form
+جرعة العبوة: $dose
+كمية الجرعة: $doseAmount
+عدد مرات الجرعة: $frequency
+مدة الاستخدام: $duration
+
+الملف الطبي للمريض:
+
+${medicalProfile?.toJson()}
+
+قم بإجراء تحليل توافق شامل.
+''';
   }
 }

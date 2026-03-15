@@ -4,6 +4,7 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 
 class MedicinesDataEntryRepo {
@@ -255,6 +256,19 @@ class MedicinesDataEntryRepo {
         userType,
       );
       return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UserMedicalHistoryDetailsModel>>
+      getUserMedicalHistoryDetails() async {
+    try {
+      final response = await _medicinesServices.getUserMedicalHistoryDetails();
+      final userMedicalHistoryDetails =
+          UserMedicalHistoryDetailsModel.fromJson(response['data']);
+
+      return ApiResult.success(userMedicalHistoryDetails);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

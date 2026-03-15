@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 part 'medication_compitability_state.dart';
 
@@ -23,7 +22,7 @@ class MedicationCompitabilityCubit extends Cubit<MedicationCompitabilityState> {
       );
 
       // Call ChatGPT service
-      final result = await DeepSeekService.getMedicationCompitability();
+      // final result = await DeepSeekService.getMedicationCompitability();
       // if (nutritionData != null) {
       //   nutritionData.userDietplan = dietInput;
       // }

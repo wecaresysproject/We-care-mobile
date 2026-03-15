@@ -51,6 +51,9 @@ class MedicinesApiConstants {
   static const getFilteredMedicines =
       "MedicineUserEntryPage/SearchUserMedicineDocuments";
 
+  static const getUserMedicalHistoryDetails =
+      "MedicalReports/full-report-Medical-file-data";
+
   /// medicine alarms local database key
   static const alarmsScheduledPerMedicineBoxKey =
       "alarmsScheduledPerMedicineBoxKey";

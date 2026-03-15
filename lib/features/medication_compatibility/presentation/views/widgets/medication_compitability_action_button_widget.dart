@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_result_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -14,32 +15,45 @@ class MedicationCompatibilityActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<MedicinesDataEntryCubit, MedicinesDataEntryState>(
       listenWhen: (prev, curr) =>
-          curr.medicinesDataEntryStatus == RequestStatus.failure ||
-          curr.medicinesDataEntryStatus == RequestStatus.success,
+          prev.analyzeMedicalCompatibilityStatus !=
+              curr.analyzeMedicalCompatibilityStatus ||
+          prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
       buildWhen: (prev, curr) =>
           prev.isMedicationCompatibilityFormValidated !=
               curr.isMedicationCompatibilityFormValidated ||
-          prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus,
+          prev.medicinesDataEntryStatus != curr.medicinesDataEntryStatus ||
+          prev.analyzeMedicalCompatibilityStatus !=
+              curr.analyzeMedicalCompatibilityStatus,
       listener: (context, state) async {
-        if (state.medicinesDataEntryStatus == RequestStatus.success) {
-          await showSuccess(state.message);
+        if (state.analyzeMedicalCompatibilityStatus == RequestStatus.success) {
           if (!context.mounted) return;
-          // pop with result to force refresh parent
-          context.pop(result: true);
-        } else if (state.medicinesDataEntryStatus == RequestStatus.failure) {
+          AppLogger.info(
+              "xxx: Navigating to medication compatibility result view");
+          final cubit = context.read<MedicinesDataEntryCubit>();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: cubit,
+                child: const MedicationCompatibilityResultView(),
+              ),
+            ),
+          );
+        } else if (state.analyzeMedicalCompatibilityStatus ==
+            RequestStatus.failure) {
           await showError(state.message);
         }
       },
       builder: (context, state) {
         return AppCustomButton(
-          isLoading: state.medicinesDataEntryStatus == RequestStatus.loading,
-          title: state.isEditMode ? "تحديث البيانات" : context.translate.send,
+          isLoading:
+              state.analyzeMedicalCompatibilityStatus == RequestStatus.loading,
+          title: "تحليل التوافق",
           onPressed: state.isMedicationCompatibilityFormValidated
               ? () async {
-                  // trigger submit
-                  // await context
-                  //     .read<MedicinesDataEntryCubit>()
-                  //     .submitMedicationCompatibilityData();
+                  await context
+                      .read<MedicinesDataEntryCubit>()
+                      .analyzeMedicalCompatibility();
                 }
               : null,
           isEnabled: state.isMedicationCompatibilityFormValidated,

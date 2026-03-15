@@ -6,10 +6,15 @@ import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.dart';
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
+import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 
 @immutable
 class MedicinesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
+  final RequestStatus analyzeMedicalCompatibilityStatus;
+  final UserMedicalHistoryDetailsModel? userMedicalProfileHistory;
+  final CompatibilityAnalysisModel? compatibilityAnalysis;
   final String? medicineStartDate;
   final String? selectedMedicineName;
   final String? selectedMedicalForm;
@@ -57,6 +62,9 @@ class MedicinesDataEntryState extends Equatable {
 
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
+    this.analyzeMedicalCompatibilityStatus = RequestStatus.initial,
+    this.userMedicalProfileHistory,
+    this.compatibilityAnalysis,
     this.isFormValidated = false,
     this.isMedicationCompatibilityFormValidated = false,
     this.isAddNewMedicineFormValidated = false,
@@ -105,6 +113,9 @@ class MedicinesDataEntryState extends Equatable {
   const MedicinesDataEntryState.initialState()
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
+          analyzeMedicalCompatibilityStatus: RequestStatus.initial,
+          userMedicalProfileHistory: null,
+          compatibilityAnalysis: null,
           isFormValidated: false,
           isMedicationCompatibilityFormValidated: false,
           isAddNewMedicineFormValidated: false,
@@ -152,6 +163,9 @@ class MedicinesDataEntryState extends Equatable {
 
   MedicinesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
+    RequestStatus? analyzeMedicalCompatibilityStatus,
+    UserMedicalHistoryDetailsModel? userMedicalProfileHistory,
+    CompatibilityAnalysisModel? compatibilityAnalysis,
     bool? isFormValidated,
     bool? isMedicationCompatibilityFormValidated,
     bool? isAddNewMedicineFormValidated,
@@ -199,6 +213,12 @@ class MedicinesDataEntryState extends Equatable {
     return MedicinesDataEntryState(
       medicinesDataEntryStatus:
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
+      analyzeMedicalCompatibilityStatus: analyzeMedicalCompatibilityStatus ??
+          this.analyzeMedicalCompatibilityStatus,
+      userMedicalProfileHistory:
+          userMedicalProfileHistory ?? this.userMedicalProfileHistory,
+      compatibilityAnalysis:
+          compatibilityAnalysis ?? this.compatibilityAnalysis,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       isMedicationCompatibilityFormValidated:
           isMedicationCompatibilityFormValidated ??
@@ -265,6 +285,9 @@ class MedicinesDataEntryState extends Equatable {
   @override
   List<Object?> get props => [
         medicinesDataEntryStatus,
+        analyzeMedicalCompatibilityStatus,
+        userMedicalProfileHistory,
+        compatibilityAnalysis,
         isFormValidated,
         isMedicationCompatibilityFormValidated,
         isAddNewMedicineFormValidated,

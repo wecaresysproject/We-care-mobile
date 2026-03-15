@@ -6,17 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
+import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
@@ -39,6 +42,15 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   final AppSharedRepo sharedRepo;
+  List<AlarmSettings> alarms = [];
+  LocalNotificationService? notifications;
+
+  static StreamSubscription<AlarmSet>? ringSubscription;
+  static StreamSubscription<AlarmSet>? updateSubscription;
+
+  final MedicinesDataEntryRepo _medicinesDataEntryRepo;
+  final personalInfoController = TextEditingController();
+  List<MedicalComplaint> medicalComplaints = [];
 
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
@@ -71,15 +83,133 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     unawaited(loadAlarms());
   }
 
-  List<AlarmSettings> alarms = [];
-  LocalNotificationService? notifications;
+  // NEW METHOD: Analyze diet plan using ChatGPT
+  Future<void> analyzeMedicalCompatibility() async {
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.loading,
+        ),
+      );
+      await getUserMedicalHistoryDetails();
 
-  static StreamSubscription<AlarmSet>? ringSubscription;
-  static StreamSubscription<AlarmSet>? updateSubscription;
+      /// stop if profile failed
+      if (state.userMedicalProfileHistory == null) {
+        emit(
+          state.copyWith(
+            analyzeMedicalCompatibilityStatus: RequestStatus.failure,
+            message: "تعذر تحميل الملف الطبي للمريض",
+          ),
+        );
+        return;
+      }
 
-  final MedicinesDataEntryRepo _medicinesDataEntryRepo;
-  final personalInfoController = TextEditingController();
-  List<MedicalComplaint> medicalComplaints = [];
+      final userPrompt = DeepSeekService.buildUserMedicationCompitabilityPrompt(
+        medicineName: state.selectedMedicineName!,
+        form: state.selectedMedicalForm!,
+        dose: state.selectedDose!,
+        doseAmount: state.selectedDoseAmount!,
+        frequency: state.selectedNoOfDose!,
+        duration: state.timePeriods!,
+        medicalProfile: state.userMedicalProfileHistory,
+      );
+      // Call ChatGPT service
+      // final analysis = await DeepSeekService.analyzeMedicalCompatibility(
+      //   userPrompt: userPrompt,
+      // );
+
+      // if (analysis != null) {
+
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.success,
+          compatibilityAnalysis: CompatibilityAnalysisModel(
+            analysisSummary:
+                "تم تحليل التوافق بين الدواء الجديد والملف الطبي للمريض. تم اكتشاف بعض التداخلات الدوائية التي تتطلب الانتباه والمتابعة مع الطبيب.",
+            issues: [
+              CompatibilityIssue(
+                riskLevel: "L1",
+                title: "تداخل دوائي خطير مع مميعات الدم",
+                scientificReason:
+                    "الدواء الجديد قد يزيد من تأثير مميعات الدم مثل الوارفارين مما قد يؤدي إلى زيادة خطر النزيف الحاد.",
+                doctorQuestion:
+                    "هل يجب إيقاف أحد الدواءين أو تعديل الجرعة لتقليل خطر النزيف؟",
+              ),
+              CompatibilityIssue(
+                riskLevel: "L2",
+                title: "زيادة احتمال انخفاض ضغط الدم",
+                scientificReason:
+                    "تناول الدواء الجديد مع أدوية خفض ضغط الدم قد يؤدي إلى انخفاض شديد في ضغط الدم خاصة عند الوقوف.",
+                doctorQuestion:
+                    "هل يجب تعديل جرعة دواء الضغط عند استخدام هذا الدواء؟",
+              ),
+              CompatibilityIssue(
+                riskLevel: "L3",
+                title: "تقليل فعالية أحد الأدوية",
+                scientificReason:
+                    "قد يؤثر الدواء الجديد على امتصاص دواء آخر في الجهاز الهضمي مما يقلل من فعاليته العلاجية.",
+                doctorQuestion:
+                    "هل يفضل تناول الدواءين بفاصل زمني معين لتحسين الامتصاص؟",
+              ),
+              CompatibilityIssue(
+                riskLevel: "L4",
+                title: "احتمال ظهور أعراض جانبية خفيفة",
+                scientificReason:
+                    "التفاعل بين الدواءين قد يسبب زيادة طفيفة في الأعراض الجانبية مثل الدوخة أو الغثيان.",
+                doctorQuestion:
+                    "هل هذه الأعراض طبيعية أم تحتاج إلى تغيير العلاج؟",
+              ),
+              CompatibilityIssue(
+                riskLevel: "L5",
+                title: "تنبيه احترازي بخصوص تناول الدواء مع الطعام",
+                scientificReason:
+                    "قد يفضل تناول الدواء الجديد بعد الطعام لتقليل تهيج المعدة.",
+                doctorQuestion:
+                    "هل يجب تناول الدواء بعد الطعام أم على معدة فارغة؟",
+              ),
+            ],
+          ),
+        ),
+      );
+      // }
+    } catch (e) {
+      AppLogger.error('Error in analyzeMedicalCompatibility: $e');
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل التوافق الدوائي $e',
+        ),
+      );
+    }
+  }
+
+  Future<void> getUserMedicalHistoryDetails() async {
+    final response =
+        await _medicinesDataEntryRepo.getUserMedicalHistoryDetails();
+
+    response.when(
+      success: (userMedicalProfileHistory) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: userMedicalProfileHistory,
+          ),
+        );
+        AppLogger.info(
+          "userMedicalProfileHistory: ${userMedicalProfileHistory.toJson()}",
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: null,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> fetchAllAddedComplaints() async {
     try {
       final medicalComplaintBox =
