@@ -12,7 +12,7 @@ class DeepSeekService {
 
   static final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
 
-  static String? cachedSystemPrompt;
+  static String? nutrationSystemPrompt;
 
 //! real deepseek
   static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
@@ -151,8 +151,8 @@ class DeepSeekService {
   // }
 
   static String buildSystemNutritionPrompt() {
-    if (cachedSystemPrompt != null && cachedSystemPrompt!.isNotEmpty) {
-      return cachedSystemPrompt!;
+    if (nutrationSystemPrompt != null && nutrationSystemPrompt!.isNotEmpty) {
+      return nutrationSystemPrompt!;
     }
     return '''
 أنت محلل غذائي تنفيذي متخصص في تحليل الأصناف الغذائية اعتمادًا على خوارزمية تفصيلية معقدة.
