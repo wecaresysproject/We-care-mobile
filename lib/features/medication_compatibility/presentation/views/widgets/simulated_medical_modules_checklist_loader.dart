@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_result_view.dart';
+import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 
 class SimulatedMedicalModulesChecklistLoader extends StatefulWidget {
   const SimulatedMedicalModulesChecklistLoader({super.key});
@@ -45,25 +48,28 @@ class _SimulatedMedicalModulesChecklistLoaderState
   }
 
   void _startAnimation() {
-    _timer = Timer.periodic(const Duration(milliseconds: 350), (timer) {
-      if (_currentIndex < _modules.length - 1) {
-        setState(() {
-          _currentIndex++;
-        });
-      } else {
-        _timer?.cancel();
-        // final cubit = context.read<MedicinesDataEntryCubit>();
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (_) => BlocProvider.value(
-        //       value: cubit,
-        //       child: const MedicationCompatibilityResultView(),
-        //     ),
-        //   ),
-        // );
-      }
-    });
+    _timer = Timer.periodic(
+      const Duration(milliseconds: 350),
+      (timer) {
+        if (_currentIndex < _modules.length - 1) {
+          setState(() {
+            _currentIndex++;
+          });
+        } else {
+          _timer?.cancel();
+          final cubit = context.read<MedicinesDataEntryCubit>();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider.value(
+                value: cubit,
+                child: const MedicationCompatibilityResultView(),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override

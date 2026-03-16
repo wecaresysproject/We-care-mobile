@@ -422,30 +422,37 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
       body: SafeArea(
         child: Column(
           children: [
-            AspectRatio(
-              key: _previewKey,
-              aspectRatio: _cameraController!.value.aspectRatio,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CameraPreview(_cameraController!),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      key: _scanBoxKey,
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color.fromARGB(153, 102, 160, 241),
-                          width: 4,
+            _isCameraInitialized && _cameraController != null
+                ? AspectRatio(
+                    key: _previewKey,
+                    aspectRatio: _cameraController!.value.aspectRatio,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        CameraPreview(_cameraController!),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            key: _scanBoxKey,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 70,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Color.fromARGB(153, 102, 160, 241),
+                                width: 4,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                  )
+                : const Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Center(
+                      child: CircularProgressIndicator(),
                     ),
                   ),
-                ],
-              ),
-            ),
 
 // Camera Scan Button with enhanced animations
             Padding(
@@ -570,7 +577,9 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
             // Non-animated Instruction Text
             Container(
               margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20,
+              ),
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(0.7),
                 borderRadius: BorderRadius.circular(16),

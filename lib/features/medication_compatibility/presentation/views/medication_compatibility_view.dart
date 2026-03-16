@@ -19,7 +19,7 @@ class MedicationCompatibilityView extends StatelessWidget {
     return BlocProvider<MedicinesDataEntryCubit>(
       create: (context) {
         final cubit = getIt<MedicinesDataEntryCubit>();
-        cubit.initialDataEntryRequests();
+        cubit.initialRequestsForMedicalCompitability();
         return cubit;
       },
       child: Scaffold(

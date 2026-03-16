@@ -37,7 +37,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       },
     );
     notifications = LocalNotificationService();
-    emitModuleGuidanceData();
   }
 
   final AppSharedRepo sharedRepo;
@@ -344,13 +343,28 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       getAllUsageCategories(),
       getChronicDiseasesNames(),
       emitDoctorNames(),
-      emitModuleGuidanceData(),
+      emitModuleGuidanceData(
+        WeCareMedicalModules.medications,
+      ),
     ]);
   }
 
-  Future<void> emitModuleGuidanceData() async {
+  Future<void> initialRequestsForMedicalCompitability() async {
+    await Future.wait([
+      emitAllMedicinesNames(),
+      emitAllDosageFrequencies(),
+      getAllUsageCategories(),
+      getChronicDiseasesNames(),
+      emitDoctorNames(),
+      emitModuleGuidanceData(
+        WeCareMedicalModules.drugCheck,
+      ),
+    ]);
+  }
+
+  Future<void> emitModuleGuidanceData(WeCareMedicalModules module) async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.medications.name,
+      module.name,
     );
 
     response.when(
