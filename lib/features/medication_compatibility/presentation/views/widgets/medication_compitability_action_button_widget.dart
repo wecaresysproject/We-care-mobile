@@ -44,12 +44,14 @@ class MedicationCompatibilityActionButton extends StatelessWidget {
           isLoading:
               state.analyzeMedicalCompatibilityStatus == RequestStatus.loading,
           title: "تحليل التوافق",
-          onPressed: () async {
-            await context
-                .read<MedicinesDataEntryCubit>()
-                .analyzeMedicalCompatibility();
-          },
-          isEnabled: true, // state.isMedicationCompatibilityFormValidated,
+          onPressed: state.isMedicationCompatibilityFormValidated
+              ? () async {
+                  await context
+                      .read<MedicinesDataEntryCubit>()
+                      .analyzeMedicalCompatibility();
+                }
+              : null,
+          isEnabled: state.isMedicationCompatibilityFormValidated,
         );
       },
     );

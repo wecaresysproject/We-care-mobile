@@ -422,36 +422,22 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
       body: SafeArea(
         child: Column(
           children: [
-            // Camera Preview (1/6 of screen height)
-            SizedBox(
+            AspectRatio(
               key: _previewKey,
-              height: MediaQuery.of(context).size.height / 7,
+              aspectRatio: _cameraController!.value.aspectRatio,
               child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  if (_isCameraInitialized && !loading)
-                    SizedBox.expand(
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: SizedBox(
-                          width: _cameraController!.value.previewSize!.width,
-                          height: _cameraController!.value.previewSize!.height,
-                          child: CameraPreview(_cameraController!),
-                        ),
-                      ),
-                    )
-                  else
-                    const Center(child: CircularProgressIndicator()),
-
-                  // المربع الأزرق (منطقة الـ scan)
+                  CameraPreview(_cameraController!),
                   Align(
                     alignment: Alignment.center,
                     child: Container(
                       key: _scanBoxKey,
                       width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height / 15,
+                      height: 70,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: const Color.fromARGB(153, 102, 160, 241),
+                          color: Color.fromARGB(153, 102, 160, 241),
                           width: 4,
                         ),
                       ),

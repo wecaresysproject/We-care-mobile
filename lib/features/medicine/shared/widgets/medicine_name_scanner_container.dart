@@ -66,7 +66,8 @@ class MedicneNameScannerContainer extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: core_colors.AppColorsManager.mainDarkBlue,
+                      backgroundColor:
+                          core_colors.AppColorsManager.mainDarkBlue,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       shape: RoundedRectangleBorder(
