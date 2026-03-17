@@ -8,24 +8,7 @@ class CompatibilityIssueCard extends StatelessWidget {
 
   const CompatibilityIssueCard({super.key, required this.issue});
 
-  Color _getRiskColor(String riskLevel) {
-    switch (riskLevel.toUpperCase()) {
-      case 'L1':
-        return AppColorsManager.criticalRisk;
-      case 'L2':
-        return AppColorsManager.elevatedRisk;
-      case 'L3':
-        return AppColorsManager.warning;
-      case 'L4':
-        return Colors.blue;
-      case 'L5':
-        return Colors.grey;
-      default:
-        return Colors.black;
-    }
-  }
-
-  String _getRiskLabel(String level) {
+  String getRiskLabel(String level) {
     switch (level.toUpperCase()) {
       case 'L1':
         return 'حرج';
@@ -44,8 +27,8 @@ class CompatibilityIssueCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color riskColor = _getRiskColor(issue.riskLevel);
-    final String riskLabel = _getRiskLabel(issue.riskLevel);
+    final Color riskColor = getRiskColor(issue.riskLevel);
+    final String riskLabel = getRiskLabel(issue.riskLevel);
 
     return Card(
       color: const Color.fromARGB(255, 231, 239, 243),
@@ -138,5 +121,22 @@ class CompatibilityIssueCard extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+Color getRiskColor(String riskLevel) {
+  switch (riskLevel.toUpperCase()) {
+    case 'L1':
+      return AppColorsManager.criticalRisk;
+    case 'L2':
+      return AppColorsManager.elevatedRisk;
+    case 'L3':
+      return AppColorsManager.warning;
+    case 'L4':
+      return Colors.blue;
+    case 'L5':
+      return Colors.grey;
+    default:
+      return Colors.black;
   }
 }

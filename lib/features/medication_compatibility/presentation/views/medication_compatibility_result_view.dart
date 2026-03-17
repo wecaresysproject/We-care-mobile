@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_summary_card.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/risk_levels_row_widget.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/simulated_medical_modules_checklist_loader.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -27,6 +28,7 @@ class MedicationCompatibilityResultView extends StatelessWidget {
             showActionButtons: false,
           ).paddingSymmetricHorizontal(20),
           const SizedBox(height: 20),
+          const RiskLevelsLegend(),
           Expanded(
             child:
                 BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
