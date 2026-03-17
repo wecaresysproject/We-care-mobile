@@ -23,7 +23,7 @@ class SupplementsDataEntryCubit extends Cubit<SupplementsDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final result = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vitaminsAndSupplements.name,
+      WeCareMedicalModules.physicalActivityDataEntry.name,
     );
     result.when(
       success: (data) {

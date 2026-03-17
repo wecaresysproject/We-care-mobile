@@ -91,7 +91,7 @@ class SupplementsViewCubit extends Cubit<SupplementsViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vitaminsAndSupplements.name,
+      WeCareMedicalModules.vitaminsAndSupplementsView.name,
     );
     result.when(
       success: (data) {

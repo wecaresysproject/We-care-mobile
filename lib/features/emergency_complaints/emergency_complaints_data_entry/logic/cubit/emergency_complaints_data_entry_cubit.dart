@@ -485,7 +485,7 @@ class EmergencyComplaintsDataEntryCubit
 
   Future<void> emitModuleGuidanceData() async {
     final response = await _appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.emergenciesComplaints.name,
+      WeCareMedicalModules.emergenciesComplaintsDataEntry.name,
     );
 
     response.when(

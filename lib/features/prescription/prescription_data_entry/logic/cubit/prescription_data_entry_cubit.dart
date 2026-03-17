@@ -408,7 +408,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.prescriptions.name,
+      WeCareMedicalModules.prescriptionsDataEntry.name,
     );
 
     response.when(

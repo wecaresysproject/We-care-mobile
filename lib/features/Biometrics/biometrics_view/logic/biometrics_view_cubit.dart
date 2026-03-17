@@ -32,7 +32,7 @@ class BiometricsViewCubit extends Cubit<BiometricsViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vitalSigns.name,
+      WeCareMedicalModules.vitalSignsView.name,
     );
 
     result.when(

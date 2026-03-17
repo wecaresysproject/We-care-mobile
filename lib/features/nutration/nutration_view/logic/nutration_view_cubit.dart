@@ -110,7 +110,7 @@ class NutrationViewCubit extends Cubit<NutrationViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.nutrition.name,
+      WeCareMedicalModules.nutritionView.name,
     );
     result.when(
       success: (data) {

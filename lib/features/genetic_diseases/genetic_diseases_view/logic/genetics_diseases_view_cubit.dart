@@ -19,7 +19,7 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await sharedRepo
-        .getModuleGuidance(WeCareMedicalModules.geneticDiseases.name);
+        .getModuleGuidance(WeCareMedicalModules.geneticDiseasesView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

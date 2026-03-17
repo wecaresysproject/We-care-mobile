@@ -807,7 +807,7 @@ class GeneticDiseasesDataEntryCubit
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.geneticDiseases.name,
+      WeCareMedicalModules.geneticDiseasesDataEntry.name,
     );
     response.when(
       success: (response) {

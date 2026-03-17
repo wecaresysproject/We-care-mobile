@@ -718,7 +718,7 @@ class MedicalIllnessesDataEntryCubit
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.mentalHealth.name,
+      WeCareMedicalModules.mentalHealthDataEntry.name,
     );
 
     response.when(

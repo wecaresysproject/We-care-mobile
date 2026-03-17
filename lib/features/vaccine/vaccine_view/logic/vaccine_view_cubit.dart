@@ -147,7 +147,7 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vaccinations.name,
+      WeCareMedicalModules.vaccinationsView.name,
     );
 
     result.when(

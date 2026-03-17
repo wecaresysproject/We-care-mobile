@@ -18,9 +18,13 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
       : super(EssentialInfoViewState.initial());
 
   Future<void> init() async {
-    await getUserEssentialInfo();
-    await emitModuleGuidance();
-    await calculateCompletionPercentage();
+    Future.wait(
+      [
+        getUserEssentialInfo(),
+        emitModuleGuidance(),
+        calculateCompletionPercentage(),
+      ],
+    );
   }
 
   Future<void> getUserEssentialInfo() async {
@@ -257,7 +261,7 @@ ${hasInsurance ? '''
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.profile.name,
+      WeCareMedicalModules.profileDataView.name,
     );
 
     result.when(

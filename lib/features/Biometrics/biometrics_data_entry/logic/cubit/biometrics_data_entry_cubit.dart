@@ -59,7 +59,7 @@ class BiometricsDataEntryCubit extends Cubit<BiometricsDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vitalSigns.name,
+      WeCareMedicalModules.vitalSignsDataEntry.name,
     );
 
     response.when(

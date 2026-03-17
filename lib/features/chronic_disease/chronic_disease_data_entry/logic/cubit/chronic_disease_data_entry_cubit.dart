@@ -294,7 +294,7 @@ class ChronicDiseaseDataEntryCubit extends Cubit<ChronicDiseaseDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.chronicDiseases.name,
+      WeCareMedicalModules.chronicDiseasesDataEntry.name,
     );
     response.when(
       success: (response) {

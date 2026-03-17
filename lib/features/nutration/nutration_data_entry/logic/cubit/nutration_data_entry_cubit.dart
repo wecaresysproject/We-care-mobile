@@ -785,7 +785,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.nutrition.name,
+      WeCareMedicalModules.nutritionDataEntry.name,
     );
     response.when(
       success: (response) {

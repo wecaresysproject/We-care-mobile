@@ -13,7 +13,7 @@ class MentalIllnessDataViewCubit extends Cubit<MentalIllnessDataViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await sharedRepo
-        .getModuleGuidance(WeCareMedicalModules.mentalHealth.name);
+        .getModuleGuidance(WeCareMedicalModules.mentalHealthView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

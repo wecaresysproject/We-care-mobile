@@ -400,7 +400,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await _appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.allergies.name,
+      WeCareMedicalModules.allergiesDataEntry.name,
     );
     response.when(
       success: (response) {

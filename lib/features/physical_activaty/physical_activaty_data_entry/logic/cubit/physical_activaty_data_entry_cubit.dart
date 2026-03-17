@@ -345,7 +345,7 @@ class PhysicalActivatyDataEntryCubit
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.physicalActivity.name,
+      WeCareMedicalModules.physicalActivityDataEntry.name,
     );
     response.when(
       success: (response) {

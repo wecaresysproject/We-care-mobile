@@ -313,7 +313,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.vaccinations.name,
+      WeCareMedicalModules.vaccinationsDataEntry.name,
     );
     response.when(
       success: (response) {
