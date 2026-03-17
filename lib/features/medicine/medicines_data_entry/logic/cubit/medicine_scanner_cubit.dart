@@ -41,4 +41,13 @@ class MedicineScannerCubit extends Cubit<MedicineScannerState> {
       },
     );
   }
+
+  void clearMatchedMedicines() {
+    emit(
+      state.copyWith(
+        matchedMedicines: [],
+        medicinesScannerStatus: RequestStatus.initial,
+      ),
+    );
+  }
 }

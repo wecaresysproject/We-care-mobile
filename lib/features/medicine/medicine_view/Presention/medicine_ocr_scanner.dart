@@ -420,305 +420,321 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
         ],
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            _isCameraInitialized && _cameraController != null
-                ? AspectRatio(
-                    key: _previewKey,
-                    aspectRatio: _cameraController!.value.aspectRatio,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        CameraPreview(_cameraController!),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            key: _scanBoxKey,
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Color.fromARGB(153, 102, 160, 241),
-                                width: 4,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const Padding(
-                    padding: EdgeInsets.all(40),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-
-// Camera Scan Button with enhanced animations
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Center(
-                child: SizedBox(
-                  width: 70.0, // Increased size for better visibility
-                  height: 70.0, // Increased size for better visibility
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Base button
-                      AnimatedBuilder(
-                        animation: _pulseAnimationController,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: _isFirstLoad ? _pulseAnimation.value : 1.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color(0xFF1A73E8),
-                                    Color(0xFF4285F4),
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0xFF1A73E8).withOpacity(0.6),
-                                    blurRadius: _isFirstLoad ? 12.0 : 8.0,
-                                    spreadRadius: _isFirstLoad ? 2.0 : 0.0,
+            Column(
+              children: [
+                _isCameraInitialized && _cameraController != null
+                    ? AspectRatio(
+                        key: _previewKey,
+                        aspectRatio: _cameraController!.value.aspectRatio,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CameraPreview(_cameraController!),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                key: _scanBoxKey,
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                height: 70,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Color.fromARGB(153, 102, 160, 241),
+                                    width: 4,
                                   ),
-                                ],
-                              ),
-                              child: FloatingActionButton(
-                                onPressed: _scanImage,
-                                elevation:
-                                    0, // Removed elevation for modern flat design
-                                backgroundColor: Colors
-                                    .transparent, // Transparent to show gradient
-                                child: Icon(
-                                  Icons.camera_alt_rounded,
-                                  color: Colors.white,
-                                  size: 30,
                                 ),
                               ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
+                      )
+                    : const Padding(
+                        padding: EdgeInsets.all(40),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
 
-                      // Enhanced pulse rings (only shown on first load)
-                      if (_isFirstLoad)
-                        ...List.generate(3, (index) {
-                          // Increased to 3 rings
-                          final delay = index * 0.3; // Faster sequence
-                          return AnimatedBuilder(
+                // Camera Scan Button with enhanced animations
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0.5),
+                  child: Center(
+                    child: SizedBox(
+                      width: 70.0, // Increased size for better visibility
+                      height: 70.0, // Increased size for better visibility
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Base button
+                          AnimatedBuilder(
                             animation: _pulseAnimationController,
                             builder: (context, child) {
-                              final progress =
-                                  (_pulseAnimationController.value - delay) %
-                                      1.0;
-
-                              // Only show when progress is positive
-                              if (progress < 0) return SizedBox();
-
-                              return Positioned.fill(
-                                child: Center(
-                                  child: Container(
-                                    width: 70 +
-                                        progress * 40, // Larger pulse effect
-                                    height: 70 + progress * 40,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Color(0xFF1A73E8)
-                                            .withOpacity(0.7 * (1 - progress)),
-                                        width: 3.0 *
-                                            (1 - progress), // Thicker border
+                              return Transform.scale(
+                                scale:
+                                    _isFirstLoad ? _pulseAnimation.value : 1.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF1A73E8),
+                                        Color(0xFF4285F4),
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Color(0xFF1A73E8).withOpacity(0.6),
+                                        blurRadius: _isFirstLoad ? 12.0 : 8.0,
+                                        spreadRadius: _isFirstLoad ? 2.0 : 0.0,
                                       ),
+                                    ],
+                                  ),
+                                  child: FloatingActionButton(
+                                    onPressed: _scanImage,
+                                    elevation:
+                                        0, // Removed elevation for modern flat design
+                                    backgroundColor: Colors
+                                        .transparent, // Transparent to show gradient
+                                    child: Icon(
+                                      Icons.camera_alt_rounded,
+                                      color: Colors.white,
+                                      size: 30,
                                     ),
                                   ),
                                 ),
                               );
                             },
-                          );
-                        }),
+                          ),
 
-                      // Optional: Add a subtle rotating glow effect
-                      if (_isFirstLoad)
-                        AnimatedBuilder(
-                          animation: _pulseAnimationController,
-                          builder: (context, child) {
-                            return Transform.rotate(
-                              angle:
-                                  _pulseAnimationController.value * 2 * 3.14159,
-                              child: Container(
-                                width: 90,
-                                height: 90,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: SweepGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Color(0xFF1A73E8).withOpacity(0.3),
-                                      Colors.transparent,
-                                    ],
-                                    stops: [0.0, 0.5, 1.0],
+                          // Enhanced pulse rings (only shown on first load)
+                          if (_isFirstLoad)
+                            ...List.generate(3, (index) {
+                              // Increased to 3 rings
+                              final delay = index * 0.3; // Faster sequence
+                              return AnimatedBuilder(
+                                animation: _pulseAnimationController,
+                                builder: (context, child) {
+                                  final progress =
+                                      (_pulseAnimationController.value -
+                                              delay) %
+                                          1.0;
+
+                                  // Only show when progress is positive
+                                  if (progress < 0) return SizedBox();
+
+                                  return Positioned.fill(
+                                    child: Center(
+                                      child: Container(
+                                        width: 70 +
+                                            progress *
+                                                40, // Larger pulse effect
+                                        height: 70 + progress * 40,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Color(0xFF1A73E8)
+                                                .withOpacity(
+                                                    0.7 * (1 - progress)),
+                                            width: 3.0 *
+                                                (1 -
+                                                    progress), // Thicker border
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }),
+
+                          // Optional: Add a subtle rotating glow effect
+                          if (_isFirstLoad)
+                            AnimatedBuilder(
+                              animation: _pulseAnimationController,
+                              builder: (context, child) {
+                                return Transform.rotate(
+                                  angle: _pulseAnimationController.value *
+                                      2 *
+                                      3.14159,
+                                  child: Container(
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: SweepGradient(
+                                        colors: [
+                                          Colors.transparent,
+                                          Color(0xFF1A73E8).withOpacity(0.3),
+                                          Colors.transparent,
+                                        ],
+                                        stops: [0.0, 0.5, 1.0],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Non-animated Instruction Text
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          'برجاء توجيه الكاميرا على الاسم الإنجليزي للدواء المطبوع على العبوة ثم التقط صورة',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            height: 1.4,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            // Non-animated Instruction Text
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.symmetric(
-                horizontal: 20,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
+
+                // Non-animated Medicine Name Preview
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: medicineNameOnly.isNotEmpty
+                        ? Color(0xFF1A73E8).withOpacity(0.2)
+                        : Colors.grey[900],
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: medicineNameOnly.isNotEmpty
+                          ? Color(0xFF1A73E8).withOpacity(0.5)
+                          : Colors.grey[800]!,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: medicineNameOnly.isNotEmpty
+                              ? Color(0xFF1A73E8).withOpacity(0.9)
+                              : Colors.grey[800],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.medication_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              medicineNameOnly.isNotEmpty
+                                  ? 'اسم الدواء'
+                                  : 'لم يتم التعرف بعد',
+                              style: TextStyle(
+                                color: medicineNameOnly.isNotEmpty
+                                    ? Color(0xFF1A73E8)
+                                    : Colors.grey[400],
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              medicineNameOnly.isNotEmpty
+                                  ? medicineNameOnly
+                                  : 'برجاء التقاط صورة للدواء أولاً',
+                              style: TextStyle(
+                                color: medicineNameOnly.isNotEmpty
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                                fontSize: 18,
+                                fontWeight: medicineNameOnly.isNotEmpty
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Non-animated Confirm Button
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  width: double.infinity,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    gradient: medicineNameOnly.isEmpty
+                        ? LinearGradient(
+                            colors: [
+                              Colors.grey.shade700,
+                              Colors.grey.shade600
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )
+                        : LinearGradient(
+                            colors: [Color(0xFF0D47A1), Color(0xFF1976D2)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: medicineNameOnly.isEmpty
+                        ? null
+                        : () async {
+                            setState(() => loading = true);
+                            await context
+                                .read<MedicineScannerCubit>()
+                                .getMatchedMedicines(
+                                  query: medicineNameOnly,
+                                );
+                            setState(() => loading = false);
+                          },
                     child: Text(
-                      'برجاء توجيه الكاميرا على الاسم الإنجليزي للدواء المطبوع على العبوة ثم التقط صورة',
+                      "تأكيد اسم الدواء",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                        height: 1.4,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Non-animated Medicine Name Preview
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: medicineNameOnly.isNotEmpty
-                    ? Color(0xFF1A73E8).withOpacity(0.2)
-                    : Colors.grey[900],
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: medicineNameOnly.isNotEmpty
-                      ? Color(0xFF1A73E8).withOpacity(0.5)
-                      : Colors.grey[800]!,
-                  width: 1.5,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: medicineNameOnly.isNotEmpty
-                          ? Color(0xFF1A73E8).withOpacity(0.9)
-                          : Colors.grey[800],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.medication_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          medicineNameOnly.isNotEmpty
-                              ? 'اسم الدواء'
-                              : 'لم يتم التعرف بعد',
-                          style: TextStyle(
-                            color: medicineNameOnly.isNotEmpty
-                                ? Color(0xFF1A73E8)
-                                : Colors.grey[400],
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          medicineNameOnly.isNotEmpty
-                              ? medicineNameOnly
-                              : 'برجاء التقاط صورة للدواء أولاً',
-                          style: TextStyle(
-                            color: medicineNameOnly.isNotEmpty
-                                ? Colors.white
-                                : Colors.grey[600],
-                            fontSize: 18,
-                            fontWeight: medicineNameOnly.isNotEmpty
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Non-animated Confirm Button
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              width: double.infinity,
-              height: 54,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: medicineNameOnly.isEmpty
-                    ? LinearGradient(
-                        colors: [Colors.grey.shade700, Colors.grey.shade600],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                    : LinearGradient(
-                        colors: [Color(0xFF0D47A1), Color(0xFF1976D2)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-              ),
-              child: ElevatedButton(
-                onPressed: medicineNameOnly.isEmpty
-                    ? null
-                    : () async {
-                        setState(() => loading = true);
-                        await context
-                            .read<MedicineScannerCubit>()
-                            .getMatchedMedicines(
-                              query: medicineNameOnly,
-                            );
-                        setState(() => loading = false);
-                      },
-                child: Text(
-                  "تأكيد اسم الدواء",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
                   ),
                 ),
-              ),
+              ],
             ),
-
-            // Part of the BlocConsumer for displaying matched medicines
-            MatchedMedicineResultsList()
+            // Results list as an overlay at the bottom
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: MatchedMedicineResultsList(),
+            ),
           ],
         ),
       ),

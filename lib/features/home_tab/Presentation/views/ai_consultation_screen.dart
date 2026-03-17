@@ -45,6 +45,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     'ChatGPT': 'com.openai.chatgpt',
     'Gemini': 'com.google.android.apps.bard',
     'DeepSeek': 'com.deepseek.chat',
+    'Claude': 'com.anthropic.claude',
     'Perplexity': 'ai.perplexity.app.android',
   };
 
@@ -435,7 +436,11 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                                 Icon(
                                   model == 'ChatGPT'
                                       ? Icons.chat_bubble_outline
-                                      : Icons.auto_awesome,
+                                      : model == 'Gemini' ||
+                                              model == 'DeepSeek' ||
+                                              model == 'Claude'
+                                          ? Icons.auto_awesome
+                                          : Icons.bolt,
                                   color: isSelected
                                       ? Colors.white
                                       : AppColorsManager.mainDarkBlue,
