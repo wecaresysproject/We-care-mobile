@@ -6,6 +6,7 @@ import 'package:we_care/features/medicine/data/models/medicine_data_entry_reques
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
 import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 class MedicinesDataEntryRepo {
   final MedicinesServices _medicinesServices;
@@ -273,7 +274,17 @@ class MedicinesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> fetchMedicalCompitabilitySystemPrompt() async {
+    try {
+      final response =
+          await _medicinesServices.fetchMedicalCompitabilitySystemPrompt();
+      final prompt = response['data'] as String;
+      // Store in global variable
+      DeepSeekService.medicalCompitabilitySystemPrompt = prompt;
+      return ApiResult.success(prompt);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
-// "67e2823af55d89100f614baa"
-// 67e2823af55d89100f614baa
-//"67e2823af55d89100f614baa"

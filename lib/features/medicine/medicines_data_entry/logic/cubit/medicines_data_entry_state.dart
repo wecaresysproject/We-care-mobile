@@ -13,6 +13,8 @@ import 'package:we_care/features/medicine/data/models/user_medical_history_detai
 class MedicinesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
   final RequestStatus analyzeMedicalCompatibilityStatus;
+  final RequestStatus fetchSystemPromptStatus;
+  final String? medicalCompitabilitySystemPrompt;
   final UserMedicalHistoryDetailsModel? userMedicalProfileHistory;
   final CompatibilityAnalysisModel? compatibilityAnalysis;
   final String? medicineStartDate;
@@ -63,6 +65,8 @@ class MedicinesDataEntryState extends Equatable {
   const MedicinesDataEntryState({
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.analyzeMedicalCompatibilityStatus = RequestStatus.initial,
+    this.fetchSystemPromptStatus = RequestStatus.initial,
+    this.medicalCompitabilitySystemPrompt,
     this.userMedicalProfileHistory,
     this.compatibilityAnalysis,
     this.isFormValidated = false,
@@ -114,6 +118,8 @@ class MedicinesDataEntryState extends Equatable {
       : this(
           medicinesDataEntryStatus: RequestStatus.initial,
           analyzeMedicalCompatibilityStatus: RequestStatus.initial,
+          fetchSystemPromptStatus: RequestStatus.initial,
+          medicalCompitabilitySystemPrompt: null,
           userMedicalProfileHistory: null,
           compatibilityAnalysis: null,
           isFormValidated: false,
@@ -164,6 +170,8 @@ class MedicinesDataEntryState extends Equatable {
   MedicinesDataEntryState copyWith({
     RequestStatus? medicinesDataEntryStatus,
     RequestStatus? analyzeMedicalCompatibilityStatus,
+    RequestStatus? fetchSystemPromptStatus,
+    String? medicalCompitabilitySystemPrompt,
     UserMedicalHistoryDetailsModel? userMedicalProfileHistory,
     CompatibilityAnalysisModel? compatibilityAnalysis,
     bool? isFormValidated,
@@ -215,6 +223,10 @@ class MedicinesDataEntryState extends Equatable {
           medicinesDataEntryStatus ?? this.medicinesDataEntryStatus,
       analyzeMedicalCompatibilityStatus: analyzeMedicalCompatibilityStatus ??
           this.analyzeMedicalCompatibilityStatus,
+      fetchSystemPromptStatus:
+          fetchSystemPromptStatus ?? this.fetchSystemPromptStatus,
+      medicalCompitabilitySystemPrompt: medicalCompitabilitySystemPrompt ??
+          this.medicalCompitabilitySystemPrompt,
       userMedicalProfileHistory:
           userMedicalProfileHistory ?? this.userMedicalProfileHistory,
       compatibilityAnalysis:
@@ -286,6 +298,8 @@ class MedicinesDataEntryState extends Equatable {
   List<Object?> get props => [
         medicinesDataEntryStatus,
         analyzeMedicalCompatibilityStatus,
+        fetchSystemPromptStatus,
+        medicalCompitabilitySystemPrompt,
         userMedicalProfileHistory,
         compatibilityAnalysis,
         isFormValidated,

@@ -13,6 +13,7 @@ class DeepSeekService {
   static final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
 
   static String? nutrationSystemPrompt;
+  static String? medicalCompitabilitySystemPrompt;
 
 //! real deepseek
   static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
@@ -584,6 +585,10 @@ $dietInput
   }
 
   static String buildSystemMedicationCompitabilityPrompt() {
+    if (medicalCompitabilitySystemPrompt != null &&
+        medicalCompitabilitySystemPrompt!.isNotEmpty) {
+      return medicalCompitabilitySystemPrompt!;
+    }
     return '''
 أنت نظام تحليل طبي متخصص في تقييم توافق الأدوية.
 

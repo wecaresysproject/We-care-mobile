@@ -148,4 +148,7 @@ abstract class MedicinesServices {
 
   @GET(MedicinesApiConstants.getUserMedicalHistoryDetails)
   Future<dynamic> getUserMedicalHistoryDetails();
+
+  @GET(MedicinesApiConstants.fetchMedicalCompitabilitySystemPrompt)
+  Future<dynamic> fetchMedicalCompitabilitySystemPrompt();
 }

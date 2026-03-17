@@ -57,4 +57,7 @@ class MedicinesApiConstants {
   /// medicine alarms local database key
   static const alarmsScheduledPerMedicineBoxKey =
       "alarmsScheduledPerMedicineBoxKey";
+
+  static const fetchMedicalCompitabilitySystemPrompt =
+      "LongTextContents/prompt-by-name/DrugsCompatibility";
 }

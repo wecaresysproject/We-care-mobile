@@ -7,6 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_wit
 import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/medical_compitability_system_prompt_view.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medication_compitability_form_field_widget.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -22,18 +23,38 @@ class MedicationCompatibilityView extends StatelessWidget {
         cubit.initialRequestsForMedicalCompitability();
         return cubit;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-        ),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+      child: Builder(builder: (context) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              final cubit = context.read<MedicinesDataEntryCubit>();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider.value(
+                    value: cubit,
+                    child: const MedicalCompitaiblitySystemPromptView(),
+                  ),
+                ),
+              );
+            },
+            backgroundColor: AppColorsManager.mainDarkBlue,
+            child: const Icon(
+              Icons.download,
+              color: Colors.white,
+            ),
+          ),
+          appBar: AppBar(
+            toolbarHeight: 0,
+          ),
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
                     buildWhen: (previous, current) =>
                         previous.moduleGuidanceData !=
                         current.moduleGuidanceData,
@@ -80,14 +101,16 @@ class MedicationCompatibilityView extends StatelessWidget {
                           ),
                         ],
                       );
-                    }),
-                verticalSpacing(24),
-                MedicationCompatibilityFormFieldsWidget(),
-              ],
+                    },
+                  ),
+                  verticalSpacing(24),
+                  MedicationCompatibilityFormFieldsWidget(),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

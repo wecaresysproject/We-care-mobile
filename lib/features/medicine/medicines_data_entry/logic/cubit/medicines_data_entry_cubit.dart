@@ -81,6 +81,31 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     unawaited(loadAlarms());
   }
 
+  Future<void> fetchNewMedicalCompitabilitySystemPrompt() async {
+    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
+
+    final result =
+        await _medicinesDataEntryRepo.fetchMedicalCompitabilitySystemPrompt();
+    result.when(
+      success: (prompt) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.success,
+            medicalCompitabilitySystemPrompt: prompt,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   // NEW METHOD: Analyze diet plan using ChatGPT
   Future<void> analyzeMedicalCompatibility() async {
     try {
@@ -364,7 +389,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
   Future<void> emitModuleGuidanceData(WeCareMedicalModules module) async {
     final response = await sharedRepo.getModuleGuidance(
-      "Drug Check",
+      module.name,
     );
 
     response.when(
