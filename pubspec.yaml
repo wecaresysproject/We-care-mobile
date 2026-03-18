@@ -90,7 +90,6 @@ flutter:
     - assets/svgs/
     - assets/alarm_sounds/
     - assets/sounds/
-    - assets/medical_report_pdf/
 
   fonts:
     - family: Cairo

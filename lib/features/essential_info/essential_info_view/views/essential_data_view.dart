@@ -22,7 +22,8 @@ class EssentialDataView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<EssentialInfoViewCubit>()..init(),
+      create: (context) =>
+          getIt<EssentialInfoViewCubit>()..initEssentialInfoViewRequests(),
       child: BlocBuilder<EssentialInfoViewCubit, EssentialInfoViewState>(
         builder: (context, state) {
           final info = state.userEssentialInfo;

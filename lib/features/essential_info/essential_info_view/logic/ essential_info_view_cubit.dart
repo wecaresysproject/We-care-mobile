@@ -17,14 +17,16 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
   EssentialInfoViewCubit(this._essentialInfoRepo, this._sharedRepo)
       : super(EssentialInfoViewState.initial());
 
-  Future<void> init() async {
-    Future.wait(
-      [
-        getUserEssentialInfo(),
-        emitModuleGuidance(),
-        calculateCompletionPercentage(),
-      ],
-    );
+  Future<void> initProfileCompletionRequests() async {
+    await getUserEssentialInfo();
+    await calculateCompletionPercentage();
+  }
+
+  Future<void> initEssentialInfoViewRequests() async {
+    Future.wait([
+      getUserEssentialInfo(),
+      emitModuleGuidance(),
+    ]);
   }
 
   Future<void> getUserEssentialInfo() async {
@@ -185,7 +187,7 @@ ${hasInsurance ? '''
     if (info.nationalID != null &&
         info.nationalID!.isNotEmpty &&
         info.nationalID!.isFilled) {
-      percentage += 12;
+      percentage += 2; // ✅ كان 12، بقى 2
     }
     if (info.email != null && info.email!.isNotEmpty && info.email!.isFilled) {
       percentage += 3;
@@ -206,9 +208,9 @@ ${hasInsurance ? '''
     if (info.areaOrDistrict != null &&
         info.areaOrDistrict!.isNotEmpty &&
         info.areaOrDistrict!.isFilled) {
-      percentage += 2; // District
+      percentage += 3; // ✅ كان 2، بقى 3 (المنطقة)
     }
-    // Neighborhood (3%) - Missing in model, skipping
+    // Neighborhood (2%) - الحي - Missing in model, skipping
     if (info.bloodType != null &&
         info.bloodType!.isNotEmpty &&
         info.bloodType!.isFilled) {
@@ -222,18 +224,18 @@ ${hasInsurance ? '''
     if (info.disabilityType != null &&
         info.disabilityType!.isNotEmpty &&
         info.disabilityType!.isFilled) {
-      percentage += 3;
+      percentage += 2; // ✅ كان 3، بقى 2
     }
     if (info.socialStatus != null &&
         info.socialStatus!.isNotEmpty &&
         info.socialStatus!.isFilled) {
-      percentage += 3;
+      percentage += 1; // ✅ كان 3، بقى 1
     }
-    if (info.numberOfChildren != null) percentage += 3;
+    if (info.numberOfChildren != null) percentage += 1; // ✅ كان 3، بقى 1
     if (info.familyDoctorName != null &&
         info.familyDoctorName!.isNotEmpty &&
         info.familyDoctorName!.isFilled) {
-      percentage += 1;
+      percentage += 3; // ✅ كان 1، بقى 3
     }
     if (info.familyDoctorPhoneNumber != null &&
         info.familyDoctorPhoneNumber!.isNotEmpty &&
@@ -243,12 +245,12 @@ ${hasInsurance ? '''
     if (info.workHours != null &&
         info.workHours!.isNotEmpty &&
         info.workHours!.isFilled) {
-      percentage += 3;
+      percentage += 1; // ✅ كان 3، بقى 1
     }
     if (info.emergencyContact1 != null &&
         info.emergencyContact1!.isNotEmpty &&
         info.emergencyContact1!.isFilled) {
-      percentage += 1;
+      percentage += 3; // ✅ كان 1، بقى 3
     }
     if (info.emergencyContact2 != null &&
         info.emergencyContact2!.isNotEmpty &&

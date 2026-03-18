@@ -15,8 +15,12 @@ class ProfileCompletionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<EssentialInfoViewCubit>()..init(),
+      create: (context) =>
+          getIt<EssentialInfoViewCubit>()..initProfileCompletionRequests(),
       child: BlocBuilder<EssentialInfoViewCubit, EssentialInfoViewState>(
+        buildWhen: (previous, current) =>
+            previous.profileCompletionPercentage !=
+            current.profileCompletionPercentage,
         builder: (context, state) {
           final color =
               _getColorForPercentage(state.profileCompletionPercentage);
@@ -62,7 +66,7 @@ class ProfileCompletionWidget extends StatelessWidget {
                 style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                   fontWeight: FontWeightHelper.bold,
                   fontSize: 10.sp,
-                  color: AppColorsManager.mainDarkBlue  ,
+                  color: AppColorsManager.mainDarkBlue,
                 ),
               ),
             ],

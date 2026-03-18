@@ -456,65 +456,40 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                         ),
                       ),
 
-                // Camera Scan Button with enhanced animations
+                // ✅ Scan Button — animation منفصلة عن الـ button
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0.5),
                   child: Center(
                     child: SizedBox(
-                      width: 70.0, // Increased size for better visibility
-                      height: 70.0, // Increased size for better visibility
+                      width: 70.0,
+                      height: 70.0,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
-                          // Base button
-                          AnimatedBuilder(
-                            animation: _pulseAnimationController,
-                            builder: (context, child) {
-                              return Transform.scale(
-                                scale:
-                                    _isFirstLoad ? _pulseAnimation.value : 1.0,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Color(0xFF1A73E8),
-                                        Color(0xFF4285F4),
-                                      ],
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            Color(0xFF1A73E8).withOpacity(0.6),
-                                        blurRadius: _isFirstLoad ? 12.0 : 8.0,
-                                        spreadRadius: _isFirstLoad ? 2.0 : 0.0,
-                                      ),
-                                    ],
-                                  ),
-                                  child: FloatingActionButton(
-                                    onPressed: _scanImage,
-                                    elevation:
-                                        0, // Removed elevation for modern flat design
-                                    backgroundColor: Colors
-                                        .transparent, // Transparent to show gradient
-                                    child: Icon(
-                                      Icons.camera_alt_rounded,
-                                      color: Colors.white,
-                                      size: 30,
+                          // Animation layer منفصل تماماً
+                          if (_isFirstLoad)
+                            AnimatedBuilder(
+                              animation: _pulseAnimationController,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _pulseAnimation.value,
+                                  child: Container(
+                                    width: 70,
+                                    height: 70,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color:
+                                          Color(0xFF1A73E8).withOpacity(0.25),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
 
-                          // Enhanced pulse rings (only shown on first load)
+                          // Pulse rings
                           if (_isFirstLoad)
                             ...List.generate(3, (index) {
-                              // Increased to 3 rings
-                              final delay = index * 0.3; // Faster sequence
+                              final delay = index * 0.3;
                               return AnimatedBuilder(
                                 animation: _pulseAnimationController,
                                 builder: (context, child) {
@@ -522,28 +497,16 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                                       (_pulseAnimationController.value -
                                               delay) %
                                           1.0;
-
-                                  // Only show when progress is positive
-                                  if (progress < 0) return SizedBox();
-
-                                  return Positioned.fill(
-                                    child: Center(
-                                      child: Container(
-                                        width: 70 +
-                                            progress *
-                                                40, // Larger pulse effect
-                                        height: 70 + progress * 40,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Color(0xFF1A73E8)
-                                                .withOpacity(
-                                                    0.7 * (1 - progress)),
-                                            width: 3.0 *
-                                                (1 -
-                                                    progress), // Thicker border
-                                          ),
-                                        ),
+                                  if (progress < 0) return SizedBox.shrink();
+                                  return Container(
+                                    width: 70 + progress * 40,
+                                    height: 70 + progress * 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Color(0xFF1A73E8)
+                                            .withOpacity(0.7 * (1 - progress)),
+                                        width: 3.0 * (1 - progress),
                                       ),
                                     ),
                                   );
@@ -551,44 +514,54 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                               );
                             }),
 
-                          // Optional: Add a subtle rotating glow effect
-                          if (_isFirstLoad)
-                            AnimatedBuilder(
-                              animation: _pulseAnimationController,
-                              builder: (context, child) {
-                                return Transform.rotate(
-                                  angle: _pulseAnimationController.value *
-                                      2 *
-                                      3.14159,
-                                  child: Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: SweepGradient(
-                                        colors: [
-                                          Colors.transparent,
-                                          Color(0xFF1A73E8).withOpacity(0.3),
-                                          Colors.transparent,
-                                        ],
-                                        stops: [0.0, 0.5, 1.0],
-                                      ),
-                                    ),
+                          // ✅ Button مستقل — استجابة فورية
+                          GestureDetector(
+                            onTap: loading ? null : _scanImage,
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Color(0xFF1A73E8),
+                                    Color(0xFF4285F4),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFF1A73E8).withOpacity(0.5),
+                                    blurRadius: 8,
                                   ),
-                                );
-                              },
+                                ],
+                              ),
+                              child: loading
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.camera_alt_rounded,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
                             ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                // Non-animated Instruction Text
+
+                // Instruction Text
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 20,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.7),
                     borderRadius: BorderRadius.circular(16),
@@ -612,7 +585,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                   ),
                 ),
 
-                // Non-animated Medicine Name Preview
+                // Medicine Name Preview
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -683,7 +656,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                   ),
                 ),
 
-                // Non-animated Confirm Button
+                // ✅ Confirm Button
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   width: double.infinity,
@@ -694,7 +667,7 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                         ? LinearGradient(
                             colors: [
                               Colors.grey.shade700,
-                              Colors.grey.shade600
+                              Colors.grey.shade600,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -706,7 +679,14 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                           ),
                   ),
                   child: ElevatedButton(
-                    onPressed: medicineNameOnly.isEmpty
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: medicineNameOnly.isEmpty || loading
                         ? null
                         : () async {
                             setState(() => loading = true);
@@ -730,7 +710,9 @@ class _MedicineOCRScannerState extends State<MedicineOCRScanner>
                 ),
               ],
             ),
-            // Results list as an overlay at the bottom
+
+            // ✅ Results list — بدون Align عشان MatchedMedicineResultsList
+            // دلوقتي بتستخدم SizedBox مش Expanded
             const Align(
               alignment: Alignment.bottomCenter,
               child: MatchedMedicineResultsList(),

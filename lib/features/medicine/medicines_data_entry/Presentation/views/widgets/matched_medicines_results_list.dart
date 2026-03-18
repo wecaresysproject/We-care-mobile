@@ -21,8 +21,8 @@ class MatchedMedicineResultsList extends StatelessWidget {
       },
       builder: (context, state) {
         if (state.matchedMedicines.isNotEmpty) {
-          return Expanded(
-            flex: 4,
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
             child: Container(
               margin: EdgeInsets.only(top: 8),
               decoration: BoxDecoration(
