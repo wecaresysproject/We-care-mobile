@@ -38,6 +38,35 @@ class _MedicationCompatibilityConsultationViewState
     super.dispose();
   }
 
+  Widget _getModelIcon(String model, bool isSelected) {
+    String? assetPath;
+    if (model == 'ChatGPT') {
+      assetPath = 'assets/images/chat_gbt_icon.png';
+    } else if (model == 'DeepSeek') {
+      assetPath = 'assets/images/deep_seek_icon.png';
+    } else if (model == 'Claude') {
+      assetPath = 'assets/images/claude_icon.png';
+    } else if (model == 'Gemini') {
+      assetPath = 'assets/images/gemini_icon.png';
+    } else if (model == 'Perplexity') {
+      assetPath = 'assets/images/perplexity_icon.png';
+    }
+
+    if (assetPath != null) {
+      return Image.asset(
+        assetPath,
+        width: 24.w,
+        height: 24.h,
+      );
+    }
+
+    return Icon(
+      model == 'Gemini' ? Icons.auto_awesome : Icons.bolt,
+      color: isSelected ? Colors.white : AppColorsManager.mainDarkBlue,
+      size: 24.w,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,18 +150,7 @@ class _MedicationCompatibilityConsultationViewState
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            model == 'ChatGPT'
-                                ? Icons.chat_bubble_outline
-                                : model == 'Gemini' ||
-                                        model == 'DeepSeek' ||
-                                        model == 'Claude'
-                                    ? Icons.auto_awesome
-                                    : Icons.bolt,
-                            color: isSelected
-                                ? Colors.white
-                                : AppColorsManager.mainDarkBlue,
-                          ),
+                          _getModelIcon(model, isSelected),
                           verticalSpacing(8),
                           Text(
                             model,

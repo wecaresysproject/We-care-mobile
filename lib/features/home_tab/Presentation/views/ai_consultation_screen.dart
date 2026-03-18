@@ -83,6 +83,35 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
     }
   }
 
+  Widget _getModelIcon(String model, bool isSelected) {
+    String? assetPath;
+    if (model == 'ChatGPT') {
+      assetPath = 'assets/images/chat_gbt_icon.png';
+    } else if (model == 'DeepSeek') {
+      assetPath = 'assets/images/deep_seek_icon.png';
+    } else if (model == 'Claude') {
+      assetPath = 'assets/images/claude_icon.png';
+    } else if (model == 'Gemini') {
+      assetPath = 'assets/images/gemini_icon.png';
+    } else if (model == 'Perplexity') {
+      assetPath = 'assets/images/perplexity_icon.png';
+    }
+
+    if (assetPath != null) {
+      return Image.asset(
+        assetPath,
+        width: 30.w,
+        height: 30.h,
+      );
+    }
+
+    return Icon(
+      model == 'Gemini' ? Icons.auto_awesome : Icons.bolt,
+      color: isSelected ? Colors.white : AppColorsManager.mainDarkBlue,
+      size: 24.w,
+    );
+  }
+
   Future<void> _onDateChanged(String? val, AIConsultationCubit cubit) async {
     if (val == null) return;
     setState(() {
@@ -334,18 +363,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  model == 'ChatGPT'
-                                      ? Icons.chat_bubble_outline
-                                      : model == 'Gemini' ||
-                                              model == 'DeepSeek' ||
-                                              model == 'Claude'
-                                          ? Icons.auto_awesome
-                                          : Icons.bolt,
-                                  color: isSelected
-                                      ? Colors.white
-                                      : AppColorsManager.mainDarkBlue,
-                                ),
+                                _getModelIcon(model, isSelected),
                                 SizedBox(height: 8.h),
                                 Text(
                                   model,

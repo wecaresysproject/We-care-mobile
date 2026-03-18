@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
@@ -417,7 +418,9 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       surgeryName: state.surgeryNameSelection!,
       techUsed: state.selectedTechUsed!,
     );
-
+    AppLogger.info(
+      "emitSurgeryPurpose called after updateSelectedTechUsed and values of state are: ${state.surgeryBodyPartSelection}, ${state.selectedSubSurgery}, ${state.surgeryNameSelection}, ${state.selectedTechUsed}",
+    );
     response.when(
       success: (response) {
         emit(
@@ -425,6 +428,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
             surgeryPurpose: response,
           ),
         );
+        AppLogger.info("xxx: surgeryPurpose: $response");
       },
       failure: (error) {
         emit(
