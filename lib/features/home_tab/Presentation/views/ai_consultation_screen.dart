@@ -1,14 +1,11 @@
 import 'dart:io';
 
-import 'package:appcheck/appcheck.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/ai_handoff_helper.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -41,13 +38,7 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
   bool _isHandoffInProgress = false;
   File? _downloadedPdf;
 
-  final Map<String, String> _aiModels = {
-    'ChatGPT': 'com.openai.chatgpt',
-    'Gemini': 'com.google.android.apps.bard',
-    'DeepSeek': 'com.deepseek.chat',
-    'Claude': 'com.anthropic.claude',
-    'Perplexity': 'ai.perplexity.app.android',
-  };
+  final Map<String, String> _aiModels = ConsultAIHelper.aiModels;
 
   @override
   void dispose() {
@@ -75,111 +66,21 @@ class _AIConsultationScreenState extends State<AIConsultationScreen> {
       _isHandoffInProgress = true;
     });
 
-    final packageName = _aiModels[_selectedModel!];
-    final isInstalled = await _checkIfAppInstalled(packageName!);
+    final pdfFile =
+        _isUsingPreAttachedReport ? widget.preAttachedReport! : _downloadedPdf;
 
-    if (isInstalled) {
-      try {
-        // Use pre-attached report if available, otherwise use downloaded PDF
-        final pdfFile = _isUsingPreAttachedReport
-            ? widget.preAttachedReport!
-            : _downloadedPdf;
-
-        if (pdfFile == null) {
-          throw Exception("No PDF available for handoff.");
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "سيتم نقلك الآن لمتابعة استشارتك في تطبيق $_selectedModel",
-              textAlign: TextAlign.right,
-            ),
-          ),
-        );
-        await _copyComplaintToClipboard();
-
-        await Share.shareXFiles(
-          [XFile(pdfFile.path, mimeType: 'application/pdf')],
-          text: _complaintController.text,
-        );
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Error attaching PDF. Please try again."),
-          ),
-        );
-      }
-    } else {
-      _showNotInstalledDialog(_selectedModel!, packageName);
-    }
-
-    setState(() {
-      _isHandoffInProgress = false;
-    });
-  }
-
-  Future<void> _copyComplaintToClipboard() async {
-    final text = _complaintController.text.trim();
-
-    if (text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("يرجى كتابة الشكوى أولاً"),
-        ),
-      );
-      return;
-    }
-
-    await Clipboard.setData(ClipboardData(text: text));
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 3),
-        content: Text(
-            "تم نسخ نص الشكوى. يمكنك لصقه داخل المحادثة مع التقرير الطبي."),
-      ),
-    );
-  }
-
-  Future<bool> _checkIfAppInstalled(String packageName) async {
-    return await AppCheck().isAppInstalled(packageName);
-  }
-
-  void _showNotInstalledDialog(String modelName, String packageName) {
-    showDialog(
+    await ConsultAIHelper.handleHandoff(
       context: context,
-      builder: (context) => Directionality(
-        textDirection: TextDirection.rtl,
-        child: AlertDialog(
-          title: Text("التطبيق غير مثبت",
-              style: AppTextStyles.font16BlackSemiBold),
-          content: Text("تطبيق $modelName غير مثبت على جهازك. هل تريد تثبيته؟",
-              style: AppTextStyles.font14blackWeight400),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("إلغاء"),
-            ),
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context);
-                final url = Uri.parse("market://details?id=$packageName");
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url);
-                } else {
-                  await launchUrl(Uri.parse(
-                      "https://play.google.com/store/apps/details?id=$packageName"));
-                }
-              },
-              child: const Text("تثبيت"),
-            ),
-          ],
-        ),
-      ),
+      modelName: _selectedModel!,
+      text: _complaintController.text,
+      pdfFile: pdfFile,
     );
+
+    if (mounted) {
+      setState(() {
+        _isHandoffInProgress = false;
+      });
+    }
   }
 
   Future<void> _onDateChanged(String? val, AIConsultationCubit cubit) async {

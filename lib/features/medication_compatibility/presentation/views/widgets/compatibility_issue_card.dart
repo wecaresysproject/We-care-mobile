@@ -55,15 +55,17 @@ class CompatibilityIssueCard extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: riskColor.withOpacity(0.1),
+                    color: riskColor.withAlpha(128),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: riskColor.withOpacity(0.5)),
+                    border: Border.all(
+                      color: riskColor.withAlpha(255),
+                    ),
                   ),
                   child: Text(
                     riskLabel,
                     style: AppTextStyles.font12blackWeight400.copyWith(
-                      color: riskColor,
-                      fontWeight: FontWeight.bold,
+                      color: AppColorsManager.textColor,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

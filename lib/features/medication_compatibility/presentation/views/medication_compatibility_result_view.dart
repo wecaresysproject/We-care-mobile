@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_ai_consultation_view.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_summary_card.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/risk_levels_row_widget.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/simulated_medical_modules_checklist_loader.dart';
+import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -67,6 +70,22 @@ class MedicationCompatibilityResultView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CompatibilitySummaryCard(analysis: analysis),
+                        const SizedBox(height: 16),
+                        AppCustomButton(
+                          title: "استشر الـ AI",
+                          isEnabled: true,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    MedicationCompatibilityConsultationView(
+                                  initialMessage: _generateAITemplate(analysis),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         const SizedBox(height: 24),
                         if (analysis.issues.isEmpty)
                           _buildNoIssuesState()
@@ -103,6 +122,33 @@ class MedicationCompatibilityResultView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _generateAITemplate(CompatibilityAnalysisModel analysis) {
+    final buffer = StringBuffer();
+    buffer.writeln(
+        "أنا قمت بتحليل التفاعلات الدوائية الخاصة بي باستخدام تطبيق طبي.");
+    buffer.writeln();
+    buffer.writeln("ملخص التحليل:");
+    buffer.writeln(analysis.analysisSummary);
+    buffer.writeln();
+
+    if (analysis.issues.isNotEmpty) {
+      buffer.writeln("التفاعلات المكتشفة:");
+      buffer.writeln();
+      for (int i = 0; i < analysis.issues.length; i++) {
+        final issue = analysis.issues[i];
+        buffer.writeln("${i + 1}. ${issue.title}");
+        buffer.writeln("مستوى الخطورة: ${issue.riskLevel}");
+        buffer.writeln("السبب العلمي: ${issue.scientificReason}");
+        buffer.writeln("سؤال للطبيب: ${issue.doctorQuestion}");
+        buffer.writeln();
+      }
+    } else {
+      buffer.writeln("لا يوجد تعارض دوائي خطير بناءً على البيانات المتاحة.");
+    }
+
+    return buffer.toString();
   }
 
   Widget _buildNoIssuesState() {

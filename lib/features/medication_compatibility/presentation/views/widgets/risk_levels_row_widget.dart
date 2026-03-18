@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
 
 class RiskLevelItem extends StatelessWidget {
@@ -42,9 +43,9 @@ class RiskLevelItem extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
+          style: AppTextStyles.font16BlackSemiBold.copyWith(
+            fontWeight: FontWeight.w700,
+            fontSize: 15,
           ),
         ),
       ],
