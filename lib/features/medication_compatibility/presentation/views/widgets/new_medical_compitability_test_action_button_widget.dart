@@ -7,8 +7,8 @@ import 'package:we_care/features/medication_compatibility/presentation/views/wid
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
-class MedicationCompatibilityActionButton extends StatelessWidget {
-  const MedicationCompatibilityActionButton({super.key});
+class NewMedicalCompitabilityTestActionButton extends StatelessWidget {
+  const NewMedicalCompitabilityTestActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {

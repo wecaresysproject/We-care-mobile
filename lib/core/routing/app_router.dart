@@ -50,6 +50,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
 import 'package:we_care/features/home_tab/Presentation/views/ai_consultation_screen.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility_view.dart';
 import 'package:we_care/features/home_tab/Presentation/views/notifications_view.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
@@ -718,6 +719,10 @@ class AppRouter {
       case Routes.aiConsultation:
         return MaterialPageRoute(
           builder: (_) => const AIConsultationScreen(),
+        );
+      case Routes.medicinesCompatibilityView:
+        return MaterialPageRoute(
+          builder: (_) => const MedicinesCompatibilityView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

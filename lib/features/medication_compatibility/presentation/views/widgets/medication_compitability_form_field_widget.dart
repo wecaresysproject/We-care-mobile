@@ -4,7 +4,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medical_information_notice_widget.dart';
-import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medication_compitability_action_button_widget.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/new_medical_compitability_test_action_button_widget.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 import 'package:we_care/features/medicine/shared/widgets/medicine_name_scanner_container.dart';
@@ -189,7 +189,7 @@ class MedicationCompatibilityFormFieldsWidget extends StatelessWidget {
               },
             ),
             verticalSpacing(16),
-            MedicationCompatibilityActionButton(),
+            NewMedicalCompitabilityTestActionButton(),
             verticalSpacing(16),
             MedicalInformationNotice(),
             verticalSpacing(16),

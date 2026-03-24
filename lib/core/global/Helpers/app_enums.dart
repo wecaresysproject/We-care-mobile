@@ -101,7 +101,8 @@ enum WeCareMedicalModules {
   vitaminsAndSupplementsView, // 18. الفيتامينات والمكملات الغذائية (عرض)
 
   drugCheck, // 19. اختبار توافق ادويتي
-  aiConsult, // 20. استشر الـ AI
-  myMedicalReports, // 21. تقاريري الطبية
-  medicalNotes, // 22. ملاحظاتي الطبية
+  newMedicineCompitability, //20. اختبار توافق دواء جديد
+  aiConsult, // 21. استشر الـ AI
+  myMedicalReports, // 22. تقاريري الطبية
+  medicalNotes, // 23. ملاحظاتي الطبية
 }

@@ -382,7 +382,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       getChronicDiseasesNames(),
       emitDoctorNames(),
       emitModuleGuidanceData(
-        WeCareMedicalModules.drugCheck,
+        WeCareMedicalModules.newMedicineCompitability,
       ),
     ]);
   }

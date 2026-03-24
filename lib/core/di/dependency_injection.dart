@@ -51,6 +51,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/lo
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/ai_consultation_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
@@ -444,6 +445,12 @@ void setupAppCubits() {
   );
   getIt.registerFactory<MedicalReportGenerationCubit>(
     () => MedicalReportGenerationCubit(
+      getIt<MedicalReportRepo>(),
+      getIt<AppSharedRepo>(),
+    ),
+  );
+  getIt.registerFactory<MedicinesCompatibilityCubit>(
+    () => MedicinesCompatibilityCubit(
       getIt<MedicalReportRepo>(),
       getIt<AppSharedRepo>(),
     ),

@@ -109,7 +109,7 @@ class HomeTabView extends StatelessWidget {
                         imagePath: "assets/images/medicines.png",
                         onTap: () async {
                           await context.pushNamedWithSettingRootNavigator(
-                            Routes.newMedicationCompatibilityView,
+                            Routes.medicinesCompatibilityView,
                           );
                         },
                       ),
