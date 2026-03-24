@@ -69,7 +69,7 @@ import 'package:we_care/features/medical_notes/data/models/medical_note_model.da
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
 import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
-import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_view.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/new_medication_compatibility_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -699,9 +699,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const NotificationsView(),
         );
-      case Routes.medicationCompatibilityView:
+      case Routes.newMedicationCompatibilityView:
         return MaterialPageRoute(
-          builder: (_) => const MedicationCompatibilityView(),
+          builder: (_) => const NewMedicationCompatibilityView(),
         );
       case Routes.caloriesFollowUpReportView:
         return MaterialPageRoute(

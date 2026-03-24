@@ -13,6 +13,8 @@ class SupplementsViewState extends Equatable {
   final VitaminsAndSupplementsModel? vitaminsAndSupplementsData;
   final RequestStatus vitaminsAndSupplementsStatus;
   final ModuleGuidanceDataModel? moduleGuidanceData;
+  final String? selectedDateTab1;
+  final String? selectedDateTab2;
 
   const SupplementsViewState({
     this.responseMessage = '',
@@ -23,6 +25,8 @@ class SupplementsViewState extends Equatable {
     this.vitaminsAndSupplementsData,
     this.vitaminsAndSupplementsStatus = RequestStatus.initial,
     this.moduleGuidanceData,
+    this.selectedDateTab1,
+    this.selectedDateTab2,
   });
 
   factory SupplementsViewState.initial() {
@@ -35,6 +39,8 @@ class SupplementsViewState extends Equatable {
       vitaminsAndSupplementsData: null,
       vitaminsAndSupplementsStatus: RequestStatus.initial,
       moduleGuidanceData: null,
+      selectedDateTab1: null,
+      selectedDateTab2: null,
     );
   }
 
@@ -47,6 +53,8 @@ class SupplementsViewState extends Equatable {
     VitaminsAndSupplementsModel? vitaminsAndSupplementsData,
     RequestStatus? vitaminsAndSupplementsStatus,
     ModuleGuidanceDataModel? moduleGuidanceData,
+    String? selectedDateTab1,
+    String? selectedDateTab2,
   }) {
     return SupplementsViewState(
       responseMessage: responseMessage ?? this.responseMessage,
@@ -61,6 +69,8 @@ class SupplementsViewState extends Equatable {
       vitaminsAndSupplementsStatus:
           vitaminsAndSupplementsStatus ?? this.vitaminsAndSupplementsStatus,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+      selectedDateTab1: selectedDateTab1 ?? this.selectedDateTab1,
+      selectedDateTab2: selectedDateTab2 ?? this.selectedDateTab2,
     );
   }
 
@@ -74,5 +84,7 @@ class SupplementsViewState extends Equatable {
         vitaminsAndSupplementsData,
         vitaminsAndSupplementsStatus,
         moduleGuidanceData,
+        selectedDateTab1,
+        selectedDateTab2,
       ];
 }

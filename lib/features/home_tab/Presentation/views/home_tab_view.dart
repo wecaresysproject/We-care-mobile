@@ -58,10 +58,10 @@ class HomeTabView extends StatelessWidget {
                         },
                       ),
                       CustomElevatedButton(
-                        text: "اختبار توافق أدويتى",
+                        text: "توافق دواء جديد",
                         onPressed: () async {
                           await context.pushNamedWithSettingRootNavigator(
-                            Routes.medicationCompatibilityView,
+                            Routes.newMedicationCompatibilityView,
                           );
                         },
                       ),
@@ -105,6 +105,15 @@ class HomeTabView extends StatelessWidget {
                         },
                       ),
                       HomeSecondCategoryItem(
+                        categoryName: "توافق\n أدويتي",
+                        imagePath: "assets/images/medicines.png",
+                        onTap: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.newMedicationCompatibilityView,
+                          );
+                        },
+                      ),
+                      HomeSecondCategoryItem(
                         categoryName: "مفكرتي\n الطبية",
                         imagePath: "assets/images/medical_note.png",
                         onTap: () async {
@@ -113,12 +122,12 @@ class HomeTabView extends StatelessWidget {
                           );
                         },
                       ),
-                      HomeSecondCategoryItem(
-                        categoryName: "امراضى\nالوراثيه",
-                        imagePath: "assets/images/icon_family.png",
-                        onTap: () {},
-                        isInactive: true,
-                      ),
+                      // HomeSecondCategoryItem(
+                      //   categoryName: "امراضى\nالوراثيه",
+                      //   imagePath: "assets/images/icon_family.png",
+                      //   onTap: () {},
+                      //   isInactive: true,
+                      // ),
                       HomeSecondCategoryItem(
                         categoryName: "لست\nوحدك",
                         imagePath: "assets/images/support_rooms_icon.png",

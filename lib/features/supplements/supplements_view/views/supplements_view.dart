@@ -171,6 +171,12 @@ class _SupplementsViewState extends State<SupplementsView>
               DataViewFiltersRow(
                 onFilterSelected: (filter, _) {},
                 onApply: (selectedFilter) {
+                  final selectedDate = selectedFilter["التاريخ"]?.toString();
+                  context.read<SupplementsViewCubit>().setSelectedDate(
+                        tab: tabNumber,
+                        date: selectedDate,
+                      );
+
                   if (tabNumber == 1) {
                     context
                         .read<SupplementsViewCubit>()
@@ -193,7 +199,15 @@ class _SupplementsViewState extends State<SupplementsView>
                   )
                 ],
               ),
-              verticalSpacing(16),
+              verticalSpacing(12),
+
+              // ✅ هنا نعرض التاريخ
+              if (_getSelectedDate(state, tabNumber) != null)
+                _buildSelectedDateText(
+                  _getSelectedDate(state, tabNumber)!,
+                ),
+
+              verticalSpacing(8),
               if (tabNumber == 1)
                 _buildVitaminsAndSupplementsTable(state: state)
               else
@@ -203,6 +217,27 @@ class _SupplementsViewState extends State<SupplementsView>
         );
       },
     );
+  }
+
+  Widget _buildSelectedDateText(String date) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: AppColorsManager.mainDarkBlue.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        "التاريخ المختار: $date",
+        style: AppTextStyles.font14BlueWeight700.copyWith(
+          color: AppColorsManager.mainDarkBlue,
+        ),
+      ),
+    );
+  }
+
+  String? _getSelectedDate(SupplementsViewState state, int tab) {
+    return tab == 1 ? state.selectedDateTab1 : state.selectedDateTab2;
   }
 
   Widget _buildVitaminsAndSupplementsTable(
@@ -485,7 +520,7 @@ class _SupplementsViewState extends State<SupplementsView>
                 width: 75.w,
                 child: const Center(
                   child: Text(
-                    "الكمية من \n الفايتمين",
+                    "الكمية من \n الفيتامين",
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -496,7 +531,7 @@ class _SupplementsViewState extends State<SupplementsView>
                 width: 85.w,
                 child: const Center(
                   child: Text(
-                    "الزيادة/النقص \n بعد الفايتمين",
+                    "الزيادة/النقص \n بعد الفيتامين",
                     textAlign: TextAlign.center,
                   ),
                 ),

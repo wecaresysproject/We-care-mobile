@@ -12,8 +12,8 @@ import 'package:we_care/features/medication_compatibility/presentation/views/wid
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
-class MedicationCompatibilityView extends StatelessWidget {
-  const MedicationCompatibilityView({super.key});
+class NewMedicationCompatibilityView extends StatelessWidget {
+  const NewMedicationCompatibilityView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class MedicationCompatibilityView extends StatelessWidget {
                         current.moduleGuidanceData,
                     builder: (context, state) {
                       return CustomAppBarWithCenteredTitleWithGuidance(
-                        title: 'اختبار توافق ادويتي',
+                        title: 'اختبار توافق دواء جديد',
                         trailingActions: [
                           CircleIconButton(
                             size: 30.w,
@@ -92,7 +92,7 @@ class MedicationCompatibilityView extends StatelessWidget {
                                 ? () {
                                     ModuleGuidanceAlertDialog.show(
                                       context,
-                                      title: "توافق ادويتي",
+                                      title: "توافق دواء جديد",
                                       description: state.moduleGuidanceData!
                                           .moduleGuidanceText!,
                                     );

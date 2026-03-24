@@ -27,7 +27,7 @@ class MedicationCompatibilityResultView extends StatelessWidget {
       body: Column(
         children: [
           AppBarWithCenteredTitle(
-            title: "نتيجة التحليل",
+            title: "نتيجة التوافق",
             showActionButtons: false,
           ).paddingSymmetricHorizontal(20),
           const SizedBox(height: 20),
