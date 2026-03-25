@@ -105,4 +105,5 @@ enum WeCareMedicalModules {
   aiConsult, // 21. استشر الـ AI
   myMedicalReports, // 22. تقاريري الطبية
   medicalNotes, // 23. ملاحظاتي الطبية
+  qualityOfLife, // 24. جودة الحياة
 }

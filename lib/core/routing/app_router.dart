@@ -97,6 +97,10 @@ import 'package:we_care/features/prescription/Presentation_view/views/prescripti
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_main_view.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_questions_view.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_table_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
@@ -722,7 +726,28 @@ class AppRouter {
         );
       case Routes.medicinesCompatibilityView:
         return MaterialPageRoute(
-          builder: (_) => const MedicinesCompatibilityView(),
+          builder: (context) => const MedicinesCompatibilityView(),
+        );
+      case Routes.qualityOfLifeMainView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>(
+            create: (context) => getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeMainView(),
+          ),
+        );
+      case Routes.qualityOfLifeQuestionsView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>.value(
+            value: getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeQuestionsView(),
+          ),
+        );
+      case Routes.qualityOfLifeTableView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>.value(
+            value: getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeTableView(),
+          ),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

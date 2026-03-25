@@ -88,6 +88,7 @@ import 'package:we_care/features/prescription/data/repos/prescription_data_entry
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
@@ -452,6 +453,13 @@ void setupAppCubits() {
   getIt.registerFactory<MedicinesCompatibilityCubit>(
     () => MedicinesCompatibilityCubit(
       getIt<MedicalReportRepo>(),
+      getIt<AppSharedRepo>(),
+    ),
+  );
+
+  //! recheck this later if there is an error due to registeration type
+  getIt.registerLazySingleton<QualityOfLifeCubit>(
+    () => QualityOfLifeCubit(
       getIt<AppSharedRepo>(),
     ),
   );

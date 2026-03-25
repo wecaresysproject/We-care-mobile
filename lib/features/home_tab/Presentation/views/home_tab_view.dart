@@ -129,17 +129,22 @@ class HomeTabView extends StatelessWidget {
                       //   isInactive: true,
                       // ),
                       HomeSecondCategoryItem(
+                        categoryName: "جودة\nالحياة",
+                        imagePath: "assets/images/quality_of_life.png",
+                        onTap: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.qualityOfLifeMainView,
+                          );
+                        },
+                        isInactive: false,
+                      ),
+                      HomeSecondCategoryItem(
                         categoryName: "لست\nوحدك",
                         imagePath: "assets/images/support_rooms_icon.png",
                         onTap: () {},
                         isInactive: true,
                       ),
-                      HomeSecondCategoryItem(
-                        categoryName: "جودة\nالحياة",
-                        imagePath: "assets/images/quality_of_life.png",
-                        onTap: () {},
-                        isInactive: true,
-                      ),
+
                       HomeSecondCategoryItem(
                         categoryName: "بحث عن\nطبيب",
                         imagePath: "assets/images/search_for_doctor_icon.png",

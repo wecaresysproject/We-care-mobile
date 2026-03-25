@@ -139,4 +139,7 @@ class Routes {
   static const scheduledMedicinesListView = '/scheduledMedicinesListView';
   static const aiConsultation = '/aiConsultation';
   static const medicinesCompatibilityView = '/medicinesCompatibilityView';
+  static const qualityOfLifeMainView = '/qualityOfLifeMainView';
+  static const qualityOfLifeQuestionsView = '/qualityOfLifeQuestionsView';
+  static const qualityOfLifeTableView = '/qualityOfLifeTableView';
 }
