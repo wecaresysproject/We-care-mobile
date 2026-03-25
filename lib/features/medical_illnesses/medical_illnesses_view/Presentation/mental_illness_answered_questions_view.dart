@@ -4,12 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/medical_illnesses/data/models/answered_question_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_cubit.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_view/logic/mental_illness_data_view_state.dart';
 
@@ -27,24 +27,31 @@ class MentalIllnessYesAnswersView extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              BlocBuilder<MentalIllnessDataViewCubit, MentalIllnessDataViewState>(
+              BlocBuilder<MentalIllnessDataViewCubit,
+                  MentalIllnessDataViewState>(
                 builder: (context, state) {
                   return AppBarWithCenteredTitle(
                     title: 'الأسئلة المجاب عليها بنعم',
                     titleColor: AppColorsManager.mainDarkBlue,
                     showShareButtonOnly: true,
                     shareFunction: () {
-                      final hasYesAnswers = state.mentalIllnessAnsweredQuestions != null &&
-                          state.mentalIllnessAnsweredQuestions!.isNotEmpty;
+                      final hasYesAnswers =
+                          state.mentalIllnessAnsweredQuestions != null &&
+                              state.mentalIllnessAnsweredQuestions!.isNotEmpty;
                       if (!hasYesAnswers) {
                         showError("لا توجد أسئلة مجاب عليها بنعم للمشاركة");
                         return;
                       }
-                      final questionsText = state.mentalIllnessAnsweredQuestions!
+                      final questionsText = state
+                          .mentalIllnessAnsweredQuestions!
                           .map((q) =>
                               "المحور: ${q.category}\nالسؤال: ${q.questionText}\nالنطاق: ${q.scope}\nالتاريخ: ${q.answeredDate}\n")
                           .join("\n\n");
-                      Share.share('🧠📄 الأسئلة المجاب عليها بنعم 🧠📄\n\n$questionsText');
+
+                      Share.share(
+                          '🧠📄 الأسئلة المجاب عليها بنعم 🧠📄\n\n$questionsText');
+                      AppLogger.info(
+                          "questionsText length: ${questionsText.length}");
                     },
                   );
                 },

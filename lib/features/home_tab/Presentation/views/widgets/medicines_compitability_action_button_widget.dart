@@ -60,6 +60,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/features/home_tab/Presentation/views/widgets/simulated_medicines_combitability_loading_view.dart';
 
 class MedicinesCompitabilityActionButton extends StatelessWidget {
   const MedicinesCompitabilityActionButton({
@@ -71,7 +72,14 @@ class MedicinesCompitabilityActionButton extends StatelessWidget {
     return AppCustomButton(
       isLoading: false,
       title: "تحليل التوافق",
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const SimulatedMedicinesCombitabilityLoader(),
+          ),
+        );
+      },
       isEnabled: true,
     );
   }
