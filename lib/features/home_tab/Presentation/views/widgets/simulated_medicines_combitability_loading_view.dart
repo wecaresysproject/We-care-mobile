@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/home_tab/Presentation/views/medicines_combitability_reesults_view.dart';
 
 class SimulatedMedicinesCombitabilityLoader extends StatefulWidget {
   const SimulatedMedicinesCombitabilityLoader({super.key});
@@ -55,12 +54,12 @@ class _SimulatedMedicinesCombitabilityLoaderState
         } else {
           _timer?.cancel();
           // final cubit = context.read<MedicinesDataEntryCubit>();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => const MedicinesCombitabilityReesultsView(),
-            ),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (_) => const MedicinesCombitabilityReesultsView(),
+          //   ),
+          // );
         }
       },
     );

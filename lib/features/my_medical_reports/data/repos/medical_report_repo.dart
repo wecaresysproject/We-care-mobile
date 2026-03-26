@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/my_medical_reports/data/medical_report_api_services.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
@@ -322,6 +323,19 @@ class MedicalReportRepo {
     try {
       final response = await _apiServices.getSpecificPdf(date);
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UserMedicalHistoryDetailsModel>>
+      getUserMedicalHistoryDetails() async {
+    try {
+      final response = await _apiServices.getUserMedicalHistoryDetails();
+      final userMedicalHistoryDetails =
+          UserMedicalHistoryDetailsModel.fromJson(response['data']);
+
+      return ApiResult.success(userMedicalHistoryDetails);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

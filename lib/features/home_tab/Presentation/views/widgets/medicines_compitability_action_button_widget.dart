@@ -59,7 +59,11 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/simulated_medicines_combitability_loading_view.dart';
 
 class MedicinesCompitabilityActionButton extends StatelessWidget {
@@ -69,18 +73,28 @@ class MedicinesCompitabilityActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCustomButton(
-      isLoading: false,
-      title: "تحليل التوافق",
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const SimulatedMedicinesCombitabilityLoader(),
-          ),
+    return BlocBuilder<MedicinesCompatibilityCubit,
+        MedicinesCompatibilityState>(
+      buildWhen: (previous, current) =>
+          previous.medicalHistoryStatus != current.medicalHistoryStatus,
+      builder: (context, state) {
+        return AppCustomButton(
+          isLoading: false,
+          title: "تحليل التوافق",
+          onPressed: state.medicalHistoryStatus == RequestStatus.success
+              ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const SimulatedMedicinesCombitabilityLoader(),
+                    ),
+                  );
+                }
+              : null,
+          isEnabled: state.medicalHistoryStatus == RequestStatus.success,
         );
       },
-      isEnabled: true,
     );
   }
 }

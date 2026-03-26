@@ -31,4 +31,6 @@ class MedicalReportApiConstants {
   static const String uploadReport = 'MedicalReports/upload-report';
   static const String getPdfDates = 'MedicalReports/pdf/dates';
   static const String getSpecificPdf = 'MedicalReports/pdf';
+  static const getUserMedicalHistoryDetails =
+      "MedicalReports/full-report-Medical-file-data";
 }

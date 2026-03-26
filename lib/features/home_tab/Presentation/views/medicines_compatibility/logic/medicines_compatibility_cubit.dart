@@ -15,7 +15,36 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
       [
         fetchMedicinesFilters(),
         emitModuleGuidanceData(),
+        getUserMedicalHistoryDetails(),
       ],
+    );
+  }
+
+  Future<void> getUserMedicalHistoryDetails() async {
+    emit(state.copyWith(
+      medicalHistoryStatus: RequestStatus.loading,
+    ));
+
+    final response = await _medicalReportRepo.getUserMedicalHistoryDetails();
+
+    response.when(
+      success: (userMedicalProfileHistory) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: userMedicalProfileHistory,
+            medicalHistoryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: null,
+            medicalHistoryStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
     );
   }
 

@@ -138,4 +138,6 @@ abstract class MedicalReportApiServices {
   Future<UploadMedicalReportResponseModel> getSpecificPdf(
     @Query('date') String date,
   );
+  @GET(MedicalReportApiConstants.getUserMedicalHistoryDetails)
+  Future<dynamic> getUserMedicalHistoryDetails();
 }
