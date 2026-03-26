@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+
 import '../widgets/quality_of_life_app_bar.dart';
+import '../widgets/quality_of_life_filters_row.dart';
 
 class QualityOfLifeTableView extends StatelessWidget {
   const QualityOfLifeTableView({super.key});
@@ -23,11 +27,8 @@ class QualityOfLifeTableView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "تفاصيل السجلات",
-                    style: AppTextStyles.font18blackWight500,
-                  ),
-                  SizedBox(height: 16.h),
+                  const QualityOfLifeFiltersRow(),
+                  verticalSpacing(18),
                   _buildDataTable(context),
                 ],
               ),
@@ -42,45 +43,102 @@ class QualityOfLifeTableView extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: DataTable(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         headingRowColor: WidgetStateProperty.all(AppColorsManager.mainDarkBlue),
-        columnSpacing: 20.w,
-        headingTextStyle: AppTextStyles.font14whiteWeight600,
-        dataTextStyle: AppTextStyles.font14blackWeight400,
+        columnSpacing: _getResponsiveColumnSpacing(context),
+        dataRowMaxHeight: 78,
+        horizontalMargin: _getResponsiveColumnSpacing(context),
+        dividerThickness: 0.83,
+        headingTextStyle: _getHeadingTextStyle(),
+        showBottomBorder: true,
+        headingRowHeight: 50.h,
         border: TableBorder.all(
+          style: BorderStyle.solid,
+          borderRadius: BorderRadius.circular(8.r),
           color: const Color(0xff909090),
           width: 0.19,
-          borderRadius: BorderRadius.circular(8.r),
         ),
-        columns: const [
-          DataColumn(label: Text("السؤال")),
-          DataColumn(label: Text("الإجابة")),
+        columns: [
+          _buildColumn("السؤال"),
+          _buildColumn("الإجابة"),
         ],
-        rows: _buildDummyRows(),
+        rows: _buildDummyRows(context),
       ),
     );
   }
 
-  List<DataRow> _buildDummyRows() {
-    final dummyData = [
-      {"q": "كيف تقيم صحتك الجسدية العامة؟", "a": "جيدة"},
-      {"q": "هل عانيت من صداع أو دوخة؟", "a": "لا"},
-      {"q": "هل شعرت بتعب أو إرهاق؟", "a": "أحياناً"},
-      {"q": "كيف تقيم جودة نومك؟", "a": "ممتازة"},
-      {"q": "هل مارست نشاطاً بدنياً؟", "a": "نعم"},
-    ];
+  double _getResponsiveColumnSpacing(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    if (width <= 360) return 6;
+    if (width <= 480) return 10;
+    if (width <= 600) return 14;
+    return 20;
+  }
 
-    return dummyData
-        .map((data) => DataRow(
-              cells: [
-                DataCell(
-                  SizedBox(
-                    width: 200.w,
-                    child: Text(data["q"]!, maxLines: 2, overflow: TextOverflow.ellipsis),
-                  ),
-                ),
-                DataCell(Text(data["a"]!)),
-              ],
-            ))
-        .toList();
+  DataColumn _buildColumn(String label) {
+    return DataColumn(
+      headingRowAlignment: MainAxisAlignment.center,
+      label: Text(
+        label,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.font18blackWight500.copyWith(
+          fontSize: 11.5.sp,
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+
+  List<DataRow> _buildDummyRows(BuildContext context) {
+    return QualityOfLifeCubit.questions.map((q) {
+      return DataRow(
+        cells: [
+          DataCell(
+            Container(
+              alignment: Alignment.centerRight,
+              width: 250.w,
+              child: Text(
+                q.question,
+                style: _getCellTextStyle(false),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ),
+          _buildCell(q.answers.first),
+        ],
+      );
+    }).toList();
+  }
+
+  DataCell _buildCell(String text, {bool isBold = false}) {
+    return DataCell(
+      Center(
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          style: _getCellTextStyle(isBold),
+        ),
+      ),
+    );
+  }
+
+  TextStyle _getHeadingTextStyle() {
+    return AppTextStyles.font16DarkGreyWeight400.copyWith(
+      color: AppColorsManager.backGroundColor,
+      fontWeight: FontWeight.w600,
+      fontSize: 15.sp,
+    );
+  }
+
+  TextStyle _getCellTextStyle(bool isBold) {
+    return AppTextStyles.font12blackWeight400.copyWith(
+      fontWeight: FontWeight.w500,
+      fontSize: isBold ? 14.sp : 15.sp,
+      color: !isBold ? Colors.black : AppColorsManager.mainDarkBlue,
+    );
   }
 }
