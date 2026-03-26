@@ -118,7 +118,8 @@ class FAQSectionWidgetState extends State<FAQSectionWidget> {
                           children: [
                             if (index > 0)
                               Divider(
-                                color: AppColorsManager.placeHolderColor.withAlpha(100),
+                                color: AppColorsManager.placeHolderColor
+                                    .withAlpha(100),
                                 height: 1,
                               ),
                             _buildFAQItem(

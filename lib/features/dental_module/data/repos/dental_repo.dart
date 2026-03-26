@@ -94,8 +94,7 @@ class DentalRepo {
     String? procedureType,
   }) async {
     try {
-      final response =
-          await dentalService.getFilteredToothDocuments(
+      final response = await dentalService.getFilteredToothDocuments(
         userType,
         language,
         toothNumber,
@@ -103,15 +102,14 @@ class DentalRepo {
         procedureType,
       );
       return ApiResult.success(
-      response['data'] != null
-          ? (response['data'] as List).map((e) => int.parse(e)).toList()
-          : <int>[],
+        response['data'] != null
+            ? (response['data'] as List).map((e) => int.parse(e)).toList()
+            : <int>[],
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
-
 
   // Future<ApiResult<GetSurgeriesFiltersResponseModel>> gettFilters(
   //     {required String language}) async {

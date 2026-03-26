@@ -1,5 +1,3 @@
-
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'get_tooth_documents_reponse_model.g.dart';
@@ -8,7 +6,7 @@ part 'get_tooth_documents_reponse_model.g.dart';
 class GetToothDocumentsResponseModel {
   bool success;
   String message;
-@JsonKey(name: 'data')
+  @JsonKey(name: 'data')
   List<ToothDocument> toothDocuments;
 
   GetToothDocumentsResponseModel({
@@ -20,15 +18,16 @@ class GetToothDocumentsResponseModel {
   factory GetToothDocumentsResponseModel.fromJson(Map<String, dynamic> json) =>
       _$GetToothDocumentsResponseModelFromJson(json);
 }
+
 @JsonSerializable()
 class ToothDocument {
-  String? id; 
-  String? symptomStartDate; 
-  String? painNature; 
-  String? teethNumber; 
-  String? primaryProcedure; 
+  String? id;
+  String? symptomStartDate;
+  String? painNature;
+  String? teethNumber;
+  String? primaryProcedure;
 
- ToothDocument({
+  ToothDocument({
     this.id,
     this.symptomStartDate,
     this.painNature,

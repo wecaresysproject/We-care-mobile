@@ -4,14 +4,13 @@ class BiometricsApiConstants {
   static const postBiometricDataOfSpecifcCategory =
       "VitalActivity/AddVitalActivity";
   //View Entry
-  static const getAllAvailableBiometrics = "VitalActivity/GetAllAvailableCategories";
+  static const getAllAvailableBiometrics =
+      "VitalActivity/GetAllAvailableCategories";
   static const getAllFilters = "VitalActivity/GetFilterOptions";
   static const getFilteredBiometrics = "VitalActivity/FilterVitalActivity";
-  static const getCurrentBiometricData =
-      "VitalActivity/currentbiometrics";
-  static const editBiometricDataOfSpecifcCategory =
-      "VitalActivity/biometrics";    
-      static const deleteBiometricDataOfSpecifcCategory =
+  static const getCurrentBiometricData = "VitalActivity/currentbiometrics";
+  static const editBiometricDataOfSpecifcCategory = "VitalActivity/biometrics";
+  static const deleteBiometricDataOfSpecifcCategory =
       "VitalActivity/biometrics";
 
   //filters

@@ -10,11 +10,13 @@ class VaccineViewRepo {
   VaccineViewRepo(this.vaccineApiServices);
 
   Future<ApiResult<GetUserVaccinesResponseModel>> getUserVaccines(
-     {required String language,required String userType, int? page, int? pageSize}) async {
+      {required String language,
+      required String userType,
+      int? page,
+      int? pageSize}) async {
     try {
-      final response =
-          await vaccineApiServices.getUserVaccines(language, userType,
-              page: page, pageSize: pageSize);
+      final response = await vaccineApiServices
+          .getUserVaccines(language, userType, page: page, pageSize: pageSize);
       return ApiResult.success(response);
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));

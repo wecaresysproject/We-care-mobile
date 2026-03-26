@@ -93,7 +93,7 @@ class SimilarAnalysisCard extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 16.0),
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-             decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -102,7 +102,6 @@ class SimilarAnalysisCard extends StatelessWidget {
                     controller: context
                         .read<TestAnalysisViewCubit>()
                         .resultEditingController,
-                  
                     decoration: InputDecoration(
                       labelText: 'النتيجة الجديدة',
                     ),
@@ -193,7 +192,7 @@ class SimilarAnalysisCard extends StatelessWidget {
                 value[index],
                 style: AppTextStyles.font14whiteWeight600.copyWith(
                   color: isHighlightValue ? Colors.white : Colors.black,
-                  fontSize:  label == 'التاريخ' ? 11.5.sp : 14.sp,
+                  fontSize: label == 'التاريخ' ? 11.5.sp : 14.sp,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,

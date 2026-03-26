@@ -28,7 +28,8 @@ class LoginCubit extends Cubit<LoginState> {
     final response = await _loginRepo.login(
       LoginRequestBodyModel(
         password: passwordController.text,
-        phoneNumber: "+2${phoneController.text}", //! handle app regex to be started from 1022647417
+        phoneNumber:
+            "+2${phoneController.text}", //! handle app regex to be started from 1022647417
         language: AppStrings.arabicLang, //TOD to change this later
       ),
     );

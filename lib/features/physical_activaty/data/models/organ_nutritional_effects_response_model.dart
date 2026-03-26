@@ -36,8 +36,7 @@ class OrganNutritionalEffectsData extends Equatable {
   factory OrganNutritionalEffectsData.fromJson(Map<String, dynamic> json) =>
       _$OrganNutritionalEffectsDataFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      _$OrganNutritionalEffectsDataToJson(this);
+  Map<String, dynamic> toJson() => _$OrganNutritionalEffectsDataToJson(this);
 
   @override
   List<Object?> get props => [effects];

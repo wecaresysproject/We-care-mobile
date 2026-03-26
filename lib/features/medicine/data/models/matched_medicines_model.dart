@@ -5,7 +5,7 @@ part 'matched_medicines_model.g.dart';
 @JsonSerializable()
 class MatchedMedicineModel {
   final String id;
-   @JsonKey(name: 'tradeName')
+  @JsonKey(name: 'tradeName')
   final String medicineName;
 
   MatchedMedicineModel({

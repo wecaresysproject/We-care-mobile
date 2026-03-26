@@ -115,14 +115,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           analyzeMedicalCompatibilityStatus: RequestStatus.loading,
         ),
       );
-      await getUserMedicalHistoryDetails();
 
-      /// stop if profile failed
+      /// check if profile exists
       if (state.userMedicalProfileHistory == null) {
         emit(
           state.copyWith(
             analyzeMedicalCompatibilityStatus: RequestStatus.failure,
-            message: "تعذر تحميل الملف الطبي للمريض",
+            message: "تعذر تحميل الملف الطبي للمريض، يرجى المحاولة مرة أخرى",
           ),
         );
         return;
@@ -209,6 +208,10 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> getUserMedicalHistoryDetails() async {
+    emit(state.copyWith(
+      medicalHistoryStatus: RequestStatus.loading,
+    ));
+
     final response =
         await _medicinesDataEntryRepo.getUserMedicalHistoryDetails();
 
@@ -217,6 +220,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             userMedicalProfileHistory: userMedicalProfileHistory,
+            medicalHistoryStatus: RequestStatus.success,
           ),
         );
       },
@@ -224,6 +228,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         emit(
           state.copyWith(
             userMedicalProfileHistory: null,
+            medicalHistoryStatus: RequestStatus.failure,
             message: failure.errors.first,
           ),
         );
@@ -377,6 +382,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   Future<void> initialRequestsForMedicalCompitability() async {
     await Future.wait([
       emitAllMedicinesNames(),
+      getUserMedicalHistoryDetails(),
       emitAllDosageFrequencies(),
       getAllUsageCategories(),
       getChronicDiseasesNames(),

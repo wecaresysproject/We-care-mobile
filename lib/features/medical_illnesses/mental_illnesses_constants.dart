@@ -29,16 +29,11 @@ class MentalIllnessesConstants {
   static const getActivationOfUmbrella = "/MentalAssessment/umbrella-status";
 
   static const deleteMentalIllnessDetailsDocumentById = "/v1/document";
-  static const getMedicalIllnessUmbrellaDocs =
-      "/psych/umbrella-docs";
+  static const getMedicalIllnessUmbrellaDocs = "/psych/umbrella-docs";
   static const getAllAnsweredQuestions = "/psych/questions/answered";
-  static const getFollowUpReportsAvailableYears =
-      "/psych/available-years";
-  static const getAllFollowUpReportsRecords =
-     "/psych/follow-up-reports";
-  static const getFilteredFollowUpReports =
-      "/psych/reports/filter";
+  static const getFollowUpReportsAvailableYears = "/psych/available-years";
+  static const getAllFollowUpReportsRecords = "/psych/follow-up-reports";
+  static const getFilteredFollowUpReports = "/psych/reports/filter";
   static const editSurgeryEndpoint = "/api/EnterSectionSurgery";
-  static const getFollowUpDocumentDetailsById =
-      "/psych/follow-up-report";
+  static const getFollowUpDocumentDetailsById = "/psych/follow-up-report";
 }

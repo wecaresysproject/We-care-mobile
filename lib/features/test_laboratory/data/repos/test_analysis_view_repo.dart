@@ -22,7 +22,7 @@ class TestAnalysisViewRepo {
     }
   }
 
-    Future<ApiResult<List<String>>> getGroupNamesFilter() async {
+  Future<ApiResult<List<String>>> getGroupNamesFilter() async {
     try {
       final response = await testAnalysisSerices.getAllUserGroupNames();
       return ApiResult.success(
@@ -32,7 +32,7 @@ class TestAnalysisViewRepo {
     }
   }
 
-    Future<ApiResult<List<String>>> getTestCodesFilter() async {
+  Future<ApiResult<List<String>>> getTestCodesFilter() async {
     try {
       final response = await testAnalysisSerices.getAllUserTestCodes();
       return ApiResult.success(
@@ -53,8 +53,8 @@ class TestAnalysisViewRepo {
     }
   }
 
-  Future<ApiResult<GetUserAnalysisReponseModel>> getFilteredTests(
-      int? year,{String ? groupName, String ? testCode}) async {
+  Future<ApiResult<GetUserAnalysisReponseModel>> getFilteredTests(int? year,
+      {String? groupName, String? testCode}) async {
     try {
       final response = await testAnalysisSerices.getFilteredTestsByYear(
           AppStrings.arabicLang, year, groupName, testCode);

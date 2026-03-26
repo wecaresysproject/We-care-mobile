@@ -8,6 +8,7 @@ import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.d
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/medical_compitability_system_prompt_view.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medical_history_status_bloc_builder_widget.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medication_compitability_form_field_widget.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
@@ -104,7 +105,9 @@ class NewMedicationCompatibilityView extends StatelessWidget {
                     },
                   ),
                   verticalSpacing(24),
-                  MedicationCompatibilityFormFieldsWidget(),
+                  const MedicalHistoryStatusBlocBuilder(),
+                  verticalSpacing(8),
+                  const MedicationCompatibilityFormFieldsWidget(),
                 ],
               ),
             ),

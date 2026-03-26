@@ -9,10 +9,12 @@ class MedicalReportPdfDatesResponseModel extends Equatable {
 
   const MedicalReportPdfDatesResponseModel({this.dates});
 
-  factory MedicalReportPdfDatesResponseModel.fromJson(Map<String, dynamic> json) =>
+  factory MedicalReportPdfDatesResponseModel.fromJson(
+          Map<String, dynamic> json) =>
       _$MedicalReportPdfDatesResponseModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MedicalReportPdfDatesResponseModelToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$MedicalReportPdfDatesResponseModelToJson(this);
 
   @override
   List<Object?> get props => [dates];

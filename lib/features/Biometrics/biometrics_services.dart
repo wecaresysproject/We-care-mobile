@@ -13,49 +13,44 @@ abstract class BiometricsServices {
   Future<dynamic> postBiometricDataOfSpecifcCategory(
     @Body() PostBiometricCategoryModel requestBody,
     @Query('userType') String userType,
-    @Query('Language') String language,);
-    
+    @Query('Language') String language,
+  );
+
   @GET(BiometricsApiConstants.getAllAvailableBiometrics)
   Future<dynamic> getAllAvailableBiometrics(
-      @Query('Language') String language, 
-      @Query('userType') String userType
-  );
+      @Query('Language') String language, @Query('userType') String userType);
 
   @GET(BiometricsApiConstants.getAllFilters)
   Future<dynamic> getAllFilters(
-      @Query('Language') String language, 
-      @Query('userType') String userType
-  );
+      @Query('Language') String language, @Query('userType') String userType);
 
   @GET(BiometricsApiConstants.getFilteredBiometrics)
   Future<dynamic> getFilteredBiometrics(
-      @Query('Language') String language, 
-      @Query('userType') String userType, 
-      @Query('year') String? year, 
-      @Query('month') String? month, 
-      @Query('day') String? day, 
-      @Query('category') List<String> biometricCategories,
+    @Query('Language') String language,
+    @Query('userType') String userType,
+    @Query('year') String? year,
+    @Query('month') String? month,
+    @Query('day') String? day,
+    @Query('category') List<String> biometricCategories,
   );
   @GET(BiometricsApiConstants.getCurrentBiometricData)
   Future<dynamic> getCurrentBiometricData(
-      @Query('Language') String language, 
-      @Query('userType') String userType,);
+    @Query('Language') String language,
+    @Query('userType') String userType,
+  );
 
   @PUT(BiometricsApiConstants.editBiometricDataOfSpecifcCategory)
   Future<dynamic> editBiometricDataOfSpecifcCategory(
-    @Body() dynamic requestBody,
-    @Query('userType') String userType,
-    @Query('Language') String language,
-    @Query('createdAt') String date,
-    @Query('biometricName') String biometricName
-    ); 
-
+      @Body() dynamic requestBody,
+      @Query('userType') String userType,
+      @Query('Language') String language,
+      @Query('createdAt') String date,
+      @Query('biometricName') String biometricName);
 
   @DELETE(BiometricsApiConstants.deleteBiometricDataOfSpecifcCategory)
   Future<dynamic> deleteBiometricDataOfSpecifcCategory(
-    @Query('userType') String userType,
-    @Query('Language') String language,
-    @Query('createdAt') String date,
-    @Query('biometricName') String biometricName
-    );
+      @Query('userType') String userType,
+      @Query('Language') String language,
+      @Query('createdAt') String date,
+      @Query('biometricName') String biometricName);
 }

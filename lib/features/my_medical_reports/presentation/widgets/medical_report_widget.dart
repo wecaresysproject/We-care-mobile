@@ -62,7 +62,8 @@ class MedicalReportWidget extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                   image: const DecorationImage(
-                    image: AssetImage('assets/images/ai_image.png'), // Placeholder
+                    image:
+                        AssetImage('assets/images/ai_image.png'), // Placeholder
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -79,21 +80,28 @@ class MedicalReportWidget extends StatelessWidget {
                   ),
                   Text(
                     'الاسم: أحمد محمد',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ],
           ),
-          
+
           // Center: Title
           Row(
             children: const [
-              Icon(Icons.medical_services_outlined, color: Colors.white, size: 40),
+              Icon(Icons.medical_services_outlined,
+                  color: Colors.white, size: 40),
               SizedBox(width: 10),
               Text(
                 'تقرير طبي شخصي',
-                style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -107,8 +115,13 @@ class MedicalReportWidget extends StatelessWidget {
             ),
             child: Column(
               children: const [
-                 Icon(Icons.local_hospital, color: AppColorsManager.mainDarkBlue, size: 30),
-                 Text('WE CARE SYS', style: TextStyle(color: AppColorsManager.mainDarkBlue, fontWeight: FontWeight.bold, fontSize: 10)),
+                Icon(Icons.local_hospital,
+                    color: AppColorsManager.mainDarkBlue, size: 30),
+                Text('WE CARE SYS',
+                    style: TextStyle(
+                        color: AppColorsManager.mainDarkBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10)),
               ],
             ),
           ),
@@ -122,7 +135,9 @@ class MedicalReportWidget extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.only(bottom: 8),
       decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColorsManager.babyBlueColor, width: 2)),
+        border: Border(
+            bottom:
+                BorderSide(color: AppColorsManager.babyBlueColor, width: 2)),
       ),
       child: Text(
         title,
@@ -172,7 +187,11 @@ class MedicalReportWidget extends StatelessWidget {
   Widget _buildInfoItem(String label, String value) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(color: AppColorsManager.mainDarkBlue, fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(label,
+            style: const TextStyle(
+                color: AppColorsManager.mainDarkBlue,
+                fontWeight: FontWeight.bold,
+                fontSize: 16)),
         const SizedBox(width: 8),
         Text(value, style: const TextStyle(fontSize: 16)),
       ],
@@ -202,12 +221,16 @@ class MedicalReportWidget extends StatelessWidget {
             spacing: 20,
             runSpacing: 20,
             children: [
-              _buildVitalCard('سكر عشوائي', '180', '20/12/2024', Icons.bloodtype),
+              _buildVitalCard(
+                  'سكر عشوائي', '180', '20/12/2024', Icons.bloodtype),
               _buildVitalCard('الضغط', '120/80', '20/12/2024', Icons.speed),
               _buildVitalCard('مستوى الأكسجين', '95 %', '23/6/2024', Icons.air),
-              _buildVitalCard('نبضات القلب', '60', '20/12/2024', Icons.monitor_heart),
-              _buildVitalCard('درجة الحرارة', '37.4', '23/12/2024', Icons.thermostat),
-              _buildVitalCard('مؤشر كتلة الجسم', '22.9', '23/12/2024', Icons.accessibility_new),
+              _buildVitalCard(
+                  'نبضات القلب', '60', '20/12/2024', Icons.monitor_heart),
+              _buildVitalCard(
+                  'درجة الحرارة', '37.4', '23/12/2024', Icons.thermostat),
+              _buildVitalCard('مؤشر كتلة الجسم', '22.9', '23/12/2024',
+                  Icons.accessibility_new),
             ],
           ),
         ],
@@ -215,7 +238,8 @@ class MedicalReportWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildVitalCard(String title, String value, String date, IconData icon) {
+  Widget _buildVitalCard(
+      String title, String value, String date, IconData icon) {
     return Container(
       width: 350, // Fixed width for grid items
       padding: const EdgeInsets.all(12),
@@ -242,12 +266,19 @@ class MedicalReportWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(title, style: const TextStyle(color: AppColorsManager.mainDarkBlue, fontWeight: FontWeight.bold)),
-                    Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(title,
+                        style: const TextStyle(
+                            color: AppColorsManager.mainDarkBlue,
+                            fontWeight: FontWeight.bold)),
+                    Text(date,
+                        style:
+                            const TextStyle(fontSize: 12, color: Colors.grey)),
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Text(value,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -275,13 +306,37 @@ class MedicalReportWidget extends StatelessWidget {
         children: [
           _buildSectionHeader('الشكاوى المرضية'),
           const SizedBox(height: 16),
-          _buildTableHeader(['المنطقة', 'الشكوى', 'طبيعة الشكوى', 'حدة الشكوى', 'تاريخ الشكوى']),
+          _buildTableHeader([
+            'المنطقة',
+            'الشكوى',
+            'طبيعة الشكوى',
+            'حدة الشكوى',
+            'تاريخ الشكوى'
+          ]),
           const Divider(),
-          _buildTableRow(['اليد', 'هذا النص مثال لنص اخر يمكن استبداله', 'مستمرة', 'خفيف', '22/7/2024']),
+          _buildTableRow([
+            'اليد',
+            'هذا النص مثال لنص اخر يمكن استبداله',
+            'مستمرة',
+            'خفيف',
+            '22/7/2024'
+          ]),
           const Divider(),
-          _buildTableRow(['الرأس', 'هذا النص مثال لنص اخر يمكن استبداله', 'مستمرة', 'خفيف', '22/7/2024']),
+          _buildTableRow([
+            'الرأس',
+            'هذا النص مثال لنص اخر يمكن استبداله',
+            'مستمرة',
+            'خفيف',
+            '22/7/2024'
+          ]),
           const Divider(),
-          _buildTableRow(['الرأس', 'صداع نصفي هذا النص مثال', 'مستمرة', 'خفيف', '22/7/2024']),
+          _buildTableRow([
+            'الرأس',
+            'صداع نصفي هذا النص مثال',
+            'مستمرة',
+            'خفيف',
+            '22/7/2024'
+          ]),
         ],
       ),
     );
@@ -306,9 +361,15 @@ class MedicalReportWidget extends StatelessWidget {
         children: [
           _buildSectionHeader('الأدوية الحالية المستمرة'),
           const SizedBox(height: 16),
-          _buildTableHeader(['اسم الدواء', 'الجرعة', 'عدد مرات الجرعة اليومية', 'مدة الاستخدام']),
+          _buildTableHeader([
+            'اسم الدواء',
+            'الجرعة',
+            'عدد مرات الجرعة اليومية',
+            'مدة الاستخدام'
+          ]),
           const Divider(),
-          _buildTableRow(['الكلورديازيبوكسيد', 'قرصين', 'بعد العشاء', '3 أسابيع']),
+          _buildTableRow(
+              ['الكلورديازيبوكسيد', 'قرصين', 'بعد العشاء', '3 أسابيع']),
           const Divider(),
           _buildTableRow(['نوردازيام', 'قرص', '3 مرات باليوم', '4 أسابيع']),
         ],
@@ -366,7 +427,8 @@ class MedicalReportWidget extends StatelessWidget {
           const SizedBox(height: 16),
           _buildTableHeader(['العملية', 'التاريخ', 'المستشفى', 'ملاحظات']),
           const Divider(),
-          _buildTableRow(['استئصال الزائدة', '15/03/2018', 'مستشفى السلام', 'ناجحة']),
+          _buildTableRow(
+              ['استئصال الزائدة', '15/03/2018', 'مستشفى السلام', 'ناجحة']),
           const Divider(),
           _buildTableRow(['تصحيح نظر', '10/11/2020', 'مستشفى العيون', 'ليزر']),
         ],
@@ -393,9 +455,11 @@ class MedicalReportWidget extends StatelessWidget {
         children: [
           _buildSectionHeader('نتائج التحاليل'),
           const SizedBox(height: 16),
-          _buildTableHeader(['اسم التحليل', 'النتيجة', 'المعدل الطبيعي', 'التاريخ']),
+          _buildTableHeader(
+              ['اسم التحليل', 'النتيجة', 'المعدل الطبيعي', 'التاريخ']),
           const Divider(),
-          _buildTableRow(['Hemoglobin', '13.5 g/dL', '13.0 - 17.0', '20/12/2024']),
+          _buildTableRow(
+              ['Hemoglobin', '13.5 g/dL', '13.0 - 17.0', '20/12/2024']),
           const Divider(),
           _buildTableRow(['Cholesterol', '190 mg/dL', '< 200', '20/12/2024']),
         ],
@@ -465,13 +529,18 @@ class MedicalReportWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
-        children: cells.map((cell) => Expanded(
-          child: Text(
-            cell,
-            style: const TextStyle(color: AppColorsManager.mainDarkBlue, fontWeight: FontWeight.bold, fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-        )).toList(),
+        children: cells
+            .map((cell) => Expanded(
+                  child: Text(
+                    cell,
+                    style: const TextStyle(
+                        color: AppColorsManager.mainDarkBlue,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16),
+                    textAlign: TextAlign.center,
+                  ),
+                ))
+            .toList(),
       ),
     );
   }
@@ -480,13 +549,15 @@ class MedicalReportWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Row(
-        children: cells.map((cell) => Expanded(
-          child: Text(
-            cell,
-            style: const TextStyle(fontSize: 14),
-            textAlign: TextAlign.center,
-          ),
-        )).toList(),
+        children: cells
+            .map((cell) => Expanded(
+                  child: Text(
+                    cell,
+                    style: const TextStyle(fontSize: 14),
+                    textAlign: TextAlign.center,
+                  ),
+                ))
+            .toList(),
       ),
     );
   }

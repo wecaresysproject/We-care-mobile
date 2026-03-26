@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'get_family_members_names.g.dart';
@@ -8,27 +7,27 @@ class GetFamilyMembersNames {
   @JsonKey(name: 'Bro')
   List<String>? bro;
   @JsonKey(name: 'Sis')
-	List<String>? sis;
+  List<String>? sis;
   @JsonKey(name: 'Mam')
-	List<String>? mother;
+  List<String>? mother;
   @JsonKey(name: 'Dad')
-	List<String>?father;
+  List<String>? father;
   @JsonKey(name: 'GrandpaFather')
-	List<String>? grandpaFather;
+  List<String>? grandpaFather;
   @JsonKey(name: 'GrandmaFather')
-	List<String>? grandmaFather;
+  List<String>? grandmaFather;
   @JsonKey(name: 'GrandpaMother')
   List<String>? grandpaMother;
   @JsonKey(name: 'GrandmaMother')
-	List<String>? grandmaMother;
+  List<String>? grandmaMother;
   @JsonKey(name: 'MotherSideAunt')
-	List<String>? motherSideAunt;
+  List<String>? motherSideAunt;
   @JsonKey(name: 'MotherSideUncle')
-	List<String>? motherSideUncle;
+  List<String>? motherSideUncle;
   @JsonKey(name: 'FatherSideAunt')
-	List<String>? fatherSideAunt;
+  List<String>? fatherSideAunt;
   @JsonKey(name: 'FatherSideUncle')
-	List<String>?fatherSideUncle;
+  List<String>? fatherSideUncle;
 
   GetFamilyMembersNames({
     this.bro,
@@ -48,5 +47,4 @@ class GetFamilyMembersNames {
       _$GetFamilyMembersNamesFromJson(json);
 
   Map<String, dynamic> toJson() => _$GetFamilyMembersNamesToJson(this);
-
 }

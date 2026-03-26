@@ -213,7 +213,8 @@ class BiometricMeasurementCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 4.w),
         height: 120.h,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18.r), color: Color(0xffF1F3F6)),
+            borderRadius: BorderRadius.circular(18.r),
+            color: Color(0xffF1F3F6)),
         child: Column(
           children: [
             Container(

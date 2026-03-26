@@ -81,7 +81,7 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-       //   home: const EssentialDataView(),
+          //   home: const EssentialDataView(),
         );
       },
     );

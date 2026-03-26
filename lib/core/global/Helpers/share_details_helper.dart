@@ -18,7 +18,7 @@ Future<void> shareDetails({
     void addLine(String label, dynamic value) {
       if (value == null) return;
       final v = value.toString().trim();
-      if (v.isEmpty || v ==  "لم يتم ادخال بيانات") return;
+      if (v.isEmpty || v == "لم يتم ادخال بيانات") return;
       buffer.writeln('$label $v');
     }
 

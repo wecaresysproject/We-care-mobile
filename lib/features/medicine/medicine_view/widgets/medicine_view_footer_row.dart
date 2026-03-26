@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +24,11 @@ class MedicineViewFooterRow extends StatelessWidget {
                 child: LinearProgressIndicator(
                   minHeight: 2.h,
                   color: AppColorsManager.mainDarkBlue,
-                  backgroundColor: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                  backgroundColor:
+                      AppColorsManager.mainDarkBlue.withOpacity(0.1),
                 ),
               ),
-            
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -70,21 +70,25 @@ class MedicineViewFooterRow extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "عرض المزيد" ,
-                              style: AppTextStyles.font14whiteWeight600.copyWith(
-                                color: !cubit.hasMore ? Colors.black : Colors.white,
+                              "عرض المزيد",
+                              style:
+                                  AppTextStyles.font14whiteWeight600.copyWith(
+                                color: !cubit.hasMore
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
                             horizontalSpacing(8.w),
                             Icon(
                               Icons.expand_more,
-                              color:!cubit.hasMore ? Colors.black : Colors.white,
+                              color:
+                                  !cubit.hasMore ? Colors.black : Colors.white,
                               size: 20.sp,
                             ),
                           ],
                         ),
                 ),
-                
+
                 // // Items Count Badge
                 // Container(
                 //   width: 47.w,

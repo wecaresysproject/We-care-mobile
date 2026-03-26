@@ -16,8 +16,18 @@ class QualityOfLifeFilterRow extends StatelessWidget {
   });
 
   static const List<String> months = [
-    "يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
-    "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو",
+    "يونيو",
+    "يوليو",
+    "أغسطس",
+    "سبتمبر",
+    "أكتوبر",
+    "نوفمبر",
+    "ديسمبر"
   ];
 
   @override
@@ -35,7 +45,8 @@ class QualityOfLifeFilterRow extends StatelessWidget {
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: selectedMonth,
-                hint: Text("اختر الشهر", style: AppTextStyles.font16DarkGreyWeight400),
+                hint: Text("اختر الشهر",
+                    style: AppTextStyles.font16DarkGreyWeight400),
                 items: months.map((month) {
                   return DropdownMenuItem(
                     value: month,

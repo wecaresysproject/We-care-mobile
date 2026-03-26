@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -71,7 +70,7 @@ class GlassesRecordItem extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                           "الطبيب ",
+                            "الطبيب ",
                             style: AppTextStyles.font14BlueWeight700
                                 .copyWith(fontSize: 14.sp),
                           ),

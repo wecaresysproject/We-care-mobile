@@ -103,10 +103,15 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
     const double chipHorizontalPadding = 20; // approximate (left+right)
     const double containerHorizontalPadding = 16; // overlay container padding
     const double checkIconAndGap = 14; // when selected
-    final double desiredOverlayWidth = longestLabelWidth + chipHorizontalPadding + containerHorizontalPadding + checkIconAndGap;
-    final double overlayWidth = desiredOverlayWidth.clamp(renderBox.size.width, maxWidth);
+    final double desiredOverlayWidth = longestLabelWidth +
+        chipHorizontalPadding +
+        containerHorizontalPadding +
+        checkIconAndGap;
+    final double overlayWidth =
+        desiredOverlayWidth.clamp(renderBox.size.width, maxWidth);
 
-    double left = widget.filterTitle == "اسم العملية" ? offset.dx - 150 : offset.dx;
+    double left =
+        widget.filterTitle == "اسم العملية" ? offset.dx - 150 : offset.dx;
     // Clamp overlay horizontally to stay on screen
     if (left + overlayWidth > screenSize.width - screenPadding) {
       left = screenSize.width - screenPadding - overlayWidth;
@@ -160,7 +165,8 @@ class _SearchFilterWidgetState extends State<SearchFilterWidget> {
                                   : widget.filterList[index].toString();
 
                           // Use wider chip only for long labels to avoid affecting original component
-                          final bool useWide = label.length > 18 || label.contains('/');
+                          final bool useWide =
+                              label.length > 18 || label.contains('/');
                           final Widget chip = useWide
                               ? WideFilterChipItem(
                                   label: label,

@@ -32,8 +32,9 @@ class AnalysisLineChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final sortedData = data..sort((a, b) => a.x.compareTo(b.x));
     final double minY = 0; // Force starting from 0
-    final double maxDataY = data.map((d) => d.y).reduce((a, b) => a > b ? a : b);
-    
+    final double maxDataY =
+        data.map((d) => d.y).reduce((a, b) => a > b ? a : b);
+
     // Consider all relevant values for determining the chart's max Y
     final double effectiveMaxY = [maxDataY, normalMax].reduce(max);
 
@@ -46,7 +47,7 @@ class AnalysisLineChart extends StatelessWidget {
     final int niceInterval = _calculateNiceInterval(yRange);
 
     final spots = sortedData.map((d) => FlSpot(d.x.toDouble(), d.y)).toList();
-    
+
     // Calculate x-axis padding
     final double xAxisPadding = 0.05; // Add padding of 0.05 units
     final double minX = sortedData.first.x.toDouble() - xAxisPadding;
@@ -139,13 +140,13 @@ class AnalysisLineChart extends StatelessWidget {
                                 orElse: () =>
                                     AnalysisData(x: 0, y: 0, label: ''),
                               );
-                              
+
                               if (matchedData.label.isEmpty) {
                                 return const SizedBox.shrink();
                               }
 
                               return Transform.rotate(
-                                angle: -90 * (pi / 180), 
+                                angle: -90 * (pi / 180),
                                 origin: const Offset(18, -10),
                                 child: Text(
                                   matchedData.label,
@@ -176,7 +177,9 @@ class AnalysisLineChart extends StatelessWidget {
                         tooltipMargin: 8,
                         getTooltipItems: (spots) => spots.map((spot) {
                           return LineTooltipItem(
-                              spot.y == spot.y.truncate() ? spot.y.toInt().toString() : spot.y.toString(),
+                            spot.y == spot.y.truncate()
+                                ? spot.y.toInt().toString()
+                                : spot.y.toString(),
                             const TextStyle(
                               color: Colors.brown,
                               fontSize: 11,
@@ -210,7 +213,9 @@ class AnalysisLineChart extends StatelessWidget {
                       // Normal Minimum line
                       LineChartBarData(
                         spots: sortedData.length > 1
-                            ? sortedData.map((d) => FlSpot(d.x.toDouble(), normalMin)).toList()
+                            ? sortedData
+                                .map((d) => FlSpot(d.x.toDouble(), normalMin))
+                                .toList()
                             : [
                                 FlSpot(minX, normalMin),
                                 FlSpot(maxX, normalMin),
@@ -224,7 +229,9 @@ class AnalysisLineChart extends StatelessWidget {
                       // Normal Maximum line
                       LineChartBarData(
                         spots: sortedData.length > 1
-                            ? sortedData.map((d) => FlSpot(d.x.toDouble(), normalMax)).toList()
+                            ? sortedData
+                                .map((d) => FlSpot(d.x.toDouble(), normalMax))
+                                .toList()
                             : [
                                 FlSpot(minX, normalMax),
                                 FlSpot(maxX, normalMax),
@@ -247,7 +254,7 @@ class AnalysisLineChart extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top:16),
+                padding: const EdgeInsets.only(top: 16),
                 child: const Text(
                   "المعيار",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -267,9 +274,10 @@ int _calculateNiceInterval(double yRange) {
   // Aim for 4-7 divisions on the y-axis for readability
   final int targetDivisions = 5;
   double rawInterval = yRange / targetDivisions;
-  
+
   // Calculate magnitude (power of 10)
-  final double magnitude = pow(10, (log(rawInterval) / ln10).floor()).toDouble();
+  final double magnitude =
+      pow(10, (log(rawInterval) / ln10).floor()).toDouble();
   final double normalized = rawInterval / magnitude;
 
   // Find the nearest "nice" number (1, 2, 2.5, 5, 10)

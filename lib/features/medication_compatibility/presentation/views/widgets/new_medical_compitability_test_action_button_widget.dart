@@ -20,7 +20,8 @@ class NewMedicalCompitabilityTestActionButton extends StatelessWidget {
           prev.isMedicationCompatibilityFormValidated !=
               curr.isMedicationCompatibilityFormValidated ||
           prev.analyzeMedicalCompatibilityStatus !=
-              curr.analyzeMedicalCompatibilityStatus,
+              curr.analyzeMedicalCompatibilityStatus ||
+          prev.medicalHistoryStatus != curr.medicalHistoryStatus,
       listener: (context, state) async {
         if (state.analyzeMedicalCompatibilityStatus == RequestStatus.success) {
           if (!context.mounted) return;
@@ -44,14 +45,16 @@ class NewMedicalCompitabilityTestActionButton extends StatelessWidget {
           isLoading:
               state.analyzeMedicalCompatibilityStatus == RequestStatus.loading,
           title: "تحليل التوافق",
-          onPressed: state.isMedicationCompatibilityFormValidated
+          onPressed: (state.medicalHistoryStatus == RequestStatus.success &&
+                  state.isMedicationCompatibilityFormValidated)
               ? () async {
                   await context
                       .read<MedicinesDataEntryCubit>()
                       .analyzeMedicalCompatibility();
                 }
               : null,
-          isEnabled: state.isMedicationCompatibilityFormValidated,
+          isEnabled: state.medicalHistoryStatus == RequestStatus.success &&
+              state.isMedicationCompatibilityFormValidated,
         );
       },
     );

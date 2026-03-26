@@ -10,9 +10,13 @@ class AllCategoriesTicketsCount {
   CategoriesTicketsCount categoriesTicketsCount;
 
   AllCategoriesTicketsCount(
-      {required this.success, required this.message, required this.categoriesTicketsCount});
-  factory AllCategoriesTicketsCount.fromJson(Map<String, dynamic> json) => _$AllCategoriesTicketsCountFromJson(json);
+      {required this.success,
+      required this.message,
+      required this.categoriesTicketsCount});
+  factory AllCategoriesTicketsCount.fromJson(Map<String, dynamic> json) =>
+      _$AllCategoriesTicketsCountFromJson(json);
 }
+
 @JsonSerializable()
 class CategoriesTicketsCount {
   int labTest;
@@ -31,6 +35,6 @@ class CategoriesTicketsCount {
       required this.medicine,
       required this.vaccine,
       required this.predescription});
-  factory CategoriesTicketsCount.fromJson(Map<String, dynamic> json) =>  _$CategoriesTicketsCountFromJson(json);
-
+  factory CategoriesTicketsCount.fromJson(Map<String, dynamic> json) =>
+      _$CategoriesTicketsCountFromJson(json);
 }

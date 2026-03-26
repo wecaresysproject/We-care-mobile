@@ -24,8 +24,8 @@ class EyesOrGlassesDataView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => BlocProvider(
-                create: (context) => getIt<EyeViewCubit>()
-                  ..getEffectedEyeParts(),
+                create: (context) =>
+                    getIt<EyeViewCubit>()..getEffectedEyeParts(),
                 child: EyePartsViewDataEntry(
                   pageTitle: 'اضغط على جزء العين الذى تريد عرضه',
                   handleArrowTap: (partName) async {

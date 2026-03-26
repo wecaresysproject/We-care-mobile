@@ -102,11 +102,9 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                           isExpanded: true,
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment
-                              .center, 
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
-      
                               child: DetailsViewInfoTile(
                                 title: "التنبيهات",
                                 value: medicine.reminderStatus
@@ -115,7 +113,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                                 icon: 'assets/images/date_icon.png',
                               ),
                             ),
-                            SizedBox(width: 8.w), 
+                            SizedBox(width: 8.w),
                             Flexible(
                               child: CustomContainer(value: medicine.reminder),
                             ),

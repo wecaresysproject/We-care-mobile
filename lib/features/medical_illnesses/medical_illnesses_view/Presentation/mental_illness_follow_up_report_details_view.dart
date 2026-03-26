@@ -72,7 +72,8 @@ class MentalIllnessFollowUpReportDetailsView extends StatelessWidget {
             title: 'تفاصيل التقرير',
             titleColor: AppColorsManager.mainDarkBlue,
             shareFunction: () {
-              Share.share('🧠📄 تفاصيل التقرير النفسي 🧠📄\n\n${data.map((section) => '${section.sectionTitle}\n${section.sectionContent}\n').join('\n')}');
+              Share.share(
+                  '🧠📄 تفاصيل التقرير النفسي 🧠📄\n\n${data.map((section) => '${section.sectionTitle}\n${section.sectionContent}\n').join('\n')}');
             },
             showShareButtonOnly: true,
           ),

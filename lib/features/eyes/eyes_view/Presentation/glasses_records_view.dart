@@ -53,8 +53,7 @@ class EyeGlassesRecordsView extends StatelessWidget {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      EyesGlassesDetailsView(
+                                  builder: (context) => EyesGlassesDetailsView(
                                     documentId: doc.id,
                                   ),
                                 ),
@@ -132,4 +131,3 @@ class EyeGlassesRecordsView extends StatelessWidget {
     );
   }
 }
-

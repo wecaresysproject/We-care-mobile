@@ -173,7 +173,7 @@ class EyesViewRepo {
   }
 
   //get Effected Eye Parts
-    Future<ApiResult<List<String>>> getEffectedEyeParts({
+  Future<ApiResult<List<String>>> getEffectedEyeParts({
     required String language,
     required String userType,
   }) async {
@@ -185,7 +185,7 @@ class EyesViewRepo {
       final List<String> eyeParts = List<String>.from(response['data']);
       return ApiResult.success(eyeParts);
     } catch (error) {
-      return ApiResult.failure(ApiErrorHandler.handle(error));    
+      return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 }

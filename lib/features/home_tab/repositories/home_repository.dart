@@ -17,7 +17,8 @@ class HomeRepository {
 
       if (response['success'] == true && response['data'] != null) {
         final List<dynamic> data = response['data'];
-        final notifications = data.map((e) => CrausalMessageModel.fromJson(e)).toList();
+        final notifications =
+            data.map((e) => CrausalMessageModel.fromJson(e)).toList();
         return ApiResult.success(notifications);
       } else {
         return ApiResult.success([]);

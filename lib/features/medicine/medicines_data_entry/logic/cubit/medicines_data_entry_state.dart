@@ -14,6 +14,7 @@ class MedicinesDataEntryState extends Equatable {
   final RequestStatus medicinesDataEntryStatus;
   final RequestStatus analyzeMedicalCompatibilityStatus;
   final RequestStatus fetchSystemPromptStatus;
+  final RequestStatus medicalHistoryStatus;
   final String? medicalCompitabilitySystemPrompt;
   final UserMedicalHistoryDetailsModel? userMedicalProfileHistory;
   final CompatibilityAnalysisModel? compatibilityAnalysis;
@@ -66,6 +67,7 @@ class MedicinesDataEntryState extends Equatable {
     this.medicinesDataEntryStatus = RequestStatus.initial,
     this.analyzeMedicalCompatibilityStatus = RequestStatus.initial,
     this.fetchSystemPromptStatus = RequestStatus.initial,
+    this.medicalHistoryStatus = RequestStatus.initial,
     this.medicalCompitabilitySystemPrompt,
     this.userMedicalProfileHistory,
     this.compatibilityAnalysis,
@@ -119,6 +121,7 @@ class MedicinesDataEntryState extends Equatable {
           medicinesDataEntryStatus: RequestStatus.initial,
           analyzeMedicalCompatibilityStatus: RequestStatus.initial,
           fetchSystemPromptStatus: RequestStatus.initial,
+          medicalHistoryStatus: RequestStatus.initial,
           medicalCompitabilitySystemPrompt: null,
           userMedicalProfileHistory: null,
           compatibilityAnalysis: null,
@@ -171,6 +174,7 @@ class MedicinesDataEntryState extends Equatable {
     RequestStatus? medicinesDataEntryStatus,
     RequestStatus? analyzeMedicalCompatibilityStatus,
     RequestStatus? fetchSystemPromptStatus,
+    RequestStatus? medicalHistoryStatus,
     String? medicalCompitabilitySystemPrompt,
     UserMedicalHistoryDetailsModel? userMedicalProfileHistory,
     CompatibilityAnalysisModel? compatibilityAnalysis,
@@ -225,6 +229,7 @@ class MedicinesDataEntryState extends Equatable {
           this.analyzeMedicalCompatibilityStatus,
       fetchSystemPromptStatus:
           fetchSystemPromptStatus ?? this.fetchSystemPromptStatus,
+      medicalHistoryStatus: medicalHistoryStatus ?? this.medicalHistoryStatus,
       medicalCompitabilitySystemPrompt: medicalCompitabilitySystemPrompt ??
           this.medicalCompitabilitySystemPrompt,
       userMedicalProfileHistory:
@@ -299,6 +304,7 @@ class MedicinesDataEntryState extends Equatable {
         medicinesDataEntryStatus,
         analyzeMedicalCompatibilityStatus,
         fetchSystemPromptStatus,
+        medicalHistoryStatus,
         medicalCompitabilitySystemPrompt,
         userMedicalProfileHistory,
         compatibilityAnalysis,

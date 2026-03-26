@@ -36,24 +36,23 @@ class FilterChipItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-              if (isSelected)
-                Image.asset('assets/images/check_icon.png',
-                    width: 10, height: 10),
-              if (isSelected) horizontalSpacing(2), // Avoid spacing issues
+            if (isSelected)
+              Image.asset('assets/images/check_icon.png',
+                  width: 10, height: 10),
+            if (isSelected) horizontalSpacing(2), // Avoid spacing issues
             Text(
               label,
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.visible,
               style: AppTextStyles.font12blackWeight400.copyWith(
-                color: isSelected
-                    ? AppColorsManager.mainDarkBlue
-                    : Colors.black,
+                color:
+                    isSelected ? AppColorsManager.mainDarkBlue : Colors.black,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.start,
             ),
-            ],
+          ],
         ),
       ),
     );
