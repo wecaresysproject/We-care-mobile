@@ -79,15 +79,19 @@ class MedicinesCompitabilityActionButton extends StatelessWidget {
           previous.medicalHistoryStatus != current.medicalHistoryStatus,
       builder: (context, state) {
         return AppCustomButton(
-          isLoading: false,
+          isLoading: state.analysisStatus == RequestStatus.loading,
           title: "تحليل التوافق",
           onPressed: state.medicalHistoryStatus == RequestStatus.success
               ? () {
+                  final cubit = context.read<MedicinesCompatibilityCubit>();
+                  cubit.analyseAllMedicinesCompitability();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) =>
-                          const SimulatedMedicinesCombitabilityLoader(),
+                      builder: (_) => BlocProvider.value(
+                        value: cubit,
+                        child: const SimulatedMedicinesCombitabilityLoader(),
+                      ),
                     ),
                   );
                 }

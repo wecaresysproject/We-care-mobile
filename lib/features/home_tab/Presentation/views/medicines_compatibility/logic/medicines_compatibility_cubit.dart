@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
 import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
   final MedicalReportRepo _medicalReportRepo;
@@ -10,6 +12,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
 
   MedicinesCompatibilityCubit(this._medicalReportRepo, this.sharedRepo)
       : super(const MedicinesCompatibilityState());
+
   Future<void> initialRequests() async {
     await Future.wait(
       [
@@ -18,6 +21,53 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
         getUserMedicalHistoryDetails(),
       ],
     );
+  }
+
+  void updateSelectedMedicines(List<String> medicines) {
+    AppLogger.info("updateSelectedMedicines: $medicines");
+    emit(state.copyWith(selectedMedicines: medicines));
+  }
+
+  void updateRecentlyExpiredMedicines(List<String> medicines) {
+    AppLogger.info("updateRecentlyExpiredMedicines: $medicines");
+    emit(state.copyWith(recentlyExpiredMedicines: medicines));
+  }
+
+  Future<void> analyseAllMedicinesCompitability() async {
+    // if (state.selectedMedicines.isEmpty &&
+    //     state.recentlyExpiredMedicines.isEmpty) {
+    //   emit(state.copyWith(
+    //     analysisStatus: RequestStatus.failure,
+    //     message: "برجاء اختيار دواء واحد على الأقل",
+    //   ));
+    //   return;
+    // }
+
+    emit(state.copyWith(analysisStatus: RequestStatus.loading));
+
+    final result = await DeepSeekService
+        .analyseAllMedicinesCompitabilityWithUserMedicalHistory(
+      currentMedicines: state.selectedMedicines,
+      recentlyExpiredMedicines: state.recentlyExpiredMedicines,
+      medicalProfile: state.userMedicalProfileHistory,
+    );
+
+    if (result != null) {
+      emit(
+        state.copyWith(
+          analysisStatus: RequestStatus.success,
+          auditReport: result,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          analysisStatus: RequestStatus.failure,
+          message:
+              "فشل استخراج تقرير التدقيق الإكلينيكي، برجاء المحاولة لاحقاً",
+        ),
+      );
+    }
   }
 
   Future<void> getUserMedicalHistoryDetails() async {

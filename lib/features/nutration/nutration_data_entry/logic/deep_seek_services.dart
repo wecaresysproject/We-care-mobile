@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart';
 import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
@@ -694,6 +695,291 @@ L5 - Cautionary
 ${medicalProfile?.toJson()}
 
 قم بإجراء تحليل توافق شامل.
+''';
+  }
+
+  static Future<ClinicalAuditReportModel?>
+      analyseAllMedicinesCompitabilityWithUserMedicalHistory({
+    required List<String> currentMedicines,
+    required List<String> recentlyExpiredMedicines,
+    UserMedicalHistoryDetailsModel? medicalProfile,
+  }) async {
+    try {
+      final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
+      final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
+
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $apiKey',
+        },
+        body: jsonEncode(
+          {
+            'model': 'deepseek-chat',
+            'messages': [
+              {
+                'role': 'system',
+                'content': buildSystemAllMedicinesCompatibilityPrompt(),
+              },
+              {
+                'role': 'user',
+                'content': buildUserAllMedicinesCompatibilityPrompt(
+                  currentMedicines: currentMedicines,
+                  recentlyExpiredMedicines: recentlyExpiredMedicines,
+                  medicalProfile: medicalProfile,
+                ),
+              }
+            ],
+            'temperature': 0.1,
+            'max_tokens': 6000,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        final content = decoded['choices']?[0]?['message']?['content'];
+
+        if (content == null) {
+          AppLogger.error('DeepSeek response content is null');
+          return null;
+        }
+
+        AppLogger.debug('DeepSeek response raw: $content');
+
+        final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
+        if (jsonMatch == null) {
+          AppLogger.error('JSON not found in DeepSeek response');
+          return null;
+        }
+
+        final jsonString = jsonMatch.group(0)!;
+        final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+
+        return ClinicalAuditReportModel.fromJson(jsonMap);
+      } else {
+        AppLogger.error(
+          'DeepSeek API Error: ${response.statusCode} - ${response.body}',
+        );
+      }
+    } catch (e, stack) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('host lookup')) {
+        AppLogger.error('DeepSeek Network Error: $e');
+      } else {
+        AppLogger.error('Error in analyseAllMedicinesCompitability: $e');
+        AppLogger.error('StackTrace: $stack');
+      }
+    }
+    return null;
+  }
+
+  static String buildSystemAllMedicinesCompatibilityPrompt() {
+    return '''
+أنت نظام تدقيق إكلينيكي (Clinical Audit AI System) متخصص في تحليل سلامة وتوافق الأدوية بشكل شامل.
+
+==============================
+الهدف الأساسي
+==============================
+قم بإجراء تدقيق إكلينيكي شامل (Comprehensive System Audit) للنظام العلاجي الحالي للمريض.
+
+يجب تحليل التداخلات التقاطعية بين:
+
+- المحور 1: الأدوية الحالية (Current Medications) ← تعتبر هي المحفزات الأساسية (Triggers)
+- المحور 2: الأدوية المتوقفة خلال آخر 90 يوم (Residual Drugs)
+- الملف الطبي الكامل (17 محوراً: الأمراض، التحاليل، القياسات الحيوية، الحساسية، التغذية، السلوك، إلخ)
+
+⚠️ مهم:
+يجب التعامل مع كل دواء حالي كمحفز (Trigger):
+- بشكل فردي
+- وبشكل تراكمي مع باقي الأدوية
+- ومع جميع محاور الملف الطبي
+
+أي محور لا يحتوي على بيانات → يتم تجاهله تماماً بدون افتراض بيانات.
+
+==============================
+قواعد الزمن (Temporal Rules)
+==============================
+- البيانات خلال ≤ 30 يوم → نشطة (وزن كامل)
+- البيانات > 30 يوم → يتم تخفيض مستوى الخطورة إلى L5
+- الأدوية المتوقفة:
+  - من 1 إلى 15 يوم → تأثير متبقي عالي
+  - من 60 إلى 90 يوم → تأثير متبقي ضعيف
+
+==============================
+نظام تقييم الخطورة (Risk Levels)
+==============================
+
+L1 - حرج (مهدد للحياة)
+- تداخل دوائي قاتل
+- فشل عضوي حاد
+- قياسات حيوية نشطة تجعل الدواء خطيراً
+
+L2 - مرتفع الخطورة
+- تداخلات قوية تؤدي لعدم استقرار الحالة
+- آثار جانبية شديدة
+
+L3 - متوسط
+- تقليل فعالية العلاج
+- مشاكل امتصاص (غذاء / مكملات)
+
+L4 - منخفض
+- أعراض بسيطة تحتاج متابعة
+- تعديل نمط حياة أو توقيت الجرعات
+
+L5 - احترازي
+- بيانات قديمة (>30 يوم)
+- نقص بيانات
+- نصيحة عامة
+
+⚠️ قاعدة مهمة جداً:
+إذا كانت البيانات قديمة → لا يجوز إصدار L1 أو L2 → يتم تحويلها إلى L5
+
+==============================
+متطلبات التحليل
+==============================
+
+يجب تنفيذ التحليل التالي:
+
+1) تحليل دواء مع دواء (Axis 1 vs Axis 1)
+- كشف التآزر (Synergy)
+- كشف التضاد (Antagonism)
+- كشف السمية التراكمية
+
+2) تحليل دواء مع دواء متوقف (Axis 1 vs Axis 2)
+- كشف التداخلات المتأخرة
+- مراعاة فترة الـ Wash-out
+
+3) تحليل دواء مع الملف الطبي
+يشمل:
+- الأمراض المزمنة
+- التحاليل
+- القياسات الحيوية
+- الحساسية
+- التغذية
+- المكملات
+- الحالة النفسية والسلوكية
+
+4) تحليل التأثير العام على الجسم:
+- سلامة الأعضاء (Organ Safety)
+- الغذاء والمكملات
+- التأثير السلوكي
+
+==============================
+قواعد صارمة
+==============================
+
+- لا تقم بافتراض بيانات غير موجودة
+- لا تخترع معلومات طبية
+- استخدم التفكير الطبي المنطقي (وليس أمثلة محفوظة)
+- طبق نفس القواعد على أي حالة مشابهة حتى لو لم تُذكر صراحة
+
+يجب أن يكون الإخراج JSON فقط بالهيكل التالي:
+{
+  "clinicalAuditReport": {
+    "chemicalInteractionMatrix": {
+      "antagonism": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "drugsInvolved": ["..."]
+        }
+      ],
+      "synergy": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "drugsInvolved": ["..."]
+        }
+      ],
+      "pastDrugResiduals": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "drugsInvolved": ["..."]
+        }
+      ]
+    },
+
+    "systemicCompatibility": {
+      "foodAndSupplements": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "relatedItems": ["..."]
+        }
+      ],
+      "organSafety": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "relatedItems": ["..."]
+        }
+      ],
+      "behavioralImpact": [
+        {
+          "title": "...",
+          "description": "...",
+          "riskLevel": "L1 | L2 | L3 | L4 | L5",
+          "action": "...",
+          "relatedItems": ["..."]
+        }
+      ]
+    },
+
+    "doctorDiscussion": {
+      "riskTable": [
+        {
+          "level": "L1 | L2 | L3 | L4 | L5",
+          "meaning": "...",
+          "action": "..."
+        }
+      ],
+      "questions": [
+        "string"
+      ]
+    }
+  }
+}
+
+NO extra text outside JSON.
+''';
+  }
+
+  static String buildUserAllMedicinesCompatibilityPrompt({
+    required List<String> currentMedicines,
+    required List<String> recentlyExpiredMedicines,
+    UserMedicalHistoryDetailsModel? medicalProfile,
+  }) {
+    return '''
+برجاء تحليل توافق الأدوية بناءً على البيانات التالية:
+
+1. الأدوية الحالية (Axis 1):
+${currentMedicines.join(', ')}
+
+2. الأدوية المتوقفة حديثاً (خلال 90 يوم) (Axis 2):
+${recentlyExpiredMedicines.join(', ')}
+
+3. الملف الطبي للمريض (17 محوراً):
+${medicalProfile != null ? jsonEncode(medicalProfile.toJson()) : "لا توجد بيانات"}
+
+الالتزام بالقواعد:
+- تحليل Axis 1 vs Axis 1
+- تحليل Axis 1 vs Axis 2
+- تحليل Axis 1 vs Medical Profile
+- تجاهل أي محور قيمته خالية.
+- الإخراج يجب أن يكون JSON فقط حسب الهيكل المحدد.
 ''';
   }
 }

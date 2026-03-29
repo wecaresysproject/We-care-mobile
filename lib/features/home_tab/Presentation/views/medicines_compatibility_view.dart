@@ -125,6 +125,9 @@ class _MedicinesCompatibilityViewState
                         _selectedOptionValues.remove(value);
                       }
                     });
+                    context
+                        .read<MedicinesCompatibilityCubit>()
+                        .updateSelectedMedicines(_selectedOptionValues.toList());
                   },
                 ),
               if (category.selectionType == MedicalSelectionType.filters ||
@@ -145,6 +148,13 @@ class _MedicinesCompatibilityViewState
                       }
                       _selectedFilters[key] = selectedValues;
                     });
+                    // Flatten all selected filter values to update recently expired medicines in Cubit
+                    final allRecentlyExpired = _selectedFilters.values
+                        .expand((values) => values)
+                        .toList();
+                    context
+                        .read<MedicinesCompatibilityCubit>()
+                        .updateRecentlyExpiredMedicines(allRecentlyExpired);
                   },
                 ),
             ],

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
+import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart';
 import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 
@@ -11,6 +12,13 @@ class MedicinesCompatibilityState extends Equatable {
   final ModuleGuidanceDataModel? moduleGuidanceData;
   final UserMedicalHistoryDetailsModel? userMedicalProfileHistory;
   final RequestStatus medicalHistoryStatus;
+
+  // New fields for Medicines Compatibility
+  final List<String> selectedMedicines;
+  final List<String> recentlyExpiredMedicines;
+  final RequestStatus analysisStatus;
+  final ClinicalAuditReportModel? auditReport;
+
   const MedicinesCompatibilityState({
     this.status = RequestStatus.initial,
     this.filterData,
@@ -18,6 +26,10 @@ class MedicinesCompatibilityState extends Equatable {
     this.moduleGuidanceData,
     this.userMedicalProfileHistory,
     this.medicalHistoryStatus = RequestStatus.initial,
+    this.selectedMedicines = const [],
+    this.recentlyExpiredMedicines = const [],
+    this.analysisStatus = RequestStatus.initial,
+    this.auditReport,
   });
 
   MedicinesCompatibilityState copyWith({
@@ -27,6 +39,10 @@ class MedicinesCompatibilityState extends Equatable {
     ModuleGuidanceDataModel? moduleGuidanceData,
     UserMedicalHistoryDetailsModel? userMedicalProfileHistory,
     RequestStatus? medicalHistoryStatus,
+    List<String>? selectedMedicines,
+    List<String>? recentlyExpiredMedicines,
+    RequestStatus? analysisStatus,
+    ClinicalAuditReportModel? auditReport,
   }) {
     return MedicinesCompatibilityState(
       status: status ?? this.status,
@@ -36,6 +52,11 @@ class MedicinesCompatibilityState extends Equatable {
       userMedicalProfileHistory:
           userMedicalProfileHistory ?? this.userMedicalProfileHistory,
       medicalHistoryStatus: medicalHistoryStatus ?? this.medicalHistoryStatus,
+      selectedMedicines: selectedMedicines ?? this.selectedMedicines,
+      recentlyExpiredMedicines:
+          recentlyExpiredMedicines ?? this.recentlyExpiredMedicines,
+      analysisStatus: analysisStatus ?? this.analysisStatus,
+      auditReport: auditReport ?? this.auditReport,
     );
   }
 
@@ -47,5 +68,9 @@ class MedicinesCompatibilityState extends Equatable {
         moduleGuidanceData,
         userMedicalProfileHistory,
         medicalHistoryStatus,
+        selectedMedicines,
+        recentlyExpiredMedicines,
+        analysisStatus,
+        auditReport,
       ];
 }

@@ -1,149 +1,393 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
+import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart' as model;
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/widgets/risk_levels_row_widget.dart';
 
 class MedicinesCombitabilityReesultsView extends StatelessWidget {
   const MedicinesCombitabilityReesultsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(toolbarHeight: 0),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: const AppBarWithCenteredTitle(
-              title: "نتيجة التوافق",
-              showActionButtons: false,
+    return BlocBuilder<MedicinesCompatibilityCubit,
+        MedicinesCompatibilityState>(
+      builder: (context, state) {
+        final auditReport = state.auditReport?.clinicalAuditReport;
+
+        return Scaffold(
+          appBar: AppBar(toolbarHeight: 0),
+          body: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: const AppBarWithCenteredTitle(
+                  title: "نتائج تحليل التوافق الدوائي",
+                  showActionButtons: false,
+                ),
+              ),
+              verticalSpacing(20),
+              if (auditReport == null)
+                const Expanded(
+                  child: Center(
+                    child: Text("لا توجد بيانات متاحة حالياً"),
+                  ),
+                )
+              else
+                Expanded(
+                  child: ListView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                    children: [
+                      const RiskLevelsLegend(),
+                      verticalSpacing(30),
+                      _buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"),
+                      _buildItemsList(
+                        "التضاد (Antagonism)",
+                        auditReport.chemicalInteractionMatrix.antagonism
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.drugsInvolved,
+                                  isChemical: true,
+                                ))
+                            .toList(),
+                      ),
+                      _buildItemsList(
+                        "التآزر (Synergy)",
+                        auditReport.chemicalInteractionMatrix.synergy
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.drugsInvolved,
+                                  isChemical: true,
+                                ))
+                            .toList(),
+                      ),
+                      _buildItemsList(
+                        "تأثيرات الأدوية السابقة (Residuals)",
+                        auditReport.chemicalInteractionMatrix.pastDrugResiduals
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.drugsInvolved,
+                                  isChemical: true,
+                                ))
+                            .toList(),
+                      ),
+                      verticalSpacing(20),
+                      _buildSectionHeader("التوافق مع أجهزة الجسم (Systemic)"),
+                      _buildItemsList(
+                        "الغذاء والمكملات",
+                        auditReport.systemicCompatibility.foodAndSupplements
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.relatedItems,
+                                  isChemical: false,
+                                ))
+                            .toList(),
+                      ),
+                      _buildItemsList(
+                        "أمان الأعضاء",
+                        auditReport.systemicCompatibility.organSafety
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.relatedItems,
+                                  isChemical: false,
+                                ))
+                            .toList(),
+                      ),
+                      _buildItemsList(
+                        "تأثيرات سلوكية",
+                        auditReport.systemicCompatibility.behavioralImpact
+                            .map((e) => _InteractionCard(
+                                  title: e.title,
+                                  description: e.description,
+                                  riskLevel: e.riskLevel,
+                                  action: e.action,
+                                  extraInfo: e.relatedItems,
+                                  isChemical: false,
+                                ))
+                            .toList(),
+                      ),
+                      verticalSpacing(20),
+                      _buildSectionHeader("دليل استشارة الطبيب"),
+                      _buildRiskGuideTable(
+                          auditReport.doctorDiscussion.riskTable),
+                      verticalSpacing(30),
+                      _buildQuestionsSection(
+                          auditReport.doctorDiscussion.questions),
+                      verticalSpacing(40),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Text(
+        title,
+        style: AppTextStyles.font18blackWight500.copyWith(
+          color: AppColorsManager.mainDarkBlue,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItemsList(String title, List<Widget> items) {
+    if (items.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
+          child: Text(
+            title,
+            style: AppTextStyles.font16BlackSemiBold.copyWith(
+              color: AppColorsManager.mainDarkBlue.withOpacity(0.7),
             ),
           ),
-          verticalSpacing(20),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-              itemCount: _dummyResults.length,
-              itemBuilder: (context, index) {
-                return _buildMedicineCard(_dummyResults[index]);
-              },
+        ),
+        ...items,
+      ],
+    );
+  }
+
+  Widget _buildRiskGuideTable(List<model.RiskLevelItem> table) {
+    return Card(
+      elevation: 0,
+      color: AppColorsManager.secondaryColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      child: Padding(
+        padding: EdgeInsets.all(12.w),
+        child: Column(
+          children: table
+              .map((item) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.h),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30.w,
+                          height: 30.w,
+                          decoration: BoxDecoration(
+                            color: getRiskColor(item.level),
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            item.level,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ),
+                        horizontalSpacing(12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.meaning,
+                                  style: AppTextStyles.font14BlackMedium),
+                              verticalSpacing(4),
+                              Text(
+                                "الإجراء المطوب: ${item.action}",
+                                style: AppTextStyles.font14blackWeight400
+                                    .copyWith(
+                                        color: AppColorsManager.textColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuestionsSection(List<String> questions) {
+    if (questions.isEmpty) return const SizedBox.shrink();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.h),
+          child: Text(
+            "أسئلة لنقاشها مع طبيبك",
+            style: AppTextStyles.font16BlackSemiBold.copyWith(
+              color: AppColorsManager.mainDarkBlue,
+            ),
+          ),
+        ),
+        Card(
+          elevation: 0,
+          color: Colors.orange.shade50,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          child: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: questions
+                  .map((q) => Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.help_outline,
+                                color: Colors.orange, size: 18),
+                            horizontalSpacing(12),
+                            Expanded(
+                              child: Text(
+                                q,
+                                style: AppTextStyles.font14blackWeight400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InteractionCard extends StatelessWidget {
+  final String title;
+  final String description;
+  final String riskLevel;
+  final String action;
+  final List<String> extraInfo;
+  final bool isChemical;
+
+  const _InteractionCard({
+    required this.title,
+    required this.description,
+    required this.riskLevel,
+    required this.action,
+    required this.extraInfo,
+    required this.isChemical,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = getRiskColor(riskLevel);
+    return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.05),
+        border: Border(right: BorderSide(color: color, width: 4.w)),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8.r),
+          bottomLeft: Radius.circular(8.r),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTextStyles.font16BlackSemiBold,
+                ),
+              ),
+              horizontalSpacing(8),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+                child: Text(
+                  riskLevel,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          verticalSpacing(8),
+          Text(
+            description,
+            style: AppTextStyles.font14blackWeight400,
+          ),
+          if (extraInfo.isNotEmpty) ...[
+            verticalSpacing(8),
+            Text(
+              isChemical
+                  ? "الأدوية المعنية: ${extraInfo.join(', ')}"
+                  : "المحاور المرتبطة: ${extraInfo.join(', ')}",
+              style: AppTextStyles.font12blackWeight400.copyWith(
+                color: AppColorsManager.mainDarkBlue,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+          verticalSpacing(12),
+          Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6.r),
+              border: Border.all(color: color.withOpacity(0.3)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline, color: color, size: 16.sp),
+                horizontalSpacing(8),
+                Expanded(
+                  child: Text(
+                    "الإجراء: $action",
+                    style: AppTextStyles.font12blackWeight400.copyWith(
+                      color: AppColorsManager.mainDarkBlue,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
-
-  Widget _buildMedicineCard(_MedicineResult result) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 16.h),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  result.name,
-                  style: AppTextStyles.font18blackWight500,
-                ),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                  decoration: BoxDecoration(
-                    color: result.isCompatible
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    result.isCompatible ? "متوافق" : "غير متوافق",
-                    style: AppTextStyles.font14BlackMedium.copyWith(
-                      color: result.isCompatible ? Colors.green : Colors.red,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            verticalSpacing(12),
-            Text(
-              "الأسباب:",
-              style: AppTextStyles.font14BlackMedium.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-              ),
-            ),
-            verticalSpacing(8),
-            ...result.reasons.map((reason) => Padding(
-                  padding: EdgeInsets.only(bottom: 4.h),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 6.h),
-                        child: CircleAvatar(
-                          radius: 3.r,
-                          backgroundColor: AppColorsManager.placeHolderColor,
-                        ),
-                      ),
-                      horizontalSpacing(8),
-                      Expanded(
-                        child: Text(
-                          reason,
-                          style: AppTextStyles.font14blackWeight400.copyWith(
-                            color: AppColorsManager.textColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-          ],
-        ),
-      ),
-    );
-  }
 }
-
-class _MedicineResult {
-  final String name;
-  final bool isCompatible;
-  final List<String> reasons;
-
-  _MedicineResult({
-    required this.name,
-    required this.isCompatible,
-    required this.reasons,
-  });
-}
-
-final List<_MedicineResult> _dummyResults = [
-  _MedicineResult(
-    name: "Paracetamol",
-    isCompatible: true,
-    reasons: [
-      "لا يوجد تداخل معروف مع الأدوية الحالية",
-      "آمن للاستخدام مع حالتك الصحية الحالية",
-    ],
-  ),
-  _MedicineResult(
-    name: "Ibuprofen",
-    isCompatible: false,
-    reasons: [
-      "قد يزيد من خطر النزيف عند استخدامه مع الأسبرين",
-      "يجب استشارة الطبيب قبل الاستخدام مع أدوية الضغط",
-    ],
-  ),
-  _MedicineResult(
-    name: "Aspirin",
-    isCompatible: true,
-    reasons: [
-      "يتوافق مع الجدول الزمني للعلاجات الحالية",
-    ],
-  ),
-];
