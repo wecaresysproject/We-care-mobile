@@ -127,7 +127,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         return;
       }
 
-      final userPrompt = DeepSeekService.buildUserMedicationCompitabilityPrompt(
+      final userPrompt =
+          DeepSeekService.buildUserNewOneMedicineCompitabilityPrompt(
         medicineName: state.selectedMedicineName!,
         form: state.selectedMedicalForm!,
         dose: state.selectedDose!,
@@ -137,7 +138,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         medicalProfile: state.userMedicalProfileHistory,
       );
       // Call ChatGPT service
-      final analysis = await DeepSeekService.analyzeMedicalCompatibility(
+      final analysis = await DeepSeekService.analyzeNewOneMedicineCompatibility(
         userPrompt: userPrompt,
       );
 
@@ -159,40 +160,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           //       doctorQuestion:
           //           "هل يجب إيقاف أحد الدواءين أو تعديل الجرعة لتقليل خطر النزيف؟",
           //     ),
-          //     CompatibilityIssue(
-          //       riskLevel: "L2",
-          //       title: "زيادة احتمال انخفاض ضغط الدم",
-          //       scientificReason:
-          //           "تناول الدواء الجديد مع أدوية خفض ضغط الدم قد يؤدي إلى انخفاض شديد في ضغط الدم خاصة عند الوقوف.",
-          //       doctorQuestion:
-          //           "هل يجب تعديل جرعة دواء الضغط عند استخدام هذا الدواء؟",
-          //     ),
-          //     CompatibilityIssue(
-          //       riskLevel: "L3",
-          //       title: "تقليل فعالية أحد الأدوية",
-          //       scientificReason:
-          //           "قد يؤثر الدواء الجديد على امتصاص دواء آخر في الجهاز الهضمي مما يقلل من فعاليته العلاجية.",
-          //       doctorQuestion:
-          //           "هل يفضل تناول الدواءين بفاصل زمني معين لتحسين الامتصاص؟",
-          //     ),
-          //     CompatibilityIssue(
-          //       riskLevel: "L4",
-          //       title: "احتمال ظهور أعراض جانبية خفيفة",
-          //       scientificReason:
-          //           "التفاعل بين الدواءين قد يسبب زيادة طفيفة في الأعراض الجانبية مثل الدوخة أو الغثيان.",
-          //       doctorQuestion:
-          //           "هل هذه الأعراض طبيعية أم تحتاج إلى تغيير العلاج؟",
-          //     ),
-          //     CompatibilityIssue(
-          //       riskLevel: "L5",
-          //       title: "تنبيه احترازي بخصوص تناول الدواء مع الطعام",
-          //       scientificReason:
-          //           "قد يفضل تناول الدواء الجديد بعد الطعام لتقليل تهيج المعدة.",
-          //       doctorQuestion:
-          //           "هل يجب تناول الدواء بعد الطعام أم على معدة فارغة؟",
-          //     ),
-          //   ],
-          // ),
+          //          ]
+          //    );
         ),
       );
       // }

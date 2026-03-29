@@ -510,7 +510,8 @@ $dietInput
 ''';
   }
 
-  static Future<CompatibilityAnalysisModel?> analyzeMedicalCompatibility({
+  static Future<CompatibilityAnalysisModel?>
+      analyzeNewOneMedicineCompatibility({
     required String userPrompt,
   }) async {
     try {
@@ -529,7 +530,7 @@ $dietInput
             'messages': [
               {
                 'role': 'system',
-                'content': buildSystemMedicationCompitabilityPrompt(),
+                'content': buildSystemNewOneMedicineCompitabilityPrompt(),
               },
               {
                 'role': 'user',
@@ -584,7 +585,7 @@ $dietInput
     return null;
   }
 
-  static String buildSystemMedicationCompitabilityPrompt() {
+  static String buildSystemNewOneMedicineCompitabilityPrompt() {
     if (medicalCompitabilitySystemPrompt != null &&
         medicalCompitabilitySystemPrompt!.isNotEmpty) {
       return medicalCompitabilitySystemPrompt!;
@@ -667,7 +668,7 @@ L5 - Cautionary
 ''';
   }
 
-  static String buildUserMedicationCompitabilityPrompt({
+  static String buildUserNewOneMedicineCompitabilityPrompt({
     required String medicineName,
     required String form,
     required String dose,
