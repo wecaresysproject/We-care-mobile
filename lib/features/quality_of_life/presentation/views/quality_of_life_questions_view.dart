@@ -90,19 +90,16 @@ class QualityOfLifeSaveButton extends StatelessWidget {
           );
         }
       },
-      buildWhen: (previous, current) =>
-          previous.isFormValid != current.isFormValid,
+      buildWhen: (previous, current) => previous.isSaved != current.isSaved,
       builder: (context, state) {
         return Padding(
           padding: EdgeInsets.all(16.w),
           child: AppCustomButton(
             title: "حفظ",
-            onPressed: state.isFormValid
-                ? () {
-                    context.read<QualityOfLifeCubit>().saveAnswers();
-                  }
-                : null,
-            isEnabled: state.isFormValid,
+            onPressed: () {
+              context.read<QualityOfLifeCubit>().saveAnswers();
+            },
+            isEnabled: true,
           ),
         );
       },

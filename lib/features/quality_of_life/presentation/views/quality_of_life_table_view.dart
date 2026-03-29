@@ -97,13 +97,14 @@ class QualityOfLifeTableView extends StatelessWidget {
           DataCell(
             Container(
               alignment: Alignment.centerRight,
-              width: 250.w,
+              width: 220.w,
               child: Text(
                 q.question,
                 style: _getCellTextStyle(false),
                 maxLines: 3,
-                overflow: TextOverflow.ellipsis,
+                overflow: TextOverflow.visible,
                 textAlign: TextAlign.right,
+                softWrap: true,
               ),
             ),
           ),
@@ -119,7 +120,7 @@ class QualityOfLifeTableView extends StatelessWidget {
         child: Text(
           text,
           textAlign: TextAlign.center,
-          maxLines: 3,
+          maxLines: 4,
           style: _getCellTextStyle(isBold),
         ),
       ),
@@ -137,7 +138,7 @@ class QualityOfLifeTableView extends StatelessWidget {
   TextStyle _getCellTextStyle(bool isBold) {
     return AppTextStyles.font12blackWeight400.copyWith(
       fontWeight: FontWeight.w500,
-      fontSize: isBold ? 14.sp : 15.sp,
+      fontSize: isBold ? 13.sp : 13.5.sp, // 👈 كان 15
       color: !isBold ? Colors.black : AppColorsManager.mainDarkBlue,
     );
   }

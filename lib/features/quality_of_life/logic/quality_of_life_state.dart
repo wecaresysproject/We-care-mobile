@@ -7,7 +7,6 @@ class QualityOfLifeState extends Equatable {
   final Map<int, String> answers;
   final List<QualityOfLifeRecord> records;
   final List<QualityOfLifeRecord> filteredRecords;
-  final bool isFormValid;
   final bool isSaved;
   final String? error;
   final String? selectedMonthFilter;
@@ -17,7 +16,6 @@ class QualityOfLifeState extends Equatable {
     this.answers = const {},
     this.records = const [],
     this.filteredRecords = const [],
-    this.isFormValid = false,
     this.isSaved = false,
     this.error,
     this.selectedMonthFilter,
@@ -28,7 +26,6 @@ class QualityOfLifeState extends Equatable {
     Map<int, String>? answers,
     List<QualityOfLifeRecord>? records,
     List<QualityOfLifeRecord>? filteredRecords,
-    bool? isFormValid,
     bool? isSaved,
     String? error,
     String? selectedMonthFilter,
@@ -38,7 +35,6 @@ class QualityOfLifeState extends Equatable {
       answers: answers ?? this.answers,
       records: records ?? this.records,
       filteredRecords: filteredRecords ?? this.filteredRecords,
-      isFormValid: isFormValid ?? this.isFormValid,
       isSaved: isSaved ?? this.isSaved,
       error: error,
       selectedMonthFilter: selectedMonthFilter ?? this.selectedMonthFilter,
@@ -51,7 +47,6 @@ class QualityOfLifeState extends Equatable {
         answers,
         records,
         filteredRecords,
-        isFormValid,
         isSaved,
         error,
         selectedMonthFilter,

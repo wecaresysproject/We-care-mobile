@@ -207,21 +207,13 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     final Map<int, String> newAnswers = Map.from(state.answers);
     newAnswers[questionId] = answer;
 
-    final bool isFormValid = newAnswers.length == questions.length;
-
     emit(state.copyWith(
       answers: newAnswers,
-      isFormValid: isFormValid,
       isSaved: false,
     ));
   }
 
   void saveAnswers() {
-    if (state.answers.length != questions.length) {
-      emit(state.copyWith(error: 'الرجاء الإجابة على جميع الأسئلة'));
-      return;
-    }
-
     final String currentMonth = _getCurrentMonthTranslation();
     final newRecord = QualityOfLifeRecord(
       answers: Map.from(state.answers),
@@ -238,7 +230,6 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
           _filterRecords(updatedRecords, state.selectedMonthFilter),
       isSaved: true,
       answers: {},
-      isFormValid: false,
     ));
   }
 
