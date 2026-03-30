@@ -3,6 +3,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 
 import '../models/quality_of_life_record.dart';
+import '../models/quality_of_life_table_model.dart';
 import '../models/quality_question.dart';
 import 'quality_of_life_state.dart';
 
@@ -11,6 +12,141 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     emitModuleGuidance();
   }
   final AppSharedRepo _appSharedRepo;
+
+  static const List<String> tableColumns = [
+    "يناير",
+    "فبراير",
+    "مارس",
+    "أبريل",
+    "مايو"
+  ];
+
+  static const List<QualityOfLifeTableRow> historyTableRows = [
+    QualityOfLifeTableRow(
+      question: 'كيف تقيم صحتك الجسدية العامة خلال هذا الشهر؟',
+      answersForOverMonths: ['ممتازة', 'جيدة', 'مقبولة', 'جيدة', 'ممتازة'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل عانيت من صداع أو دوخة متكررة خلال الشهر؟',
+      answersForOverMonths: ['لا', 'نعم', 'لا', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بتعب أو إرهاق غير مبرر معظم الوقت؟',
+      answersForOverMonths: ['لا', 'لا', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل عانيت من ألم في الصدر أو ضيق في التنفس خلال الشهر؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل لاحظت تغيراً ملحوظاً في وزنك هذا الشهر؟',
+      answersForOverMonths: ['لا تغيير', 'أخر 3 شهور', 'زيادة ملحوظة', 'لا تغيير', 'لا تغيير'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كيف تقيم حالتك النفسية العامة خلال هذا الشهر؟',
+      answersForOverMonths: ['إيجابي جداً', 'جيد', 'عادي', 'جيد', 'إيجابي جداً'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بقلق أو توتر شديد لأكثر من أسبوع متواصل؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بعدم الرغبة في أي نشاط أو فقدان الاهتمام بالأشياء المعتادة؟',
+      answersForOverMonths: ['لا', 'لا', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كيف تصف مستوى تواصلك الاجتماعي مع العائلة والأصدقاء هذا الشهر؟',
+      answersForOverMonths: ['تواصل ممتاز', 'جيد', 'عادي', 'جيد', 'تواصل ممتاز'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كيف كان مستوى الضغط النفسي خلال الشهر؟',
+      answersForOverMonths: ['لا ضغط', 'خفيف', 'متوسط', 'خفيف', 'لا ضغط'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كيف تقيم جودة نومك خلال هذا الشهر؟',
+      answersForOverMonths: ['ممتازة', 'جيدة', 'مقبولة', 'جيدة', 'ممتازة'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كم كانت مدة نومك المعتادة يومياً؟',
+      answersForOverMonths: ['7-9 ساعات', '5-7 ساعات', 'أقل من 5', '7-9 ساعات', '7-9 ساعات'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل كان نومك في أوقات منتظمة معظم أيام الشهر؟',
+      answersForOverMonths: ['نعم', 'أحياناً', 'لا', 'نعم', 'نعم'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل كنت تستيقظ منتعشاً ونشيطاً في الغالب؟',
+      answersForOverMonths: ['نعم', 'أحياناً', 'لا', 'نعم', 'نعم'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل كنت تستيقظ أثناء الليل بشكل متكرر؟',
+      answersForOverMonths: ['لا', 'أحياناً', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل عانيت من أحلام مزعجة أو كوابيس متكررة؟',
+      answersForOverMonths: ['لا', 'لا', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بحاجة قسرية للنوم أثناء النهار؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كم مرة مارست نشاطاً بدنياً (30 دقيقة فأكثر) خلال الشهر؟',
+      answersForOverMonths: ['أكثر من 10 مرات', '5-10 مرات', 'لم أمارس', '1-4 مرات', 'أكثر من 10 مرات'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كيف تقيم جودة تغذيتك خلال هذا الشهر؟',
+      answersForOverMonths: ['صحية جداً', 'جيدة', 'مقبولة', 'جيدة', 'صحية جداً'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'ما مدى التزامك بمواعيد الدواء خلال هذا الشهر؟',
+      answersForOverMonths: ['التزمت تماماً', 'معظم الأوقات', 'نادراً', 'معظم الأوقات', 'التزمت تماماً'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل أوقفت أي دواء أو علاج من تلقاء نفسك خلال هذا الشهر؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل تعرضت لحدث ضاغط كبير خلال الشهر؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل استخدمت التدخين، الكحول، أو أي مواد أخرى خلال هذا الشهر؟',
+      answersForOverMonths: ['لا', 'لا', 'نعم بشكل نادر', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل كانت هناك أيام تغيبت فيها أو لم تستطع فيها أداء مهامك اليومية المعتادة؟',
+      answersForOverMonths: ['لا', 'لا', '1-3 أيام', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'كم كان متوسط ساعات عملك اليومية هذا الشهر؟',
+      answersForOverMonths: ['6-9 ساعات', '9-12 ساعة', 'أكثر من 12', '6-9 ساعات', '6-9 ساعات'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بإجهاد ذهني شديد بسبب العمل؟',
+      answersForOverMonths: ['لا', 'أحياناً', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل شعرت بإجهاد جسدي شديد بسبب العمل أو النشاط اليومي؟',
+      answersForOverMonths: ['لا', 'أحياناً', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل تعرضت بشكل متكرر لبيئة بها تلوث هواء أو أدخنة أو أتربة؟',
+      answersForOverMonths: ['لا', 'لا', 'نعم', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل تعرضت لضوضاء شديدة أو مستمرة في العمل أو السكن؟',
+      answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل تعرضت لمواد كيميائية أو مبيدات أو مذيبات في العمل أو المنزل؟',
+      answersForOverMonths: ['لا', 'نعم', 'لا', 'لا', 'لا'],
+    ),
+    QualityOfLifeTableRow(
+      question: 'هل زرت طبيباً أو مستشفى أو مركزاً صحياً خلال هذا الشهر؟',
+      answersForOverMonths: ['لا', 'نعم، زيارة روتينية', 'نعم، بسبب عارض طارئ', 'لا', 'لا'],
+    ),
+  ];
 
   static const List<QualityQuestion> questions = [
     QualityQuestion(
@@ -187,14 +323,14 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     );
     result.when(
       success: (data) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: data,
           ),
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: null,
           ),
@@ -207,7 +343,7 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     final Map<int, String> newAnswers = Map.from(state.answers);
     newAnswers[questionId] = answer;
 
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       answers: newAnswers,
       isSaved: false,
     ));
@@ -224,7 +360,7 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     final List<QualityOfLifeRecord> updatedRecords = List.from(state.records)
       ..add(newRecord);
 
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       records: updatedRecords,
       filteredRecords:
           _filterRecords(updatedRecords, state.selectedMonthFilter),
@@ -234,14 +370,14 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
   }
 
   void filterByMonth(String month) {
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       selectedMonthFilter: month,
       filteredRecords: _filterRecords(state.records, month),
     ));
   }
 
   void clearFilter() {
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       selectedMonthFilter: null,
       filteredRecords: state.records,
     ));
@@ -270,5 +406,11 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
       "ديسمبر"
     ];
     return months[now.month - 1];
+  }
+
+  void safeEmit(QualityOfLifeState state) {
+    if (!isClosed) {
+      emit(state);
+    }
   }
 }

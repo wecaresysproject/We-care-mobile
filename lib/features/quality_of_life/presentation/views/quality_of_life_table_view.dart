@@ -60,7 +60,8 @@ class QualityOfLifeTableView extends StatelessWidget {
         ),
         columns: [
           _buildColumn("السؤال"),
-          _buildColumn("الإجابة"),
+          ...QualityOfLifeCubit.tableColumns
+              .map((month) => _buildColumn(month)),
         ],
         rows: _buildDummyRows(context),
       ),
@@ -91,7 +92,7 @@ class QualityOfLifeTableView extends StatelessWidget {
   }
 
   List<DataRow> _buildDummyRows(BuildContext context) {
-    return QualityOfLifeCubit.questions.map((q) {
+    return QualityOfLifeCubit.historyTableRows.map((row) {
       return DataRow(
         cells: [
           DataCell(
@@ -99,7 +100,7 @@ class QualityOfLifeTableView extends StatelessWidget {
               alignment: Alignment.centerRight,
               width: 220.w,
               child: Text(
-                q.question,
+                row.question,
                 style: _getCellTextStyle(false),
                 maxLines: 3,
                 overflow: TextOverflow.visible,
@@ -108,7 +109,7 @@ class QualityOfLifeTableView extends StatelessWidget {
               ),
             ),
           ),
-          _buildCell(q.answers.first),
+          ...row.answersForOverMonths.map((answer) => _buildCell(answer)),
         ],
       );
     }).toList();

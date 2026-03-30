@@ -458,7 +458,7 @@ void setupAppCubits() {
   );
 
   //! recheck this later if there is an error due to registeration type
-  getIt.registerLazySingleton<QualityOfLifeCubit>(
+  getIt.registerFactory<QualityOfLifeCubit>(
     () => QualityOfLifeCubit(
       getIt<AppSharedRepo>(),
     ),
