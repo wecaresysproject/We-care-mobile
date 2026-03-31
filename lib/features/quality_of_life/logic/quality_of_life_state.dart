@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
 
+import '../data/models/answered_questions_response.dart';
+import '../data/models/quality_of_life_questionnaire_response.dart';
 import '../models/quality_of_life_record.dart';
 
 class QualityOfLifeState extends Equatable {
@@ -20,7 +23,25 @@ class QualityOfLifeState extends Equatable {
     this.error,
     this.selectedMonthFilter,
     this.moduleGuidanceData,
+    this.questionnaireStatus = RequestStatus.initial,
+    this.submitStatus = RequestStatus.initial,
+    this.questions = const [],
+    this.answeredQuestionsStatus = RequestStatus.initial,
+    this.dateRangesStatus = RequestStatus.initial,
+    this.answeredQuestionsData,
+    this.dateRanges = const [],
+    this.selectedDateRange,
   });
+
+  final RequestStatus questionnaireStatus;
+  final RequestStatus submitStatus;
+  final List<QuestionModel> questions;
+
+  final RequestStatus answeredQuestionsStatus;
+  final RequestStatus dateRangesStatus;
+  final AnsweredQuestionsData? answeredQuestionsData;
+  final List<String> dateRanges;
+  final String? selectedDateRange;
 
   QualityOfLifeState copyWith({
     Map<int, String>? answers,
@@ -30,6 +51,14 @@ class QualityOfLifeState extends Equatable {
     String? error,
     String? selectedMonthFilter,
     ModuleGuidanceDataModel? moduleGuidanceData,
+    RequestStatus? questionnaireStatus,
+    RequestStatus? submitStatus,
+    List<QuestionModel>? questions,
+    RequestStatus? answeredQuestionsStatus,
+    RequestStatus? dateRangesStatus,
+    AnsweredQuestionsData? answeredQuestionsData,
+    List<String>? dateRanges,
+    String? selectedDateRange,
   }) {
     return QualityOfLifeState(
       answers: answers ?? this.answers,
@@ -39,6 +68,16 @@ class QualityOfLifeState extends Equatable {
       error: error,
       selectedMonthFilter: selectedMonthFilter ?? this.selectedMonthFilter,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+      questionnaireStatus: questionnaireStatus ?? this.questionnaireStatus,
+      submitStatus: submitStatus ?? this.submitStatus,
+      questions: questions ?? this.questions,
+      answeredQuestionsStatus:
+          answeredQuestionsStatus ?? this.answeredQuestionsStatus,
+      dateRangesStatus: dateRangesStatus ?? this.dateRangesStatus,
+      answeredQuestionsData:
+          answeredQuestionsData ?? this.answeredQuestionsData,
+      dateRanges: dateRanges ?? this.dateRanges,
+      selectedDateRange: selectedDateRange ?? this.selectedDateRange,
     );
   }
 
@@ -51,5 +90,13 @@ class QualityOfLifeState extends Equatable {
         error,
         selectedMonthFilter,
         moduleGuidanceData,
+        questionnaireStatus,
+        submitStatus,
+        questions,
+        answeredQuestionsStatus,
+        dateRangesStatus,
+        answeredQuestionsData,
+        dateRanges,
+        selectedDateRange,
       ];
 }

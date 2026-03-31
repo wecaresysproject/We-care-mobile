@@ -2,16 +2,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 
+import '../data/models/quality_of_life_submit_request.dart';
+import '../data/repos/quality_of_life_repo.dart';
 import '../models/quality_of_life_record.dart';
 import '../models/quality_of_life_table_model.dart';
 import '../models/quality_question.dart';
 import 'quality_of_life_state.dart';
 
 class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
-  QualityOfLifeCubit(this._appSharedRepo) : super(const QualityOfLifeState()) {
+  QualityOfLifeCubit(this._appSharedRepo, this._qualityOfLifeRepo)
+      : super(const QualityOfLifeState()) {
     emitModuleGuidance();
   }
   final AppSharedRepo _appSharedRepo;
+  final QualityOfLifeRepo _qualityOfLifeRepo;
 
   static const List<String> tableColumns = [
     "يناير",
@@ -40,23 +44,43 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     ),
     QualityOfLifeTableRow(
       question: 'هل لاحظت تغيراً ملحوظاً في وزنك هذا الشهر؟',
-      answersForOverMonths: ['لا تغيير', 'أخر 3 شهور', 'زيادة ملحوظة', 'لا تغيير', 'لا تغيير'],
+      answersForOverMonths: [
+        'لا تغيير',
+        'أخر 3 شهور',
+        'زيادة ملحوظة',
+        'لا تغيير',
+        'لا تغيير'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'كيف تقيم حالتك النفسية العامة خلال هذا الشهر؟',
-      answersForOverMonths: ['إيجابي جداً', 'جيد', 'عادي', 'جيد', 'إيجابي جداً'],
+      answersForOverMonths: [
+        'إيجابي جداً',
+        'جيد',
+        'عادي',
+        'جيد',
+        'إيجابي جداً'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'هل شعرت بقلق أو توتر شديد لأكثر من أسبوع متواصل؟',
       answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
     ),
     QualityOfLifeTableRow(
-      question: 'هل شعرت بعدم الرغبة في أي نشاط أو فقدان الاهتمام بالأشياء المعتادة؟',
+      question:
+          'هل شعرت بعدم الرغبة في أي نشاط أو فقدان الاهتمام بالأشياء المعتادة؟',
       answersForOverMonths: ['لا', 'لا', 'نعم', 'لا', 'لا'],
     ),
     QualityOfLifeTableRow(
-      question: 'كيف تصف مستوى تواصلك الاجتماعي مع العائلة والأصدقاء هذا الشهر؟',
-      answersForOverMonths: ['تواصل ممتاز', 'جيد', 'عادي', 'جيد', 'تواصل ممتاز'],
+      question:
+          'كيف تصف مستوى تواصلك الاجتماعي مع العائلة والأصدقاء هذا الشهر؟',
+      answersForOverMonths: [
+        'تواصل ممتاز',
+        'جيد',
+        'عادي',
+        'جيد',
+        'تواصل ممتاز'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'كيف كان مستوى الضغط النفسي خلال الشهر؟',
@@ -68,7 +92,13 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     ),
     QualityOfLifeTableRow(
       question: 'كم كانت مدة نومك المعتادة يومياً؟',
-      answersForOverMonths: ['7-9 ساعات', '5-7 ساعات', 'أقل من 5', '7-9 ساعات', '7-9 ساعات'],
+      answersForOverMonths: [
+        '7-9 ساعات',
+        '5-7 ساعات',
+        'أقل من 5',
+        '7-9 ساعات',
+        '7-9 ساعات'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'هل كان نومك في أوقات منتظمة معظم أيام الشهر؟',
@@ -92,15 +122,33 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     ),
     QualityOfLifeTableRow(
       question: 'كم مرة مارست نشاطاً بدنياً (30 دقيقة فأكثر) خلال الشهر؟',
-      answersForOverMonths: ['أكثر من 10 مرات', '5-10 مرات', 'لم أمارس', '1-4 مرات', 'أكثر من 10 مرات'],
+      answersForOverMonths: [
+        'أكثر من 10 مرات',
+        '5-10 مرات',
+        'لم أمارس',
+        '1-4 مرات',
+        'أكثر من 10 مرات'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'كيف تقيم جودة تغذيتك خلال هذا الشهر؟',
-      answersForOverMonths: ['صحية جداً', 'جيدة', 'مقبولة', 'جيدة', 'صحية جداً'],
+      answersForOverMonths: [
+        'صحية جداً',
+        'جيدة',
+        'مقبولة',
+        'جيدة',
+        'صحية جداً'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'ما مدى التزامك بمواعيد الدواء خلال هذا الشهر؟',
-      answersForOverMonths: ['التزمت تماماً', 'معظم الأوقات', 'نادراً', 'معظم الأوقات', 'التزمت تماماً'],
+      answersForOverMonths: [
+        'التزمت تماماً',
+        'معظم الأوقات',
+        'نادراً',
+        'معظم الأوقات',
+        'التزمت تماماً'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'هل أوقفت أي دواء أو علاج من تلقاء نفسك خلال هذا الشهر؟',
@@ -115,12 +163,19 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
       answersForOverMonths: ['لا', 'لا', 'نعم بشكل نادر', 'لا', 'لا'],
     ),
     QualityOfLifeTableRow(
-      question: 'هل كانت هناك أيام تغيبت فيها أو لم تستطع فيها أداء مهامك اليومية المعتادة؟',
+      question:
+          'هل كانت هناك أيام تغيبت فيها أو لم تستطع فيها أداء مهامك اليومية المعتادة؟',
       answersForOverMonths: ['لا', 'لا', '1-3 أيام', 'لا', 'لا'],
     ),
     QualityOfLifeTableRow(
       question: 'كم كان متوسط ساعات عملك اليومية هذا الشهر؟',
-      answersForOverMonths: ['6-9 ساعات', '9-12 ساعة', 'أكثر من 12', '6-9 ساعات', '6-9 ساعات'],
+      answersForOverMonths: [
+        '6-9 ساعات',
+        '9-12 ساعة',
+        'أكثر من 12',
+        '6-9 ساعات',
+        '6-9 ساعات'
+      ],
     ),
     QualityOfLifeTableRow(
       question: 'هل شعرت بإجهاد ذهني شديد بسبب العمل؟',
@@ -139,12 +194,19 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
       answersForOverMonths: ['لا', 'لا', 'لا', 'نعم', 'لا'],
     ),
     QualityOfLifeTableRow(
-      question: 'هل تعرضت لمواد كيميائية أو مبيدات أو مذيبات في العمل أو المنزل؟',
+      question:
+          'هل تعرضت لمواد كيميائية أو مبيدات أو مذيبات في العمل أو المنزل؟',
       answersForOverMonths: ['لا', 'نعم', 'لا', 'لا', 'لا'],
     ),
     QualityOfLifeTableRow(
       question: 'هل زرت طبيباً أو مستشفى أو مركزاً صحياً خلال هذا الشهر؟',
-      answersForOverMonths: ['لا', 'نعم، زيارة روتينية', 'نعم، بسبب عارض طارئ', 'لا', 'لا'],
+      answersForOverMonths: [
+        'لا',
+        'نعم، زيارة روتينية',
+        'نعم، بسبب عارض طارئ',
+        'لا',
+        'لا'
+      ],
     ),
   ];
 
@@ -339,6 +401,65 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     );
   }
 
+  Future<void> fetchQuestionnaire() async {
+    safeEmit(state.copyWith(questionnaireStatus: RequestStatus.loading));
+    final result = await _qualityOfLifeRepo.fetchQuestionnaire();
+    result.when(
+      success: (data) {
+        safeEmit(state.copyWith(
+          questionnaireStatus: RequestStatus.success,
+          questions: data.data,
+        ));
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            questionnaireStatus: RequestStatus.failure,
+            error: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> submitAssessment() async {
+    if (state.answers.isEmpty) return;
+
+    safeEmit(state.copyWith(submitStatus: RequestStatus.loading));
+
+    final List<AnswerModel> answersList = state.answers.entries.map((entry) {
+      final question =
+          state.questions.firstWhere((q) => q.questionId == entry.key);
+      return AnswerModel(
+        questionText: question.questionText,
+        answer: entry.value,
+      );
+    }).toList();
+
+    final requestBody = QualityOfLifeSubmitRequest(answers: answersList);
+
+    final result = await _qualityOfLifeRepo.submitAssessment(requestBody);
+
+    result.when(
+      success: (data) {
+        safeEmit(
+          state.copyWith(
+            submitStatus: RequestStatus.success,
+            isSaved: true,
+            answers: {},
+          ),
+        );
+        // You might want to update local records here if needed
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(
+          submitStatus: RequestStatus.failure,
+          error: error.errors.first,
+        ));
+      },
+    );
+  }
+
   void selectAnswer(int questionId, String answer) {
     final Map<int, String> newAnswers = Map.from(state.answers);
     newAnswers[questionId] = answer;
@@ -412,5 +533,50 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     if (!isClosed) {
       emit(state);
     }
+  }
+
+  Future<void> fetchAnsweredQuestions({String? dateRange}) async {
+    safeEmit(state.copyWith(
+      answeredQuestionsStatus: RequestStatus.loading,
+      selectedDateRange: dateRange,
+    ));
+    final result = await _qualityOfLifeRepo.fetchAnsweredQuestions(dateRange);
+    result.when(
+      success: (data) {
+        safeEmit(state.copyWith(
+          answeredQuestionsStatus: RequestStatus.success,
+          answeredQuestionsData: data.data,
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(
+          answeredQuestionsStatus: RequestStatus.failure,
+          error: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  Future<void> fetchDateRanges() async {
+    safeEmit(state.copyWith(dateRangesStatus: RequestStatus.loading));
+    final result = await _qualityOfLifeRepo.fetchDateRanges();
+    result.when(
+      success: (dateRanges) {
+        safeEmit(
+          state.copyWith(
+            dateRangesStatus: RequestStatus.success,
+            dateRanges: dateRanges,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            dateRangesStatus: RequestStatus.failure,
+            error: error.errors.first,
+          ),
+        );
+      },
+    );
   }
 }

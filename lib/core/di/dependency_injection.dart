@@ -88,7 +88,9 @@ import 'package:we_care/features/prescription/data/repos/prescription_data_entry
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
+import 'package:we_care/features/quality_of_life/data/repos/quality_of_life_repo.dart';
 import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+import 'package:we_care/features/quality_of_life/quality_of_life_services.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
@@ -461,6 +463,7 @@ void setupAppCubits() {
   getIt.registerFactory<QualityOfLifeCubit>(
     () => QualityOfLifeCubit(
       getIt<AppSharedRepo>(),
+      getIt<QualityOfLifeRepo>(),
     ),
   );
 }
@@ -719,6 +722,11 @@ void setupAppRepos() {
       getIt<MedicalReportApiServices>(),
     ),
   );
+  getIt.registerLazySingleton<QualityOfLifeRepo>(
+    () => QualityOfLifeRepo(
+      getIt<QualityOfLifeServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -818,5 +826,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<MedicalReportApiServices>(
     () => MedicalReportApiServices(dio),
+  );
+  getIt.registerLazySingleton<QualityOfLifeServices>(
+    () => QualityOfLifeServices(dio),
   );
 }
