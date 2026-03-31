@@ -18,6 +18,8 @@ class MedicinesCompatibilityState extends Equatable {
   final List<String> recentlyExpiredMedicines;
   final RequestStatus analysisStatus;
   final ClinicalAuditReportModel? auditReport;
+  final RequestStatus fetchSystemPromptStatus;
+  final String? medicalCompitabilitySystemPrompt;
 
   const MedicinesCompatibilityState({
     this.status = RequestStatus.initial,
@@ -30,6 +32,8 @@ class MedicinesCompatibilityState extends Equatable {
     this.recentlyExpiredMedicines = const [],
     this.analysisStatus = RequestStatus.initial,
     this.auditReport,
+    this.fetchSystemPromptStatus = RequestStatus.initial,
+    this.medicalCompitabilitySystemPrompt,
   });
 
   MedicinesCompatibilityState copyWith({
@@ -43,6 +47,8 @@ class MedicinesCompatibilityState extends Equatable {
     List<String>? recentlyExpiredMedicines,
     RequestStatus? analysisStatus,
     ClinicalAuditReportModel? auditReport,
+    RequestStatus? fetchSystemPromptStatus,
+    String? medicalCompitabilitySystemPrompt,
   }) {
     return MedicinesCompatibilityState(
       status: status ?? this.status,
@@ -57,6 +63,10 @@ class MedicinesCompatibilityState extends Equatable {
           recentlyExpiredMedicines ?? this.recentlyExpiredMedicines,
       analysisStatus: analysisStatus ?? this.analysisStatus,
       auditReport: auditReport ?? this.auditReport,
+      fetchSystemPromptStatus:
+          fetchSystemPromptStatus ?? this.fetchSystemPromptStatus,
+      medicalCompitabilitySystemPrompt: medicalCompitabilitySystemPrompt ??
+          this.medicalCompitabilitySystemPrompt,
     );
   }
 
@@ -72,5 +82,7 @@ class MedicinesCompatibilityState extends Equatable {
         recentlyExpiredMedicines,
         analysisStatus,
         auditReport,
+        fetchSystemPromptStatus,
+        medicalCompitabilitySystemPrompt,
       ];
 }

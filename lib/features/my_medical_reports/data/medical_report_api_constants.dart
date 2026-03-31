@@ -33,4 +33,6 @@ class MedicalReportApiConstants {
   static const String getSpecificPdf = 'MedicalReports/pdf';
   static const getUserMedicalHistoryDetails =
       "MedicalReports/full-report-Medical-file-data";
+  static const fetchMedicalCompitabilitySystemPrompt = //! should be changed later when backend change it
+      "LongTextContents/prompt-by-name/Drugsatibility";
 }

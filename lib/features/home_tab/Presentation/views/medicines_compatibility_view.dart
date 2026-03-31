@@ -13,6 +13,7 @@ import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibi
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/medicines_compitability_action_button_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/medicines_medical_history_status_bloc_builder_widget.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compitaability_sysptem_prompt.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medical_information_notice_widget.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
@@ -44,6 +45,25 @@ class _MedicinesCompatibilityViewState
     return BlocProvider(
       create: (_) => getIt<MedicinesCompatibilityCubit>()..initialRequests(),
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            final cubit = getIt<MedicinesCompatibilityCubit>();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: cubit,
+                  child: const MedicinesCompitaabilitySysptemPrompt(),
+                ),
+              ),
+            );
+          },
+          backgroundColor: AppColorsManager.mainDarkBlue,
+          child: const Icon(
+            Icons.download,
+            color: Colors.white,
+          ),
+        ),
         appBar: AppBar(toolbarHeight: 0),
         body: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

@@ -146,4 +146,28 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
       },
     );
   }
+
+  Future<void> fetchMedicinesCompitabilitySystemPrompt() async {
+    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
+    final result =
+        await _medicalReportRepo.fetchMedicinesCompitabilitySystemPrompt();
+    result.when(
+      success: (prompt) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.success,
+            medicalCompitabilitySystemPrompt: prompt,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
 }

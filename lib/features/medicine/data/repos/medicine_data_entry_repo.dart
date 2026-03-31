@@ -281,7 +281,7 @@ class MedicinesDataEntryRepo {
           await _medicinesServices.fetchMedicalCompitabilitySystemPrompt();
       final prompt = response['data'] as String;
       // Store in global variable
-      DeepSeekService.medicalCompitabilitySystemPrompt = prompt;
+      DeepSeekService.newMedicalCompitabilitySystemPrompt = prompt;
       return ApiResult.success(prompt);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

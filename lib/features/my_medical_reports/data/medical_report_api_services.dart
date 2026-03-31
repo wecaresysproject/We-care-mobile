@@ -140,4 +140,7 @@ abstract class MedicalReportApiServices {
   );
   @GET(MedicalReportApiConstants.getUserMedicalHistoryDetails)
   Future<dynamic> getUserMedicalHistoryDetails();
+
+  @GET(MedicalReportApiConstants.fetchMedicalCompitabilitySystemPrompt)
+  Future<dynamic> fetchMedicalCompitabilitySystemPrompt();
 }
