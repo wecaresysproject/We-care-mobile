@@ -57,19 +57,15 @@ class BiometricHistoryView extends StatelessWidget {
 
                         final formattedDate = formatDateTime(item.originalDate);
 
-                        // 👇 دعم الضغط (قيمتين)
                         final value = item.secondaryValue != null
                             ? "${item.secondaryValue} / ${item.value}"
                             : item.value;
 
-                        return "${index + 1}. 📅 $formattedDate\n   📊 $value";
+                        return "${index + 1}. 📅 $formattedDate\n📊 $value";
                       }).join("\n\n");
 
-                      final shareContent = '''
-      📊 سجل قياسات $metricName
-      
-        $formattedList
-      ''';
+                      final shareContent =
+                          "📊 سجل قياسات $metricName\n\n$formattedList";
 
                       await Share.share(shareContent);
                     },
@@ -640,7 +636,7 @@ class BiometricHistoryView extends StatelessWidget {
   }
 }
 
-String formatDateTime(String isoString) {
+String formatDateTime(String isoString, {bool needForShare = false}) {
   final dateTime = DateTime.tryParse(isoString);
   if (dateTime == null) return isoString;
 
@@ -651,5 +647,7 @@ String formatDateTime(String isoString) {
   final period = hour >= 12 ? 'PM' : 'AM';
   hour = hour % 12 == 0 ? 12 : hour % 12;
 
-  return '$day/$month \n $hour:$minute $period';
+  return needForShare
+      ? '$day/$month $hour:$minute $period'
+      : '$day/$month \n $hour:$minute $period';
 }
