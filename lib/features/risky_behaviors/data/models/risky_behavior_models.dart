@@ -29,6 +29,7 @@ class RiskyBehaviorDetailsModel extends Equatable {
   final String type;
   final String option;
   final List<RiskyBehaviorPeriod> periods;
+  final bool? attachToDrugInteractionModules;
 
   const RiskyBehaviorDetailsModel({
     this.id,
@@ -36,6 +37,7 @@ class RiskyBehaviorDetailsModel extends Equatable {
     required this.type,
     required this.option,
     required this.periods,
+    this.attachToDrugInteractionModules,
   });
 
   factory RiskyBehaviorDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -44,5 +46,6 @@ class RiskyBehaviorDetailsModel extends Equatable {
   Map<String, dynamic> toJson() => _$RiskyBehaviorDetailsModelToJson(this);
 
   @override
-  List<Object?> get props => [id, section, type, option, periods];
+  List<Object?> get props =>
+      [id, section, type, option, periods, attachToDrugInteractionModules];
 }

@@ -18,6 +18,7 @@ class RiskyBehaviorsState extends Equatable {
   final bool isEditMode;
   final String updatedDocId;
   final ModuleGuidanceDataModel? moduleGuidanceData;
+  final bool attachToDrugInteractionModules;
 
   const RiskyBehaviorsState({
     this.status = RequestStatus.initial,
@@ -32,6 +33,7 @@ class RiskyBehaviorsState extends Equatable {
     this.isEditMode = false,
     this.updatedDocId = '',
     this.moduleGuidanceData,
+    this.attachToDrugInteractionModules = false,
   });
 
   const RiskyBehaviorsState.initialState() : this();
@@ -49,6 +51,7 @@ class RiskyBehaviorsState extends Equatable {
     bool? isEditMode,
     String? updatedDocId,
     ModuleGuidanceDataModel? moduleGuidanceData,
+    bool? attachToDrugInteractionModules,
   }) {
     return RiskyBehaviorsState(
       status: status ?? this.status,
@@ -63,6 +66,8 @@ class RiskyBehaviorsState extends Equatable {
       isEditMode: isEditMode ?? this.isEditMode,
       updatedDocId: updatedDocId ?? this.updatedDocId,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+      attachToDrugInteractionModules:
+          attachToDrugInteractionModules ?? this.attachToDrugInteractionModules,
     );
   }
 
@@ -80,5 +85,6 @@ class RiskyBehaviorsState extends Equatable {
         isEditMode,
         updatedDocId,
         moduleGuidanceData,
+        attachToDrugInteractionModules,
       ];
 }

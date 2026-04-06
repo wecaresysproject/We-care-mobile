@@ -159,12 +159,24 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
     emit(state.copyWith(isFormValidated: isValid));
   }
 
+  void toggleAttachToDrugInteractionModules(bool? value) {
+    emit(state.copyWith(attachToDrugInteractionModules: value ?? false));
+  }
+
   Future<void> submit() async {
     if (!state.isFormValidated) return;
 
     emit(state.copyWith(status: RequestStatus.loading));
 
-    // Simulate API call
+    // Simulate API call with the new field
+    final requestModel = RiskyBehaviorDetailsModel(
+      section: state.selectedSection!,
+      type: state.selectedType!,
+      option: state.selectedOption!,
+      periods: state.periods,
+      attachToDrugInteractionModules: state.attachToDrugInteractionModules,
+    );
+
     await Future.delayed(const Duration(seconds: 2));
 
     emit(state.copyWith(
@@ -179,6 +191,8 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
       selectedType: existingData.type,
       selectedOption: existingData.option,
       periods: existingData.periods,
+      attachToDrugInteractionModules:
+          existingData.attachToDrugInteractionModules ?? false,
       isEditMode: true,
       updatedDocId: existingData.id ?? '',
     ));

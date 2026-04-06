@@ -150,6 +150,41 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
                 ),
               ),
 
+            verticalSpacing(16),
+
+            // Drug Interaction Integration Checkbox
+            InkWell(
+              onTap: () {
+                cubit.toggleAttachToDrugInteractionModules(
+                    !state.attachToDrugInteractionModules);
+              },
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24.w,
+                    height: 24.h,
+                    child: Checkbox(
+                      value: state.attachToDrugInteractionModules,
+                      onChanged: (value) {
+                        cubit.toggleAttachToDrugInteractionModules(value);
+                      },
+                      activeColor: AppColorsManager.mainDarkBlue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+                  ),
+                  horizontalSpacing(10),
+                  Expanded(
+                    child: Text(
+                      "هل تريد إضافة البيانات المدخلة لموديولز توافق أدويتي وتوافق دواء جديد؟",
+                      style: AppTextStyles.font14blackWeight400,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
             verticalSpacing(40),
 
             // Submit Button
