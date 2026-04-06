@@ -1021,7 +1021,9 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
         state.timePeriods == null ||
-        state.selectedDoseAmount == null) {
+        state.selectedDoseAmount == null ||
+        state.userMedicalProfileHistory == null ||
+        state.userMedicalProfileHistory!.isHistoryEmpty) {
       emit(
         state.copyWith(
           isMedicationCompatibilityFormValidated: false,

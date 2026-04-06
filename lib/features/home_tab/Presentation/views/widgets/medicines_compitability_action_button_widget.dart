@@ -81,7 +81,9 @@ class MedicinesCompitabilityActionButton extends StatelessWidget {
         return AppCustomButton(
           isLoading: state.analysisStatus == RequestStatus.loading,
           title: "تحليل التوافق",
-          onPressed: state.medicalHistoryStatus == RequestStatus.success
+          onPressed: state.medicalHistoryStatus == RequestStatus.success &&
+                  state.userMedicalProfileHistory != null &&
+                  !state.userMedicalProfileHistory!.isHistoryEmpty
               ? () {
                   final cubit = context.read<MedicinesCompatibilityCubit>();
                   cubit.analyseAllMedicinesCompitability();
@@ -96,7 +98,9 @@ class MedicinesCompitabilityActionButton extends StatelessWidget {
                   );
                 }
               : null,
-          isEnabled: state.medicalHistoryStatus == RequestStatus.success,
+          isEnabled: state.medicalHistoryStatus == RequestStatus.success &&
+              state.userMedicalProfileHistory != null &&
+              !state.userMedicalProfileHistory!.isHistoryEmpty,
         );
       },
     );

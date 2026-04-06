@@ -48,6 +48,24 @@ class UserMedicalHistoryDetailsModel extends Equatable {
 
   Map<String, dynamic> toJson() => _$UserMedicalHistoryDetailsModelToJson(this);
 
+  bool get isHistoryEmpty =>
+      (vitalSigns == null || vitalSigns!.isEmpty) &&
+      medicationsModule == null &&
+      (chronicDiseases == null || chronicDiseases!.isEmpty) &&
+      complaintsModule == null &&
+      (preDescriptions == null || preDescriptions!.isEmpty) &&
+      (medicalTests == null || medicalTests!.isEmpty) &&
+      (radiology == null || radiology!.isEmpty) &&
+      (surgeryEntries == null || surgeryEntries!.isEmpty) &&
+      geneticDiseases == null &&
+      (allergy == null || allergy!.isEmpty) &&
+      eyeModule == null &&
+      teethModule == null &&
+      mentalIllnessModule == null &&
+      (nutritionTrackingModule == null || nutritionTrackingModule!.isEmpty) &&
+      (physicalActivityModule == null || physicalActivityModule!.isEmpty) &&
+      supplementsModule == null;
+
   @override
   List<Object?> get props => [
         basicInformation,

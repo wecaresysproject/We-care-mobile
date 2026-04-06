@@ -142,4 +142,7 @@ class Routes {
   static const qualityOfLifeMainView = '/qualityOfLifeMainView';
   static const qualityOfLifeQuestionsView = '/qualityOfLifeQuestionsView';
   static const qualityOfLifeTableView = '/qualityOfLifeTableView';
+  static const riskyBehaviorsDataEntryView = '/riskyBehaviorsDataEntryView';
+  static const riskyBehaviorsDataView = '/riskyBehaviorsDataView';
+  static const riskyBehaviorsMainView = '/riskyBehaviorsMainView';
 }

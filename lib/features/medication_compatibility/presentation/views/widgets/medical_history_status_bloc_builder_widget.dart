@@ -42,14 +42,37 @@ class MedicalHistoryStatusBlocBuilder extends StatelessWidget {
             text = "جارٍ تحميل التاريخ الطبي المريض...";
             break;
           case RequestStatus.success:
-            backgroundColor = AppColorsManager.doneColor.withOpacity(0.1);
-            borderColor = AppColorsManager.doneColor;
-            icon = Icon(
-              Icons.check_circle_outline,
-              color: AppColorsManager.doneColor,
-              size: 22.w,
-            );
-            text = "تم تحميل التاريخ الطبي بنجاح";
+            // backgroundColor = AppColorsManager.doneColor.withOpacity(0.1);
+
+            // borderColor = AppColorsManager.doneColor;
+            // icon = Icon(
+            //   Icons.check_circle_outline,
+            //   color: AppColorsManager.doneColor,
+            //   size: 22.w,
+            // );
+            // text = "تم تحميل التاريخ الطبي بنجاح";
+            final isEmpty = state.userMedicalProfileHistory == null ||
+                state.userMedicalProfileHistory!.isHistoryEmpty;
+            if (isEmpty) {
+              backgroundColor = AppColorsManager.warningColor.withOpacity(0.1);
+              borderColor = AppColorsManager.warningColor;
+              icon = Icon(
+                Icons.error_outline,
+                color: AppColorsManager.warningColor,
+                size: 22.w,
+              );
+              text =
+                  "يحب ان يكون لديك تاريخ مرضي بداخل التطبيق لإستخدام هذا الموديول";
+            } else {
+              backgroundColor = AppColorsManager.doneColor.withOpacity(0.1);
+              borderColor = AppColorsManager.doneColor;
+              icon = Icon(
+                Icons.check_circle_outline,
+                color: AppColorsManager.doneColor,
+                size: 22.w,
+              );
+              text = "تم تحميل التاريخ الطبي بنجاح";
+            }
             break;
           case RequestStatus.failure:
             backgroundColor = AppColorsManager.warningColor.withOpacity(0.1);

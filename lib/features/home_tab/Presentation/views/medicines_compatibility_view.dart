@@ -11,9 +11,9 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compitaability_sysptem_prompt.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/medicines_compitability_action_button_widget.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/medicines_medical_history_status_bloc_builder_widget.dart';
-import 'package:we_care/features/home_tab/Presentation/views/medicines_compitaability_sysptem_prompt.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/medical_information_notice_widget.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
@@ -147,7 +147,8 @@ class _MedicinesCompatibilityViewState
                     });
                     context
                         .read<MedicinesCompatibilityCubit>()
-                        .updateSelectedMedicines(_selectedOptionValues.toList());
+                        .updateSelectedMedicines(
+                            _selectedOptionValues.toList());
                   },
                 ),
               if (category.selectionType == MedicalSelectionType.filters ||

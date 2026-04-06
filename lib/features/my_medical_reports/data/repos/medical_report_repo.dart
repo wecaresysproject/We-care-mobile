@@ -8,6 +8,7 @@ import 'package:we_care/features/my_medical_reports/data/models/medical_report_f
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/upload_medical_report_response_model.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 class MedicalReportRepo {
   final MedicalReportApiServices _apiServices;
@@ -336,6 +337,19 @@ class MedicalReportRepo {
           UserMedicalHistoryDetailsModel.fromJson(response['data']);
 
       return ApiResult.success(userMedicalHistoryDetails);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> fetchMedicinesCompitabilitySystemPrompt() async {
+    try {
+      final response =
+          await _apiServices.fetchMedicalCompitabilitySystemPrompt();
+      final prompt = response['data'] as String;
+      // Store in global variable
+      DeepSeekService.medicinesCompitabilitySystemPrompt = prompt;
+      return ApiResult.success(prompt);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

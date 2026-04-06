@@ -106,4 +106,5 @@ enum WeCareMedicalModules {
   myMedicalReports, // 22. تقاريري الطبية
   medicalNotes, // 23. ملاحظاتي الطبية
   qualityOfLife, // 24. جودة الحياة
+  riskyBehaviors, // 25. السلوكيات الخطرة
 }

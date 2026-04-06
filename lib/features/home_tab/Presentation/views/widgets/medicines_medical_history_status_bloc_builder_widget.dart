@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
@@ -43,14 +44,28 @@ class MedicinesMedicalHistoryStatusBlocBuilder extends StatelessWidget {
             text = "جارٍ تحميل التاريخ الطبي المريض...";
             break;
           case RequestStatus.success:
-            backgroundColor = AppColorsManager.doneColor.withOpacity(0.1);
-            borderColor = AppColorsManager.doneColor;
-            icon = Icon(
-              Icons.check_circle_outline,
-              color: AppColorsManager.doneColor,
-              size: 22.w,
-            );
-            text = "تم تحميل التاريخ الطبي بنجاح";
+            final isEmpty = state.userMedicalProfileHistory.isNull ||
+                state.userMedicalProfileHistory!.isHistoryEmpty;
+            if (isEmpty) {
+              backgroundColor = AppColorsManager.warningColor.withOpacity(0.1);
+              borderColor = AppColorsManager.warningColor;
+              icon = Icon(
+                Icons.error_outline,
+                color: AppColorsManager.warningColor,
+                size: 22.w,
+              );
+              text =
+                  "يحب ان يكون لديك تاريخ مرضي بداخل التطبيق لإستخدام هذا الموديول";
+            } else {
+              backgroundColor = AppColorsManager.doneColor.withOpacity(0.1);
+              borderColor = AppColorsManager.doneColor;
+              icon = Icon(
+                Icons.check_circle_outline,
+                color: AppColorsManager.doneColor,
+                size: 22.w,
+              );
+              text = "تم تحميل التاريخ الطبي بنجاح";
+            }
             break;
           case RequestStatus.failure:
             backgroundColor = AppColorsManager.warningColor.withOpacity(0.1);

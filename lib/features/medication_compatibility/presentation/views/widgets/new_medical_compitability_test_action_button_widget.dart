@@ -15,7 +15,8 @@ class NewMedicalCompitabilityTestActionButton extends StatelessWidget {
     return BlocConsumer<MedicinesDataEntryCubit, MedicinesDataEntryState>(
       listenWhen: (prev, curr) =>
           prev.analyzeMedicalCompatibilityStatus !=
-          curr.analyzeMedicalCompatibilityStatus,
+              curr.analyzeMedicalCompatibilityStatus ||
+          prev.medicalHistoryStatus != curr.medicalHistoryStatus,
       buildWhen: (prev, curr) =>
           prev.isMedicationCompatibilityFormValidated !=
               curr.isMedicationCompatibilityFormValidated ||
