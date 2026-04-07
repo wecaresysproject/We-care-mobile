@@ -123,9 +123,9 @@ class AddNewMedicationView extends StatelessWidget {
                     containerBorderColor: state.selectedDose == null
                         ? AppColorsManager.warningColor
                         : AppColorsManager.textfieldOutsideBorderColor,
-                    categoryLabel: "الجرعة",
+                    categoryLabel: "كمية الجرعة",
                     containerHintText: state.selectedDose ?? "اختر كمية الجرعة",
-                    options: state.medicalDoses,
+                    options: state.dosageAmounts,
                     loadingState: state.medicalDosesOptionsLoadingState,
                     onOptionSelected: (value) {
                       context

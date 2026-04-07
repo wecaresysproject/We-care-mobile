@@ -53,7 +53,7 @@ class _SimulatedMedicinesCombitabilityLoaderState
 
   void _startAnimation() {
     _timer = Timer.periodic(
-      const Duration(milliseconds: 350),
+      const Duration(milliseconds: 450),
       (timer) {
         if (!mounted) {
           timer.cancel();

@@ -52,6 +52,7 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
           RiskyBehaviorPeriod(fromDate: "2024-01-01", toDate: "2024-06-01"),
           RiskyBehaviorPeriod(fromDate: "2024-08-01"),
         ],
+        attachToDrugInteractionModules: true,
       ),
       const RiskyBehaviorDetailsModel(
         id: "2",

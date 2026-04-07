@@ -140,19 +140,23 @@ class MedicineDetailsView extends StatelessWidget {
                       icon: 'assets/images/doctor_name.png',
                     ),
 
-                    Row(children: [
-                      DetailsViewInfoTile(
-                        title: "الشكل الدوائي",
-                        value: " اقراص",
-                        icon: 'assets/images/symptoms_icon.png',
-                      ),
-                      Spacer(),
-                      DetailsViewInfoTile(
-                        title: " الجرعه",
-                        value: state.selectestMedicineDetails!.dosage,
-                        icon: 'assets/images/hugeicons_medicine-01.png',
-                      ),
-                    ]),
+                    Row(
+                      children: [
+                        DetailsViewInfoTile(
+                          title: "الشكل الدوائي",
+                          value: " اقراص",
+                          icon: 'assets/images/symptoms_icon.png',
+                        ),
+                        Spacer(),
+                        DetailsViewInfoTile(
+                          title: "كمية الدواء",
+                          value: state.selectestMedicineDetails!
+                                  .selectedDoseAmount ??
+                              "",
+                          icon: 'assets/images/time_icon.png',
+                        ),
+                      ],
+                    ),
 
                     Row(
                       children: [
@@ -169,14 +173,7 @@ class MedicineDetailsView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    DetailsViewInfoTile(
-                      title: "كمية الدواء",
-                      value:
-                          state.selectestMedicineDetails!.selectedDoseAmount ??
-                              "",
-                      icon: 'assets/images/time_icon.png',
-                      isExpanded: true,
-                    ),
+
                     DetailsViewInfoTile(
                       title: "تاريخ بدء الدواء",
                       value: state.selectestMedicineDetails!.startDate,
@@ -367,7 +364,6 @@ Future<void> _shareMedicineDetails(BuildContext context) async {
   final detailsMap = {
     '💊 اسم الدواء:': medicine.medicineName,
     '🧪 الشكل الدوائي:': 'أقراص',
-    '📏 الجرعة:': medicine.dosage,
     '🔁 عدد مرات الجرعة:': medicine.dosageFrequency,
     '⏳ مدة العلاج:': medicine.timeDuration,
     '💊 كمية الدواء:': medicine.selectedDoseAmount,

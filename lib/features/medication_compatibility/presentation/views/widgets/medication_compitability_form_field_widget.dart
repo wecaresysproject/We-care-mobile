@@ -70,30 +70,6 @@ class MedicationCompatibilityFormFieldsWidget extends StatelessWidget {
             ),
             verticalSpacing(16),
             UserSelectionContainer(
-              isEditMode: state.isEditMode,
-              allowManualEntry: true,
-              containerBorderColor: state.selectedDose == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "الجرعة",
-              containerHintText: state.selectedDose ?? "اختر كمية الجرعة",
-              options: state.medicalDoses,
-              loadingState: state.medicalDosesOptionsLoadingState,
-              onOptionSelected: (value) {
-                context
-                    .read<MedicinesDataEntryCubit>()
-                    .updateSelectedDose(value);
-              },
-              bottomSheetTitle: "اختر كمية الجرعة",
-              searchHintText: "ابحث عن كمية الجرعة",
-              onRetryPressed: () async {
-                await context
-                    .read<MedicinesDataEntryCubit>()
-                    .emitMedcineDosesByForms();
-              },
-            ),
-            verticalSpacing(16),
-            UserSelectionContainer(
               allowManualEntry: true,
               containerBorderColor: state.selectedDoseAmount == null
                   ? AppColorsManager.warningColor

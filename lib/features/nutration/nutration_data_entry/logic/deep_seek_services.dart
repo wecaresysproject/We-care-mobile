@@ -673,7 +673,6 @@ L5 - Cautionary
   static String buildUserNewOneMedicineCompitabilityPrompt({
     required String medicineName,
     required String form,
-    required String dose,
     required String doseAmount,
     required String frequency,
     required String duration,
@@ -686,7 +685,6 @@ L5 - Cautionary
 
 اسم الدواء: $medicineName
 طريقة الاستخدام: $form
-جرعة العبوة: $dose
 كمية الجرعة: $doseAmount
 عدد مرات الجرعة: $frequency
 مدة الاستخدام: $duration

@@ -391,7 +391,7 @@ class AddedNewMedicineTemplateWidget extends StatelessWidget {
               ),
               Spacer(),
               DetailsViewInfoTile(
-                title: "الجرعة",
+                title: "كمية الجرعة",
                 value: model.dose ?? '-',
                 icon: 'assets/images/heart_rate_search_icon.png',
               ),

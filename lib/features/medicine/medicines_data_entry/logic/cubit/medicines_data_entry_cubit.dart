@@ -131,7 +131,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
           DeepSeekService.buildUserNewOneMedicineCompitabilityPrompt(
         medicineName: state.selectedMedicineName!,
         form: state.selectedMedicalForm!,
-        dose: state.selectedDose!,
         doseAmount: state.selectedDoseAmount!,
         frequency: state.selectedNoOfDose!,
         duration: state.timePeriods!,
@@ -235,7 +234,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         medicineStartDate: pastDataEntered.startDate,
         selectedMedicineName: pastDataEntered.medicineName,
         selectedMedicalForm: pastDataEntered.usageMethod,
-        selectedDose: pastDataEntered.dosage,
         selectedNoOfDose: pastDataEntered.dosageFrequency,
         doseDuration: pastDataEntered.usageDuration,
         timePeriods: pastDataEntered.timeDuration,
@@ -300,7 +298,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
-        dosage: state.selectedDose!,
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
@@ -625,7 +622,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
-        dosage: state.selectedDose!,
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
@@ -895,9 +891,10 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     validateRequiredFieldsForMedicationCompatibility();
   }
 
+  //! Recheck this once more
   void updateSelectedDose(String? dose) {
     emit(state.copyWith(selectedDose: dose));
-    validateRequiredFields();
+    // validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
   }
@@ -995,7 +992,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     if (state.medicineStartDate == null ||
         state.selectedMedicineName == null ||
         state.selectedMedicalForm == null ||
-        state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
         state.timePeriods == null ||
@@ -1017,7 +1013,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void validateRequiredFieldsForMedicationCompatibility() {
     if (state.selectedMedicineName == null ||
         state.selectedMedicalForm == null ||
-        state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
         state.timePeriods == null ||
@@ -1121,7 +1116,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         selectedMedicalForm: model.medicalForm,
         selectedMedicineName: model.medicineName,
         selectedNoOfDose: model.numberOfDoses,
-        selectedDose: model.dose,
+        selectedDose: model.dose, //! recheck this later
       ),
     );
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();

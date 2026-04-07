@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
-import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart' as model;
+import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart'
+    as model;
+import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_ai_consultation_view.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/compatibility_issue_card.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/risk_levels_row_widget.dart';
 
@@ -46,7 +49,24 @@ class MedicinesCombitabilityReesultsView extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                     children: [
                       const RiskLevelsLegend(),
-                      verticalSpacing(30),
+                      verticalSpacing(10),
+                      AppCustomButton(
+                        title: "استشر الـ AI",
+                        isEnabled: true,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MedicationCompatibilityConsultationView(
+                                initialMessage:
+                                    _generateAITemplate(auditReport),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      verticalSpacing(15),
                       _buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"),
                       _buildItemsList(
                         "التضاد (Antagonism)",
@@ -280,6 +300,65 @@ class MedicinesCombitabilityReesultsView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _generateAITemplate(model.ClinicalAuditReport auditReport) {
+    final buffer = StringBuffer();
+    buffer.writeln(
+        "أنا قمت بتحليل التفاعلات الدوائية الخاصة بي باستخدام تطبيق طبي.");
+    buffer.writeln();
+    buffer.writeln("ملخص التفاعلات المرصودة:");
+
+    // Chemical Interaction Matrix
+    if (auditReport.chemicalInteractionMatrix.antagonism.isNotEmpty ||
+        auditReport.chemicalInteractionMatrix.synergy.isNotEmpty ||
+        auditReport.chemicalInteractionMatrix.pastDrugResiduals.isNotEmpty) {
+      buffer.writeln("1. تداخلات المواد الكيميائية:");
+      for (var item in auditReport.chemicalInteractionMatrix.antagonism) {
+        buffer.writeln(
+            "- ${item.title} (Antagonism): ${item.description}. الأدوية: ${item.drugsInvolved.join(', ')}");
+      }
+      for (var item in auditReport.chemicalInteractionMatrix.synergy) {
+        buffer.writeln(
+            "- ${item.title} (Synergy): ${item.description}. الأدوية: ${item.drugsInvolved.join(', ')}");
+      }
+      for (var item
+          in auditReport.chemicalInteractionMatrix.pastDrugResiduals) {
+        buffer.writeln(
+            "- ${item.title} (Residuals): ${item.description}. الأدوية: ${item.drugsInvolved.join(', ')}");
+      }
+      buffer.writeln();
+    }
+
+    // Systemic Compatibility
+    if (auditReport.systemicCompatibility.foodAndSupplements.isNotEmpty ||
+        auditReport.systemicCompatibility.organSafety.isNotEmpty ||
+        auditReport.systemicCompatibility.behavioralImpact.isNotEmpty) {
+      buffer.writeln("2. التوافق مع أجهزة الجسم:");
+      for (var item in auditReport.systemicCompatibility.foodAndSupplements) {
+        buffer.writeln(
+            "- ${item.title}: ${item.description}. المحاور: ${item.relatedItems.join(', ')}");
+      }
+      for (var item in auditReport.systemicCompatibility.organSafety) {
+        buffer.writeln(
+            "- ${item.title}: ${item.description}. المحاور: ${item.relatedItems.join(', ')}");
+      }
+      for (var item in auditReport.systemicCompatibility.behavioralImpact) {
+        buffer.writeln(
+            "- ${item.title}: ${item.description}. المحاور: ${item.relatedItems.join(', ')}");
+      }
+      buffer.writeln();
+    }
+
+    // Questions
+    if (auditReport.doctorDiscussion.questions.isNotEmpty) {
+      buffer.writeln("الأسئلة المقترحة للنقاش مع الطبيب:");
+      for (var q in auditReport.doctorDiscussion.questions) {
+        buffer.writeln("- $q");
+      }
+    }
+
+    return buffer.toString();
   }
 }
 

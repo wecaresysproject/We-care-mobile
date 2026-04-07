@@ -8,7 +8,6 @@ class MedicineDataEntryRequestBody {
   final String startDate;
   final String medicineName;
   final String usageMethod;
-  final String dosage;
   final String dosageFrequency;
   final String usageDuration;
   final String timeDuration;
@@ -25,7 +24,6 @@ class MedicineDataEntryRequestBody {
     required this.startDate,
     required this.medicineName,
     required this.usageMethod,
-    required this.dosage,
     required this.dosageFrequency,
     required this.usageDuration,
     required this.timeDuration,
