@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -8,6 +14,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
+import 'package:we_care/features/home_tab/logic/medicines_compatibility_pdf_generator.dart';
 import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart'
     as model;
 import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_ai_consultation_view.dart';
@@ -30,9 +37,15 @@ class MedicinesCombitabilityReesultsView extends StatelessWidget {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: const AppBarWithCenteredTitle(
+                child: AppBarWithCenteredTitle(
                   title: "نتائج تحليل التوافق الدوائي",
-                  showActionButtons: false,
+                  showActionButtons: true,
+                  showShareButtonOnly: true,
+                  shareFunction: () async {
+                    if (auditReport != null) {
+                      await _sharePdf(context, auditReport);
+                    }
+                  },
                 ),
               ),
               verticalSpacing(20),
@@ -164,6 +177,29 @@ class MedicinesCombitabilityReesultsView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> _sharePdf(
+      BuildContext context, model.ClinicalAuditReport report) async {
+    try {
+      final pdfBytes = await MedicinesCompatibilityPdfGenerator()
+          .generateCompatibilityReport(report);
+
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/medicines_compatibility_report.pdf');
+      await file.writeAsBytes(pdfBytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'تقرير التوافق الدوائي',
+        subject: 'Compatibility Report',
+      );
+    } catch (e) {
+      AppLogger.info(" error is $e");
+      if (context.mounted) {
+        showError("حدث خطأ أثناء إنشاء أو مشاركة التقرير");
+      }
+    }
   }
 
   Widget _buildSectionHeader(String title) {
