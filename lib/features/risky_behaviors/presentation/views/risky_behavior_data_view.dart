@@ -151,7 +151,7 @@ class _SectionCard extends StatelessWidget {
       text += "- ${b.type}:\n";
       for (var r in b.records) {
         text +=
-            "  * ${r.option}: [${r.period.fromDate} ← ${r.period.toDate ?? "الحالي"}]\n";
+            "  * ${r.option}: [${r.period.fromDate} إلى ${r.period.toDate ?? "الحالي"}]\n";
       }
       text += "\n";
     }

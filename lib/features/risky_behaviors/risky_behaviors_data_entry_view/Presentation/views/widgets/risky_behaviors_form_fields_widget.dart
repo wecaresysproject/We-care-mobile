@@ -7,12 +7,12 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
 import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_state.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/Presentation/views/widgets/usage_rate_scale_selector.dart';
 
 import '../../../../logic/cubit/risky_behaviors_cubit.dart';
 
@@ -99,7 +99,7 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
                       horizontalSpacing(12),
                       Expanded(
                         child: Text(
-                          "${record.period.fromDate} ${record.period.toDate != null ? "→ ${record.period.toDate}" : "(مستمر)"}",
+                          "${record.period.fromDate} ${record.period.toDate != null ? "إلى ${record.period.toDate}" : "(مستمر)"}",
                           style: AppTextStyles.font14blackWeight400,
                         ),
                       ),
@@ -230,14 +230,15 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
                       ),
                     ),
                     verticalSpacing(10),
-                    OptionSelectorWidget(
-                      answersFontSize: 11.sp,
+                    UsageRateScaleSelector(
                       options: cubit.getAvailableOptions(),
-                      initialSelectedOption: selectedOption,
+                      selectedOption: selectedOption,
                       onOptionSelected: (value) {
-                        setState(() {
-                          selectedOption = value;
-                        });
+                        setState(
+                          () {
+                            selectedOption = value;
+                          },
+                        );
                       },
                     ),
                     verticalSpacing(20),

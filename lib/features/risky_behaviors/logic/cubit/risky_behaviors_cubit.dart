@@ -66,11 +66,39 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
         type: "Vape",
         records: [
           BehaviorRecord(
-            option: "من حين لآخر",
+            option: "أقل من 5 يوميًا",
             period: RiskyBehaviorPeriod(
                 fromDate: "2023-10-01", toDate: "2023-12-31"),
           ),
         ],
+      ),
+      const RiskyBehaviorDetailsModel(
+        id: "3",
+        section: "الكحول",
+        type: "كحول عام",
+        records: [
+          BehaviorRecord(
+            option: "نادر",
+            period: RiskyBehaviorPeriod(
+                fromDate: "2022-01-01", toDate: "2023-01-01"),
+          ),
+          BehaviorRecord(
+            option: "أسبوعي",
+            period: RiskyBehaviorPeriod(fromDate: "2023-05-01"),
+          ),
+        ],
+      ),
+      const RiskyBehaviorDetailsModel(
+        id: "4",
+        section: "المخدرات",
+        type: "الحشيش",
+        records: [
+          BehaviorRecord(
+            option: "يومي",
+            period: RiskyBehaviorPeriod(fromDate: "2024-09-01"),
+          ),
+        ],
+        attachToDrugInteractionModules: true,
       ),
     ];
 
