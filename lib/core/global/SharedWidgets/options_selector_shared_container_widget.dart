@@ -9,6 +9,7 @@ class OptionSelectorWidget extends StatefulWidget {
   final String? initialSelectedOption;
   final Function(String)? onOptionSelected;
   final Color containerValidationColor;
+  final double? answersFontSize;
 
   const OptionSelectorWidget({
     super.key,
@@ -17,6 +18,7 @@ class OptionSelectorWidget extends StatefulWidget {
     this.onOptionSelected,
     this.containerValidationColor =
         AppColorsManager.textfieldOutsideBorderColor,
+    this.answersFontSize = 14,
   });
 
   @override
@@ -110,6 +112,7 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
                           softWrap: true,
                           style: AppTextStyles.font14BlueWeight700.copyWith(
                             fontWeight: FontWeight.w600,
+                            fontSize: widget.answersFontSize,
                             color: AppColorsManager.textColor,
                           ),
                         ),

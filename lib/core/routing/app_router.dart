@@ -104,7 +104,6 @@ import 'package:we_care/features/quality_of_life/presentation/views/quality_of_l
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
 import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_cubit.dart';
 import 'package:we_care/features/risky_behaviors/presentation/views/risky_behavior_data_view.dart';
-import 'package:we_care/features/risky_behaviors/presentation/views/risky_behavior_main_view.dart';
 import 'package:we_care/features/risky_behaviors/presentation/views/risky_behaviors_data_entry_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
@@ -763,13 +762,7 @@ class AppRouter {
             existingData: argumentsMap,
           ),
         );
-      case Routes.riskyBehaviorsMainView:
-        return MaterialPageRoute(
-          builder: (context) => BlocProvider<RiskyBehaviorsCubit>(
-            create: (context) => getIt<RiskyBehaviorsCubit>(),
-            child: const RiskyBehaviorsMainView(),
-          ),
-        );
+
       case Routes.riskyBehaviorsDataView:
         return MaterialPageRoute(
           builder: (context) => BlocProvider<RiskyBehaviorsCubit>(

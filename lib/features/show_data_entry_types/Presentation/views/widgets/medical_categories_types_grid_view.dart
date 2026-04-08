@@ -380,10 +380,10 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": true,
   },
   {
-    "title": "السلوكيات\nالخطرة",
-    "image": "assets/images/red_icon.png",
-    "route": "/risky_behaviors",
-    "isActive": false,
+    "title": "السلوكيات\nالخاطئة",
+    "image": "assets/images/risk_behavior.png",
+    "route": Routes.riskyBehaviorsDataView,
+    "isActive": true,
   },
   {
     "title": "الصحه\nالعامه",

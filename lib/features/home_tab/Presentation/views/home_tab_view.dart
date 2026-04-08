@@ -138,23 +138,13 @@ class HomeTabView extends StatelessWidget {
                         },
                         isInactive: false,
                       ),
-                      HomeSecondCategoryItem(
-                        categoryName: "السلوكيات\nالخاطئة",
-                        imagePath: "assets/images/risk_behavior.png",
-                        onTap: () {
-                          context.pushNamedWithSettingRootNavigator(
-                            Routes.riskyBehaviorsMainView,
-                          );
-                        },
-                        isInactive: false,
-                      ),
 
-                      // HomeSecondCategoryItem(
-                      //   categoryName: "لست\nوحدك",
-                      //   imagePath: "assets/images/support_rooms_icon.png",
-                      //   onTap: () {},
-                      //   isInactive: true,
-                      // ),
+                      HomeSecondCategoryItem(
+                        categoryName: "لست\nوحدك",
+                        imagePath: "assets/images/support_rooms_icon.png",
+                        onTap: () {},
+                        isInactive: true,
+                      ),
 
                       HomeSecondCategoryItem(
                         categoryName: "بحث عن\nطبيب",

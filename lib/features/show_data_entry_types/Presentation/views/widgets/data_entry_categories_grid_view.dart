@@ -481,9 +481,10 @@ final List<Map<String, dynamic>> dataEntryCategories = [
     "isActive": true,
   },
   {
-    "title": "السلوكيات\nالخطرة",
-    "image": "assets/images/red_icon.png",
-    "route": "/risky_behaviors",
+    "title": "السلوكيات\nالخاطئة",
+    "image": "assets/images/risk_behavior.png",
+    "route": Routes.riskyBehaviorsDataEntryView,
+    "isActive": true,
     "cornerImagePath": "assets/images/risky_behavior_module.png",
     "audio": "",
   },

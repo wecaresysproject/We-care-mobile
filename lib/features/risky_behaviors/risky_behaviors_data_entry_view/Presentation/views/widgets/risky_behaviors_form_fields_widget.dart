@@ -66,11 +66,12 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
             // Frequency Option
             if (state.selectedType != null) ...[
               Text(
-                "معدل الاستخدام",
+                "معدل الإستخدام",
                 style: AppTextStyles.font18blackWight500,
               ),
               verticalSpacing(10),
               OptionSelectorWidget(
+                answersFontSize: 11.5.sp,
                 options: cubit.getAvailableOptions(),
                 initialSelectedOption: state.selectedOption,
                 onOptionSelected: (value) {
