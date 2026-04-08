@@ -23,20 +23,37 @@ class RiskyBehaviorPeriod extends Equatable {
 }
 
 @JsonSerializable()
+class BehaviorRecord extends Equatable {
+  final String option;
+  final RiskyBehaviorPeriod period;
+
+  const BehaviorRecord({
+    required this.option,
+    required this.period,
+  });
+
+  factory BehaviorRecord.fromJson(Map<String, dynamic> json) =>
+      _$BehaviorRecordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BehaviorRecordToJson(this);
+
+  @override
+  List<Object?> get props => [option, period];
+}
+
+@JsonSerializable()
 class RiskyBehaviorDetailsModel extends Equatable {
   final String? id;
   final String section;
   final String type;
-  final String option;
-  final List<RiskyBehaviorPeriod> periods;
+  final List<BehaviorRecord> records;
   final bool? attachToDrugInteractionModules;
 
   const RiskyBehaviorDetailsModel({
     this.id,
     required this.section,
     required this.type,
-    required this.option,
-    required this.periods,
+    required this.records,
     this.attachToDrugInteractionModules,
   });
 
@@ -47,5 +64,5 @@ class RiskyBehaviorDetailsModel extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, section, type, option, periods, attachToDrugInteractionModules];
+      [id, section, type, records, attachToDrugInteractionModules];
 }

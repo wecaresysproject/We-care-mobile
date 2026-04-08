@@ -47,10 +47,16 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
         id: "1",
         section: "التدخين",
         type: "سجائر",
-        option: "من 5 إلى 20 يوميًا",
-        periods: [
-          RiskyBehaviorPeriod(fromDate: "2024-01-01", toDate: "2024-06-01"),
-          RiskyBehaviorPeriod(fromDate: "2024-08-01"),
+        records: [
+          BehaviorRecord(
+            option: "من 5 إلى 20 يوميًا",
+            period: RiskyBehaviorPeriod(
+                fromDate: "2024-01-01", toDate: "2024-06-01"),
+          ),
+          BehaviorRecord(
+            option: "أكثر من 20 يوميًا",
+            period: RiskyBehaviorPeriod(fromDate: "2024-08-01"),
+          ),
         ],
         attachToDrugInteractionModules: true,
       ),
@@ -58,39 +64,12 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
         id: "2",
         section: "التدخين",
         type: "Vape",
-        option: "من حين لآخر",
-        periods: [
-          RiskyBehaviorPeriod(fromDate: "2023-10-01", toDate: "2023-12-31"),
-        ],
-      ),
-      const RiskyBehaviorDetailsModel(
-        id: "3",
-        section: "التدخين",
-        type: "الشيشة",
-        option: "أسبوعي",
-        periods: [
-          RiskyBehaviorPeriod(fromDate: "2024-01-01", toDate: "2024-06-01"),
-          RiskyBehaviorPeriod(fromDate: "2024-08-01"),
-        ],
-      ),
-      const RiskyBehaviorDetailsModel(
-        id: "4",
-        section: "الكحول",
-        type: "كحول عام",
-        option: "نادر",
-        periods: [
-          RiskyBehaviorPeriod(fromDate: "2022-01-01", toDate: "2022-06-01"),
-        ],
-      ),
-      const RiskyBehaviorDetailsModel(
-        id: "5",
-        section: "المخدرات",
-        type: "الحشيش",
-        option: "نادر",
-        periods: [
-          RiskyBehaviorPeriod(fromDate: "2022-01-01", toDate: "2022-06-01"),
-          RiskyBehaviorPeriod(fromDate: "2022-01-01", toDate: "2022-06-01"),
-          RiskyBehaviorPeriod(fromDate: "2022-01-01", toDate: "2022-06-01"),
+        records: [
+          BehaviorRecord(
+            option: "من حين لآخر",
+            period: RiskyBehaviorPeriod(
+                fromDate: "2023-10-01", toDate: "2023-12-31"),
+          ),
         ],
       ),
     ];
@@ -120,7 +99,7 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
     emit(state.copyWith(
       selectedSection: section,
       selectedType: null, // Reset type when section changes
-      selectedOption: null, // Reset option when section changes
+      records: [], // Reset records when section changes
     ));
     validateForm();
   }
@@ -130,32 +109,26 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
     validateForm();
   }
 
-  void updateOption(String option) {
-    emit(state.copyWith(selectedOption: option));
-    validateForm();
-  }
-
-  void addPeriod(RiskyBehaviorPeriod period) {
-    if (state.periods.length < 3) {
-      final updatedPeriods = List<RiskyBehaviorPeriod>.from(state.periods)
-        ..add(period);
-      emit(state.copyWith(periods: updatedPeriods));
+  void addRecord(BehaviorRecord record) {
+    if (state.records.length < 3) {
+      final updatedRecords = List<BehaviorRecord>.from(state.records)
+        ..add(record);
+      emit(state.copyWith(records: updatedRecords));
       validateForm();
     }
   }
 
-  void removePeriod(int index) {
-    final updatedPeriods = List<RiskyBehaviorPeriod>.from(state.periods)
+  void removeRecord(int index) {
+    final updatedRecords = List<BehaviorRecord>.from(state.records)
       ..removeAt(index);
-    emit(state.copyWith(periods: updatedPeriods));
+    emit(state.copyWith(records: updatedRecords));
     validateForm();
   }
 
   void validateForm() {
     final isValid = state.selectedSection != null &&
         state.selectedType != null &&
-        state.selectedOption != null &&
-        state.periods.isNotEmpty;
+        state.records.isNotEmpty;
 
     emit(state.copyWith(isFormValidated: isValid));
   }
@@ -169,15 +142,14 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
 
     emit(state.copyWith(status: RequestStatus.loading));
 
-    // Simulate API call with the new field
     final requestModel = RiskyBehaviorDetailsModel(
       section: state.selectedSection!,
       type: state.selectedType!,
-      option: state.selectedOption!,
-      periods: state.periods,
+      records: state.records,
       attachToDrugInteractionModules: state.attachToDrugInteractionModules,
     );
 
+    // Simulate API call
     await Future.delayed(const Duration(seconds: 2));
 
     emit(state.copyWith(
@@ -190,8 +162,7 @@ class RiskyBehaviorsCubit extends Cubit<RiskyBehaviorsState> {
     emit(state.copyWith(
       selectedSection: existingData.section,
       selectedType: existingData.type,
-      selectedOption: existingData.option,
-      periods: existingData.periods,
+      records: existingData.records,
       attachToDrugInteractionModules:
           existingData.attachToDrugInteractionModules ?? false,
       isEditMode: true,

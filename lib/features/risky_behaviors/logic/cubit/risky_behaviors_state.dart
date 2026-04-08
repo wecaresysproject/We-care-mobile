@@ -11,8 +11,7 @@ class RiskyBehaviorsState extends Equatable {
   final bool isFormValidated;
   final String? selectedSection;
   final String? selectedType;
-  final String? selectedOption;
-  final List<RiskyBehaviorPeriod> periods;
+  final List<BehaviorRecord> records;
   final List<RiskyBehaviorDetailsModel> allBehaviors;
   final String message;
   final bool isEditMode;
@@ -26,8 +25,7 @@ class RiskyBehaviorsState extends Equatable {
     this.isFormValidated = false,
     this.selectedSection,
     this.selectedType,
-    this.selectedOption,
-    this.periods = const [],
+    this.records = const [],
     this.allBehaviors = const [],
     this.message = '',
     this.isEditMode = false,
@@ -44,8 +42,7 @@ class RiskyBehaviorsState extends Equatable {
     bool? isFormValidated,
     String? selectedSection,
     String? selectedType,
-    String? selectedOption,
-    List<RiskyBehaviorPeriod>? periods,
+    List<BehaviorRecord>? records,
     List<RiskyBehaviorDetailsModel>? allBehaviors,
     String? message,
     bool? isEditMode,
@@ -59,8 +56,7 @@ class RiskyBehaviorsState extends Equatable {
       isFormValidated: isFormValidated ?? this.isFormValidated,
       selectedSection: selectedSection ?? this.selectedSection,
       selectedType: selectedType ?? this.selectedType,
-      selectedOption: selectedOption ?? this.selectedOption,
-      periods: periods ?? this.periods,
+      records: records ?? this.records,
       allBehaviors: allBehaviors ?? this.allBehaviors,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -78,8 +74,7 @@ class RiskyBehaviorsState extends Equatable {
         isFormValidated,
         selectedSection,
         selectedType,
-        selectedOption,
-        periods,
+        records,
         allBehaviors,
         message,
         isEditMode,

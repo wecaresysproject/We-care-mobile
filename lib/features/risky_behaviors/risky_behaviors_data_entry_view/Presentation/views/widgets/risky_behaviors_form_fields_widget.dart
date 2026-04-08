@@ -28,8 +28,7 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Section Selection
-
-            verticalSpacing(10),
+            verticalSpacing(20),
             UserSelectionContainer(
               containerBorderColor: state.selectedSection == null
                   ? AppColorsManager.warningColor
@@ -46,7 +45,6 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
             verticalSpacing(16),
 
             // Type Selection
-            // if (state.selectedSection != null) ...[
             UserSelectionContainer(
               containerBorderColor: state.selectedType == null
                   ? AppColorsManager.warningColor
@@ -60,56 +58,56 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
               bottomSheetTitle: 'اختر النوع',
               searchHintText: 'ابحث عن النوع',
             ),
-            verticalSpacing(16),
-            // ],
+            verticalSpacing(24),
 
-            // Frequency Option
-            if (state.selectedType != null) ...[
-              Text(
-                "معدل الإستخدام",
-                style: AppTextStyles.font18blackWight500,
-              ),
-              verticalSpacing(10),
-              OptionSelectorWidget(
-                answersFontSize: 11.5.sp,
-                options: cubit.getAvailableOptions(),
-                initialSelectedOption: state.selectedOption,
-                onOptionSelected: (value) {
-                  cubit.updateOption(value);
-                },
-              ),
-              verticalSpacing(16),
-            ],
-
-            // Periods List
+            // Registered Records Section
             Text(
-              "الفترات الزمنية",
+              "الحالات المسجلة",
               style: AppTextStyles.font18blackWight500,
             ),
             verticalSpacing(10),
-            if (state.periods.isNotEmpty) ...[
-              ...state.periods.asMap().entries.map((entry) {
+            if (state.records.isNotEmpty) ...[
+              ...state.records.asMap().entries.map((entry) {
                 final index = entry.key;
-                final period = entry.value;
+                final record = entry.value;
                 return Container(
-                  margin: EdgeInsets.only(bottom: 8.h),
-                  padding: EdgeInsets.all(12.w),
+                  margin: EdgeInsets.only(bottom: 12.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                   decoration: BoxDecoration(
+                    color:
+                        AppColorsManager.textfieldInsideColor.withOpacity(0.3),
                     border: Border.all(
                         color: AppColorsManager.textfieldOutsideBorderColor),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
                     children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.w, vertical: 4.h),
+                        decoration: BoxDecoration(
+                          color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(5.r),
+                        ),
+                        child: Text(
+                          record.option,
+                          style: AppTextStyles.font14BlueWeight700
+                              .copyWith(fontSize: 12.sp),
+                        ),
+                      ),
+                      horizontalSpacing(12),
                       Expanded(
                         child: Text(
-                          "من: ${period.fromDate} ${period.toDate != null ? "إلى: ${period.toDate}" : "(مستمر)"}",
+                          "${record.period.fromDate} ${record.period.toDate != null ? "→ ${record.period.toDate}" : "(مستمر)"}",
                           style: AppTextStyles.font14blackWeight400,
                         ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => cubit.removePeriod(index),
+                        onPressed: () => cubit.removeRecord(index),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
@@ -118,28 +116,32 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
               verticalSpacing(8),
             ],
 
-            // Add Period Button
-            if (state.periods.length < 3)
+            // Add New Record Button
+            if (state.records.length < 3 && state.selectedType != null)
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 child: InkWell(
                   onTap: () async {
-                    await _showAddPeriodDialog(context, cubit);
+                    await _showAddRecordDialog(context, cubit);
                   },
                   child: Container(
                     padding:
-                        EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
+                        EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
                     decoration: BoxDecoration(
                       color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10.r),
+                      border: Border.all(
+                        color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.add, color: AppColorsManager.mainDarkBlue),
+                        Icon(Icons.add_circle_outline,
+                            color: AppColorsManager.mainDarkBlue),
                         horizontalSpacing(8),
                         Text(
-                          "إضافة فترة زمنية",
+                          "إضافة حالة جديدة",
                           style: AppTextStyles.font14blackWeight400.copyWith(
                             color: AppColorsManager.mainDarkBlue,
                             fontWeight: FontWeight.bold,
@@ -196,8 +198,9 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
     );
   }
 
-  Future<void> _showAddPeriodDialog(
+  Future<void> _showAddRecordDialog(
       BuildContext context, RiskyBehaviorsCubit cubit) async {
+    String? selectedOption;
     String? fromDate;
     String? toDate;
 
@@ -207,45 +210,132 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: const Text("إضافة فترة زمنية"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DateTimePickerContainer(
-                    placeholderText: fromDate ?? "تاريخ البدء",
-                    onDateSelected: (date) {
-                      setState(() {
-                        fromDate = date;
-                      });
-                    },
-                  ),
-                  verticalSpacing(10),
-                  DateTimePickerContainer(
-                    placeholderText: toDate ?? "تاريخ الانتهاء (اختياري)",
-                    onDateSelected: (date) {
-                      setState(() {
-                        toDate = date;
-                      });
-                    },
-                  ),
-                ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.r),
+              ),
+              title: Text(
+                "إضافة حالة جديدة",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.font18blackWight500,
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "معدل الإستخدام",
+                      style: AppTextStyles.font14blackWeight400.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    verticalSpacing(10),
+                    OptionSelectorWidget(
+                      answersFontSize: 11.sp,
+                      options: cubit.getAvailableOptions(),
+                      initialSelectedOption: selectedOption,
+                      onOptionSelected: (value) {
+                        setState(() {
+                          selectedOption = value;
+                        });
+                      },
+                    ),
+                    verticalSpacing(20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "الفترة الزمنية",
+                          style: AppTextStyles.font14blackWeight400.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: toDate == null,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value == true) {
+                                    toDate = null;
+                                  } else {
+                                    // Set a default if unchecking "Currently"
+                                    toDate = DateTime.now()
+                                        .toIso8601String()
+                                        .split('T')[0];
+                                  }
+                                });
+                              },
+                              activeColor: AppColorsManager.mainDarkBlue,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            Text(
+                              "مستمر",
+                              style: AppTextStyles.font14blackWeight400,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    verticalSpacing(10),
+                    DateTimePickerContainer(
+                      placeholderText: fromDate ?? "تاريخ البدء",
+                      onDateSelected: (date) {
+                        setState(() {
+                          fromDate = date;
+                        });
+                      },
+                    ),
+                    if (toDate != null ||
+                        (toDate == null &&
+                            false)) // Logic to show if not "currently"
+                      verticalSpacing(10),
+                    if (toDate != null)
+                      DateTimePickerContainer(
+                        placeholderText: toDate ?? "تاريخ الانتهاء",
+                        onDateSelected: (date) {
+                          setState(() {
+                            toDate = date;
+                          });
+                        },
+                      ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("إلغاء"),
+                  child: Text(
+                    "إلغاء",
+                    style: AppTextStyles.font14blackWeight400
+                        .copyWith(color: Colors.red),
+                  ),
                 ),
                 TextButton(
-                  onPressed: fromDate == null
+                  onPressed: (selectedOption == null || fromDate == null)
                       ? null
                       : () {
-                          cubit.addPeriod(RiskyBehaviorPeriod(
-                            fromDate: fromDate!,
-                            toDate: toDate,
-                          ));
+                          cubit.addRecord(
+                            BehaviorRecord(
+                              option: selectedOption!,
+                              period: RiskyBehaviorPeriod(
+                                fromDate: fromDate!,
+                                toDate: toDate,
+                              ),
+                            ),
+                          );
                           Navigator.pop(context);
                         },
-                  child: const Text("إضافة"),
+                  child: Text(
+                    "إضافة",
+                    style: AppTextStyles.font14blackWeight400.copyWith(
+                      color: (selectedOption == null || fromDate == null)
+                          ? Colors.grey
+                          : AppColorsManager.mainDarkBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             );

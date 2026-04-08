@@ -68,8 +68,6 @@ class RiskyBehaviorsDataView extends StatelessWidget {
       }
     }
 
-    // Remove empty sections? User's instruction says: "Each section should be displayed as a separate container".
-    // I'll keep them if they have data.
     grouped.removeWhere((key, value) => value.isEmpty);
 
     return grouped;
@@ -150,9 +148,10 @@ class _SectionCard extends StatelessWidget {
       String section, List<RiskyBehaviorDetailsModel> behaviors) {
     String text = "$section:\n\n";
     for (var b in behaviors) {
-      text += "- ${b.type}: ${b.option}\n";
-      for (var p in b.periods) {
-        text += "  [${p.fromDate} ← ${p.toDate ?? "الحالي"}]\n";
+      text += "- ${b.type}:\n";
+      for (var r in b.records) {
+        text +=
+            "  * ${r.option}: [${r.period.fromDate} ← ${r.period.toDate ?? "الحالي"}]\n";
       }
       text += "\n";
     }
@@ -197,48 +196,37 @@ class _BehaviorItem extends StatelessWidget {
             ),
           ],
         ),
-        Text(
-          behavior.option,
-          style: AppTextStyles.font14blackWeight400.copyWith(
-            color: Colors.grey[600],
-          ),
-        ),
         verticalSpacing(8),
-        Wrap(
-          spacing: 8.w,
-          runSpacing: 8.h,
-          children: behavior.periods.map((period) {
-            return _PeriodChip(period: period);
-          }).toList(),
-        ),
+        ...behavior.records.map((record) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 8.h),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Text(
+                    record.option,
+                    style: AppTextStyles.font14BlueWeight700
+                        .copyWith(fontSize: 10.sp),
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  "${record.period.fromDate} ${record.period.toDate != null ? "إلى ${record.period.toDate}" : "(مستمر)"}",
+                  style: AppTextStyles.font14blackWeight400.copyWith(
+                    color: Colors.grey[600],
+                    fontSize: 12.sp,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ],
-    );
-  }
-}
-
-class _PeriodChip extends StatelessWidget {
-  final RiskyBehaviorPeriod period;
-
-  const _PeriodChip({required this.period});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: AppColorsManager.mainDarkBlue.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
-        ),
-      ),
-      child: Text(
-        "${period.fromDate} ← ${period.toDate ?? "حتي الآن"}",
-        style: AppTextStyles.font14BlueWeight700.copyWith(
-          fontSize: 10.sp,
-          fontWeight: FontWeight.normal,
-        ),
-      ),
     );
   }
 }
