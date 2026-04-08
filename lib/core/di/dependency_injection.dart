@@ -91,7 +91,8 @@ import 'package:we_care/features/prescription/prescription_services.dart';
 import 'package:we_care/features/quality_of_life/data/repos/quality_of_life_repo.dart';
 import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
 import 'package:we_care/features/quality_of_life/quality_of_life_services.dart';
-import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/logic/cubit/risky_behaviors_data_entry_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/logic/cubit/risky_behaviors_view_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
@@ -467,8 +468,11 @@ void setupAppCubits() {
       getIt<QualityOfLifeRepo>(),
     ),
   );
-  getIt.registerFactory<RiskyBehaviorsCubit>(
-    () => RiskyBehaviorsCubit(getIt<AppSharedRepo>()),
+  getIt.registerFactory<RiskyBehaviorsDataEntryCubit>(
+    () => RiskyBehaviorsDataEntryCubit(getIt<AppSharedRepo>()),
+  );
+  getIt.registerFactory<RiskyBehaviorsViewCubit>(
+    () => RiskyBehaviorsViewCubit(getIt<AppSharedRepo>()),
   );
 }
 

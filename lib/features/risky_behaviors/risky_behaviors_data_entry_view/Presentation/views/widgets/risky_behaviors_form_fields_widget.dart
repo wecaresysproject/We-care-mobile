@@ -11,19 +11,19 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
-import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_state.dart';
 import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/Presentation/views/widgets/usage_rate_scale_selector.dart';
-
-import '../../../../logic/cubit/risky_behaviors_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/logic/cubit/risky_behaviors_data_entry_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/logic/cubit/risky_behaviors_data_entry_state.dart';
 
 class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
   const RiskyBehaviorsFormFieldsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RiskyBehaviorsCubit, RiskyBehaviorsState>(
+    return BlocBuilder<RiskyBehaviorsDataEntryCubit,
+        RiskyBehaviorsDataEntryState>(
       builder: (context, state) {
-        final cubit = context.read<RiskyBehaviorsCubit>();
+        final cubit = context.read<RiskyBehaviorsDataEntryCubit>();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -199,7 +199,7 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
   }
 
   Future<void> _showAddRecordDialog(
-      BuildContext context, RiskyBehaviorsCubit cubit) async {
+      BuildContext context, RiskyBehaviorsDataEntryCubit cubit) async {
     String? selectedOption;
     String? fromDate;
     String? toDate;
@@ -347,7 +347,8 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
   }
 
   Widget _buildSubmitButton() {
-    return BlocConsumer<RiskyBehaviorsCubit, RiskyBehaviorsState>(
+    return BlocConsumer<RiskyBehaviorsDataEntryCubit,
+        RiskyBehaviorsDataEntryState>(
       listener: (context, state) {
         if (state.status == RequestStatus.success) {
           showSuccess(state.message);
@@ -361,7 +362,8 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
           isLoading: state.status == RequestStatus.loading,
           isEnabled: state.isFormValidated,
           title: state.isEditMode ? "تحديث البيانات" : "حفظ",
-          onPressed: () => context.read<RiskyBehaviorsCubit>().submit(),
+          onPressed: () =>
+              context.read<RiskyBehaviorsDataEntryCubit>().submit(),
         );
       },
     );

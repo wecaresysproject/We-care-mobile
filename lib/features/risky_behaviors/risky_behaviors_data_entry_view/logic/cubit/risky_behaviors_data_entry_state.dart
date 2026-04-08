@@ -5,81 +5,71 @@ import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
 
 @immutable
-class RiskyBehaviorsState extends Equatable {
+class RiskyBehaviorsDataEntryState extends Equatable {
   final RequestStatus status;
-  final RequestStatus getBehaviorsStatus;
   final bool isFormValidated;
   final String? selectedSection;
   final String? selectedType;
   final List<BehaviorRecord> records;
-  final List<RiskyBehaviorDetailsModel> allBehaviors;
   final String message;
   final bool isEditMode;
   final String updatedDocId;
-  final ModuleGuidanceDataModel? moduleGuidanceData;
   final bool attachToDrugInteractionModules;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
-  const RiskyBehaviorsState({
+  const RiskyBehaviorsDataEntryState({
     this.status = RequestStatus.initial,
-    this.getBehaviorsStatus = RequestStatus.initial,
     this.isFormValidated = false,
     this.selectedSection,
     this.selectedType,
     this.records = const [],
-    this.allBehaviors = const [],
     this.message = '',
     this.isEditMode = false,
     this.updatedDocId = '',
-    this.moduleGuidanceData,
     this.attachToDrugInteractionModules = false,
+    this.moduleGuidanceData,
   });
 
-  const RiskyBehaviorsState.initialState() : this();
+  const RiskyBehaviorsDataEntryState.initialState() : this();
 
-  RiskyBehaviorsState copyWith({
+  RiskyBehaviorsDataEntryState copyWith({
     RequestStatus? status,
-    RequestStatus? getBehaviorsStatus,
     bool? isFormValidated,
     String? selectedSection,
     String? selectedType,
     List<BehaviorRecord>? records,
-    List<RiskyBehaviorDetailsModel>? allBehaviors,
     String? message,
     bool? isEditMode,
     String? updatedDocId,
-    ModuleGuidanceDataModel? moduleGuidanceData,
     bool? attachToDrugInteractionModules,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
-    return RiskyBehaviorsState(
+    return RiskyBehaviorsDataEntryState(
       status: status ?? this.status,
-      getBehaviorsStatus: getBehaviorsStatus ?? this.getBehaviorsStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       selectedSection: selectedSection ?? this.selectedSection,
       selectedType: selectedType ?? this.selectedType,
       records: records ?? this.records,
-      allBehaviors: allBehaviors ?? this.allBehaviors,
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
       updatedDocId: updatedDocId ?? this.updatedDocId,
-      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
       attachToDrugInteractionModules:
           attachToDrugInteractionModules ?? this.attachToDrugInteractionModules,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
   @override
   List<Object?> get props => [
         status,
-        getBehaviorsStatus,
         isFormValidated,
         selectedSection,
         selectedType,
         records,
-        allBehaviors,
         message,
         isEditMode,
         updatedDocId,
-        moduleGuidanceData,
         attachToDrugInteractionModules,
+        moduleGuidanceData,
       ];
 }

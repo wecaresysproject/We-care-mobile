@@ -8,9 +8,9 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
-import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_cubit.dart';
-import 'package:we_care/features/risky_behaviors/logic/cubit/risky_behaviors_state.dart';
-import 'package:we_care/features/risky_behaviors/presentation/widgets/risky_behaviors_app_bar.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/logic/cubit/risky_behaviors_view_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/logic/cubit/risky_behaviors_view_state.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/presentation/widgets/risky_behaviors_view_app_bar.dart';
 
 class RiskyBehaviorsDataView extends StatelessWidget {
   const RiskyBehaviorsDataView({super.key});
@@ -19,7 +19,7 @@ class RiskyBehaviorsDataView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
-      body: BlocBuilder<RiskyBehaviorsCubit, RiskyBehaviorsState>(
+      body: BlocBuilder<RiskyBehaviorsViewCubit, RiskyBehaviorsViewState>(
         builder: (context, state) {
           if (state.getBehaviorsStatus == RequestStatus.loading) {
             return const Center(child: CircularProgressIndicator());
@@ -37,7 +37,7 @@ class RiskyBehaviorsDataView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const RiskyBehaviorsAppBar(),
+                const RiskyBehaviorsViewAppBar(),
                 verticalSpacing(24),
                 ...groupedBehaviors.entries.map((entry) {
                   return _SectionCard(
