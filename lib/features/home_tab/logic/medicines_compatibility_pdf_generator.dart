@@ -43,10 +43,10 @@ class MedicinesCompatibilityPdfGenerator {
           _buildTitle(),
           _buildRiskLegend(),
           pw.SizedBox(height: 15),
-          _buildChemicalSection(auditReport.chemicalInteractionMatrix),
-          _buildSystemicSection(auditReport.systemicCompatibility),
-          _buildRiskGuideSection(auditReport.doctorDiscussion.riskTable),
-          _buildQuestionsSection(auditReport.doctorDiscussion.questions),
+          ..._buildChemicalSection(auditReport.chemicalInteractionMatrix),
+          ..._buildSystemicSection(auditReport.systemicCompatibility),
+          ..._buildRiskGuideSection(auditReport.doctorDiscussion.riskTable),
+          ..._buildQuestionsSection(auditReport.doctorDiscussion.questions),
         ],
       ),
     );
@@ -54,11 +54,8 @@ class MedicinesCompatibilityPdfGenerator {
     return pdf.save();
   }
 
-  // Sanitize text to remove characters that might not be in the font (like emojis)
   String _clean(String? text) {
     if (text == null) return "";
-    // Replace non-standard characters and common emojis with placeholders or remove them
-    // This is a safety measure to prevent "Unable to find font" errors
     return text.replaceAll(RegExp(r'[^\x00-\x7F\u0600-\u06FF\s،؟!]'), '');
   }
 
@@ -69,7 +66,7 @@ class MedicinesCompatibilityPdfGenerator {
   }) {
     return pw.TextStyle(
       font: bold ? _fontBold : _fontRegular,
-      fontFallback: [_fontRegular], // Always fallback to Cairo regular
+      fontFallback: [_fontRegular],
       fontSize: fontSize,
       color: color,
     );
@@ -89,7 +86,7 @@ class MedicinesCompatibilityPdfGenerator {
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('تطبيق  كير', style: _style(bold: true, fontSize: 16)),
+              pw.Text('تطبيق وى كير', style: _style(bold: true, fontSize: 16)),
               pw.Text('تقرير التوافق الدوائي', style: _style(fontSize: 12)),
               pw.Text(DateFormat('dd/MM/yyyy HH:mm').format(DateTime.now()),
                   style: _style(fontSize: 10, color: PdfColors.grey700)),
@@ -122,7 +119,7 @@ class MedicinesCompatibilityPdfGenerator {
       margin: const pw.EdgeInsets.only(bottom: 25),
       alignment: pw.Alignment.center,
       child: pw.Text(
-        'نتائج تحليل التوافق الدوائي',
+        'نتائج تحليل توافق أدويتى',
         style: _style(
           bold: true,
           fontSize: 24,
@@ -166,157 +163,92 @@ class MedicinesCompatibilityPdfGenerator {
     );
   }
 
-  pw.Widget _buildChemicalSection(ChemicalInteractionMatrix matrix) {
+  List<pw.Widget> _buildChemicalSection(ChemicalInteractionMatrix matrix) {
     if (matrix.antagonism.isEmpty &&
         matrix.synergy.isEmpty &&
-        matrix.pastDrugResiduals.isEmpty) return pw.SizedBox.shrink();
+        matrix.pastDrugResiduals.isEmpty) return [];
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"),
-        if (matrix.antagonism.isNotEmpty) ...[
-          _buildSubSectionHeader("التضاد (Antagonism)"),
-          ...matrix.antagonism.map((e) => _buildInteractionCard(e.title,
-              e.description, e.riskLevel, e.action, e.drugsInvolved, true)),
-        ],
-        if (matrix.synergy.isNotEmpty) ...[
-          _buildSubSectionHeader("التآزر (Synergy)"),
-          ...matrix.synergy.map((e) => _buildInteractionCard(e.title,
-              e.description, e.riskLevel, e.action, e.drugsInvolved, true)),
-        ],
-        if (matrix.pastDrugResiduals.isNotEmpty) ...[
-          _buildSubSectionHeader("تأثيرات الأدوية السابقة (Residuals)"),
-          ...matrix.pastDrugResiduals.map((e) => _buildInteractionCard(e.title,
-              e.description, e.riskLevel, e.action, e.drugsInvolved, true)),
-        ],
-        pw.SizedBox(height: 20),
-      ],
-    );
+    final widgets = <pw.Widget>[];
+    widgets.add(_buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"));
+
+    if (matrix.antagonism.isNotEmpty) {
+      widgets.add(_buildSubSectionHeader("التضاد (Antagonism)"));
+      widgets.addAll(matrix.antagonism.map((e) => _buildInteractionCard(e.title,
+          e.description, e.riskLevel, e.action, e.drugsInvolved, true)));
+    }
+
+    if (matrix.synergy.isNotEmpty) {
+      widgets.add(_buildSubSectionHeader("التآزر (Synergy)"));
+      widgets.addAll(matrix.synergy.map((e) => _buildInteractionCard(e.title,
+          e.description, e.riskLevel, e.action, e.drugsInvolved, true)));
+    }
+
+    if (matrix.pastDrugResiduals.isNotEmpty) {
+      widgets
+          .add(_buildSubSectionHeader("تأثيرات الأدوية السابقة (Residuals)"));
+      widgets.addAll(matrix.pastDrugResiduals.map((e) => _buildInteractionCard(
+          e.title,
+          e.description,
+          e.riskLevel,
+          e.action,
+          e.drugsInvolved,
+          true)));
+    }
+
+    widgets.add(pw.SizedBox(height: 10));
+    return widgets;
   }
 
-  pw.Widget _buildSystemicSection(SystemicCompatibility systemic) {
+  List<pw.Widget> _buildSystemicSection(SystemicCompatibility systemic) {
     if (systemic.foodAndSupplements.isEmpty &&
         systemic.organSafety.isEmpty &&
-        systemic.behavioralImpact.isEmpty) return pw.SizedBox.shrink();
+        systemic.behavioralImpact.isEmpty) return [];
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("التوافق مع أجهزة الجسم (Systemic)"),
-        if (systemic.foodAndSupplements.isNotEmpty) ...[
-          _buildSubSectionHeader("الغذاء والمكملات"),
-          ...systemic.foodAndSupplements.map((e) => _buildInteractionCard(
-              e.title,
-              e.description,
-              e.riskLevel,
-              e.action,
-              e.relatedItems,
-              false)),
-        ],
-        if (systemic.organSafety.isNotEmpty) ...[
-          _buildSubSectionHeader("أمان الأعضاء"),
-          ...systemic.organSafety.map((e) => _buildInteractionCard(e.title,
-              e.description, e.riskLevel, e.action, e.relatedItems, false)),
-        ],
-        if (systemic.behavioralImpact.isNotEmpty) ...[
-          _buildSubSectionHeader("تأثيرات سلوكية"),
-          ...systemic.behavioralImpact.map((e) => _buildInteractionCard(e.title,
-              e.description, e.riskLevel, e.action, e.relatedItems, false)),
-        ],
-        pw.SizedBox(height: 20),
-      ],
-    );
+    final widgets = <pw.Widget>[];
+    widgets.add(_buildSectionHeader("التوافق مع أجهزة الجسم (Systemic)"));
+
+    if (systemic.foodAndSupplements.isNotEmpty) {
+      widgets.add(_buildSubSectionHeader("الغذاء والمكملات"));
+      widgets.addAll(systemic.foodAndSupplements.map((e) =>
+          _buildInteractionCard(e.title, e.description, e.riskLevel, e.action,
+              e.relatedItems, false)));
+    }
+
+    if (systemic.organSafety.isNotEmpty) {
+      widgets.add(_buildSubSectionHeader("أمان الأعضاء"));
+      widgets.addAll(systemic.organSafety.map((e) => _buildInteractionCard(
+          e.title,
+          e.description,
+          e.riskLevel,
+          e.action,
+          e.relatedItems,
+          false)));
+    }
+
+    if (systemic.behavioralImpact.isNotEmpty) {
+      widgets.add(_buildSubSectionHeader("تأثيرات سلوكية"));
+      widgets.addAll(systemic.behavioralImpact.map((e) => _buildInteractionCard(
+          e.title,
+          e.description,
+          e.riskLevel,
+          e.action,
+          e.relatedItems,
+          false)));
+    }
+
+    widgets.add(pw.SizedBox(height: 10));
+    return widgets;
   }
 
-  // pw.Widget _buildInteractionCard(
-  //     String title,
-  //     String description,
-  //     String riskLevel,
-  //     String action,
-  //     List<String> extraInfo,
-  //     bool isChemical) {
-  //   final color = _getRiskPdfColor(riskLevel);
-
-  //   // Clean all inputs
-  //   final cleanTitle = _clean(title);
-  //   final cleanDescription = _clean(description);
-  //   final cleanAction = _clean(action);
-  //   final cleanExtra = extraInfo.map((e) => _clean(e)).toList();
-
-  //   return pw.Container(
-  //     margin: const pw.EdgeInsets.only(bottom: 12),
-  //     padding: const pw.EdgeInsets.all(12),
-  //     decoration: pw.BoxDecoration(
-  //       color: PdfColors.white,
-  //       border: pw.Border(right: pw.BorderSide(color: color, width: 4)),
-  //       borderRadius: const pw.BorderRadius.only(
-  //         topLeft: pw.Radius.circular(6),
-  //         bottomLeft: pw.Radius.circular(6),
-  //       ),
-  //     ),
-  //     child: pw.Column(
-  //       crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //       children: [
-  //         pw.Row(
-  //           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             pw.Expanded(
-  //               child: pw.Text(cleanTitle,
-  //                   style: _style(bold: true, fontSize: 13)),
-  //             ),
-  //             pw.Container(
-  //               padding:
-  //                   const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-  //               decoration: pw.BoxDecoration(
-  //                   color: color, borderRadius: pw.BorderRadius.circular(4)),
-  //               child: pw.Text(_clean(riskLevel),
-  //                   style: _style(
-  //                       bold: true, fontSize: 10, color: PdfColors.white)),
-  //             ),
-  //           ],
-  //         ),
-  //         pw.SizedBox(height: 8),
-  //         pw.Text(cleanDescription, style: _style(fontSize: 11)),
-  //         if (cleanExtra.isNotEmpty) ...[
-  //           pw.SizedBox(height: 8),
-  //           pw.Text(
-  //             isChemical
-  //                 ? "الأدوية المعنية: ${cleanExtra.join(', ')}"
-  //                 : "المحاور المرتبطة: ${cleanExtra.join(', ')}",
-  //             style: _style(
-  //                 bold: true,
-  //                 fontSize: 10,
-  //                 color: PdfColor.fromInt(
-  //                     AppColorsManager.mainDarkBlue.toARGB32())),
-  //           ),
-  //         ],
-  //         pw.SizedBox(height: 10),
-  //         pw.Container(
-  //           padding: const pw.EdgeInsets.all(8),
-  //           decoration: pw.BoxDecoration(
-  //             color: PdfColors.grey50,
-  //             borderRadius: pw.BorderRadius.circular(4),
-  //             border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
-  //           ),
-  //           child:
-  //               pw.Text("الإجراء: $cleanAction", style: _style(fontSize: 10)),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   pw.Widget _buildInteractionCard(
-    String title,
-    String description,
-    String riskLevel,
-    String action,
-    List<String> extraInfo,
-    bool isChemical,
-  ) {
+      String title,
+      String description,
+      String riskLevel,
+      String action,
+      List<String> extraInfo,
+      bool isChemical) {
     final color = _getRiskPdfColor(riskLevel);
 
-    // Clean all inputs
     final cleanTitle = _clean(title);
     final cleanDescription = _clean(description);
     final cleanAction = _clean(action);
@@ -324,32 +256,32 @@ class MedicinesCompatibilityPdfGenerator {
 
     return pw.Container(
       margin: const pw.EdgeInsets.only(bottom: 12),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        border: pw.Border.all(color: PdfColors.grey200, width: 0.5),
+        borderRadius: pw.BorderRadius.circular(6),
+      ),
       child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        crossAxisAlignment: pw.CrossAxisAlignment
+            .start, // Avoid stretch to prevent infinite height
         children: [
-          // 🔵 الخط الملون (يمين)
+          // Sidebar - we use a fixed height container or stack to simulate intrinsic height
+          // Since IntrinsicHeight is risky, we use a simple leading border on a Container
           pw.Container(
-            width: 4,
+            width: 5,
+            height:
+                50, // This is just a placeholder, we'll actually use a better approach
             decoration: pw.BoxDecoration(
               color: color,
               borderRadius: const pw.BorderRadius.only(
-                topLeft: pw.Radius.circular(6),
-                bottomLeft: pw.Radius.circular(6),
+                topRight: pw.Radius.circular(6),
+                bottomRight: pw.Radius.circular(6),
               ),
             ),
           ),
-
-          // 🧾 الكارد
           pw.Expanded(
-            child: pw.Container(
+            child: pw.Padding(
               padding: const pw.EdgeInsets.all(12),
-              decoration: pw.BoxDecoration(
-                color: PdfColors.white,
-                borderRadius: const pw.BorderRadius.only(
-                  topRight: pw.Radius.circular(6),
-                  bottomRight: pw.Radius.circular(6),
-                ),
-              ),
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
@@ -357,34 +289,28 @@ class MedicinesCompatibilityPdfGenerator {
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
                       pw.Expanded(
-                        child: pw.Text(
-                          cleanTitle,
-                          style: _style(bold: true, fontSize: 13),
-                        ),
+                        child: pw.Text(cleanTitle,
+                            style: _style(bold: true, fontSize: 13)),
                       ),
-                      pw.Container(
-                        padding: const pw.EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 3),
-                        decoration: pw.BoxDecoration(
-                          color: color,
-                          borderRadius: pw.BorderRadius.circular(4),
-                        ),
-                        child: pw.Text(
-                          _clean(riskLevel),
-                          style: _style(
-                            bold: true,
-                            fontSize: 10,
-                            color: PdfColors.white,
-                          ),
+                      pw.Padding(
+                        padding: const pw.EdgeInsets.only(right: 8),
+                        child: pw.Container(
+                          padding: const pw.EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: pw.BoxDecoration(
+                              color: color,
+                              borderRadius: pw.BorderRadius.circular(4)),
+                          child: pw.Text(_clean(riskLevel),
+                              style: _style(
+                                  bold: true,
+                                  fontSize: 10,
+                                  color: PdfColors.white)),
                         ),
                       ),
                     ],
                   ),
                   pw.SizedBox(height: 8),
-                  pw.Text(
-                    cleanDescription,
-                    style: _style(fontSize: 11),
-                  ),
+                  pw.Text(cleanDescription, style: _style(fontSize: 11)),
                   if (cleanExtra.isNotEmpty) ...[
                     pw.SizedBox(height: 8),
                     pw.Text(
@@ -392,29 +318,24 @@ class MedicinesCompatibilityPdfGenerator {
                           ? "الأدوية المعنية: ${cleanExtra.join(', ')}"
                           : "المحاور المرتبطة: ${cleanExtra.join(', ')}",
                       style: _style(
-                        bold: true,
-                        fontSize: 10,
-                        color: PdfColor.fromInt(
-                          AppColorsManager.mainDarkBlue.toARGB32(),
-                        ),
-                      ),
+                          bold: true,
+                          fontSize: 10,
+                          color: PdfColor.fromInt(
+                              AppColorsManager.mainDarkBlue.toARGB32())),
                     ),
                   ],
                   pw.SizedBox(height: 10),
                   pw.Container(
                     padding: const pw.EdgeInsets.all(8),
+                    width: double.infinity,
                     decoration: pw.BoxDecoration(
                       color: PdfColors.grey50,
                       borderRadius: pw.BorderRadius.circular(4),
-                      border: pw.Border.all(
-                        color: PdfColors.grey300,
-                        width: 0.5,
-                      ),
+                      border:
+                          pw.Border.all(color: PdfColors.grey300, width: 0.5),
                     ),
-                    child: pw.Text(
-                      "الإجراء: $cleanAction",
-                      style: _style(fontSize: 10),
-                    ),
+                    child: pw.Text("الإجراء: $cleanAction",
+                        style: _style(fontSize: 10)),
                   ),
                 ],
               ),
@@ -425,106 +346,105 @@ class MedicinesCompatibilityPdfGenerator {
     );
   }
 
-  pw.Widget _buildRiskGuideSection(List<RiskLevelItem> table) {
-    if (table.isEmpty) return pw.SizedBox.shrink();
+  List<pw.Widget> _buildRiskGuideSection(List<RiskLevelItem> table) {
+    if (table.isEmpty) return [];
 
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("دليل استشارة الطبيب"),
-        pw.Container(
-          padding: const pw.EdgeInsets.all(12),
-          decoration: pw.BoxDecoration(
-            color: PdfColors.grey50,
-            borderRadius: pw.BorderRadius.circular(10),
-            // border: pw.Border.all(color: PdfColors.grey200, width: 0.5),
-          ),
-          child: pw.Column(
-            children: table
-                .map((item) => pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 6),
-                      child: pw.Row(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Container(
-                            width: 24,
-                            height: 24,
-                            decoration: pw.BoxDecoration(
-                              color: _getRiskPdfColor(item.level),
-                              borderRadius: pw.BorderRadius.circular(6),
-                            ),
-                            alignment: pw.Alignment.center,
-                            child: pw.Text(_clean(item.level),
-                                style: _style(
-                                    bold: true,
-                                    fontSize: 10,
-                                    color: PdfColors.white)),
-                          ),
-                          pw.SizedBox(width: 12),
-                          pw.Expanded(
-                            child: pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.Text(_clean(item.meaning),
-                                    style: _style(bold: true, fontSize: 11)),
-                                pw.Text(
-                                    "الإجراء المطلوب: ${_clean(item.action)}",
-                                    style: _style(
-                                        fontSize: 10,
-                                        color: PdfColors.grey800)),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ))
-                .toList(),
-          ),
+    final widgets = <pw.Widget>[];
+    widgets.add(_buildSectionHeader("دليل استشارة الطبيب"));
+
+    widgets.add(
+      pw.Container(
+        padding: const pw.EdgeInsets.all(12),
+        decoration: pw.BoxDecoration(
+          color: PdfColors.grey50,
+          borderRadius: pw.BorderRadius.circular(10),
         ),
-        pw.SizedBox(height: 20),
-      ],
-    );
-  }
-
-  pw.Widget _buildQuestionsSection(List<String> questions) {
-    if (questions.isEmpty) return pw.SizedBox.shrink();
-
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("أسئلة لنقاشها مع طبيبك"),
-        pw.Container(
-          padding: const pw.EdgeInsets.all(15),
-          decoration: pw.BoxDecoration(
-            color: PdfColor.fromInt(0xFFFFF2E6), // Light orange
-            borderRadius: pw.BorderRadius.circular(10),
-            border: pw.Border.all(color: PdfColors.orange200, width: 0.5),
-          ),
-          child: pw.Column(
-            children: questions
-                .map((q) => pw.Padding(
-                      padding: const pw.EdgeInsets.only(bottom: 10),
-                      child: pw.Row(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text("•",
+        child: pw.Column(
+          children: table
+              .map((item) => pw.Padding(
+                    padding: const pw.EdgeInsets.symmetric(vertical: 6),
+                    child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Container(
+                          width: 24,
+                          height: 24,
+                          decoration: pw.BoxDecoration(
+                            color: _getRiskPdfColor(item.level),
+                            borderRadius: pw.BorderRadius.circular(6),
+                          ),
+                          alignment: pw.Alignment.center,
+                          child: pw.Text(_clean(item.level),
                               style: _style(
                                   bold: true,
-                                  fontSize: 16,
-                                  color: PdfColors.orange700)),
-                          pw.SizedBox(width: 10),
-                          pw.Expanded(
-                              child: pw.Text(_clean(q),
+                                  fontSize: 10,
+                                  color: PdfColors.white)),
+                        ),
+                        pw.SizedBox(width: 12),
+                        pw.Expanded(
+                          child: pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              pw.Text(_clean(item.meaning),
+                                  style: _style(bold: true, fontSize: 11)),
+                              pw.Text("الإجراء المطلوب: ${_clean(item.action)}",
                                   style: _style(
-                                      fontSize: 11, color: PdfColors.grey900))),
-                        ],
-                      ),
-                    ))
-                .toList(),
-          ),
+                                      fontSize: 10, color: PdfColors.grey800)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ))
+              .toList(),
         ),
-      ],
+      ),
     );
+
+    widgets.add(pw.SizedBox(height: 15));
+    return widgets;
+  }
+
+  List<pw.Widget> _buildQuestionsSection(List<String> questions) {
+    if (questions.isEmpty) return [];
+
+    final widgets = <pw.Widget>[];
+    widgets.add(_buildSectionHeader("أسئلة لنقاشها مع طبيبك"));
+
+    widgets.add(
+      pw.Container(
+        padding: const pw.EdgeInsets.all(15),
+        decoration: pw.BoxDecoration(
+          color: PdfColor.fromInt(0xFFFFF2E6),
+          borderRadius: pw.BorderRadius.circular(10),
+          border: pw.Border.all(color: PdfColors.orange200, width: 0.5),
+        ),
+        child: pw.Column(
+          children: questions
+              .map((q) => pw.Padding(
+                    padding: const pw.EdgeInsets.only(bottom: 10),
+                    child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text("•",
+                            style: _style(
+                                bold: true,
+                                fontSize: 16,
+                                color: PdfColors.orange700)),
+                        pw.SizedBox(width: 10),
+                        pw.Expanded(
+                            child: pw.Text(_clean(q),
+                                style: _style(
+                                    fontSize: 11, color: PdfColors.grey900))),
+                      ],
+                    ),
+                  ))
+              .toList(),
+        ),
+      ),
+    );
+
+    return widgets;
   }
 
   pw.Widget _buildSectionHeader(String title) {
@@ -580,4 +500,17 @@ class MedicinesCompatibilityPdfGenerator {
       return null;
     }
   }
+}
+
+String normalizeArabicText(String input) {
+  if (input.isEmpty) return input;
+
+  return input
+      // ياء لينة → ياء
+      .replaceAll('\u0649', '\u064A')
+
+      // optional fixes (مهمة جدًا أحيانًا 👇)
+      .replaceAll('\u0629', '\u0647') // ة → ه (لو عندك مشاكل فيها)
+      .replaceAll('\u0640', '') // تطويل ـ
+      .replaceAll(RegExp(r'[\u064B-\u0652]'), ''); // تشكيل
 }
