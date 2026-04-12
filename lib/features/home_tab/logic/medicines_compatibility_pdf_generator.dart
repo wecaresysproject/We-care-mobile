@@ -168,35 +168,50 @@ class MedicinesCompatibilityPdfGenerator {
         matrix.synergy.isEmpty &&
         matrix.pastDrugResiduals.isEmpty) return [];
 
-    final widgets = <pw.Widget>[];
-    widgets.add(_buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"));
+    // Build sub-section content, grouping each sub-header with its first card
+    final content = <pw.Widget>[];
 
     if (matrix.antagonism.isNotEmpty) {
-      widgets.add(_buildSubSectionHeader("التضاد (Antagonism)"));
-      widgets.addAll(matrix.antagonism.map((e) => _buildInteractionCard(e.title,
-          e.description, e.riskLevel, e.action, e.drugsInvolved, true)));
+      final cards = matrix.antagonism
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.drugsInvolved, true))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("التضاد (Antagonism)"),
+        cards,
+      ));
     }
 
     if (matrix.synergy.isNotEmpty) {
-      widgets.add(_buildSubSectionHeader("التآزر (Synergy)"));
-      widgets.addAll(matrix.synergy.map((e) => _buildInteractionCard(e.title,
-          e.description, e.riskLevel, e.action, e.drugsInvolved, true)));
+      final cards = matrix.synergy
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.drugsInvolved, true))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("التآزر (Synergy)"),
+        cards,
+      ));
     }
 
     if (matrix.pastDrugResiduals.isNotEmpty) {
-      widgets
-          .add(_buildSubSectionHeader("تأثيرات الأدوية السابقة (Residuals)"));
-      widgets.addAll(matrix.pastDrugResiduals.map((e) => _buildInteractionCard(
-          e.title,
-          e.description,
-          e.riskLevel,
-          e.action,
-          e.drugsInvolved,
-          true)));
+      final cards = matrix.pastDrugResiduals
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.drugsInvolved, true))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("تأثيرات الأدوية السابقة (Residuals)"),
+        cards,
+      ));
     }
 
-    widgets.add(pw.SizedBox(height: 10));
-    return widgets;
+    // Group section header with first content item to prevent orphaned headers
+    final result = _groupHeaderWithContent(
+      _buildSectionHeader("تداخلات المواد الكيميائية (Matrix)"),
+      content,
+    );
+
+    result.add(pw.SizedBox(height: 10));
+    return result;
   }
 
   List<pw.Widget> _buildSystemicSection(SystemicCompatibility systemic) {
@@ -204,40 +219,50 @@ class MedicinesCompatibilityPdfGenerator {
         systemic.organSafety.isEmpty &&
         systemic.behavioralImpact.isEmpty) return [];
 
-    final widgets = <pw.Widget>[];
-    widgets.add(_buildSectionHeader("التوافق مع أجهزة الجسم (Systemic)"));
+    // Build sub-section content, grouping each sub-header with its first card
+    final content = <pw.Widget>[];
 
     if (systemic.foodAndSupplements.isNotEmpty) {
-      widgets.add(_buildSubSectionHeader("الغذاء والمكملات"));
-      widgets.addAll(systemic.foodAndSupplements.map((e) =>
-          _buildInteractionCard(e.title, e.description, e.riskLevel, e.action,
-              e.relatedItems, false)));
+      final cards = systemic.foodAndSupplements
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.relatedItems, false))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("الغذاء والمكملات"),
+        cards,
+      ));
     }
 
     if (systemic.organSafety.isNotEmpty) {
-      widgets.add(_buildSubSectionHeader("أمان الأعضاء"));
-      widgets.addAll(systemic.organSafety.map((e) => _buildInteractionCard(
-          e.title,
-          e.description,
-          e.riskLevel,
-          e.action,
-          e.relatedItems,
-          false)));
+      final cards = systemic.organSafety
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.relatedItems, false))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("أمان الأعضاء"),
+        cards,
+      ));
     }
 
     if (systemic.behavioralImpact.isNotEmpty) {
-      widgets.add(_buildSubSectionHeader("تأثيرات سلوكية"));
-      widgets.addAll(systemic.behavioralImpact.map((e) => _buildInteractionCard(
-          e.title,
-          e.description,
-          e.riskLevel,
-          e.action,
-          e.relatedItems,
-          false)));
+      final cards = systemic.behavioralImpact
+          .map((e) => _buildInteractionCard(e.title, e.description, e.riskLevel,
+              e.action, e.relatedItems, false))
+          .toList();
+      content.addAll(_groupHeaderWithContent(
+        _buildSubSectionHeader("تأثيرات سلوكية"),
+        cards,
+      ));
     }
 
-    widgets.add(pw.SizedBox(height: 10));
-    return widgets;
+    // Group section header with first content item to prevent orphaned headers
+    final result = _groupHeaderWithContent(
+      _buildSectionHeader("التوافق مع أجهزة الجسم (Systemic)"),
+      content,
+    );
+
+    result.add(pw.SizedBox(height: 10));
+    return result;
   }
 
   pw.Widget _buildInteractionCard(
@@ -349,102 +374,149 @@ class MedicinesCompatibilityPdfGenerator {
   List<pw.Widget> _buildRiskGuideSection(List<RiskLevelItem> table) {
     if (table.isEmpty) return [];
 
-    final widgets = <pw.Widget>[];
-    widgets.add(_buildSectionHeader("دليل استشارة الطبيب"));
-
-    widgets.add(
-      pw.Container(
-        padding: const pw.EdgeInsets.all(12),
-        decoration: pw.BoxDecoration(
-          color: PdfColors.grey50,
-          borderRadius: pw.BorderRadius.circular(10),
-        ),
+    // Entire section wrapped in pw.Inseparable — the pdf package's built-in
+    // widget (widget.dart:420) that overrides canSpan => false, making
+    // MultiPage treat it as truly atomic. If it doesn't fit on the current
+    // page, the ENTIRE block moves to the next page.
+    // This is safe because risk guide content is bounded (5 levels max).
+    return [
+      pw.Inseparable(
         child: pw.Column(
-          children: table
-              .map((item) => pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 6),
-                    child: pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Container(
-                          width: 24,
-                          height: 24,
-                          decoration: pw.BoxDecoration(
-                            color: _getRiskPdfColor(item.level),
-                            borderRadius: pw.BorderRadius.circular(6),
-                          ),
-                          alignment: pw.Alignment.center,
-                          child: pw.Text(_clean(item.level),
-                              style: _style(
-                                  bold: true,
-                                  fontSize: 10,
-                                  color: PdfColors.white)),
-                        ),
-                        pw.SizedBox(width: 12),
-                        pw.Expanded(
-                          child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader("دليل استشارة الطبيب"),
+            pw.Container(
+              padding: const pw.EdgeInsets.all(12),
+              decoration: pw.BoxDecoration(
+                color: PdfColors.grey50,
+                borderRadius: pw.BorderRadius.circular(10),
+              ),
+              child: pw.Column(
+                children: table
+                    .map((item) => pw.Padding(
+                          padding: const pw.EdgeInsets.symmetric(vertical: 6),
+                          child: pw.Row(
                             crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
-                              pw.Text(_clean(item.meaning),
-                                  style: _style(bold: true, fontSize: 11)),
-                              pw.Text("الإجراء المطلوب: ${_clean(item.action)}",
-                                  style: _style(
-                                      fontSize: 10, color: PdfColors.grey800)),
+                              pw.Container(
+                                width: 24,
+                                height: 24,
+                                decoration: pw.BoxDecoration(
+                                  color: _getRiskPdfColor(item.level),
+                                  borderRadius: pw.BorderRadius.circular(6),
+                                ),
+                                alignment: pw.Alignment.center,
+                                child: pw.Text(_clean(item.level),
+                                    style: _style(
+                                        bold: true,
+                                        fontSize: 10,
+                                        color: PdfColors.white)),
+                              ),
+                              pw.SizedBox(width: 12),
+                              pw.Expanded(
+                                child: pw.Column(
+                                  crossAxisAlignment:
+                                      pw.CrossAxisAlignment.start,
+                                  children: [
+                                    pw.Text(_clean(item.meaning),
+                                        style:
+                                            _style(bold: true, fontSize: 11)),
+                                    pw.Text(
+                                        "الإجراء المطلوب: ${_clean(item.action)}",
+                                        style: _style(
+                                            fontSize: 10,
+                                            color: PdfColors.grey800)),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ))
-              .toList(),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
         ),
       ),
-    );
-
-    widgets.add(pw.SizedBox(height: 15));
-    return widgets;
+      pw.SizedBox(height: 15),
+    ];
   }
 
   List<pw.Widget> _buildQuestionsSection(List<String> questions) {
     if (questions.isEmpty) return [];
 
-    final widgets = <pw.Widget>[];
-    widgets.add(_buildSectionHeader("أسئلة لنقاشها مع طبيبك"));
-
-    widgets.add(
-      pw.Container(
-        padding: const pw.EdgeInsets.all(15),
-        decoration: pw.BoxDecoration(
-          color: PdfColor.fromInt(0xFFFFF2E6),
-          borderRadius: pw.BorderRadius.circular(10),
-          border: pw.Border.all(color: PdfColors.orange200, width: 0.5),
-        ),
+    // Entire section wrapped in pw.Inseparable — forces canSpan => false,
+    // so MultiPage treats it as truly atomic (indivisible).
+    // This is safe because the questions content is bounded.
+    return [
+      pw.Inseparable(
         child: pw.Column(
-          children: questions
-              .map((q) => pw.Padding(
-                    padding: const pw.EdgeInsets.only(bottom: 10),
-                    child: pw.Row(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        pw.Text("•",
-                            style: _style(
-                                bold: true,
-                                fontSize: 16,
-                                color: PdfColors.orange700)),
-                        pw.SizedBox(width: 10),
-                        pw.Expanded(
-                            child: pw.Text(_clean(q),
-                                style: _style(
-                                    fontSize: 11, color: PdfColors.grey900))),
-                      ],
-                    ),
-                  ))
-              .toList(),
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader("أسئلة لنقاشها مع طبيبك"),
+            pw.Container(
+              padding: const pw.EdgeInsets.all(15),
+              decoration: pw.BoxDecoration(
+                color: PdfColor.fromInt(0xFFFFF2E6),
+                borderRadius: pw.BorderRadius.circular(10),
+                border: pw.Border.all(color: PdfColors.orange200, width: 0.5),
+              ),
+              child: pw.Column(
+                children: questions
+                    .map((q) => pw.Padding(
+                          padding: const pw.EdgeInsets.only(bottom: 10),
+                          child: pw.Row(
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
+                            children: [
+                              pw.Text("•",
+                                  style: _style(
+                                      bold: true,
+                                      fontSize: 16,
+                                      color: PdfColors.orange700)),
+                              pw.SizedBox(width: 10),
+                              pw.Expanded(
+                                  child: pw.Text(_clean(q),
+                                      style: _style(
+                                          fontSize: 11,
+                                          color: PdfColors.grey900))),
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
         ),
       ),
-    );
+    ];
+  }
 
-    return widgets;
+  /// Groups [header] with the first widget from [contentWidgets] into a single
+  /// [pw.Inseparable] block, preventing [pw.MultiPage] from splitting them
+  /// across pages.
+  ///
+  /// **Why pw.Inseparable:** In the pdf package (v3.11.x), both [pw.Container]
+  /// and [pw.StatelessWidget] mix in [SpanningWidget] and delegate `canSpan`
+  /// to their child. [pw.Inseparable] (widget.dart:420) overrides `canSpan`
+  /// to return `false`, making MultiPage treat it as truly atomic.
+  List<pw.Widget> _groupHeaderWithContent(
+    pw.Widget header,
+    List<pw.Widget> contentWidgets,
+  ) {
+    if (contentWidgets.isEmpty) return [header];
+
+    return [
+      pw.Inseparable(
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            header,
+            contentWidgets.first,
+          ],
+        ),
+      ),
+      ...contentWidgets.skip(1),
+    ];
   }
 
   pw.Widget _buildSectionHeader(String title) {

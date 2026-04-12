@@ -7,7 +7,6 @@ part 'user_medical_history_details_model.g.dart';
 class UserMedicalHistoryDetailsModel extends Equatable {
   final List<BasicInformationModel>? basicInformation;
   final List<VitalSignModel>? vitalSigns;
-  final MedicationsModuleModel? medicationsModule;
   final List<ChronicDiseaseModel>? chronicDiseases;
   final ComplaintsModuleModel? complaintsModule;
   final List<PreDescriptionModel>? preDescriptions;
@@ -26,7 +25,6 @@ class UserMedicalHistoryDetailsModel extends Equatable {
   const UserMedicalHistoryDetailsModel({
     this.basicInformation,
     this.vitalSigns,
-    this.medicationsModule,
     this.chronicDiseases,
     this.complaintsModule,
     this.preDescriptions,
@@ -50,7 +48,6 @@ class UserMedicalHistoryDetailsModel extends Equatable {
 
   bool get isHistoryEmpty =>
       (vitalSigns == null || vitalSigns!.isEmpty) &&
-      medicationsModule == null &&
       (chronicDiseases == null || chronicDiseases!.isEmpty) &&
       complaintsModule == null &&
       (preDescriptions == null || preDescriptions!.isEmpty) &&
@@ -70,7 +67,6 @@ class UserMedicalHistoryDetailsModel extends Equatable {
   List<Object?> get props => [
         basicInformation,
         vitalSigns,
-        medicationsModule,
         chronicDiseases,
         complaintsModule,
         preDescriptions,

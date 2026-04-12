@@ -71,7 +71,7 @@ class DayCardWidget extends StatelessWidget {
           // إظهار رسالة تحذير للأيام التي لها تقرير بالفعل
           await showWarningDialog(
             context,
-            message: 'هذا اليوم مدخل فيه وجبات بالفعل',
+            message: 'هذا اليوم مدخل فيه بيانات بالفعل',
             // confirmText: 'مراجعة تقرير اليوم',
             onConfirm: () async {
               // await context.pushNamed(
