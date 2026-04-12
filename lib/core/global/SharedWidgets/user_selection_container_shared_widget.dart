@@ -540,7 +540,7 @@ class OptionItem extends StatelessWidget {
                   child: Text(
                     option,
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                    maxLines: 4,
                     softWrap: true,
                     style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                       color: isSelected

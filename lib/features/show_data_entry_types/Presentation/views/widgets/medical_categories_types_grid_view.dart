@@ -392,12 +392,6 @@ final List<Map<String, dynamic>> categoriesView = [
     "isActive": false,
   },
   {
-    "title": "العادات\nالغذائية",
-    "image": "assets/images/spoon_icon.png",
-    "route": "/mental_issues",
-    "isActive": false,
-  },
-  {
     "title": "المتابعه الغذائية",
     "image": "assets/images/chemical_medicine.png",
     "route": Routes.nutritionPlanDataView,

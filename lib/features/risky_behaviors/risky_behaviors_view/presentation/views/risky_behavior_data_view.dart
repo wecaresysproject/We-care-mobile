@@ -106,29 +106,39 @@ class _SectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                sectionTitle,
-                style:
-                    AppTextStyles.font14BlueWeight700.copyWith(fontSize: 16.sp),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.h),
+            decoration: BoxDecoration(
+              color: AppColorsManager.mainDarkBlue.withOpacity(0.06),
+              border: Border.all(
+                color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                width: 1,
               ),
-              IconButton(
-                onPressed: () => _shareSection(sectionTitle, behaviors),
-                icon: Icon(
-                  Icons.share_outlined,
-                  color: AppColorsManager.mainDarkBlue,
-                  size: 20.sp,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  sectionTitle,
+                  style: AppTextStyles.font14BlueWeight700
+                      .copyWith(fontSize: 16.sp),
                 ),
-                constraints: const BoxConstraints(),
-                padding: EdgeInsets.zero,
-              ),
-            ],
+                IconButton(
+                  onPressed: () => _shareSection(sectionTitle, behaviors),
+                  icon: Icon(
+                    Icons.share_outlined,
+                    color: AppColorsManager.mainDarkBlue,
+                    size: 20.sp,
+                  ),
+                ),
+              ],
+            ),
           ),
-          verticalSpacing(16),
+          verticalSpacing(8),
           ListView.separated(
             shrinkWrap: true,
+            padding: EdgeInsets.symmetric(horizontal: 2.w),
             physics: const NeverScrollableScrollPhysics(),
             itemCount: behaviors.length,
             separatorBuilder: (context, index) => Divider(
@@ -211,7 +221,7 @@ class _BehaviorItem extends StatelessWidget {
                   child: Text(
                     record.option,
                     style: AppTextStyles.font14BlueWeight700
-                        .copyWith(fontSize: 10.sp),
+                        .copyWith(fontSize: 12.sp),
                   ),
                 ),
                 const Spacer(),
