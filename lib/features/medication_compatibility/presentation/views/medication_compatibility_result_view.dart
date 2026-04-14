@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
@@ -12,6 +18,7 @@ import 'package:we_care/features/medication_compatibility/presentation/views/wid
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/risk_levels_row_widget.dart';
 import 'package:we_care/features/medication_compatibility/presentation/views/widgets/simulated_medical_modules_checklist_loader.dart';
 import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
+import 'package:we_care/features/medicine/logic/medication_compatibility_analysis_pdf_generator.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_cubit.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
 
@@ -20,108 +27,139 @@ class MedicationCompatibilityResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
-      body: Column(
-        children: [
-          AppBarWithCenteredTitle(
-            title: "نتيجة التوافق",
-            showActionButtons: false,
-          ).paddingSymmetricHorizontal(20),
-          const SizedBox(height: 20),
-          const RiskLevelsLegend(),
-          Expanded(
-            child:
-                BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
-              builder: (context, state) {
-                if (state.analyzeMedicalCompatibilityStatus ==
-                    RequestStatus.loading) {
-                  return const SimulatedMedicalModulesChecklistLoader();
-                }
+    return BlocBuilder<MedicinesDataEntryCubit, MedicinesDataEntryState>(
+      builder: (context, state) {
+        final analysis = state.compatibilityAnalysis;
 
-                if (state.analyzeMedicalCompatibilityStatus ==
-                    RequestStatus.failure) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Text(
-                        state.message.isNotEmpty
-                            ? state.message
-                            : "حدث خطأ أثناء تحليل التوافق",
-                        style: AppTextStyles.font16BlackSemiBold.copyWith(
-                          color: AppColorsManager.warningColor,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                }
+        return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+          ),
+          body: Column(
+            children: [
+              AppBarWithCenteredTitle(
+                title: "نتيجة التوافق",
+                showActionButtons: true,
+                showShareButtonOnly: true,
+                shareFunction: () async {
+                  if (analysis != null) {
+                    await _sharePdf(context, analysis);
+                  }
+                },
+              ).paddingSymmetricHorizontal(20),
+              const SizedBox(height: 20),
+              const RiskLevelsLegend(),
+              Expanded(
+                child: () {
+                  if (state.analyzeMedicalCompatibilityStatus ==
+                      RequestStatus.loading) {
+                    return const SimulatedMedicalModulesChecklistLoader();
+                  }
 
-                if (state.analyzeMedicalCompatibilityStatus ==
-                        RequestStatus.success &&
-                    state.compatibilityAnalysis != null) {
-                  final analysis = state.compatibilityAnalysis!;
-
-                  return SingleChildScrollView(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CompatibilitySummaryCard(analysis: analysis),
-                        const SizedBox(height: 16),
-                        AppCustomButton(
-                          title: "استشر الـ AI",
-                          isEnabled: true,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    MedicationCompatibilityConsultationView(
-                                  initialMessage: _generateAITemplate(analysis),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                        if (analysis.issues.isEmpty)
-                          _buildNoIssuesState()
-                        else ...[
-                          Text(
-                            "التداخلات المرصودة",
-                            style: AppTextStyles.font18blackWight500.copyWith(
-                              color: AppColorsManager.mainDarkBlue,
-                            ),
+                  if (state.analyzeMedicalCompatibilityStatus ==
+                      RequestStatus.failure) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          state.message.isNotEmpty
+                              ? state.message
+                              : "حدث خطأ أثناء تحليل التوافق",
+                          style: AppTextStyles.font16BlackSemiBold.copyWith(
+                            color: AppColorsManager.warningColor,
                           ),
-                          const SizedBox(height: 12),
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: analysis.issues.length,
-                            itemBuilder: (context, index) {
-                              return CompatibilityIssueCard(
-                                issue: analysis.issues[index],
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (state.analyzeMedicalCompatibilityStatus ==
+                          RequestStatus.success &&
+                      analysis != null) {
+                    return SingleChildScrollView(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CompatibilitySummaryCard(analysis: analysis),
+                          const SizedBox(height: 16),
+                          AppCustomButton(
+                            title: "استشر الـ AI",
+                            isEnabled: true,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      MedicationCompatibilityConsultationView(
+                                    initialMessage:
+                                        _generateAITemplate(analysis),
+                                  ),
+                                ),
                               );
                             },
                           ),
+                          const SizedBox(height: 24),
+                          if (analysis.issues.isEmpty)
+                            _buildNoIssuesState()
+                          else ...[
+                            Text(
+                              "التداخلات المرصودة",
+                              style: AppTextStyles.font18blackWight500.copyWith(
+                                color: AppColorsManager.mainDarkBlue,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: analysis.issues.length,
+                              itemBuilder: (context, index) {
+                                return CompatibilityIssueCard(
+                                  issue: analysis.issues[index],
+                                );
+                              },
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  );
-                }
+                      ),
+                    );
+                  }
 
-                return const Center(
-                  child: Text("لا توجد بيانات متاحة حالياً"),
-                );
-              },
-            ),
+                  return const Center(
+                    child: Text("لا توجد بيانات متاحة حالياً"),
+                  );
+                }(),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
+  }
+
+  Future<void> _sharePdf(
+      BuildContext context, CompatibilityAnalysisModel analysis) async {
+    try {
+      final pdfBytes = await MedicationCompatibilityAnalysisPdfGenerator()
+          .generateCompatibilityReport(analysis);
+
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/medication_compatibility_report.pdf');
+      await file.writeAsBytes(pdfBytes);
+
+      await Share.shareXFiles(
+        [XFile(file.path)],
+        text: 'تقرير التوافق الدوائي',
+        subject: 'Compatibility Report',
+      );
+    } catch (e) {
+      AppLogger.info(" error is $e");
+      if (context.mounted) {
+        showError("حدث خطأ أثناء إنشاء أو مشاركة التقرير");
+      }
+    }
   }
 
   String _generateAITemplate(CompatibilityAnalysisModel analysis) {
