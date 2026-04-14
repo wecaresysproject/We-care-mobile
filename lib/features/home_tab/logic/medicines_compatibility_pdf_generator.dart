@@ -56,7 +56,26 @@ class MedicinesCompatibilityPdfGenerator {
 
   String _clean(String? text) {
     if (text == null) return "";
-    return text.replaceAll(RegExp(r'[^\x00-\x7F\u0600-\u06FF\s،؟!]'), '');
+    final sanitized =
+        text.replaceAll(RegExp(r'[^\x00-\x7F\u0600-\u06FF\s،؟!]'), '');
+    return _normalizeForPdf(sanitized);
+  }
+
+  /// Normalizes Arabic text for correct PDF rendering.
+  /// - Replaces word-final Ya (\u064A) with Alif Maqsura (\u0649)
+  ///   because the PDF engine shapes final Ya incorrectly.
+  /// - Removes Tatweel (\u0640) elongation characters.
+  /// - Strips diacritics (\u064B-\u0652) for cleaner output.
+  /// This is a rendering-only fix — original API data is not modified.
+  String _normalizeForPdf(String input) {
+    if (input.isEmpty) return input;
+    return input
+        .replaceAllMapped(
+          RegExp(r'\u064A(?=\s|\b|$)'),
+          (match) => '\u0649',
+        )
+        .replaceAll('\u0640', '')
+        .replaceAll(RegExp(r'[\u064B-\u0652]'), '');
   }
 
   pw.TextStyle _style({
@@ -572,17 +591,4 @@ class MedicinesCompatibilityPdfGenerator {
       return null;
     }
   }
-}
-
-String normalizeArabicText(String input) {
-  if (input.isEmpty) return input;
-
-  return input
-      // ياء لينة → ياء
-      .replaceAll('\u0649', '\u064A')
-
-      // optional fixes (مهمة جدًا أحيانًا 👇)
-      .replaceAll('\u0629', '\u0647') // ة → ه (لو عندك مشاكل فيها)
-      .replaceAll('\u0640', '') // تطويل ـ
-      .replaceAll(RegExp(r'[\u064B-\u0652]'), ''); // تشكيل
 }
