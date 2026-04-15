@@ -36,12 +36,10 @@ class AnsweredQuestionsData {
 
 @JsonSerializable()
 class AnsweredQuestionRow {
-  final int questionId;
   final String question;
   final List<String> answersOverMonths;
 
   AnsweredQuestionRow({
-    required this.questionId,
     required this.question,
     required this.answersOverMonths,
   });

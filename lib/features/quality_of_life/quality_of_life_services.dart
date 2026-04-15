@@ -25,6 +25,6 @@ abstract class QualityOfLifeServices {
     @Query('dateRange') String? dateRange,
   );
 
-  @GET(QualityOfLifeApiConstants.getDateRanges)
-  Future<dynamic> getDateRanges();
+  @GET(QualityOfLifeApiConstants.getUserSubmissionDates)
+  Future<dynamic> getUserSubmissionDates();
 }

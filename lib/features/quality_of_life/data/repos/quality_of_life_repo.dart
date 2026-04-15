@@ -43,10 +43,10 @@ class QualityOfLifeRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> fetchDateRanges() async {
+  Future<ApiResult<List<String>>> fetchUserSubmissionDates() async {
     try {
-      final response = await _qualityOfLifeServices.getDateRanges();
-      return ApiResult.success(response["data"]);
+      final response = await _qualityOfLifeServices.getUserSubmissionDates();
+      return ApiResult.success(List<String>.from(response["data"]));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

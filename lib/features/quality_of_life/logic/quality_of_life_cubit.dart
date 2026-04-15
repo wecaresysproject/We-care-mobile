@@ -558,22 +558,29 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     );
   }
 
-  Future<void> fetchDateRanges() async {
-    safeEmit(state.copyWith(dateRangesStatus: RequestStatus.loading));
-    final result = await _qualityOfLifeRepo.fetchDateRanges();
+  Future<void> initialRequests() async {
+    await Future.wait([
+      fetchUserSubmissionDates(),
+      fetchAnsweredQuestions(),
+    ]);
+  }
+
+  Future<void> fetchUserSubmissionDates() async {
+    safeEmit(state.copyWith(userSubmissionDatesStatus: RequestStatus.loading));
+    final result = await _qualityOfLifeRepo.fetchUserSubmissionDates();
     result.when(
-      success: (dateRanges) {
+      success: (dates) {
         safeEmit(
           state.copyWith(
-            dateRangesStatus: RequestStatus.success,
-            dateRanges: dateRanges,
+            userSubmissionDatesStatus: RequestStatus.success,
+            userSubmissionDates: dates,
           ),
         );
       },
       failure: (error) {
         safeEmit(
           state.copyWith(
-            dateRangesStatus: RequestStatus.failure,
+            userSubmissionDatesStatus: RequestStatus.failure,
             error: error.errors.first,
           ),
         );

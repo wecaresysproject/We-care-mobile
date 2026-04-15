@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
 
 class QualityOfLifeFiltersRow extends StatelessWidget {
@@ -6,28 +9,24 @@ class QualityOfLifeFiltersRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Dummy dates for demonstration
-    final List<String> dummyDates = [
-      "من 18/12/2025 إلى 16/01/2026",
-      "من 01/11/2025 إلى 30/11/2025",
-      "من 01/10/2025 إلى 31/10/2025",
-      "من 01/09/2025 إلى 30/09/2025",
-      "من 01/08/2025 إلى 31/08/2025",
-      "من 01/07/2025 إلى 31/07/2025",
-      "من 01/06/2025 إلى 30/06/2025",
-    ];
-
-    return DataViewFiltersRow(
-      onApply: (selectedFilters) {
-        // Placeholder for filtering logic
+    return BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
+      builder: (context, state) {
+        return DataViewFiltersRow(
+          onApply: (selectedFilters) {
+            final String? selectedDate = selectedFilters['التاريخ'];
+            context
+                .read<QualityOfLifeCubit>()
+                .fetchAnsweredQuestions(dateRange: selectedDate);
+          },
+          filters: [
+            FilterConfig(
+              title: 'التاريخ',
+              options: state.userSubmissionDates,
+              isYearFilter: false,
+            ),
+          ],
+        );
       },
-      filters: [
-        FilterConfig(
-          title: 'التاريخ',
-          options: dummyDates,
-          isYearFilter: false,
-        ),
-      ],
     );
   }
 }

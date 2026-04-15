@@ -29,9 +29,9 @@ class QualityOfLifeState extends Equatable {
     this.submitStatus = RequestStatus.initial,
     this.questions = const [],
     this.answeredQuestionsStatus = RequestStatus.initial,
-    this.dateRangesStatus = RequestStatus.initial,
+    this.userSubmissionDatesStatus = RequestStatus.initial,
     this.answeredQuestionsData,
-    this.dateRanges = const [],
+    this.userSubmissionDates = const [],
     this.selectedDateRange,
   });
 
@@ -40,9 +40,9 @@ class QualityOfLifeState extends Equatable {
   final List<QuestionModel> questions;
 
   final RequestStatus answeredQuestionsStatus;
-  final RequestStatus dateRangesStatus;
+  final RequestStatus userSubmissionDatesStatus;
   final AnsweredQuestionsData? answeredQuestionsData;
-  final List<String> dateRanges;
+  final List<String> userSubmissionDates;
   final String? selectedDateRange;
 
   QualityOfLifeState copyWith({
@@ -58,9 +58,9 @@ class QualityOfLifeState extends Equatable {
     RequestStatus? submitStatus,
     List<QuestionModel>? questions,
     RequestStatus? answeredQuestionsStatus,
-    RequestStatus? dateRangesStatus,
+    RequestStatus? userSubmissionDatesStatus,
     AnsweredQuestionsData? answeredQuestionsData,
-    List<String>? dateRanges,
+    List<String>? userSubmissionDates,
     String? selectedDateRange,
   }) {
     return QualityOfLifeState(
@@ -77,10 +77,11 @@ class QualityOfLifeState extends Equatable {
       questions: questions ?? this.questions,
       answeredQuestionsStatus:
           answeredQuestionsStatus ?? this.answeredQuestionsStatus,
-      dateRangesStatus: dateRangesStatus ?? this.dateRangesStatus,
+      userSubmissionDatesStatus:
+          userSubmissionDatesStatus ?? this.userSubmissionDatesStatus,
       answeredQuestionsData:
           answeredQuestionsData ?? this.answeredQuestionsData,
-      dateRanges: dateRanges ?? this.dateRanges,
+      userSubmissionDates: userSubmissionDates ?? this.userSubmissionDates,
       selectedDateRange: selectedDateRange ?? this.selectedDateRange,
     );
   }
@@ -99,9 +100,9 @@ class QualityOfLifeState extends Equatable {
         submitStatus,
         questions,
         answeredQuestionsStatus,
-        dateRangesStatus,
+        userSubmissionDatesStatus,
         answeredQuestionsData,
-        dateRanges,
+        userSubmissionDates,
         selectedDateRange,
       ];
 }
