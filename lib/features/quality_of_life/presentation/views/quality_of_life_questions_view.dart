@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
@@ -10,52 +11,89 @@ import 'package:we_care/features/quality_of_life/presentation/widgets/quality_of
 import '../widgets/quality_of_life_app_bar.dart';
 import '../widgets/question_item_widget.dart';
 
-class QualityOfLifeQuestionsView extends StatelessWidget {
+class QualityOfLifeQuestionsView extends StatefulWidget {
   const QualityOfLifeQuestionsView({super.key});
+
+  @override
+  State<QualityOfLifeQuestionsView> createState() =>
+      _QualityOfLifeQuestionsViewState();
+}
+
+class _QualityOfLifeQuestionsViewState
+    extends State<QualityOfLifeQuestionsView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<QualityOfLifeCubit>().fetchQuestionnaire();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: const QualityOfLifeAppBar(),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.all(16.w),
-              itemCount: QualityOfLifeCubit.questions.length,
-              itemBuilder: (context, index) {
-                final question = QualityOfLifeCubit.questions[index];
-                return BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
-                  buildWhen: (previous, current) =>
-                      previous.answers[question.id] !=
-                      current.answers[question.id],
-                  builder: (context, state) {
-                    return QuestionItemWidget(
-                      id: question.id,
-                      question: question.question,
-                      answers: question.answers,
-                      selectedAnswer: state.answers[question.id],
-                      onAnswerSelected: (id, answer) {
-                        context
-                            .read<QualityOfLifeCubit>()
-                            .selectAnswer(id, answer);
+      body: BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
+        builder: (context, state) {
+          switch (state.questionnaireStatus) {
+            case RequestStatus.loading:
+              return const Center(child: CircularProgressIndicator());
+            case RequestStatus.failure:
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.error ?? 'حدث خطأ ما'),
+                  ],
+                ),
+              );
+            case RequestStatus.success:
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: const QualityOfLifeAppBar(),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.all(16.w),
+                      itemCount: state.questions.length,
+                      itemBuilder: (context, index) {
+                        final question = state.questions[index];
+                        return BlocBuilder<QualityOfLifeCubit,
+                            QualityOfLifeState>(
+                          buildWhen: (previous, current) =>
+                              previous.answers[question.questionId] !=
+                              current.answers[question.questionId],
+                          builder: (context, state) {
+                            return QuestionItemWidget(
+                              id: question.questionId,
+                              question: question.questionText,
+                              answers: question.options
+                                  .map((e) => e.optionText)
+                                  .toList(),
+                              selectedAnswer:
+                                  state.answers[question.questionId],
+                              onAnswerSelected: (id, answer) {
+                                context
+                                    .read<QualityOfLifeCubit>()
+                                    .selectAnswer(id, answer);
+                              },
+                            );
+                          },
+                        );
                       },
-                    );
-                  },
-                );
-              },
-            ),
-            verticalSpacing(16),
-            const QualityOfLifeModuleNote(),
-            const QualityOfLifeSaveButton(),
-          ],
-        ),
+                    ),
+                    verticalSpacing(16),
+                    const QualityOfLifeModuleNote(),
+                    const QualityOfLifeSaveButton(),
+                  ],
+                ),
+              );
+            default:
+              return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }

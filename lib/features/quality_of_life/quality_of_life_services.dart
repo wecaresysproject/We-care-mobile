@@ -8,7 +8,7 @@ import 'package:we_care/features/quality_of_life/quality_of_life_api_constants.d
 
 part 'quality_of_life_services.g.dart';
 
-@RestApi()
+@RestApi(baseUrl: QualityOfLifeApiConstants.baseUrl)
 abstract class QualityOfLifeServices {
   factory QualityOfLifeServices(Dio dio, {String baseUrl}) =
       _QualityOfLifeServices;
