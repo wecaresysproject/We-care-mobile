@@ -10,6 +10,8 @@ class QualityOfLifeFiltersRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
+      buildWhen: (previous, current) =>
+          current.userSubmissionDates != previous.userSubmissionDates,
       builder: (context, state) {
         return DataViewFiltersRow(
           onApply: (selectedFilters) {

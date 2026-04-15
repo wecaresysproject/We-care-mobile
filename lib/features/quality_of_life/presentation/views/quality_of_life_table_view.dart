@@ -48,6 +48,8 @@ class QualityOfLifeTableView extends StatelessWidget {
 
   Widget _buildDataTable(BuildContext context) {
     return BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
+      buildWhen: (previous, current) =>
+          current.answeredQuestionsStatus != previous.answeredQuestionsStatus,
       builder: (context, state) {
         switch (state.answeredQuestionsStatus) {
           case RequestStatus.loading:
