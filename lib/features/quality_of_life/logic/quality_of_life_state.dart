@@ -12,6 +12,7 @@ class QualityOfLifeState extends Equatable {
   final List<QualityOfLifeRecord> filteredRecords;
   final bool isSaved;
   final String? error;
+  final String? message;
   final String? selectedMonthFilter;
   final ModuleGuidanceDataModel? moduleGuidanceData;
 
@@ -21,6 +22,7 @@ class QualityOfLifeState extends Equatable {
     this.filteredRecords = const [],
     this.isSaved = false,
     this.error,
+    this.message,
     this.selectedMonthFilter,
     this.moduleGuidanceData,
     this.questionnaireStatus = RequestStatus.initial,
@@ -49,6 +51,7 @@ class QualityOfLifeState extends Equatable {
     List<QualityOfLifeRecord>? filteredRecords,
     bool? isSaved,
     String? error,
+    String? message,
     String? selectedMonthFilter,
     ModuleGuidanceDataModel? moduleGuidanceData,
     RequestStatus? questionnaireStatus,
@@ -66,6 +69,7 @@ class QualityOfLifeState extends Equatable {
       filteredRecords: filteredRecords ?? this.filteredRecords,
       isSaved: isSaved ?? this.isSaved,
       error: error,
+      message: message ?? this.message,
       selectedMonthFilter: selectedMonthFilter ?? this.selectedMonthFilter,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
       questionnaireStatus: questionnaireStatus ?? this.questionnaireStatus,
@@ -88,6 +92,7 @@ class QualityOfLifeState extends Equatable {
         filteredRecords,
         isSaved,
         error,
+        message,
         selectedMonthFilter,
         moduleGuidanceData,
         questionnaireStatus,

@@ -111,8 +111,8 @@ class QualityOfLifeSaveButton extends StatelessWidget {
       listener: (context, state) {
         if (state.isSaved) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم حفظ البيانات بنجاح'),
+            SnackBar(
+              content: Text(state.message ?? 'تم حفظ البيانات بنجاح'),
               backgroundColor: Colors.green,
             ),
           );
@@ -128,15 +128,18 @@ class QualityOfLifeSaveButton extends StatelessWidget {
           );
         }
       },
-      buildWhen: (previous, current) => previous.isSaved != current.isSaved,
+      buildWhen: (previous, current) =>
+          previous.isSaved != current.isSaved ||
+          previous.submitStatus != current.submitStatus,
       builder: (context, state) {
         return Padding(
           padding: EdgeInsets.all(16.w),
           child: AppCustomButton(
             title: "حفظ",
             onPressed: () {
-              context.read<QualityOfLifeCubit>().saveAnswers();
+              context.read<QualityOfLifeCubit>().submitAssessment();
             },
+            isLoading: state.submitStatus == RequestStatus.loading,
             isEnabled: true,
           ),
         );

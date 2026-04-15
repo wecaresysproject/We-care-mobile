@@ -441,12 +441,13 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     final result = await _qualityOfLifeRepo.submitAssessment(requestBody);
 
     result.when(
-      success: (data) {
+      success: (message) {
         safeEmit(
           state.copyWith(
             submitStatus: RequestStatus.success,
             isSaved: true,
             answers: {},
+            message: message,
           ),
         );
         // You might want to update local records here if needed

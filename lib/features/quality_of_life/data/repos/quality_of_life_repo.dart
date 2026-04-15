@@ -3,7 +3,6 @@ import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/quality_of_life/data/models/answered_questions_response.dart';
 import 'package:we_care/features/quality_of_life/data/models/quality_of_life_questionnaire_response.dart';
 import 'package:we_care/features/quality_of_life/data/models/quality_of_life_submit_request.dart';
-import 'package:we_care/features/quality_of_life/data/models/quality_of_life_submit_response.dart';
 import 'package:we_care/features/quality_of_life/quality_of_life_services.dart';
 
 class QualityOfLifeRepo {
@@ -21,12 +20,12 @@ class QualityOfLifeRepo {
     }
   }
 
-  Future<ApiResult<QualityOfLifeSubmitResponse>> submitAssessment(
+  Future<ApiResult<String>> submitAssessment(
     QualityOfLifeSubmitRequest request,
   ) async {
     try {
       final response = await _qualityOfLifeServices.submitAssessment(request);
-      return ApiResult.success(response);
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
