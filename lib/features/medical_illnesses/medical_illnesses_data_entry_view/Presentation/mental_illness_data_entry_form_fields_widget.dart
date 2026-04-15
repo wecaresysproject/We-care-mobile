@@ -735,41 +735,32 @@ class PsychologicalTreatmentQuestionWidget extends StatelessWidget {
                             searchHintText: "اختر الطبيب/الاخصائي",
                           ),
                           verticalSpacing(18),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: UserSelectionContainer(
-                                  categoryLabel: "المستشفى/المركز",
-                                  containerHintText:
-                                      state.selectedHospitalName ??
-                                          "اختر اسم المستشفى",
-                                  options: state.hospitalsNames,
-                                  onOptionSelected: (value) {
-                                    context
-                                        .read<MedicalIllnessesDataEntryCubit>()
-                                        .updateSelectedHospitalName(value);
-                                  },
-                                  bottomSheetTitle: "اختر اسم المستشفى",
-                                  searchHintText: "ابحث عن اسم المستشفى",
-                                ),
-                              ),
-                              horizontalSpacing(16),
-                              Expanded(
-                                child: UserSelectionContainer(
-                                  categoryLabel: "الدولة",
-                                  containerHintText: state.selectedCountry ??
-                                      "اختر اسم الدولة",
-                                  options: state.countriesNames,
-                                  onOptionSelected: (value) {
-                                    context
-                                        .read<MedicalIllnessesDataEntryCubit>()
-                                        .updateTreatmentCountry(value);
-                                  },
-                                  bottomSheetTitle: "اختر اسم الدولة",
-                                  searchHintText: "ابحث عن اسم الدولة",
-                                ),
-                              ),
-                            ],
+                          UserSelectionContainer(
+                            categoryLabel: "المستشفى/المركز",
+                            containerHintText: state.selectedHospitalName ??
+                                "اختر اسم المستشفى",
+                            options: state.hospitalsNames,
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateSelectedHospitalName(value);
+                            },
+                            bottomSheetTitle: "اختر اسم المستشفى",
+                            searchHintText: "ابحث عن اسم المستشفى",
+                          ),
+                          verticalSpacing(18),
+                          UserSelectionContainer(
+                            categoryLabel: "الدولة",
+                            containerHintText:
+                                state.selectedCountry ?? "اختر اسم الدولة",
+                            options: state.countriesNames,
+                            onOptionSelected: (value) {
+                              context
+                                  .read<MedicalIllnessesDataEntryCubit>()
+                                  .updateTreatmentCountry(value);
+                            },
+                            bottomSheetTitle: "اختر اسم الدولة",
+                            searchHintText: "ابحث عن اسم الدولة",
                           ),
                         ],
                       )
