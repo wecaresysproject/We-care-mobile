@@ -19,14 +19,14 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
     );
     result.when(
       success: (data) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: data,
           ),
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: null,
           ),
@@ -51,16 +51,22 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   };
 
   void updateSection(String section) {
-    emit(state.copyWith(
-      selectedSection: section,
-      selectedType: null,
-      records: [],
-    ));
+    safeEmit(
+      state.copyWith(
+        selectedSection: section,
+        selectedType: null,
+        records: [],
+      ),
+    );
     validateForm();
   }
 
+  void safeEmit(RiskyBehaviorsDataEntryState cubitState) {
+    if (!isClosed) emit(cubitState);
+  }
+
   void updateType(String type) {
-    emit(state.copyWith(selectedType: type));
+    safeEmit(state.copyWith(selectedType: type));
     validateForm();
   }
 
@@ -68,7 +74,7 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
     if (state.records.length < 3) {
       final updatedRecords = List<BehaviorRecord>.from(state.records)
         ..add(record);
-      emit(state.copyWith(records: updatedRecords));
+      safeEmit(state.copyWith(records: updatedRecords));
       validateForm();
     }
   }
@@ -76,7 +82,7 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   void removeRecord(int index) {
     final updatedRecords = List<BehaviorRecord>.from(state.records)
       ..removeAt(index);
-    emit(state.copyWith(records: updatedRecords));
+    safeEmit(state.copyWith(records: updatedRecords));
     validateForm();
   }
 
@@ -85,37 +91,39 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
         state.selectedType != null &&
         state.records.isNotEmpty;
 
-    emit(state.copyWith(isFormValidated: isValid));
+    safeEmit(state.copyWith(isFormValidated: isValid));
   }
 
   void toggleAttachToDrugInteractionModules(bool? value) {
-    emit(state.copyWith(attachToDrugInteractionModules: value ?? false));
+    safeEmit(state.copyWith(attachToDrugInteractionModules: value ?? false));
   }
 
   Future<void> submit() async {
     if (!state.isFormValidated) return;
 
-    emit(state.copyWith(status: RequestStatus.loading));
+    safeEmit(state.copyWith(status: RequestStatus.loading));
 
     // Simulate API call
     await Future.delayed(const Duration(seconds: 2));
 
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       status: RequestStatus.success,
       message: "تم حفظ البيانات بنجاح",
     ));
   }
 
   void loadExistingData(RiskyBehaviorDetailsModel existingData) {
-    emit(state.copyWith(
-      selectedSection: existingData.section,
-      selectedType: existingData.type,
-      records: existingData.records,
-      attachToDrugInteractionModules:
-          existingData.attachToDrugInteractionModules ?? false,
-      isEditMode: true,
-      updatedDocId: existingData.id ?? '',
-    ));
+    safeEmit(
+      state.copyWith(
+        selectedSection: existingData.section,
+        selectedType: existingData.type,
+        records: existingData.records,
+        attachToDrugInteractionModules:
+            existingData.attachToDrugInteractionModules ?? false,
+        isEditMode: true,
+        updatedDocId: existingData.id ?? '',
+      ),
+    );
     validateForm();
   }
 
