@@ -22,7 +22,7 @@ class HomeTabView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => getIt<HomeCubit>()..getMessageNotifications(),
+        create: (context) => getIt<HomeCubit>()..initialRequests(),
         child: SafeArea(
           child: DecoratedBox(
             decoration: ShapeDecoration(
@@ -38,6 +38,8 @@ class HomeTabView extends StatelessWidget {
                   const HomeCarouselWidget(),
                   verticalSpacing(8),
                   const BannerCrausalWidget(),
+                  verticalSpacing(8),
+
                   Image.asset("assets/images/indicators.png"),
                   verticalSpacing(16),
                   GridView.count(

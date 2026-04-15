@@ -27,4 +27,17 @@ class HomeRepository {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<List<String>>> getAds() async {
+    try {
+      final response = await _homeService.getAds(
+        'Patient',
+        'ar',
+      );
+
+      return ApiResult.success(List<String>.from(response['data'] ?? []));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

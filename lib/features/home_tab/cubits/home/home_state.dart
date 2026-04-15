@@ -8,6 +8,8 @@ class HomeState extends Equatable {
   final List<VideoModel> videos;
   final RequestStatus requestStatus;
   final RequestStatus videoRequestStatus;
+  final RequestStatus adsRequestStatus;
+  final List<String> ads;
   final String? errorMessage;
 
   const HomeState({
@@ -15,6 +17,8 @@ class HomeState extends Equatable {
     required this.videos,
     required this.requestStatus,
     required this.videoRequestStatus,
+    required this.adsRequestStatus,
+    required this.ads,
     this.errorMessage,
   });
 
@@ -24,6 +28,8 @@ class HomeState extends Equatable {
       videos: [],
       requestStatus: RequestStatus.initial,
       videoRequestStatus: RequestStatus.initial,
+      adsRequestStatus: RequestStatus.initial,
+      ads: [],
       errorMessage: null,
     );
   }
@@ -33,6 +39,8 @@ class HomeState extends Equatable {
     List<VideoModel>? videos,
     RequestStatus? requestStatus,
     RequestStatus? videoRequestStatus,
+    RequestStatus? adsRequestStatus,
+    List<String>? ads,
     String? errorMessage,
   }) {
     return HomeState(
@@ -40,11 +48,20 @@ class HomeState extends Equatable {
       videos: videos ?? this.videos,
       requestStatus: requestStatus ?? this.requestStatus,
       videoRequestStatus: videoRequestStatus ?? this.videoRequestStatus,
+      adsRequestStatus: adsRequestStatus ?? this.adsRequestStatus,
+      ads: ads ?? this.ads,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [notifications, videos, requestStatus, videoRequestStatus, errorMessage];
+  List<Object?> get props => [
+        notifications,
+        videos,
+        ads,
+        requestStatus,
+        videoRequestStatus,
+        adsRequestStatus,
+        errorMessage
+      ];
 }
