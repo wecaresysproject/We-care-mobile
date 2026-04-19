@@ -22,7 +22,8 @@ abstract class QualityOfLifeServices {
 
   @GET(QualityOfLifeApiConstants.getAnsweredQuestions)
   Future<AnsweredQuestionsResponse> getAnsweredQuestions(
-    @Query('dateRange') String? dateRange,
+    @Query('dateFrom') String? dateFrom,
+    @Query('dateTo') String? dateTo,
   );
 
   @GET(QualityOfLifeApiConstants.getUserSubmissionDates)

@@ -13,28 +13,10 @@ class QualityOfLifeState extends Equatable {
   final bool isSaved;
   final String? error;
   final String? message;
-  final String? selectedMonthFilter;
   final ModuleGuidanceDataModel? moduleGuidanceData;
-
-  const QualityOfLifeState({
-    this.answers = const {},
-    this.records = const [],
-    this.filteredRecords = const [],
-    this.isSaved = false,
-    this.error,
-    this.message,
-    this.selectedMonthFilter,
-    this.moduleGuidanceData,
-    this.questionnaireStatus = RequestStatus.initial,
-    this.submitStatus = RequestStatus.initial,
-    this.questions = const [],
-    this.answeredQuestionsStatus = RequestStatus.initial,
-    this.userSubmissionDatesStatus = RequestStatus.initial,
-    this.answeredQuestionsData,
-    this.userSubmissionDates = const [],
-    this.selectedDateRange,
-  });
-
+  final String? selectedDateFrom;
+  final String? selectedDateTo;
+  final String? selectedMonthFilter;
   final RequestStatus questionnaireStatus;
   final RequestStatus submitStatus;
   final List<QuestionModel> questions;
@@ -43,7 +25,25 @@ class QualityOfLifeState extends Equatable {
   final RequestStatus userSubmissionDatesStatus;
   final AnsweredQuestionsData? answeredQuestionsData;
   final List<String> userSubmissionDates;
-  final String? selectedDateRange;
+  const QualityOfLifeState({
+    this.answers = const {},
+    this.records = const [],
+    this.filteredRecords = const [],
+    this.isSaved = false,
+    this.error,
+    this.message,
+    this.moduleGuidanceData,
+    this.questionnaireStatus = RequestStatus.initial,
+    this.submitStatus = RequestStatus.initial,
+    this.questions = const [],
+    this.answeredQuestionsStatus = RequestStatus.initial,
+    this.userSubmissionDatesStatus = RequestStatus.initial,
+    this.answeredQuestionsData,
+    this.userSubmissionDates = const [],
+    this.selectedDateFrom,
+    this.selectedDateTo,
+    this.selectedMonthFilter,
+  });
 
   QualityOfLifeState copyWith({
     Map<int, String>? answers,
@@ -61,7 +61,8 @@ class QualityOfLifeState extends Equatable {
     RequestStatus? userSubmissionDatesStatus,
     AnsweredQuestionsData? answeredQuestionsData,
     List<String>? userSubmissionDates,
-    String? selectedDateRange,
+    String? selectedDateFrom,
+    String? selectedDateTo,
   }) {
     return QualityOfLifeState(
       answers: answers ?? this.answers,
@@ -70,7 +71,6 @@ class QualityOfLifeState extends Equatable {
       isSaved: isSaved ?? this.isSaved,
       error: error,
       message: message ?? this.message,
-      selectedMonthFilter: selectedMonthFilter ?? this.selectedMonthFilter,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
       questionnaireStatus: questionnaireStatus ?? this.questionnaireStatus,
       submitStatus: submitStatus ?? this.submitStatus,
@@ -82,7 +82,9 @@ class QualityOfLifeState extends Equatable {
       answeredQuestionsData:
           answeredQuestionsData ?? this.answeredQuestionsData,
       userSubmissionDates: userSubmissionDates ?? this.userSubmissionDates,
-      selectedDateRange: selectedDateRange ?? this.selectedDateRange,
+      selectedDateFrom: selectedDateFrom ?? this.selectedDateFrom,
+      selectedDateTo: selectedDateTo ?? this.selectedDateTo,
+      selectedMonthFilter: selectedMonthFilter ?? this.selectedMonthFilter,
     );
   }
 
@@ -94,7 +96,6 @@ class QualityOfLifeState extends Equatable {
         isSaved,
         error,
         message,
-        selectedMonthFilter,
         moduleGuidanceData,
         questionnaireStatus,
         submitStatus,
@@ -103,6 +104,8 @@ class QualityOfLifeState extends Equatable {
         userSubmissionDatesStatus,
         answeredQuestionsData,
         userSubmissionDates,
-        selectedDateRange,
+        selectedDateFrom,
+        selectedDateTo,
+        selectedMonthFilter,
       ];
 }

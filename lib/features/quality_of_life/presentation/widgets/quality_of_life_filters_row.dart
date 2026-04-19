@@ -15,14 +15,21 @@ class QualityOfLifeFiltersRow extends StatelessWidget {
       builder: (context, state) {
         return DataViewFiltersRow(
           onApply: (selectedFilters) {
-            final String? selectedDate = selectedFilters['التاريخ'];
-            context
-                .read<QualityOfLifeCubit>()
-                .fetchAnsweredQuestions(dateRange: selectedDate);
+            final String? selectedDate = selectedFilters['التاريخ من'];
+            final String? selectedDateTo = selectedFilters['التاريخ الى'];
+            context.read<QualityOfLifeCubit>().fetchAnsweredQuestions(
+                  dateFrom: selectedDate,
+                  dateTo: selectedDateTo,
+                );
           },
           filters: [
             FilterConfig(
-              title: 'التاريخ',
+              title: 'التاريخ من',
+              options: state.userSubmissionDates,
+              isYearFilter: false,
+            ),
+            FilterConfig(
+              title: 'التاريخ الى',
               options: state.userSubmissionDates,
               isYearFilter: false,
             ),

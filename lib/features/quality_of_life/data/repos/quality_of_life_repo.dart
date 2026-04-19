@@ -32,11 +32,12 @@ class QualityOfLifeRepo {
   }
 
   Future<ApiResult<AnsweredQuestionsResponse>> fetchAnsweredQuestions(
-    String? dateRange,
+    String? dateFrom,
+    String? dateTo,
   ) async {
     try {
       final response =
-          await _qualityOfLifeServices.getAnsweredQuestions(dateRange);
+          await _qualityOfLifeServices.getAnsweredQuestions(dateFrom, dateTo);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

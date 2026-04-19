@@ -536,12 +536,15 @@ class QualityOfLifeCubit extends Cubit<QualityOfLifeState> {
     }
   }
 
-  Future<void> fetchAnsweredQuestions({String? dateRange}) async {
+  Future<void> fetchAnsweredQuestions(
+      {String? dateFrom, String? dateTo}) async {
     safeEmit(state.copyWith(
       answeredQuestionsStatus: RequestStatus.loading,
-      selectedDateRange: dateRange,
+      selectedDateFrom: dateFrom,
+      selectedDateTo: dateTo,
     ));
-    final result = await _qualityOfLifeRepo.fetchAnsweredQuestions(dateRange);
+    final result =
+        await _qualityOfLifeRepo.fetchAnsweredQuestions(dateFrom, dateTo);
     result.when(
       success: (data) {
         safeEmit(state.copyWith(
