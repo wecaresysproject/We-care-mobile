@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
 import 'package:we_care/features/quality_of_life/logic/quality_of_life_state.dart';
 import 'package:we_care/features/quality_of_life/presentation/widgets/quality_of_lify_module_note_widget.dart';
@@ -37,13 +39,81 @@ class _QualityOfLifeQuestionsViewState
             case RequestStatus.loading:
               return const Center(child: CircularProgressIndicator());
             case RequestStatus.failure:
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(state.error ?? 'حدث خطأ ما'),
-                  ],
-                ),
+              return Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: const QualityOfLifeAppBar(),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 30.w),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 32.h,
+                          horizontal: 24.w,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColorsManager.mainDarkBlue
+                                  .withOpacity(0.08),
+                              blurRadius: 30,
+                              offset: const Offset(0, 15),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(20.w),
+                              decoration: BoxDecoration(
+                                color: AppColorsManager
+                                    .redBackgroundValidationColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.error_outline_rounded,
+                                color: AppColorsManager.warningColor,
+                                size: 50.sp,
+                              ),
+                            ),
+                            verticalSpacing(24),
+                            Text(
+                              "حدث خطأ ما",
+                              style: AppTextStyles.font20blackWeight600,
+                            ),
+                            verticalSpacing(12),
+                            Text(
+                              state.error ??
+                                  'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.',
+                              textAlign: TextAlign.center,
+                              style:
+                                  AppTextStyles.font14blackWeight400.copyWith(
+                                color: AppColorsManager.placeHolderColor,
+                                height: 1.5,
+                              ),
+                            ),
+                            verticalSpacing(32),
+                            AppCustomButton(
+                              title: 'إعادة المحاولة',
+                              isEnabled: true,
+                              textFontSize: 18,
+                              onPressed: () {
+                                context
+                                    .read<QualityOfLifeCubit>()
+                                    .fetchQuestionnaire();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             case RequestStatus.success:
               return SingleChildScrollView(

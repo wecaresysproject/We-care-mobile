@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'new_genetic_disease_model.g.dart';
 
 @HiveType(typeId: 2)
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class NewGeneticDiseaseModel {
   @HiveField(0)
   final String? diseaseCategory; // فئة المرض
