@@ -373,7 +373,7 @@ class FamilyTreeView extends StatelessWidget {
           ),
           verticalSpacing(16),
           buildMainItem(
-              context, mother, "👩🏻‍🦳", AppColorsManager.mainDarkBlue, 'Mom'),
+              context, mother, "👩🏻‍🦳", AppColorsManager.mainDarkBlue, 'Mam'),
           verticalSpacing(16),
           Wrap(
             spacing: 16,
