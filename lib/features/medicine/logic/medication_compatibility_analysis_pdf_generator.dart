@@ -5,6 +5,16 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 
+class PdfSpacing {
+  static const double xs = 4.0;
+  static const double sm = 8.0;
+  static const double md = 12.0;
+  static const double lg = 8.0;
+  static const double xl = 24.0;
+}
+
+pw.Widget verticalSpace(double height) => pw.SizedBox(height: height);
+
 class MedicationCompatibilityAnalysisPdfGenerator {
   late pw.Font _fontRegular;
   late pw.Font _fontBold;
@@ -36,15 +46,15 @@ class MedicationCompatibilityAnalysisPdfGenerator {
         pageTheme: pw.PageTheme(
           theme: theme,
           pageFormat: PdfPageFormat.a4,
-          margin: const pw.EdgeInsets.all(30),
+          margin: const pw.EdgeInsets.all(25),
           textDirection: pw.TextDirection.rtl,
         ),
         build: (context) => [
           _buildTitle(),
           _buildRiskLegend(),
-          pw.SizedBox(height: 15),
+          verticalSpace(PdfSpacing.lg),
           _buildSummarySection(analysis.analysisSummary),
-          pw.SizedBox(height: 20),
+          verticalSpace(PdfSpacing.lg),
           if (analysis.issues.isEmpty)
             _buildNoIssuesSection()
           else
@@ -89,8 +99,8 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildHeader(pw.MemoryImage? logo) {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 25),
-      padding: const pw.EdgeInsets.only(bottom: 10),
+      margin: const pw.EdgeInsets.only(bottom: 4),
+      padding: const pw.EdgeInsets.only(bottom: PdfSpacing.sm),
       decoration: const pw.BoxDecoration(
         border: pw.Border(
             bottom: pw.BorderSide(color: PdfColors.grey300, width: 0.5)),
@@ -123,8 +133,10 @@ class MedicationCompatibilityAnalysisPdfGenerator {
   pw.Widget _buildFooter(pw.Context context) {
     return pw.Container(
       alignment: pw.Alignment.center,
-      margin: const pw.EdgeInsets.only(top: 25),
-      padding: const pw.EdgeInsets.only(top: 10),
+      margin: const pw.EdgeInsets.only(top: 4),
+      padding: const pw.EdgeInsets.only(top: PdfSpacing.sm),
+      // margin: const pw.EdgeInsets.only(top: PdfSpacing.lg),
+      // padding: const pw.EdgeInsets.only(top: PdfSpacing.sm),
       decoration: const pw.BoxDecoration(
         border:
             pw.Border(top: pw.BorderSide(color: PdfColors.grey300, width: 0.5)),
@@ -138,7 +150,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildTitle() {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 25),
+      margin: const pw.EdgeInsets.only(bottom: PdfSpacing.lg),
       alignment: pw.Alignment.center,
       child: pw.Text(
         'نتائج تحليل التوافق الدوائي',
@@ -153,7 +165,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildRiskLegend() {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(12),
+      padding: const pw.EdgeInsets.all(PdfSpacing.md),
       decoration: pw.BoxDecoration(
         color: PdfColors.grey100,
         borderRadius: pw.BorderRadius.circular(8),
@@ -179,7 +191,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
           height: 8,
           decoration: pw.BoxDecoration(color: color, shape: pw.BoxShape.circle),
         ),
-        pw.SizedBox(width: 5),
+        pw.SizedBox(width: PdfSpacing.xs),
         pw.Text('$level: $label', style: _style(fontSize: 10)),
       ],
     );
@@ -187,10 +199,10 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildSummarySection(String summary) {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(15),
+      padding: const pw.EdgeInsets.all(PdfSpacing.md),
       decoration: pw.BoxDecoration(
         color: PdfColors.grey50,
-        borderRadius: pw.BorderRadius.circular(10),
+        borderRadius: pw.BorderRadius.circular(PdfSpacing.sm),
         border: pw.Border.all(color: PdfColors.grey200, width: 0.5),
       ),
       child: pw.Column(
@@ -202,7 +214,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
                   fontSize: 16,
                   color: PdfColor.fromInt(
                       AppColorsManager.mainDarkBlue.toARGB32()))),
-          pw.SizedBox(height: 10),
+          verticalSpace(PdfSpacing.xs),
           pw.Text(_clean(summary), style: _style(fontSize: 12)),
         ],
       ),
@@ -211,7 +223,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildNoIssuesSection() {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(20),
+      padding: const pw.EdgeInsets.all(PdfSpacing.lg),
       alignment: pw.Alignment.center,
       decoration: pw.BoxDecoration(
         color: PdfColor.fromInt(0xFFE8F5E9), // Green 50
@@ -239,7 +251,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
           color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
         ),
       ),
-      pw.SizedBox(height: 12),
+      verticalSpace(PdfSpacing.sm),
       ...issues.map((issue) => _buildIssueCard(issue)),
     ];
   }
@@ -248,7 +260,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
     final color = _getRiskPdfColor(issue.riskLevel);
 
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: 12),
+      margin: const pw.EdgeInsets.only(bottom: PdfSpacing.md),
       decoration: pw.BoxDecoration(
         color: PdfColors.white,
         border: pw.Border.all(color: PdfColors.grey200, width: 0.5),
@@ -271,7 +283,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
             ),
             pw.Expanded(
               child: pw.Padding(
-                padding: const pw.EdgeInsets.all(12),
+                padding: const pw.EdgeInsets.all(PdfSpacing.md),
                 child: pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
@@ -290,25 +302,30 @@ class MedicationCompatibilityAnalysisPdfGenerator {
                             decoration: pw.BoxDecoration(
                                 color: color,
                                 borderRadius: pw.BorderRadius.circular(4)),
-                            child: pw.Text(_clean(issue.riskLevel),
-                                style: _style(
-                                    bold: true,
-                                    fontSize: 10,
-                                    color: PdfColors.white)),
+                            child: pw.Text(
+                              _clean(issue.riskLevel),
+                              style: _style(
+                                bold: true,
+                                fontSize: 10,
+                                color: issue.riskLevel == "L3"
+                                    ? PdfColors.black
+                                    : PdfColors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    pw.SizedBox(height: 8),
+                    verticalSpace(PdfSpacing.sm),
                     pw.Text(_clean('السبب العلمي: ${issue.scientificReason}'),
                         style: _style(fontSize: 11)),
-                    pw.SizedBox(height: 10),
+                    verticalSpace(PdfSpacing.sm),
                     pw.Container(
-                      padding: const pw.EdgeInsets.all(8),
+                      padding: const pw.EdgeInsets.all(PdfSpacing.sm),
                       width: double.infinity,
                       decoration: pw.BoxDecoration(
                         color: PdfColors.grey50,
-                        borderRadius: pw.BorderRadius.circular(4),
+                        borderRadius: pw.BorderRadius.circular(PdfSpacing.xs),
                         border:
                             pw.Border.all(color: PdfColors.grey300, width: 0.5),
                       ),
