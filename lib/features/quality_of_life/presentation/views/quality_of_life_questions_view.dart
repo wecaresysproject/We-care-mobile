@@ -31,9 +31,14 @@ class _QualityOfLifeQuestionsViewState
 
   @override
   Widget build(BuildContext context) {
+    final noNeedToSubmitMessageThisMonth =
+        "للحفاظ على دقة النتائج، يمكنك الإجابة على هذه الأسئلة مرة واحدة فقط كل شهر. يرجى المحاولة مرة أخرى الشهر القادم";
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
       body: BlocBuilder<QualityOfLifeCubit, QualityOfLifeState>(
+        buildWhen: (previous, current) =>
+            previous.questionnaireStatus != current.questionnaireStatus ||
+            previous.error != current.error,
         builder: (context, state) {
           switch (state.questionnaireStatus) {
             case RequestStatus.loading:
@@ -48,66 +53,61 @@ class _QualityOfLifeQuestionsViewState
                   Expanded(
                     child: Center(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 30.w),
+                        margin: EdgeInsets.symmetric(horizontal: 24.w),
                         padding: EdgeInsets.symmetric(
-                          vertical: 32.h,
+                          vertical: 40.h,
                           horizontal: 24.w,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.red.shade50,
+                              Colors.white,
+                            ],
+                          ),
                           borderRadius: BorderRadius.circular(30.r),
+                          border: Border.all(
+                            color: Colors.red.shade100,
+                            width: 1.2,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: AppColorsManager.mainDarkBlue
-                                  .withOpacity(0.08),
-                              blurRadius: 30,
-                              offset: const Offset(0, 15),
+                                  .withOpacity(0.05),
+                              blurRadius: 25,
+                              offset: const Offset(0, 10),
                             ),
                           ],
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              padding: EdgeInsets.all(20.w),
-                              decoration: BoxDecoration(
-                                color: AppColorsManager
-                                    .redBackgroundValidationColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.error_outline_rounded,
-                                color: AppColorsManager.warningColor,
-                                size: 50.sp,
-                              ),
-                            ),
-                            verticalSpacing(24),
-                            Text(
-                              "حدث خطأ ما",
-                              style: AppTextStyles.font20blackWeight600,
-                            ),
-                            verticalSpacing(12),
                             Text(
                               state.error ??
                                   'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.',
                               textAlign: TextAlign.center,
-                              style:
-                                  AppTextStyles.font14blackWeight400.copyWith(
-                                color: AppColorsManager.placeHolderColor,
-                                height: 1.5,
+                              style: AppTextStyles.font18blackWight500.copyWith(
+                                color: AppColorsManager.mainDarkBlue,
+                                height: 1.6,
                               ),
                             ),
-                            verticalSpacing(32),
-                            AppCustomButton(
-                              title: 'إعادة المحاولة',
-                              isEnabled: true,
-                              textFontSize: 18,
-                              onPressed: () {
-                                context
-                                    .read<QualityOfLifeCubit>()
-                                    .fetchQuestionnaire();
-                              },
-                            ),
+                            if (state.error ==
+                                noNeedToSubmitMessageThisMonth) ...[
+                              verticalSpacing(32),
+                              AppCustomButton(
+                                title: 'إعادة المحاولة',
+                                isEnabled: true,
+                                textFontSize: 18,
+                                onPressed: () {
+                                  context
+                                      .read<QualityOfLifeCubit>()
+                                      .fetchQuestionnaire();
+                                },
+                              ),
+                            ],
                           ],
                         ),
                       ),
