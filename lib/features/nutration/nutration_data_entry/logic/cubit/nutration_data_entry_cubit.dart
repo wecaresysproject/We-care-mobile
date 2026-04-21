@@ -208,9 +208,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       );
 
       // Call ChatGPT service
-      final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
+      var nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
       if (nutritionData != null) {
-        nutritionData.userDietplan = dietInput;
+        nutritionData = nutritionData.copyWith(userDietplan: dietInput);
       }
       // You can now use nutritionData to send to your backend
       await postDailyDietPlan(
@@ -241,10 +241,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       );
 
       // Call ChatGPT service
-      final nutritionData =
-          await DeepSeekService.analyzeDietPlan(editedDietPlan);
+      var nutritionData = await DeepSeekService.analyzeDietPlan(editedDietPlan);
       if (nutritionData != null) {
-        nutritionData.userDietplan = editedDietPlan;
+        nutritionData = nutritionData.copyWith(userDietplan: editedDietPlan);
       }
       // You can now use nutritionData to send to your backend
       await updateDailyDietPlan(
