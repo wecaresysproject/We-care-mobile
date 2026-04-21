@@ -9,7 +9,6 @@ class PdfSpacing {
   static const double xs = 4.0;
   static const double sm = 8.0;
   static const double md = 12.0;
-  static const double lg = 8.0;
   static const double xl = 24.0;
 }
 
@@ -52,9 +51,9 @@ class MedicationCompatibilityAnalysisPdfGenerator {
         build: (context) => [
           _buildTitle(),
           _buildRiskLegend(),
-          verticalSpace(PdfSpacing.lg),
+          verticalSpace(PdfSpacing.sm),
           _buildSummarySection(analysis.analysisSummary),
-          verticalSpace(PdfSpacing.lg),
+          verticalSpace(PdfSpacing.sm),
           if (analysis.issues.isEmpty)
             _buildNoIssuesSection()
           else
@@ -135,7 +134,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
       alignment: pw.Alignment.center,
       margin: const pw.EdgeInsets.only(top: 4),
       padding: const pw.EdgeInsets.only(top: PdfSpacing.sm),
-      // margin: const pw.EdgeInsets.only(top: PdfSpacing.lg),
+      // margin: const pw.EdgeInsets.only(top: PdfSpacing.sm),
       // padding: const pw.EdgeInsets.only(top: PdfSpacing.sm),
       decoration: const pw.BoxDecoration(
         border:
@@ -150,7 +149,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildTitle() {
     return pw.Container(
-      margin: const pw.EdgeInsets.only(bottom: PdfSpacing.lg),
+      margin: const pw.EdgeInsets.only(bottom: PdfSpacing.sm),
       alignment: pw.Alignment.center,
       child: pw.Text(
         'نتائج تحليل التوافق الدوائي',
@@ -223,7 +222,7 @@ class MedicationCompatibilityAnalysisPdfGenerator {
 
   pw.Widget _buildNoIssuesSection() {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(PdfSpacing.lg),
+      padding: const pw.EdgeInsets.all(PdfSpacing.sm),
       alignment: pw.Alignment.center,
       decoration: pw.BoxDecoration(
         color: PdfColor.fromInt(0xFFE8F5E9), // Green 50
