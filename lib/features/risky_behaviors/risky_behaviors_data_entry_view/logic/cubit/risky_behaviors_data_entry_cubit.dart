@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
 import 'package:we_care/features/risky_behaviors/data/repos/risk_behaviors_data_entry_repo.dart';
@@ -149,17 +150,42 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   }
 
   Future<void> submit() async {
-    if (!state.isFormValidated) return;
+    // if (!state.isFormValidated ||
+    //     state.selectedSection == null ||
+    //     state.selectedType == null) return;
 
     safeEmit(state.copyWith(status: RequestStatus.loading));
 
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
+    final requestBody = RiskyBehaviorDetailsModel(
+      section: state.selectedSection!,
+      type: state.selectedType!,
+      records: state.records,
+      attachToDrugInteractionModules: state.attachToDrugInteractionModules,
+    );
 
-    safeEmit(state.copyWith(
-      status: RequestStatus.success,
-      message: "تم حفظ البيانات بنجاح",
-    ));
+    final result =
+        await _riskBehaviorDataEntryRepo.submitRiskyBehaviors(requestBody);
+
+    result.when(
+      success: (message) {
+        AppLogger.info(
+            "submitRiskBehaviors Called with success and this is the message $message");
+        safeEmit(
+          state.copyWith(
+            status: RequestStatus.success,
+            message: message,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            status: RequestStatus.failure,
+            message: error.errors.join('\n'),
+          ),
+        );
+      },
+    );
   }
 
   void loadExistingData(RiskyBehaviorDetailsModel existingData) {
@@ -171,7 +197,7 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
         attachToDrugInteractionModules:
             existingData.attachToDrugInteractionModules ?? false,
         isEditMode: true,
-        updatedDocId: existingData.id ?? '',
+        updatedDocId: existingData.id ?? '', //TODO: check this later
       ),
     );
     getTypes(existingData.section);

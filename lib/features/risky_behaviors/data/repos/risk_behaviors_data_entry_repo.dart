@@ -1,6 +1,7 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/core/networking/risk_behaviors_service.dart';
+import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
 
 class RiskBehaviorDataEntryRepo {
   final RiskBehaviorsServices _riskBehaviorsServices;
@@ -35,6 +36,16 @@ class RiskBehaviorDataEntryRepo {
       final options =
           (response['data'] as List).map((e) => e as String).toList();
       return ApiResult.success(options);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> submitRiskyBehaviors(
+      RiskyBehaviorDetailsModel body) async {
+    try {
+      final response = await _riskBehaviorsServices.submitRiskyBehaviors(body);
+      return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
