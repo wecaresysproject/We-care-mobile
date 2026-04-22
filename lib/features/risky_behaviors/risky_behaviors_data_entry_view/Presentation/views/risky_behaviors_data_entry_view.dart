@@ -20,7 +20,8 @@ class RiskyBehaviorsDataEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<RiskyBehaviorsDataEntryCubit>(
       create: (context) {
-        final cubit = getIt<RiskyBehaviorsDataEntryCubit>();
+        final cubit = getIt<RiskyBehaviorsDataEntryCubit>()
+          ..getInitalRequests();
         if (existingData != null) {
           cubit.loadExistingData(existingData!);
         }

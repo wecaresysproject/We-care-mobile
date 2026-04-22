@@ -35,7 +35,8 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "القسم",
               containerHintText: state.selectedSection ?? "اختر القسم",
-              options: cubit.sections,
+              options: state.sections,
+              onRetryPressed: () => cubit.getSections(),
               onOptionSelected: (value) {
                 cubit.updateSection(value);
               },
@@ -51,12 +52,21 @@ class RiskyBehaviorsFormFieldsWidget extends StatelessWidget {
                   : AppColorsManager.textfieldOutsideBorderColor,
               categoryLabel: "النوع",
               containerHintText: state.selectedType ?? "اختر النوع",
-              options: cubit.getAvailableTypes(),
+              options: state.types,
+              loadingState: state.typesStatus == RequestStatus.loading
+                  ? OptionsLoadingState.loading
+                  : state.typesStatus == RequestStatus.failure
+                      ? OptionsLoadingState.error
+                      : OptionsLoadingState.loaded,
+              onRetryPressed: state.selectedSection != null
+                  ? () => cubit.getTypes(state.selectedSection!)
+                  : null,
               onOptionSelected: (value) {
                 cubit.updateType(value);
               },
               bottomSheetTitle: 'اختر النوع',
               searchHintText: 'ابحث عن النوع',
+              isDisabled: state.selectedSection == null,
             ),
             verticalSpacing(24),
 

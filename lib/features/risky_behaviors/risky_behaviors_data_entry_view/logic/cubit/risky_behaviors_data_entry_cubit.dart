@@ -2,15 +2,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
+import 'package:we_care/features/risky_behaviors/data/repos/risk_behaviors_data_entry_repo.dart';
 
 import 'risky_behaviors_data_entry_state.dart';
 
 class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   final AppSharedRepo _appSharedRepo;
+  final RiskBehaviorDataEntryRepo _riskBehaviorDataEntryRepo;
 
-  RiskyBehaviorsDataEntryCubit(this._appSharedRepo)
+  RiskyBehaviorsDataEntryCubit(
+      this._appSharedRepo, this._riskBehaviorDataEntryRepo)
       : super(const RiskyBehaviorsDataEntryState.initialState()) {
-    emitModuleGuidance();
+    getInitalRequests();
+  }
+
+  Future<void> getInitalRequests() async {
+    await Future.wait([
+      getSections(),
+      emitModuleGuidance(),
+    ]);
   }
 
   Future<void> emitModuleGuidance() async {
@@ -35,29 +45,63 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
     );
   }
 
-  // Static Dummy Data
-  final List<String> sections = ["التدخين", "الكحول", "المخدرات"];
+  Future<void> getSections() async {
+    safeEmit(state.copyWith(sectionsStatus: RequestStatus.loading));
+    final result = await _riskBehaviorDataEntryRepo.getSections();
+    result.when(
+      success: (data) {
+        safeEmit(state.copyWith(
+          sectionsStatus: RequestStatus.success,
+          sections: data,
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(sectionsStatus: RequestStatus.failure));
+      },
+    );
+  }
 
-  final Map<String, List<String>> typesBySection = {
-    "التدخين": ["سجائر", "شيشة", "IQOS", "Vape"],
-    "الكحول": ["كحول عام"],
-    "المخدرات": ["الحشيش", "المنبهات", "الهيروين", "الكوكايين", "مخدرات أخرى"],
-  };
+  Future<void> getTypes(String section) async {
+    safeEmit(state.copyWith(typesStatus: RequestStatus.loading));
+    final result = await _riskBehaviorDataEntryRepo.getTypes(section);
+    result.when(
+      success: (data) {
+        safeEmit(state.copyWith(
+          typesStatus: RequestStatus.success,
+          types: data,
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(typesStatus: RequestStatus.failure));
+      },
+    );
+  }
 
-  final Map<String, List<String>> optionsBySection = {
-    "التدخين": ["أقل من 5 يوميًا", "من 5 إلى 20 يوميًا", "أكثر من 20 يوميًا"],
-    "الكحول": ["نادر", "أسبوعي", "يومي"],
-    "المخدرات": ["نادر", "أسبوعي", "يومي"],
-  };
+  Future<void> getOptions(String section, String type) async {
+    safeEmit(state.copyWith(optionsStatus: RequestStatus.loading));
+    final result = await _riskBehaviorDataEntryRepo.getOptions(section, type);
+    result.when(
+      success: (data) {
+        safeEmit(
+          state.copyWith(
+            optionsStatus: RequestStatus.success,
+            options: data,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(optionsStatus: RequestStatus.failure));
+      },
+    );
+  }
 
   void updateSection(String section) {
     safeEmit(
       state.copyWith(
         selectedSection: section,
-        selectedType: null,
-        records: [],
       ),
     );
+    getTypes(section);
     validateForm();
   }
 
@@ -66,7 +110,13 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   }
 
   void updateType(String type) {
-    safeEmit(state.copyWith(selectedType: type));
+    safeEmit(state.copyWith(
+      selectedType: type,
+      options: [],
+    ));
+    if (state.selectedSection != null) {
+      getOptions(state.selectedSection!, type);
+    }
     validateForm();
   }
 
@@ -124,16 +174,16 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
         updatedDocId: existingData.id ?? '',
       ),
     );
+    getTypes(existingData.section);
+    getOptions(existingData.section, existingData.type);
     validateForm();
   }
 
   List<String> getAvailableTypes() {
-    if (state.selectedSection == null) return [];
-    return typesBySection[state.selectedSection] ?? [];
+    return state.types;
   }
 
   List<String> getAvailableOptions() {
-    if (state.selectedSection == null) return [];
-    return optionsBySection[state.selectedSection] ?? [];
+    return state.options;
   }
 }
