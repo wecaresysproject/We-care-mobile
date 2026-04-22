@@ -1,7 +1,7 @@
-import 'package:we_care/features/otp/Data/models/resend_otp_request_body.dart';
-import 'package:we_care/features/otp/Data/models/resend_otp_response_model.dart';
-import 'package:we_care/features/otp/Data/models/verify_otp_request_body_model.dart';
-import 'package:we_care/features/otp/Data/models/verify_otp_response_model.dart';
+import 'package:we_care/features/otp/data/models/resend_otp_request_body.dart';
+import 'package:we_care/features/otp/data/models/resend_otp_response_model.dart';
+import 'package:we_care/features/otp/data/models/verify_otp_request_body_model.dart';
+import 'package:we_care/features/otp/data/models/verify_otp_response_model.dart';
 
 import '../../../../core/networking/api_error_handler.dart';
 import '../../../../core/networking/api_result.dart';
