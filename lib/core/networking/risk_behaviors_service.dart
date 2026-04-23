@@ -28,4 +28,13 @@ abstract class RiskBehaviorsServices {
   Future<dynamic> submitRiskyBehaviors(
     @Body() RiskyBehaviorDetailsModel body,
   );
+
+  @GET(RiskyBehaviorsApiConstants.riskyBehaviorsSubmissions)
+  Future<dynamic> getUserRiskBehaviorsData();
+
+  @PUT(RiskyBehaviorsApiConstants.riskyBehaviorsSubmissions)
+  Future<dynamic> updateRiskyBehaviors(
+    @Query("id") String id,
+    @Body() RiskyBehaviorDetailsModel body,
+  );
 }

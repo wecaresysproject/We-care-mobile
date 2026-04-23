@@ -50,4 +50,14 @@ class RiskBehaviorDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<String>> updateRiskyBehaviors(
+      String id, RiskyBehaviorDetailsModel body) async {
+    try {
+      final response = await _riskBehaviorsServices.updateRiskyBehaviors(id, body);
+      return ApiResult.success(response['message']);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }

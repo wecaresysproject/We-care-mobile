@@ -4,4 +4,5 @@ class RiskyBehaviorsApiConstants {
   static const String riskyBehaviorsTypes = "/RiskyBehaviors/types";
   static const String riskyBehaviorsOptions = "/RiskyBehaviors/options";
   static const String riskyBehaviorsSubmission = "/RiskyBehaviors/Submittion";
+  static const String riskyBehaviorsSubmissions = "/RiskyBehaviors/submissions";
 }

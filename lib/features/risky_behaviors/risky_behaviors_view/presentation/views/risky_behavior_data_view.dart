@@ -189,12 +189,14 @@ class _BehaviorItem extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {
-                Navigator.pushNamed(
+              onPressed: () async {
+                await Navigator.pushNamed(
                   context,
                   Routes.riskyBehaviorsDataEntryView,
                   arguments: behavior,
                 );
+                if (!context.mounted) return;
+                context.read<RiskyBehaviorsViewCubit>().emitBehaviors();
               },
               icon: Icon(
                 Icons.edit,
@@ -226,7 +228,7 @@ class _BehaviorItem extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  "${record.period.fromDate} ${record.period.toDate != null ? "إلى ${record.period.toDate}" : "(مستمر)"}",
+                  "${record.period.fromDate} إلى ${record.period.toDate != null ? (record.period.toDate!) : "(مستمر)"}",
                   style: AppTextStyles.font14blackWeight400.copyWith(
                     color: Colors.grey[600],
                     fontSize: 12.sp,

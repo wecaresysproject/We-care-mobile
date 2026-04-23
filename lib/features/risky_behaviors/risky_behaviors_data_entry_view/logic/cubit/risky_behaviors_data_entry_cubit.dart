@@ -150,10 +150,6 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
   }
 
   Future<void> submit() async {
-    // if (!state.isFormValidated ||
-    //     state.selectedSection == null ||
-    //     state.selectedType == null) return;
-
     safeEmit(state.copyWith(status: RequestStatus.loading));
 
     final requestBody = RiskyBehaviorDetailsModel(
@@ -161,10 +157,13 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
       type: state.selectedType!,
       records: state.records,
       attachToDrugInteractionModules: state.attachToDrugInteractionModules,
+      id: state.isEditMode ? state.updatedDocId : null,
     );
 
-    final result =
-        await _riskBehaviorDataEntryRepo.submitRiskyBehaviors(requestBody);
+    final result = state.isEditMode
+        ? await _riskBehaviorDataEntryRepo.updateRiskyBehaviors(
+            state.updatedDocId, requestBody)
+        : await _riskBehaviorDataEntryRepo.submitRiskyBehaviors(requestBody);
 
     result.when(
       success: (message) {
