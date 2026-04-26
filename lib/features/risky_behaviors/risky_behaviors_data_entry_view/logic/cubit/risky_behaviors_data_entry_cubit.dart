@@ -196,7 +196,7 @@ class RiskyBehaviorsDataEntryCubit extends Cubit<RiskyBehaviorsDataEntryState> {
         attachToDrugInteractionModules:
             existingData.attachToDrugInteractionModules ?? false,
         isEditMode: true,
-        updatedDocId: existingData.id ?? '', //TODO: check this later
+        updatedDocId: existingData.id,
       ),
     );
     getTypes(existingData.section);
