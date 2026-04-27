@@ -233,14 +233,14 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
             ),
           );
         }
-        if (state.expextedPersonalGeneticDiseases == null &&
+        if (state.expectedPersonalGeneticDiseases == null &&
             state.requestStatus == RequestStatus.success) {
           return Center(
             child: Text("لا توجد بيانات متاحة",
                 style: AppTextStyles.font22MainBlueWeight700),
           );
         }
-        if (state.expextedPersonalGeneticDiseases!.isEmpty) {
+        if (state.expectedPersonalGeneticDiseases!.isEmpty) {
           return Center(
             child: Text("لا توجد بيانات متاحة",
                 style: AppTextStyles.font22MainBlueWeight700),
@@ -262,7 +262,7 @@ class ExpectedPersonalGenaticDiseases extends StatelessWidget {
             ),
             verticalSpacing(16),
             ExpectedPersonalGeneticDiseaseTable(
-              personalGeneticDiseases: state.expextedPersonalGeneticDiseases!,
+              personalGeneticDiseases: state.expectedPersonalGeneticDiseases!,
             ),
           ],
         );

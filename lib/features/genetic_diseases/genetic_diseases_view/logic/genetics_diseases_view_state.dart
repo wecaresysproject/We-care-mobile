@@ -23,7 +23,7 @@ class GeneticsDiseasesViewState extends Equatable {
   final FamilyNameGeneticDiseaseDetialsResponseModel?
       familyMemberGeneticDiseaseDetails;
   final PersonalGeneticDiseasDetails? currentPersonalGeneticDiseaseDetails;
-  final List<PersonalGenaticDisease>? expextedPersonalGeneticDiseases;
+  final List<PersonalGenaticDisease>? expectedPersonalGeneticDiseases;
   final List<CurrentPersonalGeneticDiseasesResponseModel>?
       currentPersonalGeneticDiseases;
   final ModuleGuidanceDataModel? moduleGuidanceData;
@@ -40,7 +40,7 @@ class GeneticsDiseasesViewState extends Equatable {
       this.currentPersonalGeneticDiseases,
       this.familyMemberGeneticDiseases,
       this.familyMemberGeneticDiseaseDetails,
-      this.expextedPersonalGeneticDiseases,
+      this.expectedPersonalGeneticDiseases,
       this.currentPersonalGeneticDiseaseDetails,
       this.moduleGuidanceData});
   const GeneticsDiseasesViewState.initial()
@@ -53,7 +53,7 @@ class GeneticsDiseasesViewState extends Equatable {
         familyMemberGeneticDiseases = null,
         familyMemberGeneticDiseaseDetails = null,
         currentPersonalGeneticDiseaseDetails = null,
-        expextedPersonalGeneticDiseases = null,
+        expectedPersonalGeneticDiseases = null,
         currentPersonalGeneticDiseases = null,
         familyMembersNames = null,
         moduleGuidanceData = null,
@@ -73,7 +73,7 @@ class GeneticsDiseasesViewState extends Equatable {
         currentPersonalGeneticDiseases,
         familyMemberGeneticDiseaseDetails,
         currentPersonalGeneticDiseaseDetails,
-        expextedPersonalGeneticDiseases,
+        expectedPersonalGeneticDiseases,
         moduleGuidanceData,
       ];
 
@@ -89,13 +89,12 @@ class GeneticsDiseasesViewState extends Equatable {
     FamilyMemberGeneticsDiseasesResponseModel? familyMemberGeneticDiseases,
     List<CurrentPersonalGeneticDiseasesResponseModel>?
         currentPersonalGeneticDiseases,
-    List<PersonalGenaticDisease>? personalGeneticDiseases,
     FamilyNameGeneticDiseaseDetialsResponseModel?
         familyMemberGeneticDiseaseDetails,
     ModuleGuidanceDataModel? moduleGuidanceData,
     PersonalGeneticDiseasDetails? personalGeneticDiseaseDetails,
     PersonalGeneticDiseasDetails? currentPersonalGeneticDiseaseDetails,
-    List<PersonalGenaticDisease>? expextedPersonalGeneticDiseases,
+    List<PersonalGenaticDisease>? expectedPersonalGeneticDiseases,
   }) {
     return GeneticsDiseasesViewState(
       message: message ?? this.message,
@@ -113,8 +112,8 @@ class GeneticsDiseasesViewState extends Equatable {
               this.currentPersonalGeneticDiseaseDetails,
       familyMemberGeneticDiseaseDetails: familyMemberGeneticDiseaseDetails ??
           this.familyMemberGeneticDiseaseDetails,
-      expextedPersonalGeneticDiseases: expextedPersonalGeneticDiseases ??
-          this.expextedPersonalGeneticDiseases,
+      expectedPersonalGeneticDiseases: expectedPersonalGeneticDiseases ??
+          this.expectedPersonalGeneticDiseases,
       currentPersonalGeneticDiseases:
           currentPersonalGeneticDiseases ?? this.currentPersonalGeneticDiseases,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,

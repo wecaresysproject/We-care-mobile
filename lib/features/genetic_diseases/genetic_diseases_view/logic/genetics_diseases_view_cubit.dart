@@ -183,7 +183,7 @@ class GeneticsDiseasesViewCubit extends Cubit<GeneticsDiseasesViewState> {
       success: (data) {
         emit(state.copyWith(
           requestStatus: RequestStatus.success,
-          personalGeneticDiseases: data.personalGenaticDisease,
+          expectedPersonalGeneticDiseases: data.personalGenaticDisease,
         ));
       },
       failure: (error) {
