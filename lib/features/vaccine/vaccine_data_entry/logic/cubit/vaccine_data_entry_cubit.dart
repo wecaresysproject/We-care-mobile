@@ -24,7 +24,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   final personalNotesController = TextEditingController();
   Future<void> loadVaccineDataForEditing(
       UserVaccineModel editingVaccineData) async {
-    emit(
+    safeEmit(
       state.copyWith(
         vaccineDateSelection: editingVaccineData.vaccineDate,
         selectedVaccineName: editingVaccineData.vaccineName,
@@ -42,7 +42,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   Future<void> submitEditVaccineData(S localozation) async {
-    emit(
+    safeEmit(
       state.copyWith(
         vaccineDataEntryStatus: RequestStatus.loading,
       ),
@@ -70,7 +70,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             vaccineDataEntryStatus: RequestStatus.success,
             message: successMessage,
@@ -78,7 +78,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             vaccineDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -95,14 +95,14 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             countriesNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -119,14 +119,14 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             vaccineCategories: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -136,7 +136,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   void updateSelectedCountry(String? selectedCountry) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedCountryName: selectedCountry,
       ),
@@ -145,7 +145,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
 // ترتيب الجرعه
   void updateDoseArrangement(String? dose) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedDoseArrangement: dose,
       ),
@@ -154,7 +154,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   void updateVaccineDate(String? vaccineDateSelection) {
-    emit(
+    safeEmit(
       state.copyWith(
         vaccineDateSelection: vaccineDateSelection,
       ),
@@ -164,7 +164,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
   /// اختر اسم الطعم
   void updateVaccineeName(String? selectedVaccineName) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedVaccineName: selectedVaccineName,
       ),
@@ -174,7 +174,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   Future<void> updateSelectedVaccineCategory(String? value) async {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedVaccineCategory: value,
       ),
@@ -185,7 +185,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 
   //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForVaccineDataEntry() async {
-    Future.wait([
+    await Future.wait([
       emitVaccineCategories(),
       emitCountriesData(),
       emitModuleGuidanceData(),
@@ -208,7 +208,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
               (e) => e.vaccineName,
             )
             .toList();
-        emit(
+        safeEmit(
           state.copyWith(
             vaccinesDataList: response,
             vaccinesNames: vaccineNames,
@@ -216,7 +216,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -228,7 +228,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   void getDoseArrangement() {
     for (var element in state.vaccinesDataList) {
       if (element.vaccineName == state.selectedVaccineName) {
-        emit(
+        safeEmit(
           state.copyWith(
             doseArrangementData: element.doses,
             vaccinePerfectAge: element.vaccinePerfectAge,
@@ -244,13 +244,13 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         state.selectedVaccineCategory == null ||
         state.selectedVaccineName == null ||
         state.selectedDoseArrangement == null) {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: true,
         ),
@@ -259,7 +259,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   Future<void> postVaccineDataEntry(S localozation) async {
-    emit(
+    safeEmit(
       state.copyWith(
         vaccineDataEntryStatus: RequestStatus.loading,
       ),
@@ -286,7 +286,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
     response.when(
       success: (sucessMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: sucessMessage,
             vaccineDataEntryStatus: RequestStatus.success,
@@ -294,7 +294,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             vaccineDataEntryStatus: RequestStatus.failure,
@@ -317,11 +317,15 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
     response.when(
       success: (response) {
-        emit(state.copyWith(moduleGuidanceData: response));
+        safeEmit(state.copyWith(moduleGuidanceData: response));
       },
       failure: (error) {
-        emit(state.copyWith(moduleGuidanceData: null));
+        safeEmit(state.copyWith(moduleGuidanceData: null));
       },
     );
+  }
+
+  void safeEmit(VaccineDataEntryState newState) {
+    if (!isClosed) emit(newState);
   }
 }
