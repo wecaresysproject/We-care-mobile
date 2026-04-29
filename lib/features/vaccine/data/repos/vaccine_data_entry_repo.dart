@@ -1,3 +1,4 @@
+import 'package:we_care/features/vaccine/data/models/vaccine_details_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/vaccine_services.dart';
@@ -10,6 +11,77 @@ class VaccineDataEntryRepo {
 
   VaccineDataEntryRepo({required VaccineApiServices vaccineApiServices})
       : _vaccineApiServices = vaccineApiServices;
+
+  Future<ApiResult<List<String>>> getBirthGenerations({
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.getBirthGenerations(
+        language,
+        userType,
+      );
+      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getTargetGroupsByBirthGeneration({
+    required String birthCohort,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.getTargetGroupsByBirthGeneration(
+        birthCohort,
+        language,
+        userType,
+      );
+      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getVaccineNamesByTargetGroup({
+    required String targetGroup,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.getVaccineNamesByTargetGroup(
+        targetGroup,
+        language,
+        userType,
+      );
+      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      return ApiResult.success(data);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<VaccineDetailsModel>> getVaccineDetailsByName({
+    required String vaccineName,
+    required String language,
+    required String userType,
+  }) async {
+    try {
+      final response = await _vaccineApiServices.getVaccineDetailsByName(
+        vaccineName,
+        language,
+        userType,
+      );
+      return ApiResult.success(
+        VaccineDetailsModel.fromJson(response['data'] as Map<String, dynamic>),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   Future<ApiResult<List<String>>> getVaccineCategories({
     required String language,

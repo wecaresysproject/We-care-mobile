@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
+import 'package:we_care/features/vaccine/data/models/vaccine_details_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_model.dart';
 
 @immutable
@@ -25,6 +26,14 @@ class VaccineDataEntryState extends Equatable {
   final String? editedVaccineId;
   final ModuleGuidanceDataModel? moduleGuidanceData;
 
+  // NEW FIELDS
+  final List<String> birthGenerations;
+  final String? selectedBirthGeneration;
+  final List<String> targetGroups;
+  final String? selectedTargetGroup;
+  final VaccineDetailsModel? vaccineDetails;
+  final RequestStatus vaccineDetailsStatus;
+
   const VaccineDataEntryState({
     this.countriesNames = const [],
     this.vaccineCategories = const [],
@@ -43,6 +52,12 @@ class VaccineDataEntryState extends Equatable {
     this.editedVaccineId,
     this.moduleGuidanceData,
     this.isEditMode = false,
+    this.birthGenerations = const [],
+    this.selectedBirthGeneration,
+    this.targetGroups = const [],
+    this.selectedTargetGroup,
+    this.vaccineDetails,
+    this.vaccineDetailsStatus = RequestStatus.initial,
   }) : super();
 
   const VaccineDataEntryState.initialState()
@@ -59,6 +74,12 @@ class VaccineDataEntryState extends Equatable {
           vaccinePerfectAge: null,
           editedVaccineId: null,
           moduleGuidanceData: null,
+          birthGenerations: const [],
+          selectedBirthGeneration: null,
+          targetGroups: const [],
+          selectedTargetGroup: null,
+          vaccineDetails: null,
+          vaccineDetailsStatus: RequestStatus.initial,
         );
 
   VaccineDataEntryState copyWith({
@@ -79,6 +100,12 @@ class VaccineDataEntryState extends Equatable {
     String? vaccinePerfectAge,
     String? editedVaccineId,
     ModuleGuidanceDataModel? moduleGuidanceData,
+    List<String>? birthGenerations,
+    String? selectedBirthGeneration,
+    List<String>? targetGroups,
+    String? selectedTargetGroup,
+    VaccineDetailsModel? vaccineDetails,
+    RequestStatus? vaccineDetailsStatus,
   }) {
     return VaccineDataEntryState(
       vaccineDataEntryStatus:
@@ -101,6 +128,13 @@ class VaccineDataEntryState extends Equatable {
       vaccinePerfectAge: vaccinePerfectAge ?? this.vaccinePerfectAge,
       editedVaccineId: editedVaccineId ?? this.editedVaccineId,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+      birthGenerations: birthGenerations ?? this.birthGenerations,
+      selectedBirthGeneration:
+          selectedBirthGeneration ?? this.selectedBirthGeneration,
+      targetGroups: targetGroups ?? this.targetGroups,
+      selectedTargetGroup: selectedTargetGroup ?? this.selectedTargetGroup,
+      vaccineDetails: vaccineDetails ?? this.vaccineDetails,
+      vaccineDetailsStatus: vaccineDetailsStatus ?? this.vaccineDetailsStatus,
     );
   }
 
@@ -123,5 +157,11 @@ class VaccineDataEntryState extends Equatable {
         vaccinePerfectAge,
         editedVaccineId,
         moduleGuidanceData,
+        birthGenerations,
+        selectedBirthGeneration,
+        targetGroups,
+        selectedTargetGroup,
+        vaccineDetails,
+        vaccineDetailsStatus,
       ];
 }

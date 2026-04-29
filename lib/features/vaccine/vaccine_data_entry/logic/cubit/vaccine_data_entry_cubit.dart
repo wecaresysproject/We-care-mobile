@@ -111,26 +111,123 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
   }
 
-  Future<void> emitVaccineCategories() async {
-    final response = await _vaccineDataEntryRepo.getVaccineCategories(
+  Future<void> emitBirthGenerations() async {
+    final response = await _vaccineDataEntryRepo.getBirthGenerations(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
 
     response.when(
-      success: (response) {
-        safeEmit(
-          state.copyWith(
-            vaccineCategories: response,
-          ),
-        );
+      success: (data) {
+        safeEmit(state.copyWith(birthGenerations: data));
       },
       failure: (error) {
-        safeEmit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
+        safeEmit(state.copyWith(message: error.errors.first));
+      },
+    );
+  }
+
+  Future<void> updateBirthGeneration(String? value) async {
+    safeEmit(state.copyWith(
+      selectedBirthGeneration: value,
+      // Reset dependent fields
+      selectedTargetGroup: null,
+      targetGroups: [],
+      selectedVaccineName: null,
+      vaccinesNames: [],
+      vaccineDetails: null,
+      vaccineDetailsStatus: RequestStatus.initial,
+    ));
+    validateRequiredFields();
+    await emitTargetGroups();
+  }
+
+  Future<void> emitTargetGroups() async {
+    if (state.selectedBirthGeneration == null) return;
+    final response =
+        await _vaccineDataEntryRepo.getTargetGroupsByBirthGeneration(
+      birthCohort: state.selectedBirthGeneration!,
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (data) {
+        safeEmit(state.copyWith(targetGroups: data));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(message: error.errors.first));
+      },
+    );
+  }
+
+  Future<void> updateTargetGroup(String? value) async {
+    safeEmit(state.copyWith(
+      selectedTargetGroup: value,
+      // Reset dependent fields
+      selectedVaccineName: null,
+      vaccinesNames: [],
+      vaccineDetails: null,
+      vaccineDetailsStatus: RequestStatus.initial,
+    ));
+    validateRequiredFields();
+    await emitVaccineNames();
+  }
+
+  Future<void> emitVaccineNames() async {
+    if (state.selectedTargetGroup == null) return;
+    final response = await _vaccineDataEntryRepo.getVaccineNamesByTargetGroup(
+      targetGroup: state.selectedTargetGroup!,
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (data) {
+        safeEmit(state.copyWith(vaccinesNames: data));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(message: error.errors.first));
+      },
+    );
+  }
+
+  /// اختر اسم الطعم
+  Future<void> updateVaccineeName(String? selectedVaccineName) async {
+    safeEmit(
+      state.copyWith(
+        selectedVaccineName: selectedVaccineName,
+        vaccineDetails: null, // Reset details when name changes
+        vaccineDetailsStatus: RequestStatus.initial,
+      ),
+    );
+    validateRequiredFields();
+    await emitVaccineDetails();
+  }
+
+  Future<void> emitVaccineDetails() async {
+    if (state.selectedVaccineName == null) return;
+    safeEmit(state.copyWith(vaccineDetailsStatus: RequestStatus.loading));
+    final response = await _vaccineDataEntryRepo.getVaccineDetailsByName(
+      vaccineName: state.selectedVaccineName!,
+      language: AppStrings.arabicLang,
+      userType: UserTypes.patient.name.firstLetterToUpperCase,
+    );
+
+    response.when(
+      success: (data) {
+        safeEmit(state.copyWith(
+          vaccineDetails: data,
+          vaccineDetailsStatus: RequestStatus.success,
+          vaccinePerfectAge:
+              data.recommendedAge, // Sync with old field if needed
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(
+          message: error.errors.first,
+          vaccineDetailsStatus: RequestStatus.failure,
+        ));
       },
     );
   }
@@ -143,15 +240,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
   }
 
-// ترتيب الجرعه
-  void updateDoseArrangement(String? dose) {
-    safeEmit(
-      state.copyWith(
-        selectedDoseArrangement: dose,
-      ),
-    );
-    validateRequiredFields();
-  }
+  // ترتيب الجرعه
 
   void updateVaccineDate(String? vaccineDateSelection) {
     safeEmit(
@@ -162,88 +251,19 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     validateRequiredFields();
   }
 
-  /// اختر اسم الطعم
-  void updateVaccineeName(String? selectedVaccineName) {
-    safeEmit(
-      state.copyWith(
-        selectedVaccineName: selectedVaccineName,
-      ),
-    );
-    validateRequiredFields();
-    getDoseArrangement();
-  }
-
-  Future<void> updateSelectedVaccineCategory(String? value) async {
-    safeEmit(
-      state.copyWith(
-        selectedVaccineCategory: value,
-      ),
-    );
-    validateRequiredFields();
-    await emitVaccineResultsByCategoryName();
-  }
-
-  //! crash app when user try get into page and go back in afew seconds , gives me error state emitted after cubit closed
   Future<void> intialRequestsForVaccineDataEntry() async {
     await Future.wait([
-      emitVaccineCategories(),
+      emitBirthGenerations(),
       emitCountriesData(),
       emitModuleGuidanceData(),
     ]);
   }
 
-  Future<void> emitVaccineResultsByCategoryName() async {
-    final response =
-        await _vaccineDataEntryRepo.getVaccineResultsByCategoryName(
-      vaccineCategory:
-          state.selectedVaccineCategory!, //TODO: handle null check later
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-    );
-
-    response.when(
-      success: (response) {
-        final vaccineNames = response
-            .map(
-              (e) => e.vaccineName,
-            )
-            .toList();
-        safeEmit(
-          state.copyWith(
-            vaccinesDataList: response,
-            vaccinesNames: vaccineNames,
-          ),
-        );
-      },
-      failure: (error) {
-        safeEmit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
-  void getDoseArrangement() {
-    for (var element in state.vaccinesDataList) {
-      if (element.vaccineName == state.selectedVaccineName) {
-        safeEmit(
-          state.copyWith(
-            doseArrangementData: element.doses,
-            vaccinePerfectAge: element.vaccinePerfectAge,
-          ),
-        );
-      }
-    }
-  }
-
-  /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
     if (state.vaccineDateSelection == null ||
-        state.selectedVaccineCategory == null ||
-        state.selectedVaccineName == null ||
-        state.selectedDoseArrangement == null) {
+        state.selectedBirthGeneration == null ||
+        state.selectedTargetGroup == null ||
+        state.selectedVaccineName == null) {
       safeEmit(
         state.copyWith(
           isFormValidated: false,
@@ -268,9 +288,9 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
       requestBody: VaccineModuleRequestBody(
         vaccineName: state.selectedVaccineName!,
         vaccineDate: state.vaccineDateSelection!,
-        vaccineCategory: state.selectedVaccineCategory!,
-        vaccinePerfectAge: state.vaccinePerfectAge!,
-        dose: state.selectedDoseArrangement!,
+        vaccineCategory: state.vaccineDetails?.vaccineCategory ?? '',
+        vaccinePerfectAge: state.vaccinePerfectAge ?? '',
+        dose: state.selectedDoseArrangement ?? '',
         regionForVaccine: vaccinationLocationController.text.isEmpty
             ? localozation.no_data_entered
             : vaccinationLocationController.text,
