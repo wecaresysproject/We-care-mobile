@@ -49,18 +49,25 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     );
     final response = await _vaccineDataEntryRepo.editVaccineData(
       requestBody: VaccineModuleRequestBody(
+        date: state.vaccineDateSelection!,
+        targetAge: state.selectedTargetGroup!,
         vaccineName: state.selectedVaccineName!,
-        vaccineDate: state.vaccineDateSelection!,
-        vaccineCategory: state.selectedVaccineCategory!,
-        vaccinePerfectAge: state.vaccinePerfectAge!,
-        dose: state.selectedDoseArrangement!,
-        regionForVaccine: vaccinationLocationController.text.isEmpty
+        generation: state.selectedBirthGeneration!,
+        vaccineCategory: state.vaccineDetails?.vaccineCategory ?? '',
+        perfectAge: state.vaccineDetails?.recommendedAge ?? '',
+        abbreviationCode: state.vaccineDetails?.abbreviationCode ?? '',
+        vaccineActionDescription: state.vaccineDetails?.description ?? '',
+        priorityTake: state.vaccineDetails?.priorityTake ?? '',
+        targetDisease: state.vaccineDetails?.targetDisease ?? '',
+        dose: state.vaccineDetails?.dose ?? '',
+        wayToTakeVaccine: state.vaccineDetails?.administrationMethod ?? '',
+        vaccinationProvider: vaccinationLocationController.text.isEmpty
             ? localozation.no_data_entered
             : vaccinationLocationController.text,
         country: state.selectedCountryName.isEmptyOrNull
             ? localozation.no_data_entered
             : state.selectedCountryName!,
-        notes: personalNotesController.text.isEmpty
+        additionalInfo: personalNotesController.text.isEmpty
             ? localozation.no_data_entered
             : personalNotesController.text,
       ),
@@ -112,10 +119,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   }
 
   Future<void> emitBirthGenerations() async {
-    final response = await _vaccineDataEntryRepo.getBirthGenerations(
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
-    );
+    final response = await _vaccineDataEntryRepo.getBirthGenerations();
 
     response.when(
       success: (data) {
@@ -146,9 +150,7 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     if (state.selectedBirthGeneration == null) return;
     final response =
         await _vaccineDataEntryRepo.getTargetGroupsByBirthGeneration(
-      birthCohort: state.selectedBirthGeneration!,
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      generation: state.selectedBirthGeneration!,
     );
 
     response.when(
@@ -177,9 +179,8 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
   Future<void> emitVaccineNames() async {
     if (state.selectedTargetGroup == null) return;
     final response = await _vaccineDataEntryRepo.getVaccineNamesByTargetGroup(
-      targetGroup: state.selectedTargetGroup!,
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      generation: state.selectedBirthGeneration!,
+      targetAge: state.selectedTargetGroup!,
     );
 
     response.when(
@@ -210,8 +211,8 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
     safeEmit(state.copyWith(vaccineDetailsStatus: RequestStatus.loading));
     final response = await _vaccineDataEntryRepo.getVaccineDetailsByName(
       vaccineName: state.selectedVaccineName!,
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
+      generation: state.selectedBirthGeneration!,
+      targetAge: state.selectedTargetGroup!,
     );
 
     response.when(
@@ -284,23 +285,31 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
         vaccineDataEntryStatus: RequestStatus.loading,
       ),
     );
+    final requestBody = VaccineModuleRequestBody(
+      date: state.vaccineDateSelection!,
+      targetAge: state.selectedTargetGroup!,
+      vaccineName: state.selectedVaccineName!,
+      generation: state.selectedBirthGeneration!,
+      vaccineCategory: state.vaccineDetails?.vaccineCategory ?? '',
+      perfectAge: state.vaccineDetails?.recommendedAge ?? '',
+      abbreviationCode: state.vaccineDetails?.abbreviationCode ?? '',
+      vaccineActionDescription: state.vaccineDetails?.description ?? '',
+      priorityTake: state.vaccineDetails?.priorityTake ?? '',
+      targetDisease: state.vaccineDetails?.targetDisease ?? '',
+      dose: state.vaccineDetails?.dose ?? '',
+      wayToTakeVaccine: state.vaccineDetails?.administrationMethod ?? '',
+      vaccinationProvider: vaccinationLocationController.text.isEmpty
+          ? localozation.no_data_entered
+          : vaccinationLocationController.text,
+      country: state.selectedCountryName.isEmptyOrNull
+          ? localozation.no_data_entered
+          : state.selectedCountryName!,
+      additionalInfo: personalNotesController.text.isEmpty
+          ? localozation.no_data_entered
+          : personalNotesController.text,
+    );
     final response = await _vaccineDataEntryRepo.postVaccineDataEntry(
-      requestBody: VaccineModuleRequestBody(
-        vaccineName: state.selectedVaccineName!,
-        vaccineDate: state.vaccineDateSelection!,
-        vaccineCategory: state.vaccineDetails?.vaccineCategory ?? '',
-        vaccinePerfectAge: state.vaccinePerfectAge ?? '',
-        dose: state.selectedDoseArrangement ?? '',
-        regionForVaccine: vaccinationLocationController.text.isEmpty
-            ? localozation.no_data_entered
-            : vaccinationLocationController.text,
-        country: state.selectedCountryName.isEmptyOrNull
-            ? localozation.no_data_entered
-            : state.selectedCountryName!,
-        notes: personalNotesController.text.isEmpty
-            ? localozation.no_data_entered
-            : personalNotesController.text,
-      ),
+      requestBody: requestBody,
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );

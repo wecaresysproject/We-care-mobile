@@ -12,16 +12,10 @@ class VaccineDataEntryRepo {
   VaccineDataEntryRepo({required VaccineApiServices vaccineApiServices})
       : _vaccineApiServices = vaccineApiServices;
 
-  Future<ApiResult<List<String>>> getBirthGenerations({
-    required String language,
-    required String userType,
-  }) async {
+  Future<ApiResult<List<String>>> getBirthGenerations() async {
     try {
-      final response = await _vaccineApiServices.getBirthGenerations(
-        language,
-        userType,
-      );
-      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      final response = await _vaccineApiServices.getBirthGenerations();
+      final data = (response['data'] as List).map<String>((e) => e).toList();
       return ApiResult.success(data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -29,17 +23,14 @@ class VaccineDataEntryRepo {
   }
 
   Future<ApiResult<List<String>>> getTargetGroupsByBirthGeneration({
-    required String birthCohort,
-    required String language,
-    required String userType,
+    required String generation,
   }) async {
     try {
-      final response = await _vaccineApiServices.getTargetGroupsByBirthGeneration(
-        birthCohort,
-        language,
-        userType,
+      final response =
+          await _vaccineApiServices.getTargetGroupsByBirthGeneration(
+        generation,
       );
-      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      final data = (response['data'] as List).map<String>((e) => e).toList();
       return ApiResult.success(data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -47,17 +38,15 @@ class VaccineDataEntryRepo {
   }
 
   Future<ApiResult<List<String>>> getVaccineNamesByTargetGroup({
-    required String targetGroup,
-    required String language,
-    required String userType,
+    required String generation,
+    required String targetAge,
   }) async {
     try {
       final response = await _vaccineApiServices.getVaccineNamesByTargetGroup(
-        targetGroup,
-        language,
-        userType,
+        generation,
+        targetAge,
       );
-      final data = (response['data'] as List).map((e) => e.toString()).toList();
+      final data = (response['data'] as List).map<String>((e) => e).toList();
       return ApiResult.success(data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -66,18 +55,17 @@ class VaccineDataEntryRepo {
 
   Future<ApiResult<VaccineDetailsModel>> getVaccineDetailsByName({
     required String vaccineName,
-    required String language,
-    required String userType,
+    required String generation,
+    required String targetAge,
   }) async {
     try {
       final response = await _vaccineApiServices.getVaccineDetailsByName(
+        generation,
+        targetAge,
         vaccineName,
-        language,
-        userType,
       );
-      return ApiResult.success(
-        VaccineDetailsModel.fromJson(response['data'] as Map<String, dynamic>),
-      );
+      final data = VaccineDetailsModel.fromJson(response['data'][0]);
+      return ApiResult.success(data);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

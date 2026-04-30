@@ -39,7 +39,6 @@ class _VaccineDataEntryFormFieldsState
             _buildVaccineFiltersSection(context, state),
             verticalSpacing(16),
             _buildVaccineDetailsContainer(state),
-            verticalSpacing(16),
             _buildAdditionalInfoSection(context, state),
             verticalSpacing(24),
             submitVaccineDataEntryButtonBlocConsumer(),
@@ -153,6 +152,7 @@ class _VaccineDataEntryFormFieldsState
     final details = state.vaccineDetails!;
     return Container(
       padding: EdgeInsets.all(16.w),
+      margin: EdgeInsets.only(bottom: 16.h),
       decoration: BoxDecoration(
         color: AppColorsManager.textfieldInsideColor,
         borderRadius: BorderRadius.circular(12.r),
@@ -163,10 +163,10 @@ class _VaccineDataEntryFormFieldsState
         children: [
           _buildDetailRow("فئة اللقاح", details.vaccineCategory),
           _buildDetailRow("العمر النموذي", details.recommendedAge),
-          _buildDetailRow("الرمز المختصر", details.shortCode),
+          _buildDetailRow("الرمز المختصر", details.abbreviationCode),
           _buildDetailRow("وصف عمل اللقاح", details.description),
           _buildDetailRow("إلزامي / اختياري", details.priorityTake),
-          _buildDetailRow("المرض المستهدف", details.targetDose),
+          _buildDetailRow("المرض المستهدف", details.targetDisease),
           _buildDetailRow("الجرعة", details.dose),
           _buildDetailRow("طريقة التطعيم", details.administrationMethod),
         ],
