@@ -16,7 +16,8 @@ class VaccineApiConstants {
   static const getVaccineDetailsByName = "/Vaccine/vaccine-details";
   //View Entry
 
-  static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";
+  static const getUserVaccines = "/Vaccine/user-vaccines";
+  static const getUserSubmissionDates = "/Vaccine/years";
   static const getVaccineById = "/VaccineUserEntryPage/GetVaccineById";
   static const deleteVaccineById = "/VaccineUserEntryPage/DeleteUserVaccine";
 
