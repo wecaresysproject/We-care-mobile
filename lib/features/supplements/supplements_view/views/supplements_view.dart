@@ -542,12 +542,12 @@ class _SupplementsViewState extends State<SupplementsView>
             return DataRow(
               cells: [
                 _cell(item.nutrient ?? "N/A", isElementNameCell: true),
-                _cell(item.standard?.toStringAsFixed(2) ?? "N/A"),
-                _cell(item.accumulativeStandard?.toStringAsFixed(2) ?? "N/A"),
-                _cell(item.difference?.toStringAsFixed(2) ?? "N/A"),
-                _cell(item.value?.toStringAsFixed(2) ?? "N/A"),
+                _cell(item.standard?.toStringAsFixed(1) ?? "N/A"),
+                _cell(item.accumulativeStandard?.toStringAsFixed(1) ?? "N/A"),
+                _cell(item.difference?.toStringAsFixed(1) ?? "N/A"),
+                _cell(item.amountFromVitamins?.toStringAsFixed(1) ?? "N/A"),
                 _cell(
-                    item.differenceAfterVitamins?.toStringAsFixed(2) ?? "N/A"),
+                    item.differenceAfterVitamins?.toStringAsFixed(1) ?? "N/A"),
               ],
             );
           }).toList(),
