@@ -14,11 +14,6 @@ class PushNotificationsService {
 
   static Future<void> init(GlobalKey<NavigatorState> navigatorKey) async {
     await _messaging.requestPermission();
-    // await getAndAppLogger.infoToken();
-    // final token = await _messaging.getToken();
-    // AppLogger.info('FCM Token: $token');
-    // Set the navigator key in LocalNotificationService
-    // await LocalNotificationService.init();
     LocalNotificationService.setNavigatorKey(navigatorKey);
 
     //!when the app is in the background or terminated.
@@ -46,6 +41,8 @@ class PushNotificationsService {
       GlobalKey<NavigatorState> navigatorKey) {
     FirebaseMessaging.onMessage.listen(
       (RemoteMessage message) {
+        AppLogger.info(
+            "Foreground notification message.toMap: ${message.toMap()}");
         AppLogger.info(
             "Foreground notification message.notification?.title: ${message.notification?.title}");
         AppLogger.info(
@@ -143,9 +140,5 @@ class PushNotificationsService {
       AppLogger.error("Error navigating from notification: $e");
       AppLogger.error(stack.toString());
     }
-  }
-
-  static void sendTokenToServer(String token) {
-    // Implement API call to send token to your backend if needed
   }
 }

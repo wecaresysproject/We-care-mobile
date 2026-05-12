@@ -111,7 +111,7 @@ class DisableMentalHealthUmbrellaDialogWidget extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'أكمل',
+                        'إيقاف المظلة',
                         style: AppTextStyles.font22WhiteWeight600.copyWith(
                           color: AppColorsManager.mainDarkBlue,
                         ),
@@ -139,7 +139,7 @@ class DisableMentalHealthUmbrellaDialogWidget extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'إلغاء',
+                        'عودة',
                         style: AppTextStyles.font22WhiteWeight600.copyWith(
                           color: Color(0xffE02E2E),
                         ),

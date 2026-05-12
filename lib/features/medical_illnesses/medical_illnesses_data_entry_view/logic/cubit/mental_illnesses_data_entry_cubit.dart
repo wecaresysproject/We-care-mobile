@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
-import 'package:we_care/core/Services/push_notifications_services.dart';
+import 'package:we_care/core/Services/fcm_token_manager.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
@@ -20,7 +20,7 @@ part 'mental_illnesses_data_entry_state.dart';
 class MedicalIllnessesDataEntryCubit
     extends Cubit<MedicalIllnessesDataEntryState> {
   MedicalIllnessesDataEntryCubit(this._medicalIllnessesDataEntryRepo,
-      this.pushNotificationsService, this.sharedRepo)
+      this.fcmTokenManager, this.sharedRepo)
       : super(
           MedicalIllnessesDataEntryState.initialState(),
         );
@@ -29,7 +29,7 @@ class MedicalIllnessesDataEntryCubit
 
   final noOfSessionsController = TextEditingController(); // عدد الجلسات
 
-  final PushNotificationsService pushNotificationsService;
+  final FcmTokenManager fcmTokenManager;
   void addNewSymptomField() {
     final newController = TextEditingController();
     final updatedControllers =
@@ -532,7 +532,7 @@ class MedicalIllnessesDataEntryCubit
         mentalIllnessesDataEntryStatus: RequestStatus.loading,
       ),
     );
-    final token = await pushNotificationsService.getAndLogToken();
+    final token = await fcmTokenManager.getAndLogToken();
     final response =
         await _medicalIllnessesDataEntryRepo.postActivationOfUmbrella(
       requestBody: PostFcmTokenRequest(
