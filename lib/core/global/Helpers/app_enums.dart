@@ -40,6 +40,66 @@ enum FamilyCodes {
   MotherSideAunt,
 }
 
+String getArabicFamilyName(String code) {
+  switch (code) {
+    case "Mam":
+      return "الأم";
+    case "Dad":
+      return "الأب";
+    case "GrandpaFather":
+      return "الجد (من جهة الأب)";
+    case "GrandmaFather":
+      return "الجدة (من جهة الأب)";
+    case "GrandpaMother":
+      return "الجد (من جهة الأم)";
+    case "GrandmaMother":
+      return "الجدة (من جهة الأم)";
+    case "Bro":
+      return "الأخ";
+    case "Sis":
+      return "الأخت";
+    case "FatherSideUncle":
+      return "العم";
+    case "FatherSideAunt":
+      return "العمة";
+    case "MotherSideUncle":
+      return "الخال";
+    case "MotherSideAunt":
+      return "الخالة";
+    default:
+      return code; // fallback
+  }
+}
+
+const defaultFamilyNames = {
+  'الجد',
+  'الجدة',
+  'الجده',
+  'الاب',
+  'الأب',
+  'الام',
+  'الأم',
+  'الاخ',
+  'الأخ',
+  'أخ',
+  'الاخت',
+  'الأخت',
+  'أخت',
+  'العم',
+  'عم',
+  'العمة',
+  'العمه',
+  'عمة',
+  'الخال',
+  'خال',
+  'الخالة',
+  'الخاله',
+  'خالة',
+};
+bool isDefaultFamilyMember(String name) {
+  return defaultFamilyNames.contains(name.trim());
+}
+
 enum PlanType {
   weekly,
   monthly,

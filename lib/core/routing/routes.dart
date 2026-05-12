@@ -144,4 +144,5 @@ class Routes {
   static const qualityOfLifeTableView = '/qualityOfLifeTableView';
   static const riskyBehaviorsDataEntryView = '/riskyBehaviorsDataEntryView';
   static const riskyBehaviorsDataView = '/riskyBehaviorsDataView';
+  static const systemOutputJsonResponseView = '/systemOutputJsonResponseView';
 }

@@ -46,7 +46,9 @@ class SimilarTests {
   String testDate;
   String testName;
   String code;
-  String standardRate;
+  String? standardRate;
+  @JsonKey(name: 'selectedChoice')
+  String? resultAsText;
   double? writtenPercent;
   String interpretation;
   String recommendation;
@@ -56,8 +58,9 @@ class SimilarTests {
     required this.testDate,
     required this.testName,
     required this.code,
-    required this.standardRate,
-    required this.writtenPercent,
+    this.standardRate,
+    this.resultAsText,
+    this.writtenPercent,
     required this.interpretation,
     required this.recommendation,
   });
