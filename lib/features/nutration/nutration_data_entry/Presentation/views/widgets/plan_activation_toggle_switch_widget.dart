@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_dialogs.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
 
 class PlanActivationToggleBlocBuilder extends StatelessWidget {
@@ -95,6 +97,16 @@ class PlanActivationToggleBlocBuilder extends StatelessWidget {
             Text(
               'تفعيل الخطة',
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            ),
+            horizontalSpacing(10),
+            IconButton(
+              onPressed: () {
+                context.pushNamed(Routes.systemOutputJsonResponseView);
+              },
+              icon: const Icon(
+                Icons.data_object,
                 color: AppColorsManager.mainDarkBlue,
               ),
             ),

@@ -16,6 +16,7 @@ class DeepSeekService {
   static String? nutrationSystemPrompt;
   static String? newMedicalCompitabilitySystemPrompt;
   static String? medicinesCompitabilitySystemPrompt;
+  static String? systemOutputJsonResponse;
 
 //! real deepseek
   static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
@@ -33,7 +34,7 @@ class DeepSeekService {
         },
         body: jsonEncode(
           {
-            'model': 'deepseek-chat',
+            'model': 'deepseek-v4-pro',
             'messages': [
               {
                 'role': 'system',
@@ -44,8 +45,8 @@ class DeepSeekService {
                 'content': buildUserDietPrompt(dietInput),
               }
             ],
-            'temperature': 0.1,
-            'max_tokens': 8000, // مهم لتقليل cost ومنع expansion
+            'temperature': 0,
+            'max_tokens': 12000, // مهم لتقليل cost ومنع expansion
           },
         ),
       );
@@ -71,6 +72,7 @@ class DeepSeekService {
 
         final jsonString = jsonMatch.group(0)!;
         final nutritionJson = jsonDecode(jsonString);
+        systemOutputJsonResponse = jsonString;
 
         return NutrationFactsModel.fromJson(nutritionJson);
       } else {
