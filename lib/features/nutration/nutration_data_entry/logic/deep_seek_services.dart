@@ -34,7 +34,7 @@ class DeepSeekService {
         },
         body: jsonEncode(
           {
-            'model': 'deepseek-v4-pro',
+            'model': 'deepseek-v4-flash',
             'messages': [
               {
                 'role': 'system',
@@ -87,73 +87,6 @@ class DeepSeekService {
 
     return null;
   }
-
-  // static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
-  //   try {
-  //     AppLogger.debug(' deepSeekBaseUrl: $apiKey $deepSeekBaseUrl');
-
-  //     final response = await http.post(
-  //       Uri.parse("https://openrouter.ai/api/v1/chat/completions"),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization':
-  //             'Bearer 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',
-  //       },
-  //       body: jsonEncode(
-  //         {
-  //           'model':
-  //               "deepseek/deepseek-r1-0528:free", //"deepseek/deepseek-chat",
-  //           // "reasoning": {"enabled": true},
-  //           'messages': [
-  //             {
-  //               'role': 'system',
-  //               'content': buildSystemNutritionPrompt(),
-  //             },
-  //             {
-  //               'role': 'user',
-  //               'content': buildUserDietPrompt(dietInput),
-  //             }
-  //           ],
-  //
-  //           // 'max_tokens': 4000,
-  //           'temperature': 0.2,
-  //         },
-  //       ),
-  //     );
-
-  //     // input tokens (algorithm) + buildUserDietPrompt <= limited cridets
-
-  //     if (response.statusCode == 200) {
-  //       /// 🔥 هنا الإصلاح الأساسي — UTF8 correct decoding
-  //       final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-  //       AppLogger.debug('deepseek Response (decoded): $decoded');
-
-  //       final content = decoded['choices'][0]['message']['content'];
-  //       // AppLogger.debug('deepseek Response (decoded): $content');
-
-  //       /// استخراج JSON من النص
-  //       final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
-
-  //       if (jsonMatch != null) {
-  //         final jsonString = jsonMatch.group(0)!;
-
-  //         /// parse JSON
-  //         final nutritionJson = jsonDecode(jsonString);
-
-  //         return NutrationFactsModel.fromJson(nutritionJson);
-  //       }
-
-  //       AppLogger.error("❗ JSON not found inside LLM response");
-  //     } else {
-  //       AppLogger.error(
-  //           'deepseek API Error: ${response.statusCode} - ${response.body}');
-  //     }
-  //   } catch (e) {
-  //     AppLogger.error('Error analyzing diet plan: $e');
-  //   }
-
-  //   return null;
-  // }
 
   static String buildSystemNutritionPrompt() {
     if (nutrationSystemPrompt != null && nutrationSystemPrompt!.isNotEmpty) {
