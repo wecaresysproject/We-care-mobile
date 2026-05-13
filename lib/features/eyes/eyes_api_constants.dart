@@ -44,6 +44,5 @@ class EyesApiConstants {
   static const getGlassesDetailsById = "/EyesDataEntry/glasses/details";
   static const deleteGlassesById = "/EyesDataEntry/glasses";
 
-    static const getEffectedEyeParts = "/EyesDataEntry/affected-eye-parts";    
-
+  static const getEffectedEyeParts = "/EyesDataEntry/affected-eye-parts";
 }

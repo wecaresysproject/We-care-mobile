@@ -62,8 +62,8 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                         Row(children: [
                           Expanded(
                             child: DetailsViewInfoTile(
-                              title: "الجرعة",
-                              value: medicine.dosage,
+                              title: "كمية الجرعة",
+                              value: medicine.selectedDoseAmount!,
                               icon: 'assets/images/hugeicons_medicine-01.png',
                             ),
                           ),
@@ -90,7 +90,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                         ),
                         DetailsViewInfoTile(
                           title: "الشكل الدوائي",
-                          value: " اقراص",
+                          value: medicine.usageMethod,
                           icon: 'assets/images/symptoms_icon.png',
                           isExpanded: true,
                         ),
@@ -102,11 +102,9 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                           isExpanded: true,
                         ),
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment
-                              .center, 
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
-      
                               child: DetailsViewInfoTile(
                                 title: "التنبيهات",
                                 value: medicine.reminderStatus
@@ -115,7 +113,7 @@ class SameDateMedicineDetailsView extends StatelessWidget {
                                 icon: 'assets/images/date_icon.png',
                               ),
                             ),
-                            SizedBox(width: 8.w), 
+                            SizedBox(width: 8.w),
                             Flexible(
                               child: CustomContainer(value: medicine.reminder),
                             ),
@@ -140,11 +138,11 @@ void shareDetails(String date, List<MedicineModel> medicines) {
   for (int i = 0; i < medicines.length; i++) {
     final medicine = medicines[i];
     buffer.writeln('🔹 اسم الدواء: ${medicine.medicineName}');
-    buffer.writeln('   - الجرعة: ${medicine.dosage}');
+    buffer.writeln('   - كمية الجرعة: ${medicine.selectedDoseAmount}');
     buffer.writeln('   - عدد مرات الجرعة: ${medicine.dosageFrequency}');
     buffer.writeln('   - مدة العلاج: ${medicine.timeDuration}');
     buffer.writeln('   - اسم الطبيب: ${medicine.doctorName}');
-    buffer.writeln('   - الشكل الدوائي: أقراص');
+    buffer.writeln('   - الشكل الدوائي: ${medicine.usageMethod}');
     buffer.writeln('   - الملاحظات: ${medicine.personalNotes}');
     buffer.writeln(
         '   - التنبيهات: ${medicine.reminderStatus ? 'مفعل' : 'غير مفعل'}');

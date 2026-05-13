@@ -148,7 +148,7 @@ class PrescriptionViewCubit extends Cubit<PrescriptionViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.prescriptions.name,
+      WeCareMedicalModules.prescriptionsView.name,
     );
 
     result.when(

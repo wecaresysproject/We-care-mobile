@@ -180,7 +180,10 @@ class ExpectedPersonalGenaticDiseaseInfo extends StatelessWidget {
               // Main Symptoms
               DetailsViewInfoTile(
                 title: "الأعراض الرئيسية",
-                value: diseaseDetails.mainSymptoms![0],
+                value: diseaseDetails.mainSymptoms != [] &&
+                        diseaseDetails.mainSymptoms!.isNotEmpty
+                    ? diseaseDetails.mainSymptoms!.join('، ')
+                    : "لا توجد اعراض",
                 icon: 'assets/images/symptoms_icon.png',
                 isExpanded: true,
               ),
@@ -201,7 +204,10 @@ class ExpectedPersonalGenaticDiseaseInfo extends StatelessWidget {
               // Diagnostic Tests
               DetailsViewInfoTile(
                 title: "الفحوصات التشخيصية",
-                value: diseaseDetails.diagnosticTests![0],
+                value: diseaseDetails.diagnosticTests != [] &&
+                        diseaseDetails.diagnosticTests!.isNotEmpty
+                    ? diseaseDetails.diagnosticTests!.join('، ')
+                    : "لا توجد فحوصات",
                 icon: 'assets/images/doctor_name.png',
                 isExpanded: true,
               ),
@@ -221,7 +227,10 @@ class ExpectedPersonalGenaticDiseaseInfo extends StatelessWidget {
               // Available Treatments
               DetailsViewInfoTile(
                 title: "العلاجات المتاحة",
-                value: diseaseDetails.availableTreatments![0],
+                value: diseaseDetails.availableTreatments != [] &&
+                        diseaseDetails.availableTreatments!.isNotEmpty
+                    ? diseaseDetails.availableTreatments!.join('، ')
+                    : "لا توجد علاجات",
                 icon: 'assets/images/medicine_icon.png',
                 isExpanded: true,
               ),

@@ -115,7 +115,7 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _appSharedRepo
-        .getModuleGuidance(WeCareMedicalModules.medications.name);
+        .getModuleGuidance(WeCareMedicalModules.medicationsView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

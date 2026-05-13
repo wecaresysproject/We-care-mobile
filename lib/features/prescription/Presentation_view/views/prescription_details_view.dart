@@ -171,39 +171,62 @@ class PrescriptionDetailsView extends StatelessWidget {
 }
 
 Future<void> _shareDetails(
-    BuildContext context, PrescriptionViewState state) async {
+  BuildContext context,
+  PrescriptionViewState state,
+) async {
   try {
     final prescriptionDetails = state.selectedPrescriptionDetails!;
 
-    // 📝 Extract text details
+    // 📝 Share text بنفس ترتيب العرض في الـ UI
     final text = '''
-    🩺 *تفاصيل الروشتة* 🩺
+🩺 تفاصيل الروشتة
 
-    📅 *التاريخ*: ${prescriptionDetails.preDescriptionDate}
-    👩‍⚕️ *الاعراض *: ${prescriptionDetails.cause}
-    🔬 * المرض*: ${prescriptionDetails.disease}
-    👨‍⚕️ *الطبيب المعالج*: ${prescriptionDetails.doctorName}
-    🏥 *التخصص*: ${prescriptionDetails.doctorSpecialty}
-    🌍 *الدولة*: ${prescriptionDetails.country}
-    📝 *ملاحظات*: ${prescriptionDetails.preDescriptionNotes}
-    ''';
+📅 التاريخ: ${prescriptionDetails.preDescriptionDate}
 
-    // 📥 Download images
+🔬 التشخيص: ${prescriptionDetails.disease}
+
+👨‍⚕️ اسم الطبيب: ${prescriptionDetails.doctorName}
+
+🏥 التخصص: ${prescriptionDetails.doctorSpecialty}
+
+📷 صور الروشتة: ${prescriptionDetails.preDescriptionPhoto.isNotEmpty ? "مرفقة أدناه 📎" : "-"}
+
+👩‍⚕️ الأعراض: ${prescriptionDetails.cause}
+
+📝 الملاحظات: ${prescriptionDetails.preDescriptionNotes}
+
+🌍 الدولة: ${prescriptionDetails.country}
+
+🏙️ المدينة: ${prescriptionDetails.governate}
+
+---------------------
+تمت المشاركة من تطبيق WeCare 💙
+''';
+
+    // 📥 تحميل الصور إن وجدت
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
-    // if (prescriptionDetails.preDescriptionPhoto.startsWith("http")) {
-    //   final imagePath = await downloadImage(
-    //       prescriptionDetails.preDescriptionPhoto,
-    //       tempDir,
-    //       'analysis_image.png');
-    //   if (imagePath != null) imagePaths.add(imagePath);
-    // }
+    for (var url in prescriptionDetails.preDescriptionPhoto) {
+      if (url.startsWith("http")) {
+        final imageNumber = imagePaths.length + 1;
 
-//!TODO: to be removed after adding real data
-    // 📤 Share text & images
+        final imagePath = await downloadImage(
+          url,
+          tempDir,
+          'صورة_الروشتة_$imageNumber.png',
+        );
+
+        if (imagePath != null) {
+          imagePaths.add(imagePath);
+        }
+      }
+    }
+
+    // 📤 مشاركة النص + الصور
     if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles([XFile(imagePaths.first)], text: text);
+      final files = imagePaths.map((e) => XFile(e)).toList();
+      await Share.shareXFiles(files, text: text);
     } else {
       await Share.share(text);
     }

@@ -8,7 +8,8 @@ class DentalFilterResponseModel {
   List<String>? teethNumbers;
   List<String>? subProcedures;
 
-  DentalFilterResponseModel({this.years, this.teethNumbers, this.subProcedures});
+  DentalFilterResponseModel(
+      {this.years, this.teethNumbers, this.subProcedures});
 
   factory DentalFilterResponseModel.fromJson(Map<String, dynamic> json) =>
       _$DentalFilterResponseModelFromJson(json);

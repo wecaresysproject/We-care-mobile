@@ -28,4 +28,11 @@ class MedicalReportApiConstants {
       'MedicalReports/physical-activity/options';
   static const String getMentalDiseasesFilters =
       'MedicalReports/MentalDiseases/filters';
+  static const String uploadReport = 'MedicalReports/upload-report';
+  static const String getPdfDates = 'MedicalReports/pdf/dates';
+  static const String getSpecificPdf = 'MedicalReports/pdf';
+  static const getUserMedicalHistoryDetails =
+      "MedicalReports/full-report-Medical-file-data";
+  static const fetchMedicalCompitabilitySystemPrompt = //! should be changed later when backend change it
+      "LongTextContents/prompt-by-name/CurrentDrugsCompatability";
 }

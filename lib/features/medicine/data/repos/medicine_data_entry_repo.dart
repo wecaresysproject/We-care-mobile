@@ -4,7 +4,9 @@ import 'package:we_care/features/medicine/data/models/basic_medicine_info_model.
 import 'package:we_care/features/medicine/data/models/matched_medicines_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_data_entry_request_body.dart';
 import 'package:we_care/features/medicine/data/models/medicine_details_model.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 class MedicinesDataEntryRepo {
   final MedicinesServices _medicinesServices;
@@ -259,7 +261,30 @@ class MedicinesDataEntryRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Future<ApiResult<UserMedicalHistoryDetailsModel>>
+      getUserMedicalHistoryDetails() async {
+    try {
+      final response = await _medicinesServices.getUserMedicalHistoryDetails();
+      final userMedicalHistoryDetails =
+          UserMedicalHistoryDetailsModel.fromJson(response['data']);
+
+      return ApiResult.success(userMedicalHistoryDetails);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> fetchMedicalCompitabilitySystemPrompt() async {
+    try {
+      final response =
+          await _medicinesServices.fetchMedicalCompitabilitySystemPrompt();
+      final prompt = response['data'] as String;
+      // Store in global variable
+      DeepSeekService.newMedicalCompitabilitySystemPrompt = prompt;
+      return ApiResult.success(prompt);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 }
-// "67e2823af55d89100f614baa"
-// 67e2823af55d89100f614baa
-//"67e2823af55d89100f614baa"

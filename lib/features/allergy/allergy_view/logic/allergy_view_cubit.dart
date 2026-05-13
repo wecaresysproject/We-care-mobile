@@ -145,7 +145,7 @@ class AllergyViewCubit extends Cubit<AllergyViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _appSharedRepo
-        .getModuleGuidance(WeCareMedicalModules.allergies.name);
+        .getModuleGuidance(WeCareMedicalModules.allergiesView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

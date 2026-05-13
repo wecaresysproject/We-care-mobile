@@ -5,7 +5,7 @@ import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_
 
 class VaccineViewState extends Equatable {
   final RequestStatus requestStatus;
-  final String responseMessage;
+  final String message;
   final List<UserVaccineModel> userVaccines;
   final List<int> yearsFilter;
   final List<String> vaccineTypesFilter;
@@ -13,13 +13,21 @@ class VaccineViewState extends Equatable {
   final bool isDeleteRequest;
   final bool isLoadingMore;
   final ModuleGuidanceDataModel? moduleGuidanceData;
+  final List<String> userSubmissionDates;
+  final RequestStatus userSubmissionDatesStatus;
+  final String? selectedDateFrom;
+  final String? selectedDateTo;
 
   const VaccineViewState({
-    this.responseMessage = '',
+    this.message = '',
     this.requestStatus = RequestStatus.initial,
+    this.userSubmissionDatesStatus = RequestStatus.initial,
     this.userVaccines = const [],
     this.yearsFilter = const [],
     this.vaccineTypesFilter = const [],
+    this.userSubmissionDates = const [],
+    this.selectedDateFrom,
+    this.selectedDateTo,
     this.selectedVaccine,
     this.isDeleteRequest = false,
     this.isLoadingMore = false,
@@ -28,11 +36,15 @@ class VaccineViewState extends Equatable {
 
   factory VaccineViewState.initial() {
     return VaccineViewState(
-      responseMessage: '',
+      message: '',
       requestStatus: RequestStatus.initial,
+      userSubmissionDatesStatus: RequestStatus.initial,
       userVaccines: [],
       yearsFilter: [],
       vaccineTypesFilter: [],
+      userSubmissionDates: [],
+      selectedDateFrom: null,
+      selectedDateTo: null,
       selectedVaccine: null,
       isDeleteRequest: false,
       isLoadingMore: false,
@@ -41,23 +53,32 @@ class VaccineViewState extends Equatable {
   }
 
   VaccineViewState copyWith({
-    String? responseMessage,
+    String? message,
     RequestStatus? requestStatus,
+    RequestStatus? userSubmissionDatesStatus,
     List<UserVaccineModel>? userVaccines,
     List<int>? yearsFilter,
     List<String>? vaccineTypesFilter,
+    List<String>? userSubmissionDates,
     UserVaccineModel? selectedVaccine,
+    String? selectedDateFrom,
+    String? selectedDateTo,
     bool? isDeleteRequest,
     bool? isLoadingMore,
     ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return VaccineViewState(
-      responseMessage: responseMessage ?? this.responseMessage,
+      message: message ?? this.message,
       requestStatus: requestStatus ?? this.requestStatus,
+      userSubmissionDatesStatus:
+          userSubmissionDatesStatus ?? this.userSubmissionDatesStatus,
       userVaccines: userVaccines ?? this.userVaccines,
       yearsFilter: yearsFilter ?? this.yearsFilter,
       vaccineTypesFilter: vaccineTypesFilter ?? this.vaccineTypesFilter,
+      userSubmissionDates: userSubmissionDates ?? this.userSubmissionDates,
       selectedVaccine: selectedVaccine ?? this.selectedVaccine,
+      selectedDateFrom: selectedDateFrom ?? this.selectedDateFrom,
+      selectedDateTo: selectedDateTo ?? this.selectedDateTo,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
@@ -66,11 +87,15 @@ class VaccineViewState extends Equatable {
 
   @override
   List<Object?> get props => [
-        responseMessage,
+        message,
         requestStatus,
+        userSubmissionDatesStatus,
         userVaccines,
         yearsFilter,
         vaccineTypesFilter,
+        userSubmissionDates,
+        selectedDateFrom,
+        selectedDateTo,
         selectedVaccine,
         isDeleteRequest,
         isLoadingMore,

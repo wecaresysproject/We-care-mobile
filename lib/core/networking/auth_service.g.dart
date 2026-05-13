@@ -6,9 +6,14 @@ part of 'auth_service.dart';
 // RetrofitGenerator
 // **************************************************************************
 
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
+
 class _AuthApiServices implements AuthApiServices {
-  _AuthApiServices(this._dio, {this.baseUrl}) {
-    baseUrl ??= AuthApiConstants.baseUrl;
+  _AuthApiServices(
+    this._dio, {
+    this.baseUrl,
+  }) {
+    baseUrl ??= 'http://147.93.57.70/api/v1/auth/';
   }
 
   final Dio _dio;
@@ -24,11 +29,18 @@ class _AuthApiServices implements AuthApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(signupRequestBody.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<SignUpResponseModel>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, AuthApiConstants.signUpEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<SignUpResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'register',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = SignUpResponseModel.fromJson(_result.data!);
     return value;
   }
@@ -42,11 +54,18 @@ class _AuthApiServices implements AuthApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(verifyOtpRequestBody.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<VerifyOtpResponseModel>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, AuthApiConstants.verifyOtpEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<VerifyOtpResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'verify-otp',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = VerifyOtpResponseModel.fromJson(_result.data!);
     return value;
   }
@@ -59,12 +78,19 @@ class _AuthApiServices implements AuthApiServices {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(loginRequestBody.toJson());
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<LoginResponseModel>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, AuthApiConstants.loginEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<LoginResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'login',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = LoginResponseModel.fromJson(_result.data!);
     return value;
   }
@@ -78,11 +104,18 @@ class _AuthApiServices implements AuthApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(resendOtpRequestBody.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ResendOtpResponseModel>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, AuthApiConstants.resendOtpEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<ResendOtpResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'resend-otp',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ResendOtpResponseModel.fromJson(_result.data!);
     return value;
   }
@@ -96,12 +129,18 @@ class _AuthApiServices implements AuthApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(createNewPasswordRequestBody.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CreateNewPasswordResponseModel>(
-            Options(method: 'PUT', headers: _headers, extra: _extra)
-                .compose(
-                    _dio.options, AuthApiConstants.createNewPasswordEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<CreateNewPasswordResponseModel>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'change-password',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CreateNewPasswordResponseModel.fromJson(_result.data!);
     return value;
   }
@@ -115,12 +154,42 @@ class _AuthApiServices implements AuthApiServices {
     final _data = <String, dynamic>{};
     _data.addAll(forgetPasswordRequestBody.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ForgetPasswordResponseModel>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, AuthApiConstants.forgotPasswordEndPoint,
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<ForgetPasswordResponseModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'forgot-password',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ForgetPasswordResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<dynamic> updateFcmToken(UpdateFcmTokenRequestBody body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'http://147.93.57.70/api/Statistics/fcm-token',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data;
     return value;
   }
 
@@ -156,7 +225,11 @@ class _AuthApiServices implements AuthApiServices {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
             requestOptions.responseType == ResponseType.stream)) {
-      requestOptions.responseType = ResponseType.json;
+      if (T == String) {
+        requestOptions.responseType = ResponseType.plain;
+      } else {
+        requestOptions.responseType = ResponseType.json;
+      }
     }
     return requestOptions;
   }

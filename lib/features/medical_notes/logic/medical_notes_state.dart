@@ -7,6 +7,7 @@ class MedicalNotesState extends Equatable {
   final RequestStatus requestStatus;
   final String? message;
   final String searchQuery;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const MedicalNotesState({
     required this.notes,
@@ -15,6 +16,7 @@ class MedicalNotesState extends Equatable {
     required this.requestStatus,
     this.message,
     required this.searchQuery,
+    this.moduleGuidanceData,
   });
 
   factory MedicalNotesState.initial() {
@@ -25,6 +27,7 @@ class MedicalNotesState extends Equatable {
       requestStatus: RequestStatus.initial,
       message: null,
       searchQuery: '',
+      moduleGuidanceData: null,
     );
   }
 
@@ -35,6 +38,7 @@ class MedicalNotesState extends Equatable {
     RequestStatus? requestStatus,
     String? message,
     String? searchQuery,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return MedicalNotesState(
       notes: notes ?? this.notes,
@@ -43,6 +47,7 @@ class MedicalNotesState extends Equatable {
       requestStatus: requestStatus ?? this.requestStatus,
       message: message ?? this.message,
       searchQuery: searchQuery ?? this.searchQuery,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -63,5 +68,6 @@ class MedicalNotesState extends Equatable {
         requestStatus,
         message,
         searchQuery,
+        moduleGuidanceData,
       ];
 }

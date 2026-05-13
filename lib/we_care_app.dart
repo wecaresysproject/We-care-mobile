@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/Services/fcm_token_manager.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -11,9 +13,30 @@ import 'core/global/theming/color_manager.dart';
 import 'core/routing/app_router.dart';
 import 'generated/l10n.dart';
 
-class WeCareApp extends StatelessWidget {
+class WeCareApp extends StatefulWidget {
   const WeCareApp({super.key, required this.appRouter});
   final AppRouter appRouter;
+
+  @override
+  State<WeCareApp> createState() => _WeCareAppState();
+}
+
+class _WeCareAppState extends State<WeCareApp> {
+  @override
+  void initState() {
+    super.initState();
+    _initFcmTokenSync();
+  }
+
+  /// Syncs FCM token with backend on app startup if user is already logged in.
+  void _initFcmTokenSync() {
+    if (isLoggedInUser) {
+      final fcmTokenManager = getIt<FcmTokenManager>();
+      fcmTokenManager.syncFcmToken();
+      fcmTokenManager.startTokenRefreshListener();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -34,7 +57,7 @@ class WeCareApp extends StatelessWidget {
           },
           debugShowCheckedModeBanner: false,
 
-          onGenerateRoute: appRouter.onGenerateRoutes,
+          onGenerateRoute: widget.appRouter.onGenerateRoutes,
           locale: const Locale(
             AppStrings.arabicLang,
           ), //TODO: handle localization cubit to switch between each locale later
@@ -81,9 +104,10 @@ class WeCareApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-       //   home: const EssentialDataView(),
+          //   home: const EssentialDataView(),
         );
       },
     );
   }
 }
+

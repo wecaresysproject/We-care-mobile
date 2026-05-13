@@ -22,7 +22,7 @@ class MedicalItemGridView extends StatelessWidget {
     return Expanded(
       child: GridView.builder(
         shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: items.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

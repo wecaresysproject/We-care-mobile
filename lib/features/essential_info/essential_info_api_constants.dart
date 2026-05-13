@@ -5,4 +5,5 @@ class EssentialInfoApiConstants {
   static const deleteUserEssentialInfo = "/statistics/personal-user-data";
   static const postUserEssentialInfo = "/statistics/personal-user-data";
   static const updateUserEssentialInfo =
-      "/statistics/update-personal-user-data";}
+      "/statistics/update-personal-user-data";
+}

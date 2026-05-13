@@ -7,13 +7,16 @@ class CustomElevatedButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
+    this.isInactive = false,
   });
   final String text;
   final void Function()? onPressed;
+  final bool isInactive;
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
+    Widget button = ElevatedButton(
+      onPressed: isInactive ? null : onPressed,
       style: ElevatedButton.styleFrom(
         alignment: Alignment.center,
         elevation: 3,
@@ -36,10 +39,24 @@ class CustomElevatedButton extends StatelessWidget {
           textAlign: TextAlign.center,
           style: AppTextStyles.font16DarkGreyWeight400.copyWith(
             fontWeight: FontWeight.w600,
-            color: Color(0xffFEFEFE),
+            color: const Color(0xffFEFEFE),
           ),
         ),
       ),
     );
+
+    if (isInactive) {
+      button = IgnorePointer(
+        child: Container(
+          foregroundDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+          ),
+          color: Colors.grey.withValues(alpha: 0.1),
+          child: button,
+        ),
+      );
+    }
+
+    return button;
   }
 }

@@ -44,7 +44,8 @@ class LensDetailsCard extends StatelessWidget {
                   : SizedBox.shrink(),
               Text(
                 lensSide,
-                style: AppTextStyles.font14BlueWeight700.copyWith(fontSize: 13.sp),
+                style:
+                    AppTextStyles.font14BlueWeight700.copyWith(fontSize: 13.sp),
               ),
               lensSide == "العدسة اليمنى"
                   ? Image.asset(icon, height: 22.h, width: 22.w)

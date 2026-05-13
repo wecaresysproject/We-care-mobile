@@ -30,7 +30,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.labTests.name,
+      WeCareMedicalModules.labTestsView.name,
     );
     response.when(success: (response) async {
       emit(state.copyWith(

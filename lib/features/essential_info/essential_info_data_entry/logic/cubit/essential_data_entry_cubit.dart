@@ -225,7 +225,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.profile.name,
+      WeCareMedicalModules.profileDataEntry.name,
     );
 
     response.when(

@@ -2,7 +2,8 @@ class NutrationApiConstants {
   static const baseUrl = "http://147.93.57.70/api/";
   //Data Entry
   static const postPersonalUserInfoData = "SmartNutritionAnalyzer/calculate";
-  static const postDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
+  static const postDailyDietPlan =
+      "SmartNutritionAnalyzer/search-from-deepseek";
   static const editDailyDietPlan = "SmartNutritionAnalyzer/nutrition-entry";
   static const getAllCreatedPlans = "SmartNutritionAnalyzer/generate-plan";
   static const getAllChronicDiseases = "SmartNutritionAnalyzer/names";

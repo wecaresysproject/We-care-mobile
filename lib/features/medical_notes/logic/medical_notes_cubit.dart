@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/medical_notes/data/models/medical_note_model.dart';
 import 'package:we_care/features/medical_notes/data/repos/medical_notes_repository.dart';
 
@@ -10,8 +12,10 @@ part 'medical_notes_state.dart';
 
 class MedicalNotesCubit extends Cubit<MedicalNotesState> {
   final MedicalNotesRepository repository;
+  final AppSharedRepo sharedRepo;
 
-  MedicalNotesCubit(this.repository) : super(MedicalNotesState.initial());
+  MedicalNotesCubit(this.repository, this.sharedRepo)
+      : super(MedicalNotesState.initial());
 
   /// Load all notes from repository
   Future<void> loadNotes() async {
@@ -44,8 +48,45 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
     );
   }
 
+  Future<void> initialRequests() async {
+    Future.wait([
+      loadNotes(),
+      loadModuleGuidance(),
+    ]);
+  }
+
   void safeEmit(MedicalNotesState cubitState) {
     if (!isClosed) emit(cubitState);
+  }
+
+  Future<void> loadModuleGuidance() async {
+    emit(state.copyWith(requestStatus: RequestStatus.loading));
+
+    final response = await sharedRepo
+        .getModuleGuidance(WeCareMedicalModules.medicalNotes.name);
+
+    response.when(
+      success: (moduleGuidanceData) {
+        safeEmit(
+          state.copyWith(
+            moduleGuidanceData: moduleGuidanceData,
+            requestStatus: RequestStatus.success,
+          ),
+        );
+        AppLogger.info('Loaded module guidance');
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            requestStatus: RequestStatus.failure,
+            message: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'Failed to load module guidance',
+          ),
+        );
+        AppLogger.error('Failed to load module guidance: ${error.errors}');
+      },
+    );
   }
 
   /// Create a new note

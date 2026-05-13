@@ -5,6 +5,8 @@ import 'package:manual_speech_to_text/manual_speech_to_text.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_element_table_row_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
@@ -18,11 +20,13 @@ import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_
 part 'nutration_data_entry_state.dart';
 
 class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
-  NutrationDataEntryCubit(this._nutrationDataEntryRepo, this.context)
+  NutrationDataEntryCubit(
+      this._nutrationDataEntryRepo, this.context, this.sharedRepo)
       : super(
           NutrationDataEntryState.initialState(),
         ) {
     _init();
+    emitModuleGuidanceData();
   }
   final TextEditingController weightController = TextEditingController();
 
@@ -37,6 +41,7 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
 
   final NutrationDataEntryRepo _nutrationDataEntryRepo;
   final BuildContext context; // New addition
+  final AppSharedRepo sharedRepo;
   // Controllers for each tab
   final TextEditingController weeklyMessageController = TextEditingController();
   final TextEditingController monthlyMessageController =
@@ -203,9 +208,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       );
 
       // Call ChatGPT service
-      final nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
+      var nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
       if (nutritionData != null) {
-        nutritionData.userDietplan = dietInput;
+        nutritionData = nutritionData.copyWith(userDietplan: dietInput);
       }
       // You can now use nutritionData to send to your backend
       await postDailyDietPlan(
@@ -236,10 +241,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
       );
 
       // Call ChatGPT service
-      final nutritionData =
-          await DeepSeekService.analyzeDietPlan(editedDietPlan);
+      var nutritionData = await DeepSeekService.analyzeDietPlan(editedDietPlan);
       if (nutritionData != null) {
-        nutritionData.userDietplan = editedDietPlan;
+        nutritionData = nutritionData.copyWith(userDietplan: editedDietPlan);
       }
       // You can now use nutritionData to send to your backend
       await updateDailyDietPlan(
@@ -774,6 +778,20 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
             message: failure.errors.first,
           ),
         );
+      },
+    );
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.nutritionDataEntry.name,
+    );
+    response.when(
+      success: (response) {
+        emit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        emit(state.copyWith(moduleGuidanceData: null));
       },
     );
   }

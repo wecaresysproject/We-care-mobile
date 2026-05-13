@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'biometrics_dataset_model.g.dart';
 
 @JsonSerializable()
- class BiometricsDatasetModel {
+class BiometricsDatasetModel {
   @JsonKey(name: 'metric')
   final String type; // e.g. 'heart_rate', 'blood_pressure'
   final List<BiometricData> data;
@@ -32,7 +32,6 @@ class BiometricData {
   factory BiometricData.fromJson(Map<String, dynamic> json) =>
       _$BiometricDataFromJson(json);
 }
-
 
 // This local class is used to map biometric names to their types, icons, and colors.
 class BiometricType {

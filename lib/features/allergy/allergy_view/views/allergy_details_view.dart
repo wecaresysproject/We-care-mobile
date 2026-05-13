@@ -114,7 +114,7 @@ class AllergyDetailsView extends StatelessWidget {
                       await shareDetails(
                         title: '⚕️ تفاصيل الحساسية',
                         details: details,
-                        imageUrls: allergy.medicalReportImage.isEmpty == true
+                        imageUrls: allergy.medicalReportImage.isEmpty
                             ? null
                             : allergy.medicalReportImage,
                         errorMessage: "❌ حدث خطأ أثناء مشاركة تفاصيل الحساسية",
@@ -320,17 +320,25 @@ class AllergyDetailsView extends StatelessWidget {
           .join('\n');
     }
 
-    addIfValid('📅 التاريخ :', allergy.allergyOccurrenceDate);
-    addIfValid('🦠 نوع الحساسية :', allergy.allergyType);
+    // نفس ترتيب العرض في الـ UI
 
-    addListIfValid('🤧 مسببات الحساسية :', allergy.allergyTriggers);
-    addListIfValid('🤕 الأعراض الجانبية :', allergy.expectedSideEffects);
+    addIfValid('📅 التاريخ:', allergy.allergyOccurrenceDate);
 
-    addIfValid('⚡ حدة الأعراض :', allergy.symptomSeverity);
-    addIfValid('⏱ زمن بدء الأعراض :', allergy.timeToSymptomOnset);
+    addIfValid('🦠 نوع الحساسية:', allergy.allergyType);
+
+    addListIfValid('🤧 مسببات الحساسية:', allergy.allergyTriggers);
+
+    addListIfValid(
+      '🤕 الأعراض الجانبية المتوقعة:',
+      allergy.expectedSideEffects,
+    );
+
+    addIfValid('⚡ حدة الأعراض:', allergy.symptomSeverity);
+
+    addIfValid('⏱ زمن بدء الأعراض بعد التعرض:', allergy.timeToSymptomOnset);
 
     addIfValid(
-      '👨‍⚕️ استشارة طبيب :',
+      '👨‍⚕️ استشارة طبيب:',
       allergy.isDoctorConsulted == null
           ? null
           : allergy.isDoctorConsulted!
@@ -339,7 +347,7 @@ class AllergyDetailsView extends StatelessWidget {
     );
 
     addIfValid(
-      '🧪 اختبار حساسية :',
+      '🧪 اختبار حساسية:',
       allergy.isAllergyTestPerformed == null
           ? null
           : allergy.isAllergyTestPerformed!
@@ -347,10 +355,10 @@ class AllergyDetailsView extends StatelessWidget {
               : 'لا',
     );
 
-    addIfValid('💊 الأدوية :', allergy.medicationName);
+    addIfValid('💊 الأدوية:', allergy.medicationName);
 
     addIfValid(
-      '✅ فعالية العلاج :',
+      '✅ فعالية العلاج:',
       allergy.isTreatmentsEffective == null
           ? null
           : allergy.isTreatmentsEffective!
@@ -358,18 +366,21 @@ class AllergyDetailsView extends StatelessWidget {
               : 'لا',
     );
 
-    addIfValid('⚠️ وجود صدمة تحسسية :', allergy.proneToAllergies);
-    addIfValid('📄 التقرير الطبي :', allergy.writtenReport);
-    addIfValid('👪 التاريخ العائلي :', allergy.familyHistory);
-    addIfValid('🛡 الاحتياطات :', allergy.precautions);
+    addIfValid('⚠️ وجود صدمة تحسسية:', allergy.proneToAllergies);
+
+    addIfValid('📄 التقرير الطبي:', allergy.writtenReport);
+
+    addIfValid('👪 التاريخ العائلي:', allergy.familyHistory);
+
+    addIfValid('🛡 الاحتياطات:', allergy.precautions);
 
     addIfValid(
-      '🚨 تحذير طبي للمسببات :',
+      '🚨 تحذير طبي للمسببات:',
       allergy.isMedicalWarningReceived,
     );
 
     addIfValid(
-      '💉 حمل حقنة الإبينفرين :',
+      '💉 حمل حقنة الإبينفرين:',
       allergy.carryEpinephrine == null
           ? null
           : allergy.carryEpinephrine!

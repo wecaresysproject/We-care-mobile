@@ -23,7 +23,7 @@ class ToothAnatomyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DentalViewCubit>(
-      create: (context) => getIt<DentalViewCubit>()..emitModuleGuidance(),
+      create: (context) => getIt<DentalViewCubit>()..initialRequests(),
       child: DefaultTabController(
         length: 2,
         child: Scaffold(

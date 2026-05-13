@@ -21,11 +21,14 @@ class PrescriptionViewRepo {
   }
 
   Future<ApiResult<GetUserPrescriptionsResponseModel>> getUserPrescriptionList(
-      {required String language, required String userType,int? page, int? pageSize}) async {
+      {required String language,
+      required String userType,
+      int? page,
+      int? pageSize}) async {
     try {
-      final response =
-          await prescriptionServices.getUserPrescriptionList(language, userType,
-              page: page, pageSize: pageSize);
+      final response = await prescriptionServices.getUserPrescriptionList(
+          language, userType,
+          page: page, pageSize: pageSize);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

@@ -180,7 +180,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                         reverse: true, // This ensures proper z-index layering
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 2,
+                          childAspectRatio: 1.89,
                           crossAxisSpacing: 0,
                           mainAxisSpacing: 0,
                         ),
@@ -204,7 +204,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                                       category.riskLevel),
                               paddingListHorizontal: 10,
                               flipLeftIconIfOpen: true,
-                              contentVerticalPadding: 4,
+                              contentVerticalPadding: 2,
                               contentBorderColor:
                                   getCategoryColorRelativeToRiskLevel(
                                 category.riskLevel,
@@ -254,7 +254,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                                     category.riskLevel,
                                   ).withOpacity(0.3),
                                   header: Container(
-                                    height: 70.h,
+                                    height: 85.h,
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       color:
@@ -273,7 +273,7 @@ class _MentalIllnessesUmbrellRecordsViewState
                                             style: AppTextStyles
                                                 .font14whiteWeight600
                                                 .copyWith(
-                                              fontSize: 13.2.sp,
+                                              fontSize: 13.sp,
                                               color:
                                                   _getCategoryTitleDesiredColor(
                                                       category),

@@ -119,11 +119,11 @@ class XRayCardItem extends StatelessWidget {
                           // 🔥Expanded علشان ياخد باقي المساحة
                           Expanded(
                             child: Text(
-                             item.periodicUsage!
-                            .asMap()
-                            .entries
-                            .map((e) => "${e.key + 1}. ${e.value}")
-                            .join("\n"),
+                              item.periodicUsage!
+                                  .asMap()
+                                  .entries
+                                  .map((e) => "${e.key + 1}. ${e.value}")
+                                  .join("\n"),
                               style:
                                   AppTextStyles.font14blackWeight400.copyWith(
                                 fontSize: 14.sp,

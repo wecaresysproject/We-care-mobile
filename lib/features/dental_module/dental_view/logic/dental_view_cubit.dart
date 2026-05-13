@@ -18,8 +18,8 @@ class DentalViewCubit extends Cubit<DentalViewState> {
   }) : super(const DentalViewState.initial());
 
   Future<void> emitModuleGuidance() async {
-    final result =
-        await sharedRepo.getModuleGuidance(WeCareMedicalModules.dentistry.name);
+    final result = await sharedRepo
+        .getModuleGuidance(WeCareMedicalModules.dentistryView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

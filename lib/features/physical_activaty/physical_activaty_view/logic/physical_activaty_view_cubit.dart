@@ -19,7 +19,7 @@ class PhysicalActivityViewCubit extends Cubit<PhysicalActivatyViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await sharedRepo
-        .getModuleGuidance(WeCareMedicalModules.physicalActivity.name);
+        .getModuleGuidance(WeCareMedicalModules.physicalActivityView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

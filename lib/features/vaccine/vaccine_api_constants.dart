@@ -6,13 +6,18 @@ class VaccineApiConstants {
       "/VaccineUserEntryPage/GetAllVaccineCategories";
   static const getSpecificVaccinesResultsUsingSelectedCategory =
       "/VaccineUserEntryPage/GetVaccinesByCategory";
-  static const postVaccineDataEntry =
-      "/VaccineUserEntryPage/AddVaccineUserEntry";
+  static const postVaccineDataEntry = "/Vaccine/vaccine-user-entry";
   static const updateVaccineDataEntry =
       "/VaccineUserEntryPage/EditUserVaccineDocument";
+
+  static const getBirthGenerations = "/Vaccine/generations";
+  static const getTargetGroupsByBirthGeneration = "/Vaccine/target-ages";
+  static const getVaccineNamesByTargetGroup = "/Vaccine/vaccine-names";
+  static const getVaccineDetailsByName = "/Vaccine/vaccine-details";
   //View Entry
 
-  static const getUserVaccines = "/VaccineUserEntryPage/GetUserVaccines";
+  static const getUserVaccines = "/Vaccine/user-vaccines";
+  static const getUserSubmissionDates = "/Vaccine/years";
   static const getVaccineById = "/VaccineUserEntryPage/GetVaccineById";
   static const deleteVaccineById = "/VaccineUserEntryPage/DeleteUserVaccine";
 

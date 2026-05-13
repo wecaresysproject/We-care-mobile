@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
@@ -144,14 +145,18 @@ class GeneticDiseasesDataEntryCubit
     );
     final response =
         await _geneticDiseasesDataEntryRepo.editGenticDiseaseForFamilyMember(
-      oldMembername: oldMembername,
+      oldMembername: oldMembername.trim(),
       requestBody: FamilyMemberGeneticDiseasesRequestBodyModel(
-        name: state.familyMemberName!,
+        name: state.familyMemberName!.trim().isEmpty
+            ? oldMembername.trim()
+            : state.familyMemberName!.trim(),
         code: memberCode,
         geneticDiseases: state.geneticDiseases,
       ),
     );
-
+    AppLogger.info(
+      "editGenticDiseaseForFamilyMember: oldMembername: $oldMembername , name: ${state.familyMemberName}, code: $memberCode, geneticDiseases: ${state.geneticDiseases}",
+    );
     response.when(
       success: (successMessage) {
         safeEmit(
@@ -304,7 +309,7 @@ class GeneticDiseasesDataEntryCubit
   }
 
   void onFamilyMemberChanges(String? value) {
-    safeEmit(state.copyWith(familyMemberName: value));
+    safeEmit(state.copyWith(familyMemberName: value!.trim()));
   }
 
   void onNumberOfMaternalUnclesChanged(String? value) {
@@ -418,7 +423,7 @@ class GeneticDiseasesDataEntryCubit
     final response = await _geneticDiseasesDataEntryRepo.addNewUsertoFamilyTree(
       language: AppStrings.arabicLang,
       requestBody: AddNewUserToFamilyTreeRequestBodyModel(
-        name: memberName,
+        name: memberName.trim(),
         code: memberCode,
       ),
     );
@@ -807,7 +812,7 @@ class GeneticDiseasesDataEntryCubit
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.geneticDiseases.name,
+      WeCareMedicalModules.geneticDiseasesDataEntry.name,
     );
     response.when(
       success: (response) {

@@ -19,7 +19,7 @@ class SimilarAnalysisCard extends StatelessWidget {
   final String testName;
 
   const SimilarAnalysisCard({
-    Key? key,
+    super.key,
     required this.date,
     required this.names,
     required this.ranges,
@@ -28,7 +28,7 @@ class SimilarAnalysisCard extends StatelessWidget {
     required this.recommendation,
     required this.testName,
     required this.id,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class SimilarAnalysisCard extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 16.0),
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-             decoration: BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -102,7 +102,6 @@ class SimilarAnalysisCard extends StatelessWidget {
                     controller: context
                         .read<TestAnalysisViewCubit>()
                         .resultEditingController,
-                  
                     decoration: InputDecoration(
                       labelText: 'النتيجة الجديدة',
                     ),
@@ -173,7 +172,7 @@ class SimilarAnalysisCard extends StatelessWidget {
         SizedBox(
           height: value.length > 1
               ? MediaQuery.of(context).size.height * 0.17
-              : MediaQuery.of(context).size.height * 0.05,
+              : MediaQuery.of(context).size.height * 0.06,
           width: MediaQuery.of(context).size.width * 0.2,
           child: ListView.builder(
             scrollDirection: Axis.vertical,
@@ -189,14 +188,17 @@ class SimilarAnalysisCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: borderColor, width: 1),
               ),
-              child: Text(
-                value[index],
-                style: AppTextStyles.font14whiteWeight600.copyWith(
-                  color: isHighlightValue ? Colors.white : Colors.black,
-                  fontSize:  label == 'التاريخ' ? 11.5.sp : 14.sp,
+              child: Expanded(
+                child: Text(
+                  value[index],
+                  style: AppTextStyles.font14whiteWeight600.copyWith(
+                    color: isHighlightValue ? Colors.white : Colors.black,
+                    // fontSize: label == 'التاريخ' ? 11.5.sp : 14.sp,
+                    fontSize: 11.8.sp,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
               ),
             ),
           ),

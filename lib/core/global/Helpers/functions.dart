@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
@@ -107,6 +108,21 @@ Future<String?> downloadImage(
     return filePath;
   } catch (e) {
     AppLogger.error("⚠️ Failed to download image: $imageUrl - Error: $e");
+    return null;
+  }
+}
+
+// 📥 Helper function to download any file using a fresh Dio instance to avoid global interceptors/headers
+Future<String?> downloadFile(
+    String url, Directory tempDir, String fileName) async {
+  try {
+    final filePath = '${tempDir.path}/$fileName';
+    // Use a fresh Dio instance to avoid global headers (like Authorization)
+    // which some servers might reject for static file paths.
+    await Dio().download(url, filePath);
+    return filePath;
+  } catch (e) {
+    AppLogger.error("⚠️ Failed to download file: $url - Error: $e");
     return null;
   }
 }

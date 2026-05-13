@@ -99,7 +99,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     ));
     await Future.wait([
       emitAlleryTriggersBasedOnSelectedAllergyType(),
-      emitExpectedSideEffects(),
+      // emitExpectedSideEffects(),
     ]);
     validateRequiredFields();
   }
@@ -112,7 +112,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     emit(state.copyWith(selectedSyptomSeverity: val));
   }
 
-  void updateSelectedAllergyCauses(String? value) {
+  Future<void> updateSelectedAllergyCauses(String? value) async {
     if (value == null || value.isEmpty) return;
 
     List<String> currentCauses = List.from(state.selectedAllergyCauses);
@@ -125,6 +125,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     }
 
     emit(state.copyWith(selectedAllergyCauses: currentCauses));
+    emitExpectedSideEffects();
     validateRequiredFields();
   }
 
@@ -133,6 +134,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     List<String> currentCauses = List.from(state.selectedAllergyCauses);
     currentCauses.remove(cause);
     emit(state.copyWith(selectedAllergyCauses: currentCauses));
+    emitExpectedSideEffects();
   }
 
   Future<void> intialRequestsForDataEntry() async {
@@ -274,7 +276,8 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
   Future<void> emitExpectedSideEffects() async {
     final response = await _allergyDataEntryRepo.getExpectedSideEffects(
       language: AppStrings.arabicLang,
-      allergyType: state.alleryTypeSelection!,
+      allergyType: state
+          .alleryTypeSelection!, //! to be chnages to be selected مسببات الحساسية selectedAllergyCauses
       userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     response.when(
@@ -400,7 +403,7 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await _appSharedRepo.getModuleGuidance(
-      WeCareMedicalModules.allergies.name,
+      WeCareMedicalModules.allergiesDataEntry.name,
     );
     response.when(
       success: (response) {

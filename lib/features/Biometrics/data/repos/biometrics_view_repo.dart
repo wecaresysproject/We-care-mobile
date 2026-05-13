@@ -27,6 +27,7 @@ class BiometricsViewRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
   Future<ApiResult<BiometricFiltersModel>> getAllFilters({
     required String language,
     required String userType,
@@ -36,11 +37,12 @@ class BiometricsViewRepo {
         language,
         userType,
       );
-      return ApiResult.success(BiometricFiltersModel.fromJson(response["data"]));
+      return ApiResult.success(
+          BiometricFiltersModel.fromJson(response["data"]));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
-  }  
+  }
 
   Future<ApiResult<List<BiometricsDatasetModel>>> getFilteredBiometrics({
     required String language,
@@ -48,7 +50,7 @@ class BiometricsViewRepo {
     int? year,
     int? month,
     int? day,
-   required List<String> biometricCategories,
+    required List<String> biometricCategories,
   }) async {
     try {
       final response = await _biometricsServices.getFilteredBiometrics(
@@ -67,7 +69,7 @@ class BiometricsViewRepo {
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
-  }  
+  }
 
   Future<ApiResult<CurrentBioMetricsData>> getCurrentBiometricData({
     required String language,
@@ -78,24 +80,23 @@ class BiometricsViewRepo {
         language,
         userType,
       );
-      return ApiResult.success(CurrentBioMetricsData.fromJson(response["data"]['measurements']));
+      return ApiResult.success(
+          CurrentBioMetricsData.fromJson(response["data"]['measurements']));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-    Future<ApiResult<String>> deleteBiometricDataOfSpecifcCategory({
+  Future<ApiResult<String>> deleteBiometricDataOfSpecifcCategory({
     required String language,
     required String userType,
     required String date,
     required String biometricName,
   }) async {
     try {
-      final response = await _biometricsServices.deleteBiometricDataOfSpecifcCategory(
-         userType,
-         language,
-         date,
-         biometricName);
+      final response =
+          await _biometricsServices.deleteBiometricDataOfSpecifcCategory(
+              userType, language, date, biometricName);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -110,12 +111,9 @@ class BiometricsViewRepo {
     required String biometricName,
   }) async {
     try {
-      final response = await _biometricsServices.editBiometricDataOfSpecifcCategory(
-         requestBody,
-         userType,
-         language,
-         date,
-         biometricName);
+      final response =
+          await _biometricsServices.editBiometricDataOfSpecifcCategory(
+              requestBody, userType, language, date, biometricName);
       return ApiResult.success(response['message']);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

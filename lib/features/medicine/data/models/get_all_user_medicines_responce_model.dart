@@ -27,7 +27,6 @@ class MedicineModel {
   String startDate;
   String medicineName;
   String usageMethod;
-  String dosage;
   String dosageFrequency;
   String usageDuration;
   String timeDuration;
@@ -46,7 +45,6 @@ class MedicineModel {
     required this.startDate,
     required this.medicineName,
     required this.usageMethod,
-    required this.dosage,
     required this.dosageFrequency,
     required this.usageDuration,
     required this.timeDuration,

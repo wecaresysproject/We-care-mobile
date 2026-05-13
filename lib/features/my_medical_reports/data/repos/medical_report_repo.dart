@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
 import 'package:we_care/features/my_medical_reports/data/medical_report_api_services.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_request_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_response_model.dart';
+import 'package:we_care/features/my_medical_reports/data/models/upload_medical_report_response_model.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
 class MedicalReportRepo {
   final MedicalReportApiServices _apiServices;
@@ -280,6 +285,71 @@ class MedicalReportRepo {
         userType,
       );
       return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadMedicalReportResponseModel>> uploadReport(
+    File reportFile,
+    String fileName,
+    String generatedAt,
+  ) async {
+    try {
+      final response = await _apiServices.uploadReport(
+        fileName,
+        reportFile,
+        generatedAt,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getPdfDates() async {
+    try {
+      final response = await _apiServices.getPdfDates();
+      final dates =
+          (response['dates'] as List).map((date) => date as String).toList();
+      return ApiResult.success(dates);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UploadMedicalReportResponseModel>> getSpecificPdf(
+    String date,
+  ) async {
+    try {
+      final response = await _apiServices.getSpecificPdf(date);
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<UserMedicalHistoryDetailsModel>>
+      getUserMedicalHistoryDetails() async {
+    try {
+      final response = await _apiServices.getUserMedicalHistoryDetails();
+      final userMedicalHistoryDetails =
+          UserMedicalHistoryDetailsModel.fromJson(response['data']);
+
+      return ApiResult.success(userMedicalHistoryDetails);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> fetchMedicinesCompitabilitySystemPrompt() async {
+    try {
+      final response =
+          await _apiServices.fetchMedicalCompitabilitySystemPrompt();
+      final prompt = response['data'] as String;
+      // Store in global variable
+      DeepSeekService.medicinesCompitabilitySystemPrompt = prompt;
+      return ApiResult.success(prompt);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

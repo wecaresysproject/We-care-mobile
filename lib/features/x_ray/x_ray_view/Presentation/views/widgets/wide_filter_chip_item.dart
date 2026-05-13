@@ -36,7 +36,8 @@ class WideFilterChipItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (isSelected)
-              Image.asset('assets/images/check_icon.png', width: 10, height: 10),
+              Image.asset('assets/images/check_icon.png',
+                  width: 10, height: 10),
             if (isSelected) horizontalSpacing(3),
             Text(
               label,
@@ -44,9 +45,8 @@ class WideFilterChipItem extends StatelessWidget {
               softWrap: false,
               overflow: TextOverflow.visible,
               style: AppTextStyles.font12blackWeight400.copyWith(
-                color: isSelected
-                    ? AppColorsManager.mainDarkBlue
-                    : Colors.black,
+                color:
+                    isSelected ? AppColorsManager.mainDarkBlue : Colors.black,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.start,
@@ -57,5 +57,3 @@ class WideFilterChipItem extends StatelessWidget {
     );
   }
 }
-
-

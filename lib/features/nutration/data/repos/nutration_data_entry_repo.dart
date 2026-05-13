@@ -20,7 +20,7 @@ class NutrationDataEntryRepo {
       final response = await _nutrationServices.fetchNutrationSystemPrompt();
       final prompt = response['data'] as String;
       // Store in global variable
-      DeepSeekService.cachedSystemPrompt = prompt;
+      DeepSeekService.nutrationSystemPrompt = prompt;
       return ApiResult.success(prompt);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

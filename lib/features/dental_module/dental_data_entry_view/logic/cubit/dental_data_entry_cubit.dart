@@ -684,7 +684,7 @@ class DentalDataEntryCubit extends Cubit<DentalDataEntryState> {
 
   Future<void> emitModuleGuidanceData() async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.dentistry.name,
+      WeCareMedicalModules.dentistryDataEntry.name,
     );
     response.when(
       success: (response) {

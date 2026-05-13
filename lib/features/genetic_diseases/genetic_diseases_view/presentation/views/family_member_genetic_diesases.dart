@@ -343,7 +343,7 @@ String getFamilyMemberCode(String familyMemberCode) {
   switch (familyMemberCode) {
     case 'Dad':
       return 'الأب';
-    case 'Mom':
+    case 'Mam':
       return 'الأم';
     case 'Bro':
       return 'الأخ';

@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
-import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_with_guidance.dart';
+import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
+import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
-import 'package:we_care/features/my_medical_reports/logic/medical_report_export_logic.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/category_filters_widget.dart';
 import 'package:we_care/features/my_medical_reports/presentation/widgets/generate_button_bloc_consumer_widget.dart';
@@ -36,7 +36,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<MedicalReportGenerationCubit>(),
+      create: (context) =>
+          getIt<MedicalReportGenerationCubit>()..emitModuleGuidanceData(),
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
@@ -50,10 +51,55 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const AppBarWithCenteredTitle(
-                    title: 'تقاريرى الطبية',
-                    showActionButtons: false,
-                  ),
+                  BlocBuilder<MedicalReportGenerationCubit,
+                          MedicalReportGenerationState>(
+                      buildWhen: (previous, current) =>
+                          previous.moduleGuidanceData !=
+                          current.moduleGuidanceData,
+                      builder: (context, state) {
+                        return CustomAppBarWithCenteredTitleWithGuidance(
+                          title: 'تقاريرى الطبية',
+                          trailingActions: [
+                            CircleIconButton(
+                              size: 30.w,
+                              icon: Icons.play_arrow,
+                              color: state.moduleGuidanceData?.videoLink
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                              onTap: state.moduleGuidanceData?.videoLink
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? () => launchYouTubeVideo(
+                                      state.moduleGuidanceData!.videoLink)
+                                  : null,
+                            ),
+                            horizontalSpacing(8.w),
+                            CircleIconButton(
+                              size: 30.w,
+                              icon: Icons.menu_book_outlined,
+                              color: state.moduleGuidanceData
+                                          ?.moduleGuidanceText?.isNotEmpty ==
+                                      true
+                                  ? AppColorsManager.mainDarkBlue
+                                  : Colors.grey,
+                              onTap: state.moduleGuidanceData
+                                          ?.moduleGuidanceText?.isNotEmpty ==
+                                      true
+                                  ? () {
+                                      ModuleGuidanceAlertDialog.show(
+                                        context,
+                                        title: 'تقاريرى الطبية',
+                                        description: state.moduleGuidanceData!
+                                            .moduleGuidanceText!,
+                                      );
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        );
+                      }),
                   verticalSpacing(24),
                   Column(
                     children: categoriesView.asMap().entries.map((entry) {
@@ -454,50 +500,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
             );
           },
         ),
-        floatingActionButton: buildFloatingActionButtonBlocBuilder(),
       ),
-    );
-  }
-
-  BlocBuilder<MedicalReportGenerationCubit, MedicalReportGenerationState>
-      buildFloatingActionButtonBlocBuilder() {
-    return BlocBuilder<MedicalReportGenerationCubit,
-        MedicalReportGenerationState>(
-      buildWhen: (previous, current) =>
-          previous.generateReportStatus != current.generateReportStatus,
-      builder: (context, state) {
-        if (state.medicalReportData.isNotNull &&
-            state.generateReportStatus == RequestStatus.success) {
-          return FloatingActionButton.extended(
-            onPressed: state.generateReportStatus == RequestStatus.loading
-                ? null
-                : () async {
-                    final logic = MedicalReportExportLogic();
-                    await logic.exportAndShareReport(
-                        context, state.medicalReportData);
-                  },
-            backgroundColor: AppColorsManager.mainDarkBlue,
-            icon: state.generateReportStatus == RequestStatus.loading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.picture_as_pdf, color: Colors.white),
-            label: Text(
-              state.generateReportStatus == RequestStatus.loading
-                  ? 'Generating...'
-                  : 'Export as PDF',
-              style: const TextStyle(color: Colors.white),
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
     );
   }
 

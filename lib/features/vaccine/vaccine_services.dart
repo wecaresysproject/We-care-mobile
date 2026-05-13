@@ -25,10 +25,34 @@ abstract class VaccineApiServices {
     @Query('UserType') String userType,
   );
 
+  @GET(VaccineApiConstants.getBirthGenerations)
+  Future<dynamic> getBirthGenerations();
+
+  @GET(VaccineApiConstants.getTargetGroupsByBirthGeneration)
+  Future<dynamic> getTargetGroupsByBirthGeneration(
+    @Query('generation') String generation,
+  );
+
+  @GET(VaccineApiConstants.getVaccineNamesByTargetGroup)
+  Future<dynamic> getVaccineNamesByTargetGroup(
+    @Query('generation') String generation,
+    @Query('targetAge') String targetAge,
+  );
+
+  @GET(VaccineApiConstants.getVaccineDetailsByName)
+  Future<dynamic> getVaccineDetailsByName(
+    @Query('generation') String generation,
+    @Query('targetAge') String targetAge,
+    @Query('vaccineName') String vaccineName,
+  );
+
   @GET(VaccineApiConstants.getUserVaccines)
   Future<GetUserVaccinesResponseModel> getUserVaccines(
-      @Query('language') String language, @Query('userType') String userType,
-      {@Query('page') int? page, @Query('pageSize') int? pageSize});
+    @Query('dateFrom') String? dateFrom,
+    @Query('dateTo') String? dateTo,
+  );
+  @GET(VaccineApiConstants.getUserSubmissionDates)
+  Future<dynamic> getUserSubmissionDates();
 
   @GET(VaccineApiConstants.getVaccinesFilters)
   Future<dynamic> getVaccinesFilters(

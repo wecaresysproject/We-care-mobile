@@ -6,14 +6,12 @@ part 'medical_report_filter_response_model.g.dart';
 @JsonSerializable()
 class MedicalReportFilterResponseModel {
   final String title;
-  final String image;
   final MedicalSelectionType selectionType;
   final List<String> radioOptions;
   final List<MedicalFilterSectionModel>? filterSections;
 
   MedicalReportFilterResponseModel({
     required this.title,
-    required this.image,
     required this.selectionType,
     this.radioOptions = const [],
     this.filterSections,

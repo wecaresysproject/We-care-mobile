@@ -1,6 +1,6 @@
-
 import 'package:json_annotation/json_annotation.dart';
 part 'family_member_genatic_disease_response_model.g.dart';
+
 @JsonSerializable()
 class FamilyNameGeneticDiseaseDetialsResponseModel {
   bool success;
@@ -19,7 +19,6 @@ class FamilyNameGeneticDiseaseDetialsResponseModel {
   Map<String, dynamic> toJson() =>
       _$FamilyNameGeneticDiseaseDetialsResponseModelToJson(this);
 }
-
 
 @JsonSerializable()
 class GenaticDiseaseDetails {
@@ -51,8 +50,7 @@ class GenaticDiseaseDetails {
       this.mainSymptoms,
       this.diagnosticTests,
       this.availableTreatments});
-  factory GenaticDiseaseDetails.fromJson(Map<String, dynamic> json) => 
+  factory GenaticDiseaseDetails.fromJson(Map<String, dynamic> json) =>
       _$GenaticDiseaseDetailsFromJson(json);
   Map<String, dynamic> toJson() => _$GenaticDiseaseDetailsToJson(this);
-
 }

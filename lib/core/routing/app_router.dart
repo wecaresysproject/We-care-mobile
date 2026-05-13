@@ -50,6 +50,7 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/genetic_diseases_homw_screen.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
 import 'package:we_care/features/home_tab/Presentation/views/ai_consultation_screen.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility_view.dart';
 import 'package:we_care/features/home_tab/Presentation/views/notifications_view.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
@@ -69,7 +70,7 @@ import 'package:we_care/features/medical_notes/data/models/medical_note_model.da
 import 'package:we_care/features/medical_notes/logic/medical_notes_cubit.dart';
 import 'package:we_care/features/medical_notes/presentation/views/create_edit_medical_note_view.dart';
 import 'package:we_care/features/medical_notes/presentation/views/medical_notes_view.dart';
-import 'package:we_care/features/medication_compatibility/presentation/views/medication_compatibility_view.dart';
+import 'package:we_care/features/medication_compatibility/presentation/views/new_medication_compatibility_view.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
 import 'package:we_care/features/medicine/medicine_view/Presention/medicine_view.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/screens/alarm_home_view.dart';
@@ -96,6 +97,14 @@ import 'package:we_care/features/prescription/Presentation_view/views/prescripti
 import 'package:we_care/features/prescription/Presentation_view/views/prescription_view.dart';
 import 'package:we_care/features/prescription/data/models/get_user_prescriptions_response_model.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/Presentation/views/prescription_data_entry_view.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_main_view.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_questions_view.dart';
+import 'package:we_care/features/quality_of_life/presentation/views/quality_of_life_table_view.dart';
+import 'package:we_care/features/risky_behaviors/data/models/risky_behavior_models.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/Presentation/views/risky_behaviors_data_entry_view.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/logic/cubit/risky_behaviors_view_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/presentation/views/risky_behavior_data_view.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/medical_categories_types_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/supplements_data_entry_view.dart';
 import 'package:we_care/features/supplements/supplements_data_entry/views/supplements_plans_view.dart';
@@ -112,6 +121,7 @@ import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/v
 import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/system_output_json_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
@@ -660,7 +670,7 @@ class AppRouter {
       case Routes.medicalNotesView:
         return MaterialPageRoute(
           builder: (_) => BlocProvider<MedicalNotesCubit>(
-            create: (context) => getIt<MedicalNotesCubit>()..loadNotes(),
+            create: (context) => getIt<MedicalNotesCubit>()..initialRequests(),
             child: const MedicalNotesView(),
           ),
         );
@@ -699,9 +709,9 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const NotificationsView(),
         );
-      case Routes.medicationCompatibilityView:
+      case Routes.newMedicationCompatibilityView:
         return MaterialPageRoute(
-          builder: (_) => const MedicationCompatibilityView(),
+          builder: (_) => const NewMedicationCompatibilityView(),
         );
       case Routes.caloriesFollowUpReportView:
         return MaterialPageRoute(
@@ -718,6 +728,52 @@ class AppRouter {
       case Routes.aiConsultation:
         return MaterialPageRoute(
           builder: (_) => const AIConsultationScreen(),
+        );
+      case Routes.medicinesCompatibilityView:
+        return MaterialPageRoute(
+          builder: (context) => const MedicinesCompatibilityView(),
+        );
+      case Routes.qualityOfLifeMainView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>(
+            create: (context) => getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeMainView(),
+          ),
+        );
+      case Routes.qualityOfLifeQuestionsView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>.value(
+            value: getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeQuestionsView(),
+          ),
+        );
+      case Routes.qualityOfLifeTableView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<QualityOfLifeCubit>.value(
+            value: getIt<QualityOfLifeCubit>(),
+            child: const QualityOfLifeTableView(),
+          ),
+        );
+
+      case Routes.riskyBehaviorsDataEntryView:
+        final argumentsMap = arguments as RiskyBehaviorDetailsModel?;
+
+        return MaterialPageRoute(
+          builder: (context) => RiskyBehaviorsDataEntryView(
+            existingData: argumentsMap,
+          ),
+        );
+
+      case Routes.riskyBehaviorsDataView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<RiskyBehaviorsViewCubit>(
+            create: (context) => getIt<RiskyBehaviorsViewCubit>(),
+            child: const RiskyBehaviorsDataView(),
+          ),
+        );
+      case Routes.systemOutputJsonResponseView:
+        return MaterialPageRoute(
+          builder: (context) => const SystemOutputJsonResponseView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

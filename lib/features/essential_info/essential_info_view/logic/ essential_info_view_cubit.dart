@@ -17,10 +17,16 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
   EssentialInfoViewCubit(this._essentialInfoRepo, this._sharedRepo)
       : super(EssentialInfoViewState.initial());
 
-  Future<void> init() async {
+  Future<void> initProfileCompletionRequests() async {
     await getUserEssentialInfo();
-    await emitModuleGuidance();
     await calculateCompletionPercentage();
+  }
+
+  Future<void> initEssentialInfoViewRequests() async {
+    Future.wait([
+      getUserEssentialInfo(),
+      emitModuleGuidance(),
+    ]);
   }
 
   Future<void> getUserEssentialInfo() async {
@@ -81,57 +87,75 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     final info = state.userEssentialInfo!;
     final tempDir = await getTemporaryDirectory();
 
-    // ✅ تحميل الصور (إن وُجدت)
+    final hasInsurance = info.insuranceStatus == true;
+
+    // تحميل الصورة الشخصية إن وجدت
     final personalPhotoPath =
         info.personalPhotoUrl != null && info.personalPhotoUrl!.isNotEmpty
             ? await downloadImage(
                 info.personalPhotoUrl!, tempDir, 'personal_photo.jpg')
             : null;
 
-    final insuranceCardPath = info.insuranceCardPhotoUrl != null &&
+    // تحميل صورة التأمين فقط لو التأمين موجود
+    final insuranceCardPath = hasInsurance &&
+            info.insuranceCardPhotoUrl != null &&
             info.insuranceCardPhotoUrl!.isNotEmpty
         ? await downloadImage(
             info.insuranceCardPhotoUrl!, tempDir, 'insurance_card.jpg')
         : null;
 
-    // ✅ النص الذي سيتم مشاركته
     final shareText = '''
-🩺 بياناتي الأساسية:
+🩺 البيانات الأساسية
 ---------------------
+
 👤 الاسم: ${info.fullName ?? '-'}
+🎂 تاريخ الميلاد: ${info.dateOfBirth ?? '-'}
 🪪 الرقم الوطني: ${info.nationalID ?? '-'}
+⚧ النوع: ${info.gender ?? '-'}
+
 📧 البريد الإلكتروني: ${info.email ?? '-'}
-📷 صورة شخصية: ${info.personalPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
-🔎 تفاصيل الإعاقة: ${info.disabilityDetails ?? '-'}
-👤 الحالة الاجتماعية: ${info.socialStatus ?? '-'}
-👶 عدد الأبناء: ${info.numberOfChildren ?? '-'}
+
+📷 الصورة الشخصية: 
+${info.personalPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
+
 🌍 الدولة: ${info.country ?? '-'}
 🏙️ المدينة: ${info.city ?? '-'}
+📍 الحي / المنطقة: ${info.areaOrDistrict ?? '-'}
+
+❤️ فصيلة الدم: ${info.bloodType ?? '-'}
+⏰ ساعات العمل: ${info.workHours ?? '-'}
+
+${hasInsurance ? '''
+🏥 معلومات التأمين
+---------------------
+🏢 شركة التأمين: ${info.insuranceCompany ?? '-'}
+📅 انتهاء التغطية: ${info.insuranceCoverageExpiryDate ?? '-'}
+📝 شروط إضافية: ${info.additionalTerms ?? '-'}
+📷 صورة بطاقة التأمين: ${info.insuranceCardPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
+''' : ''}
+
+♿ نوع الإعاقة: ${info.disabilityType ?? '-'}
+📝 تفاصيل الإعاقة: ${info.disabilityDetails ?? '-'}
+
+👨‍👩‍👧‍👦 الحالة الاجتماعية: ${info.socialStatus ?? '-'}
+👶 عدد الأطفال: ${info.numberOfChildren ?? '-'}
+
 📞 هاتف الطوارئ 1: ${info.emergencyContact1 ?? '-'}
 📞 هاتف الطوارئ 2: ${info.emergencyContact2 ?? '-'}
-❤️ فصيلة الدم: ${info.bloodType ?? '-'}
-🏢 شركة التأمين: ${info.insuranceCompany ?? '-'}
-📅 تاريخ انتهاء التأمين: ${info.insuranceCoverageExpiryDate ?? '-'}
-📝 شروط التأمين: ${info.additionalTerms ?? '-'}
-📷 صورة التأمين: ${info.insuranceCardPhotoUrl != null ? 'مرفقة أدناه 📎' : '-'}
 
-📌 الحي: ${info.areaOrDistrict ?? '-'}
-👨‍⚕️ طبيب العائلة: ${info.familyDoctorName ?? '-'}
-📞 هاتف الطبيب: ${info.familyDoctorPhoneNumber ?? '-'}
-🔎 نوع الإعاقة: ${info.disabilityType ?? '-'}
+👨‍⚕️ طبيب الأسرة: ${info.familyDoctorName ?? '-'}
+📞 هاتف طبيب الأسرة: ${info.familyDoctorPhoneNumber ?? '-'}
+
 ---------------------
 تمت المشاركة من تطبيق WeCare 💙
 ''';
 
-    // ✅ تحضير قائمة الصور المرفقة
     final imagePaths = [
       if (personalPhotoPath != null) personalPhotoPath,
       if (insuranceCardPath != null) insuranceCardPath,
     ];
 
-// ✅ مشاركة النص + الصور
     if (imagePaths.isNotEmpty) {
-      // نحول المسارات إلى XFile objects
       final xFiles = imagePaths.map((path) => XFile(path)).toList();
       await Share.shareXFiles(xFiles, text: shareText);
     } else {
@@ -163,7 +187,7 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     if (info.nationalID != null &&
         info.nationalID!.isNotEmpty &&
         info.nationalID!.isFilled) {
-      percentage += 12;
+      percentage += 2; // ✅ كان 12، بقى 2
     }
     if (info.email != null && info.email!.isNotEmpty && info.email!.isFilled) {
       percentage += 3;
@@ -184,9 +208,9 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     if (info.areaOrDistrict != null &&
         info.areaOrDistrict!.isNotEmpty &&
         info.areaOrDistrict!.isFilled) {
-      percentage += 2; // District
+      percentage += 3; // ✅ كان 2، بقى 3 (المنطقة)
     }
-    // Neighborhood (3%) - Missing in model, skipping
+    // Neighborhood (2%) - الحي - Missing in model, skipping
     if (info.bloodType != null &&
         info.bloodType!.isNotEmpty &&
         info.bloodType!.isFilled) {
@@ -200,18 +224,18 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     if (info.disabilityType != null &&
         info.disabilityType!.isNotEmpty &&
         info.disabilityType!.isFilled) {
-      percentage += 3;
+      percentage += 2; // ✅ كان 3، بقى 2
     }
     if (info.socialStatus != null &&
         info.socialStatus!.isNotEmpty &&
         info.socialStatus!.isFilled) {
-      percentage += 3;
+      percentage += 1; // ✅ كان 3، بقى 1
     }
-    if (info.numberOfChildren != null) percentage += 3;
+    if (info.numberOfChildren != null) percentage += 1; // ✅ كان 3، بقى 1
     if (info.familyDoctorName != null &&
         info.familyDoctorName!.isNotEmpty &&
         info.familyDoctorName!.isFilled) {
-      percentage += 1;
+      percentage += 3; // ✅ كان 1، بقى 3
     }
     if (info.familyDoctorPhoneNumber != null &&
         info.familyDoctorPhoneNumber!.isNotEmpty &&
@@ -221,12 +245,12 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
     if (info.workHours != null &&
         info.workHours!.isNotEmpty &&
         info.workHours!.isFilled) {
-      percentage += 3;
+      percentage += 1; // ✅ كان 3، بقى 1
     }
     if (info.emergencyContact1 != null &&
         info.emergencyContact1!.isNotEmpty &&
         info.emergencyContact1!.isFilled) {
-      percentage += 1;
+      percentage += 3; // ✅ كان 1، بقى 3
     }
     if (info.emergencyContact2 != null &&
         info.emergencyContact2!.isNotEmpty &&
@@ -239,7 +263,7 @@ class EssentialInfoViewCubit extends Cubit<EssentialInfoViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.profile.name,
+      WeCareMedicalModules.profileDataView.name,
     );
 
     result.when(

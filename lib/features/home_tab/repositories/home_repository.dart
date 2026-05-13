@@ -17,11 +17,25 @@ class HomeRepository {
 
       if (response['success'] == true && response['data'] != null) {
         final List<dynamic> data = response['data'];
-        final notifications = data.map((e) => CrausalMessageModel.fromJson(e)).toList();
+        final notifications =
+            data.map((e) => CrausalMessageModel.fromJson(e)).toList();
         return ApiResult.success(notifications);
       } else {
         return ApiResult.success([]);
       }
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<List<String>>> getAds() async {
+    try {
+      final response = await _homeService.getAds(
+        'Patient',
+        'ar',
+      );
+
+      return ApiResult.success(List<String>.from(response['data'] ?? []));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

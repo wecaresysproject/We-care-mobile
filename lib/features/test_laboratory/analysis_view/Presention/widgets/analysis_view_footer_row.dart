@@ -81,45 +81,44 @@ class AnalysisViewFooterRow extends StatelessWidget {
   }
 }
 
-
-
-  Widget _buildLoadMoreButtonContent(TestAnalysisViewState state, TestAnalysisViewCubit cubit) {
-    if (state.isLoadingMore) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 16.w,
-            height: 16.h,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
-          ),
-          horizontalSpacing(8.w),
-          Text(
-            "جاري التحميل...",
-            style: AppTextStyles.font14whiteWeight600,
-          ),
-        ],
-      );
-    }
-    
+Widget _buildLoadMoreButtonContent(
+    TestAnalysisViewState state, TestAnalysisViewCubit cubit) {
+  if (state.isLoadingMore) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          "عرض المزيد",
-          style: AppTextStyles.font14whiteWeight600.copyWith(
-            color: !cubit.hasMore ? Colors.black : Colors.white,
+        SizedBox(
+          width: 16.w,
+          height: 16.h,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Colors.white,
           ),
         ),
         horizontalSpacing(8.w),
-        Icon(
-          Icons.expand_more,
-          color: !cubit.hasMore ? Colors.black : Colors.white,
-          size: 20.sp,
+        Text(
+          "جاري التحميل...",
+          style: AppTextStyles.font14whiteWeight600,
         ),
       ],
     );
   }
+
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Text(
+        "عرض المزيد",
+        style: AppTextStyles.font14whiteWeight600.copyWith(
+          color: !cubit.hasMore ? Colors.black : Colors.white,
+        ),
+      ),
+      horizontalSpacing(8.w),
+      Icon(
+        Icons.expand_more,
+        color: !cubit.hasMore ? Colors.black : Colors.white,
+        size: 20.sp,
+      ),
+    ],
+  );
+}

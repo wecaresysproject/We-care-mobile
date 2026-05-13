@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
@@ -17,6 +18,7 @@ import 'package:we_care/features/medicine/data/repos/medicine_data_entry_repo.da
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/permission.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medicines_data_entry_state.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
@@ -35,10 +37,18 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       },
     );
     notifications = LocalNotificationService();
-    emitModuleGuidanceData();
   }
 
   final AppSharedRepo sharedRepo;
+  List<AlarmSettings> alarms = [];
+  LocalNotificationService? notifications;
+
+  static StreamSubscription<AlarmSet>? ringSubscription;
+  static StreamSubscription<AlarmSet>? updateSubscription;
+
+  final MedicinesDataEntryRepo _medicinesDataEntryRepo;
+  final personalInfoController = TextEditingController();
+  List<MedicalComplaint> medicalComplaints = [];
 
   Future<void> loadAlarms() async {
     final updatedAlarms = await Alarm.getAlarms();
@@ -71,15 +81,129 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     unawaited(loadAlarms());
   }
 
-  List<AlarmSettings> alarms = [];
-  LocalNotificationService? notifications;
+  Future<void> fetchNewMedicalCompitabilitySystemPrompt() async {
+    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
 
-  static StreamSubscription<AlarmSet>? ringSubscription;
-  static StreamSubscription<AlarmSet>? updateSubscription;
+    final result =
+        await _medicinesDataEntryRepo.fetchMedicalCompitabilitySystemPrompt();
+    result.when(
+      success: (prompt) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.success,
+            medicalCompitabilitySystemPrompt: prompt,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            fetchSystemPromptStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
 
-  final MedicinesDataEntryRepo _medicinesDataEntryRepo;
-  final personalInfoController = TextEditingController();
-  List<MedicalComplaint> medicalComplaints = [];
+  // NEW METHOD: Analyze diet plan using ChatGPT
+  Future<void> analyzeMedicalCompatibility() async {
+    try {
+      // Start loading
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.loading,
+        ),
+      );
+
+      /// check if profile exists
+      if (state.userMedicalProfileHistory == null) {
+        emit(
+          state.copyWith(
+            analyzeMedicalCompatibilityStatus: RequestStatus.failure,
+            message: "تعذر تحميل الملف الطبي للمريض، يرجى المحاولة مرة أخرى",
+          ),
+        );
+        return;
+      }
+
+      final userPrompt =
+          DeepSeekService.buildUserNewOneMedicineCompitabilityPrompt(
+        medicineName: state.selectedMedicineName!,
+        form: state.selectedMedicalForm!,
+        doseAmount: state.selectedDoseAmount!,
+        frequency: state.selectedNoOfDose!,
+        duration: state.timePeriods!,
+        medicalProfile: state.userMedicalProfileHistory,
+      );
+      // Call ChatGPT service
+      final analysis = await DeepSeekService.analyzeNewOneMedicineCompatibility(
+        userPrompt: userPrompt,
+      );
+
+      // if (analysis != null) {
+
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.success,
+          compatibilityAnalysis: analysis,
+          // compatibilityAnalysis: CompatibilityAnalysisModel(
+          //   analysisSummary:
+          //       "تم تحليل التوافق بين الدواء الجديد والملف الطبي للمريض. تم اكتشاف بعض التداخلات الدوائية التي تتطلب الانتباه والمتابعة مع الطبيب.",
+          //   issues: [
+          //     CompatibilityIssue(
+          //       riskLevel: "L1",
+          //       title: "تداخل دوائي خطير مع مميعات الدم",
+          //       scientificReason:
+          //           "الدواء الجديد قد يزيد من تأثير مميعات الدم مثل الوارفارين مما قد يؤدي إلى زيادة خطر النزيف الحاد.",
+          //       doctorQuestion:
+          //           "هل يجب إيقاف أحد الدواءين أو تعديل الجرعة لتقليل خطر النزيف؟",
+          //     ),
+          //          ]
+          //    );
+        ),
+      );
+      // }
+    } catch (e) {
+      AppLogger.error('Error in analyzeMedicalCompatibility: $e');
+      emit(
+        state.copyWith(
+          analyzeMedicalCompatibilityStatus: RequestStatus.failure,
+          message: 'حدث خطأ أثناء تحليل التوافق الدوائي $e',
+        ),
+      );
+    }
+  }
+
+  Future<void> getUserMedicalHistoryDetails() async {
+    emit(state.copyWith(
+      medicalHistoryStatus: RequestStatus.loading,
+    ));
+
+    final response =
+        await _medicinesDataEntryRepo.getUserMedicalHistoryDetails();
+
+    response.when(
+      success: (userMedicalProfileHistory) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: userMedicalProfileHistory,
+            medicalHistoryStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (failure) {
+        emit(
+          state.copyWith(
+            userMedicalProfileHistory: null,
+            medicalHistoryStatus: RequestStatus.failure,
+            message: failure.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> fetchAllAddedComplaints() async {
     try {
       final medicalComplaintBox =
@@ -110,7 +234,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         medicineStartDate: pastDataEntered.startDate,
         selectedMedicineName: pastDataEntered.medicineName,
         selectedMedicalForm: pastDataEntered.usageMethod,
-        selectedDose: pastDataEntered.dosage,
         selectedNoOfDose: pastDataEntered.dosageFrequency,
         doseDuration: pastDataEntered.usageDuration,
         timePeriods: pastDataEntered.timeDuration,
@@ -175,7 +298,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
-        dosage: state.selectedDose!,
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
@@ -217,13 +339,29 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
       getAllUsageCategories(),
       getChronicDiseasesNames(),
       emitDoctorNames(),
-      emitModuleGuidanceData(),
+      emitModuleGuidanceData(
+        WeCareMedicalModules.medicationsDataEntry,
+      ),
     ]);
   }
 
-  Future<void> emitModuleGuidanceData() async {
+  Future<void> initialRequestsForMedicalCompitability() async {
+    await Future.wait([
+      emitAllMedicinesNames(),
+      getUserMedicalHistoryDetails(),
+      emitAllDosageFrequencies(),
+      getAllUsageCategories(),
+      getChronicDiseasesNames(),
+      emitDoctorNames(),
+      emitModuleGuidanceData(
+        WeCareMedicalModules.newMedicineCompitability,
+      ),
+    ]);
+  }
+
+  Future<void> emitModuleGuidanceData(WeCareMedicalModules module) async {
     final response = await sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.medications.name,
+      module.name,
     );
 
     response.when(
@@ -484,7 +622,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         startDate: state.medicineStartDate!,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
-        dosage: state.selectedDose!,
         dosageFrequency: state.selectedNoOfDose!,
         usageDuration: state.doseDuration!,
         timeDuration: state.timePeriods!,
@@ -754,9 +891,10 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     validateRequiredFieldsForMedicationCompatibility();
   }
 
+  //! Recheck this once more
   void updateSelectedDose(String? dose) {
     emit(state.copyWith(selectedDose: dose));
-    validateRequiredFields();
+    // validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
   }
@@ -854,7 +992,6 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     if (state.medicineStartDate == null ||
         state.selectedMedicineName == null ||
         state.selectedMedicalForm == null ||
-        state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
         state.timePeriods == null ||
@@ -876,11 +1013,12 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   void validateRequiredFieldsForMedicationCompatibility() {
     if (state.selectedMedicineName == null ||
         state.selectedMedicalForm == null ||
-        state.selectedDose == null ||
         state.selectedNoOfDose == null ||
         state.doseDuration == null ||
         state.timePeriods == null ||
-        state.selectedDoseAmount == null) {
+        state.selectedDoseAmount == null ||
+        state.userMedicalProfileHistory == null ||
+        state.userMedicalProfileHistory!.isHistoryEmpty) {
       emit(
         state.copyWith(
           isMedicationCompatibilityFormValidated: false,
@@ -978,7 +1116,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         selectedMedicalForm: model.medicalForm,
         selectedMedicineName: model.medicineName,
         selectedNoOfDose: model.numberOfDoses,
-        selectedDose: model.dose,
+        selectedDose: model.dose, //! recheck this later
       ),
     );
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();

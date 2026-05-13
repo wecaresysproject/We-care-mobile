@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -27,36 +28,69 @@ class BiometricHistoryView extends StatelessWidget {
     return BlocProvider<BiometricsViewCubit>(
       create: (context) => getIt<BiometricsViewCubit>()
         ..getFilteredBiometrics(biometricCategories: [metricName]),
-      child: Scaffold(
-        appBar: AppBar(toolbarHeight: 0),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              AppBarWithCenteredTitle(
-                title: "قياسات $metricName",
-                showActionButtons: false,
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(toolbarHeight: 0),
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  AppBarWithCenteredTitle(
+                    title: "قياسات $metricName",
+                    showShareButtonOnly: true,
+                    shareFunction: () async {
+                      final state = context.read<BiometricsViewCubit>().state;
+
+                      if (state.biometricsData.isEmpty ||
+                          state.biometricsData.first.data.isEmpty) {
+                        showError("لا توجد بيانات للمشاركة");
+                        return;
+                      }
+
+                      final data = state.biometricsData.first.data;
+
+                      final formattedList = data.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final item = entry.value;
+
+                        final formattedDate = formatDateTime(item.originalDate);
+
+                        final value = item.secondaryValue != null
+                            ? "${item.secondaryValue} / ${item.value}"
+                            : item.value;
+
+                        return "${index + 1}. 📅 $formattedDate\n📊 $value";
+                      }).join("\n\n");
+
+                      final shareContent =
+                          "📊 سجل قياسات $metricName\n\n$formattedList";
+
+                      await Share.share(shareContent);
+                    },
+                  ),
+                  verticalSpacing(16),
+                  BlocConsumer<BiometricsViewCubit, BiometricsViewState>(
+                    listener: (context, state) async {
+                      if (state.deleteRequestStatus == RequestStatus.success ||
+                          state.editRequestStatus == RequestStatus.success) {
+                        showSuccess(state.responseMessage);
+                      }
+                      if (state.deleteRequestStatus == RequestStatus.failure ||
+                          state.editRequestStatus == RequestStatus.failure) {
+                        showError(state.responseMessage);
+                      }
+                    },
+                    builder: (context, state) {
+                      return _buildDataTableByState(state, context);
+                    },
+                  ),
+                ],
               ),
-              verticalSpacing(16),
-              BlocConsumer<BiometricsViewCubit, BiometricsViewState>(
-                listener: (context, state) async {
-                  if (state.deleteRequestStatus == RequestStatus.success ||
-                      state.editRequestStatus == RequestStatus.success) {
-                    showSuccess(state.responseMessage);
-                  }
-                  if (state.deleteRequestStatus == RequestStatus.failure ||
-                      state.editRequestStatus == RequestStatus.failure) {
-                    showError(state.responseMessage);
-                  }
-                },
-                builder: (context, state) {
-                  return _buildDataTableByState(state, context);
-                },
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -602,7 +636,7 @@ class BiometricHistoryView extends StatelessWidget {
   }
 }
 
-String formatDateTime(String isoString) {
+String formatDateTime(String isoString, {bool needForShare = false}) {
   final dateTime = DateTime.tryParse(isoString);
   if (dateTime == null) return isoString;
 
@@ -613,5 +647,7 @@ String formatDateTime(String isoString) {
   final period = hour >= 12 ? 'PM' : 'AM';
   hour = hour % 12 == 0 ? 12 : hour % 12;
 
-  return '$day/$month \n $hour:$minute $period';
+  return needForShare
+      ? '$day/$month $hour:$minute $period'
+      : '$day/$month \n $hour:$minute $period';
 }

@@ -13,7 +13,7 @@ class NotificationsView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColorsManager.scaffoldBackGroundColor,
         appBar: AppBar(
-         toolbarHeight: 0.h,
+          toolbarHeight: 0.h,
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
@@ -31,7 +31,8 @@ class NotificationsView extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return NotificationItem(
                       title: "تذكير بموعد الدواء",
-                      body: "حان موعد أخذ دواء الضغط الخاص بك، يرجى الالتزام بالموعد المحدد للحفاظ على صحتك.",
+                      body:
+                          "حان موعد أخذ دواء الضغط الخاص بك، يرجى الالتزام بالموعد المحدد للحفاظ على صحتك.",
                       time: "منذ ${index + 1} ساعة",
                       isRead: index > 2,
                     );

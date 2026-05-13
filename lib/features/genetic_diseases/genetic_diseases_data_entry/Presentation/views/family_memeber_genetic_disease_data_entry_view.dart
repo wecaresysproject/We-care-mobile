@@ -12,6 +12,7 @@ import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/genetic_diseases/data/models/family_member_genatics_diseases_response_model.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/Presentation/views/widgets/genetic_disease_template_widget.dart';
@@ -70,16 +71,43 @@ class FamilyMemeberGeneticDiseaseDataEntryView extends StatelessWidget {
                 ),
                 verticalSpacing(12),
                 Builder(builder: (context) {
-                  return CustomTextField(
-                    hintText: memberName,
-                    onChanged: (p0) {
-                      BlocProvider.of<GeneticDiseasesDataEntryCubit>(context)
-                          .onFamilyMemberChanges(p0);
-                    },
-                    validator: (context) {
-                      return null;
-                    },
-                  );
+                  final isDefault = isDefaultFamilyMember(memberName);
+                  if (isDefault) {
+                    return CustomTextField(
+                      hintText: memberName,
+                      onChanged: (p0) {
+                        BlocProvider.of<GeneticDiseasesDataEntryCubit>(context)
+                            .onFamilyMemberChanges(p0);
+                      },
+                      validator: (context) {
+                        return null;
+                      },
+                    );
+                  } else {
+                    return Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 14.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColorsManager.textfieldInsideColor
+                            .withAlpha(100),
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(
+                          color:
+                              AppColorsManager.placeHolderColor.withAlpha(150),
+                          width: 1.3,
+                        ),
+                      ),
+                      child: Text(
+                        "${getArabicFamilyName(familyCodes)} ($memberName)",
+                        style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                          color: AppColorsManager.textColor,
+                        ),
+                      ),
+                    );
+                  }
                 }),
                 verticalSpacing(20),
                 GeneticDiseaseTemplateListBlocBuilder(),

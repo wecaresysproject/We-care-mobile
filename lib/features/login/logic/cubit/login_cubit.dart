@@ -2,10 +2,12 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/Services/fcm_token_manager.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/login/Data/models/login_response_model.dart';
 
 import '../../../../core/Database/cach_helper.dart';
+import '../../../../core/di/dependency_injection.dart';
 import '../../../../core/global/Helpers/app_enums.dart';
 import '../../../../core/global/Helpers/app_logger.dart';
 import '../../../../core/global/app_strings.dart';
@@ -28,13 +30,20 @@ class LoginCubit extends Cubit<LoginState> {
     final response = await _loginRepo.login(
       LoginRequestBodyModel(
         password: passwordController.text,
-        phoneNumber: "+2${phoneController.text}", //! handle app regex to be started from 1022647417
+        phoneNumber:
+            "+2${phoneController.text}", //! handle app regex to be started from 1022647417
         language: AppStrings.arabicLang, //TOD to change this later
       ),
     );
 
     response.when(success: (response) async {
       await saveUserToken(response);
+
+      // Sync FCM token with backend after successful login
+      final fcmTokenManager = getIt<FcmTokenManager>();
+      await fcmTokenManager.syncFcmToken();
+      fcmTokenManager.startTokenRefreshListener();
+
       emit(
         state.copyWith(
           message: response.message,

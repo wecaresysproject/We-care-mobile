@@ -8,7 +8,7 @@ class EffectsOnNutrientsModel {
   final double? standard;
   final double? accumulativeStandard;
   final double? difference;
-  final double? value;
+  final double? amountFromVitamins;
   final double? differenceAfterVitamins;
 
   EffectsOnNutrientsModel({
@@ -16,7 +16,7 @@ class EffectsOnNutrientsModel {
     this.standard,
     this.accumulativeStandard,
     this.difference,
-    this.value,
+    this.amountFromVitamins,
     this.differenceAfterVitamins,
   });
 

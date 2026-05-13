@@ -2,6 +2,8 @@ part of 'nutration_data_entry_cubit.dart';
 
 @immutable
 class NutrationDataEntryState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   final RequestStatus submitNutrationDataStatus;
 
   final bool isFormValidated;
@@ -36,6 +38,7 @@ class NutrationDataEntryState extends Equatable {
   const NutrationDataEntryState({
     this.submitNutrationDataStatus = RequestStatus.initial,
     this.isFormValidated = false,
+    this.moduleGuidanceData,
     this.message = '',
     this.isEditMode = false,
     this.isListening = false,
@@ -86,6 +89,7 @@ class NutrationDataEntryState extends Equatable {
           nutritionDefinition: null,
           fetchSystemPromptStatus: RequestStatus.initial,
           systemPrompt: '',
+          moduleGuidanceData: null,
         );
 
   NutrationDataEntryState copyWith({
@@ -113,6 +117,7 @@ class NutrationDataEntryState extends Equatable {
     NutritionDefinitionModel? nutritionDefinition,
     RequestStatus? fetchSystemPromptStatus,
     String? systemPrompt,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return NutrationDataEntryState(
       submitNutrationDataStatus:
@@ -149,6 +154,7 @@ class NutrationDataEntryState extends Equatable {
       fetchSystemPromptStatus:
           fetchSystemPromptStatus ?? this.fetchSystemPromptStatus,
       systemPrompt: systemPrompt ?? this.systemPrompt,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -178,5 +184,6 @@ class NutrationDataEntryState extends Equatable {
         nutritionDefinition,
         fetchSystemPromptStatus,
         systemPrompt,
+        moduleGuidanceData,
       ];
 }

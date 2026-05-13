@@ -21,8 +21,8 @@ class MatchedMedicineResultsList extends StatelessWidget {
       },
       builder: (context, state) {
         if (state.matchedMedicines.isNotEmpty) {
-          return Expanded(
-            flex: 4,
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
             child: Container(
               margin: EdgeInsets.only(top: 8),
               decoration: BoxDecoration(
@@ -57,7 +57,6 @@ class MatchedMedicineResultsList extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 children: [
@@ -77,6 +76,7 @@ class MatchedMedicineResultsList extends StatelessWidget {
                                   ),
                                 ],
                               ),
+                              Spacer(),
                               Container(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 4),
@@ -91,6 +91,26 @@ class MatchedMedicineResultsList extends StatelessWidget {
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                     color: AppColorsManager.mainDarkBlue,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 6),
+                              GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<MedicineScannerCubit>()
+                                      .clearMatchedMedicines();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    size: 18,
+                                    color: Colors.black54,
                                   ),
                                 ),
                               ),

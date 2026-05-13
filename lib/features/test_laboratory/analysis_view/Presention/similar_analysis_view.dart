@@ -69,7 +69,7 @@ class SimilarAnalysisView extends StatelessWidget {
 
 // نفس الـ standard rate
           String standardRateStr =
-              similarTestsResponse.similarTests[0].standardRate;
+              similarTestsResponse.similarTests[0].standardRate ?? "لا يوجد";
 
           return Scaffold(
             appBar: AppBar(
@@ -146,12 +146,16 @@ class SimilarAnalysisView extends StatelessWidget {
                             ],
                             ranges: [
                               similarTestsResponse
-                                  .similarTests[index].standardRate
+                                      .similarTests[index].standardRate ??
+                                  "--"
                             ],
                             results: [
                               similarTestsResponse
-                                  .similarTests[index].writtenPercent
-                                  .toString()
+                                      .similarTests[index].writtenPercent
+                                      ?.toString() ??
+                                  similarTestsResponse
+                                      .similarTests[index].resultAsText ??
+                                  "--",
                             ],
                             interpretation: similarTestsResponse
                                 .similarTests[index].interpretation,

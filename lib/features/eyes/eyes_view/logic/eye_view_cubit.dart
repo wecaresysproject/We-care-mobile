@@ -238,7 +238,7 @@ class EyeViewCubit extends Cubit<EyeViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _sharedRepo.getModuleGuidance(
-      WeCareMedicalModules.ophthalmology.name,
+      WeCareMedicalModules.ophthalmologyView.name,
     );
     result.when(
       success: (data) {

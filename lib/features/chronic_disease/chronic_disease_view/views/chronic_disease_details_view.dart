@@ -108,18 +108,18 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                     },
                     shareFunction: () async {
                       final details = state.selectedChronicDiseaseDetails!;
+
                       await shareDetails(
-                        title: '🩺 *تفاصيل المرض المزمن* 🩺',
+                        title: '🩺 تفاصيل المرض المزمن',
                         details: {
-                          '📅 *تاريخ بداية التشخيص*:':
-                              details.diagnosisStartDate,
-                          '🦠 *المرض المزمن*:': details.diseaseName,
-                          '👨‍⚕️ *الطبيب المتابع*:': details.treatingDoctorName,
-                          '📊 *حالة المرض*:': details.diseaseStatus,
-                          '🤒 *الأعراض الجانبية*:': details.sideEffect,
-                          '📝 *ملاحظات شخصية*:': details.personalNotes,
+                          '📅 تاريخ بداية التشخيص:': details.diagnosisStartDate,
+                          '🦠 المرض المزمن:': details.diseaseName,
+                          '👨‍⚕️ الطبيب المتابع:': details.treatingDoctorName,
+                          '📊 حالة المرض:': details.diseaseStatus,
+                          '🤒 الأعراض الجانبية:': details.sideEffect,
+                          '📝 ملاحظات شخصية:': details.personalNotes,
                         },
-                        subLists: (details.medications).map((med) {
+                        subLists: details.medications.map((med) {
                           return {
                             '💊 اسم الدواء:': med.medicineName,
                             '📅 تاريخ بدء الدواء:': med.startDate,
@@ -128,9 +128,9 @@ class ChronicDiseaseDetailsView extends StatelessWidget {
                             '💊 الشكل الصيدلاني:': med.medicalForm,
                           };
                         }).toList(),
-                        subListTitle: '💊 *الأدوية المستخدمة:*',
+                        subListTitle: '💊 الأدوية المستخدمة:',
                         errorMessage:
-                            "❌ حدث خطأ أثناء مشاركة تفاصيل المرض المزمن",
+                            "حدث خطأ أثناء مشاركة تفاصيل المرض المزمن",
                       );
                     },
                     deleteFunction: () async {

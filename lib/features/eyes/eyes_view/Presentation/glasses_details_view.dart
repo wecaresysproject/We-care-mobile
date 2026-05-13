@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
@@ -8,10 +9,10 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar_with_centered_title_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/eyes/data/models/eye_glasses_details_model.dart';
 import 'package:we_care/features/eyes/eyes_view/Presentation/widgets/lense_details_card.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_cubit.dart';
 import 'package:we_care/features/eyes/eyes_view/logic/eye_view_state.dart';
-import 'package:we_care/generated/l10n.dart';
 
 class EyesGlassesDetailsView extends StatelessWidget {
   final String documentId;
@@ -52,6 +53,9 @@ class EyesGlassesDetailsView extends StatelessWidget {
                   AppBarWithCenteredTitle(
                     title: 'بيانات النظارات',
                     showActionButtons: true,
+                    shareFunction: () {
+                      shareEyeGlassesDetails(context, data);
+                    },
                     deleteFunction: () => context
                         .read<EyeViewCubit>()
                         .deleteEyeGlassesRecord(documentId),
@@ -96,8 +100,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                     value: data.storeName,
                     icon: 'assets/images/hospital_icon.png',
                   ),
-                  Row(
-                 children: [
+                  Row(children: [
                     DetailsViewInfoTile(
                       title: "حماية من ضوء ازرق",
                       value: data.blueLightProtection == null
@@ -118,10 +121,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                       icon: 'assets/images/scratch_protection.png',
                     )
                   ]),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     DetailsViewInfoTile(
                       title: ' مضادة للانعكاس',
                       value: data.antiReflection == null
@@ -218,4 +218,63 @@ class EyesGlassesDetailsView extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> shareEyeGlassesDetails(
+  BuildContext context,
+  EyeGlassesDetailsModel data,
+) async {
+  String boolToText(bool? value) {
+    if (value == null) return "-";
+    return value ? "نعم" : "لا";
+  }
+
+  final shareContent = '''
+👓 بيانات النظارات
+
+📅 تاريخ الفحص: ${data.date}
+🏥 المركز / المستشفى: ${data.hospitalName}
+👨‍⚕️ الطبيب: ${data.doctorName}
+🏬 محل النظارات: ${data.storeName}
+
+🛡️ خصائص العدسة
+🔵 حماية من الضوء الأزرق: ${boolToText(data.blueLightProtection)}
+🛡️ مقاومة الخدش: ${boolToText(data.scratchResistance)}
+✨ مضادة للانعكاس: ${boolToText(data.antiReflection)}
+👆 مضادة للبصمات: ${boolToText(data.fingerprintResistance)}
+🌫️ طبقة مضادة للضباب: ${boolToText(data.antiFog)}
+☀️ حماية من الأشعة فوق البنفسجية: ${boolToText(data.uvProtection)}
+
+👁️ العدسة اليمنى
+قصر النظر: ${data.rightEye.myopiaDegree}
+طول القصر: ${data.rightEye.hyperopiaDegree}
+الاستجماتزم: ${data.rightEye.astigmatismDegree}
+محور الاستجماتزم: ${data.rightEye.astigmatismAxis}
+الإضافة البؤرية: ${data.rightEye.nearAddition}
+تباعُد الحدقتين: ${data.rightEye.pupillaryDistance}
+معامل الانكسار: ${data.rightEye.refractiveIndex}
+قطر العدسة: ${data.rightEye.lensDiameter}
+المركز: ${data.rightEye.lensCentering}
+الحواف: ${data.rightEye.lensEdgeType}
+سطح العدسة: ${data.rightEye.lensSurfaceType}
+سُمك العدسة: ${data.rightEye.lensThickness}
+نوع العدسة: ${data.rightEye.lensType}
+
+👁️ العدسة اليسرى
+قصر النظر: ${data.leftEye.myopiaDegree}
+طول القصر: ${data.leftEye.hyperopiaDegree}
+الاستجماتزم: ${data.leftEye.astigmatismDegree}
+محور الاستجماتزم: ${data.leftEye.astigmatismAxis}
+الإضافة البؤرية: ${data.leftEye.nearAddition}
+تباعُد الحدقتين: ${data.leftEye.pupillaryDistance}
+معامل الانكسار: ${data.leftEye.refractiveIndex}
+قطر العدسة: ${data.leftEye.lensDiameter}
+المركز: ${data.leftEye.lensCentering}
+الحواف: ${data.leftEye.lensEdgeType}
+سطح العدسة: ${data.leftEye.lensSurfaceType}
+سُمك العدسة: ${data.leftEye.lensThickness}
+نوع العدسة: ${data.leftEye.lensType}
+''';
+
+  await Share.share(shareContent);
 }

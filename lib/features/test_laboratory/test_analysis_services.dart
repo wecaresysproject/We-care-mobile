@@ -28,7 +28,7 @@ abstract class TestAnalysisSerices {
   @GET(TestAnalysisApiConstants.getAllUserGroupNames)
   Future<dynamic> getAllUserGroupNames();
 
-    @GET(TestAnalysisApiConstants.getAllUserTestCodes)
+  @GET(TestAnalysisApiConstants.getAllUserTestCodes)
   Future<dynamic> getAllUserTestCodes();
 
   @GET(TestAnalysisApiConstants.getUserTests)

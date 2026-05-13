@@ -25,7 +25,7 @@ class EmergencyComplaintsViewCubit extends Cubit<EmergencyComplaintViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _appSharedRepo
-        .getModuleGuidance(WeCareMedicalModules.emergenciesComplaints.name);
+        .getModuleGuidance(WeCareMedicalModules.emergenciesComplaintsView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -482,8 +483,13 @@ class MedicalOperationsComponent extends StatelessWidget {
 Future<void> shareDentalDetails(
     BuildContext context, DentalViewState state) async {
   final dentalData = state.selectedToothOperationDetails;
-  if (dentalData != null) {
-    final shareContent = '''
+
+  if (dentalData == null) {
+    showError("لا توجد بيانات للمشاركة.");
+    return;
+  }
+
+  final shareContent = '''
 🦷 تفاصيل الإجراء السني
 
 📆 تاريخ الشكوى: ${dentalData.medicalComplaints.symptomStartDate}
@@ -508,35 +514,65 @@ Future<void> shareDentalDetails(
 📌 ملاحظات إضافية: ${dentalData.additionalNotes}
 ''';
 
-    // تحميل الصور
-    List<String> imagePaths = [];
+  final tempDir = await getTemporaryDirectory();
+  List<XFile> filesToShare = [];
 
-    // if (dentalData.medicalReportImage.startsWith("http")) {
-    //   final path = await downloadImage(
-    //       dentalData.medicalReportImage, tempDir, 'report.png');
-    //   if (path != null) imagePaths.add(path);
-    // }
+  int reportIndex = 1;
+  int xrayIndex = 1;
+  int analysisIndex = 1;
 
-    // if (dentalData.xRayImage.startsWith("http")) {
-    //   final path =
-    //       await downloadImage(dentalData.xRayImage, tempDir, 'xray.png');
-    //   if (path != null) imagePaths.add(path);
-    // }
-
-    // if (dentalData.lymphAnalysisImage.startsWith("http")) {
-    //   final path = await downloadImage(
-    //       dentalData.lymphAnalysisImage, tempDir, 'lymph.png');
-    //   if (path != null) imagePaths.add(path);
-    // }
-
-    // المشاركة
-    if (imagePaths.isNotEmpty) {
-      await Share.shareXFiles(imagePaths.map((e) => XFile(e)).toList(),
-          text: shareContent);
-    } else {
-      await Share.share(shareContent);
+  /// 📄 التقارير الطبية
+  if (dentalData.medicalReportImage.isNotEmpty) {
+    for (final url in dentalData.medicalReportImage) {
+      if (url.startsWith("http")) {
+        final path = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التقرير_${reportIndex++}.jpg',
+        );
+        if (path != null) {
+          filesToShare.add(XFile(path));
+        }
+      }
     }
+  }
+
+  /// 🦷 الأشعة السنية
+  if (dentalData.xRayImage.isNotEmpty) {
+    for (final url in dentalData.xRayImage) {
+      if (url.startsWith("http")) {
+        final path = await downloadImage(
+          url,
+          tempDir,
+          'صورة_الأشعة_${xrayIndex++}.jpg',
+        );
+        if (path != null) {
+          filesToShare.add(XFile(path));
+        }
+      }
+    }
+  }
+
+  /// 🧪 التحاليل الفموية
+  if (dentalData.lymphAnalysisImage.isNotEmpty) {
+    for (final url in dentalData.lymphAnalysisImage) {
+      if (url.startsWith("http")) {
+        final path = await downloadImage(
+          url,
+          tempDir,
+          'صورة_التحليل_${analysisIndex++}.jpg',
+        );
+        if (path != null) {
+          filesToShare.add(XFile(path));
+        }
+      }
+    }
+  }
+
+  /// 📤 المشاركة
+  if (filesToShare.isNotEmpty) {
+    await Share.shareXFiles(filesToShare, text: shareContent);
   } else {
-    showError("لا توجد بيانات للمشاركة.");
+    await Share.share(shareContent);
   }
 }

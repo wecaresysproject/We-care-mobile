@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/features/otp/Data/models/resend_otp_request_body.dart';
-import 'package:we_care/features/otp/Data/models/verify_otp_request_body_model.dart';
-import 'package:we_care/features/otp/Data/repo/otp_repository.dart';
+import 'package:we_care/features/otp/data/models/resend_otp_request_body.dart';
+import 'package:we_care/features/otp/data/models/verify_otp_request_body_model.dart';
+import 'package:we_care/features/otp/data/repo/otp_repository.dart';
 
 import '../../../core/Database/cach_helper.dart';
 import '../../../core/global/Helpers/app_enums.dart';

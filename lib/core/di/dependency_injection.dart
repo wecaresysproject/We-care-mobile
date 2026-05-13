@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_care/core/Services/fcm_token_manager.dart';
 import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/shared_services.dart';
@@ -51,6 +52,8 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/lo
 import 'package:we_care/features/genetic_diseases/genetic_diseases_data_entry/logic/cubit/genetic_diseases_data_entry_cubit.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_services.dart';
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/logic/genetics_diseases_view_cubit.dart';
+import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_cubit.dart';
+import 'package:we_care/features/home_tab/cubits/ai_consultation_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
 import 'package:we_care/features/home_tab/services/home_service.dart';
@@ -86,6 +89,12 @@ import 'package:we_care/features/prescription/data/repos/prescription_data_entry
 import 'package:we_care/features/prescription/data/repos/prescription_view_repo.dart';
 import 'package:we_care/features/prescription/prescription_data_entry/logic/cubit/prescription_data_entry_cubit.dart';
 import 'package:we_care/features/prescription/prescription_services.dart';
+import 'package:we_care/features/quality_of_life/data/repos/quality_of_life_repo.dart';
+import 'package:we_care/features/quality_of_life/logic/quality_of_life_cubit.dart';
+import 'package:we_care/features/quality_of_life/quality_of_life_services.dart';
+import 'package:we_care/features/risky_behaviors/data/repos/risk_behaviors_data_view_repo.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_data_entry_view/logic/cubit/risky_behaviors_data_entry_cubit.dart';
+import 'package:we_care/features/risky_behaviors/risky_behaviors_view/logic/cubit/risky_behaviors_view_cubit.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Service/categories_services.dart';
 import 'package:we_care/features/supplements/data/repos/supplements_data_entry_repo.dart';
@@ -120,13 +129,15 @@ import '../../features/forget_password/Data/Repostory/forget_password_repo.dart'
 import '../../features/forget_password/Presentation/view_models/cubit/forget_password_cubit.dart';
 import '../../features/login/Data/Repostory/login_repo.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
-import '../../features/otp/Data/repo/otp_repository.dart';
+import '../../features/otp/data/repo/otp_repository.dart';
 import '../../features/otp/logic/otp_cubit.dart';
+import '../../features/risky_behaviors/data/repos/risk_behaviors_data_entry_repo.dart';
 import '../../features/sign_up/Data/repos/sign_up_repo.dart';
 import '../../features/sign_up/logic/sign_up_cubit.dart';
 import '../global/Helpers/image_quality_detector.dart';
 import '../networking/auth_service.dart';
 import '../networking/dio_serices.dart';
+import '../networking/risk_behaviors_service.dart';
 
 final getIt = GetIt.instance;
 Future<void> setUpDependencyInjection() async {
@@ -339,7 +350,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicalIllnessesDataEntryCubit>(
     () => MedicalIllnessesDataEntryCubit(
       getIt<MentalIllnessesDataEntryRepo>(),
-      getIt<PushNotificationsService>(),
+      getIt<FcmTokenManager>(),
       getIt<AppSharedRepo>(),
     ),
   );
@@ -408,6 +419,7 @@ void setupAppCubits() {
   getIt.registerFactory<MedicalNotesCubit>(
     () => MedicalNotesCubit(
       getIt<MedicalNotesRepository>(),
+      getIt<AppSharedRepo>(),
     ),
   );
 
@@ -415,6 +427,12 @@ void setupAppCubits() {
     () => HomeCubit(
       getIt<HomeRepository>(),
       getIt<AppSharedRepo>(),
+    ),
+  );
+  getIt.registerFactory<AIConsultationCubit>(
+    () => AIConsultationCubit(
+      getIt<AppSharedRepo>(),
+      getIt<MedicalReportRepo>(),
     ),
   );
   getIt.registerFactory<ContactSupportCubit>(
@@ -431,11 +449,39 @@ void setupAppCubits() {
   getIt.registerFactory<SupplementsDataEntryCubit>(
     () => SupplementsDataEntryCubit(
       getIt<SupplementsDataEntryRepo>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerFactory<MedicalReportGenerationCubit>(
     () => MedicalReportGenerationCubit(
       getIt<MedicalReportRepo>(),
+      getIt<AppSharedRepo>(),
+    ),
+  );
+  getIt.registerFactory<MedicinesCompatibilityCubit>(
+    () => MedicinesCompatibilityCubit(
+      getIt<MedicalReportRepo>(),
+      getIt<AppSharedRepo>(),
+    ),
+  );
+
+  //! recheck this later if there is an error due to registeration type
+  getIt.registerFactory<QualityOfLifeCubit>(
+    () => QualityOfLifeCubit(
+      getIt<AppSharedRepo>(),
+      getIt<QualityOfLifeRepo>(),
+    ),
+  );
+  getIt.registerFactory<RiskyBehaviorsDataEntryCubit>(
+    () => RiskyBehaviorsDataEntryCubit(
+      getIt<AppSharedRepo>(),
+      getIt<RiskBehaviorDataEntryRepo>(),
+    ),
+  );
+  getIt.registerFactory<RiskyBehaviorsViewCubit>(
+    () => RiskyBehaviorsViewCubit(
+      getIt<AppSharedRepo>(),
+      getIt<RiskBehaviorsDataViewRepo>(),
     ),
   );
 }
@@ -694,6 +740,21 @@ void setupAppRepos() {
       getIt<MedicalReportApiServices>(),
     ),
   );
+  getIt.registerLazySingleton<QualityOfLifeRepo>(
+    () => QualityOfLifeRepo(
+      getIt<QualityOfLifeServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<RiskBehaviorDataEntryRepo>(
+    () => RiskBehaviorDataEntryRepo(
+      getIt<RiskBehaviorsServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<RiskBehaviorsDataViewRepo>(
+    () => RiskBehaviorsDataViewRepo(
+      getIt<RiskBehaviorsServices>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -760,6 +821,9 @@ void setupAppServices() {
   getIt.registerLazySingleton<PushNotificationsService>(
     () => PushNotificationsService(),
   );
+  getIt.registerLazySingleton<FcmTokenManager>(
+    () => FcmTokenManager(getIt<AuthApiServices>()),
+  );
   getIt.registerLazySingleton<AllergyServices>(
     () => AllergyServices(
       dio,
@@ -793,5 +857,11 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<MedicalReportApiServices>(
     () => MedicalReportApiServices(dio),
+  );
+  getIt.registerLazySingleton<QualityOfLifeServices>(
+    () => QualityOfLifeServices(dio),
+  );
+  getIt.registerLazySingleton<RiskBehaviorsServices>(
+    () => RiskBehaviorsServices(dio),
   );
 }

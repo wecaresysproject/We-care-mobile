@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';

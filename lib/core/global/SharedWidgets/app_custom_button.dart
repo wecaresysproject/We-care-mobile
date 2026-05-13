@@ -11,12 +11,14 @@ class AppCustomButton extends StatelessWidget {
     this.onPressed,
     this.isEnabled = false,
     this.isLoading = false,
+    this.textFontSize = 22,
   });
 
   final String title;
   final void Function()? onPressed;
   final bool isEnabled;
   final bool isLoading;
+  final double textFontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,7 @@ class AppCustomButton extends StatelessWidget {
                     title,
                     style: AppTextStyles.font22MainBlueWeight700.copyWith(
                       color: Colors.white,
+                      fontSize: textFontSize,
                     ),
                   ),
           ),

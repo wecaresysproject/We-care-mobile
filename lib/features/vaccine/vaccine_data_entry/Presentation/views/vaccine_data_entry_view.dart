@@ -25,7 +25,7 @@ class VaccineDataEntryView extends StatelessWidget {
       create: (context) {
         var cubit = getIt<VaccineDataEntryCubit>();
         if (editingVaccineData != null) {
-          cubit.loadVaccineDataForEditing(editingVaccineData!);
+          // cubit.loadVaccineDataForEditing(editingVaccineData!);
         } else {
           cubit.intialRequestsForVaccineDataEntry();
         }

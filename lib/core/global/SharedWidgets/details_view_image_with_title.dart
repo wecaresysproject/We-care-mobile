@@ -42,7 +42,7 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
               if (isShareEnabled)
                 CustomActionButton(
                   onTap: () {
-                    shareImage(context,image ?? '', title);
+                    shareImage(context, image ?? '', title);
                   },
                   title: 'ارسال',
                   icon: 'assets/images/share.png',
@@ -75,19 +75,15 @@ class DetailsViewImageWithTitleTile extends StatelessWidget {
   }
 }
 
-
 Future<void> shareImage(
-    BuildContext context, String image,String title) async {
+    BuildContext context, String image, String title) async {
   try {
     // 📥 Download images
     final tempDir = await getTemporaryDirectory();
     List<String> imagePaths = [];
 
     if (image.startsWith("http")) {
-      final imagePath = await downloadImage(
-          image,
-          tempDir,
-          'image.png');
+      final imagePath = await downloadImage(image, tempDir, 'image.png');
       if (imagePath != null) imagePaths.add(imagePath);
     }
     if (imagePaths.isNotEmpty) {
@@ -100,7 +96,6 @@ Future<void> shareImage(
   }
 }
 
-
 class FullScreenImageViewer extends StatelessWidget {
   final String imageUrl;
 
@@ -111,19 +106,18 @@ class FullScreenImageViewer extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-    leading: BackButton(
+        leading: BackButton(
           color: Colors.white,
-          onPressed: () => Navigator.pop(context), 
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: GestureDetector(
-        onTap: () => Navigator.pop(context), 
+        onTap: () => Navigator.pop(context),
         child: Center(
-          child:PhotoView(
-              backgroundDecoration:
-                  BoxDecoration(color: Colors.white),
-              imageProvider: NetworkImage(imageUrl),
-            ),
+          child: PhotoView(
+            backgroundDecoration: BoxDecoration(color: Colors.white),
+            imageProvider: NetworkImage(imageUrl),
+          ),
         ),
       ),
     );

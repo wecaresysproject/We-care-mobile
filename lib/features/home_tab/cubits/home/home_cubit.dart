@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
 
@@ -11,6 +12,13 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(this._homeRepository, this._appSharedRepo)
       : super(HomeState.initial());
+
+  Future<void> initialRequests() async {
+    await Future.wait([
+      getMessageNotifications(),
+      getAds(),
+    ]);
+  }
 
   Future<void> getMessageNotifications() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
@@ -54,6 +62,35 @@ class HomeCubit extends Cubit<HomeState> {
               ? error.errors.first
               : 'Failed to load videos',
         ));
+      },
+    );
+  }
+
+  Future<void> getAds() async {
+    emit(state.copyWith(adsRequestStatus: RequestStatus.loading));
+
+    final result = await _homeRepository.getAds();
+
+    result.when(
+      success: (ads) {
+        AppLogger.info('xxxxxxx getAds success $ads');
+        emit(
+          state.copyWith(
+            ads: ads,
+            adsRequestStatus: RequestStatus.success,
+          ),
+        );
+      },
+      failure: (error) {
+        AppLogger.info('xxxxxxx getAds failure $error');
+        emit(
+          state.copyWith(
+            adsRequestStatus: RequestStatus.failure,
+            errorMessage: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'فشل في تحميل الإعلانات',
+          ),
+        );
       },
     );
   }

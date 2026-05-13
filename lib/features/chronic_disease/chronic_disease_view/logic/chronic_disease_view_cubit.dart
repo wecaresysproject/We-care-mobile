@@ -120,7 +120,7 @@ class ChronicDiseaseViewCubit extends Cubit<ChronicDiseaseViewState> {
 
   Future<void> emitModuleGuidance() async {
     final result = await _appSharedRepo
-        .getModuleGuidance(WeCareMedicalModules.chronicDiseases.name);
+        .getModuleGuidance(WeCareMedicalModules.chronicDiseasesView.name);
     result.when(
       success: (data) {
         emit(state.copyWith(moduleGuidanceData: data));

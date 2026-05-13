@@ -22,8 +22,8 @@ class SurgeriesViewRepo {
   Future<ApiResult<GetUserSurgeriesResponseModal>> getUserSurgeriesList(
       {required String language, int? page, int? pageSize}) async {
     try {
-      final response = await surgeriesService.getSurgeries(language,
-          'Patient', page ?? 1, pageSize ?? 10);
+      final response = await surgeriesService.getSurgeries(
+          language, 'Patient', page ?? 1, pageSize ?? 10);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

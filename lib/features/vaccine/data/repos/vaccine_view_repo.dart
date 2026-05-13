@@ -9,12 +9,22 @@ class VaccineViewRepo {
 
   VaccineViewRepo(this.vaccineApiServices);
 
-  Future<ApiResult<GetUserVaccinesResponseModel>> getUserVaccines(
-     {required String language,required String userType, int? page, int? pageSize}) async {
+  Future<ApiResult<List<String>>> fetchUserSubmissionDates() async {
+    try {
+      final response = await vaccineApiServices.getUserSubmissionDates();
+      return ApiResult.success(List<String>.from(response["data"]));
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<GetUserVaccinesResponseModel>> getUserVaccines({
+    String? dateFrom,
+    String? dateTo,
+  }) async {
     try {
       final response =
-          await vaccineApiServices.getUserVaccines(language, userType,
-              page: page, pageSize: pageSize);
+          await vaccineApiServices.getUserVaccines(dateFrom, dateTo);
       return ApiResult.success(response);
     } catch (e) {
       return ApiResult.failure(ApiErrorHandler.handle(e));

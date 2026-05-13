@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/nutration/data/models/get_all_created_plans_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_entry_model.dart';
 import 'package:we_care/features/supplements/data/models/supplement_follow_up_row_model.dart';
 
 class SupplementsDataEntryState extends Equatable {
+  final ModuleGuidanceDataModel? moduleGuidanceData;
   final RequestStatus requestStatus;
   final String message;
   final List<String> availableVitamins;
@@ -23,6 +25,7 @@ class SupplementsDataEntryState extends Equatable {
   final RequestStatus supplementTableStatus;
 
   const SupplementsDataEntryState({
+    this.moduleGuidanceData,
     this.message = '',
     this.requestStatus = RequestStatus.initial,
     this.availableVitamins = const [],
@@ -43,6 +46,7 @@ class SupplementsDataEntryState extends Equatable {
 
   factory SupplementsDataEntryState.initial() {
     return SupplementsDataEntryState(
+      moduleGuidanceData: null,
       message: '',
       requestStatus: RequestStatus.initial,
       availableVitamins: const [],
@@ -66,6 +70,7 @@ class SupplementsDataEntryState extends Equatable {
   }
 
   SupplementsDataEntryState copyWith({
+    ModuleGuidanceDataModel? moduleGuidanceData,
     String? message,
     RequestStatus? requestStatus,
     List<String>? availableVitamins,
@@ -84,6 +89,7 @@ class SupplementsDataEntryState extends Equatable {
     RequestStatus? supplementTableStatus,
   }) {
     return SupplementsDataEntryState(
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
       message: message ?? this.message,
       requestStatus: requestStatus ?? this.requestStatus,
       availableVitamins: availableVitamins ?? this.availableVitamins,
@@ -113,6 +119,7 @@ class SupplementsDataEntryState extends Equatable {
 
   @override
   List<Object?> get props => [
+        moduleGuidanceData,
         message,
         requestStatus,
         availableVitamins,

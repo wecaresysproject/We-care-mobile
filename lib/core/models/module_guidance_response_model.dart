@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'module_guidance_response_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ModuleGuidanceResponseModel extends Equatable {
   final bool success;
   final ModuleGuidanceDataModel? data;
@@ -20,7 +20,7 @@ class ModuleGuidanceResponseModel extends Equatable {
   List<Object?> get props => [success, data];
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ModuleGuidanceDataModel extends Equatable {
   final String? videoLink;
   final String? moduleGuidanceText;

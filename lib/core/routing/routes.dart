@@ -131,10 +131,18 @@ class Routes {
   static const supplementsFollowUpPlansView = '/supplementsPlansView';
   static const supplementsReportTableView = '/supplementsReportTableView';
   static const notificationsScreen = '/notificationsScreen';
-  static const medicationCompatibilityView = '/medicationCompatibilityView';
+  static const newMedicationCompatibilityView =
+      '/newMedicationCompatibilityView';
   static const caloriesFollowUpReportView = '/caloriesFollowUpReportView';
 
   static const myMedicalReportsView = '/myMedicalReportsView';
   static const scheduledMedicinesListView = '/scheduledMedicinesListView';
   static const aiConsultation = '/aiConsultation';
+  static const medicinesCompatibilityView = '/medicinesCompatibilityView';
+  static const qualityOfLifeMainView = '/qualityOfLifeMainView';
+  static const qualityOfLifeQuestionsView = '/qualityOfLifeQuestionsView';
+  static const qualityOfLifeTableView = '/qualityOfLifeTableView';
+  static const riskyBehaviorsDataEntryView = '/riskyBehaviorsDataEntryView';
+  static const riskyBehaviorsDataView = '/riskyBehaviorsDataView';
+  static const systemOutputJsonResponseView = '/systemOutputJsonResponseView';
 }

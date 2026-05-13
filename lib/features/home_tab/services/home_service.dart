@@ -13,4 +13,10 @@ abstract class HomeService {
     @Query("userType") String userType,
     @Query("language") String language,
   );
+
+  @GET(HomeApiConstants.ads)
+  Future<dynamic> getAds(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
 }

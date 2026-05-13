@@ -23,7 +23,9 @@ class NotificationItem extends StatelessWidget {
       margin: EdgeInsets.only(bottom: 12.h),
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
-        color: isRead ? Colors.white : AppColorsManager.babyBlueColor.withOpacity(0.3),
+        color: isRead
+            ? Colors.white
+            : AppColorsManager.babyBlueColor.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: AppColorsManager.placeHolderColor.withOpacity(0.1),
