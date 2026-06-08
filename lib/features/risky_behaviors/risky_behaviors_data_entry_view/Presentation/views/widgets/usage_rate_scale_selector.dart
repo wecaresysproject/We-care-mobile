@@ -61,12 +61,14 @@ class UsageRateScaleSelector extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? AppColorsManager.mainDarkBlue
-                                  : AppColorsManager.mainDarkBlue.withOpacity(0.4),
+                                  : AppColorsManager.mainDarkBlue
+                                      .withOpacity(0.4),
                               borderRadius: BorderRadius.circular(3.r),
                               boxShadow: isSelected
                                   ? [
                                       BoxShadow(
-                                        color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                                        color: AppColorsManager.mainDarkBlue
+                                            .withOpacity(0.3),
                                         blurRadius: 8,
                                         spreadRadius: 1,
                                       )
@@ -96,8 +98,11 @@ class UsageRateScaleSelector extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: AppTextStyles.font14blackWeight400.copyWith(
                       fontSize: 11.sp,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w400,
-                      color: isSelected ? AppColorsManager.mainDarkBlue : Colors.black87,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.w400,
+                      color: isSelected
+                          ? AppColorsManager.mainDarkBlue
+                          : Colors.black87,
                     ),
                   ),
                 ),
