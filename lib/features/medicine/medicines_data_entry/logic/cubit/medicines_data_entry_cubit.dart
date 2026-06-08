@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
@@ -21,7 +22,8 @@ import 'package:we_care/features/medicine/medicines_data_entry/logic/cubit/medic
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 import 'package:we_care/generated/l10n.dart';
 
-class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
+class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
+    with SafeEmitMixin {
   MedicinesDataEntryCubit(this._medicinesDataEntryRepo, this.sharedRepo)
       : super(
           MedicinesDataEntryState.initialState(),
@@ -366,14 +368,14 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: null,
           ),
@@ -383,7 +385,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitAllMedicinesNames() async {
-    emit(
+    safeEmit(
       state.copyWith(
         medicinesNamesOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -395,7 +397,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     response.when(
       success: (response) {
         final medcineNames = response.map((e) => e.tradeName).toList();
-        emit(
+        safeEmit(
           state.copyWith(
             medicinesNames: medcineNames,
             medicinesBasicInfo: response,
@@ -404,7 +406,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             isLoading: false,
@@ -499,14 +501,14 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             doctorNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -516,7 +518,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> emitAllDosageFrequencies() async {
-    emit(
+    safeEmit(
       state.copyWith(
         dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -527,7 +529,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             dosageFrequencies: response,
             dosageFrequenciesOptionsLoadingState: OptionsLoadingState.loaded,
@@ -535,7 +537,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             dosageFrequenciesOptionsLoadingState: OptionsLoadingState.error,
@@ -546,7 +548,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
   }
 
   Future<void> getAllUsageCategories() async {
-    emit(
+    safeEmit(
       state.copyWith(
         allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -557,7 +559,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             allUsageCategories: response,
             allUsageCategoriesOptionsLoadingState: OptionsLoadingState.loaded,
@@ -565,7 +567,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             allUsageCategoriesOptionsLoadingState: OptionsLoadingState.error,
@@ -917,14 +919,14 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState> {
 
     response.when(
       success: (diseasesList) {
-        emit(
+        safeEmit(
           state.copyWith(
             chronicDiseaseNames: diseasesList,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),

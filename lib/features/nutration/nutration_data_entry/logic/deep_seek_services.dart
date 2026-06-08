@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/features/medication_compatibility/data/models/clinical_audit_report_model.dart';
 import 'package:we_care/features/medicine/data/models/medical_compatibility_analysis_model.dart';
 import 'package:we_care/features/medicine/data/models/user_medical_history_details_model.dart';
+import 'package:we_care/features/nutration/data/models/meal_segmentation_model.dart';
 import 'package:we_care/features/nutration/data/models/nutration_facts_data_model.dart';
 
 class DeepSeekService {
@@ -19,13 +20,15 @@ class DeepSeekService {
   static String? systemOutputJsonResponse;
 
 //! real deepseek
-  static Future<NutrationFactsModel?> analyzeDietPlan(String dietInput) async {
+  /// Performs deep nutrition analysis for a single meal only
+  /// This is STAGE 2 of the pipeline: Focused Deep Analysis
+  static Future<NutrationFactsModel?> analyzeSingleMeal(String mealText) async {
     try {
       final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
       final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
 
       AppLogger.debug('DeepSeek Direct URL: $baseUrl');
-      AppLogger.info('system prompt : ${buildSystemNutritionPrompt()}');
+      // AppLogger.info('system prompt : ${buildSystemNutritionPrompt()}');
       final response = await http.post(
         Uri.parse(baseUrl),
         headers: {
@@ -42,38 +45,32 @@ class DeepSeekService {
               },
               {
                 'role': 'user',
-                'content': buildUserDietPrompt(dietInput),
+                'content': buildUserDietPrompt(mealText),
               }
             ],
             'temperature': 0,
-            'max_tokens': 12000, // مهم لتقليل cost ومنع expansion
+            'max_tokens': 20000,
           },
         ),
       );
 
       if (response.statusCode == 200) {
-        /// ✅ UTF8 safe decoding
         final decoded = jsonDecode(utf8.decode(response.bodyBytes));
-
         final content = decoded['choices']?[0]?['message']?['content'];
         if (content == null) {
           AppLogger.error('DeepSeek response content is null');
           return null;
         }
 
-        AppLogger.debug('DeepSeek response (raw): $content');
-
         final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
-
         if (jsonMatch == null) {
           AppLogger.error('❗ JSON not found inside DeepSeek response');
           return null;
         }
-
+        AppLogger.debug('RAW RESPONSE 1: $content');
         final jsonString = jsonMatch.group(0)!;
         final nutritionJson = jsonDecode(jsonString);
-        systemOutputJsonResponse = jsonString;
-
+        AppLogger.debug('RAW RESPONSE 2: $nutritionJson');
         return NutrationFactsModel.fromJson(nutritionJson);
       } else {
         AppLogger.error(
@@ -81,11 +78,177 @@ class DeepSeekService {
         );
       }
     } catch (e, stack) {
-      AppLogger.error('Error analyzing diet plan: $e');
+      AppLogger.error('Error analyzing single meal: $e');
       AppLogger.error('StackTrace: $stack');
     }
-
     return null;
+  }
+
+  /// Splits full user diet text into isolated meal strings
+  /// This is STAGE 1 of the pipeline: Meal Segmentation
+  static Future<MealSegmentationModel?> segmentMeals(String input) async {
+    try {
+      final String baseUrl = dotenv.env['DEEPSEEK_BASE_URL'] ?? "";
+      final String apiKey = dotenv.env['DEEPSEEK_API_KEY'] ?? "";
+
+      AppLogger.info('Starting Stage 1: Meal Segmentation');
+
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $apiKey',
+        },
+        body: jsonEncode(
+          {
+            'model': 'deepseek-v4-flash',
+            'messages': [
+              {
+                'role': 'system',
+                'content': '''
+أنت محرك تقسيم أصناف غذائية.
+
+مهمتك الوحيدة هي قراءة النص الغذائي المدخل واستخراج كل صنف غذائي مستقل في عنصر منفصل داخل JSON.
+
+قواعد إلزامية:
+- صحح الأخطاء الإملائية واللهجات المحلية وحوّل أسماء الأطعمة إلى العربية الواضحة.
+- احتفظ بالكمية أو الحجم إذا ذكره المستخدم (مثل: طبق متوسط، كوب، قطعتين، نصف رغيف).
+- إذا لم يذكر المستخدم كمية، لا تخترع أي كمية.
+- يُمنع إضافة أي صنف غير موجود في النص.
+- يُمنع دمج أكثر من صنف مختلف داخل عنصر واحد.
+- كل عنصر غذائي مستقل يجب أن يكون داخل عنصر منفصل في القائمة.
+- لا تقم بتحليل السعرات أو القيم الغذائية.
+- لا تضف أي شرح أو نص إضافي خارج JSON.
+
+أعد النتيجة فقط بالتنسيق التالي:
+
+{
+  "meal_count": number,
+  "meals": [
+    "صنف 1",
+    "صنف 2",
+    "صنف 3"
+  ]
+}
+
+مثال:
+
+النص:
+"طبق كشري متوسط، ساندوتش فول، ساندوتش جبنة فلمنك، كوباية شاي، موزتين، قطعة مكرونة بالبشاميل"
+
+الناتج:
+{
+  "meal_count": 6,
+  "meals": [
+    "طبق كشري متوسط",
+    "ساندوتش فول",
+    "ساندوتش جبنة فلمنك",
+    "كوب شاي",
+    "موزتين",
+    "قطعة مكرونة بالبشاميل"
+  ]
+}
+
+''',
+              },
+              {
+                'role': 'user',
+                'content': input,
+              }
+            ],
+            'temperature': 0,
+            'max_tokens': 2000,
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(utf8.decode(response.bodyBytes));
+        final content = decoded['choices']?[0]?['message']?['content'];
+        if (content == null) return null;
+        AppLogger.info('SEGMENT RAW RESPONSE: $content');
+        final jsonMatch = RegExp(r'\{.*\}', dotAll: true).firstMatch(content);
+        if (jsonMatch == null) return null;
+
+        final jsonString = jsonMatch.group(0)!;
+        return MealSegmentationModel.fromJson(jsonDecode(jsonString));
+      }
+    } catch (e) {
+      AppLogger.error('Error in segmentMeals: $e');
+    }
+    return null;
+  }
+
+  /// Full nutrition pipeline orchestrator:
+  /// 1. Segment full diet text into isolated meals (Stage 1)
+  /// 2. Analyze each meal in parallel using the deep nutrition prompt (Stage 2)
+  /// 3. Merge all results into a single NutrationFactsModel
+  static Future<NutrationFactsModel?> analyzeFullDietPlan(
+      String fullInput) async {
+    try {
+      AppLogger.info('Starting full diet plan analysis pipeline...');
+
+      // STAGE 1: Segment meals
+      final segmentation = await segmentMeals(fullInput);
+      if (segmentation == null || segmentation.meals.isEmpty) {
+        AppLogger.warning(
+            'Stage 1 failed or no meals detected, falling back to single analysis');
+        return await analyzeSingleMeal(fullInput);
+      }
+
+      AppLogger.info(
+          'Stage 1 success: Detected ${segmentation.mealCount} meals. Starting Stage 2 parallel analysis...');
+
+      // STAGE 2: Parallel Deep Analysis
+      final List<Future<NutrationFactsModel?>> analysisFutures =
+          segmentation.meals.map((meal) => analyzeSingleMeal(meal)).toList();
+
+      final List<NutrationFactsModel?> results =
+          await Future.wait(analysisFutures);
+
+      // Filter out failed analyses
+      final List<NutrationFactsModel> validResults =
+          results.whereType<NutrationFactsModel>().toList();
+
+      if (validResults.isEmpty) {
+        AppLogger.error('Stage 2 failed: All meal analyses returned null');
+        return null;
+      }
+
+      // FINAL STEP: Merge results
+      AppLogger.info('Merging ${validResults.length} analysis results');
+      return mergeNutritionResults(validResults, fullInput);
+    } catch (e, stack) {
+      AppLogger.error('Error in analyzeFullDietPlan pipeline: $e');
+      AppLogger.error('StackTrace: $stack');
+      return null;
+    }
+  }
+
+  /// Merges multiple NutrationFactsModel results into one final model
+  /// Ensures the final output matches the expected app schema
+  static NutrationFactsModel mergeNutritionResults(
+    List<NutrationFactsModel> results,
+    String originalUserDietplan,
+  ) {
+    final List<FoodItemModel> allFoodItems = [];
+
+    for (final result in results) {
+      allFoodItems.addAll(result.foodItems);
+    }
+
+    final mergedResult = NutrationFactsModel(
+      userDietplan: originalUserDietplan,
+      foodItems: allFoodItems,
+    );
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+
+    final formattedJson = encoder.convert(mergedResult.toJson());
+
+    systemOutputJsonResponse = formattedJson;
+
+    return mergedResult;
   }
 
   static String buildSystemNutritionPrompt() {

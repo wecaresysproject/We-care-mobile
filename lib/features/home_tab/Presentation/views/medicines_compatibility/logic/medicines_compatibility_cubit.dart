@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility/logic/medicines_compatibility_state.dart';
 import 'package:we_care/features/my_medical_reports/data/repos/medical_report_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/deep_seek_services.dart';
 
-class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
+class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState>
+    with SafeEmitMixin {
   final MedicalReportRepo _medicalReportRepo;
   final AppSharedRepo sharedRepo;
 
@@ -25,25 +27,25 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
 
   void updateSelectedMedicines(List<String> medicines) {
     AppLogger.info("updateSelectedMedicines: $medicines");
-    emit(state.copyWith(selectedMedicines: medicines));
+    safeEmit(state.copyWith(selectedMedicines: medicines));
   }
 
   void updateRecentlyExpiredMedicines(List<String> medicines) {
     AppLogger.info("updateRecentlyExpiredMedicines: $medicines");
-    emit(state.copyWith(recentlyExpiredMedicines: medicines));
+    safeEmit(state.copyWith(recentlyExpiredMedicines: medicines));
   }
 
   Future<void> analyseAllMedicinesCompitability() async {
     // if (state.selectedMedicines.isEmpty &&
     //     state.recentlyExpiredMedicines.isEmpty) {
-    //   emit(state.copyWith(
+    //   safeEmit(state.copyWith(
     //     analysisStatus: RequestStatus.failure,
     //     message: "برجاء اختيار دواء واحد على الأقل",
     //   ));
     //   return;
     // }
 
-    emit(state.copyWith(analysisStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(analysisStatus: RequestStatus.loading));
 
     final result = await DeepSeekService
         .analyseAllMedicinesCompitabilityWithUserMedicalHistory(
@@ -53,14 +55,14 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
     );
 
     if (result != null) {
-      emit(
+      safeEmit(
         state.copyWith(
           analysisStatus: RequestStatus.success,
           auditReport: result,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           analysisStatus: RequestStatus.failure,
           message:
@@ -71,7 +73,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
   }
 
   Future<void> getUserMedicalHistoryDetails() async {
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       medicalHistoryStatus: RequestStatus.loading,
     ));
 
@@ -79,7 +81,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
 
     response.when(
       success: (userMedicalProfileHistory) {
-        emit(
+        safeEmit(
           state.copyWith(
             userMedicalProfileHistory: userMedicalProfileHistory,
             medicalHistoryStatus: RequestStatus.success,
@@ -87,7 +89,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             userMedicalProfileHistory: null,
             medicalHistoryStatus: RequestStatus.failure,
@@ -105,14 +107,14 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: null,
           ),
@@ -122,7 +124,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
   }
 
   Future<void> fetchMedicinesFilters() async {
-    emit(state.copyWith(status: RequestStatus.loading));
+    safeEmit(state.copyWith(status: RequestStatus.loading));
 
     final result = await _medicalReportRepo.getMedicinesFilters(
       'ar',
@@ -131,13 +133,13 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
 
     result.when(
       success: (data) {
-        emit(state.copyWith(
+        safeEmit(state.copyWith(
           status: RequestStatus.success,
           filterData: data,
         ));
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             status: RequestStatus.failure,
             message: error.errors.firstOrNull ?? 'حدث خطأ أثناء تحميل البيانات',
@@ -148,12 +150,12 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
   }
 
   Future<void> fetchMedicinesCompitabilitySystemPrompt() async {
-    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
     final result =
         await _medicalReportRepo.fetchMedicinesCompitabilitySystemPrompt();
     result.when(
       success: (prompt) {
-        emit(
+        safeEmit(
           state.copyWith(
             fetchSystemPromptStatus: RequestStatus.success,
             medicalCompitabilitySystemPrompt: prompt,
@@ -161,7 +163,7 @@ class MedicinesCompatibilityCubit extends Cubit<MedicinesCompatibilityState> {
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             fetchSystemPromptStatus: RequestStatus.failure,
             message: failure.errors.first,

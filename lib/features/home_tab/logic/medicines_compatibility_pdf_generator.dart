@@ -185,7 +185,9 @@ class MedicinesCompatibilityPdfGenerator {
   List<pw.Widget> _buildChemicalSection(ChemicalInteractionMatrix matrix) {
     if (matrix.antagonism.isEmpty &&
         matrix.synergy.isEmpty &&
-        matrix.pastDrugResiduals.isEmpty) return [];
+        matrix.pastDrugResiduals.isEmpty) {
+      return [];
+    }
 
     // Build sub-section content, grouping each sub-header with its first card
     final content = <pw.Widget>[];
@@ -236,7 +238,9 @@ class MedicinesCompatibilityPdfGenerator {
   List<pw.Widget> _buildSystemicSection(SystemicCompatibility systemic) {
     if (systemic.foodAndSupplements.isEmpty &&
         systemic.organSafety.isEmpty &&
-        systemic.behavioralImpact.isEmpty) return [];
+        systemic.behavioralImpact.isEmpty) {
+      return [];
+    }
 
     // Build sub-section content, grouping each sub-header with its first card
     final content = <pw.Widget>[];

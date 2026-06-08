@@ -207,8 +207,8 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         ),
       );
 
-      // Call ChatGPT service
-      var nutritionData = await DeepSeekService.analyzeDietPlan(dietInput);
+      // Call the new full diet plan analysis pipeline
+      var nutritionData = await DeepSeekService.analyzeFullDietPlan(dietInput);
       if (nutritionData != null) {
         nutritionData = nutritionData.copyWith(userDietplan: dietInput);
       }
@@ -240,8 +240,9 @@ class NutrationDataEntryCubit extends Cubit<NutrationDataEntryState> {
         ),
       );
 
-      // Call ChatGPT service
-      var nutritionData = await DeepSeekService.analyzeDietPlan(editedDietPlan);
+      // Call the new full diet plan analysis pipeline
+      var nutritionData =
+          await DeepSeekService.analyzeFullDietPlan(editedDietPlan);
       if (nutritionData != null) {
         nutritionData = nutritionData.copyWith(userDietplan: editedDietPlan);
       }
