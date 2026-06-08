@@ -110,4 +110,3 @@ class _WeCareAppState extends State<WeCareApp> {
     );
   }
 }
-

@@ -8,6 +8,11 @@ import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/vi
 import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view.dart';
 import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/add_care_person_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/allowed_care_access_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/care_access_requests_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/join_care_request_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/review_care_access_request_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
@@ -83,6 +88,7 @@ import 'package:we_care/features/nutration/nutration_data_entry/Presentation/vie
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/follow_up_nutration_plans_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/nutration_table_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/organ_affected_view.dart';
+import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/system_output_json_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/user_nutration_info_data_entry_view.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/view_and_edit_diet_plan_view.dart';
 import 'package:we_care/features/nutration/nutration_view/Presention/views/food_alternatives_view.dart';
@@ -121,7 +127,6 @@ import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/v
 import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
-import 'package:we_care/features/nutration/nutration_data_entry/Presentation/views/system_output_json_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
@@ -774,6 +779,26 @@ class AppRouter {
       case Routes.systemOutputJsonResponseView:
         return MaterialPageRoute(
           builder: (context) => const SystemOutputJsonResponseView(),
+        );
+      case Routes.allowedCareAccessView:
+        return MaterialPageRoute(
+          builder: (context) => const AllowedCareAccessScreen(),
+        );
+      case Routes.addCarePersonView:
+        return MaterialPageRoute(
+          builder: (context) => const AddCarePersonScreen(),
+        );
+      case Routes.joinCareRequestView:
+        return MaterialPageRoute(
+          builder: (context) => const JoinCareRequestScreen(),
+        );
+      case Routes.careAccessRequestsView:
+        return MaterialPageRoute(
+          builder: (context) => const CareAccessRequestsScreen(),
+        );
+      case Routes.reviewCareAccessRequestView:
+        return MaterialPageRoute(
+          builder: (context) => const ReviewCareAccessRequestScreen(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -68,10 +68,19 @@ class HomeTabView extends StatelessWidget {
                         },
                       ),
                       CustomElevatedButton(
-                        text: "زيارة طبية للمنزل",
-                        onPressed: () {},
-                        isInactive: true,
+                        text: "المسموح لهم بالرعاية",
+                        onPressed: () async {
+                          await context.pushNamedWithSettingRootNavigator(
+                            Routes.allowedCareAccessView,
+                          );
+                        },
+                        isInactive: false,
                       ),
+                      // CustomElevatedButton(
+                      //   text: "زيارة طبية للمنزل",
+                      //   onPressed: () {},
+                      //   isInactive: true,
+                      // ),
                       CustomElevatedButton(
                         text: "طبيبك أونلاين",
                         onPressed: () {},
