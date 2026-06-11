@@ -2,34 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 
 class PermissionExplanationCard extends StatelessWidget {
-  const PermissionExplanationCard({super.key});
+  final List<PermissionCapabilityModel> capabilities;
+
+  const PermissionExplanationCard({super.key, required this.capabilities});
 
   Widget _buildItem(String text, bool allowed) {
-    return Row(
-      children: [
-        Icon(
-          allowed ? Icons.check_circle : Icons.cancel,
-          color: allowed ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
-          size: 20.sp,
-        ),
-        SizedBox(width: 8.w),
-        Expanded(
-          child: Text(
-            text,
-            style: AppTextStyles.font14blackWeight400.copyWith(
-              color: Colors.grey.shade800,
-              fontSize: 14.sp,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        children: [
+          Icon(
+            allowed ? Icons.check_circle : Icons.cancel,
+            color: allowed ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
+            size: 20.sp,
+          ),
+          SizedBox(width: 8.w),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyles.font14blackWeight400.copyWith(
+                color: Colors.grey.shade800,
+                fontSize: 14.sp,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (capabilities.isEmpty) return const SizedBox.shrink();
+
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -54,13 +62,7 @@ class PermissionExplanationCard extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          _buildItem('الاطلاع على ملفك الطبي كاملاً', true),
-          SizedBox(height: 8.h),
-          _buildItem('إضافة وتعديل البيانات الطبية', true),
-          SizedBox(height: 8.h),
-          _buildItem('لا يستطيع حذف ملفك', false),
-          SizedBox(height: 8.h),
-          _buildItem('لا يستطيع منح صلاحيات لغيره', false),
+          ...capabilities.map((cap) => _buildItem(cap.title, cap.allowed)),
         ],
       ),
     );

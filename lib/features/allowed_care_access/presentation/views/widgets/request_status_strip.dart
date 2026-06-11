@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 
 class RequestStatusStrip extends StatelessWidget {
-  const RequestStatusStrip({super.key});
+  final int count;
+  const RequestStatusStrip({super.key, required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class RequestStatusStrip extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
-              '1',
+              count.toString(),
               style: AppTextStyles.font14blackWeight400.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

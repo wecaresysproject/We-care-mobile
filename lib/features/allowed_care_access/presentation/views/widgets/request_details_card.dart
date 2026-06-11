@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 
 class RequestDetailsCard extends StatelessWidget {
-  const RequestDetailsCard({super.key});
+  final String requestedPermission;
+  final String relation;
+  final String requestedAt;
+
+  const RequestDetailsCard({
+    super.key,
+    required this.requestedPermission,
+    required this.relation,
+    required this.requestedAt,
+  });
 
   Widget _buildRow(String label, String value) {
     return Padding(
@@ -54,11 +64,15 @@ class RequestDetailsCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildRow('الصلاحية المطلوبة', 'تحكم كامل ✏️'),
+              _buildRow(
+                  'الصلاحية المطلوبة',
+                  requestedPermission == 'FULL_ACCESS'
+                      ? 'تحكم كامل'
+                      : 'قراءة فقط'),
               const Divider(height: 16, color: Color(0xFFF5F5F5)),
-              _buildRow('صلة القرابة', 'أخوه'),
+              _buildRow('صلة القرابة', relation),
               const Divider(height: 16, color: Color(0xFFF5F5F5)),
-              _buildRow('تاريخ الطلب', '2 مايو 2026'),
+              _buildRow('تاريخ الطلب', formatRequestDate(requestedAt)),
             ],
           ),
         ),

@@ -8,6 +8,7 @@ import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/vi
 import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view.dart';
 import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
+import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/add_care_person_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/allowed_care_access_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/care_access_requests_view.dart';
@@ -782,7 +783,10 @@ class AppRouter {
         );
       case Routes.allowedCareAccessView:
         return MaterialPageRoute(
-          builder: (context) => const AllowedCareAccessScreen(),
+          builder: (context) => BlocProvider<AccessManagementCubit>(
+            create: (context) => getIt<AccessManagementCubit>(),
+            child: const AllowedCareAccessScreen(),
+          ),
         );
       case Routes.addCarePersonView:
         return MaterialPageRoute(
@@ -790,15 +794,26 @@ class AppRouter {
         );
       case Routes.joinCareRequestView:
         return MaterialPageRoute(
-          builder: (context) => const JoinCareRequestScreen(),
+          builder: (context) => BlocProvider<AccessManagementCubit>(
+            create: (context) => getIt<AccessManagementCubit>(),
+            child: const JoinCareRequestScreen(),
+          ),
         );
       case Routes.careAccessRequestsView:
         return MaterialPageRoute(
-          builder: (context) => const CareAccessRequestsScreen(),
+          builder: (context) => BlocProvider<AccessManagementCubit>(
+            create: (context) =>
+                getIt<AccessManagementCubit>()..getIncomingCareAccessRequests(),
+            child: const CareAccessRequestsScreen(),
+          ),
         );
       case Routes.reviewCareAccessRequestView:
+        final requestId = arguments as String;
         return MaterialPageRoute(
-          builder: (context) => const ReviewCareAccessRequestScreen(),
+          builder: (context) => BlocProvider<AccessManagementCubit>.value(
+            value: getIt<AccessManagementCubit>(),
+            child: ReviewCareAccessRequestScreen(requestId: requestId),
+          ),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

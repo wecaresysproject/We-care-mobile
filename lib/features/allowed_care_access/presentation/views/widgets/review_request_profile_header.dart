@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 
 class ReviewRequestProfileHeader extends StatelessWidget {
-  const ReviewRequestProfileHeader({super.key});
+  final RequesterDetailsModel requesterDetails;
+
+  const ReviewRequestProfileHeader({
+    super.key,
+    required this.requesterDetails,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +27,9 @@ class ReviewRequestProfileHeader extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            'أ',
+            requesterDetails.fullName.isNotEmpty
+                ? requesterDetails.fullName[0].toUpperCase()
+                : '؟',
             style: AppTextStyles.font22MainBlueWeight700.copyWith(
               color: Colors.white,
               fontSize: 40.sp,
@@ -31,7 +39,7 @@ class ReviewRequestProfileHeader extends StatelessWidget {
         SizedBox(height: 16.h),
         // User Name
         Text(
-          'أشرف إسماعيل بسيوني',
+          requesterDetails.fullName,
           style: AppTextStyles.font22MainBlueWeight700.copyWith(
             color: AppColorsManager.mainDarkBlue,
             fontSize: 20.sp,
@@ -41,7 +49,7 @@ class ReviewRequestProfileHeader extends StatelessWidget {
         SizedBox(height: 4.h),
         // Phone Number
         Text(
-          '+20 100 555 7890',
+          requesterDetails.phoneNumber,
           style: AppTextStyles.font14blackWeight400.copyWith(
             color: Colors.grey.shade500,
             fontSize: 14.sp,

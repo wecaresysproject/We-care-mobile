@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 
 class RelationshipInputField extends StatelessWidget {
@@ -22,6 +24,8 @@ class RelationshipInputField extends StatelessWidget {
         SizedBox(
           height: 44.h,
           child: TextField(
+            controller:
+                context.read<AccessManagementCubit>().relationController,
             decoration: InputDecoration(
               hintText: 'أمي، أبي، زوجتي...',
               hintStyle: AppTextStyles.font14blackWeight400.copyWith(

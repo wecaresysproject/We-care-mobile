@@ -2,14 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/request_action_buttons.dart';
 
 class CareAccessRequestCard extends StatelessWidget {
+  final IncomingCareAccessRequestModel request;
   final VoidCallback onReview;
-  const CareAccessRequestCard({super.key, required this.onReview});
+  const CareAccessRequestCard({
+    super.key,
+    required this.request,
+    required this.onReview,
+  });
+
+  String _getPermissionText(String? permission) {
+    if (permission == 'FULL_ACCESS') {
+      return 'بصلاحية تحكم كامل';
+    } else if (permission == 'VIEW_ONLY') {
+      return 'بصلاحية عرض فقط';
+    }
+    return 'بصلاحية غير معروفة';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final requesterName = request.requesterName ?? 'مستخدم مجهول';
+    final permissionText = _getPermissionText(request.requestedPermission);
+    final description = '$requesterName يطلب الوصول لملفك $permissionText.';
+    final timeAgo = formatTimeAgo(request.timeAgo ?? request.requestedAt);
+
     return Column(
       children: [
         Container(
@@ -60,7 +80,7 @@ class CareAccessRequestCard extends StatelessWidget {
                         ),
                         SizedBox(height: 6.h),
                         Text(
-                          'أشرف إسماعيل يطلب الوصول لملفك بصلاحية تحكم كامل.',
+                          description,
                           style: AppTextStyles.font14blackWeight400.copyWith(
                             color: Colors.grey.shade600,
                             height: 1.4,
@@ -84,7 +104,7 @@ class CareAccessRequestCard extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    'منذ دقيقتين',
+                    timeAgo,
                     style: AppTextStyles.font14blackWeight400.copyWith(
                       color: Colors.grey.shade500,
                       fontSize: 12.sp,
@@ -106,5 +126,51 @@ class CareAccessRequestCard extends StatelessWidget {
         SizedBox(height: 8.h),
       ],
     );
+  }
+
+  String formatTimeAgo(String? dateString) {
+    if (dateString == null || dateString.isEmpty) {
+      return 'غير معروف';
+    }
+
+    try {
+      final date = DateTime.parse(dateString).toLocal();
+      final difference = DateTime.now().difference(date);
+
+      if (difference.inSeconds < 60) {
+        return 'منذ لحظات';
+      }
+
+      if (difference.inMinutes < 60) {
+        final minutes = difference.inMinutes;
+
+        if (minutes == 1) return 'منذ دقيقة';
+        if (minutes == 2) return 'منذ دقيقتين';
+
+        return 'منذ $minutes دقائق';
+      }
+
+      if (difference.inHours < 24) {
+        final hours = difference.inHours;
+
+        if (hours == 1) return 'منذ ساعة';
+        if (hours == 2) return 'منذ ساعتين';
+
+        return 'منذ $hours ساعات';
+      }
+
+      if (difference.inDays < 30) {
+        final days = difference.inDays;
+
+        if (days == 1) return 'منذ يوم';
+        if (days == 2) return 'منذ يومين';
+
+        return 'منذ $days أيام';
+      }
+
+      return '${date.day}/${date.month}/${date.year}';
+    } catch (_) {
+      return 'غير معروف';
+    }
   }
 }

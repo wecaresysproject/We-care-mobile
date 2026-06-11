@@ -250,3 +250,12 @@ mixin SafeEmitMixin<T> on Cubit<T> {
     }
   }
 }
+
+//* output dd/MM/yyyy from yyyy-MM-ddTHH:mm:ss.SSSSSSZ
+String formatRequestDate(String? dateString) {
+  if (dateString == null || dateString.isEmpty) {
+    return 'غير معروف';
+  }
+
+  return DateFormat('dd/MM/yyyy').format(DateTime.parse(dateString).toLocal());
+}
