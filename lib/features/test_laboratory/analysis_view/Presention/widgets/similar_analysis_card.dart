@@ -188,7 +188,7 @@ class SimilarAnalysisCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: borderColor, width: 1),
               ),
-              child: Expanded(
+              child: Center(
                 child: Text(
                   value[index],
                   style: AppTextStyles.font14whiteWeight600.copyWith(

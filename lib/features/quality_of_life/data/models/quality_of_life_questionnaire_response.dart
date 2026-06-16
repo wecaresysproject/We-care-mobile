@@ -12,10 +12,12 @@ class QualityOfLifeQuestionnaireResponse {
     required this.data,
   });
 
-  factory QualityOfLifeQuestionnaireResponse.fromJson(Map<String, dynamic> json) =>
+  factory QualityOfLifeQuestionnaireResponse.fromJson(
+          Map<String, dynamic> json) =>
       _$QualityOfLifeQuestionnaireResponseFromJson(json);
 
-  Map<String, dynamic> toJson() => _$QualityOfLifeQuestionnaireResponseToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$QualityOfLifeQuestionnaireResponseToJson(this);
 }
 
 @JsonSerializable()

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 
 import '../Database/cach_helper.dart';
 import 'auth_api_constants.dart';
@@ -35,7 +36,8 @@ class DioServices {
       dio!
         ..options.connectTimeout = timeOut
         ..options.receiveTimeout = timeOut;
-      addDioHeaders(); //TODO: check it later
+      // addDioHeaders(); //TODO: check it later
+      addCareContextInterceptor();
       addDioInterceptor();
       addCancelableInterceptor();
       addRetryInterceptor();
@@ -81,14 +83,14 @@ class DioServices {
     );
   }
 
-  static void addDioHeaders() async {
-    dio?.options.headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization':
-          'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
-    };
-  }
+  // static void addDioHeaders() async {
+  //   dio?.options.headers = {
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //     'Authorization':
+  //         'Bearer ${await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey)}',
+  //   };
+  // }
 
   //TODO: use it later after getting token from login response in cubit in case of success
   static void setTokenIntoHeaderAfterLogin(String token) {
@@ -111,6 +113,32 @@ class DioServices {
         ),
       );
     }
+  }
+
+  static void addCareContextInterceptor() {
+    dio!.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = await CacheHelper.getSecuredString(
+            AuthApiConstants.userTokenKey,
+          );
+
+          options.headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          };
+          AppLogger.info('iam here addCareContextInterceptor ');
+          final context = CareContextManager.activeContext;
+
+          if (context != null) {
+            options.headers['Active-Medical-Profile'] = context.patientId;
+          }
+
+          handler.next(options);
+        },
+      ),
+    );
   }
 
   // This method allows cancellation of requests

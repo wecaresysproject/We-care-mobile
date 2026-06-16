@@ -123,6 +123,8 @@ import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_e
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 
+import '../../features/allowed_care_access/data/repositories/access_management_repository.dart';
+import '../../features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Data/Repostory/forget_password_repo.dart';
@@ -135,6 +137,7 @@ import '../../features/risky_behaviors/data/repos/risk_behaviors_data_entry_repo
 import '../../features/sign_up/Data/repos/sign_up_repo.dart';
 import '../../features/sign_up/logic/sign_up_cubit.dart';
 import '../global/Helpers/image_quality_detector.dart';
+import '../networking/access_management_service.dart';
 import '../networking/auth_service.dart';
 import '../networking/dio_serices.dart';
 import '../networking/risk_behaviors_service.dart';
@@ -484,6 +487,11 @@ void setupAppCubits() {
       getIt<RiskBehaviorsDataViewRepo>(),
     ),
   );
+  getIt.registerFactory<AccessManagementCubit>(
+    () => AccessManagementCubit(
+      getIt<AccessManagementRepository>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -755,6 +763,11 @@ void setupAppRepos() {
       getIt<RiskBehaviorsServices>(),
     ),
   );
+  getIt.registerLazySingleton<AccessManagementRepository>(
+    () => AccessManagementRepository(
+      getIt<AccessManagementService>(),
+    ),
+  );
 }
 
 void setupAppServices() {
@@ -863,5 +876,8 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<RiskBehaviorsServices>(
     () => RiskBehaviorsServices(dio),
+  );
+  getIt.registerLazySingleton<AccessManagementService>(
+    () => AccessManagementService(dio),
   );
 }

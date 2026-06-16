@@ -112,7 +112,7 @@ class SimilarAnalysisView extends StatelessWidget {
                               ? () {
                                   ModuleGuidanceAlertDialog.show(
                                     context,
-                                    title: "العمليات",
+                                    title: "التحاليل المماثلة",
                                     description: state.moduleGuidanceData!
                                         .moduleGuidanceText!,
                                   );

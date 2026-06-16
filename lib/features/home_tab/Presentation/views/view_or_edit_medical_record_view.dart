@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/custom_text_with_image_button.dart';
 
@@ -41,6 +42,9 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                 ),
                 verticalSpacing(60),
                 CustomImageWithTextButtonHomeWidget(
+                  isDisabled:
+                      CareContextManager.currentActiveProfilePermission ==
+                          CarePermission.viewOnly,
                   onTap: () async {
                     await context.pushNamed(Routes.medicalDataEntryTypesView);
                   },

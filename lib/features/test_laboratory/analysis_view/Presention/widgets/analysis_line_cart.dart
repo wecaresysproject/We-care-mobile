@@ -21,12 +21,12 @@ class AnalysisLineChart extends StatelessWidget {
   final double normalMin;
   final double normalMax;
   const AnalysisLineChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.title,
     required this.normalMin,
     required this.normalMax,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class AnalysisLineChart extends StatelessWidget {
 
     // Calculate optimal integer interval based on all relevant values
     final double yRange = dynamicMaxY - minY;
-    final int niceInterval = _calculateNiceInterval(yRange);
+    final double niceInterval = _calculateNiceInterval(yRange);
 
     final spots = sortedData.map((d) => FlSpot(d.x.toDouble(), d.y)).toList();
 
@@ -125,7 +125,7 @@ class AnalysisLineChart extends StatelessWidget {
                           showTitles: true,
                           reservedSize: 35,
                           maxIncluded: false,
-                          interval: niceInterval.toDouble(),
+                          interval: niceInterval,
                         ),
                       ),
                       bottomTitles: AxisTitles(
@@ -268,8 +268,8 @@ class AnalysisLineChart extends StatelessWidget {
   }
 }
 
-int _calculateNiceInterval(double yRange) {
-  if (yRange <= 0) return 1;
+double _calculateNiceInterval(double yRange) {
+  if (yRange <= 0) return 1.0;
 
   // Aim for 4-7 divisions on the y-axis for readability
   final int targetDivisions = 5;
@@ -281,9 +281,18 @@ int _calculateNiceInterval(double yRange) {
   final double normalized = rawInterval / magnitude;
 
   // Find the nearest "nice" number (1, 2, 2.5, 5, 10)
-  if (normalized < 1.5) return (1 * magnitude).toInt();
-  if (normalized < 2.3) return (2 * magnitude).toInt();
-  if (normalized < 3.5) return (2.5 * magnitude).toInt();
-  if (normalized < 7.5) return (5 * magnitude).toInt();
-  return (10 * magnitude).toInt();
+  double interval;
+  if (normalized < 1.5) {
+    interval = 1 * magnitude;
+  } else if (normalized < 2.3) {
+    interval = 2 * magnitude;
+  } else if (normalized < 3.5) {
+    interval = 2.5 * magnitude;
+  } else if (normalized < 7.5) {
+    interval = 5 * magnitude;
+  } else {
+    interval = 10 * magnitude;
+  }
+
+  return interval > 0 ? interval : 1.0;
 }

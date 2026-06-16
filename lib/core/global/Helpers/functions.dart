@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
@@ -240,4 +241,21 @@ Future<void> launchYouTubeVideo(String? url) async {
   } catch (e) {
     AppLogger.error("Error launching YouTube URL: $e");
   }
+}
+
+mixin SafeEmitMixin<T> on Cubit<T> {
+  void safeEmit(T state) {
+    if (!isClosed) {
+      emit(state);
+    }
+  }
+}
+
+//* output dd/MM/yyyy from yyyy-MM-ddTHH:mm:ss.SSSSSSZ
+String formatRequestDate(String? dateString) {
+  if (dateString == null || dateString.isEmpty) {
+    return 'غير معروف';
+  }
+
+  return DateFormat('dd/MM/yyyy').format(DateTime.parse(dateString).toLocal());
 }

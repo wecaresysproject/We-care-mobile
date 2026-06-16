@@ -169,13 +169,21 @@ class _MedicinesCompatibilityViewState
                       }
                       _selectedFilters[key] = selectedValues;
                     });
-                    // Flatten all selected filter values to update recently expired medicines in Cubit
-                    final allRecentlyExpired = _selectedFilters.values
-                        .expand((values) => values)
-                        .toList();
+                    final currentMedicines =
+                        _selectedFilters["0_اسم الدواء"]?.toList() ?? [];
+                    final expiredMedicines =
+                        (_selectedFilters["1_اسم الدواء"] ??
+                                    _selectedFilters["1_اسم الدواء_expired"])
+                                ?.toList() ??
+                            [];
+
                     context
                         .read<MedicinesCompatibilityCubit>()
-                        .updateRecentlyExpiredMedicines(allRecentlyExpired);
+                        .updateSelectedMedicines(currentMedicines);
+
+                    context
+                        .read<MedicinesCompatibilityCubit>()
+                        .updateRecentlyExpiredMedicines(expiredMedicines);
                   },
                 ),
             ],

@@ -12,6 +12,7 @@ import 'core/global/app_strings.dart';
 import 'core/global/theming/color_manager.dart';
 import 'core/routing/app_router.dart';
 import 'generated/l10n.dart';
+import 'core/global/SharedWidgets/global_care_context_banner.dart';
 
 class WeCareApp extends StatefulWidget {
   const WeCareApp({super.key, required this.appRouter});
@@ -52,7 +53,7 @@ class _WeCareAppState extends State<WeCareApp> {
           builder: (context, Widget? child) {
             return Directionality(
               textDirection: isArabic() ? TextDirection.rtl : TextDirection.ltr,
-              child: child!,
+              child: GlobalCareContextBanner(child: child!),
             );
           },
           debugShowCheckedModeBanner: false,
@@ -110,4 +111,3 @@ class _WeCareAppState extends State<WeCareApp> {
     );
   }
 }
-
