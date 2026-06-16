@@ -36,6 +36,7 @@ class _AllowedCareAccessScreenState extends State<AllowedCareAccessScreen> {
       return state.allowedCareAccessList!.profiles.map((profile) {
         return CareProfile(
           id: profile.accessId,
+          patientId: profile.patientId,
           name: profile.patientName,
           relation: profile.relation,
           permissionType: profile.permission == 'FULL_ACCESS'

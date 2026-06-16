@@ -20,13 +20,11 @@ class PermissionExplanationCard extends StatelessWidget {
             size: 20.sp,
           ),
           SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              text,
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                color: Colors.grey.shade800,
-                fontSize: 14.sp,
-              ),
+          Text(
+            text,
+            style: AppTextStyles.font14blackWeight400.copyWith(
+              color: Colors.grey.shade800,
+              fontSize: 14.sp,
             ),
           ),
         ],

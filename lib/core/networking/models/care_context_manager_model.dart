@@ -1,11 +1,17 @@
+import 'package:flutter/foundation.dart';
+
 class CareContextManager {
   CareContextManager._();
 
-  static CareContext? _activeContext;
+  static final ValueNotifier<CareContext?> activeContextNotifier =
+      ValueNotifier<CareContext?>(null);
 
-  static CareContext? get activeContext => _activeContext;
+  static CareContext? get activeContext => activeContextNotifier.value;
 
-  static bool get isCareModeActive => _activeContext != null;
+  static bool get isCareModeActive => activeContextNotifier.value != null;
+
+  static CarePermission? get currentActiveProfilePermission =>
+      activeContextNotifier.value?.permission;
 
   static void enter({
     required String accessId,
@@ -13,7 +19,7 @@ class CareContextManager {
     required String patientName,
     required CarePermission permission,
   }) {
-    _activeContext = CareContext(
+    activeContextNotifier.value = CareContext(
       accessId: accessId,
       patientId: patientId,
       patientName: patientName,
@@ -22,11 +28,11 @@ class CareContextManager {
   }
 
   static void exit() {
-    _activeContext = null;
+    activeContextNotifier.value = null;
   }
 
   static bool isCurrentPatient(String patientId) {
-    return _activeContext?.patientId == patientId;
+    return activeContextNotifier.value?.patientId == patientId;
   }
 }
 

@@ -7,6 +7,7 @@ enum PermissionType {
 
 class CareProfile extends Equatable {
   final String id;
+  final String patientId;
   final String name;
   final String relation;
   final PermissionType permissionType;
@@ -14,6 +15,7 @@ class CareProfile extends Equatable {
 
   const CareProfile({
     required this.id,
+    required this.patientId,
     required this.name,
     required this.relation,
     required this.permissionType,
@@ -24,6 +26,7 @@ class CareProfile extends Equatable {
   List<Object?> get props => [
         id,
         name,
+        patientId,
         relation,
         permissionType,
         addedAtLabel,

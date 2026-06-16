@@ -2,9 +2,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/allowed_care_access/data/models/allowed_care_access_response.dart';
+import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
-import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 
 @immutable
 class AccessManagementState extends Equatable {
@@ -24,6 +24,10 @@ class AccessManagementState extends Equatable {
   final RequestStatus requestDetailsStatus;
   final String requestDetailsMessage;
   final CareAccessRequestDetailsResponse? requestDetails;
+  final RequestStatus approveRequestStatus;
+  final String approveRequestMessage;
+  final RequestStatus rejectRequestStatus;
+  final String rejectRequestMessage;
 
   const AccessManagementState({
     this.searchStatus = RequestStatus.initial,
@@ -42,6 +46,10 @@ class AccessManagementState extends Equatable {
     this.requestDetailsStatus = RequestStatus.initial,
     this.requestDetailsMessage = '',
     this.requestDetails,
+    this.approveRequestStatus = RequestStatus.initial,
+    this.approveRequestMessage = '',
+    this.rejectRequestStatus = RequestStatus.initial,
+    this.rejectRequestMessage = '',
   });
 
   const AccessManagementState.initialState() : this();
@@ -63,6 +71,10 @@ class AccessManagementState extends Equatable {
     RequestStatus? requestDetailsStatus,
     String? requestDetailsMessage,
     CareAccessRequestDetailsResponse? requestDetails,
+    RequestStatus? approveRequestStatus,
+    String? approveRequestMessage,
+    RequestStatus? rejectRequestStatus,
+    String? rejectRequestMessage,
   }) {
     return AccessManagementState(
       searchStatus: searchStatus ?? this.searchStatus,
@@ -87,6 +99,11 @@ class AccessManagementState extends Equatable {
       requestDetailsMessage:
           requestDetailsMessage ?? this.requestDetailsMessage,
       requestDetails: requestDetails ?? this.requestDetails,
+      approveRequestStatus: approveRequestStatus ?? this.approveRequestStatus,
+      approveRequestMessage:
+          approveRequestMessage ?? this.approveRequestMessage,
+      rejectRequestStatus: rejectRequestStatus ?? this.rejectRequestStatus,
+      rejectRequestMessage: rejectRequestMessage ?? this.rejectRequestMessage,
     );
   }
 
@@ -108,5 +125,9 @@ class AccessManagementState extends Equatable {
         requestDetailsStatus,
         requestDetailsMessage,
         requestDetails,
+        approveRequestStatus,
+        approveRequestMessage,
+        rejectRequestStatus,
+        rejectRequestMessage,
       ];
 }

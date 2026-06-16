@@ -10,6 +10,7 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final VoidCallback? onTap;
   final bool isTextFirst;
+  final bool isDisabled;
 
   const CustomImageWithTextButtonHomeWidget({
     super.key,
@@ -18,33 +19,37 @@ class CustomImageWithTextButtonHomeWidget extends StatelessWidget {
     this.textStyle,
     this.onTap,
     this.isTextFirst = false,
+    this.isDisabled = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 130.h,
-        width: 355.w,
-        alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 2.w),
-        decoration: BoxDecoration(
-          color: AppColorsManager.mainDarkBlue,
-          borderRadius: BorderRadius.circular(47.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 8.r,
-              offset: const Offset(2, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: isTextFirst
-              ? [_buildText(), horizontalSpacing(20), _buildImage()]
-              : [_buildImage(), horizontalSpacing(20), _buildText()],
+    return Opacity(
+      opacity: isDisabled ? 0.5 : 1.0,
+      child: GestureDetector(
+        onTap: isDisabled ? null : onTap,
+        child: Container(
+          height: 130.h,
+          width: 355.w,
+          alignment: Alignment.center,
+          padding: EdgeInsets.symmetric(horizontal: 2.w),
+          decoration: BoxDecoration(
+            color: isDisabled ? Colors.grey : AppColorsManager.mainDarkBlue,
+            borderRadius: BorderRadius.circular(47.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8.r,
+                offset: const Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: isTextFirst
+                ? [_buildText(), horizontalSpacing(20), _buildImage()]
+                : [_buildImage(), horizontalSpacing(20), _buildText()],
+          ),
         ),
       ),
     );

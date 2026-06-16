@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/allowed_care_access/access_management_api_constants.dart';
 import 'package:we_care/features/allowed_care_access/data/models/allowed_care_access_response.dart';
+import 'package:we_care/features/allowed_care_access/data/models/approve_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_response.dart';
@@ -33,5 +34,15 @@ abstract class AccessManagementService {
   @GET('AccessManagement/request-details')
   Future<CareAccessRequestDetailsResponse> getCareAccessRequestDetails(
     @Query('requestId') String requestId,
+  );
+
+  @POST('AccessManagement/approve')
+  Future<dynamic> approveCareAccessRequest(
+    @Body() ApproveCareAccessRequest request,
+  );
+
+  @POST('AccessManagement/reject')
+  Future<dynamic> rejectCareAccessRequest(
+    @Body() String requestId,
   );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/features/allowed_care_access/data/models/approve_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 import 'package:we_care/features/allowed_care_access/data/repositories/access_management_repository.dart';
@@ -177,6 +178,64 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
           state.copyWith(
             requestDetailsStatus: RequestStatus.failure,
             requestDetailsMessage: error.errors.join('\n'),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> approveCareAccessRequest(String requestId,
+      {String? permission}) async {
+    safeEmit(state.copyWith(approveRequestStatus: RequestStatus.loading));
+
+    final request = ApproveCareAccessRequest(
+      requestId: requestId,
+      approvedPermission: permission ?? state.selectedPermission,
+    );
+
+    final result =
+        await _accessManagementRepository.approveCareAccessRequest(request);
+
+    result.when(
+      success: (message) {
+        safeEmit(
+          state.copyWith(
+            approveRequestStatus: RequestStatus.success,
+            approveRequestMessage: message,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            approveRequestStatus: RequestStatus.failure,
+            approveRequestMessage: error.errors.join('\n'),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> rejectCareAccessRequest(String requestId) async {
+    safeEmit(state.copyWith(rejectRequestStatus: RequestStatus.loading));
+
+    final result =
+        await _accessManagementRepository.rejectCareAccessRequest(requestId);
+
+    result.when(
+      success: (message) {
+        safeEmit(
+          state.copyWith(
+            rejectRequestStatus: RequestStatus.success,
+            rejectRequestMessage: message,
+          ),
+        );
+      },
+      failure: (error) {
+        safeEmit(
+          state.copyWith(
+            rejectRequestStatus: RequestStatus.failure,
+            rejectRequestMessage: error.errors.join('\n'),
           ),
         );
       },

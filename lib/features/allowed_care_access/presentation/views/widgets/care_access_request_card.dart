@@ -8,10 +8,13 @@ import 'package:we_care/features/allowed_care_access/presentation/views/widgets/
 class CareAccessRequestCard extends StatelessWidget {
   final IncomingCareAccessRequestModel request;
   final VoidCallback onReview;
+  final VoidCallback? onQuickApprove;
+
   const CareAccessRequestCard({
     super.key,
     required this.request,
     required this.onReview,
+    this.onQuickApprove,
   });
 
   String _getPermissionText(String? permission) {
@@ -118,7 +121,11 @@ class CareAccessRequestCard extends StatelessWidget {
               // Actions
               RequestActionButtons(
                 onReview: onReview,
-                onQuickApprove: () {},
+                onQuickApprove: () {
+                  if (onQuickApprove != null) {
+                    onQuickApprove!();
+                  }
+                },
               ),
             ],
           ),

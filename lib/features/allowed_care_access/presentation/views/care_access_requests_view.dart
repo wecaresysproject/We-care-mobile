@@ -35,8 +35,18 @@ class CareAccessRequestsScreen extends StatelessWidget {
                 verticalSpacing(16),
 
                 Expanded(
-                  child:
-                      BlocBuilder<AccessManagementCubit, AccessManagementState>(
+                  child: BlocConsumer<AccessManagementCubit,
+                      AccessManagementState>(
+                    listenWhen: (previous, current) =>
+                        previous.approveRequestStatus !=
+                        current.approveRequestStatus,
+                    listener: (context, state) {
+                      if (state.approveRequestStatus == RequestStatus.success) {
+                        context
+                            .read<AccessManagementCubit>()
+                            .getIncomingCareAccessRequests();
+                      }
+                    },
                     builder: (context, state) {
                       if (state.incomingRequestsStatus ==
                               RequestStatus.loading ||
@@ -79,10 +89,30 @@ class CareAccessRequestsScreen extends StatelessWidget {
                                         padding: EdgeInsets.only(bottom: 24.h),
                                         child: CareAccessRequestCard(
                                           request: request,
-                                          onReview: () {
-                                            context.pushNamedWithSettingRootNavigator(
-                                              Routes.reviewCareAccessRequestView,
+                                          onReview: () async {
+                                            final result = await context
+                                                .pushNamedWithSettingRootNavigator(
+                                              Routes
+                                                  .reviewCareAccessRequestView,
                                               arguments: request.requestId,
+                                            );
+                                            if (result == true &&
+                                                context.mounted) {
+                                              context
+                                                  .read<AccessManagementCubit>()
+                                                  .getIncomingCareAccessRequests();
+                                            }
+                                          },
+                                          onQuickApprove: () async {
+                                            final cubit = context
+                                                .read<AccessManagementCubit>();
+
+                                            await cubit
+                                                .approveCareAccessRequest(
+                                              request.requestId,
+                                              permission:
+                                                  request.requestedPermission ??
+                                                      'VIEW_ONLY',
                                             );
                                           },
                                         ),
