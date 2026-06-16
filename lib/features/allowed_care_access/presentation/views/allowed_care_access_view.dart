@@ -34,10 +34,11 @@ class _AllowedCareAccessScreenState extends State<AllowedCareAccessScreen> {
     if (state.allowedCareAccessStatus == RequestStatus.success &&
         state.allowedCareAccessList != null) {
       return state.allowedCareAccessList!.profiles.map((profile) {
-        return CareProfile(
+          return CareProfile(
           id: profile.accessId,
           patientId: profile.patientId,
           name: profile.patientName,
+          personalPhotoUrl: profile.personalPhotoUrl,
           relation: profile.relation,
           permissionType: profile.permission == 'FULL_ACCESS'
               ? PermissionType.fullAccess

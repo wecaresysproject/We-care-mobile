@@ -9,6 +9,7 @@ class CareProfile extends Equatable {
   final String id;
   final String patientId;
   final String name;
+  final String personalPhotoUrl;
   final String relation;
   final PermissionType permissionType;
   final String addedAtLabel;
@@ -17,6 +18,7 @@ class CareProfile extends Equatable {
     required this.id,
     required this.patientId,
     required this.name,
+    required this.personalPhotoUrl,
     required this.relation,
     required this.permissionType,
     required this.addedAtLabel,
@@ -27,6 +29,7 @@ class CareProfile extends Equatable {
         id,
         name,
         patientId,
+        personalPhotoUrl,
         relation,
         permissionType,
         addedAtLabel,

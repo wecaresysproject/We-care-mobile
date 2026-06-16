@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -18,9 +19,6 @@ class CareProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isFullAccess =
-        profile.permissionType == PermissionType.fullAccess;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -57,11 +55,34 @@ class CareProfileCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        Container(
+                          width: 48.w,
+                          height: 48.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColorsManager.mainDarkBlue
+                                  .withOpacity(0.1),
+                              width: 2,
+                            ),
+                            image: DecorationImage(
+                              image: (profile.personalPhotoUrl.isEmptyOrNull ||
+                                      profile.personalPhotoUrl ==
+                                          "لم يتم ادخال بيانات")
+                                  ? const AssetImage(
+                                          "assets/images/user_avatar.png")
+                                      as ImageProvider
+                                  : NetworkImage(profile.personalPhotoUrl),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        horizontalSpacing(12),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              profile.name,
+                              (profile.name).firstAndLastName,
                               style: AppTextStyles.font14BlueWeight700.copyWith(
                                 fontSize: 16.sp,
                               ),

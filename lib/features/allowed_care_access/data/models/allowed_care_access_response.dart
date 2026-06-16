@@ -52,6 +52,7 @@ class GrantedProfileModel extends Equatable {
   final String accessId;
   final String patientId;
   final String patientName;
+  final String personalPhotoUrl;
   final String relation;
   final String permission;
   final String joinedAt;
@@ -60,6 +61,7 @@ class GrantedProfileModel extends Equatable {
     required this.accessId,
     required this.patientId,
     required this.patientName,
+    required this.personalPhotoUrl,
     required this.relation,
     required this.permission,
     required this.joinedAt,
@@ -75,6 +77,7 @@ class GrantedProfileModel extends Equatable {
         accessId,
         patientId,
         patientName,
+        personalPhotoUrl,
         relation,
         permission,
         joinedAt,

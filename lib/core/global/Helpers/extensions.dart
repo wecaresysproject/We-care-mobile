@@ -310,3 +310,24 @@ extension NumberFormattingExtension on String {
     return sanitizeDosageForPdf(this);
   }
 }
+
+extension NameFormatter on String {
+  List<String> get _parts =>
+      trim().split(' ').where((e) => e.isNotEmpty).toList();
+
+  String get firstTwoNames {
+    if (_parts.length <= 2) {
+      return this;
+    }
+
+    return '${_parts[0]} ${_parts[1]}';
+  }
+
+  // String get firstAndLastName {
+  //   if (_parts.length <= 1) {
+  //     return this;
+  //   }
+
+  //   return '${_parts.first} ${_parts.last}';
+  // }
+}
