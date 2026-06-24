@@ -146,8 +146,8 @@ class Routes {
   static const riskyBehaviorsDataView = '/riskyBehaviorsDataView';
   static const systemOutputJsonResponseView = '/systemOutputJsonResponseView';
   static const allowedCareAccessView = '/allowedCareAccessView';
-  static const addCarePersonView = '/addCarePersonView';
   static const joinCareRequestView = '/joinCareRequestView';
   static const careAccessRequestsView = '/careAccessRequestsView';
   static const reviewCareAccessRequestView = '/reviewCareAccessRequestView';
+  static const modulePermissionsView = '/modulePermissionsView';
 }

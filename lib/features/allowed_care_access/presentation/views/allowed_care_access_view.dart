@@ -13,7 +13,6 @@ import 'package:we_care/features/allowed_care_access/presentation/views/widgets/
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/allowed_care_access_header.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/allowed_care_access_list_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/care_access_requests_banner.dart';
-import 'package:we_care/features/allowed_care_access/presentation/views/widgets/care_stats_section.dart';
 
 class AllowedCareAccessScreen extends StatefulWidget {
   const AllowedCareAccessScreen({super.key});
@@ -34,15 +33,13 @@ class _AllowedCareAccessScreenState extends State<AllowedCareAccessScreen> {
     if (state.allowedCareAccessStatus == RequestStatus.success &&
         state.allowedCareAccessList != null) {
       return state.allowedCareAccessList!.profiles.map((profile) {
-          return CareProfile(
+        return CareProfile(
           id: profile.accessId,
           patientId: profile.patientId,
           name: profile.patientName,
-          personalPhotoUrl: profile.personalPhotoUrl,
+          personalPhotoUrl: profile.personalPhotoUrl ?? "",
           relation: profile.relation,
-          permissionType: profile.permission == 'FULL_ACCESS'
-              ? PermissionType.fullAccess
-              : PermissionType.viewOnly,
+          modulePermissions: profile.modulePermissions,
           addedAtLabel: profile.joinedAt,
         );
       }).toList();
@@ -64,11 +61,7 @@ class _AllowedCareAccessScreenState extends State<AllowedCareAccessScreen> {
           child: BlocBuilder<AccessManagementCubit, AccessManagementState>(
             builder: (context, state) {
               final response = state.allowedCareAccessList;
-              final int totalCount = response?.statistics.totalProfiles ?? 0;
-              final int fullAccessCount =
-                  response?.statistics.fullAccessProfiles ?? 0;
-              final int viewOnlyCount =
-                  response?.statistics.viewOnlyProfiles ?? 0;
+              final int pendingRequests = response?.pendingRequests ?? 0;
 
               final profiles = _mapProfiles(state);
 
@@ -78,16 +71,11 @@ class _AllowedCareAccessScreenState extends State<AllowedCareAccessScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const AllowedCareAccessHeader(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
                     const Divider(height: 1, color: Color(0xFFEEEEEE)),
-                    const SizedBox(height: 24),
-                    CareStatsSection(
-                      totalCount: totalCount,
-                      fullAccessCount: fullAccessCount,
-                      viewOnlyCount: viewOnlyCount,
-                    ),
                     verticalSpacing(20),
                     CareAccessRequestsBanner(
+                      pendingRequests: pendingRequests,
                       onTap: () {
                         context.pushNamedWithSettingRootNavigator(
                             Routes.careAccessRequestsView);

@@ -5,11 +5,18 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 
 class CareAccessRequestsBanner extends StatelessWidget {
   final VoidCallback onTap;
+  final int pendingRequests;
 
-  const CareAccessRequestsBanner({super.key, required this.onTap});
+  const CareAccessRequestsBanner({
+    super.key,
+    required this.onTap,
+    required this.pendingRequests,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // if (pendingRequests == 0) return const SizedBox.shrink();
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -45,6 +52,22 @@ class CareAccessRequestsBanner extends StatelessWidget {
               style: AppTextStyles.font14BlueWeight700.copyWith(
                 color: AppColorsManager.mainDarkBlue,
                 fontSize: 14.sp,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF4F2), // Light red/orange
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: Text(
+                '$pendingRequests',
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  color: const Color(0xFFE53935), // Red
+                  fontSize: 15.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],

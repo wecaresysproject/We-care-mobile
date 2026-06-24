@@ -5,6 +5,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_state.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/permission_option_card.dart';
+import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 
 class PermissionSelectionSection extends StatelessWidget {
   const PermissionSelectionSection({super.key});
@@ -18,7 +19,7 @@ class PermissionSelectionSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'الصلاحية المطلوبة',
+              'الصلاحية المطلوبة علي الموديولات',
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                 color: Colors.black,
                 fontWeight: FontWeight.w700,
@@ -39,6 +40,12 @@ class PermissionSelectionSection extends StatelessWidget {
                       context
                           .read<AccessManagementCubit>()
                           .updateSelectedPermission('FULL_ACCESS');
+                      final titles =
+                          categoriesView.map((e) => e.title).toList();
+
+                      context
+                          .read<AccessManagementCubit>()
+                          .setAllModulesPermission('FULL_ACCESS', titles);
                     },
                   ),
                 ),
@@ -53,6 +60,11 @@ class PermissionSelectionSection extends StatelessWidget {
                       context
                           .read<AccessManagementCubit>()
                           .updateSelectedPermission('VIEW_ONLY');
+                      final titles =
+                          categoriesView.map((e) => e.title).toList();
+                      context
+                          .read<AccessManagementCubit>()
+                          .setAllModulesPermission('VIEW_ONLY', titles);
                     },
                   ),
                 ),

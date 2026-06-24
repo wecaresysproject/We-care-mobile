@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 
 class CareContextManager {
   CareContextManager._();
@@ -10,20 +11,20 @@ class CareContextManager {
 
   static bool get isCareModeActive => activeContextNotifier.value != null;
 
-  static CarePermission? get currentActiveProfilePermission =>
-      activeContextNotifier.value?.permission;
+  static List<ModulePermissionDto>? get currentActiveProfilePermissions =>
+      activeContextNotifier.value?.modulePermissions;
 
   static void enter({
     required String accessId,
     required String patientId,
     required String patientName,
-    required CarePermission permission,
+    required List<ModulePermissionDto> modulePermissions,
   }) {
     activeContextNotifier.value = CareContext(
       accessId: accessId,
       patientId: patientId,
       patientName: patientName,
-      permission: permission,
+      modulePermissions: modulePermissions,
     );
   }
 
@@ -40,17 +41,12 @@ class CareContext {
   final String accessId;
   final String patientId;
   final String patientName;
-  final CarePermission permission;
+  final List<ModulePermissionDto> modulePermissions;
 
   const CareContext({
     required this.accessId,
     required this.patientId,
     required this.patientName,
-    required this.permission,
+    required this.modulePermissions,
   });
-}
-
-enum CarePermission {
-  fullAccess,
-  viewOnly,
 }

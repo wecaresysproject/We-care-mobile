@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 
 part 'create_care_access_request.g.dart';
 
@@ -7,12 +8,12 @@ part 'create_care_access_request.g.dart';
 class CreateCareAccessRequest extends Equatable {
   final String targetUserId;
   final String relation;
-  final String permission;
+  final List<ModulePermissionDto> modulePermissions;
 
   const CreateCareAccessRequest({
     required this.targetUserId,
     required this.relation,
-    required this.permission,
+    required this.modulePermissions,
   });
 
   factory CreateCareAccessRequest.fromJson(Map<String, dynamic> json) =>
@@ -24,6 +25,6 @@ class CreateCareAccessRequest extends Equatable {
   List<Object?> get props => [
         targetUserId,
         relation,
-        permission,
+        modulePermissions,
       ];
 }

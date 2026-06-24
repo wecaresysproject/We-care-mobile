@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 
 part 'care_access_request_details_response.g.dart';
 
@@ -8,17 +9,15 @@ class CareAccessRequestDetailsResponse extends Equatable {
   final String requestId;
   final RequesterDetailsModel requester;
   final String relation;
-  final String requestedPermission;
-  final String requestedAt;
   final List<PermissionCapabilityModel> permissionCapabilities;
+  final List<ModulePermissionModel> modulePermissions;
 
   const CareAccessRequestDetailsResponse({
     required this.requestId,
     required this.requester,
     required this.relation,
-    required this.requestedPermission,
-    required this.requestedAt,
     required this.permissionCapabilities,
+    required this.modulePermissions,
   });
 
   factory CareAccessRequestDetailsResponse.fromJson(
@@ -33,9 +32,8 @@ class CareAccessRequestDetailsResponse extends Equatable {
         requestId,
         requester,
         relation,
-        requestedPermission,
-        requestedAt,
         permissionCapabilities,
+        modulePermissions,
       ];
 }
 
@@ -44,11 +42,13 @@ class RequesterDetailsModel extends Equatable {
   final String userId;
   final String fullName;
   final String phoneNumber;
+  final String? personalPhotoUrl;
 
   const RequesterDetailsModel({
     required this.userId,
     required this.fullName,
     required this.phoneNumber,
+    this.personalPhotoUrl,
   });
 
   factory RequesterDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -57,7 +57,7 @@ class RequesterDetailsModel extends Equatable {
   Map<String, dynamic> toJson() => _$RequesterDetailsModelToJson(this);
 
   @override
-  List<Object?> get props => [userId, fullName, phoneNumber];
+  List<Object?> get props => [userId, fullName, phoneNumber, personalPhotoUrl];
 }
 
 @JsonSerializable()

@@ -5,6 +5,7 @@ import 'package:we_care/features/allowed_care_access/data/models/allowed_care_ac
 import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 
 @immutable
 class AccessManagementState extends Equatable {
@@ -28,6 +29,8 @@ class AccessManagementState extends Equatable {
   final String approveRequestMessage;
   final RequestStatus rejectRequestStatus;
   final String rejectRequestMessage;
+  final Map<String, ModulePermissionDto> modulePermissions;
+  final Map<String, ModulePermissionDto> draftModulePermissions;
 
   const AccessManagementState({
     this.searchStatus = RequestStatus.initial,
@@ -50,6 +53,8 @@ class AccessManagementState extends Equatable {
     this.approveRequestMessage = '',
     this.rejectRequestStatus = RequestStatus.initial,
     this.rejectRequestMessage = '',
+    this.modulePermissions = const {},
+    this.draftModulePermissions = const {},
   });
 
   const AccessManagementState.initialState() : this();
@@ -75,6 +80,8 @@ class AccessManagementState extends Equatable {
     String? approveRequestMessage,
     RequestStatus? rejectRequestStatus,
     String? rejectRequestMessage,
+    Map<String, ModulePermissionDto>? modulePermissions,
+    Map<String, ModulePermissionDto>? draftModulePermissions,
   }) {
     return AccessManagementState(
       searchStatus: searchStatus ?? this.searchStatus,
@@ -104,6 +111,8 @@ class AccessManagementState extends Equatable {
           approveRequestMessage ?? this.approveRequestMessage,
       rejectRequestStatus: rejectRequestStatus ?? this.rejectRequestStatus,
       rejectRequestMessage: rejectRequestMessage ?? this.rejectRequestMessage,
+      modulePermissions: modulePermissions ?? this.modulePermissions,
+      draftModulePermissions: draftModulePermissions ?? this.draftModulePermissions,
     );
   }
 
@@ -129,5 +138,7 @@ class AccessManagementState extends Equatable {
         approveRequestMessage,
         rejectRequestStatus,
         rejectRequestMessage,
+        modulePermissions,
+        draftModulePermissions,
       ];
 }

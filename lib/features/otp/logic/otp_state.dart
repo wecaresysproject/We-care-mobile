@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-import '../../../core/global/Helpers/app_enums.dart';
+part of './otp_cubit.dart';
 
 class OtpState extends Equatable {
   final RequestStatus otpStatus;

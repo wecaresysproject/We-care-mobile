@@ -5,7 +5,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/allowed_care_access/data/models/care_profile.dart';
-import 'package:we_care/features/allowed_care_access/presentation/views/widgets/permission_badge.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/widgets/added_at_badge.dart';
 
 class CareProfileCard extends StatelessWidget {
   final CareProfile profile;
@@ -124,8 +124,8 @@ class CareProfileCard extends StatelessWidget {
                     // Bottom Section
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: PermissionBadge(
-                        permissionType: profile.permissionType,
+                      child: AddedAtBadge(
+                        label: profile.addedAtLabel,
                       ),
                     ),
                   ],

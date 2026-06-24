@@ -280,6 +280,18 @@ extension ArabicTimeFormat on DateTime {
   }
 }
 
+//* change date from 2026-06-18T14:55:15Z To   18 يونيو 2026
+extension DateFormattingExtension on String {
+  String toArabicFormattedDate() {
+    try {
+      final dateTime = DateTime.parse(this).toLocal();
+      return DateFormat('d MMMM yyyy', 'ar').format(dateTime);
+    } catch (e) {
+      return this;
+    }
+  }
+}
+
 extension RiskLevelExtension on RiskLevel {
   String get displayName {
     switch (this) {

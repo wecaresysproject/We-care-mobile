@@ -4,9 +4,11 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/allowed_care_access/data/models/approve_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_request.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 import 'package:we_care/features/allowed_care_access/data/repositories/access_management_repository.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_state.dart';
+import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 
 class AccessManagementCubit extends Cubit<AccessManagementState>
     with SafeEmitMixin {
@@ -16,7 +18,22 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
   final TextEditingController relationController = TextEditingController();
 
   AccessManagementCubit(this._accessManagementRepository)
-      : super(const AccessManagementState.initialState());
+      : super(const AccessManagementState.initialState()) {
+    _initializePermissions();
+  }
+
+  void _initializePermissions() {
+    final updatedPermissions = <String, ModulePermissionDto>{};
+    final titles = categoriesView.map((e) => e.title).toList();
+    for (final title in titles) {
+      updatedPermissions[title] = ModulePermissionDto(
+        moduleName: title,
+        permission: 'FULL_ACCESS',
+        isEnabledModule: true,
+      );
+    }
+    safeEmit(state.copyWith(modulePermissions: updatedPermissions));
+  }
 
   Future<void> searchPhoneNumber() async {
     final phoneNumber = phoneNumberController.text.trim();
@@ -58,6 +75,125 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
     safeEmit(state.copyWith(selectedPermission: permission));
   }
 
+  void updateModulePermission(String moduleTitle, String permission) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.modulePermissions);
+    final current = updatedPermissions[moduleTitle];
+    if (current != null) {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: current.moduleName,
+        permission: permission,
+        isEnabledModule: current.isEnabledModule,
+      );
+    } else {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: moduleTitle,
+        permission: permission,
+        isEnabledModule: true,
+      );
+    }
+    safeEmit(state.copyWith(modulePermissions: updatedPermissions));
+  }
+
+  void toggleModuleEnabled(String moduleTitle, bool isEnabled) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.modulePermissions);
+    final current = updatedPermissions[moduleTitle];
+    if (current != null) {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: current.moduleName,
+        permission: current.permission,
+        isEnabledModule: isEnabled,
+      );
+    } else {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: moduleTitle,
+        permission: 'VIEW_ONLY',
+        isEnabledModule: isEnabled,
+      );
+    }
+    safeEmit(state.copyWith(modulePermissions: updatedPermissions));
+  }
+
+  void setAllModulesPermission(String permission, List<String> moduleTitles) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.modulePermissions);
+    for (final title in moduleTitles) {
+      final current = updatedPermissions[title];
+      updatedPermissions[title] = ModulePermissionDto(
+        moduleName: title,
+        permission: permission,
+        isEnabledModule: current?.isEnabledModule ?? true,
+      );
+    }
+    safeEmit(state.copyWith(modulePermissions: updatedPermissions));
+  }
+
+  void initDraftPermissions() {
+    safeEmit(state.copyWith(
+        draftModulePermissions: Map.from(state.modulePermissions)));
+  }
+
+  void updateDraftModulePermission(String moduleTitle, String permission) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.draftModulePermissions);
+    final current = updatedPermissions[moduleTitle];
+    if (current != null) {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: current.moduleName,
+        permission: permission,
+        isEnabledModule: current.isEnabledModule,
+      );
+    } else {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: moduleTitle,
+        permission: permission,
+        isEnabledModule: true,
+      );
+    }
+    safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
+  }
+
+  void toggleDraftModuleEnabled(String moduleTitle, bool isEnabled) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.draftModulePermissions);
+    final current = updatedPermissions[moduleTitle];
+    if (current != null) {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: current.moduleName,
+        permission: current.permission,
+        isEnabledModule: isEnabled,
+      );
+    } else {
+      updatedPermissions[moduleTitle] = ModulePermissionDto(
+        moduleName: moduleTitle,
+        permission: 'VIEW_ONLY',
+        isEnabledModule: isEnabled,
+      );
+    }
+    safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
+  }
+
+  void setAllDraftModulesPermission(
+      String permission, List<String> moduleTitles) {
+    final updatedPermissions =
+        Map<String, ModulePermissionDto>.from(state.draftModulePermissions);
+    for (final title in moduleTitles) {
+      final current = updatedPermissions[title];
+      updatedPermissions[title] = ModulePermissionDto(
+        moduleName: title,
+        permission: permission,
+        isEnabledModule: current?.isEnabledModule ?? true,
+      );
+    }
+    safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
+  }
+
+  void saveDraftPermissions() {
+    safeEmit(state.copyWith(
+        modulePermissions: Map.from(state.draftModulePermissions)));
+  }
+
   Future<void> createCareAccessRequest() async {
     final relation = relationController.text.trim();
     if (relation.isEmpty) {
@@ -78,10 +214,12 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
 
     safeEmit(state.copyWith(createRequestStatus: RequestStatus.loading));
 
+    final modulePermissionsList = state.modulePermissions.values.toList();
+
     final request = CreateCareAccessRequest(
       targetUserId: state.selectedUser!.userId.toString(),
       relation: relation,
-      permission: state.selectedPermission,
+      modulePermissions: modulePermissionsList,
     );
 
     final result =
@@ -166,10 +304,23 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
 
     result.when(
       success: (data) {
+        final Map<String, ModulePermissionDto> permissionsMap = {};
+        for (final module in data.modulePermissions) {
+          if (module.moduleName.isNotEmpty) {
+            permissionsMap[module.moduleName] = ModulePermissionDto(
+              moduleName: module.moduleName,
+              permission: module.permission,
+              isEnabledModule: module.isEnabledModule,
+            );
+          }
+        }
+
         safeEmit(
           state.copyWith(
             requestDetailsStatus: RequestStatus.success,
             requestDetails: data,
+            modulePermissions:
+                permissionsMap.isNotEmpty ? permissionsMap : null,
           ),
         );
       },
@@ -184,13 +335,14 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
     );
   }
 
-  Future<void> approveCareAccessRequest(String requestId,
-      {String? permission}) async {
+  Future<void> approveCareAccessRequest(String requestId) async {
     safeEmit(state.copyWith(approveRequestStatus: RequestStatus.loading));
+
+    final modulePermissionsList = state.modulePermissions.values.toList();
 
     final request = ApproveCareAccessRequest(
       requestId: requestId,
-      approvedPermission: permission ?? state.selectedPermission,
+      modulePermissions: modulePermissionsList,
     );
 
     final result =

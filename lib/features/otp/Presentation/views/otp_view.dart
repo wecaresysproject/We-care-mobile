@@ -10,7 +10,6 @@ import '../../../../core/global/Helpers/functions.dart';
 import '../../../../core/global/SharedWidgets/design_logo_widget.dart';
 import '../../../../core/global/theming/app_text_styles.dart';
 import '../../logic/otp_cubit.dart';
-import '../../logic/otp_state.dart';
 import 'widgets/pin_code_fields_widget.dart';
 
 class OtpView extends StatelessWidget {

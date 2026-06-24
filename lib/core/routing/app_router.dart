@@ -9,10 +9,10 @@ import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view
 import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
-import 'package:we_care/features/allowed_care_access/presentation/views/add_care_person_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/allowed_care_access_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/care_access_requests_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/join_care_request_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/module_permissions_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/review_care_access_request_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
@@ -788,15 +788,20 @@ class AppRouter {
             child: const AllowedCareAccessScreen(),
           ),
         );
-      case Routes.addCarePersonView:
-        return MaterialPageRoute(
-          builder: (context) => const AddCarePersonScreen(),
-        );
+
       case Routes.joinCareRequestView:
         return MaterialPageRoute(
           builder: (context) => BlocProvider<AccessManagementCubit>(
             create: (context) => getIt<AccessManagementCubit>(),
             child: const JoinCareRequestScreen(),
+          ),
+        );
+      case Routes.modulePermissionsView:
+        final cubit = arguments as AccessManagementCubit;
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<AccessManagementCubit>.value(
+            value: cubit,
+            child: const ModulePermissionsScreen(),
           ),
         );
       case Routes.careAccessRequestsView:

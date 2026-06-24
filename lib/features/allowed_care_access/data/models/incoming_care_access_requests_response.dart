@@ -24,12 +24,12 @@ class IncomingCareAccessRequestsResponse extends Equatable {
   List<Object?> get props => [pendingRequestsCount, requests];
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class IncomingCareAccessRequestModel extends Equatable {
   final String requestId;
   final String? requesterUserId;
   final String? requesterName;
-  final String? requestedPermission;
+  final List<ModulePermissionModel>? modulePermissions;
   final String? requestedAt;
   final String? timeAgo;
 
@@ -37,7 +37,7 @@ class IncomingCareAccessRequestModel extends Equatable {
     required this.requestId,
     this.requesterUserId,
     this.requesterName,
-    this.requestedPermission,
+    this.modulePermissions,
     this.requestedAt,
     this.timeAgo,
   });
@@ -52,8 +52,33 @@ class IncomingCareAccessRequestModel extends Equatable {
         requestId,
         requesterUserId,
         requesterName,
-        requestedPermission,
+        modulePermissions,
         requestedAt,
         timeAgo,
+      ];
+}
+
+@JsonSerializable()
+class ModulePermissionModel extends Equatable {
+  final String moduleName;
+  final String permission;
+  final bool isEnabledModule;
+
+  const ModulePermissionModel({
+    required this.moduleName,
+    required this.permission,
+    required this.isEnabledModule,
+  });
+
+  factory ModulePermissionModel.fromJson(Map<String, dynamic> json) =>
+      _$ModulePermissionModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ModulePermissionModelToJson(this);
+
+  @override
+  List<Object?> get props => [
+        moduleName,
+        permission,
+        isEnabledModule,
       ];
 }

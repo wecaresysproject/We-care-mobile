@@ -1,7 +1,7 @@
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 
 final basicInfoCategory = MedicalCategoryModel(
-  title: "البيانات الاساسية",
+  title: "البيانات الأساسية",
   image: "assets/images/pin_edit_icon.png",
   selectionType: MedicalSelectionType.selection,
   radioOptions: [
@@ -122,7 +122,7 @@ final medicinesCategory = MedicalCategoryModel(
 );
 
 final chronicDiseasesCategory = MedicalCategoryModel(
-  title: "الامراض المزمنه",
+  title: "الأمراض المزمنة",
   image: "assets/images/time_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [

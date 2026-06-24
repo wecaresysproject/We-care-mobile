@@ -145,10 +145,10 @@ class GlobalCareContextBanner extends StatelessWidget {
           return child;
         }
 
-        final permissionText =
-            activeContext.permission == CarePermission.fullAccess
-                ? 'تحكم كامل'
-                : 'عرض فقط';
+        // final permissionText = activeContext.modulePermissions
+        //         .any((m) => m.permission == 'FULL_ACCESS')
+        //     ? 'تحكم كامل'
+        //     : 'عرض فقط';
 
         return Column(
           children: [
@@ -182,7 +182,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'أنت الآن تتصفح الملف الطبي لـ ${activeContext.patientName}',
+                              'أنت الآن تتصفح ملف طبي لشخص آخر ',
                               style: TextStyle(
                                 color: AppColorsManager.mainDarkBlue,
                                 fontWeight: FontWeight.bold,
@@ -190,14 +190,6 @@ class GlobalCareContextBanner extends StatelessWidget {
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              permissionText,
-                              style: TextStyle(
-                                color: AppColorsManager.mainDarkBlue
-                                    .withValues(alpha: 1),
-                                fontSize: 12.sp,
-                              ),
                             ),
                           ],
                         ),
