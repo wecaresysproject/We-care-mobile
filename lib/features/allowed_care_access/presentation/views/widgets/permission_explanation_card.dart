@@ -9,25 +9,65 @@ class PermissionExplanationCard extends StatelessWidget {
 
   const PermissionExplanationCard({super.key, required this.capabilities});
 
-  Widget _buildItem(String text, bool allowed) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: Row(
-        children: [
-          Icon(
-            allowed ? Icons.check_circle : Icons.cancel,
-            color: allowed ? const Color(0xFF2E7D32) : const Color(0xFFE65100),
-            size: 20.sp,
-          ),
-          SizedBox(width: 8.w),
-          Text(
-            text,
-            style: AppTextStyles.font14blackWeight400.copyWith(
-              color: Colors.grey.shade800,
-              fontSize: 14.sp,
+  Widget _buildExpansionItem(
+      BuildContext context, PermissionCapabilityModel cap) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: EdgeInsets.only(right: 28.w, bottom: 8.h),
+        iconColor: AppColorsManager.mainDarkBlue,
+        collapsedIconColor: AppColorsManager.mainDarkBlue,
+        title: Row(
+          children: [
+            Icon(
+              cap.allowed ? Icons.check_circle : Icons.cancel,
+              color: cap.allowed
+                  ? const Color(0xFF2E7D32)
+                  : const Color(0xFFE65100),
+              size: 20.sp,
             ),
-          ),
-        ],
+            SizedBox(width: 8.w),
+            Expanded(
+              child: Text(
+                cap.title,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  color: Colors.grey.shade800,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        children: cap.capabilities.map((subCap) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 6.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 2.h),
+                  child: Icon(
+                    Icons.check,
+                    color: AppColorsManager.mainDarkBlue,
+                    size: 16.sp,
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    subCap,
+                    style: AppTextStyles.font14blackWeight400.copyWith(
+                      color: Colors.grey.shade700,
+                      fontSize: 13.sp,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -59,8 +99,8 @@ class PermissionExplanationCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.h),
-          ...capabilities.map((cap) => _buildItem(cap.title, cap.allowed)),
+          SizedBox(height: 8.h),
+          ...capabilities.map((cap) => _buildExpansionItem(context, cap)),
         ],
       ),
     );

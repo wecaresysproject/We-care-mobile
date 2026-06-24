@@ -64,10 +64,13 @@ class RequesterDetailsModel extends Equatable {
 class PermissionCapabilityModel extends Equatable {
   final String title;
   final bool allowed;
+  @JsonKey(defaultValue: [])
+  final List<String> capabilities;
 
   const PermissionCapabilityModel({
     required this.title,
     required this.allowed,
+    required this.capabilities,
   });
 
   factory PermissionCapabilityModel.fromJson(Map<String, dynamic> json) =>
@@ -76,5 +79,5 @@ class PermissionCapabilityModel extends Equatable {
   Map<String, dynamic> toJson() => _$PermissionCapabilityModelToJson(this);
 
   @override
-  List<Object?> get props => [title, allowed];
+  List<Object?> get props => [title, allowed, capabilities];
 }
