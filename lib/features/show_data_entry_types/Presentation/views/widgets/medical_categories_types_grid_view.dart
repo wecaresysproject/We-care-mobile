@@ -67,7 +67,7 @@ class _MedicalCategoriesTypesGridViewState
               child: const Center(child: CircularProgressIndicator()));
         }
         final sortedCategories = [...categoriesView]..sort(
-            (a, b) => (b['isActive'] ? 1 : 0).compareTo(a['isActive'] ? 1 : 0));
+            (a, b) => (b['isProductionModule'] ? 1 : 0).compareTo(a['isProductionModule'] ? 1 : 0));
         return Expanded(
           child: GridView.builder(
             itemCount: sortedCategories.length,
@@ -91,8 +91,8 @@ class _MedicalCategoriesTypesGridViewState
                 imagePath: sortedCategories[index]["image"]!,
                 routeName: sortedCategories[index]["route"]!,
                 notificationCount: count,
-                isActive: sortedCategories[index]["isActive"],
-                onTap: sortedCategories[index]["isActive"]
+                isProductionModule: sortedCategories[index]["isProductionModule"],
+                onTap: sortedCategories[index]["isProductionModule"]
                     ? () async {
                         await context
                             .pushNamed(sortedCategories[index]["route"]!);
@@ -114,7 +114,7 @@ class MedicalCategoryItem extends StatelessWidget {
   final String imagePath;
   final String routeName;
   final int? notificationCount;
-  final bool isActive;
+  final bool isProductionModule;
   final VoidCallback? onTap;
 
   const MedicalCategoryItem({
@@ -123,7 +123,7 @@ class MedicalCategoryItem extends StatelessWidget {
     required this.imagePath,
     required this.routeName,
     this.notificationCount,
-    this.isActive = false,
+    this.isProductionModule = false,
     this.onTap,
   });
 
@@ -171,7 +171,7 @@ class MedicalCategoryItem extends StatelessWidget {
               ),
 
               // Notification Badge (Only shows if notificationCount > 0)
-              if (isActive &&
+              if (isProductionModule &&
                   notificationCount != null &&
                   notificationCount! > 0)
                 Positioned(
@@ -211,7 +211,7 @@ class MedicalCategoryItem extends StatelessWidget {
                   ),
                 ),
               // Dim Overlay if not active
-              if (!isActive)
+              if (!isProductionModule)
                 Positioned.fill(
                   child: Container(
                     decoration: BoxDecoration(
@@ -257,157 +257,157 @@ final List<Map<String, dynamic>> categoriesView = [
     "title": "الأدوية",
     "image": "assets/images/medicines_icon.png",
     "route": Routes.medcinesView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الشكاوى\nالطارئة",
     "image": "assets/images/urgent_icon.png",
     "route": Routes.emergenciesComplaintDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
     "route": Routes.prescriptionView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
     "route": Routes.medicalAnalysisView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
     "route": Routes.xRayDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "العمليات\nالجراحية",
     "image": "assets/images/surgery_icon.png",
     "route": Routes.surgeriesView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "المناظير\nالطبيه",
     "image": "assets/images/machine_icon.png",
     "route": "/tumors",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
     "route": Routes.chronicDiseaseDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الأورام",
     "image": "assets/images/tumor_icon.png",
     "route": "/biological_regulation",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الأمراض\n الوراثيه",
     "image": "assets/images/icon_family.png",
     "route": Routes.geneticDiseasesHomeScreen,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الغسيل\nالكلوى",
     "image": "assets/images/kidney_wash.png",
     "route": "/other_sections",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
     "route": Routes.allergyDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "العيون",
     "image": "assets/images/eye_module_pic.png",
     "route": Routes.eyesOrGlassesDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
     "route": Routes.toothAnatomyView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "العلاج\nالطبيعى",
     "image": "assets/images/physical_therapy.png",
     "route": "/other_sections",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
     "route": Routes.vaccineView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "متابعة\n الحمل",
     "image": "assets/images/pergenant_woman.png",
     "route": "/specializations",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "علاج مشاكل\nالانجاب",
     "image": "assets/images/baby_icon.png",
     "route": "/psychological_disorders",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الحروق",
     "image": "assets/images/fire_icon.png",
     "route": "/cosmetic_procedures",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الجراحات\nالتجميلية",
     "image": "assets/images/woman.png",
     "route": "/dietary_habits",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
     "route": Routes.medicalIllnessOrMindUmbrellaView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "السلوكيات\nالخاطئة",
     "image": "assets/images/risk_behavior.png",
     "route": Routes.riskyBehaviorsDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الصحه\nالعامه",
     "image": "assets/images/heart_icon.png",
     "route": "/mental_issues",
-    "isActive": false,
+    "isProductionModule": false,
   },
   {
     "title": "المتابعه الغذائية",
     "image": "assets/images/chemical_medicine.png",
     "route": Routes.nutritionPlanDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "النشاط الرياضي",
     "image": "assets/images/physical_exercise.png",
     "route": Routes.physicalActivityDataView,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الفيتامينات و\nالمكملات الغذائية",
     "image": "assets/images/vitamin_module_icon.png",
     "route": Routes.supplementsView,
-    "isActive": true,
+    "isProductionModule": true,
   },
 ];
 

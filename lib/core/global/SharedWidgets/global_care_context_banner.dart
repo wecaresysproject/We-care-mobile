@@ -64,7 +64,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           padding: EdgeInsets.symmetric(vertical: 14.h),
                         ),
                         child: Text(
-                          'إلغاء',
+                          'استمرار',
                           style: TextStyle(
                             color: AppColorsManager.mainDarkBlue,
                             fontWeight: FontWeight.bold,
