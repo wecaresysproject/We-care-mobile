@@ -44,7 +44,7 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
           title: "القياسات الحيوية",
           imagePath: "assets/images/medical_tools_img.png",
           routeName: Routes.biometricsView,
-          isActive: true,
+          isProductionModule: true,
           onTap: () async {
             await context.pushNamed(Routes.biometricsView);
           },
@@ -53,7 +53,7 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
           routeName: Routes.essentialInfoView,
-          isActive: true,
+          isProductionModule: true,
           onTap: () async {
             await context.pushNamed(Routes.essentialInfoView);
           },

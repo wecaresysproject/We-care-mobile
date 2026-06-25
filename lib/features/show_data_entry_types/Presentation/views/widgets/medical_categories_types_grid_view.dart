@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Models/all_categories_tickets_count.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
@@ -66,8 +67,9 @@ class _MedicalCategoriesTypesGridViewState
           return Expanded(
               child: const Center(child: CircularProgressIndicator()));
         }
-        final sortedCategories = [...categoriesView]..sort(
-            (a, b) => (b['isProductionModule'] ? 1 : 0).compareTo(a['isProductionModule'] ? 1 : 0));
+        final sortedCategories = [...categoriesView]..sort((a, b) =>
+            (b['isProductionModule'] ? 1 : 0)
+                .compareTo(a['isProductionModule'] ? 1 : 0));
         return Expanded(
           child: GridView.builder(
             itemCount: sortedCategories.length,
@@ -91,7 +93,8 @@ class _MedicalCategoriesTypesGridViewState
                 imagePath: sortedCategories[index]["image"]!,
                 routeName: sortedCategories[index]["route"]!,
                 notificationCount: count,
-                isProductionModule: sortedCategories[index]["isProductionModule"],
+                isProductionModule: sortedCategories[index]
+                    ["isProductionModule"],
                 onTap: sortedCategories[index]["isProductionModule"]
                     ? () async {
                         await context
@@ -258,156 +261,182 @@ final List<Map<String, dynamic>> categoriesView = [
     "image": "assets/images/medicines_icon.png",
     "route": Routes.medcinesView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.medications,
   },
   {
     "title": "الشكاوى\nالطارئة",
     "image": "assets/images/urgent_icon.png",
     "route": Routes.emergenciesComplaintDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.urgentComplaints,
   },
   {
     "title": "روشتة الأطباء",
     "image": "assets/images/doctor_medicines.png",
     "route": Routes.prescriptionView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.doctorsPrescriptions,
   },
   {
     "title": "التحاليل الطبية",
     "image": "assets/images/test_tube.png",
     "route": Routes.medicalAnalysisView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.medicalTests,
   },
   {
     "title": "الأشعة",
     "image": "assets/images/x_ray.png",
     "route": Routes.xRayDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.radiology,
   },
   {
     "title": "العمليات\nالجراحية",
     "image": "assets/images/surgery_icon.png",
     "route": Routes.surgeriesView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.surgeries,
   },
   {
     "title": "المناظير\nالطبيه",
     "image": "assets/images/machine_icon.png",
     "route": "/tumors",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.medicalEndoscopes,
   },
   {
     "title": "الامراض\n المزمنه",
     "image": "assets/images/time_icon.png",
     "route": Routes.chronicDiseaseDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.chronicDiseases,
   },
   {
     "title": "الأورام",
     "image": "assets/images/tumor_icon.png",
     "route": "/biological_regulation",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.tumors,
   },
   {
     "title": "الأمراض\n الوراثيه",
     "image": "assets/images/icon_family.png",
     "route": Routes.geneticDiseasesHomeScreen,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.geneticDiseases,
   },
   {
     "title": "الغسيل\nالكلوى",
     "image": "assets/images/kidney_wash.png",
     "route": "/other_sections",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.kidneyDialysis,
   },
   {
     "title": "الحساسية",
     "image": "assets/images/hand_icon.png",
     "route": Routes.allergyDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.allergies,
   },
   {
     "title": "العيون",
     "image": "assets/images/eye_module_pic.png",
     "route": Routes.eyesOrGlassesDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.eyes,
   },
   {
     "title": "الأسنان",
     "image": "assets/images/teeth_icon.png",
     "route": Routes.toothAnatomyView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.dental,
   },
   {
     "title": "العلاج\nالطبيعى",
     "image": "assets/images/physical_therapy.png",
     "route": "/other_sections",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.physicalTherapy,
   },
   {
     "title": "التطعيمات",
     "image": "assets/images/eye_dropper.png",
     "route": Routes.vaccineView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.vaccinations,
   },
   {
     "title": "متابعة\n الحمل",
     "image": "assets/images/pergenant_woman.png",
     "route": "/specializations",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.pregnancyFollowUp,
   },
   {
     "title": "علاج مشاكل\nالانجاب",
     "image": "assets/images/baby_icon.png",
     "route": "/psychological_disorders",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.reproductiveProblems,
   },
   {
     "title": "الحروق",
     "image": "assets/images/fire_icon.png",
     "route": "/cosmetic_procedures",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.burns,
   },
   {
     "title": "الجراحات\nالتجميلية",
     "image": "assets/images/woman.png",
     "route": "/dietary_habits",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.cosmeticSurgeries,
   },
   {
     "title": "الأمراض\nالنفسية",
     "image": "assets/images/mental_health.png",
     "route": Routes.medicalIllnessOrMindUmbrellaView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.mentalHealth,
   },
   {
     "title": "السلوكيات\nالخاطئة",
     "image": "assets/images/risk_behavior.png",
     "route": Routes.riskyBehaviorsDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.riskyBehaviors,
   },
   {
     "title": "الصحه\nالعامه",
     "image": "assets/images/heart_icon.png",
     "route": "/mental_issues",
     "isProductionModule": false,
+    "moduleNameIdentifier": MedicalModule.publicHealth,
   },
   {
     "title": "المتابعه الغذائية",
     "image": "assets/images/chemical_medicine.png",
     "route": Routes.nutritionPlanDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.smartNutritionalAnalyzer,
   },
   {
     "title": "النشاط الرياضي",
     "image": "assets/images/physical_exercise.png",
     "route": Routes.physicalActivityDataView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.sportsActivity,
   },
   {
     "title": "الفيتامينات و\nالمكملات الغذائية",
     "image": "assets/images/vitamin_module_icon.png",
     "route": Routes.supplementsView,
     "isProductionModule": true,
+    "moduleNameIdentifier": MedicalModule.supplements,
   },
 ];
 

@@ -1,7 +1,9 @@
+import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 
 final basicInfoCategory = MedicalCategoryModel(
-  title: "البيانات الأساسية",
+  title: MedicalModule.basicInformation.nameAr,
+  moduleNameIdentifier: MedicalModule.basicInformation,
   image: "assets/images/pin_edit_icon.png",
   selectionType: MedicalSelectionType.selection,
   radioOptions: [
@@ -19,7 +21,8 @@ final basicInfoCategory = MedicalCategoryModel(
 );
 
 final vitalSignsCategory = MedicalCategoryModel(
-  title: "القياسات الحيوية",
+  title: MedicalModule.vitalSigns.nameAr,
+  moduleNameIdentifier: MedicalModule.vitalSigns,
   image: "assets/images/medical_tools_img.png",
   selectionType: MedicalSelectionType.selection,
   radioOptions: [
@@ -35,7 +38,8 @@ final vitalSignsCategory = MedicalCategoryModel(
 );
 
 final medicinesCategory = MedicalCategoryModel(
-  title: "الأدوية",
+  title: MedicalModule.medications.nameAr,
+  moduleNameIdentifier: MedicalModule.medications,
   image: "assets/images/medicines_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -122,7 +126,8 @@ final medicinesCategory = MedicalCategoryModel(
 );
 
 final chronicDiseasesCategory = MedicalCategoryModel(
-  title: "الأمراض المزمنة",
+  title: MedicalModule.chronicDiseases.nameAr,
+  moduleNameIdentifier: MedicalModule.chronicDiseases,
   image: "assets/images/time_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -142,7 +147,8 @@ final chronicDiseasesCategory = MedicalCategoryModel(
 );
 
 final urgentComplaintsCategory = MedicalCategoryModel(
-  title: "الشكاوى الطارئة",
+  title: MedicalModule.urgentComplaints.nameAr,
+  moduleNameIdentifier: MedicalModule.urgentComplaints,
   image: "assets/images/urgent_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -166,7 +172,8 @@ final urgentComplaintsCategory = MedicalCategoryModel(
 );
 
 final doctorsPrescriptionCategory = MedicalCategoryModel(
-  title: "روشتة الأطباء",
+  title: MedicalModule.doctorsPrescriptions.nameAr,
+  moduleNameIdentifier: MedicalModule.doctorsPrescriptions,
   image: "assets/images/doctor_medicines.png",
   selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق صور الروشتات"],
@@ -191,7 +198,8 @@ final doctorsPrescriptionCategory = MedicalCategoryModel(
 );
 
 final medicalTestsCategory = MedicalCategoryModel(
-  title: "التحاليل الطبية",
+  title: MedicalModule.medicalTests.nameAr,
+  moduleNameIdentifier: MedicalModule.medicalTests,
   image: "assets/images/test_tube.png",
   selectionType: MedicalSelectionType.filters,
   radioOptions: ["ارفاق صور التحاليل"],
@@ -212,7 +220,8 @@ final medicalTestsCategory = MedicalCategoryModel(
 );
 
 final radiologyCategory = MedicalCategoryModel(
-  title: "الأشعة",
+  title: MedicalModule.radiology.nameAr,
+  moduleNameIdentifier: MedicalModule.radiology,
   image: "assets/images/x_ray.png",
   selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق صور الاشعة"],
@@ -237,7 +246,8 @@ final radiologyCategory = MedicalCategoryModel(
 );
 
 final surgeriesCategory = MedicalCategoryModel(
-  title: "العمليات الجراحية",
+  title: MedicalModule.surgeries.nameAr,
+  moduleNameIdentifier: MedicalModule.surgeries,
   image: "assets/images/surgery_icon.png",
   selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
@@ -254,14 +264,16 @@ final surgeriesCategory = MedicalCategoryModel(
 );
 
 final geneticDiseasesCategory = MedicalCategoryModel(
-  title: "الأمراض الوراثية",
+  title: MedicalModule.geneticDiseases.nameAr,
+  moduleNameIdentifier: MedicalModule.geneticDiseases,
   image: "assets/images/icon_family.png",
   selectionType: MedicalSelectionType.selection,
   radioOptions: ["امراض العائلة الوراثية", "أمراضي الوراثية المتوقعة"],
 );
 
 final allergiesCategory = MedicalCategoryModel(
-  title: "الحساسية",
+  title: MedicalModule.allergies.nameAr,
+  moduleNameIdentifier: MedicalModule.allergies,
   image: "assets/images/hand_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -277,7 +289,8 @@ final allergiesCategory = MedicalCategoryModel(
 );
 
 final eyesCategory = MedicalCategoryModel(
-  title: "العيون",
+  title: MedicalModule.eyes.nameAr,
+  moduleNameIdentifier: MedicalModule.eyes,
   image: "assets/images/eye_module_pic.png",
   selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
@@ -306,7 +319,8 @@ final eyesCategory = MedicalCategoryModel(
 );
 
 final dentalCategory = MedicalCategoryModel(
-  title: "الأسنان",
+  title: MedicalModule.dental.nameAr,
+  moduleNameIdentifier: MedicalModule.dental,
   image: "assets/images/teeth_icon.png",
   selectionType: MedicalSelectionType.selectionAndFilters,
   radioOptions: ["ارفاق التقرير الطبي"],
@@ -335,7 +349,8 @@ final dentalCategory = MedicalCategoryModel(
 );
 
 final mentalHealthCategory = MedicalCategoryModel(
-  title: "الأمراض النفسية",
+  title: MedicalModule.mentalHealth.nameAr,
+  moduleNameIdentifier: MedicalModule.mentalHealth,
   image: "assets/images/mental_health.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -359,7 +374,8 @@ final mentalHealthCategory = MedicalCategoryModel(
 );
 
 final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
-  title: "المحلل الغذائي الذكي",
+  title: MedicalModule.smartNutritionalAnalyzer.nameAr,
+  moduleNameIdentifier: MedicalModule.smartNutritionalAnalyzer,
   image: "assets/images/chemical_medicine.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -375,7 +391,8 @@ final smartNutritionalAnalyzerCategory = MedicalCategoryModel(
 );
 
 final sportsActivityCategory = MedicalCategoryModel(
-  title: "النشاط الرياضي",
+  title: MedicalModule.sportsActivity.nameAr,
+  moduleNameIdentifier: MedicalModule.sportsActivity,
   image: "assets/images/physical_exercise.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [
@@ -394,7 +411,8 @@ final sportsActivityCategory = MedicalCategoryModel(
 );
 
 final supplementsCategory = MedicalCategoryModel(
-  title: "المكملات الغذائية",
+  title: MedicalModule.supplements.nameAr,
+  moduleNameIdentifier: MedicalModule.supplements,
   image: "assets/images/vitamin_module_icon.png",
   selectionType: MedicalSelectionType.filters,
   filterSections: [

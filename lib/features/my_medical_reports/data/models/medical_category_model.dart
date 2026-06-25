@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
 
 part 'medical_category_model.g.dart';
 
@@ -27,6 +28,7 @@ class MedicalCategoryModel {
   final MedicalSelectionType selectionType;
   final List<String> radioOptions;
   final List<MedicalFilterSectionModel>? filterSections;
+  final MedicalModule? moduleNameIdentifier;
 
   const MedicalCategoryModel({
     required this.title,
@@ -34,6 +36,7 @@ class MedicalCategoryModel {
     this.selectionType = MedicalSelectionType.selection,
     this.radioOptions = const [],
     this.filterSections = const [],
+    this.moduleNameIdentifier,
   });
 
   factory MedicalCategoryModel.fromJson(Map<String, dynamic> json) =>

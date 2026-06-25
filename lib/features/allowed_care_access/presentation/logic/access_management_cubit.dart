@@ -24,12 +24,12 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
 
   void _initializePermissions() {
     final updatedPermissions = <String, ModulePermissionDto>{};
-    final titles = categoriesView.map((e) => e.title).toList();
-    for (final title in titles) {
-      updatedPermissions[title] = ModulePermissionDto(
-        moduleName: title,
+    for (final category in categoriesView) {
+      updatedPermissions[category.title] = ModulePermissionDto(
+        moduleName: category.title,
         permission: 'FULL_ACCESS',
         isEnabledModule: true,
+        moduleNameIdentifier: category.moduleNameIdentifier,
       );
     }
     safeEmit(state.copyWith(modulePermissions: updatedPermissions));
@@ -84,12 +84,16 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         moduleName: current.moduleName,
         permission: permission,
         isEnabledModule: current.isEnabledModule,
+        moduleNameIdentifier: current.moduleNameIdentifier,
       );
     } else {
+      final matches = categoriesView.where((c) => c.title == moduleTitle);
       updatedPermissions[moduleTitle] = ModulePermissionDto(
         moduleName: moduleTitle,
         permission: permission,
         isEnabledModule: true,
+        moduleNameIdentifier:
+            matches.isEmpty ? null : matches.first.moduleNameIdentifier,
       );
     }
     safeEmit(state.copyWith(modulePermissions: updatedPermissions));
@@ -104,12 +108,16 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         moduleName: current.moduleName,
         permission: current.permission,
         isEnabledModule: isEnabled,
+        moduleNameIdentifier: current.moduleNameIdentifier,
       );
     } else {
+      final matches = categoriesView.where((c) => c.title == moduleTitle);
       updatedPermissions[moduleTitle] = ModulePermissionDto(
         moduleName: moduleTitle,
         permission: 'VIEW_ONLY',
         isEnabledModule: isEnabled,
+        moduleNameIdentifier:
+            matches.isEmpty ? null : matches.first.moduleNameIdentifier,
       );
     }
     safeEmit(state.copyWith(modulePermissions: updatedPermissions));
@@ -120,10 +128,13 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         Map<String, ModulePermissionDto>.from(state.modulePermissions);
     for (final title in moduleTitles) {
       final current = updatedPermissions[title];
+      final matches = categoriesView.where((c) => c.title == title);
       updatedPermissions[title] = ModulePermissionDto(
         moduleName: title,
         permission: permission,
         isEnabledModule: current?.isEnabledModule ?? true,
+        moduleNameIdentifier: current?.moduleNameIdentifier ??
+            (matches.isEmpty ? null : matches.first.moduleNameIdentifier),
       );
     }
     safeEmit(state.copyWith(modulePermissions: updatedPermissions));
@@ -143,12 +154,16 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         moduleName: current.moduleName,
         permission: permission,
         isEnabledModule: current.isEnabledModule,
+        moduleNameIdentifier: current.moduleNameIdentifier,
       );
     } else {
+      final matches = categoriesView.where((c) => c.title == moduleTitle);
       updatedPermissions[moduleTitle] = ModulePermissionDto(
         moduleName: moduleTitle,
         permission: permission,
         isEnabledModule: true,
+        moduleNameIdentifier:
+            matches.isEmpty ? null : matches.first.moduleNameIdentifier,
       );
     }
     safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
@@ -163,12 +178,16 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         moduleName: current.moduleName,
         permission: current.permission,
         isEnabledModule: isEnabled,
+        moduleNameIdentifier: current.moduleNameIdentifier,
       );
     } else {
+      final matches = categoriesView.where((c) => c.title == moduleTitle);
       updatedPermissions[moduleTitle] = ModulePermissionDto(
         moduleName: moduleTitle,
         permission: 'VIEW_ONLY',
         isEnabledModule: isEnabled,
+        moduleNameIdentifier:
+            matches.isEmpty ? null : matches.first.moduleNameIdentifier,
       );
     }
     safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
@@ -180,10 +199,13 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         Map<String, ModulePermissionDto>.from(state.draftModulePermissions);
     for (final title in moduleTitles) {
       final current = updatedPermissions[title];
+      final matches = categoriesView.where((c) => c.title == title);
       updatedPermissions[title] = ModulePermissionDto(
         moduleName: title,
         permission: permission,
         isEnabledModule: current?.isEnabledModule ?? true,
+        moduleNameIdentifier: current?.moduleNameIdentifier ??
+            (matches.isEmpty ? null : matches.first.moduleNameIdentifier),
       );
     }
     safeEmit(state.copyWith(draftModulePermissions: updatedPermissions));
@@ -307,10 +329,14 @@ class AccessManagementCubit extends Cubit<AccessManagementState>
         final Map<String, ModulePermissionDto> permissionsMap = {};
         for (final module in data.modulePermissions) {
           if (module.moduleName.isNotEmpty) {
+            final matches =
+                categoriesView.where((c) => c.title == module.moduleName);
             permissionsMap[module.moduleName] = ModulePermissionDto(
               moduleName: module.moduleName,
               permission: module.permission,
               isEnabledModule: module.isEnabledModule,
+              moduleNameIdentifier:
+                  matches.isEmpty ? null : matches.first.moduleNameIdentifier,
             );
           }
         }
