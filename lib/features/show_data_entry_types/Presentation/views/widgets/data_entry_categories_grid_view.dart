@@ -10,6 +10,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
@@ -44,11 +45,24 @@ class DataEntryCategoriesGridView extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final category = sortedCategories[index];
+              final isProductionModule =
+                  category["isProductionModule"] ?? false;
+              final moduleNameIdentifier =
+                  category["moduleNameIdentifier"] as MedicalModule?;
+
+              bool hasAccess = true;
+              if (isProductionModule) {
+                hasAccess = CareContextManager
+                    .hasModuleAccessForDataEntryMedicalFilesCategory(
+                        moduleNameIdentifier);
+              }
+
               return CategoryItem(
                 title: category["title"]!,
                 imagePath: category["image"]!,
                 routeName: category["route"]!,
-                isProductionModule: category["isProductionModule"] ?? false,
+                isProductionModule: isProductionModule,
+                hasAccess: hasAccess,
                 cornerImagePath: category["cornerImagePath"] ??
                     "assets/images/basic_data.png",
                 audio: category["audio"] ?? "",
@@ -68,6 +82,7 @@ class CategoryItem extends StatefulWidget {
     required this.imagePath,
     required this.routeName,
     this.isProductionModule = false,
+    this.hasAccess = false,
     required this.cornerImagePath,
     this.audio,
   });
@@ -76,6 +91,7 @@ class CategoryItem extends StatefulWidget {
   final String imagePath;
   final String routeName;
   final bool isProductionModule;
+  final bool hasAccess;
   final String cornerImagePath;
   final String? audio;
 
@@ -132,7 +148,7 @@ class _CategoryItemState extends State<CategoryItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: widget.isProductionModule
+              onTap: (widget.isProductionModule && widget.hasAccess)
                   ? () => _handleCategoryTap(context)
                   : null,
               child: Stack(
@@ -184,6 +200,23 @@ class _CategoryItemState extends State<CategoryItem> {
                             child: Center(
                               child: Icon(
                                 Icons.hourglass_empty,
+                                color: Colors.white,
+                                size: 32.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      // Lock overlay if no access
+                      if (widget.isProductionModule && !widget.hasAccess)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(40.r),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
                                 color: Colors.white,
                                 size: 32.sp,
                               ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/widgets/data_entry_categories_grid_view.dart';
 
@@ -8,6 +10,13 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    final hasAccessBiometrics =
+        CareContextManager.hasModuleAccessForDataEntryMedicalFilesCategory(
+            MedicalModule.vitalSigns);
+    final hasAccessBasicInfo =
+        CareContextManager.hasModuleAccessForDataEntryMedicalFilesCategory(
+            MedicalModule.basicInformation);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -16,6 +25,7 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
           imagePath: "assets/images/medical_tools_img.png",
           routeName: Routes.biometricsDataEntryView,
           isProductionModule: true,
+          hasAccess: hasAccessBiometrics,
           cornerImagePath: "assets/images/qyasat_hayawya.png",
         ),
         CategoryItem(
@@ -23,6 +33,7 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
           imagePath: "assets/images/pin_edit_icon.png",
           routeName: Routes.essentialInfoDataEntry,
           isProductionModule: true,
+          hasAccess: hasAccessBasicInfo,
           cornerImagePath: "assets/images/basic_data.png",
         ),
       ],

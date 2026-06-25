@@ -6,6 +6,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Models/all_categories_tickets_count.dart';
 import 'package:we_care/features/show_data_entry_types/Data/Repository/categories_repo.dart';
@@ -88,14 +89,26 @@ class _MedicalCategoriesTypesGridViewState
               final categoryName = sortedCategories[index]["title"]!;
               final count = getCategoryCountByArabicTitle(counts, categoryName);
 
+              final isProductionModule =
+                  sortedCategories[index]["isProductionModule"] == true;
+              final moduleNameIdentifier = sortedCategories[index]
+                  ["moduleNameIdentifier"] as MedicalModule?;
+
+              bool hasAccess = true;
+              if (isProductionModule) {
+                hasAccess = CareContextManager
+                    .hasModuleAccessForViewMedicalFilesCategory(
+                        moduleNameIdentifier);
+              }
+
               return MedicalCategoryItem(
                 title: categoryName,
                 imagePath: sortedCategories[index]["image"]!,
                 routeName: sortedCategories[index]["route"]!,
                 notificationCount: count,
-                isProductionModule: sortedCategories[index]
-                    ["isProductionModule"],
-                onTap: sortedCategories[index]["isProductionModule"]
+                isProductionModule: isProductionModule,
+                hasAccess: hasAccess,
+                onTap: (isProductionModule && hasAccess)
                     ? () async {
                         await context
                             .pushNamed(sortedCategories[index]["route"]!);
@@ -118,6 +131,7 @@ class MedicalCategoryItem extends StatelessWidget {
   final String routeName;
   final int? notificationCount;
   final bool isProductionModule;
+  final bool hasAccess;
   final VoidCallback? onTap;
 
   const MedicalCategoryItem({
@@ -127,6 +141,7 @@ class MedicalCategoryItem extends StatelessWidget {
     required this.routeName,
     this.notificationCount,
     this.isProductionModule = false,
+    this.hasAccess = false,
     this.onTap,
   });
 
@@ -224,6 +239,23 @@ class MedicalCategoryItem extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         Icons.hourglass_empty,
+                        color: Colors.white,
+                        size: 32.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              // Dim Overlay if no access
+              if (!hasAccess)
+                Positioned.fill(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(40.r),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.lock_outline,
                         color: Colors.white,
                         size: 32.sp,
                       ),
