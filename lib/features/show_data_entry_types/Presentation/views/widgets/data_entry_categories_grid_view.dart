@@ -28,8 +28,8 @@ class DataEntryCategoriesGridView extends StatelessWidget {
         builder: (context) {
           // Sort active first
           final sortedCategories = [...dataEntryCategories]..sort((a, b) =>
-              (b["isActive"] == true ? 1 : 0)
-                  .compareTo(a["isActive"] == true ? 1 : 0));
+              (b["isProductionModule"] == true ? 1 : 0)
+                  .compareTo(a["isProductionModule"] == true ? 1 : 0));
 
           return GridView.builder(
             itemCount: sortedCategories.length,
@@ -48,7 +48,7 @@ class DataEntryCategoriesGridView extends StatelessWidget {
                 title: category["title"]!,
                 imagePath: category["image"]!,
                 routeName: category["route"]!,
-                isActive: category["isActive"] ?? false,
+                isProductionModule: category["isProductionModule"] ?? false,
                 cornerImagePath: category["cornerImagePath"] ??
                     "assets/images/basic_data.png",
                 audio: category["audio"] ?? "",
@@ -67,7 +67,7 @@ class CategoryItem extends StatefulWidget {
     required this.title,
     required this.imagePath,
     required this.routeName,
-    this.isActive = false,
+    this.isProductionModule = false,
     required this.cornerImagePath,
     this.audio,
   });
@@ -75,7 +75,7 @@ class CategoryItem extends StatefulWidget {
   final String title;
   final String imagePath;
   final String routeName;
-  final bool isActive;
+  final bool isProductionModule;
   final String cornerImagePath;
   final String? audio;
 
@@ -132,7 +132,9 @@ class _CategoryItemState extends State<CategoryItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: widget.isActive ? () => _handleCategoryTap(context) : null,
+              onTap: widget.isProductionModule
+                  ? () => _handleCategoryTap(context)
+                  : null,
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -172,7 +174,7 @@ class _CategoryItemState extends State<CategoryItem> {
                           ),
                         ),
                       ),
-                      if (!widget.isActive)
+                      if (!widget.isProductionModule)
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(

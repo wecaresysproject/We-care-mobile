@@ -6,7 +6,6 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
   const BasicDataAndBiometricMeasurementsCategories({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -16,14 +15,14 @@ class BasicDataAndBiometricMeasurementsCategories extends StatelessWidget {
           title: "القياسات الحيوية",
           imagePath: "assets/images/medical_tools_img.png",
           routeName: Routes.biometricsDataEntryView,
-          isActive: true,
+          isProductionModule: true,
           cornerImagePath: "assets/images/qyasat_hayawya.png",
         ),
         CategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
           routeName: Routes.essentialInfoDataEntry,
-          isActive: true,
+          isProductionModule: true,
           cornerImagePath: "assets/images/basic_data.png",
         ),
       ],
