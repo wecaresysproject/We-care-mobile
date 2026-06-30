@@ -42,9 +42,10 @@ class ViewOrEditMedicalRecord extends StatelessWidget {
                 ),
                 verticalSpacing(60),
                 CustomImageWithTextButtonHomeWidget(
-                  isDisabled:
-                      CareContextManager.currentActiveProfilePermission ==
-                          CarePermission.viewOnly,
+                  isDisabled: CareContextManager.isCareModeActive &&
+                      !(CareContextManager.currentActiveProfilePermissions
+                              ?.any((m) => m.permission == 'FULL_ACCESS') ??
+                          false),
                   onTap: () async {
                     await context.pushNamed(Routes.medicalDataEntryTypesView);
                   },

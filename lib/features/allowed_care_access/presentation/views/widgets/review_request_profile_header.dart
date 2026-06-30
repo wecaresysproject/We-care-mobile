@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -26,15 +27,20 @@ class ReviewRequestProfileHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.r),
           ),
           alignment: Alignment.center,
-          child: Text(
-            requesterDetails.fullName.isNotEmpty
-                ? requesterDetails.fullName[0].toUpperCase()
-                : '؟',
-            style: AppTextStyles.font22MainBlueWeight700.copyWith(
-              color: Colors.white,
-              fontSize: 40.sp,
-            ),
-          ),
+          clipBehavior: Clip.hardEdge,
+          child: (requesterDetails.personalPhotoUrl != null &&
+                  requesterDetails.personalPhotoUrl!.trim().isNotEmpty &&
+                  requesterDetails.personalPhotoUrl!.trim().startsWith('http'))
+              ? CachedNetworkImage(
+                  imageUrl: requesterDetails.personalPhotoUrl!.trim(),
+                  width: 80.w,
+                  height: 80.w,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(color: Colors.white),
+                  errorWidget: (context, url, error) => _buildInitials(),
+                )
+              : _buildInitials(),
         ),
         SizedBox(height: 16.h),
         // User Name
@@ -58,6 +64,20 @@ class ReviewRequestProfileHeader extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+
+  Widget _buildInitials() {
+    return Center(
+      child: Text(
+        requesterDetails.fullName.isNotEmpty
+            ? requesterDetails.fullName[0].toUpperCase()
+            : '؟',
+        style: AppTextStyles.font22MainBlueWeight700.copyWith(
+          color: Colors.white,
+          fontSize: 40.sp,
+        ),
+      ),
     );
   }
 }

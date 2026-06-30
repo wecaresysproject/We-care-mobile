@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -64,7 +65,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           padding: EdgeInsets.symmetric(vertical: 14.h),
                         ),
                         child: Text(
-                          'إلغاء',
+                          'استمرار',
                           style: TextStyle(
                             color: AppColorsManager.mainDarkBlue,
                             fontWeight: FontWeight.bold,
@@ -89,22 +90,26 @@ class GlobalCareContextBanner extends StatelessWidget {
                           // Show success snackbar
                           final scaffoldContext = navigatorKey.currentContext;
                           if (scaffoldContext != null) {
-                            ScaffoldMessenger.of(scaffoldContext).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'تمت العودة إلى ملفك الطبي الشخصي',
-                                  style: TextStyle(
-                                    fontFamily: 'Cairo',
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                backgroundColor: AppColorsManager.doneColor,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                              ),
+                            // ScaffoldMessenger.of(scaffoldContext).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text(
+                            //       'تمت العودة إلى ملفك الطبي الشخصي',
+                            //       style: TextStyle(
+                            //         fontFamily: 'Cairo',
+                            //         fontSize: 14.sp,
+                            //         fontWeight: FontWeight.w600,
+                            //       ),
+                            //     ),
+                            //     backgroundColor: AppColorsManager.doneColor,
+                            //     behavior: SnackBarBehavior.floating,
+                            //     shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(10.r),
+                            //     ),
+                            //   ),
+                            // );
+                            context.showSnackBar(
+                              message: 'تمت العودة إلى ملفك الطبي الشخصي',
+                              context: scaffoldContext,
                             );
                           }
                         },
@@ -145,11 +150,6 @@ class GlobalCareContextBanner extends StatelessWidget {
           return child;
         }
 
-        final permissionText =
-            activeContext.permission == CarePermission.fullAccess
-                ? 'تحكم كامل'
-                : 'عرض فقط';
-
         return Column(
           children: [
             SafeArea(
@@ -182,7 +182,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'أنت الآن تتصفح الملف الطبي لـ ${activeContext.patientName}',
+                              'أنت الآن تتصفح ملف طبي لشخص آخر ',
                               style: TextStyle(
                                 color: AppColorsManager.mainDarkBlue,
                                 fontWeight: FontWeight.bold,
@@ -190,14 +190,6 @@ class GlobalCareContextBanner extends StatelessWidget {
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              permissionText,
-                              style: TextStyle(
-                                color: AppColorsManager.mainDarkBlue
-                                    .withValues(alpha: 1),
-                                fontSize: 12.sp,
-                              ),
                             ),
                           ],
                         ),

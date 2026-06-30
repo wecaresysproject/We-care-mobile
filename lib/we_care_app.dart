@@ -8,11 +8,11 @@ import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
 
 import 'core/global/Helpers/functions.dart';
+import 'core/global/SharedWidgets/global_care_context_banner.dart';
 import 'core/global/app_strings.dart';
 import 'core/global/theming/color_manager.dart';
 import 'core/routing/app_router.dart';
 import 'generated/l10n.dart';
-import 'core/global/SharedWidgets/global_care_context_banner.dart';
 
 class WeCareApp extends StatefulWidget {
   const WeCareApp({super.key, required this.appRouter});

@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
@@ -65,10 +66,78 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                               );
                             },
                           ),
-                          _popupItem(Icons.lock, "تغيير كلمة السر"),
-                          _popupItem(Icons.admin_panel_settings, "الصلاحيات"),
-                          _popupItem(Icons.subscriptions, "الاشتراكات"),
-                          _popupItem(Icons.logout, "تسجيل الخروج", isRed: true),
+                          _popupItem(
+                            Icons.groups,
+                            "المسموح لهم بالرعاية",
+                            onClick: () async {
+                              if (CareContextManager.isCareModeActive) {
+                                context.showSnackBar(
+                                  message:
+                                      "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                  backgroundColor: Colors.red,
+                                  context: context,
+                                );
+                                return;
+                              }
+                              await context.pushNamedWithSettingRootNavigator(
+                                Routes.allowedCareAccessView,
+                              );
+                            },
+                          ),
+                          _popupItem(
+                            Icons.lock,
+                            "تغيير كلمة السر",
+                            onClick: () async {
+                              if (CareContextManager.isCareModeActive) {
+                                context.showSnackBar(
+                                  message:
+                                      "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                  backgroundColor: Colors.red,
+                                  context: context,
+                                );
+                                return;
+                              }
+                            },
+                          ),
+                          _popupItem(
+                            Icons.admin_panel_settings,
+                            "الصلاحيات",
+                            onClick: () async {
+                              if (CareContextManager.isCareModeActive) {
+                                context.showSnackBar(
+                                  message:
+                                      "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                  backgroundColor: Colors.red,
+                                  context: context,
+                                );
+                                return;
+                              }
+                            },
+                          ),
+                          _popupItem(Icons.subscriptions, "الاشتراكات",
+                              onClick: () {
+                            if (CareContextManager.isCareModeActive) {
+                              context.showSnackBar(
+                                message:
+                                    "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                backgroundColor: Colors.red,
+                                context: context,
+                              );
+                              return;
+                            }
+                          }),
+                          _popupItem(Icons.logout, "تسجيل الخروج", isRed: true,
+                              onClick: () {
+                            if (CareContextManager.isCareModeActive) {
+                              context.showSnackBar(
+                                message:
+                                    "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                backgroundColor: Colors.red,
+                                context: context,
+                              );
+                              return;
+                            }
+                          }),
                         ],
                         onSelected: (value) {
                           // TODO: Navigate or perform action

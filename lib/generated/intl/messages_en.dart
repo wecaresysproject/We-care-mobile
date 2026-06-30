@@ -115,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("Mobile Number"),
     "new_password": MessageLookupByLibrary.simpleMessage("New Password"),
+    "no": MessageLookupByLibrary.simpleMessage("No"),
     "no_data_entered": MessageLookupByLibrary.simpleMessage("No data"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -155,7 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "Enter your phone number, and we will send you a code to reset your password.",
     ),
-    "search_text": MessageLookupByLibrary.simpleMessage("Advanced Search"),
+    "search_text": MessageLookupByLibrary.simpleMessage("Search"),
     "send": MessageLookupByLibrary.simpleMessage("Send"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
@@ -184,5 +185,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "word_limit_exceeded": MessageLookupByLibrary.simpleMessage(
       "You have exceeded the limit of 100 words!",
     ),
+    "yes": MessageLookupByLibrary.simpleMessage("Yes"),
   };
 }

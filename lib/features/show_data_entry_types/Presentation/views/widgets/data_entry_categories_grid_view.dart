@@ -9,6 +9,8 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.dart';
 import 'package:we_care/features/nutration/nutration_data_entry/logic/cubit/nutration_data_entry_cubit.dart';
@@ -27,8 +29,8 @@ class DataEntryCategoriesGridView extends StatelessWidget {
         builder: (context) {
           // Sort active first
           final sortedCategories = [...dataEntryCategories]..sort((a, b) =>
-              (b["isActive"] == true ? 1 : 0)
-                  .compareTo(a["isActive"] == true ? 1 : 0));
+              (b["isProductionModule"] == true ? 1 : 0)
+                  .compareTo(a["isProductionModule"] == true ? 1 : 0));
 
           return GridView.builder(
             itemCount: sortedCategories.length,
@@ -43,11 +45,24 @@ class DataEntryCategoriesGridView extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final category = sortedCategories[index];
+              final isProductionModule =
+                  category["isProductionModule"] ?? false;
+              final moduleNameIdentifier =
+                  category["moduleNameIdentifier"] as MedicalModule?;
+
+              bool hasAccess = true;
+              if (isProductionModule) {
+                hasAccess = CareContextManager
+                    .hasModuleAccessForDataEntryMedicalFilesCategory(
+                        moduleNameIdentifier);
+              }
+
               return CategoryItem(
                 title: category["title"]!,
                 imagePath: category["image"]!,
                 routeName: category["route"]!,
-                isActive: category["isActive"] ?? false,
+                isProductionModule: isProductionModule,
+                hasAccess: hasAccess,
                 cornerImagePath: category["cornerImagePath"] ??
                     "assets/images/basic_data.png",
                 audio: category["audio"] ?? "",
@@ -66,7 +81,8 @@ class CategoryItem extends StatefulWidget {
     required this.title,
     required this.imagePath,
     required this.routeName,
-    this.isActive = false,
+    this.isProductionModule = false,
+    this.hasAccess = false,
     required this.cornerImagePath,
     this.audio,
   });
@@ -74,7 +90,8 @@ class CategoryItem extends StatefulWidget {
   final String title;
   final String imagePath;
   final String routeName;
-  final bool isActive;
+  final bool isProductionModule;
+  final bool hasAccess;
   final String cornerImagePath;
   final String? audio;
 
@@ -131,7 +148,9 @@ class _CategoryItemState extends State<CategoryItem> {
           mainAxisSize: MainAxisSize.min,
           children: [
             GestureDetector(
-              onTap: widget.isActive ? () => _handleCategoryTap(context) : null,
+              onTap: (widget.isProductionModule && widget.hasAccess)
+                  ? () => _handleCategoryTap(context)
+                  : null,
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -171,7 +190,7 @@ class _CategoryItemState extends State<CategoryItem> {
                           ),
                         ),
                       ),
-                      if (!widget.isActive)
+                      if (!widget.isProductionModule)
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
@@ -181,6 +200,23 @@ class _CategoryItemState extends State<CategoryItem> {
                             child: Center(
                               child: Icon(
                                 Icons.hourglass_empty,
+                                color: Colors.white,
+                                size: 32.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      // Lock overlay if no access
+                      if (widget.isProductionModule && !widget.hasAccess)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(40.r),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.lock_outline,
                                 color: Colors.white,
                                 size: 32.sp,
                               ),
@@ -322,201 +358,231 @@ class _CategoryItemState extends State<CategoryItem> {
 final List<Map<String, dynamic>> dataEntryCategories = [
   {
     "title": "الأدوية",
+    "moduleNameIdentifier": MedicalModule.medications,
     "image": "assets/images/medicines_icon.png",
     "route": Routes.medcinesDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/medicine_module.png",
     "audio": "",
   },
   {
     "title": "الشكاوى\nالطارئة",
+    "moduleNameIdentifier": MedicalModule.urgentComplaints,
     "image": "assets/images/urgent_icon.png",
     "route": Routes.emergenciesComplaintDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/emergency_module.png",
     "audio": "",
   },
   {
     "title": "روشتة الأطباء",
+    "moduleNameIdentifier": MedicalModule.doctorsPrescriptions,
     "image": "assets/images/doctor_medicines.png",
     "route": Routes.prescriptionCategoryDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/ebn_senaa.png",
     "audio": "",
   },
   {
     "title": "التحاليل الطبية",
+    "moduleNameIdentifier": MedicalModule.medicalTests,
     "image": "assets/images/test_tube.png",
     "route": Routes.testAnalsisDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/laboratory_test.png",
     "audio": "",
   },
   {
     "title": "الأشعة",
+    "moduleNameIdentifier": MedicalModule.radiology,
     "image": "assets/images/x_ray.png",
     "route": Routes.xrayCategoryDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/xray_module.png",
     "audio": "",
   },
   {
     "title": "العمليات\nالجراحية",
+    "moduleNameIdentifier": MedicalModule.surgeries,
     "image": "assets/images/surgery_icon.png",
     "route": Routes.surgeriesDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/surgery_module.png",
     "audio": "",
   },
   {
     "title": "المناظير\nالطبيه",
+    "moduleNameIdentifier": MedicalModule.medicalEndoscopes,
     "image": "assets/images/machine_icon.png",
     "route": "/tumors",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/manazeer_tebeya_module.png",
     "audio": "",
   },
   {
     "title": "الامراض\n المزمنه",
+    "moduleNameIdentifier": MedicalModule.chronicDiseases,
     "image": "assets/images/time_icon.png",
     "route": Routes.chronicDiseaseDataEntry,
     "cornerImagePath": "assets/images/chronic_disease_module_agent.png",
     "audio": "sounds/ebn_sena.mp3",
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الأورام",
+    "moduleNameIdentifier": MedicalModule.tumors,
     "image": "assets/images/tumor_icon.png",
     "route": "/biological_regulation",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/tumors_module.png",
     "audio": "",
   },
   {
     "title": "الأمراض\n الوراثيه",
+    "moduleNameIdentifier": MedicalModule.geneticDiseases,
     "image": "assets/images/icon_family.png",
     "cornerImagePath": "assets/images/genetic_dissease_module.png",
     "route": Routes.geneticDiseaeseMainView,
-    "isActive": true,
+    "isProductionModule": true,
     "audio": "",
   },
   {
     "title": "الغسيل\nالكلوى",
+    "moduleNameIdentifier": MedicalModule.kidneyDialysis,
     "image": "assets/images/kidney_wash.png",
     "route": "/other_sections",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/gaseel_kelawey_module.png",
     "audio": "",
   },
   {
     "title": "الحساسية",
+    "moduleNameIdentifier": MedicalModule.allergies,
     "image": "assets/images/hand_icon.png",
     "route": Routes.allergyDataEntry,
     "cornerImagePath": "assets/images/hasseya_module.png",
     "audio": "",
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "العيون",
+    "moduleNameIdentifier": MedicalModule.eyes,
     "image": "assets/images/eye_module_pic.png",
     "cornerImagePath": "assets/images/eyes_module.png",
     "audio": "",
-    "isActive": true,
+    "isProductionModule": true,
     "route": Routes.eyeOrGlassesView,
   },
   {
     "title": "الأسنان",
+    "moduleNameIdentifier": MedicalModule.dental,
     "image": "assets/images/teeth_icon.png",
     "route": Routes.dentalAnatomyDiagramEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/tooth_module.png",
     "audio": "",
   },
   {
     "title": "العلاج\nالطبيعى",
+    "moduleNameIdentifier": MedicalModule.physicalTherapy,
     "image": "assets/images/physical_therapy.png",
     "route": "/other_sections",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/physical_therapy_module.png",
     "audio": "",
   },
   {
     "title": "التطعيمات",
+    "moduleNameIdentifier": MedicalModule.vaccinations,
     "image": "assets/images/eye_dropper.png",
     "route": Routes.vaccineDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/tatemaat_module.png",
     "audio": "",
   },
   {
     "title": "متابعة\n الحمل",
+    "moduleNameIdentifier": MedicalModule.pregnancyFollowUp,
     "image": "assets/images/pergenant_woman.png",
     "route": "/specializations",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/prenatal_care_module.png",
     "audio": "",
   },
   {
     "title": "علاج مشاكل\nالانجاب",
+    "moduleNameIdentifier": MedicalModule.reproductiveProblems,
     "image": "assets/images/baby_icon.png",
     "route": "/psychological_disorders",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/fertility_treatment_module.png",
     "audio": "",
   },
   {
     "title": "الحروق",
+    "moduleNameIdentifier": MedicalModule.burns,
     "image": "assets/images/fire_icon.png",
     "route": "/cosmetic_procedures",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/burns_degrees_module.png",
     "audio": "",
   },
   {
     "title": "الجراحات\nالتجميلية",
+    "moduleNameIdentifier": MedicalModule.cosmeticSurgeries,
     "image": "assets/images/woman.png",
     "route": "/dietary_habits",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/cosmetic_surgeries_module.png",
     "audio": "",
   },
   {
     "title": "الأمراض\nالنفسية",
+    "moduleNameIdentifier": MedicalModule.mentalHealth,
     "image": "assets/images/mental_health.png",
     "route": Routes.mentalIllnessChoiceScreen,
     "cornerImagePath": "assets/images/mental_disorder_module.png",
     "audio": "",
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "السلوكيات\nالخاطئة",
+    "moduleNameIdentifier": MedicalModule.riskyBehaviors,
     "image": "assets/images/risk_behavior.png",
     "route": Routes.riskyBehaviorsDataEntryView,
-    "isActive": true,
+    "isProductionModule": true,
     "cornerImagePath": "assets/images/risky_behavior_module.png",
     "audio": "",
   },
   {
     "title": "الصحه\nالعامه",
+    "moduleNameIdentifier": MedicalModule.publicHealth,
     "image": "assets/images/heart_icon.png",
     "route": "/mental_issues",
+    "isProductionModule": false,
     "cornerImagePath": "assets/images/public_health_module.png",
     "audio": "",
   },
   {
     "title": "المتابعه الغذائية",
+    "moduleNameIdentifier": MedicalModule.smartNutritionalAnalyzer,
     "image": "assets/images/chemical_medicine.png",
     "route": Routes.userInfoNutrationDataEntry,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "النشاط الرياضي",
+    "moduleNameIdentifier": MedicalModule.sportsActivity,
     "image": "assets/images/physical_exercise.png",
     "route": Routes.userPhysicalActivatyInfoDataEntry,
-    "isActive": true,
+    "isProductionModule": true,
   },
   {
     "title": "الفيتامينات و\nالمكملات الغذائية",
+    "moduleNameIdentifier": MedicalModule.supplements,
     "image": "assets/images/vitamin_module_icon.png",
     "route": Routes.supplementsDataEntry,
-    "isActive": true,
+    "isProductionModule": true,
     "audio": "",
   },
-  // {
-  //   "title": "المكملات\nالغذائية",
-  //   "image": "assets/images/chemical_medicine.png",
-  //   "route": "/mental_issues"
-  // },
 ];

@@ -3,20 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class CareAccessRequestsBanner extends StatelessWidget {
+class WhoCanAccessMyRecordNavCard extends StatelessWidget {
   final VoidCallback onTap;
-  final int pendingRequests;
 
-  const CareAccessRequestsBanner({
+  const WhoCanAccessMyRecordNavCard({
     super.key,
     required this.onTap,
-    required this.pendingRequests,
   });
 
   @override
   Widget build(BuildContext context) {
-    // if (pendingRequests == 0) return const SizedBox.shrink();
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -40,35 +36,26 @@ class CareAccessRequestsBanner extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Icon(
-                Icons.person_add_alt_1_outlined,
+                Icons.admin_panel_settings_outlined,
                 color: AppColorsManager.mainDarkBlue,
                 size: 20.sp,
               ),
             ),
             SizedBox(width: 12.w),
             // Texts
-            Text(
-              'عرض طلبات الوصول الخاص بي',
-              style: AppTextStyles.font14BlueWeight700.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-                fontSize: 14.sp,
-              ),
-            ),
-            const Spacer(),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFF4F2), // Light red/orange
-                borderRadius: BorderRadius.circular(20.r),
-              ),
+            Expanded(
               child: Text(
-                '$pendingRequests',
-                style: AppTextStyles.font14blackWeight400.copyWith(
-                  color: const Color(0xFFE53935), // Red
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.w700,
+                'الأشخاص المسموح لهم بالوصول إلى ملفي',
+                style: AppTextStyles.font14BlueWeight700.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                  fontSize: 14.sp,
                 ),
               ),
+            ),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: AppColorsManager.mainDarkBlue.withOpacity(0.5),
+              size: 16.sp,
             ),
           ],
         ),

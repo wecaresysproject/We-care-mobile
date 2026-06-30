@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/medical_illnesses/data/models/mental_illness_umbrella_model.dart';
 
 import '../../../generated/l10n.dart';
@@ -50,25 +51,29 @@ extension BuildContextOperations on BuildContext {
         this,
       ).pop(result);
 
-  /// Show a standard SnackBar
   void showSnackBar({
     required String message,
     Duration duration = const Duration(seconds: 4),
-    Color backgroundColor = Colors.black,
+    Color backgroundColor = AppColorsManager.doneColor,
+    required BuildContext context,
   }) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: Theme.of(this).textTheme.headlineMedium,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: backgroundColor,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.r),
+        ),
       ),
-      duration: duration,
-      backgroundColor: backgroundColor,
-      dismissDirection: DismissDirection.horizontal,
     );
-
-    ScaffoldMessenger.of(this)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(snackBar);
   }
 }
 
@@ -277,6 +282,18 @@ extension ArabicTimeFormat on DateTime {
         .replaceAll('PM', 'م')
         .replaceAll('ص', 'ص')
         .replaceAll('م', 'م'); // extra safety
+  }
+}
+
+//* change date from 2026-06-18T14:55:15Z To   18 يونيو 2026
+extension DateFormattingExtension on String {
+  String toArabicFormattedDate() {
+    try {
+      final dateTime = DateTime.parse(this).toLocal();
+      return DateFormat('d MMMM yyyy', 'ar').format(dateTime);
+    } catch (e) {
+      return this;
+    }
   }
 }
 

@@ -1,14 +1,15 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/features/otp/data/models/resend_otp_request_body.dart';
 import 'package:we_care/features/otp/data/models/verify_otp_request_body_model.dart';
 import 'package:we_care/features/otp/data/repo/otp_repository.dart';
 
-import '../../../core/Database/cach_helper.dart';
-import '../../../core/global/Helpers/app_enums.dart';
-import '../../../core/global/app_strings.dart';
-import '../../../core/networking/auth_api_constants.dart';
-import 'otp_state.dart';
+part './otp_state.dart';
 
 class OtpCubit extends Cubit<OtpState> {
   final OtpRepository otpRepository;

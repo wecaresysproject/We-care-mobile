@@ -12,7 +12,6 @@ import '../../../../../core/global/theming/app_text_styles.dart';
 import '../../../../../core/global/theming/color_manager.dart';
 import '../../../../../core/routing/routes.dart';
 import '../../../logic/otp_cubit.dart';
-import '../../../logic/otp_state.dart';
 
 class PinCodeFieldsWidget extends StatelessWidget {
   const PinCodeFieldsWidget({

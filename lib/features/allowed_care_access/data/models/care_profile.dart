@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 
 enum PermissionType {
   fullAccess,
@@ -11,8 +12,8 @@ class CareProfile extends Equatable {
   final String name;
   final String personalPhotoUrl;
   final String relation;
-  final PermissionType permissionType;
   final String addedAtLabel;
+  final List<ModulePermissionDto> modulePermissions;
 
   const CareProfile({
     required this.id,
@@ -20,8 +21,8 @@ class CareProfile extends Equatable {
     required this.name,
     required this.personalPhotoUrl,
     required this.relation,
-    required this.permissionType,
     required this.addedAtLabel,
+    required this.modulePermissions,
   });
 
   @override
@@ -31,7 +32,7 @@ class CareProfile extends Equatable {
         patientId,
         personalPhotoUrl,
         relation,
-        permissionType,
         addedAtLabel,
+        modulePermissions,
       ];
 }

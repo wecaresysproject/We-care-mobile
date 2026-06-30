@@ -28,10 +28,9 @@ class S {
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name =
-        (locale.countryCode?.isEmpty ?? false)
-            ? locale.languageCode
-            : locale.toString();
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -540,14 +539,9 @@ class S {
     );
   }
 
-  /// `Advanced Search`
+  /// `Search`
   String get search_text {
-    return Intl.message(
-      'Advanced Search',
-      name: 'search_text',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Search', name: 'search_text', desc: '', args: []);
   }
 
   /// `Drug Interactions`
@@ -723,6 +717,16 @@ class S {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message('Yes', name: 'yes', desc: '', args: []);
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message('No', name: 'no', desc: '', args: []);
   }
 }
 

@@ -17,20 +17,20 @@ class CareAccessRequestCard extends StatelessWidget {
     this.onQuickApprove,
   });
 
-  String _getPermissionText(String? permission) {
-    if (permission == 'FULL_ACCESS') {
-      return 'بصلاحية تحكم كامل';
-    } else if (permission == 'VIEW_ONLY') {
-      return 'بصلاحية عرض فقط';
-    }
-    return 'بصلاحية غير معروفة';
-  }
+  // String _getPermissionText(String? permission) {
+  //   if (permission == 'FULL_ACCESS') {
+  //     return 'بصلاحية تحكم كامل';
+  //   } else if (permission == 'VIEW_ONLY') {
+  //     return 'بصلاحية عرض فقط';
+  //   }
+  //   return 'بصلاحية غير معروفة';
+  // }
 
   @override
   Widget build(BuildContext context) {
     final requesterName = request.requesterName ?? 'مستخدم مجهول';
-    final permissionText = _getPermissionText(request.requestedPermission);
-    final description = '$requesterName يطلب الوصول لملفك $permissionText.';
+    // final permissionText = _getPermissionText(request.requestedPermission);
+    final description = '$requesterName يطلب الوصول لملفك الطبي.';
     final timeAgo = formatTimeAgo(request.timeAgo ?? request.requestedAt);
 
     return Column(

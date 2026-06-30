@@ -110,9 +110,6 @@ class CareAccessRequestsScreen extends StatelessWidget {
                                             await cubit
                                                 .approveCareAccessRequest(
                                               request.requestId,
-                                              permission:
-                                                  request.requestedPermission ??
-                                                      'VIEW_ONLY',
                                             );
                                           },
                                         ),

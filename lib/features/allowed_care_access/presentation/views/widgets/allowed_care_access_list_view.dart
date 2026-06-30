@@ -36,7 +36,7 @@ class AllowedCareAccessListView extends StatelessWidget {
         if (profiles.isEmpty) {
           return const Center(
             child: Text(
-              'لا يوجد أشخاص مضافين حالياً',
+              'لا يوجد أشخاص مضافون حالياً',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 16,
@@ -56,10 +56,7 @@ class AllowedCareAccessListView extends StatelessWidget {
                   accessId: currentProfile.id,
                   patientId: currentProfile.patientId,
                   patientName: currentProfile.name,
-                  permission:
-                      currentProfile.permissionType == PermissionType.fullAccess
-                          ? CarePermission.fullAccess
-                          : CarePermission.viewOnly,
+                  modulePermissions: currentProfile.modulePermissions,
                 );
                 context.pushNamedAndRemoveUntil(
                   Routes.bottomNavBar,

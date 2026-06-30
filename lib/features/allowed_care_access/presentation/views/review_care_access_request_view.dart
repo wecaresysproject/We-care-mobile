@@ -6,16 +6,18 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_state.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/info_banner.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/widgets/modules_permissions_summary_card.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/permission_explanation_card.dart';
-import 'package:we_care/features/allowed_care_access/presentation/views/widgets/permission_selection_section.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/request_details_card.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/widgets/review_request_profile_header.dart';
 
 class ReviewCareAccessRequestScreen extends StatefulWidget {
   final String requestId;
+
   const ReviewCareAccessRequestScreen({super.key, required this.requestId});
 
   @override
@@ -95,9 +97,7 @@ class _ReviewCareAccessRequestScreenState
                           verticalSpacing(24),
                           // Details Card
                           RequestDetailsCard(
-                            requestedPermission: details.requestedPermission,
                             relation: details.relation,
-                            requestedAt: details.requestedAt,
                           ),
                           verticalSpacing(24),
                           // Permission Explanation Card
@@ -107,7 +107,19 @@ class _ReviewCareAccessRequestScreenState
 
                           verticalSpacing(24),
                           // Permission Selection Section (reuse existing widget)
-                          const PermissionSelectionSection(),
+                          // const PermissionSelectionSection(),
+                          ModulesPermissionsSummaryCard(
+                            onTap: () {
+                              final cubit =
+                                  context.read<AccessManagementCubit>();
+                              cubit.initDraftPermissions();
+
+                              context.pushNamed(
+                                Routes.modulePermissionsView,
+                                arguments: cubit,
+                              );
+                            },
+                          ),
                           verticalSpacing(24),
                           // Information Banner
                           const InfoBanner(

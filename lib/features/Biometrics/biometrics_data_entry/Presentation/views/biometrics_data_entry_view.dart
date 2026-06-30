@@ -98,7 +98,7 @@ class BiometricsDataEntryView extends StatelessWidget {
                       ),
                       verticalSpacing(24),
                       Text(
-                        "ادخل ما تريد لإدخال\n رقم قياسه",
+                        "ادخال القياسات الحيوية",
                         style: AppTextStyles.font22MainBlueWeight700.copyWith(
                           color: Colors.black,
                           fontFamily: "Rubik",

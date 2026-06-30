@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/show_data_entry_types/Presentation/views/widgets/medical_categories_types_grid_view.dart';
 
@@ -37,6 +39,13 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasAccessBiometrics =
+        CareContextManager.hasModuleAccessForViewMedicalFilesCategory(
+            MedicalModule.vitalSigns);
+    final hasAccessBasicInfo =
+        CareContextManager.hasModuleAccessForViewMedicalFilesCategory(
+            MedicalModule.basicInformation);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -44,19 +53,25 @@ class BasicDataAndBiometricMeasurementsCategoriesView extends StatelessWidget {
           title: "القياسات الحيوية",
           imagePath: "assets/images/medical_tools_img.png",
           routeName: Routes.biometricsView,
-          isActive: true,
-          onTap: () async {
-            await context.pushNamed(Routes.biometricsView);
-          },
+          isProductionModule: true,
+          hasAccess: hasAccessBiometrics,
+          onTap: !hasAccessBiometrics
+              ? null
+              : () async {
+                  await context.pushNamed(Routes.biometricsView);
+                },
         ),
         MedicalCategoryItem(
           title: "البيانات الاساسية",
           imagePath: "assets/images/pin_edit_icon.png",
           routeName: Routes.essentialInfoView,
-          isActive: true,
-          onTap: () async {
-            await context.pushNamed(Routes.essentialInfoView);
-          },
+          isProductionModule: true,
+          hasAccess: hasAccessBasicInfo,
+          onTap: !hasAccessBasicInfo
+              ? null
+              : () async {
+                  await context.pushNamed(Routes.essentialInfoView);
+                },
         ),
       ],
     );

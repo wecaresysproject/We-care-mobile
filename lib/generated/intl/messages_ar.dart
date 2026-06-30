@@ -88,7 +88,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "medicalRecordManagement": MessageLookupByLibrary.simpleMessage(
-      "اختر ما تريد القيام به لإدارة سجلك الطبي.",
+      "اختر ما تريد القيام به لإدارة\nسجلك الطبي.",
     ),
     "medicalServiceProviders": MessageLookupByLibrary.simpleMessage(
       "مقدمي الخدمات الطبية",
@@ -104,6 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "medical_summary_cat2": MessageLookupByLibrary.simpleMessage("ملخص طبى"),
     "mobileNumber": MessageLookupByLibrary.simpleMessage("رقم الموبايل/الجوال"),
     "new_password": MessageLookupByLibrary.simpleMessage("كلمة السر الجديدة"),
+    "no": MessageLookupByLibrary.simpleMessage("لا"),
     "no_data_entered": MessageLookupByLibrary.simpleMessage(
       "لم يتم ادخال بيانات",
     ),
@@ -141,7 +142,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
     ),
-    "search_text": MessageLookupByLibrary.simpleMessage("بحث متقدم"),
+    "search_text": MessageLookupByLibrary.simpleMessage("بحث"),
     "send": MessageLookupByLibrary.simpleMessage("ارسال"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),
     "supportingEntities": MessageLookupByLibrary.simpleMessage(
@@ -166,5 +167,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "word_limit_exceeded": MessageLookupByLibrary.simpleMessage(
       "لقد تجاوزت الحد الادنى من 100 كلمة!",
     ),
+    "yes": MessageLookupByLibrary.simpleMessage("نعم"),
   };
 }
