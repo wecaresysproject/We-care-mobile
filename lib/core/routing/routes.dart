@@ -150,4 +150,7 @@ class Routes {
   static const careAccessRequestsView = '/careAccessRequestsView';
   static const reviewCareAccessRequestView = '/reviewCareAccessRequestView';
   static const modulePermissionsView = '/modulePermissionsView';
+  static const whoCanAccessMyRecordView = '/whoCanAccessMyRecordView';
+  static const whoCanAccessModulePermissionsView =
+      '/whoCanAccessModulePermissionsView';
 }

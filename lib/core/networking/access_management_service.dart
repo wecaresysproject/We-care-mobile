@@ -8,6 +8,8 @@ import 'package:we_care/features/allowed_care_access/data/models/create_care_acc
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
+import 'package:we_care/features/allowed_care_access/data/models/update_access_permissions_request.dart';
+import 'package:we_care/features/allowed_care_access/data/models/who_can_access_response.dart';
 
 part 'access_management_service.g.dart';
 
@@ -45,4 +47,17 @@ abstract class AccessManagementService {
   Future<dynamic> rejectCareAccessRequest(
     @Body() String requestId,
   );
+
+  @PUT('AccessManagement/update-access-permissions')
+  Future<dynamic> updateAccessPermissions(
+    @Body() UpdateAccessPermissionsRequest request,
+  );
+
+  @DELETE('AccessManagement/revoke-access')
+  Future<dynamic> revokeAccess(
+    @Query('accessId') String accessId,
+  );
+
+  @GET('AccessManagement/who-can-access')
+  Future<WhoCanAccessResponse> getWhoCanAccess();
 }

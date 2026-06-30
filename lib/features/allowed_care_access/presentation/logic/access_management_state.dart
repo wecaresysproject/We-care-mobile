@@ -4,8 +4,8 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/allowed_care_access/data/models/allowed_care_access_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/care_access_request_details_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
-import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
+import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 
 @immutable
 class AccessManagementState extends Equatable {

@@ -16,6 +16,9 @@ import 'package:we_care/features/allergy/allergy_services.dart';
 import 'package:we_care/features/allergy/allergy_view/logic/allergy_view_cubit.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_data_entry_repo.dart';
 import 'package:we_care/features/allergy/data/repos/allergy_view_repo.dart';
+import 'package:we_care/features/allowed_care_access/data/repositories/access_management_repository.dart';
+import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
+import 'package:we_care/features/allowed_care_access/presentation/logic/who_care_access/who_care_access_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/logic/cubit/chronic_disease_data_entry_cubit.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_services.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/logic/chronic_disease_view_cubit.dart';
@@ -123,8 +126,6 @@ import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_e
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 
-import '../../features/allowed_care_access/data/repositories/access_management_repository.dart';
-import '../../features/allowed_care_access/presentation/logic/access_management_cubit.dart';
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Data/Repostory/forget_password_repo.dart';
@@ -489,6 +490,11 @@ void setupAppCubits() {
   );
   getIt.registerFactory<AccessManagementCubit>(
     () => AccessManagementCubit(
+      getIt<AccessManagementRepository>(),
+    ),
+  );
+  getIt.registerFactory<WhoCareAccessCubit>(
+    () => WhoCareAccessCubit(
       getIt<AccessManagementRepository>(),
     ),
   );

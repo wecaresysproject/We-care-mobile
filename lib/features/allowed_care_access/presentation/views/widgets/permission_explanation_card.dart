@@ -133,9 +133,9 @@ class PermissionExplanationCard extends StatelessWidget {
 
                 bool isAllowed = cap.allowed;
                 if (modulePermissions.isNotEmpty) {
-                  if (index == 0)
+                  if (index == 0) {
                     isAllowed = isFullAccess;
-                  else if (index == 1)
+                  } else if (index == 1)
                     isAllowed = isViewOnly;
                   else if (index == 2) isAllowed = isPartial;
                 }

@@ -7,6 +7,8 @@ import 'package:we_care/features/allowed_care_access/data/models/care_access_req
 import 'package:we_care/features/allowed_care_access/data/models/create_care_access_request.dart';
 import 'package:we_care/features/allowed_care_access/data/models/incoming_care_access_requests_response.dart';
 import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
+import 'package:we_care/features/allowed_care_access/data/models/update_access_permissions_request.dart';
+import 'package:we_care/features/allowed_care_access/data/models/who_can_access_response.dart';
 
 class AccessManagementRepository {
   final AccessManagementService _accessManagementService;
@@ -85,6 +87,34 @@ class AccessManagementRepository {
       final response =
           await _accessManagementService.rejectCareAccessRequest(requestID);
       return ApiResult.success(response["message"]);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<WhoCanAccessResponse>> getWhoCanAccess() async {
+    try {
+      final response = await _accessManagementService.getWhoCanAccess();
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> updateAccessPermissions(
+      UpdateAccessPermissionsRequest request) async {
+    try {
+      final response = await _accessManagementService.updateAccessPermissions(request);
+      return ApiResult.success(response["message"] ?? "تم التحديث بنجاح");
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<String>> revokeAccess(String accessId) async {
+    try {
+      final response = await _accessManagementService.revokeAccess(accessId);
+      return ApiResult.success(response["message"] ?? "تم إلغاء الوصول بنجاح");
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

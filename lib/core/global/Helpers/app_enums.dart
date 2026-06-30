@@ -7,6 +7,11 @@ enum UserTypes {
   patient,
 }
 
+enum PermissionType {
+  FULL_ACCESS,
+  VIEW_ONLY,
+}
+
 enum UploadImageRequestStatus {
   initial,
   success,

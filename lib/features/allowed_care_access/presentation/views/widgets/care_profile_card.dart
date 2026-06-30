@@ -78,28 +78,36 @@ class CareProfileCard extends StatelessWidget {
                           ),
                         ),
                         horizontalSpacing(12),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              (profile.name).firstAndLastName,
-                              style: AppTextStyles.font14BlueWeight700.copyWith(
-                                fontSize: 16.sp,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                (profile.name).firstAndLastName,
+                                style:
+                                    AppTextStyles.font14BlueWeight700.copyWith(
+                                  fontSize: 16.sp,
+                                  color: AppColorsManager.textColor,
+                                ),
+                                textAlign: TextAlign.right,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              textAlign: TextAlign.right,
-                            ),
-                            verticalSpacing(4),
-                            Text(
-                              profile.relation,
-                              style:
-                                  AppTextStyles.font14blackWeight400.copyWith(
-                                color: Colors.grey.shade600,
+                              verticalSpacing(4),
+                              Text(
+                                profile.relation,
+                                style:
+                                    AppTextStyles.font14blackWeight400.copyWith(
+                                  color: Colors.grey.shade600,
+                                ),
+                                textAlign: TextAlign.right,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        Spacer(),
+                        horizontalSpacing(12),
                         ElevatedButton(
                           onPressed: onEnterPressed,
                           style: ElevatedButton.styleFrom(

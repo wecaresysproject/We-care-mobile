@@ -8,12 +8,16 @@ import 'package:we_care/features/allergy/allergy_data_entry_view/Presentation/vi
 import 'package:we_care/features/allergy/allergy_view/views/allergy_details_view.dart';
 import 'package:we_care/features/allergy/allergy_view/views/allergy_view.dart';
 import 'package:we_care/features/allergy/data/models/allergy_details_data_model.dart';
+import 'package:we_care/features/allowed_care_access/data/models/module_permission_dto.dart';
 import 'package:we_care/features/allowed_care_access/presentation/logic/access_management_cubit.dart';
+import 'package:we_care/features/allowed_care_access/presentation/logic/who_care_access/who_care_access_cubit.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/allowed_care_access_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/care_access_requests_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/join_care_request_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/module_permissions_view.dart';
 import 'package:we_care/features/allowed_care_access/presentation/views/review_care_access_request_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/who_can_access_module_permissions_view.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/who_can_access_my_record_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/add_new_medicine_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_data_entry/Presentation/views/chronic_disease_data_entry_view.dart';
 import 'package:we_care/features/chronic_disease/chronic_disease_view/views/chronic_disease_details_view.dart';
@@ -818,6 +822,34 @@ class AppRouter {
           builder: (context) => BlocProvider<AccessManagementCubit>.value(
             value: getIt<AccessManagementCubit>(),
             child: ReviewCareAccessRequestScreen(requestId: requestId),
+          ),
+        );
+      case Routes.whoCanAccessMyRecordView:
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<WhoCareAccessCubit>(
+            create: (context) => getIt<WhoCareAccessCubit>()..getWhoCanAccess(),
+            child: const WhoCanAccessMyRecordView(),
+          ),
+        );
+      case Routes.whoCanAccessModulePermissionsView:
+        final argumentsMap = arguments as Map<String, dynamic>?;
+        final requestId = argumentsMap?['requestId'] as String? ?? '';
+        final permissions =
+            argumentsMap?['modulePermissions'] as List<ModulePermissionDto>? ??
+                [];
+
+        return MaterialPageRoute(
+          builder: (context) => BlocProvider<WhoCareAccessCubit>(
+            create: (context) {
+              final Map<String, ModulePermissionDto> permissionsMap = {};
+              for (var p in permissions) {
+                permissionsMap[p.moduleName] = p;
+              }
+              return getIt<WhoCareAccessCubit>()
+                ..initPermissions(
+                    requestId: requestId, permissions: permissionsMap);
+            },
+            child: const WhoCanAccessModulePermissionsView(),
           ),
         );
       default:

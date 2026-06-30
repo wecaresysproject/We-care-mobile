@@ -4,7 +4,14 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
 class AllowedCareAccessHeader extends StatelessWidget {
-  const AllowedCareAccessHeader({super.key});
+  final String title;
+  final String subtitle;
+
+  const AllowedCareAccessHeader({
+    super.key,
+    required this.title,
+    required this.subtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,23 +25,25 @@ class AllowedCareAccessHeader extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'قائمة المسموح بالرعاية',
-              style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                color: AppColorsManager.mainDarkBlue,
-                fontSize: 16.sp,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.font22MainBlueWeight700.copyWith(
+                  color: AppColorsManager.mainDarkBlue,
+                  fontSize: 16.sp,
+                ),
               ),
-            ),
-            Text(
-              'الوصول المأذون لملفاتهم الطبية',
-              style: AppTextStyles.font14blackWeight400.copyWith(
-                color: Colors.grey.shade600,
+              Text(
+                subtitle,
+                style: AppTextStyles.font14blackWeight400.copyWith(
+                  color: Colors.grey.shade600,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
