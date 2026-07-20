@@ -98,10 +98,7 @@ class ComplaintCardItem extends StatelessWidget {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              item.mainSymptoms.isNotEmpty
-                                  ? item.mainSymptoms.first
-                                      .sypmptomsComplaintIssue
-                                  : context.translate.no_data_entered,
+                              getComplaintText(item, context),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                               style:
@@ -135,5 +132,31 @@ class ComplaintCardItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getComplaintText(
+    DetailedComplaintModel item,
+    BuildContext context,
+  ) {
+    final symptomIssue = item.mainSymptoms.isNotEmpty
+        ? item.mainSymptoms.first.sypmptomsComplaintIssue
+        : '';
+
+    if (_hasValidValue(symptomIssue, context)) {
+      return symptomIssue;
+    }
+
+    if (_hasValidValue(item.additionalMedicalComplains, context)) {
+      return item.additionalMedicalComplains ??
+          context.translate.no_data_entered;
+    }
+
+    return context.translate.no_data_entered;
+  }
+
+  bool _hasValidValue(String? value, BuildContext context) {
+    return value != null &&
+        value.trim().isNotEmpty &&
+        value != context.translate.no_data_entered;
   }
 }

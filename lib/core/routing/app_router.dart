@@ -134,6 +134,7 @@ import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_m
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/x_ray_data_entry_view.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/x_ray_view.dart';
 
+import '../../features/change_password/Presentation/views/change_password_view.dart';
 import '../../features/create_new_password/Presentation/views/create_new_password_view.dart';
 import '../../features/forget_password/Presentation/views/forget_password_view.dart';
 import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_view.dart';
@@ -188,6 +189,10 @@ class AppRouter {
           builder: (context) => CreateNewPasswordView(
             phoneNumber: arguments?[AppStrings.phoneNumberArgumentKey] ?? "+20",
           ),
+        );
+      case Routes.changePasswordView:
+        return MaterialPageRoute(
+          builder: (context) => const ChangePasswordView(),
         );
       case Routes.bottomNavBar:
         return MaterialPageRoute(

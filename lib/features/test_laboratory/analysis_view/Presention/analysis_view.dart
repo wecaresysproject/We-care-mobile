@@ -201,7 +201,7 @@ class MedicalAnalysisView extends StatelessWidget {
                 _buildDataColumn(
                   "الاسم",
                 ),
-                _buildDataColumn("الرمز"),
+                _buildDataColumn("الاسم(En)"),
                 _buildDataColumn("المعيار"),
                 _buildDataColumn("النتيجة"),
               ],

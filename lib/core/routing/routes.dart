@@ -23,6 +23,7 @@ class Routes {
 
   static const otpView = '/otpView';
   static const createNewPasswordView = '/createNewPasswordView';
+  static const changePasswordView = '/changePasswordView';
   static const xRayDataView = '/xRayDataView';
   static const surgeriesView = '/surgeriesView';
   static const surgeriesDataEntryView = '/surgeriesDataEntryView';

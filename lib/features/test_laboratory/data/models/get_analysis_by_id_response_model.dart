@@ -21,7 +21,7 @@ class AnalysisDetailedData {
   String? groupName;
   String? testNeedType;
   @JsonKey(name: 'symptomsForProcedure')
-  List<String>? symptomsRequiringIntervention;
+  String? symptomsRequiringIntervention;
   String? writtenReport;
 
   List<String> imageBase64;

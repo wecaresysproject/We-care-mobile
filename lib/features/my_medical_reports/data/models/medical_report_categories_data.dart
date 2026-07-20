@@ -434,6 +434,49 @@ final supplementsCategory = MedicalCategoryModel(
   ],
 );
 
+final riskyBehaviorsCategory = MedicalCategoryModel(
+  title: MedicalModule.riskyBehaviors.nameAr,
+  moduleNameIdentifier: MedicalModule.riskyBehaviors,
+  image: "assets/images/risk_behavior.png",
+  selectionType: MedicalSelectionType.filters,
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "القسم",
+          values: ["تدخين", "كحوليات", "مخدرات"],
+        ),
+      ],
+    ),
+  ],
+);
+
+final vaccinationsCategory = MedicalCategoryModel(
+  title: MedicalModule.vaccinations.nameAr,
+  moduleNameIdentifier: MedicalModule.vaccinations,
+  image: "assets/images/eye_dropper.png",
+  selectionType: MedicalSelectionType.filters,
+  filterSections: [
+    MedicalFilterSectionModel(
+      filters: [
+        MedicalFilterModel(
+          title: "السنة",
+          values: ["2026", "2025", "2024"],
+        ),
+      ],
+    ),
+  ],
+);
+
+// لا يوجد فلاتر أو خيارات فرعية لهذا الموديول — الاختيار بيتم فقط عن طريق
+// checkbox التصنيف نفسه (يتضمن الكل أو لا يتضمنه)، مفيش تفاصيل تانية للاختيار.
+final qualityOfLifeCategory = MedicalCategoryModel(
+  title: MedicalModule.qualityOfLife.nameAr,
+  moduleNameIdentifier: MedicalModule.qualityOfLife,
+  image: "assets/images/quality_of_life.png",
+  selectionType: MedicalSelectionType.selection,
+);
+
 final List<MedicalCategoryModel> categoriesView = [
   basicInfoCategory,
   vitalSignsCategory,
@@ -452,4 +495,7 @@ final List<MedicalCategoryModel> categoriesView = [
   smartNutritionalAnalyzerCategory,
   sportsActivityCategory,
   supplementsCategory,
+  riskyBehaviorsCategory,
+  vaccinationsCategory,
+  qualityOfLifeCategory,
 ];

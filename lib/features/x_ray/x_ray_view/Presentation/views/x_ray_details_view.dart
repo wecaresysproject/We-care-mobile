@@ -141,16 +141,11 @@ class XRayDetailsView extends StatelessWidget {
                   ),
                   DetailsViewInfoTile(
                     title: "الأعراض",
-                    value: radiologyData.symptoms == null ||
-                            radiologyData.symptoms!.isEmpty ||
-                            radiologyData.symptoms!.first ==
+                    value: radiologyData.symptoms.isEmptyOrNull ||
+                            radiologyData.symptoms ==
                                 context.translate.no_data_entered
                         ? ""
-                        : radiologyData.symptoms!
-                            .asMap()
-                            .entries
-                            .map((e) => "${e.key + 1}. ${e.value}")
-                            .join("\n"),
+                        : radiologyData.symptoms!,
                     icon: 'assets/images/symptoms_icon.png',
                     isExpanded: true,
                   ),
@@ -230,15 +225,8 @@ Future<void> shareXRayDetails(
           .map((e) => "${e.key + 1}. ${e.value}")
           .join("\n");
 
-  final symptoms = radiologyData.symptoms == null ||
-          radiologyData.symptoms!.isEmpty ||
-          radiologyData.symptoms!.first == context.translate.no_data_entered
-      ? ""
-      : radiologyData.symptoms!
-          .asMap()
-          .entries
-          .map((e) => "${e.key + 1}. ${e.value}")
-          .join("\n");
+  final symptoms =
+      radiologyData.symptoms.isEmptyOrNull ? "" : radiologyData.symptoms;
 
   final shareContent = '''
 🩺 تفاصيل الأشعة

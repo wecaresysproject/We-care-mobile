@@ -28,6 +28,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
 
   final personalNotesController = TextEditingController();
   final reportTextController = TextEditingController();
+  final symptomsController = TextEditingController();
 
   Future<void> emitBodyPartsData() async {
     final response = await _xRayDataEntryRepo.getBodyPartsData();
@@ -147,27 +148,6 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
     );
   }
 
-  void updateSymptomsRequiringIntervention(String issue) {
-    if (issue.isEmpty) return;
-
-    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
-
-    // موجود؟ شيله .. مش موجود؟ ضيفه  (toggle)
-    if (symptoms.contains(issue)) {
-      symptoms.remove(issue);
-    } else {
-      symptoms.add(issue);
-    }
-
-    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
-  }
-
-  void removeSymptomRequiringIntervention(String issue) {
-    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
-    symptoms.remove(issue);
-    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
-  }
-
   void updateSelectedCountry(String? selectedCountry) {
     emit(
       state.copyWith(
@@ -266,7 +246,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyTypePurposes: state.selectedPuposes,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: state.symptomsRequiringIntervention,
+        cause: symptomsController.text,
         radiologyDoctor: state.selectedRadiologistDoctorName,
         hospital: state.selectedHospitalName,
         curedDoctor: state.selectedTreatedDoctor,
@@ -314,13 +294,13 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         selectedRadiologyCenter: editingRadiologyDetailsData.radiologyCenter,
         uploadedTestImages: editingRadiologyDetailsData.radiologyPhotos,
         uploadedTestReports: editingRadiologyDetailsData.reports,
-        symptomsRequiringIntervention: editingRadiologyDetailsData.symptoms,
         selectedBodyPartId: editingRadiologyDetailsData.bodyPartId,
         selectedCountryName: editingRadiologyDetailsData.country,
       ),
     );
     personalNotesController.text = editingRadiologyDetailsData.radiologyNote!;
     reportTextController.text = editingRadiologyDetailsData.writtenReport!;
+    symptomsController.text = editingRadiologyDetailsData.symptoms ?? "";
     validateRequiredFields();
     await _getRadiologyTypeByBodyPartId(
       editingRadiologyDetailsData.bodyPartId!,
@@ -477,10 +457,10 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
 
   Future<void> uploadXrayReportPicked({required String imagePath}) async {
     // 1) Check limit
-    if (state.uploadedTestImages.length >= 8) {
+    if (state.uploadedTestReports.length >= 8) {
       safeEmit(
         state.copyWith(
-          message: "لقد وصلت للحد الأقصى لرفع الصور (8)",
+          message: "لقد وصلت للحد الأقصى لرفع التقارير (8)",
           xRayReportRequestStatus: UploadReportRequestStatus.failure,
         ),
       );
@@ -583,7 +563,9 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         radiologyTypePurposes: state.selectedPuposes,
         xrayImages: state.uploadedTestImages,
         reportImages: state.uploadedTestReports,
-        cause: state.symptomsRequiringIntervention,
+        cause: symptomsController.text.isEmpty
+            ? localize.no_data_entered
+            : symptomsController.text,
         radiologyDoctor:
             state.selectedRadiologistDoctorName ?? localize.no_data_entered,
         hospital: state.selectedHospitalName,
@@ -626,6 +608,7 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
       "Iam closing all requests of xRayDataEntryCubit",
     );
     reportTextController.dispose(); // ✅ متنساش تعمل dispose
+    symptomsController.dispose();
 
     log('xxx: xray');
     return super.close();

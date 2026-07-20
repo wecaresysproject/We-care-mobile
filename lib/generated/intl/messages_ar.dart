@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "category_star_ratings": MessageLookupByLibrary.simpleMessage(
       "اعداد تقرير طبي",
     ),
+    "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة السر"),
     "conditionsOFUse": MessageLookupByLibrary.simpleMessage(
       "شروط الاستخدام الخاصة بنا",
     ),
@@ -52,6 +53,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
     "create_new_password": MessageLookupByLibrary.simpleMessage(
       "انشاء كلمة السر",
+    ),
+    "currentPassword": MessageLookupByLibrary.simpleMessage(
+      "كلمة السر الحالية",
     ),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "الطبيب / الاخصائي",
@@ -64,6 +68,9 @@ class MessageLookup extends MessageLookupByLibrary {
       " ليس لديك حساب ؟ ",
     ),
     "dummyUserName": MessageLookupByLibrary.simpleMessage("أحمد محمد"),
+    "enterCurrentPassword": MessageLookupByLibrary.simpleMessage(
+      "أدخل كلمة السر الحالية",
+    ),
     "enterFirstName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الأول"),
     "enterLastName": MessageLookupByLibrary.simpleMessage("اكتب اسمك الثاني"),
     "enterMobileNumber": MessageLookupByLibrary.simpleMessage("01234"),
@@ -110,6 +117,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "ok": MessageLookupByLibrary.simpleMessage("موافق"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة السر"),
+    "passwordChangedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "تم تغيير كلمة السر بنجاح",
+    ),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
       "يجب أن تحتوي كلمة المرور الخاصة بك",
     ),
@@ -142,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "أدخل رقم هاتفك وسنرسل لك رمز لإعادة تعيين كلمة المرور",
     ),
+    "save": MessageLookupByLibrary.simpleMessage("حفظ"),
     "search_text": MessageLookupByLibrary.simpleMessage("بحث"),
     "send": MessageLookupByLibrary.simpleMessage("ارسال"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("الإعدادات"),

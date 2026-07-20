@@ -74,13 +74,15 @@ class MedicalReportPdfGenerator {
           _buildAllergiesSection(reportData), // ✅
           _buildEyesModuleSection(reportData, eyesImages),
           _buildTeethModuleSection(reportData, teethImages),
-          // _buildVaccinationsSection(),
+          _buildVaccinationsSection(reportData), // ✅
+          _buildRiskyBehavioursSection(reportData), // ✅
           _buildMentalIlnessSection(
               reportData), // ✅ دن بالشكل اليدووي من غير صور
           ..._buildSmartNutrationAnalysisSection(reportData), // ✅
           pw.SizedBox(height: 10),
           _buildPhysicalActivitySection(reportData), // ✅
           _buildSupplementsAndVitaminsSection(reportData), // ✅
+          _buildQualityOfLifeSection(reportData), // ✅
         ],
       ),
     );
@@ -543,6 +545,268 @@ class MedicalReportPdfGenerator {
         ],
       ),
     );
+  }
+
+  // pw.TableHelper.fromTextArray بيدخل في تكرار تخطيط بلا نهاية على صفحة A3
+  // لما عدد الأعمدة (الشهور) يكبر مع نصوص عربية طويلة (TooManyPagesException)
+  // — نفس المشكلة اتحلت في سكاشن تانية في الملف ده بالتحويل لجدول يدوي
+  // (Row لكل صف بدل Table/TableHelper واحد)، فبنستخدم نفس الأسلوب هنا.
+  static const int _qualityOfLifeMonthsPerTable = 6;
+
+  pw.Widget _buildQualityOfLifeSection(MedicalReportResponseModel reportData) {
+    final qualityOfLife = reportData.data.monthlyHealthSurveySection;
+    final columns = qualityOfLife?.columns ?? [];
+    final rows = qualityOfLife?.rows ?? [];
+
+    if (columns.isEmpty || rows.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    final chunkStarts = [
+      for (var i = 0; i < columns.length; i += _qualityOfLifeMonthsPerTable) i,
+    ];
+
+    return pw.Container(
+      padding: sectionPadding,
+      margin: sectionMargin,
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('جودة الحياة'),
+          pw.SizedBox(height: 12),
+          for (final start in chunkStarts) ...[
+            if (start != chunkStarts.first) pw.SizedBox(height: 10),
+            ..._buildQualityOfLifeTable(
+              columns.sublist(
+                start,
+                (start + _qualityOfLifeMonthsPerTable > columns.length)
+                    ? columns.length
+                    : start + _qualityOfLifeMonthsPerTable,
+              ),
+              start,
+              rows,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  List<pw.Widget> _buildQualityOfLifeTable(
+    List<String> monthsChunk,
+    int chunkStartIndex,
+    List<QualityOfLifeQuestionRow> rows,
+  ) {
+    return [
+      _buildQualityOfLifeHeaderRow(monthsChunk),
+      ...rows.map((row) {
+        final answers = row.answersOverMonths ?? [];
+        final alignedAnswers = List.generate(
+          monthsChunk.length,
+          (i) {
+            final columnIndex = chunkStartIndex + i;
+            return columnIndex < answers.length ? answers[columnIndex] : null;
+          },
+        );
+        return pw.Column(
+          children: [
+            _buildQualityOfLifeRow(row.question, alignedAnswers),
+            pw.Divider(color: PdfColors.grey300, height: 1),
+          ],
+        );
+      }),
+    ];
+  }
+
+  pw.Widget _buildQualityOfLifeHeaderRow(List<String> monthsChunk) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.symmetric(vertical: 6),
+      decoration: pw.BoxDecoration(
+        color: PdfColors.grey100,
+        border: pw.Border.all(color: PdfColors.grey300, width: 0.5),
+      ),
+      child: pw.Row(
+        children: [
+          _buildHeaderCell('السؤال', flex: 6, fontSize: 12),
+          ...monthsChunk
+              .map((month) => _buildHeaderCell(month, flex: 2, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildQualityOfLifeRow(
+    String? question,
+    List<String?> alignedAnswers,
+  ) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(vertical: 4),
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildValueCell(_safeText(question), flex: 6, fontSize: 11),
+          ...alignedAnswers.map((answer) => _buildValueCell(
+                _safeText(answer, fallback: '--'),
+                flex: 2,
+                fontSize: 11,
+              )),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildVaccinationsSection(MedicalReportResponseModel reportData) {
+    final vaccines = reportData.data.vaccines;
+
+    if (vaccines == null || vaccines.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      padding: sectionPadding,
+      margin: sectionMargin,
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('التطعيمات'),
+          pw.SizedBox(height: 12),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'وصف عمل اللقاح',
+              'المرض المستهدف',
+              'الجرعة',
+              'فئة اللقاح',
+              'اسم اللقاح',
+              'الرمز',
+              'التاريخ',
+            ],
+            data: vaccines.map((vaccine) {
+              return [
+                _safeText(vaccine.vaccineActionDescription),
+                _safeText(vaccine.targetDisease),
+                _safeText(vaccine.dose),
+                _safeText(vaccine.vaccineCategory),
+                _safeText(vaccine.vaccineName),
+                _safeText(vaccine.code),
+                _safeText(vaccine.date),
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 11),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(
+              color: PdfColors.grey300,
+              width: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildRiskyBehavioursSection(
+      MedicalReportResponseModel reportData) {
+    final riskyBehaviours = reportData.data.riskyBehaviour;
+
+    if (riskyBehaviours == null || riskyBehaviours.isEmpty) {
+      return pw.SizedBox.shrink();
+    }
+
+    return pw.Container(
+      padding: sectionPadding,
+      margin: sectionMargin,
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        borderRadius: pw.BorderRadius.circular(16),
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          _buildSectionHeader('السلوكيات الخطرة'),
+          pw.SizedBox(height: 12),
+          pw.TableHelper.fromTextArray(
+            headers: [
+              'الحالة (متوقف/مستمر)',
+              'معدل الاستخدام',
+              'المدة',
+              'النوع',
+              'القسم',
+              'تاريخ البدء',
+            ],
+            data: riskyBehaviours.map((behaviour) {
+              return [
+                _safeText(behaviour.status, fallback: 'مستمر'),
+                _safeText(behaviour.usageRate),
+                _formatRiskyBehaviourDuration(
+                    behaviour.startDate, behaviour.status),
+                _safeText(behaviour.type),
+                _safeText(behaviour.section),
+                _safeText(behaviour.startDate),
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(
+              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 12,
+            ),
+            cellStyle: const pw.TextStyle(fontSize: 11),
+            headerDecoration: const pw.BoxDecoration(color: PdfColors.grey100),
+            cellAlignment: pw.Alignment.center,
+            border: pw.TableBorder.all(
+              color: PdfColors.grey300,
+              width: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// المدة = الحالة (تاريخ انتهاء) - تاريخ البدء، متطرحة بالسنين والشهور.
+  /// الحالة بترجع من الباك إند إما تاريخ انتهاء، أو null، أو نص "مستمر"
+  /// حرفي — التلاتة معناهم إن السلوك لسه مستمر.
+  String _formatRiskyBehaviourDuration(String startDate, String? status) {
+    if (status == null || status.trim() == 'مستمر') return 'مستمر';
+
+    final end = DateTime.tryParse(status);
+    if (end == null) return 'مستمر';
+
+    try {
+      final start = DateTime.parse(startDate);
+      if (end.isBefore(start)) return '--';
+
+      var years = end.year - start.year;
+      var months = end.month - start.month;
+      if (end.day < start.day) {
+        months -= 1;
+      }
+      if (months < 0) {
+        years -= 1;
+        months += 12;
+      }
+
+      final parts = <String>[
+        if (years > 0) '$years ${years == 1 ? "سنة" : "سنوات"}',
+        if (months > 0) '$months ${months == 1 ? "شهر" : "أشهر"}',
+      ];
+
+      return parts.isEmpty ? 'أقل من شهر' : parts.join(' و ');
+    } catch (_) {
+      return '--';
+    }
   }
 
   pw.Widget _buildPhysicalActivityRow(PhysicalActivityEntry entry) {

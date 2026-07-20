@@ -67,6 +67,15 @@ class MedicalReportSelections {
   @JsonKey(name: 'mentalDiseases')
   final MentalDiseasesSelectionRequestBody? mentalDiseases;
 
+  @JsonKey(name: 'monthlyHealthSurveySection')
+  final QualityOfLifeSelectionRequestBody? qualityOfLife;
+
+  @JsonKey(name: 'riskyBehaviourSection')
+  final RiskyBehavioursSelectionRequestBody? riskyBehaviours;
+
+  @JsonKey(name: 'vaccine')
+  final VaccinationsSelectionRequestBody? vaccinations;
+
   MedicalReportSelections({
     this.basicInformation,
     this.medications,
@@ -85,6 +94,9 @@ class MedicalReportSelections {
     this.supplements,
     this.sportsActivity,
     this.mentalDiseases,
+    this.qualityOfLife,
+    this.riskyBehaviours,
+    this.vaccinations,
   });
 
   factory MedicalReportSelections.fromJson(Map<String, dynamic> json) =>
@@ -170,6 +182,58 @@ class SmartNutritionalAnalyzerSelectionRequestBody {
 
   Map<String, dynamic> toJson() =>
       _$SmartNutritionalAnalyzerSelectionRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class QualityOfLifeSelectionRequestBody {
+  final bool getAll;
+
+  QualityOfLifeSelectionRequestBody({
+    required this.getAll,
+  });
+
+  factory QualityOfLifeSelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$QualityOfLifeSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$QualityOfLifeSelectionRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class RiskyBehavioursSelectionRequestBody {
+  final bool getAll;
+  final List<String> section;
+
+  RiskyBehavioursSelectionRequestBody({
+    required this.getAll,
+    required this.section,
+  });
+
+  factory RiskyBehavioursSelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$RiskyBehavioursSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$RiskyBehavioursSelectionRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class VaccinationsSelectionRequestBody {
+  final bool getAll;
+  final List<String> years;
+
+  VaccinationsSelectionRequestBody({
+    required this.getAll,
+    required this.years,
+  });
+
+  factory VaccinationsSelectionRequestBody.fromJson(
+          Map<String, dynamic> json) =>
+      _$VaccinationsSelectionRequestBodyFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$VaccinationsSelectionRequestBodyToJson(this);
 }
 
 @JsonSerializable()

@@ -42,6 +42,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "category_star_ratings": MessageLookupByLibrary.simpleMessage(
       "Medical Report Preparation",
     ),
+    "changePassword": MessageLookupByLibrary.simpleMessage("Change Password"),
     "choose_X_ray_body_part": MessageLookupByLibrary.simpleMessage(
       "Choose X-Ray Body Part",
     ),
@@ -56,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "create_new_password": MessageLookupByLibrary.simpleMessage(
       "Create a New Password",
     ),
+    "currentPassword": MessageLookupByLibrary.simpleMessage("Current Password"),
     "doctorSpecialist": MessageLookupByLibrary.simpleMessage(
       "Doctor / Specialist",
     ),
@@ -67,6 +69,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Don\'t have an account ? ",
     ),
     "dummyUserName": MessageLookupByLibrary.simpleMessage("Ahmed Mohamed"),
+    "enterCurrentPassword": MessageLookupByLibrary.simpleMessage(
+      "Enter Current Password",
+    ),
     "enterFirstName": MessageLookupByLibrary.simpleMessage(
       "Enter Your First Name",
     ),
@@ -119,6 +124,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "no_data_entered": MessageLookupByLibrary.simpleMessage("No data"),
     "ok": MessageLookupByLibrary.simpleMessage("Accept"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
+    "passwordChangedSuccessfully": MessageLookupByLibrary.simpleMessage(
+      "Password changed successfully",
+    ),
     "passwordHint": MessageLookupByLibrary.simpleMessage(
       "Your password must contain",
     ),
@@ -156,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "reset_password_subtitle": MessageLookupByLibrary.simpleMessage(
       "Enter your phone number, and we will send you a code to reset your password.",
     ),
+    "save": MessageLookupByLibrary.simpleMessage("Save"),
     "search_text": MessageLookupByLibrary.simpleMessage("Search"),
     "send": MessageLookupByLibrary.simpleMessage("Send"),
     "settingsTab": MessageLookupByLibrary.simpleMessage("Settings"),

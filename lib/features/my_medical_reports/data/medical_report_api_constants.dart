@@ -28,6 +28,9 @@ class MedicalReportApiConstants {
       'MedicalReports/physical-activity/options';
   static const String getMentalDiseasesFilters =
       'MedicalReports/MentalDiseases/filters';
+  static const String getVaccinationsFilters = 'MedicalReports/Vaccine/filters';
+  static const String getRiskyBehavioursFilters =
+      'MedicalReports/RiskyBehaviour/filters';
   static const String uploadReport = 'MedicalReports/upload-report';
   static const String getPdfDates = 'MedicalReports/pdf/dates';
   static const String getSpecificPdf = 'MedicalReports/pdf';

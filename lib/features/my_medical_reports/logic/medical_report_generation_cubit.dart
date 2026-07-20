@@ -4,6 +4,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_filter_response_model.dart';
@@ -313,6 +314,45 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
     );
   }
 
+  void updateVaccinationsSelection({
+    bool? getAll,
+    List<String>? selectedYears,
+  }) {
+    emit(
+      state.copyWith(
+        vaccinationsGetAll: getAll,
+        vaccinationsSelectedYears: selectedYears,
+      ),
+    );
+    AppLogger.info(
+        "[التطعيمات] getAll: ${state.vaccinationsGetAll} | السنة: ${state.vaccinationsSelectedYears}");
+  }
+
+  void updateRiskyBehavioursSelection({
+    bool? getAll,
+    List<String>? selectedTypes,
+  }) {
+    emit(
+      state.copyWith(
+        riskyBehavioursGetAll: getAll,
+        riskyBehavioursSelectedTypes: selectedTypes,
+      ),
+    );
+    AppLogger.info(
+        "[السلوكيات الخطرة] getAll: ${state.riskyBehavioursGetAll} | النوع: ${state.riskyBehavioursSelectedTypes}");
+  }
+
+  /// جودة الحياة: مفيش فلاتر — بس مفعّل / مش مفعّل (checkbox التصنيف).
+  void updateQualityOfLifeSelection({bool? getAll}) {
+    emit(
+      state.copyWith(
+        qualityOfLifeGetAll: getAll,
+      ),
+    );
+    AppLogger.info(
+        "[جودة الحياة] getAll (active): ${state.qualityOfLifeGetAll}");
+  }
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
@@ -414,6 +454,17 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
           mentalIllnessTypes: state.mentalDiseasesSelectedTypes,
           psychologicalEmergencies: state.mentalDiseasesSelectedMethods,
         ),
+        qualityOfLife: QualityOfLifeSelectionRequestBody(
+          getAll: state.qualityOfLifeGetAll,
+        ),
+        riskyBehaviours: RiskyBehavioursSelectionRequestBody(
+          getAll: state.riskyBehavioursGetAll,
+          section: state.riskyBehavioursSelectedTypes,
+        ),
+        vaccinations: VaccinationsSelectionRequestBody(
+          getAll: state.vaccinationsGetAll,
+          years: state.vaccinationsSelectedYears,
+        ),
       ),
     );
 
@@ -452,107 +503,39 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       return;
     }
 
-    final Map<String, RequestStatus> updatedStatuses =
-        Map.from(state.categoryFiltersStatus);
-    updatedStatuses[categoryTitle] = RequestStatus.loading;
-    emit(state.copyWith(categoryFiltersStatus: updatedStatuses));
+    // نحوّل عنوان التصنيف لـ enum (مصدر واحد للحقيقة) بدل مقارنة نصوص ثابتة،
+    // وبنحدد دالة الـ API المناسبة. لو مفيش موديول أو مفيش API ليه → null.
+    final module = MedicalModuleExtension.fromString(categoryTitle);
+    final request = module == null
+        ? null
+        : _filtersRequestForModule(module, language, userType);
 
-    ApiResult<MedicalReportFilterResponseModel>? result;
-
-    // Call relevant API based on category
-    if (categoryTitle == "البيانات الاساسية") {
-      result = await _medicalReportRepo.getPersonalDataFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الأدوية") {
-      result = await _medicalReportRepo.getMedicinesFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "القياسات الحيوية") {
-      result = await _medicalReportRepo.getVitalSignsFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الامراض المزمنه") {
-      result = await _medicalReportRepo.getChronicDiseasesFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الشكاوى الطارئة") {
-      result = await _medicalReportRepo.getUrgentComplaintsFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الأشعة") {
-      result = await _medicalReportRepo.getRadiologyFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "التحاليل الطبية") {
-      result = await _medicalReportRepo.getMedicalTestsFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "روشتة الأطباء") {
-      result = await _medicalReportRepo.getPrescriptionsFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "العمليات الجراحية") {
-      result = await _medicalReportRepo.getSurgeriesFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الأمراض الوراثية") {
-      result = await _medicalReportRepo.getGeneticDiseasesFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الحساسية") {
-      result = await _medicalReportRepo.getAllergyFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "العيون") {
-      result = await _medicalReportRepo.getEyesFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الأسنان") {
-      result = await _medicalReportRepo.getTeethFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "المحلل الغذائي الذكي") {
-      result = await _medicalReportRepo.getSmartNutritionFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "المكملات الغذائية") {
-      result = await _medicalReportRepo.getSupplementsFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "النشاط الرياضي") {
-      result = await _medicalReportRepo.getPhysicalActivityFilters(
-        language,
-        userType,
-      );
-    } else if (categoryTitle == "الأمراض النفسية") {
-      result = await _medicalReportRepo.getMentalDiseasesFilters(
-        language,
-        userType,
-      );
-    } else {
-      // Placeholder for other categories API calls
-      // For now we will use dummy success for demonstration if requested
+    // مفيش API لهذا التصنيف — نوقف الـ loading بدل ما يفضل معلّق للأبد
+    if (request == null) {
+      AppLogger.warning(
+          "[FILTERS] '$categoryTitle' (module: $module) → مفيش API فلاتر، هيعتمد على الـ checkbox بس");
+      _updateCategoryStatus(categoryTitle, RequestStatus.success);
       return;
     }
 
+    AppLogger.debug(
+        "[FILTERS] جاري جلب فلاتر '$categoryTitle' (module: $module)...");
+    _updateCategoryStatus(categoryTitle, RequestStatus.loading);
+
+    final result = await request;
+
     result.when(
       success: (data) {
+        // نطبع كل قسم وفلتر بقيمه — عشان نعرف المفاتيح المتوقعة في المزامنة
+        for (final section in data.filterSections ?? []) {
+          for (final filter in section.filters) {
+            AppLogger.info(
+                "[FILTERS] '$categoryTitle' → فلتر '${filter.title}' | القيم: ${filter.values}");
+          }
+        }
+        AppLogger.info(
+            "[FILTERS] ✅ '$categoryTitle' اتحمّلت | selectionType: ${data.selectionType}");
+
         final Map<String, MedicalReportFilterResponseModel> updatedFilters =
             Map.from(state.categoryFilters);
         updatedFilters[categoryTitle] = data;
@@ -567,15 +550,85 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         ));
       },
       failure: (error) {
-        final Map<String, RequestStatus> finalStatuses =
-            Map.from(state.categoryFiltersStatus);
-        finalStatuses[categoryTitle] = RequestStatus.failure;
-
-        emit(state.copyWith(
-          categoryFiltersStatus: finalStatuses,
+        AppLogger.error(
+            "[FILTERS] ❌ فشل تحميل فلاتر '$categoryTitle': ${error.errors.firstOrNull}");
+        _updateCategoryStatus(
+          categoryTitle,
+          RequestStatus.failure,
           message: error.errors.firstOrNull ?? 'An error occurred',
-        ));
+        );
       },
     );
+  }
+
+  /// يرجّع دالة جلب الفلاتر المناسبة للموديول، أو null لو مفيش API ليه.
+  /// الربط بيتم عن طريق الـ enum مش نصوص ثابتة، فأي تغيير في مسمّى الموديول
+  /// بيتبع تلقائيًا من غير ما يكسر المطابقة.
+  Future<ApiResult<MedicalReportFilterResponseModel>>? _filtersRequestForModule(
+    MedicalModule module,
+    String language,
+    String userType,
+  ) {
+    switch (module) {
+      case MedicalModule.basicInformation:
+        return _medicalReportRepo.getPersonalDataFilters(language, userType);
+      case MedicalModule.medications:
+        return _medicalReportRepo.getMedicinesFilters(language, userType);
+      case MedicalModule.vitalSigns:
+        return _medicalReportRepo.getVitalSignsFilters(language, userType);
+      case MedicalModule.chronicDiseases:
+        return _medicalReportRepo.getChronicDiseasesFilters(language, userType);
+      case MedicalModule.urgentComplaints:
+        return _medicalReportRepo.getUrgentComplaintsFilters(
+            language, userType);
+      case MedicalModule.radiology:
+        return _medicalReportRepo.getRadiologyFilters(language, userType);
+      case MedicalModule.medicalTests:
+        return _medicalReportRepo.getMedicalTestsFilters(language, userType);
+      case MedicalModule.doctorsPrescriptions:
+        return _medicalReportRepo.getPrescriptionsFilters(language, userType);
+      case MedicalModule.surgeries:
+        return _medicalReportRepo.getSurgeriesFilters(language, userType);
+      case MedicalModule.geneticDiseases:
+        return _medicalReportRepo.getGeneticDiseasesFilters(language, userType);
+      case MedicalModule.allergies:
+        return _medicalReportRepo.getAllergyFilters(language, userType);
+      case MedicalModule.eyes:
+        return _medicalReportRepo.getEyesFilters(language, userType);
+      case MedicalModule.dental:
+        return _medicalReportRepo.getTeethFilters(language, userType);
+      case MedicalModule.smartNutritionalAnalyzer:
+        return _medicalReportRepo.getSmartNutritionFilters(language, userType);
+      case MedicalModule.supplements:
+        return _medicalReportRepo.getSupplementsFilters(language, userType);
+      case MedicalModule.sportsActivity:
+        return _medicalReportRepo.getPhysicalActivityFilters(
+            language, userType);
+      case MedicalModule.mentalHealth:
+        return _medicalReportRepo.getMentalDiseasesFilters(language, userType);
+      case MedicalModule.vaccinations:
+        return _medicalReportRepo.getVaccinationsFilters(language, userType);
+      case MedicalModule.riskyBehaviors:
+        return _medicalReportRepo.getRiskyBehavioursFilters(
+            language, userType);
+      default:
+        // موديولات من غير API فلاتر (زي جودة الحياة — checkbox بس)
+        return null;
+    }
+  }
+
+  /// helper لتحديث حالة تصنيف واحد (loading/success/failure) من غير تكرار.
+  void _updateCategoryStatus(
+    String categoryTitle,
+    RequestStatus status, {
+    String? message,
+  }) {
+    final Map<String, RequestStatus> updatedStatuses =
+        Map.from(state.categoryFiltersStatus);
+    updatedStatuses[categoryTitle] = status;
+    emit(state.copyWith(
+      categoryFiltersStatus: updatedStatuses,
+      message: message,
+    ));
   }
 }

@@ -11,7 +11,6 @@ import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/syptoms_requiring_intervevention_selectior_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/x_ray_image_upload_section_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/x_ray_purposes_multi_select_widget.dart';
 import 'package:we_care/features/x_ray/x_ray_data_entry/Presentation/views/widgets/xray_report_section_widget.dart';
@@ -106,7 +105,17 @@ class _XRayDataEntryFormFieldsState extends State<XRayDataEntryFormFields> {
             verticalSpacing(16),
 
             // //! الأعراض المستدعية للاجراء"
-            SymptomsRequiringInterventionSelector(),
+            Text(
+              "الأعراض المستدعية للإجراء",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            WordLimitTextField(
+              hintText: "اكتب الأعراض",
+              controller: context
+                  .read<XRayDataEntryCubit>()
+                  .symptomsController,
+            ),
 
             verticalSpacing(16),
 

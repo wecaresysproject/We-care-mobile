@@ -60,7 +60,10 @@ class _PrescriptionDataEntryFormFieldsState
 
               UserSelectionContainer(
                 allowManualEntry: true,
-                containerBorderColor: state.doctorNameSelection == null
+                // اسم الطبيب واسم المستشفى/العيادة: يكفي إدخال واحد منهم،
+                // فالبوردر التحذيري بيتشال من الاتنين لو أي واحد فيهم اتملى
+                containerBorderColor: state.doctorNameSelection == null &&
+                        state.selectedHospitalName == null
                     ? AppColorsManager.warningColor
                     : AppColorsManager.textfieldOutsideBorderColor,
                 categoryLabel: "اسم الطبيب",
@@ -76,7 +79,26 @@ class _PrescriptionDataEntryFormFieldsState
                 bottomSheetTitle: "اختر اسم الطبيب",
                 searchHintText: "ابحث عن اسم الطبيب",
               ),
-
+              verticalSpacing(16),
+              UserSelectionContainer(
+                allowManualEntry: true,
+                containerBorderColor: state.doctorNameSelection == null &&
+                        state.selectedHospitalName == null
+                    ? AppColorsManager.warningColor
+                    : AppColorsManager.textfieldOutsideBorderColor,
+                categoryLabel: "المستشفى / العيادة",
+                containerHintText:
+                    state.selectedHospitalName ?? "اختر اسم المستشفى / العيادة",
+                options: state.hospitalNames,
+                onOptionSelected: (value) {
+                  context
+                      .read<PrescriptionDataEntryCubit>()
+                      .updateSelectedHospitalName(value);
+                  log("xxx:Selected: $value");
+                },
+                bottomSheetTitle: "اختر اسم المستشفى / العيادة",
+                searchHintText: "ابحث عن اسم المستشفى / العيادة",
+              ),
               verticalSpacing(16),
               UserSelectionContainer(
                 allowManualEntry: true,
@@ -113,20 +135,18 @@ class _PrescriptionDataEntryFormFieldsState
                     .symptomsAccompanyingComplaintController,
               ),
               verticalSpacing(16),
-              UserSelectionContainer(
-                allowManualEntry: true,
-                categoryLabel: "التشخيص", // Another Dropdown Example
-                containerHintText:
-                    state.selectedDisease ?? "اختر المرض الذى تم تشخيصه",
-                options: state.diseasesNames,
-                onOptionSelected: (value) {
-                  context
-                      .read<PrescriptionDataEntryCubit>()
-                      .updateSelectedDisease(value);
-                  log("xxx:Selected: $value");
-                },
-                bottomSheetTitle: "اختر المرض الذى تم تشخيصه",
-                searchHintText: "ابحث عن التشخيص المناسب",
+              Text(
+                "التشخيص",
+                style: AppTextStyles.font18blackWight500,
+              ),
+              verticalSpacing(10),
+
+              WordLimitTextField(
+                hintText: state.prescribtionEditedModel?.disease ??
+                    "اكتب المرض الذى تم تشخيصه",
+                controller: context
+                    .read<PrescriptionDataEntryCubit>()
+                    .diagnosisController,
               ),
 
               verticalSpacing(16),
@@ -138,7 +158,7 @@ class _PrescriptionDataEntryFormFieldsState
 
               ImageUploaderSection<PrescriptionDataEntryCubit,
                   PrescriptionDataEntryState>(
-                maxImages: 2,
+                maxImages: 4,
                 statusSelector: (state) => state.prescriptionImageRequestStatus,
                 uploadedSelector: (state) =>
                     state.prescriptionPictureUploadedUrl,
@@ -244,7 +264,7 @@ class _PrescriptionDataEntryFormFieldsState
               state.isEditMode
                   ? await context
                       .read<PrescriptionDataEntryCubit>()
-                      .submitEditsOnPrescription()
+                      .submitEditsOnPrescription(context.translate)
                   : await context
                       .read<PrescriptionDataEntryCubit>()
                       .postPrescriptionDataEntry(

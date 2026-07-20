@@ -224,9 +224,9 @@ class _MedicinesDataEntryFormFieldsWidgetState
             verticalSpacing(16),
 
             // if (widget.showMedicalComplaints) ...[
-            buildMedicalComplaintsListBlocBuilder(),
-            buildAddNewComplainButtonBlocBuilder(),
-            verticalSpacing(16),
+            // buildMedicalComplaintsListBlocBuilder(),
+            // buildAddNewComplainButtonBlocBuilder(),
+            // verticalSpacing(16),
             // ],
 
             UserSelectionContainer(

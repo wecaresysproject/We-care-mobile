@@ -42,131 +42,137 @@ class MedicineTable extends StatelessWidget {
         }
         return SingleChildScrollView(
           scrollDirection: Axis.vertical, // Allow scrolling if needed
-          child: DataTable(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            headingRowColor: WidgetStateProperty.all(
-                AppColorsManager.mainDarkBlue), // Header Background Color
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              headingRowColor: WidgetStateProperty.all(
+                  AppColorsManager.mainDarkBlue), // Header Background Color
 
-            columnSpacing: 6.w,
-            dataRowHeight: 60.h,
-            horizontalMargin: 5.w,
-            showBottomBorder: true,
-            border: TableBorder.all(
-              borderRadius: BorderRadius.circular(16.r),
-              color: Color(0xff909090),
-              width: .3,
-            ),
-            columns: [
-              DataColumn(
-                  headingRowAlignment: MainAxisAlignment.center,
-                  label: Text(
-                    "التاريخ",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.font14whiteWeight600,
-                  )),
-              DataColumn(
-                  headingRowAlignment: MainAxisAlignment.center,
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Center(
-                        child: Text(
-                      "اسم الدواء",
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.font14whiteWeight600,
-                    )),
-                  )),
-              DataColumn(
-                  headingRowAlignment: MainAxisAlignment.center,
-                  label: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Center(
+              columnSpacing: 2.w,
+              dataRowMaxHeight: 60.h,
+              horizontalMargin: 4.w,
+              showBottomBorder: true,
+              border: TableBorder.all(
+                borderRadius: BorderRadius.circular(16.r),
+                color: Color(0xff909090),
+                width: .3,
+              ),
+              columns: [
+                DataColumn(
+                    headingRowAlignment: MainAxisAlignment.center,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Text(
-                        "مدة العلاج",
+                        "التاريخ",
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font14whiteWeight600,
                       ),
-                    ),
-                  )),
-              DataColumn(
-                  headingRowAlignment: MainAxisAlignment.center,
-                  label: Center(
+                    )),
+                DataColumn(
+                    headingRowAlignment: MainAxisAlignment.center,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Text(
-                    "امراض\n مزمنة",
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.font14whiteWeight600
-                        .copyWith(fontSize: 13.sp),
-                  ))),
-            ],
-            rows: state.userMedicines.map((data) {
-              return DataRow(cells: [
-                DataCell(
-                    Center(
+                        "اسم الدواء",
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.font14whiteWeight600,
+                      ),
+                    )),
+                DataColumn(
+                    columnWidth: const FixedColumnWidth(70),
+                    headingRowAlignment: MainAxisAlignment.center,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
                       child: Text(
-                        data.startDate,
-                        maxLines: 1,
+                        "مدة\nالعلاج",
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.font14whiteWeight600,
+                      ),
+                    )),
+                DataColumn(
+                    columnWidth: const FixedColumnWidth(150),
+                    headingRowAlignment: MainAxisAlignment.center,
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "امراض\n مزمنة",
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.font14whiteWeight600
+                            .copyWith(fontSize: 13.sp),
+                      ),
+                    )),
+              ],
+              rows: state.userMedicines.map((data) {
+                return DataRow(cells: [
+                  DataCell(
+                      Center(
+                        child: Text(
+                          data.startDate,
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.font14whiteWeight600.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                              decoration: TextDecoration.underline,
+                              fontSize: 12.sp),
+                        ),
+                      ), onTap: () async {
+                    final sameDateMedicines = context
+                        .read<MedicineViewCubit>()
+                        .getMedicinesByDate(data.startDate);
+                    await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return SameDateMedicineDetailsView(
+                        medicines: sameDateMedicines,
+                        date: data.startDate,
+                      );
+                    }));
+                  }),
+                  DataCell(
+                      Center(
+                        child: Text(
+                          data.medicineName.split(' ').first,
+                          style: AppTextStyles.font14whiteWeight600.copyWith(
+                              color: AppColorsManager.mainDarkBlue,
+                              decoration: TextDecoration.underline),
+                          maxLines: 2,
+                        ),
+                      ), onTap: () async {
+                    await Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return MedicineDetailsView(
+                        documentId: data.id,
+                        guidanceData: state.moduleGuidanceData,
+                      );
+                    }));
+                    if (context.mounted) {
+                      final cubit = context.read<MedicineViewCubit>();
+                      await cubit.getUserMedicinesList();
+                      await cubit.getMedicinesFilters();
+                    }
+                  }),
+                  DataCell(Center(
+                    child: Text(data.timeDuration,
+                        maxLines: 3,
                         textAlign: TextAlign.center,
                         style: AppTextStyles.font14whiteWeight600.copyWith(
-                            color: AppColorsManager.mainDarkBlue,
-                            decoration: TextDecoration.underline),
-                      ),
-                    ), onTap: () async {
-                  final sameDateMedicines = context
-                      .read<MedicineViewCubit>()
-                      .getMedicinesByDate(data.startDate);
-                  await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                    return SameDateMedicineDetailsView(
-                      medicines: sameDateMedicines,
-                      date: data.startDate,
-                    );
-                  }));
-                }),
-                DataCell(
-                    Center(
-                      child: Text(
-                        data.medicineName.split(' ').first,
-                        style: AppTextStyles.font14whiteWeight600.copyWith(
-                            color: AppColorsManager.mainDarkBlue,
-                            decoration: TextDecoration.underline),
-                        maxLines: 2,
-                      ),
-                    ), onTap: () async {
-                  await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                    return MedicineDetailsView(
-                      documentId: data.id,
-                      guidanceData: state.moduleGuidanceData,
-                    );
-                  }));
-                  if (context.mounted) {
-                    await context
-                        .read<MedicineViewCubit>()
-                        .getUserMedicinesList();
-
-                    await context
-                        .read<MedicineViewCubit>()
-                        .getMedicinesFilters();
-                  }
-                }),
-                DataCell(Center(
-                  child: Text(data.timeDuration,
-                      maxLines: 3,
+                            color: AppColorsManager.textColor,
+                            fontSize: 12.sp)),
+                  )),
+                  DataCell(Center(
+                    child: Text(
+                      data.chronicDiseaseMedicine == 'لم يتم ادخال بيانات'
+                          ? '-'
+                          : data.chronicDiseaseMedicine,
+                      style: AppTextStyles.font14whiteWeight600
+                          .copyWith(color: AppColorsManager.textColor),
+                      maxLines: 2,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.font14whiteWeight600.copyWith(
-                          color: AppColorsManager.textColor, fontSize: 12.sp)),
-                )),
-                DataCell(Center(
-                  child: Text(
-                    data.chronicDiseaseMedicine == 'لم يتم ادخال بيانات'
-                        ? '-'
-                        : data.chronicDiseaseMedicine,
-                    style: AppTextStyles.font14whiteWeight600
-                        .copyWith(color: AppColorsManager.textColor),
-                    maxLines: 2,
-                  ),
-                )),
-              ]);
-            }).toList(),
+                    ),
+                  )),
+                ]);
+              }).toList(),
+            ),
           ),
         );
       },

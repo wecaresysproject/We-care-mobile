@@ -128,6 +128,16 @@ class PrescriptionDetailsView extends StatelessWidget {
                     isExpanded: true,
                   ),
                   DetailsViewInfoTile(
+                    title: "المستشفى / العيادة",
+                    isExpanded: true,
+                    value: state.selectedPrescriptionDetails!.hospital
+                                ?.isNotEmpty ==
+                            true
+                        ? state.selectedPrescriptionDetails!.hospital!
+                        : context.translate.no_data_entered,
+                    icon: 'assets/images/hospital_icon.png',
+                  ),
+                  DetailsViewInfoTile(
                       title: "التخصص ",
                       isExpanded: true,
                       value: state.selectedPrescriptionDetails!.doctorSpecialty,
@@ -187,7 +197,10 @@ Future<void> _shareDetails(
 
 👨‍⚕️ اسم الطبيب: ${prescriptionDetails.doctorName}
 
+🏨 المستشفى / العيادة: ${prescriptionDetails.hospital?.isNotEmpty == true ? prescriptionDetails.hospital : "لا يوجد"}
+
 🏥 التخصص: ${prescriptionDetails.doctorSpecialty}
+
 
 📷 صور الروشتة: ${prescriptionDetails.preDescriptionPhoto.isNotEmpty ? "مرفقة أدناه 📎" : "-"}
 

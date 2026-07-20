@@ -103,7 +103,7 @@ class GeneticDiseasesDataEntryCubit
         NewGeneticDiseaseModel(
           diseaseCategory: oldDisease.inheritanceType,
           geneticDisease: oldDisease.geneticDisease,
-          appearanceAgeStage: "نسال فيها ا/اشرف ،م/ آيه",
+          appearanceAgeStage: oldDisease.ageGroup,
           patientStatus: oldDisease.diseaseStatus,
         ),
       );

@@ -471,7 +471,7 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
         isConsumedHigher ? 'أعلى من المستهدف' : 'أقل من المستهدف';
 
     IconData arrowIcon =
-        !isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
+        isConsumedHigher ? Icons.arrow_upward : Icons.arrow_downward;
     num exactPercentage = consumed / standard * 100;
 
     Color percentageColor = exactPercentage >= 100
@@ -549,24 +549,32 @@ class NutrationPlanDataViewState extends State<NutrationPlanDataView>
                     color: percentageColor, // 👈 اللون المعكوس
                     borderRadius: BorderRadius.circular(6.r),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${exactPercentage.toStringAsFixed(0)}%',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      horizontalSpacing(4),
-                      Icon(
-                        percentageArrowIcon, // 👈 السهم المعكوس
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                    ],
+                  // child: Row(
+                  //   mainAxisSize: MainAxisSize.min,
+                  //   children: [
+                  //     Text(
+                  //       '${exactPercentage.toStringAsFixed(0)}%',
+                  //       style: TextStyle(
+                  //         color: Colors.white,
+                  //         fontWeight: FontWeight.bold,
+                  //         fontSize: 14.sp,
+                  //       ),
+                  //     ),
+                  //     horizontalSpacing(4),
+                  //     Icon(
+                  //       percentageArrowIcon, // 👈 السهم المعكوس
+                  //       color: Colors.white,
+                  //       size: 16,
+                  //     ),
+                  //   ],
+                  // ),
+                  child: Text(
+                    '${exactPercentage.toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                    ),
                   ),
                 ),
             ],

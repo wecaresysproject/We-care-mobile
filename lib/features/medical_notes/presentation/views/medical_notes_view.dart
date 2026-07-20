@@ -63,7 +63,9 @@ class MedicalNotesView extends StatelessWidget {
     } else {
       return BlocBuilder<MedicalNotesCubit, MedicalNotesState>(
         buildWhen: (previous, current) =>
-            previous.moduleGuidanceData != current.moduleGuidanceData,
+            previous.moduleGuidanceData != current.moduleGuidanceData ||
+            previous.moduleGuuidanceRequestStatus !=
+                current.moduleGuuidanceRequestStatus,
         builder: (context, state) {
           return AppBarWithImageAndActionButtons(
             haveBackArrow: true,

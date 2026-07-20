@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 
 import '../widgets/quality_of_life_app_bar.dart';
@@ -12,6 +14,16 @@ class QualityOfLifeMainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // بنتأكد من صلاحية المستخدم على موديول جودة الحياة في حالة كان بيشوف
+    // بيانات مريض تاني (وضع الرعاية): FULL_ACCESS يسمح بالإدخال والعرض،
+    // VIEW_ONLY يسمح بالعرض بس.
+    final hasDataEntryAccess =
+        CareContextManager.hasModuleAccessForDataEntryMedicalFilesCategory(
+            MedicalModule.qualityOfLife);
+    final hasViewAccess =
+        CareContextManager.hasModuleAccessForViewMedicalFilesCategory(
+            MedicalModule.qualityOfLife);
+
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
       body: SingleChildScrollView(
@@ -22,9 +34,9 @@ class QualityOfLifeMainView extends StatelessWidget {
           children: [
             const QualityOfLifeAppBar(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-            _buildDataEntrySection(context),
+            _buildDataEntrySection(context, hasAccess: hasDataEntryAccess),
             verticalSpacing(24),
-            _buildDataViewSection(context),
+            _buildDataViewSection(context, hasAccess: hasViewAccess),
             verticalSpacing(40),
           ],
         ),
@@ -32,113 +44,141 @@ class QualityOfLifeMainView extends StatelessWidget {
     );
   }
 
-  Widget _buildDataEntrySection(BuildContext context) {
+  Widget _buildDataEntrySection(
+    BuildContext context, {
+    required bool hasAccess,
+  }) {
     return InkWell(
-      onTap: () =>
-          Navigator.pushNamed(context, Routes.qualityOfLifeQuestionsView),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: AppColorsManager.mainDarkBlue,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
+      onTap: hasAccess
+          ? () =>
+              Navigator.pushNamed(context, Routes.qualityOfLifeQuestionsView)
+          : null,
+      child: Opacity(
+        opacity: hasAccess ? 1 : 0.5,
+        child: Stack(
           children: [
             Container(
-              padding: EdgeInsets.all(10.w),
+              width: double.infinity,
+              padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.add_task, color: Colors.white, size: 24.sp),
-            ),
-            horizontalSpacing(16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "إدخال بيانات جديدة",
-                    style: AppTextStyles.font14whiteWeight600,
+                color: AppColorsManager.mainDarkBlue,
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColorsManager.mainDarkBlue.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
-                  Text(
-                    "أجب على الأسئلة لتقييم جودة حياتك",
-                    style: AppTextStyles.font14whiteWeight600.copyWith(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.white.withOpacity(0.8),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
                     ),
+                    child:
+                        Icon(Icons.add_task, color: Colors.white, size: 24.sp),
+                  ),
+                  horizontalSpacing(16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "إدخال بيانات جديدة",
+                          style: AppTextStyles.font14whiteWeight600,
+                        ),
+                        Text(
+                          "أجب على الأسئلة لتقييم جودة حياتك",
+                          style: AppTextStyles.font14whiteWeight600.copyWith(
+                            fontWeight: FontWeight.normal,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    hasAccess ? Icons.arrow_forward_ios : Icons.lock_outline,
+                    color: Colors.white,
+                    size: 18.sp,
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18.sp),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDataViewSection(BuildContext context) {
+  Widget _buildDataViewSection(
+    BuildContext context, {
+    required bool hasAccess,
+  }) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, Routes.qualityOfLifeTableView),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-          border: Border.all(
-            color: AppColorsManager.mainDarkBlue.withOpacity(0.2),
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(10.w),
-              decoration: BoxDecoration(
+      onTap: hasAccess
+          ? () => Navigator.pushNamed(context, Routes.qualityOfLifeTableView)
+          : null,
+      child: Opacity(
+        opacity: hasAccess ? 1 : 0.5,
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(20.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
                 color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
-                shape: BoxShape.circle,
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-              child: Icon(Icons.description_outlined,
-                  color: AppColorsManager.mainDarkBlue, size: 24.sp),
+            ],
+            border: Border.all(
+              color: AppColorsManager.mainDarkBlue.withOpacity(0.2),
+              width: 1,
             ),
-            horizontalSpacing(16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "عرض السجلات والتقارير",
-                    style: AppTextStyles.font14BlueWeight700,
-                  ),
-                  Text(
-                    "راجع تقييماتك السابقة وجودة حياتك",
-                    style: AppTextStyles.font14blackWeight400.copyWith(
-                      color: AppColorsManager.mainDarkBlue.withOpacity(0.6),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(10.w),
+                decoration: BoxDecoration(
+                  color: AppColorsManager.mainDarkBlue.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.description_outlined,
+                    color: AppColorsManager.mainDarkBlue, size: 24.sp),
+              ),
+              horizontalSpacing(16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "عرض السجلات والتقارير",
+                      style: AppTextStyles.font14BlueWeight700,
                     ),
-                  ),
-                ],
+                    Text(
+                      "راجع تقييماتك السابقة وجودة حياتك",
+                      style: AppTextStyles.font14blackWeight400.copyWith(
+                        color: AppColorsManager.mainDarkBlue.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Icon(Icons.arrow_forward_ios,
-                color: AppColorsManager.mainDarkBlue, size: 18.sp),
-          ],
+              Icon(
+                hasAccess ? Icons.arrow_forward_ios : Icons.lock_outline,
+                color: AppColorsManager.mainDarkBlue,
+                size: 18.sp,
+              ),
+            ],
+          ),
         ),
       ),
     );

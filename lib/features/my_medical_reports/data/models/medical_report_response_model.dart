@@ -45,6 +45,10 @@ class MedicalReportData {
   final SupplementsModule? supplementsModule;
   final List<PhysicalActivityEntry>? physicalActivityModule;
   final List<NutritionTrackingEntry>? nutritionTrackingModule;
+  @JsonKey(name: 'MonthlyHealthSurveySection')
+  final QualityOfLifeSection? monthlyHealthSurveySection;
+  final List<RiskyBehaviourEntry>? riskyBehaviour;
+  final List<VaccineEntry>? vaccines;
 
   MedicalReportData({
     this.basicInformation,
@@ -64,6 +68,9 @@ class MedicalReportData {
     this.supplementsModule,
     this.physicalActivityModule,
     this.nutritionTrackingModule,
+    this.monthlyHealthSurveySection,
+    this.riskyBehaviour,
+    this.vaccines,
   });
 
   factory MedicalReportData.fromJson(Map<String, dynamic> json) =>
@@ -746,6 +753,86 @@ class NutritionTrackingEntry {
       _$NutritionTrackingEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$NutritionTrackingEntryToJson(this);
+}
+
+@JsonSerializable()
+class QualityOfLifeSection {
+  final List<String>? columns;
+  final List<QualityOfLifeQuestionRow>? rows;
+
+  QualityOfLifeSection({
+    this.columns,
+    this.rows,
+  });
+
+  factory QualityOfLifeSection.fromJson(Map<String, dynamic> json) =>
+      _$QualityOfLifeSectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QualityOfLifeSectionToJson(this);
+}
+
+@JsonSerializable()
+class QualityOfLifeQuestionRow {
+  final String? question;
+  final List<String?>? answersOverMonths;
+
+  QualityOfLifeQuestionRow({
+    this.question,
+    this.answersOverMonths,
+  });
+
+  factory QualityOfLifeQuestionRow.fromJson(Map<String, dynamic> json) =>
+      _$QualityOfLifeQuestionRowFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QualityOfLifeQuestionRowToJson(this);
+}
+
+@JsonSerializable()
+class RiskyBehaviourEntry {
+  final String startDate;
+  final String section;
+  final String type;
+  final String usageRate;
+  final String? status;
+
+  RiskyBehaviourEntry({
+    required this.startDate,
+    required this.section,
+    required this.type,
+    required this.usageRate,
+    this.status,
+  });
+
+  factory RiskyBehaviourEntry.fromJson(Map<String, dynamic> json) =>
+      _$RiskyBehaviourEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RiskyBehaviourEntryToJson(this);
+}
+
+@JsonSerializable()
+class VaccineEntry {
+  final String date;
+  final String code;
+  final String vaccineName;
+  final String vaccineCategory;
+  final String dose;
+  final String targetDisease;
+  final String vaccineActionDescription;
+
+  VaccineEntry({
+    required this.date,
+    required this.code,
+    required this.vaccineName,
+    required this.vaccineCategory,
+    required this.dose,
+    required this.targetDisease,
+    required this.vaccineActionDescription,
+  });
+
+  factory VaccineEntry.fromJson(Map<String, dynamic> json) =>
+      _$VaccineEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VaccineEntryToJson(this);
 }
 
 @JsonSerializable()

@@ -30,7 +30,7 @@ class RadiologyData {
   @JsonKey(name: 'reportImages')
   List<String>? reports;
   @JsonKey(name: 'cause')
-  List<String>? symptoms;
+  String? symptoms;
   String? hospital;
   String? radiologyDoctor;
   @JsonKey(name: 'curedDoctor')

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/font_weight_helper.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -12,6 +14,8 @@ import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/%20essential_info_view_cubit.dart';
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
+import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
+import 'package:we_care/features/home_tab/cubits/home/home_state.dart';
 
 class HomeCustomAppBarWidget extends StatelessWidget {
   const HomeCustomAppBarWidget({super.key});
@@ -42,34 +46,71 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                     SizedBox(
                       width: 20,
                       height: 24,
-                      child: PopupMenuButton(
-                        constraints: BoxConstraints(), // مهم جدًا
+                      child: BlocListener<HomeCubit, HomeState>(
+                        listener: (context, state) async {
+                          if (state.logoutRequestStatus ==
+                              RequestStatus.success) {
+                            if (!context.mounted) return;
+                            await context.pushNamedAndRemoveUntil(
+                              Routes.loginView,
+                              predicate: (route) => false,
+                            );
+                          } else if (state.logoutRequestStatus ==
+                              RequestStatus.failure) {
+                            await showError(state.errorMessage ?? '');
+                          }
+                        },
+                        child: PopupMenuButton(
+                          constraints: BoxConstraints(), // مهم جدًا
 
-                        color: AppColorsManager.scaffoldBackGroundColor,
-                        padding: EdgeInsets.zero,
-                        offset: const Offset(-10, 35),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        icon: Icon(
-                          Icons.more_vert,
-                          size: 30,
-                          color: AppColorsManager.mainDarkBlue,
-                        ),
-                        itemBuilder: (context) => [
-                          _popupItem(
-                            Icons.person,
-                            "الدخول على البيانات الرئيسية",
-                            onClick: () async {
-                              await context.pushNamed(
-                                Routes.essentialInfoView,
-                              );
-                            },
+                          color: AppColorsManager.scaffoldBackGroundColor,
+                          padding: EdgeInsets.zero,
+                          offset: const Offset(-10, 35),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
-                          _popupItem(
-                            Icons.groups,
-                            "المسموح لهم بالرعاية",
-                            onClick: () async {
+                          icon: Icon(
+                            Icons.more_vert,
+                            size: 30,
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                          itemBuilder: (popupContext) => [
+                            _popupItem(
+                              Icons.person,
+                              "الدخول على البيانات الرئيسية",
+                              value: 1,
+                            ),
+                            _popupItem(
+                              Icons.groups,
+                              "المسموح لهم بالرعاية",
+                              value: 2,
+                            ),
+                            _popupItem(
+                              Icons.lock,
+                              "تغيير كلمة السر",
+                              value: 3,
+                            ),
+                            _popupItem(
+                              Icons.admin_panel_settings,
+                              "الصلاحيات",
+                              value: 4,
+                            ),
+                            _popupItem(
+                              Icons.subscriptions,
+                              "الاشتراكات",
+                              value: 5,
+                            ),
+                            _popupItem(
+                              Icons.logout,
+                              "تسجيل الخروج",
+                              isRed: true,
+                              value: 6,
+                            ),
+                          ],
+                          onSelected: (value) async {
+                            if (value == 1) {
+                              await context.pushNamed(Routes.essentialInfoView);
+                            } else if (value == 2) {
                               if (CareContextManager.isCareModeActive) {
                                 context.showSnackBar(
                                   message:
@@ -80,14 +121,8 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                                 return;
                               }
                               await context.pushNamedWithSettingRootNavigator(
-                                Routes.allowedCareAccessView,
-                              );
-                            },
-                          ),
-                          _popupItem(
-                            Icons.lock,
-                            "تغيير كلمة السر",
-                            onClick: () async {
+                                  Routes.allowedCareAccessView);
+                            } else if (value == 3) {
                               if (CareContextManager.isCareModeActive) {
                                 context.showSnackBar(
                                   message:
@@ -97,12 +132,9 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                                 );
                                 return;
                               }
-                            },
-                          ),
-                          _popupItem(
-                            Icons.admin_panel_settings,
-                            "الصلاحيات",
-                            onClick: () async {
+                              await context
+                                  .pushNamed(Routes.changePasswordView);
+                            } else if (value == 4) {
                               if (CareContextManager.isCareModeActive) {
                                 context.showSnackBar(
                                   message:
@@ -112,36 +144,30 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                                 );
                                 return;
                               }
-                            },
-                          ),
-                          _popupItem(Icons.subscriptions, "الاشتراكات",
-                              onClick: () {
-                            if (CareContextManager.isCareModeActive) {
-                              context.showSnackBar(
-                                message:
-                                    "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
-                                backgroundColor: Colors.red,
-                                context: context,
-                              );
-                              return;
+                            } else if (value == 5) {
+                              if (CareContextManager.isCareModeActive) {
+                                context.showSnackBar(
+                                  message:
+                                      "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                  backgroundColor: Colors.red,
+                                  context: context,
+                                );
+                                return;
+                              }
+                            } else if (value == 6) {
+                              if (CareContextManager.isCareModeActive) {
+                                context.showSnackBar(
+                                  message:
+                                      "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
+                                  backgroundColor: Colors.red,
+                                  context: context,
+                                );
+                                return;
+                              }
+                              await context.read<HomeCubit>().logout();
                             }
-                          }),
-                          _popupItem(Icons.logout, "تسجيل الخروج", isRed: true,
-                              onClick: () {
-                            if (CareContextManager.isCareModeActive) {
-                              context.showSnackBar(
-                                message:
-                                    "انت غير مسموح لك بالدخول علي هذه الجزئية الآن",
-                                backgroundColor: Colors.red,
-                                context: context,
-                              );
-                              return;
-                            }
-                          }),
-                        ],
-                        onSelected: (value) {
-                          // TODO: Navigate or perform action
-                        },
+                          },
+                        ),
                       ),
                     ),
                     Column(
@@ -230,9 +256,9 @@ class HomeCustomAppBarWidget extends StatelessWidget {
   }
 
   PopupMenuItem _popupItem(IconData icon, String title,
-      {bool isRed = false, VoidCallback? onClick}) {
+      {bool isRed = false, required int value}) {
     return PopupMenuItem(
-      onTap: onClick,
+      value: value,
       child: Row(
         children: [
           Icon(
