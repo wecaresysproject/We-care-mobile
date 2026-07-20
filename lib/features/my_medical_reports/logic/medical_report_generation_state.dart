@@ -66,6 +66,11 @@ class MedicalReportGenerationState extends Equatable {
   final bool mentalDiseasesGetAll;
   final List<String> mentalDiseasesSelectedTypes;
   final List<String> mentalDiseasesSelectedMethods;
+  final bool vaccinationsGetAll;
+  final List<String> vaccinationsSelectedYears;
+  final bool riskyBehavioursGetAll;
+  final List<String> riskyBehavioursSelectedTypes;
+  final bool qualityOfLifeGetAll;
   final MedicalReportResponseModel? medicalReportData;
   final Map<String, MedicalReportFilterResponseModel> categoryFilters;
   final ModuleGuidanceDataModel? moduleGuidanceData;
@@ -136,6 +141,11 @@ class MedicalReportGenerationState extends Equatable {
     this.mentalDiseasesGetAll = false,
     this.mentalDiseasesSelectedTypes = const [],
     this.mentalDiseasesSelectedMethods = const [],
+    this.vaccinationsGetAll = false,
+    this.vaccinationsSelectedYears = const [],
+    this.riskyBehavioursGetAll = false,
+    this.riskyBehavioursSelectedTypes = const [],
+    this.qualityOfLifeGetAll = false,
     this.medicalReportData,
     this.categoryFilters = const {},
     this.moduleGuidanceData,
@@ -207,6 +217,11 @@ class MedicalReportGenerationState extends Equatable {
     bool? mentalDiseasesGetAll,
     List<String>? mentalDiseasesSelectedTypes,
     List<String>? mentalDiseasesSelectedMethods,
+    bool? vaccinationsGetAll,
+    List<String>? vaccinationsSelectedYears,
+    bool? riskyBehavioursGetAll,
+    List<String>? riskyBehavioursSelectedTypes,
+    bool? qualityOfLifeGetAll,
     MedicalReportResponseModel? medicalReportData,
     Map<String, MedicalReportFilterResponseModel>? categoryFilters,
     ModuleGuidanceDataModel? moduleGuidanceData,
@@ -320,6 +335,14 @@ class MedicalReportGenerationState extends Equatable {
           mentalDiseasesSelectedTypes ?? this.mentalDiseasesSelectedTypes,
       mentalDiseasesSelectedMethods:
           mentalDiseasesSelectedMethods ?? this.mentalDiseasesSelectedMethods,
+      vaccinationsGetAll: vaccinationsGetAll ?? this.vaccinationsGetAll,
+      vaccinationsSelectedYears:
+          vaccinationsSelectedYears ?? this.vaccinationsSelectedYears,
+      riskyBehavioursGetAll:
+          riskyBehavioursGetAll ?? this.riskyBehavioursGetAll,
+      riskyBehavioursSelectedTypes:
+          riskyBehavioursSelectedTypes ?? this.riskyBehavioursSelectedTypes,
+      qualityOfLifeGetAll: qualityOfLifeGetAll ?? this.qualityOfLifeGetAll,
       medicalReportData: medicalReportData ?? this.medicalReportData,
       categoryFilters: categoryFilters ?? this.categoryFilters,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
@@ -393,6 +416,11 @@ class MedicalReportGenerationState extends Equatable {
         mentalDiseasesGetAll,
         mentalDiseasesSelectedTypes,
         mentalDiseasesSelectedMethods,
+        vaccinationsGetAll,
+        vaccinationsSelectedYears,
+        riskyBehavioursGetAll,
+        riskyBehavioursSelectedTypes,
+        qualityOfLifeGetAll,
         medicalReportData,
         categoryFilters,
         moduleGuidanceData,

@@ -26,6 +26,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   final personalNotesController = TextEditingController();
   final symptomsAccompanyingComplaintController =
       TextEditingController(); // الاعراض المصاحبة للشكوى
+  final diagnosisController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
 
@@ -62,15 +63,16 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
-  void updateSelectedDisease(String? disease) {
+  void updateSelectedHospitalName(String? selectedHospital) {
     emit(
       state.copyWith(
-        selectedDisease: disease,
+        selectedHospitalName: selectedHospital,
       ),
     );
+    validateRequiredFields();
   }
 
-  Future<void> submitEditsOnPrescription() async {
+  Future<void> submitEditsOnPrescription(S localize) async {
     emit(
       state.copyWith(
         preceriptionDataEntryStatus: RequestStatus.loading,
@@ -83,13 +85,14 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang, //TODO: to change later
         prescriptionDate: state.preceriptionDateSelection!,
-        doctorName: state.doctorNameSelection!,
+        doctorName: state.doctorNameSelection ?? localize.no_data_entered,
         doctorSpecialty: state.doctorSpecialitySelection!,
         cause: symptomsAccompanyingComplaintController.text,
-        disease: state.selectedDisease!,
+        disease: diagnosisController.text,
         preDescriptionPhoto: state.prescriptionPictureUploadedUrl,
         country: state.selectedCountryName!,
         governate: state.selectedCityName!,
+        hospital: state.selectedHospitalName ?? localize.no_data_entered,
         preDescriptionNotes: personalNotesController.text,
       ),
       documentId: state.prescribtionEditedModel!.id,
@@ -127,7 +130,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
             editingPrescriptionDetailsData.doctorSpecialty,
         selectedCountryName: editingPrescriptionDetailsData.country,
         selectedCityName: editingPrescriptionDetailsData.governate, //TODO:
-        selectedDisease: editingPrescriptionDetailsData.disease,
+        selectedHospitalName: editingPrescriptionDetailsData.hospital,
         prescriptionPictureUploadedUrl:
             editingPrescriptionDetailsData.preDescriptionPhoto,
         prescriptionImageRequestStatus: UploadImageRequestStatus.success,
@@ -139,6 +142,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         editingPrescriptionDetailsData.preDescriptionNotes;
     symptomsAccompanyingComplaintController.text =
         editingPrescriptionDetailsData.cause;
+    diagnosisController.text = editingPrescriptionDetailsData.disease;
     validateRequiredFields();
     await intialRequestsForPrescriptionDataEntry();
   }
@@ -148,10 +152,10 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     Future.wait([
       emitModuleGuidanceData(),
       emitDoctorNames(),
-      emitDiseasesData(),
       emitCountriesData(),
       emitCitiesData(),
       emitDoctorsSpecializations(),
+      emitHospitalNames(),
     ]);
   }
 
@@ -190,6 +194,29 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
         emit(
           state.copyWith(
             citiesNames: citiesList,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> emitHospitalNames() async {
+    final response = await sharedRepo.getHospitalNames(
+      language: AppStrings.arabicLang,
+    );
+
+    response.when(
+      success: (hospitals) {
+        emit(
+          state.copyWith(
+            hospitalNames: hospitals,
           ),
         );
       },
@@ -243,11 +270,11 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   Future<void> uploadPrescriptionImagePicked(
       {required String imagePath}) async {
     // 1) Check limit
-    if (state.prescriptionPictureUploadedUrl.length >= 2) {
+    if (state.prescriptionPictureUploadedUrl.length >= 4) {
       emit(
         state.copyWith(
           prescriptionImageRequestStatus: UploadImageRequestStatus.failure,
-          message: "لقد وصلت للحد الأقصى لرفع الصور (2) للروشتة الواحدة",
+          message: "لقد وصلت للحد الأقصى لرفع الصور (4) للروشتة الواحدة",
         ),
       );
       return;
@@ -300,15 +327,18 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
 
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang,
-        doctorName: state.doctorNameSelection!, // TODO: handle it later
+        doctorName: state.doctorNameSelection ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
 
         cause: symptomsAccompanyingComplaintController.text.isNotEmpty
             ? symptomsAccompanyingComplaintController.text
             : localozation.no_data_entered,
-        disease: state.selectedDisease ?? localozation.no_data_entered,
+        disease: diagnosisController.text.isNotEmpty
+            ? diagnosisController.text
+            : localozation.no_data_entered,
         preDescriptionPhoto: state.prescriptionPictureUploadedUrl,
         governate: state.selectedCityName ?? localozation.no_data_entered,
+        hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         preDescriptionNotes: personalNotesController.text.isNotEmpty
             ? personalNotesController.text
             : localozation.no_data_entered,
@@ -359,37 +389,18 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     );
   }
 
-  Future<void> emitDiseasesData() async {
-    final response = await sharedRepo.getDiseasesNames(
-      language: AppStrings.arabicLang,
-    );
-
-    response.when(
-      success: (response) {
-        emit(
-          state.copyWith(
-            diseasesNames: response,
-          ),
-        );
-      },
-      failure: (error) {
-        emit(
-          state.copyWith(
-            message: error.errors.first,
-          ),
-        );
-      },
-    );
-  }
-
   void updatePrescriptionPicture(bool? isImagePicked) {
     emit(state.copyWith(isPrescriptionPictureSelected: isImagePicked));
     validateRequiredFields();
   }
 
   void validateRequiredFields() {
+    // اسم الطبيب واسم المستشفى/العيادة: يكفي إدخال واحد منهم على الأقل
+    final hasDoctorOrHospital =
+        state.doctorNameSelection != null || state.selectedHospitalName != null;
+
     if (state.preceriptionDateSelection == null ||
-        state.doctorNameSelection == null ||
+        !hasDoctorOrHospital ||
         state.doctorSpecialitySelection == null ||
         state.prescriptionPictureUploadedUrl.isEmpty) {
       emit(
@@ -433,6 +444,7 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
   Future<void> close() {
     personalNotesController.dispose();
     symptomsAccompanyingComplaintController.dispose();
+    diagnosisController.dispose();
     formKey.currentState?.reset();
     return super.close();
   }

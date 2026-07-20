@@ -11,10 +11,10 @@ class PrescriptionDataEntryState extends Equatable {
   final List<String> citiesNames;
   final List<String> doctorNames;
   final List<String> doctorSpecialities;
-  final List<String> diseasesNames;
+  final List<String> hospitalNames;
   final String? selectedCountryName;
   final String? selectedCityName;
-  final String? selectedDisease;
+  final String? selectedHospitalName;
   final bool isEditMode;
   final PrescriptionModel? prescribtionEditedModel;
 
@@ -32,16 +32,16 @@ class PrescriptionDataEntryState extends Equatable {
     this.doctorSpecialitySelection,
     this.selectedCountryName,
     this.selectedCityName,
-    this.selectedDisease,
+    this.selectedHospitalName,
     this.countriesNames = const [],
     this.citiesNames = const [],
     this.doctorNames = const [],
+    this.hospitalNames = const [],
     this.message = '',
     this.prescriptionPictureUploadedUrl = const [],
     this.prescriptionImageRequestStatus = UploadImageRequestStatus.initial,
     this.isEditMode = false,
     this.prescribtionEditedModel,
-    this.diseasesNames = const [],
     this.doctorSpecialities = const [],
     this.moduleGuidanceData,
   }) : super();
@@ -55,7 +55,7 @@ class PrescriptionDataEntryState extends Equatable {
           doctorSpecialitySelection: null,
           selectedCountryName: null,
           selectedCityName: null,
-          selectedDisease: null,
+          selectedHospitalName: null,
           message: '',
           prescriptionImageRequestStatus: UploadImageRequestStatus.initial,
           isEditMode: false,
@@ -64,7 +64,7 @@ class PrescriptionDataEntryState extends Equatable {
           countriesNames: const [],
           citiesNames: const [],
           doctorNames: const [],
-          diseasesNames: const [],
+          hospitalNames: const [],
           doctorSpecialities: const [],
           moduleGuidanceData: null,
         );
@@ -78,16 +78,16 @@ class PrescriptionDataEntryState extends Equatable {
     bool? isPrescriptionPictureSelected,
     String? selectedCountryName,
     String? selectedCityName,
+    String? selectedHospitalName,
     List<String>? countriesNames,
     String? message,
     List<String>? citiesNames,
+    List<String>? hospitalNames,
     List<String>? prescriptionPictureUploadedUrl,
     UploadImageRequestStatus? prescriptionImageRequestStatus,
-    String? selectedDisease,
     bool? isEditMode,
     PrescriptionModel? prescribtionEditedModel,
     List<String>? doctorNames,
-    List<String>? diseasesNames,
     List<String>? doctorSpecialities,
     ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
@@ -104,17 +104,17 @@ class PrescriptionDataEntryState extends Equatable {
       countriesNames: countriesNames ?? this.countriesNames,
       message: message ?? this.message,
       citiesNames: citiesNames ?? this.citiesNames,
+      hospitalNames: hospitalNames ?? this.hospitalNames,
       selectedCityName: selectedCityName ?? this.selectedCityName,
+      selectedHospitalName: selectedHospitalName ?? this.selectedHospitalName,
       prescriptionPictureUploadedUrl:
           prescriptionPictureUploadedUrl ?? this.prescriptionPictureUploadedUrl,
       prescriptionImageRequestStatus:
           prescriptionImageRequestStatus ?? this.prescriptionImageRequestStatus,
-      selectedDisease: selectedDisease ?? this.selectedDisease,
       isEditMode: isEditMode ?? this.isEditMode,
       prescribtionEditedModel:
           prescribtionEditedModel ?? this.prescribtionEditedModel,
       doctorNames: doctorNames ?? this.doctorNames,
-      diseasesNames: diseasesNames ?? this.diseasesNames,
       doctorSpecialities: doctorSpecialities ?? this.doctorSpecialities,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
@@ -131,14 +131,15 @@ class PrescriptionDataEntryState extends Equatable {
         countriesNames,
         message,
         citiesNames,
+        hospitalNames,
         selectedCityName,
+        selectedHospitalName,
         prescriptionPictureUploadedUrl,
         prescriptionImageRequestStatus,
-        selectedDisease,
         isEditMode,
         prescribtionEditedModel,
         doctorNames,
-        diseasesNames,
+        doctorNames,
         doctorSpecialities,
         moduleGuidanceData
       ];

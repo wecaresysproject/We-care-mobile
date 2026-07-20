@@ -9,11 +9,10 @@ import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
-import 'package:we_care/core/global/SharedWidgets/searchable_user_selector_container.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/test_selection_bottom_sheet.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/widgets/uploaded_reports_section_widget.dart';
@@ -94,7 +93,16 @@ class _TestAnalysisDataEntryFormFieldsState
             verticalSpacing(16),
             // //! الأعراض المستدعية للاجراء"
 
-            SymptomsRequiringInterventionSelector(),
+            Text(
+              "الأعراض المستدعية للإجراء",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            WordLimitTextField(
+              hintText: "اكتب الأعراض",
+              controller:
+                  context.read<TestAnalysisDataEntryCubit>().symptomsController,
+            ),
             verticalSpacing(16),
 
             UserSelectionContainer(
@@ -256,14 +264,14 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
     return BlocBuilder<TestAnalysisDataEntryCubit, TestAnalysisDataEntryState>(
       builder: (context, state) {
         bool showTable = !state.isTestNameSelected.isEmptyOrNull ||
-            !state.isTestCodeSelected.isEmptyOrNull ||
+            !state.isTestNameEnSelected.isEmptyOrNull ||
             !state.isTestGroupNameSelected.isEmptyOrNull;
         return Column(
           children: [
             Row(
               children: [
                 Expanded(
-                  child: !state.isTestCodeSelected.isEmptyOrNull ||
+                  child: !state.isTestNameEnSelected.isEmptyOrNull ||
                           !state.isTestGroupNameSelected.isEmptyOrNull
                       ? UserSelectionContainer(
                           isDisabled: true,
@@ -305,7 +313,7 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                 horizontalSpacing(16),
                 Expanded(
                   child: !state.isTestNameSelected.isEmptyOrNull ||
-                          !state.isTestCodeSelected.isEmptyOrNull
+                          !state.isTestNameEnSelected.isEmptyOrNull
                       ? UserSelectionContainer(
                           containerBorderColor: AppColorsManager
                               .disAbledTextFieldOutsideBorderColor,
@@ -349,34 +357,35 @@ class TypeOfTestAndAnnotationWidget extends StatelessWidget {
                               .disAbledTextFieldOutsideBorderColor,
                           iconColor: AppColorsManager.disAbledIconColor,
                           isDisabled: true,
-                          categoryLabel: "الرمز",
-                          containerHintText: "اختر الرمز",
-                          options: state.testCodes,
+                          categoryLabel: "الاسم (En)",
+                          containerHintText: "اختر الاسم",
+                          options: state.testNamesEn,
                           onOptionSelected: (value) {
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestCodeSelection(value);
+                                .updateTestNameEnSelection(value);
                             log("xxx:Selected: $value");
                           },
-                          bottomSheetTitle: 'اختر الرمز',
-                          searchHintText: "ابحث عن الرمز",
+                          bottomSheetTitle: 'اختر الاسم',
+                          searchHintText: "ابحث عن الاسم",
                         )
                       : UserSelectionContainer(
                           containerBorderColor: state
-                                  .isTestCodeSelected.isEmptyOrNull
+                                  .isTestNameEnSelected.isEmptyOrNull
                               ? AppColorsManager.warningColor
                               : AppColorsManager.textfieldOutsideBorderColor,
-                          categoryLabel: "الرمز",
-                          containerHintText: "اختر الرمز",
-                          options: state.testCodes,
+                          categoryLabel: "الاسم (En)",
+                          containerHintText:
+                              state.isTestNameEnSelected ?? "اختر الاسم",
+                          options: state.testNamesEn,
                           onOptionSelected: (value) {
                             context
                                 .read<TestAnalysisDataEntryCubit>()
-                                .updateTestCodeSelection(value);
+                                .updateTestNameEnSelection(value);
                             log("xxx:Selected: $value");
                           },
-                          bottomSheetTitle: 'اختر الرمز',
-                          searchHintText: "ابحث عن الرمز",
+                          bottomSheetTitle: 'اختر الاسم',
+                          searchHintText: "ابحث عن الاسم",
                         ),
                 ),
               ],
@@ -550,7 +559,7 @@ Widget buildTable(List<TableRowReponseModel> tableRows) {
 List<DataColumn> _buildColumns() {
   return [
     _buildColumn("الاسم"),
-    _buildColumn("الرمز"),
+    _buildColumn("الاسم بالإنجليزي"),
     _buildColumn("المعيار", isNumeric: true),
     _buildColumn("النتيجة"),
     _buildColumn("وصفية"), // 👈 العمود الجديد
@@ -579,6 +588,7 @@ List<DataRow> _buildRows(
           _buildCell(
             data.standardRate,
             fontSize: 16,
+            isNameColumn: true,
           ),
           DataCell(
             data.hasApercentage!
@@ -732,119 +742,3 @@ DataCell _buildCell(
     ),
   );
 }
-
-class SymptomsRequiringInterventionSelector extends StatelessWidget {
-  const SymptomsRequiringInterventionSelector({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<EmergencyComplaintDataEntryDetailsCubit,
-        MedicalComplaintDataEntryDetailsState>(
-      buildWhen: (previous, current) =>
-          previous.medicalSymptomsIssue != current.medicalSymptomsIssue,
-      builder: (context, emergencyState) {
-        final cubit = context.read<TestAnalysisDataEntryCubit>();
-
-        return BlocBuilder<TestAnalysisDataEntryCubit,
-            TestAnalysisDataEntryState>(
-          buildWhen: (previous, current) =>
-              previous.symptomsRequiringIntervention !=
-              current.symptomsRequiringIntervention,
-          builder: (context, xrayState) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SearchableUserSelectorContainer(
-                  allowManualEntry: true,
-                  categoryLabel: "الأعراض المستدعية للإجراء",
-
-                  /// لو مفيش ولا عرض مختار → هينزل hint
-                  /// لو فيه → يظهر عددها
-                  containerHintText:
-                      emergencyState.medicalSymptomsIssue.isEmptyOrNull
-                          ? "اختر الأعراض المستدعية"
-                          : "${emergencyState.medicalSymptomsIssue}",
-
-                  bottomSheetTitle: "اختر الأعراض المستدعية",
-                  searchHintText: "ابحث عن الأعراض",
-
-                  onOptionSelected: (value) {
-                    cubit.updateSymptomsRequiringIntervention(value);
-                  },
-                ),
-
-                /// لو المستخدم اختار أعراض → اعرضهم بشكل Chips
-                if (xrayState.symptomsRequiringIntervention.isNotEmpty) ...[
-                  verticalSpacing(12),
-                  Text(
-                    "الأعراض المحددة:",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                  verticalSpacing(6),
-                  Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    children: xrayState.symptomsRequiringIntervention.map(
-                      (symptom) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color:
-                                  AppColorsManager.mainDarkBlue.withAlpha(100),
-                              width: 2,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  symptom,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                  maxLines: 10,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              verticalSpacing(4),
-                              GestureDetector(
-                                onTap: () {
-                                  cubit.removeSymptomRequiringIntervention(
-                                      symptom);
-                                },
-                                child: const Icon(
-                                  Icons.close,
-                                  size: 16,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ],
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-// store all objects in a list to use it later, and if user try to choose one of drop down  again
-// it will be removed from the list
-// validate that as minumum one field is not empty to submit the form

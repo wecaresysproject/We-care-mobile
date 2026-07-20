@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/Biometrics/biometrics_view/Presention/current_biometrics_results_view.dart';
@@ -28,6 +30,7 @@ class _BiometricsViewState extends State<BiometricsView>
     with SingleTickerProviderStateMixin {
   final Set<String> selectedMetrics = {};
   int currentGraphIndex = 0;
+  int chartPageIndex = 0;
   bool showBottomSheet = false;
   late TabController _tabController;
 
@@ -54,6 +57,8 @@ class _BiometricsViewState extends State<BiometricsView>
 
   void _showBottomSheetModal(dynamic selectedFilters) {
     if (selectedMetrics.isEmpty) return;
+    currentGraphIndex = 0;
+    chartPageIndex = 0;
 
     showModalBottomSheet(
       context: context,
@@ -121,6 +126,7 @@ class _BiometricsViewState extends State<BiometricsView>
                                     ? () {
                                         setModalState(() {
                                           currentGraphIndex--;
+                                          chartPageIndex = 0;
                                         });
                                       }
                                     : null,
@@ -148,14 +154,6 @@ class _BiometricsViewState extends State<BiometricsView>
                                   color: textColor,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'ديسمبر 2024 حتى الآن',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: subtitleColor,
-                                ),
-                              ),
                             ],
                           ),
                           Container(
@@ -173,6 +171,7 @@ class _BiometricsViewState extends State<BiometricsView>
                                     ? () {
                                         setModalState(() {
                                           currentGraphIndex++;
+                                          chartPageIndex = 0;
                                         });
                                       }
                                     : null,
@@ -225,6 +224,7 @@ class _BiometricsViewState extends State<BiometricsView>
                             controller: scrollController,
                             child: _buildChart(
                               state.biometricsData,
+                              setModalState,
                             ),
                           ),
                         );
@@ -526,7 +526,8 @@ class _BiometricsViewState extends State<BiometricsView>
     );
   }
 
-  Widget _buildChart(List<BiometricsDatasetModel> biometricdata) {
+  Widget _buildChart(
+      List<BiometricsDatasetModel> biometricdata, StateSetter setModalState) {
     if (selectedMetrics.isEmpty) return const SizedBox();
     final currentMetricId = selectedMetrics.elementAt(currentGraphIndex);
     final currentMetric =
@@ -536,14 +537,28 @@ class _BiometricsViewState extends State<BiometricsView>
             orElse: () =>
                 BiometricsDatasetModel(type: currentMetricId, data: []))
         .data;
+// ترتيب البيانات من الأقدم إلى الأحدث
+    final sortedData = [...data]..sort(
+        (a, b) => DateTime.parse(a.originalDate)
+            .compareTo(DateTime.parse(b.originalDate)),
+      );
 
-    final formattedData = data
+    final formattedData = sortedData
         .map((d) => BiometricData(
               originalDate: formatDateTime(d.originalDate),
               value: d.value,
               secondaryValue: d.secondaryValue,
             ))
         .toList();
+    // final formattedData = data
+    //     .map((d) => BiometricData(
+    //           originalDate: formatDateTime(d.originalDate),
+    //           value: d.value,
+    //           secondaryValue: d.secondaryValue,
+    //         ))
+    //     .toList();
+
+    if (formattedData.isEmpty) return const SizedBox();
 
     final double minY = 0; // Force starting from 0
     final double maxDataY = formattedData
@@ -561,263 +576,366 @@ class _BiometricsViewState extends State<BiometricsView>
     final double yRange = dynamicMaxY - minY;
     final int niceInterval = _calculateNiceInterval(yRange);
 
-    if (formattedData.isEmpty) return const SizedBox();
+    // Pagination logic
+    final int totalPoints = formattedData.length;
+    final bool hasPagination = totalPoints > 10;
+    final int totalPages = hasPagination ? (totalPoints / 10).ceil() : 1;
 
-    return Container(
-      height: 330,
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
-      padding: const EdgeInsets.only(
-        left: 0,
-        right: 16,
-        top: 16,
-        bottom: 8,
-      ),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    if (chartPageIndex >= totalPages) {
+      chartPageIndex = 0;
+    }
+
+    // نعرض من الأحدث إلى الأقدم: الصفحة الأولى (index 0) بتحتوي أحدث النقاط،
+    // مع الحفاظ على الترتيب الزمني جوه الصفحة نفسها (الأقدم ← الأحدث)
+    final int endIndex =
+        hasPagination ? totalPoints - chartPageIndex * 10 : totalPoints;
+    final int startIndex = hasPagination ? max(0, endIndex - 10) : 0;
+
+    final pageData = formattedData.sublist(startIndex, endIndex);
+
+    final bool hasNewer = chartPageIndex > 0; // فيه بيانات أحدث
+    final bool hasOlder = chartPageIndex < totalPages - 1; // فيه بيانات أقدم
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          height: 330,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+          padding: const EdgeInsets.only(
+            left: 0,
+            right: 16,
+            top: 16,
+            bottom: 8,
           ),
-        ],
-      ),
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: true,
-            horizontalInterval: currentMetric.hasSecondaryValue ? 20 : null,
-            getDrawingHorizontalLine: (value) => FlLine(
-              color: subtitleColor.withOpacity(0.2),
-              strokeWidth: 1,
-              dashArray: [3, 3],
-            ),
-            getDrawingVerticalLine: (value) => FlLine(
-              color: subtitleColor.withOpacity(0.2),
-              strokeWidth: 1,
-              dashArray: [3, 3],
-            ),
-          ),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 50,
-                interval: 1,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  if (value.toInt() >= 0 &&
-                      value.toInt() < formattedData.length) {
-                    return SideTitleWidget(
-                      meta: meta,
-                      child: Container(
-                          padding: const EdgeInsets.only(
-                              top: 12, bottom: 4, left: 4, right: 4),
-                          child: Transform.rotate(
-                            angle: -90 * (pi / 180),
-                            child: Text(
-                              formattedData[value.toInt()].originalDate,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 9),
-                            ),
-                          )),
-                    );
-                  }
-                  return const Text('');
-                },
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                spreadRadius: 1,
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
-            ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                interval: currentMetric.hasSecondaryValue ? 20 : null,
-                reservedSize: 45,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      value.toInt().toString(),
-                      style: TextStyle(
-                        color: subtitleColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 11,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            ],
           ),
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(
-              color: subtitleColor.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-          minX: 0,
-          maxX: (formattedData.length - 1).toDouble(),
-          minY: minY,
-          maxY: formattedData
-                  .map((e) => double.tryParse(e.value.toString()) ?? 0.0)
-                  .reduce((a, b) => a > b ? a : b) +
-              10,
-          lineBarsData: [
-            // Primary line
-            LineChartBarData(
-              spots: formattedData.asMap().entries.map((entry) {
-                return FlSpot(entry.key.toDouble(),
-                    double.tryParse(entry.value.value.toString()) ?? 0.0);
-              }).toList(),
-              isCurved: true,
-              curveSmoothness: 0.3,
-              gradient: LinearGradient(
-                colors: [
-                  currentMetric.color.withOpacity(0.9),
-                  currentMetric.color,
-                ],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              barWidth: 2,
-              showingIndicators:
-                  List.generate(formattedData.length, (index) => index),
-              dotData: FlDotData(
+          child: LineChart(
+            LineChartData(
+              gridData: FlGridData(
                 show: true,
-                getDotPainter: (spot, percent, barData, index) {
-                  return FlDotCirclePainter(
-                    radius: 4,
-                    color: currentMetric.color,
-                    strokeWidth: 3,
-                    strokeColor: cardColor,
-                  );
-                },
-              ),
-              belowBarData: BarAreaData(
-                show: true,
-                gradient: LinearGradient(
-                  colors: [
-                    currentMetric.color.withOpacity(0.2),
-                    currentMetric.color.withOpacity(0.05),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                drawVerticalLine: true,
+                horizontalInterval: currentMetric.hasSecondaryValue ? 20 : null,
+                getDrawingHorizontalLine: (value) => FlLine(
+                  color: subtitleColor.withOpacity(0.2),
+                  strokeWidth: 1,
+                  dashArray: [3, 3],
+                ),
+                getDrawingVerticalLine: (value) => FlLine(
+                  color: subtitleColor.withOpacity(0.2),
+                  strokeWidth: 1,
+                  dashArray: [3, 3],
                 ),
               ),
-            ),
-
-            // Secondary line if available
-            if (currentMetric.hasSecondaryValue)
-              LineChartBarData(
-                color: primaryColor,
-                spots: formattedData.asMap().entries.map((entry) {
-                  return FlSpot(
-                      entry.key.toDouble(),
-                      double.tryParse(entry.value.secondaryValue.toString()) ??
-                          0.0);
-                }).toList(),
-                isCurved: true,
-                curveSmoothness: 0.3,
-                barWidth: 2,
-                isStrokeCapRound: true,
-                showingIndicators:
-                    List.generate(formattedData.length, (index) => index),
-                dotData: FlDotData(
-                  show: true,
-                  getDotPainter: (spot, percent, barData, index) {
-                    return FlDotCirclePainter(
-                      radius: 4,
-                      color: primaryColor,
-                      strokeWidth: 3,
-                      strokeColor: cardColor,
-                    );
-                  },
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
                 ),
-                belowBarData: BarAreaData(
-                  show: true,
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 50,
+                    interval: 1,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      if (value.toInt() >= 0 &&
+                          value.toInt() < pageData.length) {
+                        return SideTitleWidget(
+                          meta: meta,
+                          child: Container(
+                              padding: const EdgeInsets.only(
+                                  top: 12, bottom: 4, left: 4, right: 4),
+                              child: Transform.rotate(
+                                angle: -90 * (pi / 180),
+                                child: Text(
+                                  pageData[value.toInt()].originalDate,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 9),
+                                ),
+                              )),
+                        );
+                      }
+                      return const Text('');
+                    },
+                  ),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    interval: currentMetric.hasSecondaryValue ? 20 : null,
+                    reservedSize: 45,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          value.toInt().toString(),
+                          style: TextStyle(
+                            color: subtitleColor,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 11,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              borderData: FlBorderData(
+                show: true,
+                border: Border.all(
+                  color: subtitleColor.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              minX: 0,
+              maxX: (pageData.length - 1).toDouble(),
+              minY: minY,
+              maxY: formattedData
+                      .map((e) => double.tryParse(e.value.toString()) ?? 0.0)
+                      .reduce((a, b) => a > b ? a : b) +
+                  10,
+              lineBarsData: [
+                // Primary line
+                LineChartBarData(
+                  spots: pageData.asMap().entries.map((entry) {
+                    return FlSpot(entry.key.toDouble(),
+                        double.tryParse(entry.value.value.toString()) ?? 0.0);
+                  }).toList(),
+                  isCurved: true,
+                  curveSmoothness: 0.3,
                   gradient: LinearGradient(
                     colors: [
-                      secondaryColor.withOpacity(0.2),
-                      secondaryColor.withOpacity(0.05),
+                      currentMetric.color.withOpacity(0.9),
+                      currentMetric.color,
                     ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  barWidth: 2,
+                  showingIndicators:
+                      List.generate(pageData.length, (index) => index),
+                  dotData: FlDotData(
+                    show: true,
+                    getDotPainter: (spot, percent, barData, index) {
+                      return FlDotCirclePainter(
+                        radius: 4,
+                        color: currentMetric.color,
+                        strokeWidth: 3,
+                        strokeColor: cardColor,
+                      );
+                    },
+                  ),
+                  belowBarData: BarAreaData(
+                    show: true,
+                    gradient: LinearGradient(
+                      colors: [
+                        currentMetric.color.withOpacity(0.2),
+                        currentMetric.color.withOpacity(0.05),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                   ),
                 ),
-              ),
-          ],
-          lineTouchData: LineTouchData(
-            enabled: false,
-            getTouchedSpotIndicator: (_, indicators) {
-              return indicators.map((index) {
-                return TouchedSpotIndicatorData(
-                  FlLine(color: Colors.transparent),
-                  FlDotData(show: true),
-                );
-              }).toList();
-            },
-            touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (touchedSpot) => AppColorsManager.secondaryColor,
-              tooltipMargin: 12,
-              tooltipPadding: EdgeInsets.all(5),
-              getTooltipItems: (spots) => spots.map((spot) {
-                final index = spot.x.toInt();
-                final primary = spot.y;
-                final secondary = currentMetric.hasSecondaryValue &&
-                        formattedData.length > index
-                    ? formattedData[index].secondaryValue
-                    : null;
 
-                final tooltipText = secondary != null
-                    ? '${primary.toInt()}/$secondary'
-                    : (primary == primary.truncate()
-                        ? primary.toInt().toString()
-                        : primary.toString());
-                return LineTooltipItem(
-                  tooltipText,
-                  const TextStyle(
-                    color: AppColorsManager.mainDarkBlue,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          showingTooltipIndicators: formattedData
-              .asMap()
-              .entries
-              .map((spot) => ShowingTooltipIndicators([
-                    LineBarSpot(
-                      LineChartBarData(
-                          spots: formattedData
-                              .asMap()
-                              .entries
-                              .map((e) => FlSpot(
-                                  e.key.toDouble(),
-                                  double.tryParse(e.value.value.toString()) ??
-                                      0.0))
-                              .toList()),
-                      0,
-                      FlSpot(
-                        spot.key.toDouble(),
-                        double.tryParse(spot.value.value.toString()) ?? 0.0,
+                // Secondary line if available
+                if (currentMetric.hasSecondaryValue)
+                  LineChartBarData(
+                    color: primaryColor,
+                    spots: pageData.asMap().entries.map((entry) {
+                      return FlSpot(
+                          entry.key.toDouble(),
+                          double.tryParse(
+                                  entry.value.secondaryValue.toString()) ??
+                              0.0);
+                    }).toList(),
+                    isCurved: true,
+                    curveSmoothness: 0.3,
+                    barWidth: 2,
+                    isStrokeCapRound: true,
+                    showingIndicators:
+                        List.generate(pageData.length, (index) => index),
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) {
+                        return FlDotCirclePainter(
+                          radius: 4,
+                          color: primaryColor,
+                          strokeWidth: 3,
+                          strokeColor: cardColor,
+                        );
+                      },
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        colors: [
+                          secondaryColor.withOpacity(0.2),
+                          secondaryColor.withOpacity(0.05),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
                     ),
-                  ]))
-              .toList(),
+                  ),
+              ],
+              lineTouchData: LineTouchData(
+                enabled: false,
+                getTouchedSpotIndicator: (_, indicators) {
+                  return indicators.map((index) {
+                    return TouchedSpotIndicatorData(
+                      FlLine(color: Colors.transparent),
+                      FlDotData(show: true),
+                    );
+                  }).toList();
+                },
+                touchTooltipData: LineTouchTooltipData(
+                  getTooltipColor: (touchedSpot) =>
+                      AppColorsManager.secondaryColor,
+                  tooltipMargin: 12,
+                  tooltipPadding: EdgeInsets.all(5),
+                  getTooltipItems: (spots) => spots.map((spot) {
+                    final index = spot.x.toInt();
+                    final primary = spot.y;
+                    final secondary = currentMetric.hasSecondaryValue &&
+                            pageData.length > index
+                        ? pageData[index].secondaryValue
+                        : null;
+
+                    final tooltipText = secondary != null
+                        ? '${primary.toInt()}/$secondary'
+                        : (primary == primary.truncate()
+                            ? primary.toInt().toString()
+                            : primary.toString());
+                    return LineTooltipItem(
+                      tooltipText,
+                      const TextStyle(
+                        color: AppColorsManager.mainDarkBlue,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              showingTooltipIndicators: pageData
+                  .asMap()
+                  .entries
+                  .map((spot) => ShowingTooltipIndicators([
+                        LineBarSpot(
+                          LineChartBarData(
+                              spots: pageData
+                                  .asMap()
+                                  .entries
+                                  .map((e) => FlSpot(
+                                      e.key.toDouble(),
+                                      double.tryParse(
+                                              e.value.value.toString()) ??
+                                          0.0))
+                                  .toList()),
+                          0,
+                          FlSpot(
+                            spot.key.toDouble(),
+                            double.tryParse(spot.value.value.toString()) ?? 0.0,
+                          ),
+                        ),
+                      ]))
+                  .toList(),
+            ),
+          ),
         ),
-      ),
+        if (hasPagination)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // زر "التالي" → ينقلنا لبيانات أحدث
+                Opacity(
+                  opacity: hasNewer ? 1.0 : 0.0,
+                  child: IgnorePointer(
+                    ignoring: !hasNewer,
+                    child: TextButton(
+                      onPressed: () {
+                        setModalState(() {
+                          chartPageIndex--;
+                        });
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.arrow_back,
+                            color: AppColorsManager.mainDarkBlue,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'التالي',
+                            style: AppTextStyles.font14BlueWeight700,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // Page indicator text
+                Text(
+                  'صفحة ${chartPageIndex + 1} من $totalPages',
+                  style: TextStyle(
+                    fontFamily: AppStrings.cairoFontFamily,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                    color: subtitleColor,
+                  ),
+                ),
+                // زر "السابق" → ينقلنا لبيانات أقدم
+                Opacity(
+                  opacity: hasOlder ? 1.0 : 0.0,
+                  child: IgnorePointer(
+                    ignoring: !hasOlder,
+                    child: TextButton(
+                      onPressed: () {
+                        setModalState(() {
+                          chartPageIndex++;
+                        });
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'السابق',
+                            style: AppTextStyles.font14BlueWeight700,
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.arrow_forward,
+                            color: AppColorsManager.mainDarkBlue,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }

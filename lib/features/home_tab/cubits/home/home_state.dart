@@ -9,6 +9,7 @@ class HomeState extends Equatable {
   final RequestStatus requestStatus;
   final RequestStatus videoRequestStatus;
   final RequestStatus adsRequestStatus;
+  final RequestStatus logoutRequestStatus;
   final List<String> ads;
   final String? errorMessage;
 
@@ -18,6 +19,7 @@ class HomeState extends Equatable {
     required this.requestStatus,
     required this.videoRequestStatus,
     required this.adsRequestStatus,
+    required this.logoutRequestStatus,
     required this.ads,
     this.errorMessage,
   });
@@ -29,6 +31,7 @@ class HomeState extends Equatable {
       requestStatus: RequestStatus.initial,
       videoRequestStatus: RequestStatus.initial,
       adsRequestStatus: RequestStatus.initial,
+      logoutRequestStatus: RequestStatus.initial,
       ads: [],
       errorMessage: null,
     );
@@ -40,6 +43,7 @@ class HomeState extends Equatable {
     RequestStatus? requestStatus,
     RequestStatus? videoRequestStatus,
     RequestStatus? adsRequestStatus,
+    RequestStatus? logoutRequestStatus,
     List<String>? ads,
     String? errorMessage,
   }) {
@@ -49,6 +53,7 @@ class HomeState extends Equatable {
       requestStatus: requestStatus ?? this.requestStatus,
       videoRequestStatus: videoRequestStatus ?? this.videoRequestStatus,
       adsRequestStatus: adsRequestStatus ?? this.adsRequestStatus,
+      logoutRequestStatus: logoutRequestStatus ?? this.logoutRequestStatus,
       ads: ads ?? this.ads,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -62,6 +67,7 @@ class HomeState extends Equatable {
         requestStatus,
         videoRequestStatus,
         adsRequestStatus,
+        logoutRequestStatus,
         errorMessage
       ];
 }

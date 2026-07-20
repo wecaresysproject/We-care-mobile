@@ -9,6 +9,7 @@ class PostPersonalUserInfoData {
   final int age;
   final String gender;
   final String physicalActivity;
+  final int? totalTargetCalories;
 
   PostPersonalUserInfoData({
     required this.weight,
@@ -16,6 +17,7 @@ class PostPersonalUserInfoData {
     required this.age,
     required this.gender,
     required this.physicalActivity,
+    this.totalTargetCalories,
   });
 
   factory PostPersonalUserInfoData.fromJson(Map<String, dynamic> json) =>

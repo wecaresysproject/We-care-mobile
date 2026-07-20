@@ -24,7 +24,7 @@ class TestAnalysisDataEnteryRequestBodyModel {
   @JsonKey(name: "testNeedType")
   final String timesTestPerformed;
   @JsonKey(name: "symptomsForProcedure")
-  final List<String> symptomsRequiringIntervention;
+  final String symptomsRequiringIntervention;
   @JsonKey(name: "imageBase64")
   final List<String> testImages;
   @JsonKey(name: "reportBase64")
@@ -56,7 +56,7 @@ class EditTestAnalysisDataEnteryRequestBodyModel {
   @JsonKey(name: "testNeedType")
   final String timesTestPerformed;
   @JsonKey(name: "symptomsForProcedure")
-  final List<String> symptomsRequiringIntervention;
+  final String symptomsRequiringIntervention;
   @JsonKey(name: "imageBase64")
   final List<String> testImages;
   @JsonKey(name: "reportBase64")

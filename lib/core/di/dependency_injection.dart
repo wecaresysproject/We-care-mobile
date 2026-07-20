@@ -126,6 +126,8 @@ import 'package:we_care/features/x_ray/x_ray_data_entry/logic/cubit/x_ray_data_e
 import 'package:we_care/features/x_ray/x_ray_view/logic/x_ray_view_cubit.dart';
 import 'package:we_care/features/x_ray/xray_services.dart';
 
+import '../../features/change_password/Presentation/view_models/cubit/change_password_cubit.dart';
+import '../../features/change_password/data/repos/change_password_repo.dart';
 import '../../features/create_new_password/Data/repo/create_new_password_repo.dart';
 import '../../features/create_new_password/Presentation/view_models/cubit/create_new_password_cubit.dart';
 import '../../features/forget_password/Data/Repostory/forget_password_repo.dart';
@@ -173,6 +175,11 @@ void setupAppCubits() {
   getIt.registerFactory<CreateNewPasswordCubit>(
     () => CreateNewPasswordCubit(
       getIt<CreateNewPasswordRepo>(),
+    ),
+  );
+  getIt.registerFactory<ChangePasswordCubit>(
+    () => ChangePasswordCubit(
+      getIt<ChangePasswordRepo>(),
     ),
   );
   getIt.registerFactory<XRayDataEntryCubit>(
@@ -431,6 +438,7 @@ void setupAppCubits() {
     () => HomeCubit(
       getIt<HomeRepository>(),
       getIt<AppSharedRepo>(),
+      getIt<FcmTokenManager>(),
     ),
   );
   getIt.registerFactory<AIConsultationCubit>(
@@ -530,6 +538,11 @@ void setupAppRepos() {
 
   getIt.registerLazySingleton<CreateNewPasswordRepo>(
     () => CreateNewPasswordRepo(
+      getIt<AuthApiServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<ChangePasswordRepo>(
+    () => ChangePasswordRepo(
       getIt<AuthApiServices>(),
     ),
   );
@@ -734,6 +747,7 @@ void setupAppRepos() {
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepository(
       getIt<HomeService>(),
+      getIt<AuthApiServices>(),
     ),
   );
   getIt.registerFactory<ContactSupportRepository>(

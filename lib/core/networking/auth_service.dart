@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/core/networking/models/update_fcm_token_request_body.dart';
+import 'package:we_care/features/change_password/data/models/change_password_request_body_model.dart';
+import 'package:we_care/features/change_password/data/models/change_password_response_model.dart';
 import 'package:we_care/features/create_new_password/data/models/create_new_password_request_body.dart';
 import 'package:we_care/features/create_new_password/data/models/create_new_password_response_model.dart';
 import 'package:we_care/features/forget_password/Data/models/forget_password_request_body_model.dart';
@@ -45,10 +47,18 @@ abstract class AuthApiServices {
     @Body() CreateNewPasswordRequestBody createNewPasswordRequestBody,
   );
 
+  @PUT(AuthApiConstants.changePasswordEndPoint)
+  Future<ChangePasswordResponseModel> changePassword(
+    @Body() ChangePasswordRequestBodyModel changePasswordRequestBodyModel,
+  );
+
   @POST(AuthApiConstants.forgotPasswordEndPoint)
   Future<ForgetPasswordResponseModel> forgetPassword(
     @Body() ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
   );
+
+  @POST(AuthApiConstants.logoutEndPoint)
+  Future<dynamic> logout();
 
   @POST("http://147.93.57.70/api/Statistics/fcm-token")
   Future<dynamic> updateFcmToken(

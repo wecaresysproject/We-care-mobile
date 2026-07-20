@@ -8,6 +8,8 @@ class AuthApiConstants {
   static const resendOtpEndPoint = "resend-otp";
   static const verifyOtpEndPoint = "verify-otp";
   static const loginEndPoint = "login";
+  static const changePasswordEndPoint = "change-password";
   static const createNewPasswordEndPoint = "change-password";
   static const forgotPasswordEndPoint = "forgot-password";
+  static const logoutEndPoint = "logout";
 }

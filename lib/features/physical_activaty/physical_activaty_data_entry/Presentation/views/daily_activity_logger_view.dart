@@ -459,12 +459,17 @@ class _DailyActivityLoggerState extends State<DailyActivityLogger> {
         }
       },
       builder: (context, state) {
-        final activities = _collectActivities();
         return AppCustomButton(
           isLoading:
               state.submitPhysicalActivityDataStatus == RequestStatus.loading,
           title: "حفظ",
           onPressed: () async {
+            // نجمع القيم لحظة الضغط عشان نضمن أحدث ما أدخله المستخدم
+            final activities = _collectActivities();
+            if (activities.isEmpty) {
+              await showError("من فضلك أدخل مدة نشاط واحد على الأقل");
+              return;
+            }
             await context
                 .read<PhysicalActivatyDataEntryCubit>()
                 .postDailyDietPlan(activities, day);

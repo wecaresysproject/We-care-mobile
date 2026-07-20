@@ -351,6 +351,17 @@ class _SupplementsViewState extends State<SupplementsView>
               ),
             ),
           ),
+          DataColumn(
+            label: SizedBox(
+              width: 70.w,
+              child: const Center(
+                child: Text(
+                  "الإجمالي",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ),
         ],
         rows: elements.map((element) {
           // Create value lookup map
@@ -358,11 +369,20 @@ class _SupplementsViewState extends State<SupplementsView>
             for (var value in element.values) value.name: value.amount
           };
 
+          final total = element.values
+              .map((value) => double.tryParse(value.amount))
+              .whereType<double>()
+              .fold<double>(0, (sum, amount) => sum + amount);
+
           return DataRow(
             cells: [
               _cell(element.elementName, isElementNameCell: true),
               ...supplements.map(
                 (supplement) => _cell(valueMap[supplement.name] ?? "--"),
+              ),
+              _cell(
+                total == 0 ? "--" : total.toStringAsFixed(1),
+                isElementNameCell: true,
               ),
             ],
           );
@@ -542,8 +562,8 @@ class _SupplementsViewState extends State<SupplementsView>
             return DataRow(
               cells: [
                 _cell(item.nutrient ?? "N/A", isElementNameCell: true),
-                _cell(item.standard?.toStringAsFixed(1) ?? "N/A"),
                 _cell(item.accumulativeStandard?.toStringAsFixed(1) ?? "N/A"),
+                _cell(item.standard?.toStringAsFixed(1) ?? "N/A"),
                 _cell(item.difference?.toStringAsFixed(1) ?? "N/A"),
                 _cell(item.amountFromVitamins?.toStringAsFixed(1) ?? "N/A"),
                 _cell(

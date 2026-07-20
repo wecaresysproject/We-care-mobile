@@ -27,6 +27,7 @@ enum MedicalModule {
   cosmeticSurgeries,
   riskyBehaviors,
   publicHealth,
+  qualityOfLife,
 }
 
 extension MedicalModuleExtension on MedicalModule {
@@ -88,6 +89,8 @@ extension MedicalModuleExtension on MedicalModule {
         return "السلوكيات الخاطئة";
       case MedicalModule.publicHealth:
         return "الصحه العامه";
+      case MedicalModule.qualityOfLife:
+        return "جودة الحياة";
     }
   }
 
@@ -149,6 +152,8 @@ extension MedicalModuleExtension on MedicalModule {
         return "Risky Behaviors Module";
       case MedicalModule.publicHealth:
         return "Public Health Module";
+      case MedicalModule.qualityOfLife:
+        return "Quality of Life Module";
     }
   }
 

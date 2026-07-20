@@ -7,7 +7,7 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedDate;
   final String? isTestNameSelected;
   final String? isTestGroupNameSelected;
-  final String? isTestCodeSelected;
+  final String? isTestNameEnSelected;
   final bool isFormValidated;
   final List<String> countriesNames;
   final List<String> doctorNames;
@@ -18,7 +18,6 @@ class TestAnalysisDataEntryState extends Equatable {
   final String? selectedDoctorName;
   final String? selectedNoOftimesTestPerformed;
   final String? selectedLabCenter;
-  final List<String> symptomsRequiringIntervention; // الاعراض المستدعية للاعراض
 
   final bool isEditMode;
   final String updatedTestId;
@@ -31,7 +30,7 @@ class TestAnalysisDataEntryState extends Equatable {
   final String message; // error or success message
   final String? selectedTestAnnotation;
 
-  final List<String> testCodes;
+  final List<String> testNamesEn;
   final List<String> testGroupNames;
   final List<String> testNames;
   final List<TableRowReponseModel> testTableRowsData;
@@ -49,13 +48,13 @@ class TestAnalysisDataEntryState extends Equatable {
     this.selectedHospitalName,
     this.selectedDoctorName,
     this.selectedNoOftimesTestPerformed,
-    this.isTestCodeSelected,
+    this.isTestNameEnSelected,
     this.message = '',
     this.testImageRequestStatus = UploadImageRequestStatus.initial,
     this.testReportRequestStatus = UploadReportRequestStatus.initial,
     this.uploadedTestImages = const [],
     this.uploadedTestReports = const [],
-    this.testCodes = const [],
+    this.testNamesEn = const [],
     this.testGroupNames = const [],
     this.testNames = const [],
     this.testTableRowsData = const [],
@@ -66,7 +65,6 @@ class TestAnalysisDataEntryState extends Equatable {
     this.labCenters = const [],
     this.hospitalNames = const [],
     this.selectedLabCenter,
-    this.symptomsRequiringIntervention = const [],
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -75,7 +73,7 @@ class TestAnalysisDataEntryState extends Equatable {
           isFormValidated: false,
           isTestNameSelected: null,
           isTestGroupNameSelected: null,
-          isTestCodeSelected: null,
+          isTestNameEnSelected: null,
           selectedCountryName: null,
           selectedHospitalName: null,
           selectedDoctorName: null,
@@ -87,7 +85,7 @@ class TestAnalysisDataEntryState extends Equatable {
           updatedTestId: '',
           uploadedTestImages: const [],
           countriesNames: const [],
-          testCodes: const [],
+          testNamesEn: const [],
           testGroupNames: const [],
           testNames: const [],
           testTableRowsData: const [],
@@ -98,7 +96,6 @@ class TestAnalysisDataEntryState extends Equatable {
           labCenters: const [],
           hospitalNames: const [],
           selectedLabCenter: null,
-          symptomsRequiringIntervention: const [],
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -107,13 +104,13 @@ class TestAnalysisDataEntryState extends Equatable {
     bool? isFormValidated,
     String? isTestNameSelected,
     String? isTestGroupNameSelected,
-    String? isTestCodeSelected,
+    String? isTestNameEnSelected,
     List<String>? countriesNames,
     String? message,
     String? selectedCountryName,
     UploadImageRequestStatus? testImageRequestStatus,
     UploadReportRequestStatus? testReportRequestStatus,
-    List<String>? testCodes,
+    List<String>? testNamesEn,
     List<String>? testGroupNames,
     List<String>? testNames,
     String? selectedTestAnnotation,
@@ -130,7 +127,6 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? labCenters,
     List<String>? hospitalNames,
     String? selectedLabCenter,
-    List<String>? symptomsRequiringIntervention,
   }) {
     return TestAnalysisDataEntryState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -138,7 +134,7 @@ class TestAnalysisDataEntryState extends Equatable {
           testAnalysisDataEntryStatus ?? this.testAnalysisDataEntryStatus,
       isFormValidated: isFormValidated ?? this.isFormValidated,
       isTestNameSelected: isTestNameSelected ?? this.isTestNameSelected,
-      isTestCodeSelected: isTestCodeSelected ?? this.isTestCodeSelected,
+      isTestNameEnSelected: isTestNameEnSelected ?? this.isTestNameEnSelected,
       countriesNames: countriesNames ?? this.countriesNames,
       message: message ?? this.message,
       selectedCountryName: selectedCountryName ?? this.selectedCountryName,
@@ -146,7 +142,7 @@ class TestAnalysisDataEntryState extends Equatable {
           testImageRequestStatus ?? this.testImageRequestStatus,
       testReportRequestStatus:
           testReportRequestStatus ?? this.testReportRequestStatus,
-      testCodes: testCodes ?? this.testCodes,
+      testNamesEn: testNamesEn ?? this.testNamesEn,
       selectedTestAnnotation:
           selectedTestAnnotation ?? this.selectedTestAnnotation,
       isTestGroupNameSelected:
@@ -167,8 +163,6 @@ class TestAnalysisDataEntryState extends Equatable {
       labCenters: labCenters ?? this.labCenters,
       hospitalNames: hospitalNames ?? this.hospitalNames,
       selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
-      symptomsRequiringIntervention:
-          symptomsRequiringIntervention ?? this.symptomsRequiringIntervention,
     );
   }
 
@@ -178,14 +172,14 @@ class TestAnalysisDataEntryState extends Equatable {
         testAnalysisDataEntryStatus,
         isFormValidated,
         isTestNameSelected,
-        isTestCodeSelected,
+        isTestNameEnSelected,
         isTestGroupNameSelected,
         countriesNames,
         message,
         selectedCountryName,
         testImageRequestStatus,
         testReportRequestStatus,
-        testCodes,
+        testNamesEn,
         selectedTestAnnotation,
         testGroupNames,
         testNames,
@@ -202,6 +196,5 @@ class TestAnalysisDataEntryState extends Equatable {
         labCenters,
         hospitalNames,
         selectedLabCenter,
-        symptomsRequiringIntervention,
       ];
 }

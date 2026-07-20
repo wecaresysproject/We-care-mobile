@@ -86,9 +86,9 @@ class SimilarAnalysisCard extends StatelessWidget {
               ),
               InterpretationDetailsContainerWithTitleRow(
                   content: interpretation, title: 'التفسير'),
-              verticalSpacing(8),
-              InterpretationDetailsContainerWithTitleRow(
-                  content: recommendation, title: 'التوصيات'),
+              // verticalSpacing(8),
+              // InterpretationDetailsContainerWithTitleRow(
+              //     content: recommendation, title: 'التوصيات'),
               if (isEditing)
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 16.0),

@@ -290,6 +290,36 @@ class MedicalReportRepo {
     }
   }
 
+  Future<ApiResult<MedicalReportFilterResponseModel>> getVaccinationsFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getVaccinationsFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<MedicalReportFilterResponseModel>> getRiskyBehavioursFilters(
+    String language,
+    String userType,
+  ) async {
+    try {
+      final response = await _apiServices.getRiskyBehavioursFilters(
+        language,
+        userType,
+      );
+      return ApiResult.success(response);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<UploadMedicalReportResponseModel>> uploadReport(
     File reportFile,
     String fileName,

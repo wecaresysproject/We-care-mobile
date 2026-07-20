@@ -55,17 +55,20 @@ class BiometricHistoryView extends StatelessWidget {
                         final index = entry.key;
                         final item = entry.value;
 
-                        final formattedDate = formatDateTime(item.originalDate);
+                        final formattedDate = formatDateTime(
+                          item.originalDate,
+                          needForShare: true,
+                        );
 
                         final value = item.secondaryValue != null
-                            ? "${item.secondaryValue} / ${item.value}"
+                            ? "${item.secondaryValue}/${item.value}"
                             : item.value;
 
-                        return "${index + 1}. 📅 $formattedDate\n📊 $value";
-                      }).join("\n\n");
+                        return "${index + 1}) $formattedDate → $value";
+                      }).join("\n");
 
                       final shareContent =
-                          "📊 سجل قياسات $metricName\n\n$formattedList";
+                          "سجل قياسات $metricName\n\n$formattedList";
 
                       await Share.share(shareContent);
                     },

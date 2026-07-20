@@ -84,6 +84,11 @@ abstract class TestAnalysisSerices {
     @Query("language") String language,
     @Query("UserType") String userType,
   );
+
+  @GET(TestAnalysisApiConstants.getAllEnglishTestNamesEndpoint)
+  Future<TestCodeModel> getTestEnglishNames(
+    @Query("language") String language,
+  );
   @GET(TestAnalysisApiConstants.getTestByGroupNamesEndpoint)
   Future<TestGroupModel> getListOfTestGroupNames(
     @Query("language") String language,
@@ -102,7 +107,7 @@ abstract class TestAnalysisSerices {
     @Query("userType") String? userType,
     @Query("testName") String? testNameQuery,
     @Query("groupName") String? groupNameQuery,
-    @Query("code") String? codeQuery,
+    @Query("testName") String? testNameENQuery,
   );
   @GET("http://147.93.57.70/api/countries")
   Future<dynamic> getCountries(

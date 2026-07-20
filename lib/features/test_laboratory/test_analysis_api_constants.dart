@@ -29,6 +29,7 @@ class TestAnalysisApiConstants {
   static const getTestByGroupNamesEndpoint =
       "/flutter/SortsAnalysis/group-names";
   static const getTestAnnotationsEndpoint = "/flutter/SortsAnalysis/codes";
+  static const getAllEnglishTestNamesEndpoint = "/lab-tests/AllEnglishTestName";
   static const getTestNamesEndpoint = "/flutter/SortsAnalysis/test-names";
   static const getTableOfDataEndpoint = "/flutter/SortsAnalysis/test-info";
 

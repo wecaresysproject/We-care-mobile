@@ -158,12 +158,8 @@ class AnalysisDetailsView extends StatelessWidget {
                   DetailsViewInfoTile(
                     title: "الأعراض المستدعية للإجراء",
                     value: state.selectedAnalysisDetails!
-                            .symptomsRequiringIntervention
-                            ?.asMap()
-                            .entries
-                            .map((e) => "${e.key + 1}- ${e.value}")
-                            .join('\n') ??
-                        "",
+                            .symptomsRequiringIntervention ??
+                        "لم يتم ادخال بيانات",
                     icon: 'assets/images/need_icon.png',
                     isExpanded: true,
                   ),
@@ -213,13 +209,7 @@ Future<void> shareAnalysisDetails(
     return;
   }
 
-  final symptoms = analysis.symptomsRequiringIntervention == null
-      ? ""
-      : analysis.symptomsRequiringIntervention!
-          .asMap()
-          .entries
-          .map((e) => "${e.key + 1}. ${e.value}")
-          .join("\n");
+  final symptoms = analysis.symptomsRequiringIntervention ?? "";
 
   final shareContent = '''
 🧪 تفاصيل التحليل

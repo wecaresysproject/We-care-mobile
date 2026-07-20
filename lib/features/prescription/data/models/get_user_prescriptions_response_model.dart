@@ -33,6 +33,7 @@ class PrescriptionModel {
   List<String> preDescriptionPhoto;
   String country;
   String governate;
+  String? hospital;
   String preDescriptionNotes;
   String modifiedAt;
 
@@ -49,6 +50,7 @@ class PrescriptionModel {
       required this.preDescriptionPhoto,
       required this.country,
       required this.governate,
+      this.hospital,
       required this.preDescriptionNotes,
       required this.modifiedAt});
 

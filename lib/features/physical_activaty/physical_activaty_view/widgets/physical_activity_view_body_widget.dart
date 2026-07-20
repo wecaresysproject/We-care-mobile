@@ -413,6 +413,8 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
       return Column(
         children: slide.metrics.map((metric) {
           final secondSection = metric.metricName.contains("السعرات المحروقة");
+          final isBurnedCaloriesMetric =
+              metric.metricName.contains("السعرات المحروقة بالنشاط الرياضي");
 
           return Column(
             children: [
@@ -433,14 +435,15 @@ class _SwitchableSectionsState extends State<_SwitchableSections> {
               ),
               verticalSpacing(8),
               MetricRow3(
-                isCaloriesSlide: metric.metricName
-                    .contains("السعرات المحروقة بالنشاط الرياضي"),
+                isCaloriesSlide: isBurnedCaloriesMetric,
                 isBMILabel: metric.metricName.contains("BMI"),
                 isWightDetailsSlide: isWeightDetailsSlide,
                 todayValue: metric.todayActual?.toInt().toString() ?? '0',
                 cumulativeValue:
                     metric.accumulativeActual?.toInt().toString() ?? '0',
-                standardValue: metric.standardTarget?.toInt().toString() ?? '0',
+                standardValue: isBurnedCaloriesMetric
+                    ? metric.totalTargetCalories?.toInt().toString() ?? '0'
+                    : metric.standardTarget?.toInt().toString() ?? '0',
                 hasGradientBackground: true,
                 valueFontSize: thirdSlide ? 50 : 16,
               ),

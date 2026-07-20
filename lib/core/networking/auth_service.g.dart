@@ -146,6 +146,31 @@ class _AuthApiServices implements AuthApiServices {
   }
 
   @override
+  Future<ChangePasswordResponseModel> changePassword(
+      ChangePasswordRequestBodyModel changePasswordRequestBodyModel) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(changePasswordRequestBodyModel.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ChangePasswordResponseModel>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'change-password',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ChangePasswordResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ForgetPasswordResponseModel> forgetPassword(
       ForgetPasswordRequestBodyModel forgetPasswordRequestBody) async {
     const _extra = <String, dynamic>{};
@@ -167,6 +192,28 @@ class _AuthApiServices implements AuthApiServices {
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ForgetPasswordResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<dynamic> logout() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch(_setStreamType<dynamic>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          'logout',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = _result.data;
     return value;
   }
 

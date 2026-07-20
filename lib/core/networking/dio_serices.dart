@@ -99,6 +99,12 @@ class DioServices {
     };
   }
 
+  /// Clears the Authorization header from the in-memory Dio instance.
+  /// Must be called on logout to prevent stale token from being sent.
+  static void clearAuthToken() {
+    dio?.options.headers.remove('Authorization');
+  }
+
   static String getUserToken() {
     return dio?.options.headers['Authorization'];
   }

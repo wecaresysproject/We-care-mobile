@@ -52,12 +52,14 @@ class AllergyDataEntryRepo {
     required String language,
     required String userType,
     required String allergyType,
+    required List<String> allergyCauses,
   }) async {
     try {
       final response = await _allergyServices.getExpectedSideEffects(
         language,
         userType,
         allergyType,
+        allergyCauses,
       );
       final partSubRegions =
           (response['data'] as List).map((e) => e as String).toList();

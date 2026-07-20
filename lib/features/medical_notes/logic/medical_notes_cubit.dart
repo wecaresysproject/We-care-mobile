@@ -49,7 +49,7 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
   }
 
   Future<void> initialRequests() async {
-    Future.wait([
+    await Future.wait([
       loadNotes(),
       loadModuleGuidance(),
     ]);
@@ -60,7 +60,7 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
   }
 
   Future<void> loadModuleGuidance() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
+    emit(state.copyWith(moduleGuuidanceRequestStatus: RequestStatus.loading));
 
     final response = await sharedRepo
         .getModuleGuidance(WeCareMedicalModules.medicalNotes.name);
@@ -70,7 +70,7 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
         safeEmit(
           state.copyWith(
             moduleGuidanceData: moduleGuidanceData,
-            requestStatus: RequestStatus.success,
+            moduleGuuidanceRequestStatus: RequestStatus.success,
           ),
         );
         AppLogger.info('Loaded module guidance');
@@ -78,7 +78,7 @@ class MedicalNotesCubit extends Cubit<MedicalNotesState> {
       failure: (error) {
         safeEmit(
           state.copyWith(
-            requestStatus: RequestStatus.failure,
+            moduleGuuidanceRequestStatus: RequestStatus.failure,
             message: error.errors.isNotEmpty
                 ? error.errors.first
                 : 'Failed to load module guidance',

@@ -23,12 +23,12 @@ class MedicalNotesListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Loading
-    if (state.requestStatus == RequestStatus.loading && state.notes.isEmpty) {
+    if (state.requestStatus == RequestStatus.loading) {
       return const LoadingStateView();
     }
 
     // Error
-    if (state.requestStatus == RequestStatus.failure && state.notes.isEmpty) {
+    if (state.requestStatus == RequestStatus.failure) {
       return ErrorViewWidget(
         errorMessage: state.message ?? 'حدث خطأ ما',
         onRetry: () => context.read<MedicalNotesCubit>().loadNotes(),

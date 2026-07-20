@@ -64,16 +64,17 @@ class PhysicalActivatyDataEntryCubit
   Future<void> postPersonalUserInfoData() async {
     emit(state.copyWith(
         submitPhysicalActivityDataStatus: RequestStatus.loading));
-
+    final requestBody = PostPersonalUserInfoData(
+      weight: int.parse(weightController.text),
+      height: int.parse(heightController.text),
+      age: int.parse(ageController.text),
+      gender: state.genderType!,
+      physicalActivity: state.selectedMuscleDesity!,
+      totalTargetCalories: int.parse(targetCaloriesController.text),
+    );
     final result =
         await _physicalActivatyDataEntryRepo.postPersonalUserInfoData(
-      requestBody: PostPersonalUserInfoData(
-        weight: int.parse(weightController.text),
-        height: int.parse(heightController.text),
-        age: int.parse(ageController.text),
-        gender: state.genderType!,
-        physicalActivity: state.selectedMuscleDesity!,
-      ),
+      requestBody: requestBody,
       lanugage: AppStrings.arabicLang,
     );
     result.when(

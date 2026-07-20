@@ -76,6 +76,7 @@ class Metric {
   final num? standardTarget;
   final num? minimumStandard;
   final num? maximumStandard;
+  final num? totalTargetCalories;
 
   Metric({
     required this.metricName,
@@ -84,6 +85,7 @@ class Metric {
     this.standardTarget,
     this.minimumStandard,
     this.maximumStandard,
+    this.totalTargetCalories,
   });
 
   factory Metric.fromJson(Map<String, dynamic> json) => _$MetricFromJson(json);

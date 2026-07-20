@@ -20,6 +20,7 @@ class PrescriptionRequestBodyModel {
   final List<String> preDescriptionPhoto;
   final String country;
   final String governate;
+  final String hospital;
   @JsonKey(name: 'PreDescriptionNotes')
   final String preDescriptionNotes;
 
@@ -34,6 +35,7 @@ class PrescriptionRequestBodyModel {
     required this.preDescriptionPhoto,
     required this.country,
     required this.governate,
+    required this.hospital,
     required this.preDescriptionNotes,
   });
 

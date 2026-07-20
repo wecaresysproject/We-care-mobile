@@ -99,7 +99,6 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     ));
     await Future.wait([
       emitAlleryTriggersBasedOnSelectedAllergyType(),
-      // emitExpectedSideEffects(),
     ]);
     validateRequiredFields();
   }
@@ -125,16 +124,16 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     }
 
     emit(state.copyWith(selectedAllergyCauses: currentCauses));
-    emitExpectedSideEffects();
+    await emitExpectedSideEffects();
     validateRequiredFields();
   }
 
 // Add a method to remove a specific cause
-  void removeAllergyCause(String cause) {
+  Future<void> removeAllergyCause(String cause) async {
     List<String> currentCauses = List.from(state.selectedAllergyCauses);
     currentCauses.remove(cause);
     emit(state.copyWith(selectedAllergyCauses: currentCauses));
-    emitExpectedSideEffects();
+    await emitExpectedSideEffects();
   }
 
   Future<void> intialRequestsForDataEntry() async {
@@ -277,9 +276,12 @@ class AllergyDataEntryCubit extends Cubit<AllergyDataEntryState> {
     final response = await _allergyDataEntryRepo.getExpectedSideEffects(
       language: AppStrings.arabicLang,
       allergyType: state
-          .alleryTypeSelection!, //! to be chnages to be selected مسببات الحساسية selectedAllergyCauses
+          .alleryTypeSelection!,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
+      allergyCauses: state.selectedAllergyCauses,
     );
+    AppLogger.info(
+        "Allergy type : ${state.alleryTypeSelection} allergyCauses ${state.selectedAllergyCauses}");
     response.when(
       success: (response) {
         emit(

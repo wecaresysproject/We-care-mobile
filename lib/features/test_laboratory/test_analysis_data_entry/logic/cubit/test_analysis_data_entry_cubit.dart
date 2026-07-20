@@ -26,11 +26,11 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   final AppSharedRepo sharedRepo;
 
   final TextEditingController reportTextController = TextEditingController();
+  final TextEditingController symptomsController = TextEditingController();
 
   Future<void> intialRequestsForTestAnalysisDataEntry() async {
     await Future.wait([
-      emitListOfTestAnnotations(
-        testType: UserTypes.patient.name.firstLetterToUpperCase,
+      emitTestEnglishNames(
         language: AppStrings.arabicLang,
       ),
       emitListOfTestGroupNames(
@@ -56,8 +56,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         selectedCountryName: editingAnalysisDetailsData.country,
         selectedHospitalName: editingAnalysisDetailsData.hospital,
         selectedDoctorName: editingAnalysisDetailsData.doctor,
-        symptomsRequiringIntervention:
-            editingAnalysisDetailsData.symptomsRequiringIntervention,
         isTestGroupNameSelected: editingAnalysisDetailsData.groupName,
         selectedNoOftimesTestPerformed: editingAnalysisDetailsData.testNeedType,
         isEditMode: true,
@@ -68,6 +66,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       ),
     );
     reportTextController.text = editingAnalysisDetailsData.writtenReport ?? "";
+    symptomsController.text =
+        editingAnalysisDetailsData.symptomsRequiringIntervention ?? "";
     validateRequiredFields();
     intialRequestsForTestAnalysisDataEntry();
   }
@@ -244,17 +244,15 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  Future<void> emitListOfTestAnnotations(
-      {required String language, required String testType}) async {
-    final response = await _testAnalysisDataEntryRepo.getListOFTestAnnotations(
+  Future<void> emitTestEnglishNames({required String language}) async {
+    final response = await _testAnalysisDataEntryRepo.getTestEnglishNames(
       language: language,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
     );
     response.when(
-      success: (testCodes) {
+      success: (testNamesEn) {
         safeEmit(
           state.copyWith(
-            testCodes: testCodes,
+            testNamesEn: testNamesEn,
           ),
         );
       },
@@ -291,27 +289,6 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         );
       },
     );
-  }
-
-  void updateSymptomsRequiringIntervention(String issue) {
-    if (issue.isEmpty) return;
-
-    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
-
-    // موجود؟ شيله .. مش موجود؟ ضيفه  (toggle)
-    if (symptoms.contains(issue)) {
-      symptoms.remove(issue);
-    } else {
-      symptoms.add(issue);
-    }
-
-    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
-  }
-
-  void removeSymptomRequiringIntervention(String issue) {
-    List<String> symptoms = List.from(state.symptomsRequiringIntervention);
-    symptoms.remove(issue);
-    emit(state.copyWith(symptomsRequiringIntervention: symptoms));
   }
 
   Future<void> emitListOfTestNames(
@@ -383,10 +360,10 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     );
   }
 
-  Future<void> updateTestCodeSelection(String? testCode) async {
+  Future<void> updateTestNameEnSelection(String? testNameEn) async {
     safeEmit(
       state.copyWith(
-        isTestCodeSelected: testCode,
+        isTestNameEnSelected: testNameEn,
       ),
     );
     await getTableDetails();
@@ -466,7 +443,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     final response = await _testAnalysisDataEntryRepo.getTableDetails(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
-      codeQuery: state.isTestCodeSelected,
+      codeQuery: state.isTestNameEnSelected,
       groupNameQuery: state.isTestGroupNameSelected,
       testNameQuery: state.isTestNameSelected,
     );
@@ -508,7 +485,9 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName ?? localozation.no_data_entered,
         doctor: state.selectedDoctorName ?? localozation.no_data_entered,
-        symptomsRequiringIntervention: state.symptomsRequiringIntervention,
+        symptomsRequiringIntervention: symptomsController.text.isEmpty
+            ? localozation.no_data_entered
+            : symptomsController.text,
         timesTestPerformed: state.selectedNoOftimesTestPerformed ??
             localozation.no_data_entered,
         writtenReport: reportTextController.text.isEmpty
@@ -562,7 +541,8 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
         reportImages: state.uploadedTestReports,
         hospital: state.selectedHospitalName!,
         doctor: state.selectedDoctorName!,
-        symptomsRequiringIntervention: state.symptomsRequiringIntervention,
+        symptomsRequiringIntervention:
+            symptomsController.text.isEmpty ? "" : symptomsController.text,
         timesTestPerformed: state.selectedNoOftimesTestPerformed!,
       ),
       testId: state.updatedTestId,
@@ -617,7 +597,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     if (state.selectedDate == null ||
         state.uploadedTestImages.isEmpty ||
         (state.isTestNameSelected == null &&
-            state.isTestCodeSelected == null &&
+            state.isTestNameEnSelected == null &&
             state.isTestGroupNameSelected == null)) {
       safeEmit(
         state.copyWith(
@@ -636,6 +616,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
   @override
   Future<void> close() {
     reportTextController.dispose();
+    symptomsController.dispose();
     return super.close();
   }
 }

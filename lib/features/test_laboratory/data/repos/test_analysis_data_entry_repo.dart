@@ -61,6 +61,16 @@ class TestAnalysisDataEntryRepo {
     }
   }
 
+  Future<ApiResult<List<String>>> getTestEnglishNames(
+      {required String language}) async {
+    try {
+      final response = await _testAnalysisSerices.getTestEnglishNames(language);
+      return ApiResult.success(response.codesData);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
   Future<ApiResult<List<String>>> getListOfTestGroupNames(
       {required String language, required String userType}) async {
     try {

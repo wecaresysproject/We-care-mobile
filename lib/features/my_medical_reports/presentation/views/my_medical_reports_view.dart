@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_with_guidance.dart';
 import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
@@ -151,108 +153,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                   _selectedStates[index] = !isSelected;
                                 });
 
-                                // Basic Info Selection sync
-                                if (dummyCategory.title ==
-                                    "البيانات الاساسية") {
-                                  _syncBasicInfoSelectionToCubit(
-                                      context, index);
-                                }
-                                if (dummyCategory.title == "القياسات الحيوية") {
-                                  _syncVitalSignsSelectionToCubit(
-                                    context,
-                                    index,
-                                  );
-                                }
-
-                                // Medicine Selection sync
-                                if (dummyCategory.title == "الأدوية") {
-                                  _syncMedicineSelectionToCubit(context, index);
-                                }
-
-                                // Chronic Diseases Selection sync
-                                if (dummyCategory.title == "الامراض المزمنه") {
-                                  _syncChronicDiseasesSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Urgent Complaints Selection sync
-                                if (dummyCategory.title == "الشكاوى الطارئة") {
-                                  _syncUrgentComplaintsSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Radiology Selection sync
-                                if (dummyCategory.title == "الأشعة") {
-                                  _syncRadiologySelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Medical Tests Selection sync
-                                if (dummyCategory.title == "التحاليل الطبية") {
-                                  _syncMedicalTestsSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Doctors Prescription Selection sync
-                                if (dummyCategory.title == "روشتة الأطباء") {
-                                  _syncPrescriptionsSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Surgeries Selection sync
-                                if (dummyCategory.title ==
-                                    "العمليات الجراحية") {
-                                  _syncSurgeriesSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Genetic Diseases Selection sync
-                                if (dummyCategory.title == "الأمراض الوراثية") {
-                                  _syncGeneticDiseasesSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Allergies Selection sync
-                                if (dummyCategory.title == "الحساسية") {
-                                  _syncAllergiesSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Eyes Selection sync
-                                if (dummyCategory.title == "العيون") {
-                                  _syncEyesSelectionToCubit(context, index);
-                                }
-
-                                // Dental Selection sync
-                                if (dummyCategory.title == "الأسنان") {
-                                  _syncDentalSelectionToCubit(context, index);
-                                }
-
-                                // Smart Nutrition Selection sync
-                                if (dummyCategory.title ==
-                                    "المحلل الغذائي الذكي") {
-                                  _syncSmartNutritionSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Supplements Selection sync
-                                if (dummyCategory.title ==
-                                    "المكملات الغذائية") {
-                                  _syncSupplementsSelectionToCubit(
-                                      context, index);
-                                }
-
-                                // Physical Activity Selection sync
-                                if (dummyCategory.title == "النشاط الرياضي") {
-                                  _syncPhysicalActivitySelectionToCubit(
-                                      context, index, state);
-                                }
-
-                                // Mental Diseases Selection sync
-                                if (dummyCategory.title == "الأمراض النفسية") {
-                                  _syncMentalDiseasesSelectionToCubit(
-                                      context, index);
-                                }
+                                _syncSelectionToCubit(
+                                    context, index, dummyCategory.title, state);
                               },
                             ),
                             if (isExpanded) ...[
@@ -285,77 +187,8 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                             currentSelected;
                                       });
 
-                                      // Basic Info Integration (using dummyTitle for key)
-                                      if (dummyCategory.title ==
-                                          "البيانات الاساسية") {
-                                        _syncBasicInfoSelectionToCubit(
-                                            context, index);
-                                      }
-                                      if (dummyCategory.title ==
-                                          "القياسات الحيوية") {
-                                        _syncVitalSignsSelectionToCubit(
-                                          context,
-                                          index,
-                                        );
-                                      }
-
-                                      // Medicine Selection Integration
-                                      if (dummyCategory.title == "الأدوية") {
-                                        _syncMedicineSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Radiology Selection Integration
-                                      if (dummyCategory.title == "الأشعة") {
-                                        _syncRadiologySelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Medical Tests Selection Integration
-                                      if (dummyCategory.title ==
-                                          "التحاليل الطبية") {
-                                        _syncMedicalTestsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Doctors Prescription Selection Integration
-                                      if (dummyCategory.title ==
-                                          "روشتة الأطباء") {
-                                        _syncPrescriptionsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Surgeries Selection Integration
-                                      if (dummyCategory.title ==
-                                          "العمليات الجراحية") {
-                                        _syncSurgeriesSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Genetic Diseases Selection Integration
-                                      if (dummyCategory.title ==
-                                          "الأمراض الوراثية") {
-                                        _syncGeneticDiseasesSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Eyes Selection Integration
-                                      if (dummyCategory.title == "العيون") {
-                                        _syncEyesSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Dental Selection Integration
-                                      if (dummyCategory.title == "الأسنان") {
-                                        _syncDentalSelectionToCubit(
-                                            context, index);
-                                      }
-                                      // Urgent Complaints Selection Integration
-                                      if (dummyCategory.title ==
-                                          "الشكاوى الطارئة") {
-                                        _syncUrgentComplaintsSelectionToCubit(
-                                            context, index);
-                                      }
+                                      _syncSelectionToCubit(context, index,
+                                          dummyCategory.title, state);
                                     },
                                   ),
                                 if (category.selectionType ==
@@ -399,90 +232,13 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         },
                                       );
 
-                                      // Medicine Selection Integration
-                                      if (dummyCategory.title == "الأدوية") {
-                                        _syncMedicineSelectionToCubit(
-                                            context, index);
-                                      }
+                                      // بنطبع المفتاح الفعلي المستخدم في الـ map
+                                      // عشان يسهل مطابقته مع مفاتيح المزامنة
+                                      AppLogger.debug(
+                                          "[TOGGLE] '${dummyCategory.title}' → المفتاح: '${sectionIndex}_$filterTitle' | المختار: ${_selectedFilters[index]?["${sectionIndex}_$filterTitle"]}");
 
-                                      // Radiology Selection Integration
-                                      if (dummyCategory.title == "الأشعة") {
-                                        _syncRadiologySelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Medical Tests Selection Integration
-                                      if (dummyCategory.title ==
-                                          "التحاليل الطبية") {
-                                        _syncMedicalTestsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Doctors Prescription Selection Integration
-                                      if (dummyCategory.title ==
-                                          "روشتة الأطباء") {
-                                        _syncPrescriptionsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Surgeries Selection Integration
-                                      if (dummyCategory.title ==
-                                          "العمليات الجراحية") {
-                                        _syncSurgeriesSelectionToCubit(
-                                            context, index);
-                                      }
-                                      // Allergies Selection sync
-                                      if (dummyCategory.title == "الحساسية") {
-                                        _syncAllergiesSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Eyes Selection sync
-                                      if (dummyCategory.title == "العيون") {
-                                        _syncEyesSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Dental Selection sync
-                                      if (dummyCategory.title == "الأسنان") {
-                                        _syncDentalSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Urgent Complaints Selection sync
-                                      if (dummyCategory.title ==
-                                          "الشكاوى الطارئة") {
-                                        _syncUrgentComplaintsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Smart Nutrition Selection sync
-                                      if (dummyCategory.title ==
-                                          "المحلل الغذائي الذكي") {
-                                        _syncSmartNutritionSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Supplements Selection sync
-                                      if (dummyCategory.title ==
-                                          "المكملات الغذائية") {
-                                        _syncSupplementsSelectionToCubit(
-                                            context, index);
-                                      }
-
-                                      // Physical Activity Selection sync
-                                      if (dummyCategory.title ==
-                                          "النشاط الرياضي") {
-                                        _syncPhysicalActivitySelectionToCubit(
-                                            context, index, state);
-                                      }
-
-                                      // Mental Diseases Selection sync
-                                      if (dummyCategory.title ==
-                                          "الأمراض النفسية") {
-                                        _syncMentalDiseasesSelectionToCubit(
-                                            context, index);
-                                      }
+                                      _syncSelectionToCubit(context, index,
+                                          dummyCategory.title, state);
                                     },
                                   ),
                               ],
@@ -502,6 +258,107 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         ),
       ),
     );
+  }
+
+  /// نحدد الموديول عن طريق الـ enum (بدل مقارنة نصوص) وننده دالة المزامنة
+  /// المناسبة له. الموديولات اللي لسه مالهاش مزامنة (زي موديولات الصلاحيات
+  /// الجديدة) بتقع في default من غير أي كسر.
+  void _syncSelectionToCubit(BuildContext context, int index,
+      String categoryTitle, MedicalReportGenerationState state) {
+    final module = MedicalModuleExtension.fromString(categoryTitle);
+    switch (module) {
+      case MedicalModule.basicInformation:
+        _syncBasicInfoSelectionToCubit(context, index);
+        break;
+      case MedicalModule.vitalSigns:
+        _syncVitalSignsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.medications:
+        _syncMedicineSelectionToCubit(context, index);
+        break;
+      case MedicalModule.chronicDiseases:
+        _syncChronicDiseasesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.urgentComplaints:
+        _syncUrgentComplaintsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.radiology:
+        _syncRadiologySelectionToCubit(context, index);
+        break;
+      case MedicalModule.medicalTests:
+        _syncMedicalTestsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.doctorsPrescriptions:
+        _syncPrescriptionsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.surgeries:
+        _syncSurgeriesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.geneticDiseases:
+        _syncGeneticDiseasesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.allergies:
+        _syncAllergiesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.eyes:
+        _syncEyesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.dental:
+        _syncDentalSelectionToCubit(context, index);
+        break;
+      case MedicalModule.smartNutritionalAnalyzer:
+        _syncSmartNutritionSelectionToCubit(context, index);
+        break;
+      case MedicalModule.supplements:
+        _syncSupplementsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.sportsActivity:
+        _syncPhysicalActivitySelectionToCubit(context, index, state);
+        break;
+      case MedicalModule.mentalHealth:
+        _syncMentalDiseasesSelectionToCubit(context, index);
+        break;
+      case MedicalModule.vaccinations:
+        _syncVaccinationsSelectionToCubit(context, index);
+        break;
+      case MedicalModule.riskyBehaviors:
+        _syncRiskyBehavioursSelectionToCubit(context, index);
+        break;
+      case MedicalModule.qualityOfLife:
+        _syncQualityOfLifeSelectionToCubit(context, index);
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _syncVaccinationsSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateVaccinationsSelection(
+          getAll: getAll,
+          selectedYears: filters["0_السنة"]?.toList() ?? [],
+        );
+  }
+
+  void _syncRiskyBehavioursSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    final filters = _selectedFilters[index] ?? {};
+    context.read<MedicalReportGenerationCubit>().updateRiskyBehavioursSelection(
+          getAll: getAll,
+          selectedTypes: filters["0_النوع"]?.toList() ?? [],
+        );
+  }
+
+  /// جودة الحياة: مفيش فلاتر — بس checkbox التصنيف (active / not active).
+  void _syncQualityOfLifeSelectionToCubit(BuildContext context, int index) {
+    final getAll =
+        _selectedStates.isEmpty ? false : (_selectedStates[index] ?? false);
+    context.read<MedicalReportGenerationCubit>().updateQualityOfLifeSelection(
+          getAll: getAll,
+        );
   }
 
   void _syncBasicInfoSelectionToCubit(BuildContext context, int index) {

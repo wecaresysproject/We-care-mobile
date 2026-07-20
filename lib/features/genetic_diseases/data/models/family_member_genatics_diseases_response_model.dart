@@ -31,10 +31,15 @@ class GeneticDisease {
   String inheritanceType;
   String diseaseStatus;
 
+  /// المرحلة العمرية للظهور — بنبعتها وقت الإنشاء بنفس المفتاح،
+  /// ولازم الباك اند يرجّعها هنا عشان متتمسحش وقت التعديل.
+  String? ageGroup;
+
   GeneticDisease({
     required this.geneticDisease,
     required this.inheritanceType,
     required this.diseaseStatus,
+    this.ageGroup,
   });
 
   factory GeneticDisease.fromJson(Map<String, dynamic> json) =>

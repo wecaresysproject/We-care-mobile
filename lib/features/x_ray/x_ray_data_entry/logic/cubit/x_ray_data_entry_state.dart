@@ -26,7 +26,6 @@ class XRayDataEntryState extends Equatable {
   final String? selectedCountryName;
   final String? selectedTreatedDoctor;
   final String? selectedRadiologistDoctorName;
-  final List<String> symptomsRequiringIntervention; // الاعراض المستدعية للاعراض
   final UploadImageRequestStatus xRayImageRequestStatus;
   final UploadReportRequestStatus xRayReportRequestStatus;
   final RadiologyData? xRayEditedModel;
@@ -63,7 +62,6 @@ class XRayDataEntryState extends Equatable {
     this.uploadedTestImages = const [],
     this.uploadedTestReports = const [],
     this.radiologyDoctors = const [],
-    this.symptomsRequiringIntervention = const [],
     this.selectedBodyPartId,
   }) : super();
 
@@ -91,7 +89,6 @@ class XRayDataEntryState extends Equatable {
           uploadedTestImages: const [],
           uploadedTestReports: const [],
           radiologyDoctors: const [],
-          symptomsRequiringIntervention: const [],
           selectedBodyPartId: null,
         );
 
@@ -124,7 +121,6 @@ class XRayDataEntryState extends Equatable {
     List<String>? uploadedTestImages,
     List<String>? uploadedTestReports,
     List<String>? radiologyDoctors,
-    List<String>? symptomsRequiringIntervention,
     String? selectedBodyPartId,
   }) {
     return XRayDataEntryState(
@@ -167,8 +163,6 @@ class XRayDataEntryState extends Equatable {
       uploadedTestImages: uploadedTestImages ?? this.uploadedTestImages,
       uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
       radiologyDoctors: radiologyDoctors ?? this.radiologyDoctors,
-      symptomsRequiringIntervention:
-          symptomsRequiringIntervention ?? this.symptomsRequiringIntervention,
       selectedBodyPartId: selectedBodyPartId ?? this.selectedBodyPartId,
     );
   }
@@ -203,7 +197,6 @@ class XRayDataEntryState extends Equatable {
         uploadedTestImages,
         uploadedTestReports,
         radiologyDoctors,
-        symptomsRequiringIntervention,
         selectedBodyPartId,
       ];
 }
