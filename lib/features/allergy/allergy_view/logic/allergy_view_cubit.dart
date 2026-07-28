@@ -78,22 +78,6 @@ class AllergyViewCubit extends Cubit<AllergyViewState> {
     await getAllergyDiseases(page: currentPage + 1);
   }
 
-  Future<void> getSurgeriesFilters() async {
-    emit(state.copyWith(requestStatus: RequestStatus.loading));
-    final result =
-        await allergyViewRepo.gettFilters(language: AppStrings.arabicLang);
-
-    result.when(success: (response) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        yearsFilter: response.years,
-        surgeryNameFilter: response.surgeryNames,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(requestStatus: RequestStatus.failure));
-    });
-  }
-
   Future<void> getSingleAllergyDetailsById(String id) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await allergyViewRepo.getSingleAllergyDetailsById(

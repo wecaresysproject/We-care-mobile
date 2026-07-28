@@ -13,8 +13,8 @@ class ScheduledMedicinesListCubit extends Cubit<ScheduledMedicinesListState> {
 
   /// Safely reads all medicine alarms from Hive using a stable key.
   List<MedicineAlarmModel> _getAllAlarms() {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
     return List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
   }
 
@@ -77,8 +77,8 @@ class ScheduledMedicinesListCubit extends Cubit<ScheduledMedicinesListState> {
   }
 
   Future<void> _removeMedicineAlarms(String medicineName) async {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     final alarms = _getAllAlarms();
     alarms.removeWhere((model) => model.medicineName == medicineName);

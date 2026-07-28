@@ -32,6 +32,7 @@ class XRayDataEntryState extends Equatable {
   final bool isEditMode;
   final List<String> uploadedTestImages; // URLs returned from API
   final List<String> uploadedTestReports;
+  final ModuleGuidanceDataModel? moduleGuidanceData;
 
   const XRayDataEntryState({
     this.selectedPuposes = const [],
@@ -63,6 +64,7 @@ class XRayDataEntryState extends Equatable {
     this.uploadedTestReports = const [],
     this.radiologyDoctors = const [],
     this.selectedBodyPartId,
+    this.moduleGuidanceData,
   }) : super();
 
   const XRayDataEntryState.initialState()
@@ -90,6 +92,7 @@ class XRayDataEntryState extends Equatable {
           uploadedTestReports: const [],
           radiologyDoctors: const [],
           selectedBodyPartId: null,
+          moduleGuidanceData: null,
         );
 
   XRayDataEntryState copyWith({
@@ -122,6 +125,7 @@ class XRayDataEntryState extends Equatable {
     List<String>? uploadedTestReports,
     List<String>? radiologyDoctors,
     String? selectedBodyPartId,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return XRayDataEntryState(
       xRayDataEntryStatus: xRayDataEntryStatus ?? this.xRayDataEntryStatus,
@@ -164,6 +168,7 @@ class XRayDataEntryState extends Equatable {
       uploadedTestReports: uploadedTestReports ?? this.uploadedTestReports,
       radiologyDoctors: radiologyDoctors ?? this.radiologyDoctors,
       selectedBodyPartId: selectedBodyPartId ?? this.selectedBodyPartId,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -198,5 +203,6 @@ class XRayDataEntryState extends Equatable {
         uploadedTestReports,
         radiologyDoctors,
         selectedBodyPartId,
+        moduleGuidanceData,
       ];
 }

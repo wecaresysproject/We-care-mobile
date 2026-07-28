@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill -9 -f \"dart run repro_ab_tablehelper.dart\")",
+      "Bash(git status *)",
+      "Bash(python3 -)",
+      "Bash(git switch *)"
+    ]
+  }
+}

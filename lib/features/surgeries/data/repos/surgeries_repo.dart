@@ -59,11 +59,11 @@ class SurgeriesViewRepo {
   Future<ApiResult<GetUserSurgeriesResponseModal>> getFilteredSurgeries({
     required String language,
     int? year,
-    String? surgeryName,
+    String? surgeryRegion,
   }) async {
     try {
       final response = await surgeriesService.getFilteredSurgeries(
-          language, surgeryName, year);
+          language, surgeryRegion, year);
 
       return ApiResult.success(response);
     } catch (error) {

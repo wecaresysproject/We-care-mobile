@@ -75,7 +75,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     //   ),
     // );
     //!listen to ui using listner to navigate to MedicineAlarmRingingScreen using state.ringingAlarm
-    emit(
+    safeEmit(
       state.copyWith(
         ringingAlarm: alarms.alarms.first,
       ),
@@ -84,13 +84,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> fetchNewMedicalCompitabilitySystemPrompt() async {
-    emit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(fetchSystemPromptStatus: RequestStatus.loading));
 
     final result =
         await _medicinesDataEntryRepo.fetchMedicalCompitabilitySystemPrompt();
     result.when(
       success: (prompt) {
-        emit(
+        safeEmit(
           state.copyWith(
             fetchSystemPromptStatus: RequestStatus.success,
             medicalCompitabilitySystemPrompt: prompt,
@@ -98,7 +98,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             fetchSystemPromptStatus: RequestStatus.failure,
             message: failure.errors.first,
@@ -112,7 +112,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   Future<void> analyzeMedicalCompatibility() async {
     try {
       // Start loading
-      emit(
+      safeEmit(
         state.copyWith(
           analyzeMedicalCompatibilityStatus: RequestStatus.loading,
         ),
@@ -120,7 +120,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
       /// check if profile exists
       if (state.userMedicalProfileHistory == null) {
-        emit(
+        safeEmit(
           state.copyWith(
             analyzeMedicalCompatibilityStatus: RequestStatus.failure,
             message: "تعذر تحميل الملف الطبي للمريض، يرجى المحاولة مرة أخرى",
@@ -145,30 +145,16 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
       // if (analysis != null) {
 
-      emit(
+      safeEmit(
         state.copyWith(
           analyzeMedicalCompatibilityStatus: RequestStatus.success,
           compatibilityAnalysis: analysis,
-          // compatibilityAnalysis: CompatibilityAnalysisModel(
-          //   analysisSummary:
-          //       "تم تحليل التوافق بين الدواء الجديد والملف الطبي للمريض. تم اكتشاف بعض التداخلات الدوائية التي تتطلب الانتباه والمتابعة مع الطبيب.",
-          //   issues: [
-          //     CompatibilityIssue(
-          //       riskLevel: "L1",
-          //       title: "تداخل دوائي خطير مع مميعات الدم",
-          //       scientificReason:
-          //           "الدواء الجديد قد يزيد من تأثير مميعات الدم مثل الوارفارين مما قد يؤدي إلى زيادة خطر النزيف الحاد.",
-          //       doctorQuestion:
-          //           "هل يجب إيقاف أحد الدواءين أو تعديل الجرعة لتقليل خطر النزيف؟",
-          //     ),
-          //          ]
-          //    );
         ),
       );
       // }
     } catch (e) {
       AppLogger.error('Error in analyzeMedicalCompatibility: $e');
-      emit(
+      safeEmit(
         state.copyWith(
           analyzeMedicalCompatibilityStatus: RequestStatus.failure,
           message: 'حدث خطأ أثناء تحليل التوافق الدوائي $e',
@@ -178,7 +164,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> getUserMedicalHistoryDetails() async {
-    emit(state.copyWith(
+    safeEmit(state.copyWith(
       medicalHistoryStatus: RequestStatus.loading,
     ));
 
@@ -187,7 +173,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
     response.when(
       success: (userMedicalProfileHistory) {
-        emit(
+        safeEmit(
           state.copyWith(
             userMedicalProfileHistory: userMedicalProfileHistory,
             medicalHistoryStatus: RequestStatus.success,
@@ -195,7 +181,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (failure) {
-        emit(
+        safeEmit(
           state.copyWith(
             userMedicalProfileHistory: null,
             medicalHistoryStatus: RequestStatus.failure,
@@ -211,13 +197,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
       final medicalComplaintBox =
           Hive.box<MedicalComplaint>("medical_complaints");
       medicalComplaints = medicalComplaintBox.values.toList(growable: true);
-      emit(
+      safeEmit(
         state.copyWith(
           medicalComplaints: medicalComplaints,
         ),
       );
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           medicalComplaints: [],
           message: e.toString(),
@@ -231,9 +217,10 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   ) async {
     await storeTempUserPastComplaints(pastDataEntered.mainSymptoms);
 
-    emit(
+    safeEmit(
       state.copyWith(
         medicineStartDate: pastDataEntered.startDate,
+        medicineEndDate: pastDataEntered.endDate,
         selectedMedicineName: pastDataEntered.medicineName,
         selectedMedicalForm: pastDataEntered.usageMethod,
         selectedNoOfDose: pastDataEntered.dosageFrequency,
@@ -287,7 +274,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> submitEditsForMedicine() async {
-    emit(
+    safeEmit(
       state.copyWith(
         medicinesDataEntryStatus: RequestStatus.loading,
       ),
@@ -298,6 +285,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
       requestBody: MedicineDataEntryRequestBody(
         selectedDoseAmount: state.selectedDoseAmount!,
         startDate: state.medicineStartDate!,
+        //* optional: stays null unless the user picked an end date
+        endDate: state.medicineEndDate,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
         dosageFrequency: state.selectedNoOfDose!,
@@ -316,7 +305,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             medicinesDataEntryStatus: RequestStatus.success,
             message: successMessage,
@@ -324,7 +313,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             medicinesDataEntryStatus: RequestStatus.failure,
             message: error.errors.first,
@@ -420,7 +409,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   void getMedcineIdByName(String selectedMedicineName) {
     for (final medcineInfo in state.medicinesBasicInfo!) {
       if (medcineInfo.tradeName == selectedMedicineName) {
-        emit(
+        safeEmit(
           state.copyWith(
             medicineId: medcineInfo.id,
           ),
@@ -431,7 +420,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> emitMedicineforms() async {
-    emit(
+    safeEmit(
       state.copyWith(
         medicalFormsOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -443,7 +432,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             medicineForms: response,
             medicalFormsOptionsLoadingState: OptionsLoadingState.loaded,
@@ -451,7 +440,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             medicalFormsOptionsLoadingState: OptionsLoadingState.error,
@@ -462,7 +451,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> emitMedcineDosesByForms() async {
-    emit(
+    safeEmit(
       state.copyWith(
         medicalDosesOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -475,7 +464,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             medicalDoses: response,
             medicalDosesOptionsLoadingState: OptionsLoadingState.loaded,
@@ -483,7 +472,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             medicalDosesOptionsLoadingState: OptionsLoadingState.error,
@@ -578,7 +567,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> emitAllDurationsForCategory() async {
-    emit(
+    safeEmit(
       state.copyWith(
         allDurationsBasedOnCategoryOptionsLoadingState:
             OptionsLoadingState.loading,
@@ -591,7 +580,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             allDurationsBasedOnCategory: response,
             allDurationsBasedOnCategoryOptionsLoadingState:
@@ -600,7 +589,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             allDurationsBasedOnCategoryOptionsLoadingState:
@@ -612,7 +601,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> postMedicinesDataEntry(S locale) async {
-    emit(
+    safeEmit(
       state.copyWith(
         medicinesDataEntryStatus: RequestStatus.loading,
       ),
@@ -622,6 +611,8 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
       requestBody: MedicineDataEntryRequestBody(
         selectedDoseAmount: state.selectedDoseAmount!,
         startDate: state.medicineStartDate!,
+        //* optional: stays null unless the user picked an end date
+        endDate: state.medicineEndDate,
         medicineName: state.selectedMedicineName!,
         usageMethod: state.selectedMedicalForm!,
         dosageFrequency: state.selectedNoOfDose!,
@@ -641,7 +632,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     );
     response.when(
       success: (successMessage) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: successMessage,
             medicinesDataEntryStatus: RequestStatus.success,
@@ -649,7 +640,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             medicinesDataEntryStatus: RequestStatus.failure,
@@ -674,7 +665,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
           Hive.box<MedicalComplaint>("medical_complaints");
       await medicalComplaintBox.clear();
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: e.toString(),
         ),
@@ -858,7 +849,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   void updateSelectedAlarmTime(String? alarmTime) {
-    emit(
+    safeEmit(
       state.copyWith(
         selectedAlarmTime: alarmTime,
       ),
@@ -867,13 +858,18 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
   /// Update Field Values
   void updateStartMedicineDate(String? date) {
-    emit(state.copyWith(medicineStartDate: date));
+    safeEmit(state.copyWith(medicineStartDate: date));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
   }
 
+  /// Optional field, so it is deliberately left out of the form validations.
+  void updateEndMedicineDate(String? date) {
+    safeEmit(state.copyWith(medicineEndDate: date));
+  }
+
   Future<void> updateSelectedMedicineName(String? medicineName) async {
-    emit(state.copyWith(selectedMedicineName: medicineName));
+    safeEmit(state.copyWith(selectedMedicineName: medicineName));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
@@ -882,7 +878,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> updateSelectedMedicalForm(String? form) async {
-    emit(state.copyWith(selectedMedicalForm: form));
+    safeEmit(state.copyWith(selectedMedicalForm: form));
     await Future.wait([
       emitMedcineDosesByForms(),
       emitAllDoseAmounts(),
@@ -895,21 +891,21 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
   //! Recheck this once more
   void updateSelectedDose(String? dose) {
-    emit(state.copyWith(selectedDose: dose));
+    safeEmit(state.copyWith(selectedDose: dose));
     // validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedDoseFrequency(String? noOfDose) {
-    emit(state.copyWith(selectedNoOfDose: noOfDose));
+    safeEmit(state.copyWith(selectedNoOfDose: noOfDose));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedChronicDisease(String? val) {
-    emit(state.copyWith(selectedChronicDiseaseName: val));
+    safeEmit(state.copyWith(selectedChronicDiseaseName: val));
   }
 
   Future<void> getChronicDiseasesNames() async {
@@ -936,14 +932,14 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   void updateSelectedDoseAmount(String? doseAmount) {
-    emit(state.copyWith(selectedDoseAmount: doseAmount));
+    safeEmit(state.copyWith(selectedDoseAmount: doseAmount));
     validateRequiredFields();
     validateRequiredFieldsForAddNewMedicineInChronicDiseaseModule();
     validateRequiredFieldsForMedicationCompatibility();
   }
 
   Future<void> emitAllDoseAmounts() async {
-    emit(
+    safeEmit(
       state.copyWith(
         dosageAmountOptionsLoadingState: OptionsLoadingState.loading,
       ),
@@ -955,7 +951,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             dosageAmounts: response,
             dosageAmountOptionsLoadingState: OptionsLoadingState.loaded,
@@ -963,7 +959,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             dosageAmountOptionsLoadingState: OptionsLoadingState.error,
@@ -974,20 +970,20 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
   }
 
   Future<void> updateSelectedDoseDuration(String? doseDuration) async {
-    emit(state.copyWith(doseDuration: doseDuration));
+    safeEmit(state.copyWith(doseDuration: doseDuration));
     await emitAllDurationsForCategory();
     validateRequiredFields();
     validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedTimePeriod(String? timePeriods) {
-    emit(state.copyWith(timePeriods: timePeriods));
+    safeEmit(state.copyWith(timePeriods: timePeriods));
     validateRequiredFields();
     validateRequiredFieldsForMedicationCompatibility();
   }
 
   void updateSelectedDoctorName(String? value) {
-    emit(state.copyWith(selectedDoctorName: value));
+    safeEmit(state.copyWith(selectedDoctorName: value));
   }
 
   void validateRequiredFields() {
@@ -998,13 +994,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         state.doseDuration == null ||
         state.timePeriods == null ||
         state.selectedDoseAmount == null) {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isFormValidated: true,
         ),
@@ -1021,13 +1017,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         state.selectedDoseAmount == null ||
         state.userMedicalProfileHistory == null ||
         state.userMedicalProfileHistory!.isHistoryEmpty) {
-      emit(
+      safeEmit(
         state.copyWith(
           isMedicationCompatibilityFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isMedicationCompatibilityFormValidated: true,
         ),
@@ -1048,7 +1044,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
     await addedNewMedicineBox.add(newMedicalComplaint);
 
-    emit(
+    safeEmit(
       state.copyWith(
         isNewMedicineAddedSuccefuly: true,
       ),
@@ -1073,13 +1069,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         updatedMedicine,
       );
 
-      emit(
+      safeEmit(
         state.copyWith(
           isEditingNewMedicineSuccess: true,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isEditingNewMedicineSuccess: false,
         ),
@@ -1095,13 +1091,13 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
         state.selectedDose == null ||
         state.selectedNoOfDose == null) {
       //! check for this later is there is aneed to add selectedDoseAmount here in this validation or no
-      emit(
+      safeEmit(
         state.copyWith(
           isAddNewMedicineFormValidated: false,
         ),
       );
     } else {
-      emit(
+      safeEmit(
         state.copyWith(
           isAddNewMedicineFormValidated: true,
         ),
@@ -1111,7 +1107,7 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
 
   Future<void> loadMedicineDetailsViewForEditing(
       AddNewMedicineModel model) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isEditingAddedMedicine: true,
         medicineStartDate: model.startDate,

@@ -26,15 +26,40 @@ class CategoriesTicketsCount {
   int medicine;
   int vaccine;
   int predescription;
+  int teeth;
+  int allergies;
+  int chronicDiseases;
+  int eyes;
+  int mentalHealth;
+  int sportsActivities;
+  int nutrition;
+  int vitalActivities;
+  int geneticDiseases;
+  int monthlyHealthSurvey;
+  int supplements;
+  int riskBehaviors;
 
-  CategoriesTicketsCount(
-      {required this.labTest,
-      required this.surgery,
-      required this.emergency,
-      required this.radiology,
-      required this.medicine,
-      required this.vaccine,
-      required this.predescription});
+  CategoriesTicketsCount({
+    this.labTest = 0,
+    this.surgery = 0,
+    this.emergency = 0,
+    this.radiology = 0,
+    this.medicine = 0,
+    this.vaccine = 0,
+    this.predescription = 0,
+    this.riskBehaviors = 0,
+    this.teeth = 0,
+    this.allergies = 0,
+    this.chronicDiseases = 0,
+    this.eyes = 0,
+    this.mentalHealth = 0,
+    this.sportsActivities = 0,
+    this.nutrition = 0,
+    this.vitalActivities = 0,
+    this.geneticDiseases = 0,
+    this.monthlyHealthSurvey = 0,
+    this.supplements = 0,
+  });
   factory CategoriesTicketsCount.fromJson(Map<String, dynamic> json) =>
       _$CategoriesTicketsCountFromJson(json);
 }

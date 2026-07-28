@@ -480,6 +480,16 @@ const Map<String, String> _arabicTitleToField = {
   "الأدوية": "medicine",
   "التطعيمات": "vaccine",
   "روشتة الأطباء": "predescription",
+  "الامراض\n المزمنه": "chronicDiseases",
+  "الأمراض\n الوراثيه": "geneticDiseases",
+  "الحساسية": "allergies",
+  "العيون": "eyes",
+  "الأسنان": "teeth",
+  "الأمراض\nالنفسية": "mentalHealth",
+  "المتابعه الغذائية": "nutrition",
+  "النشاط الرياضي": "sportsActivities",
+  "الفيتامينات و\nالمكملات الغذائية": "supplements",
+  "السلوكيات\nالخاطئة": "riskBehaviors",
 };
 
 int getCategoryCountByArabicTitle(
@@ -502,6 +512,26 @@ int getCategoryCountByArabicTitle(
       return countData.vaccine;
     case 'predescription':
       return countData.predescription;
+    case 'chronicDiseases':
+      return countData.chronicDiseases;
+    case 'geneticDiseases':
+      return countData.geneticDiseases;
+    case 'allergies':
+      return countData.allergies;
+    case 'eyes':
+      return countData.eyes;
+    case 'teeth':
+      return countData.teeth;
+    case 'mentalHealth':
+      return countData.mentalHealth;
+    case 'nutrition':
+      return countData.nutrition;
+    case 'sportsActivities':
+      return countData.sportsActivities;
+    case 'supplements':
+      return countData.supplements;
+    case 'riskBehaviors':
+      return countData.riskBehaviors;
     default:
       return 0;
   }

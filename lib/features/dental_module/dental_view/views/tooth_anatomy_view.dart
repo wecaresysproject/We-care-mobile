@@ -67,7 +67,7 @@ class ToothAnatomyView extends StatelessWidget {
                                 ? () {
                                     ModuleGuidanceAlertDialog.show(
                                       context,
-                                      title: "القياسات الحيوية",
+                                      title: "موديول الأسنان",
                                       description: state.moduleGuidanceData!
                                           .moduleGuidanceText!,
                                     );

@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/get_user_surgeries_response_model.dart';
 import 'package:we_care/features/surgeries/data/models/surgery_request_body_model.dart';
 import 'package:we_care/features/surgeries/data/repos/surgeries_data_entry_repo.dart';
@@ -135,11 +136,35 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> intialRequestsForDataEntry() async {
+    await emitModuleGuidanceData();
     await emitGetAllSurgeriesRegions();
     await emitCountriesData();
     // await emitGetSurgeryStatus();
     await emitDoctorNames();
     await emitHospitalNames();
+  }
+
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.surgeriesDataEntry.name,
+    );
+
+    response.when(
+      success: (response) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: response,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            moduleGuidanceData: null,
+          ),
+        );
+      },
+    );
   }
 
   void removeUploadedReport(String url) {

@@ -4,6 +4,8 @@ import 'package:alarm/alarm.dart';
 import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/medicine/data/models/get_all_user_medicines_responce_model.dart';
@@ -12,7 +14,7 @@ import 'package:we_care/features/medicine/data/repos/medicine_view_repo.dart';
 import 'package:we_care/features/medicine/medicine_view/logic/medicine_view_state.dart';
 import 'package:we_care/features/medicine/medicines_api_constants.dart';
 
-class MedicineViewCubit extends Cubit<MedicineViewState> {
+class MedicineViewCubit extends Cubit<MedicineViewState> with SafeEmitMixin {
   MedicineViewCubit(this._medicinesViewRepo, this._appSharedRepo)
       : super(MedicineViewState.initial());
   final MedicinesViewRepo _medicinesViewRepo;
@@ -23,7 +25,7 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   bool isLoadingMore = false;
 
   Future<void> init() async {
-    Future.wait(
+    await Future.wait(
       [
         getMedicinesFilters(),
         getUserMedicinesList(page: 1, pageSize: 10),
@@ -135,6 +137,10 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
         selectedMedicineDetails: response,
+        //* second source for the end date: the medicine record itself carries it
+        //* when one was set. Null is a no-op in copyWith, so whichever of this
+        //* and the status request answers with a date wins.
+        medicineEndDate: response.endDate,
       ));
     }, failure: (error) {
       emit(state.copyWith(requestStatus: RequestStatus.failure));
@@ -187,83 +193,114 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   }
 
   Future<void> fetchMedicineActiveStatus(String medicineId) async {
-    emit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
+    safeEmit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
     final result = await _medicinesViewRepo.getMedicineActiveStatus(
       medicineId: medicineId,
       userType: 'Patient',
       language: AppStrings.arabicLang,
     );
     result.when(
-      success: (isActive) {
-        emit(
+      success: (status) {
+        safeEmit(
           state.copyWith(
             isSwitchLoading: false,
-            isActiveMedicine: isActive,
+            isStatusResolved: true,
+            isActiveMedicine: status.isActiveMedicine,
+            medicineEndDate: status.endDate,
           ),
         );
       },
       failure: (error) {
-        emit(state.copyWith(
-          isSwitchLoading: false,
-          switchErrorMessage: error.errors.first,
-        ));
+        //* isStatusResolved stays false: a failed fetch must never be shown as "ended".
+        safeEmit(
+          state.copyWith(
+            isSwitchLoading: false,
+            switchErrorMessage: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'تعذر تحميل حالة استمرارية الدواء',
+          ),
+        );
       },
     );
   }
 
-  Future<void> updateMedicineActiveStatus(
-      String medicineId, bool isActive) async {
-    final originalState = state.isActiveMedicine;
-    emit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
+  /// Ends the medicine: calls UpdateMedicineStatus with `isActiveMedicine: false`
+  /// and the user-picked [endDate] ('yyyy-MM-dd') collected in the confirmation
+  /// dialog. The medicine is treated as ended, and its alarms cancelled, only
+  /// after the API confirms it. Returns true when the medicine is ended.
+  Future<bool> endMedicine({
+    required String medicineId,
+    required String endDate,
+  }) async {
+    if (state.isSwitchLoading) return false; //* re-entrancy guard
+    if (state.isStatusResolved && !state.isActiveMedicine) {
+      return false; //* already ended
+    }
 
-    final date = DateTime.now().toIso8601String().split('T').first;
+    //* alarms are keyed by medicine name, so capture it before awaiting
+    final medicineName = state.selectestMedicineDetails?.medicineName;
+
+    //* no optimistic flip: isActiveMedicine/medicineEndDate are written on success only
+    safeEmit(state.copyWith(isSwitchLoading: true, switchErrorMessage: ''));
 
     final result = await _medicinesViewRepo.updateMedicineStatus(
       medicineId: medicineId,
       userType: 'Patient',
       language: AppStrings.arabicLang,
-      isActiveMedicine: isActive,
-      date: date,
+      isActiveMedicine: false,
+      endDate: endDate,
     );
 
+    bool succeeded = false;
     result.when(
-      success: (newStatus) {
-        emit(
+      success: (status) {
+        succeeded = !status.isActiveMedicine;
+        safeEmit(
           state.copyWith(
             isSwitchLoading: false,
-            isActiveMedicine: newStatus,
+            isStatusResolved: true,
+            isActiveMedicine: status.isActiveMedicine,
+            medicineEndDate: status.endDate ?? endDate,
+            switchErrorMessage:
+                succeeded ? '' : 'تعذر إنهاء الدواء، حاول مرة أخرى',
           ),
         );
-        newStatus == false
-            ? cancelAlarmsCreatedBeforePerMedicine(
-                state.selectestMedicineDetails!.medicineName)
-            : null;
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             isSwitchLoading: false,
-            isActiveMedicine: originalState,
-            switchErrorMessage: error.errors.first,
+            switchErrorMessage: error.errors.isNotEmpty
+                ? error.errors.first
+                : 'تعذر إنهاء الدواء، حاول مرة أخرى',
           ),
         );
-        cancelAlarmsCreatedBeforePerMedicine(
-            state.selectestMedicineDetails!.medicineName);
       },
     );
+
+    //* only reachable when the API confirmed the medicine is ended
+    if (succeeded && medicineName != null && medicineName.isNotEmpty) {
+      await cancelAlarmsCreatedBeforePerMedicine(medicineName);
+    }
+    return succeeded;
   }
 
   Future<void> cancelAlarmsCreatedBeforePerMedicine(String medicineName) async {
-    final alarmsId = getAlarmsForMedicine(medicineName);
-    for (final id in alarmsId) {
-      await Alarm.stop(id);
+    try {
+      final alarmsId = getAlarmsForMedicine(medicineName);
+      for (final id in alarmsId) {
+        await Alarm.stop(id);
+      }
+      await removeMedicineAlarms(medicineName);
+    } catch (error) {
+      //* a local alarm failure must not surface as a failed request
+      AppLogger.error('Failed to cancel alarms for $medicineName: $error');
     }
-    await removeMedicineAlarms(medicineName);
   }
 
   List<int> getAlarmsForMedicine(String medicineName) {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     final medicineAlarms =
         List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
@@ -279,8 +316,8 @@ class MedicineViewCubit extends Cubit<MedicineViewState> {
   }
 
   Future<void> removeMedicineAlarms(String medicineName) async {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     final alarms = List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 

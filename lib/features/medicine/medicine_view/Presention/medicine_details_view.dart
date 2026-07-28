@@ -104,14 +104,17 @@ class MedicineDetailsView extends StatelessWidget {
                       isMedicineModule: true,
                       title: 'الدواء',
                       deleteFunction: () async {
+                        final medicineName =
+                            state.selectestMedicineDetails?.medicineName;
                         await BlocProvider.of<MedicineViewCubit>(context)
                             .deleteMedicineById(documentId);
                         if (!context.mounted) return;
+                        if (medicineName == null || medicineName.isEmpty) return;
                         unawaited(
                           context
                               .read<MedicineViewCubit>()
                               .cancelAlarmsCreatedBeforePerMedicine(
-                                state.selectestMedicineDetails!.medicineName,
+                                medicineName,
                               ),
                         );
                       },
@@ -243,113 +246,6 @@ class MedicineDetailsView extends StatelessWidget {
             },
           )),
     );
-  }
-}
-
-String calculateMedicineStatus(String startDateStr, String durationStr) {
-  try {
-    final dateParts = startDateStr.split('-');
-    if (dateParts.length != 3) throw FormatException("Invalid date format");
-
-    final year = int.parse(dateParts[0]);
-    final month = int.parse(dateParts[1]);
-    final day = int.parse(dateParts[2]);
-    final startDate = DateTime(year, month, day);
-    final now = DateTime.now();
-
-    Duration duration;
-
-    switch (durationStr) {
-      // --------------------
-      // 🔹 المدد الجديدة اليومية
-      // --------------------
-      case 'يوم واحد فقط':
-        duration = Duration(days: 1);
-        break;
-      case 'يومين':
-        duration = Duration(days: 2);
-        break;
-      case '3 أيام':
-        duration = Duration(days: 3);
-        break;
-      case '5 أيام':
-        duration = Duration(days: 5);
-        break;
-      case '7 أيام (أسبوع)':
-        duration = Duration(days: 7);
-        break;
-      case '10 أيام':
-        duration = Duration(days: 10);
-        break;
-      case '14 يومًا (أسبوعين)':
-        duration = Duration(days: 14);
-        break;
-      case '21 يومًا (3 أسابيع)':
-        duration = Duration(days: 21);
-        break;
-      case 'شهر (30 يومًا)':
-      case 'شهر':
-        duration = Duration(days: 30);
-        break;
-
-      // --------------------
-      // 🔹 مدد أسبوعية/شهرية متكررة (لا يمكن حساب نهاية ثابتة)
-      // --------------------
-      case 'يومين في الأسبوع':
-      case 'ثلاث أيام في الأسبوع':
-      case 'أسبوع كل شهر':
-      case 'عشر أيام كل شهر':
-      case 'استخدام موسمي':
-        return 'مستمر';
-
-      // --------------------
-      // 🔹 مدد غير محددة بزمن (تعتمد على الحالة)
-      // --------------------
-      case 'حتى انتهاء العبوة':
-      case 'حتى زوال الأعراض':
-      case 'حتى مراجعة الطبيب':
-      case 'حسب الحاجة':
-      case 'حسب استجابة المريض':
-      case 'حسب إرشادات الطبيب':
-      case 'مدى الحياة':
-        return 'غير محدد';
-
-      // --------------------
-      // 🔹 المدد القديمة (لا تُحذف)
-      // --------------------
-      case '6 أسابيع':
-        duration = Duration(days: 42);
-        break;
-      case 'شهرين':
-        duration = Duration(days: 60);
-        break;
-      case '3 أشهر':
-        duration = Duration(days: 90);
-        break;
-      case '6 أشهر':
-        duration = Duration(days: 180);
-        break;
-      case '9 أشهر':
-        duration = Duration(days: 270);
-        break;
-      case 'سنة واحدة':
-        duration = Duration(days: 365);
-        break;
-      case 'سنتين':
-        duration = Duration(days: 730);
-        break;
-      case '3 سنوات':
-        duration = Duration(days: 1095);
-        break;
-
-      default:
-        return 'غير محدد';
-    }
-
-    final endDate = startDate.add(duration);
-    return now.isBefore(endDate) ? 'مستمر' : 'متوقف';
-  } catch (e) {
-    return 'غير محدد';
   }
 }
 

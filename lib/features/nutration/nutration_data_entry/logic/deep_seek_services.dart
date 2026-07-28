@@ -913,6 +913,8 @@ L5 - Cautionary
     required String duration,
     UserMedicalHistoryDetailsModel? medicalProfile,
   }) {
+    final profileJson = medicalProfile?.toJson();
+
     return '''
 أنا الآن بصدد تناول دواء جديد.
 
@@ -926,7 +928,7 @@ L5 - Cautionary
 
 الملف الطبي للمريض:
 
-${medicalProfile?.toJson()}
+$profileJson
 
 قم بإجراء تحليل توافق شامل.
 ''';

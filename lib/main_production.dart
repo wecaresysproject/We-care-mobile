@@ -46,9 +46,10 @@ Future<void> main() async {
   await Hive.openBox<NewGeneticDiseaseModel>("medical_genetic_diseases");
 
   Hive.registerAdapter(MedicineAlarmModelAdapter());
-  await Hive.openBox<List<MedicineAlarmModel>>(
-    MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey,
-  );
+  //* opened untyped on purpose: this box stores a List value, and Hive hands a
+  //* List<dynamic> back after reading it from disk — a Box<List<MedicineAlarmModel>>
+  //* would throw on every get(). Call sites convert with List<MedicineAlarmModel>.from.
+  await Hive.openBox(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
   await setUpDependencyInjection();
 

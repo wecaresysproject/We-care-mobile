@@ -89,15 +89,6 @@ abstract class AllergyServices {
     @Query("userType") String userType,
   );
 
-  @GET(AllergyApiConstants.getSurgeriesFilters)
-  Future<dynamic> getFilters(@Query("language") String language);
-
-  @GET(AllergyApiConstants.getFilteredSurgeries)
-  Future<GetUserSurgeriesResponseModal> getFilteredSurgeries(
-      @Query("language") String language,
-      @Query("surgeryName") String? surgeryName,
-      @Query("year") int? year);
-
   @DELETE(AllergyApiConstants.deleteAllergyById)
   Future<dynamic> deleteAllergyById(
     @Query("id") String id,
