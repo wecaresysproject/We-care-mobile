@@ -76,7 +76,7 @@ class MedicalAnalysisView extends StatelessWidget {
                               ? () {
                                   ModuleGuidanceAlertDialog.show(
                                     context,
-                                    title: "القياسات الحيوية",
+                                    title: "التحاليل الطبية",
                                     description: state.moduleGuidanceData!
                                         .moduleGuidanceText!,
                                   );
