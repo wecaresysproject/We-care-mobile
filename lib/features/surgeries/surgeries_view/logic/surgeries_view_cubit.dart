@@ -80,7 +80,7 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
         yearsFilter: response.years,
-        surgeryNameFilter: response.surgeryNames,
+        surgeryRegionFilter: response.surgeryRegion,
       ));
     }, failure: (error) {
       emit(state.copyWith(requestStatus: RequestStatus.failure));
@@ -122,11 +122,12 @@ class SurgeriesViewCubit extends Cubit<SurgeriesViewState> {
     });
   }
 
-  Future<void> getFilteredSurgeryList({int? year, String? surgeryName}) async {
+  Future<void> getFilteredSurgeryList(
+      {int? year, String? surgeryRegion}) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
     final result = await _surgeriesViewRepo.getFilteredSurgeries(
       language: AppStrings.arabicLang,
-      surgeryName: surgeryName,
+      surgeryRegion: surgeryRegion,
       year: year,
     );
     result.when(success: (response) {

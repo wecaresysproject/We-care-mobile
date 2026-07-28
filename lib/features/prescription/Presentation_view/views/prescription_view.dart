@@ -405,7 +405,7 @@ class PrescriptionCardITem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'المرض :',
+                            'التشخيص :',
                             style: AppTextStyles.font14BlueWeight700.copyWith(
                               fontSize: 14.sp,
                             ),

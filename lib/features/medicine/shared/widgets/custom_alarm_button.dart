@@ -148,8 +148,8 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
   }
 
   List<int> getAlarmsForMedicine(String medicineName) {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     final medicineAlarms =
         List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
@@ -167,8 +167,8 @@ class CustomAlarmButtonState extends State<CustomAlarmButton> {
   }
 
   Future<void> removeMedicineAlarms(String medicineName) async {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     final alarms = List<MedicineAlarmModel>.from(box.get('medicines') ?? []);
 

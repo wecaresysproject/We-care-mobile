@@ -71,7 +71,7 @@ class SurgeriesView extends StatelessWidget {
               BlocBuilder<SurgeriesViewCubit, SurgeriesViewState>(
                 buildWhen: (previous, current) =>
                     previous.yearsFilter != current.yearsFilter ||
-                    previous.surgeryNameFilter != current.surgeryNameFilter,
+                    previous.surgeryRegionFilter != current.surgeryRegionFilter,
                 builder: (context, state) {
                   return DataViewFiltersRow(
                     filters: [
@@ -80,8 +80,8 @@ class SurgeriesView extends StatelessWidget {
                           options: state.yearsFilter,
                           isYearFilter: true),
                       FilterConfig(
-                        title: 'اسم العملية',
-                        options: state.surgeryNameFilter,
+                        title: 'العضو',
+                        options: state.surgeryRegionFilter,
                       ),
                     ],
                     onApply: (selectedFilters) {
@@ -89,12 +89,12 @@ class SurgeriesView extends StatelessWidget {
                       if (selectedFilters['السنة'] == null) {
                         BlocProvider.of<SurgeriesViewCubit>(context)
                             .getFilteredSurgeryList(
-                                surgeryName: selectedFilters['اسم العملية']);
+                                surgeryRegion: selectedFilters['العضو']);
                       }
                       BlocProvider.of<SurgeriesViewCubit>(context)
                           .getFilteredSurgeryList(
                               year: selectedFilters['السنة'],
-                              surgeryName: selectedFilters['اسم العملية']);
+                              surgeryRegion: selectedFilters['العضو']);
                     },
                   );
                 },

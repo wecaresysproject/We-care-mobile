@@ -36,6 +36,8 @@ class TestAnalysisDataEntryState extends Equatable {
   final List<TableRowReponseModel> testTableRowsData;
   final List<TableRowReponseModel> enteredTableRows;
 
+  final ModuleGuidanceDataModel? moduleGuidanceData;
+
   const TestAnalysisDataEntryState({
     this.testAnalysisDataEntryStatus = RequestStatus.initial,
     this.countriesNames = const [],
@@ -65,6 +67,7 @@ class TestAnalysisDataEntryState extends Equatable {
     this.labCenters = const [],
     this.hospitalNames = const [],
     this.selectedLabCenter,
+    this.moduleGuidanceData,
   });
   const TestAnalysisDataEntryState.initial()
       : this(
@@ -96,6 +99,7 @@ class TestAnalysisDataEntryState extends Equatable {
           labCenters: const [],
           hospitalNames: const [],
           selectedLabCenter: null,
+          moduleGuidanceData: null,
         );
 
   TestAnalysisDataEntryState copyWith({
@@ -127,6 +131,7 @@ class TestAnalysisDataEntryState extends Equatable {
     List<String>? labCenters,
     List<String>? hospitalNames,
     String? selectedLabCenter,
+    ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
     return TestAnalysisDataEntryState(
       selectedDate: selectedDate ?? this.selectedDate,
@@ -163,6 +168,7 @@ class TestAnalysisDataEntryState extends Equatable {
       labCenters: labCenters ?? this.labCenters,
       hospitalNames: hospitalNames ?? this.hospitalNames,
       selectedLabCenter: selectedLabCenter ?? this.selectedLabCenter,
+      moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
     );
   }
 
@@ -196,5 +202,6 @@ class TestAnalysisDataEntryState extends Equatable {
         labCenters,
         hospitalNames,
         selectedLabCenter,
+        moduleGuidanceData,
       ];
 }

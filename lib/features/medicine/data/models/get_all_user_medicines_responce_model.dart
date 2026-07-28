@@ -25,6 +25,10 @@ class GetAllUserMedicinesResponseModel {
 class MedicineModel {
   String id;
   String startDate;
+
+  /// Optional medicine end date ('yyyy-MM-dd'); null while the medicine has no
+  /// end date recorded.
+  String? endDate;
   String medicineName;
   String usageMethod;
   String dosageFrequency;
@@ -43,6 +47,7 @@ class MedicineModel {
   MedicineModel({
     required this.id,
     required this.startDate,
+    this.endDate,
     required this.medicineName,
     required this.usageMethod,
     required this.dosageFrequency,

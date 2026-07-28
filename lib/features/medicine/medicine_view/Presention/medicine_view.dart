@@ -23,125 +23,133 @@ class MedicinesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<MedicineViewCubit>(
       create: (context) => getIt<MedicineViewCubit>()..init(),
-      child: RefreshIndicator(
-        onRefresh: () async {
-          BlocProvider.of<MedicineViewCubit>(context).init();
-        },
-        triggerMode: RefreshIndicatorTriggerMode.anywhere,
-        child: Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 0,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: [
-                BlocBuilder<MedicineViewCubit, MedicineViewState>(
-                  builder: (context, state) {
-                    final guidance = state.moduleGuidanceData;
-                    final hasVideo = guidance?.videoLink?.isNotEmpty == true;
-                    final hasText =
-                        guidance?.moduleGuidanceText?.isNotEmpty == true;
 
-                    return SharedAppBar(
-                      trailingActions: [
-                        CircleIconButton(
-                          icon: Icons.play_arrow,
-                          color: hasVideo
-                              ? AppColorsManager.mainDarkBlue
-                              : Colors.grey,
-                          onTap: hasVideo
-                              ? () => launchYouTubeVideo(guidance!.videoLink)
-                              : null,
-                        ),
-                        SizedBox(width: 12.w),
-                        CircleIconButton(
-                          icon: Icons.menu_book_outlined,
-                          color: hasText
-                              ? AppColorsManager.mainDarkBlue
-                              : Colors.grey,
-                          onTap: hasText
-                              ? () {
-                                  ModuleGuidanceAlertDialog.show(
-                                    context,
-                                    title: "الأدوية",
-                                    description: guidance!.moduleGuidanceText!,
-                                  );
-                                }
-                              : null,
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                BlocBuilder<MedicineViewCubit, MedicineViewState>(
-                  buildWhen: (previous, current) =>
-                      previous.yearsFilter != current.yearsFilter ||
-                      previous.medicineNameFilter != current.medicineNameFilter,
-                  builder: (context, state) {
-                    return DataViewFiltersRow(
-                      filters: [
-                        FilterConfig(
-                            title: 'السنة',
-                            options: state.yearsFilter,
-                            isYearFilter: true),
-                        FilterConfig(
-                            title: 'اسم الدواء',
-                            options: state.medicineNameFilter,
-                            isMedicineFilter: true),
-                      ],
-                      onApply: (selectedFilters) {
-                        AppLogger.debug("Selected Filters: $selectedFilters");
-                        BlocProvider.of<MedicineViewCubit>(context)
-                            .getFilteredMedicinesList(
-                                year: selectedFilters['السنة'],
-                                medicineName:
-                                    selectedFilters['اسم الدواء'].toString());
-                      },
-                    );
-                  },
-                ),
-                verticalSpacing(24),
-                Text(
-                  "“اضغط على اسم الدواء لعرض تفاصيله”",
-                  style: AppTextStyles.customTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalSpacing(16),
-                Text(
-                  "“اضغط على التاريخ لعرض جميع الادوية في ذلك التاريخ”",
-                  style: AppTextStyles.customTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-                verticalSpacing(16),
-                // Scheduled Medicines Button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      await context
-                          .pushNamed(Routes.scheduledMedicinesListView);
+      /// Builder so the pull-to-refresh callback resolves the cubit from a
+      /// context *below* the provider — the outer build context has no
+      /// MedicineViewCubit above it.
+      child: Builder(
+        builder: (context) => RefreshIndicator(
+          onRefresh: () async {
+            await context.read<MedicineViewCubit>().init();
+          },
+          triggerMode: RefreshIndicatorTriggerMode.anywhere,
+          child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                children: [
+                  BlocBuilder<MedicineViewCubit, MedicineViewState>(
+                    builder: (context, state) {
+                      final guidance = state.moduleGuidanceData;
+                      final hasVideo = guidance?.videoLink?.isNotEmpty == true;
+                      final hasText =
+                          guidance?.moduleGuidanceText?.isNotEmpty == true;
+
+                      return SharedAppBar(
+                        trailingActions: [
+                          CircleIconButton(
+                            icon: Icons.play_arrow,
+                            color: hasVideo
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: hasVideo
+                                ? () => launchYouTubeVideo(guidance!.videoLink)
+                                : null,
+                          ),
+                          SizedBox(width: 12.w),
+                          CircleIconButton(
+                            icon: Icons.menu_book_outlined,
+                            color: hasText
+                                ? AppColorsManager.mainDarkBlue
+                                : Colors.grey,
+                            onTap: hasText
+                                ? () {
+                                    ModuleGuidanceAlertDialog.show(
+                                      context,
+                                      title: "الأدوية",
+                                      description:
+                                          guidance!.moduleGuidanceText!,
+                                    );
+                                  }
+                                : null,
+                          ),
+                        ],
+                      );
                     },
-                    icon: const Icon(Icons.alarm, size: 20),
-                    label: const Text('الأدوية المجدولة'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColorsManager.mainDarkBlue,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  ),
+                  BlocBuilder<MedicineViewCubit, MedicineViewState>(
+                    buildWhen: (previous, current) =>
+                        previous.yearsFilter != current.yearsFilter ||
+                        previous.medicineNameFilter !=
+                            current.medicineNameFilter,
+                    builder: (context, state) {
+                      return DataViewFiltersRow(
+                        filters: [
+                          FilterConfig(
+                              title: 'السنة',
+                              options: state.yearsFilter,
+                              isYearFilter: true),
+                          FilterConfig(
+                              title: 'اسم الدواء',
+                              options: state.medicineNameFilter,
+                              isMedicineFilter: true),
+                        ],
+                        onApply: (selectedFilters) {
+                          AppLogger.debug("Selected Filters: $selectedFilters");
+                          BlocProvider.of<MedicineViewCubit>(context)
+                              .getFilteredMedicinesList(
+                                  year: selectedFilters['السنة'],
+                                  medicineName:
+                                      selectedFilters['اسم الدواء'].toString());
+                        },
+                      );
+                    },
+                  ),
+                  verticalSpacing(24),
+                  Text(
+                    "“اضغط على اسم الدواء لعرض تفاصيله”",
+                    style: AppTextStyles.customTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  verticalSpacing(16),
+                  Text(
+                    "“اضغط على التاريخ لعرض جميع الادوية في ذلك التاريخ”",
+                    style: AppTextStyles.customTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                  verticalSpacing(16),
+                  // Scheduled Medicines Button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        await context
+                            .pushNamed(Routes.scheduledMedicinesListView);
+                      },
+                      icon: const Icon(Icons.alarm, size: 20),
+                      label: const Text('الأدوية المجدولة'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColorsManager.mainDarkBlue,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                verticalSpacing(16),
-                Expanded(flex: 9, child: MedicineTable()),
-                verticalSpacing(16),
-                MedicineViewFooterRow(),
-                Spacer(
-                  flex: 1,
-                ),
-              ],
+                  verticalSpacing(16),
+                  Expanded(flex: 9, child: MedicineTable()),
+                  verticalSpacing(16),
+                  MedicineViewFooterRow(),
+                  Spacer(
+                    flex: 1,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

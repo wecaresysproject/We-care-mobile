@@ -9,7 +9,7 @@ class SurgeriesViewState extends Equatable {
   final List<SurgeryModel> userSurgeries;
   final SurgeryModel? selectedSurgeryDetails;
   final List<int> yearsFilter;
-  final List<String> surgeryNameFilter;
+  final List<String> surgeryRegionFilter;
   final bool isDeleteRequest;
   final bool isLoadingMore;
   final ModuleGuidanceDataModel? moduleGuidanceData;
@@ -18,7 +18,7 @@ class SurgeriesViewState extends Equatable {
     this.responseMessage = '',
     this.requestStatus = RequestStatus.initial,
     this.yearsFilter = const [],
-    this.surgeryNameFilter = const ['الكل'],
+    this.surgeryRegionFilter = const ['الكل'],
     this.userSurgeries = const [],
     this.selectedSurgeryDetails,
     this.isDeleteRequest = false,
@@ -31,7 +31,7 @@ class SurgeriesViewState extends Equatable {
       responseMessage: '',
       requestStatus: RequestStatus.initial,
       yearsFilter: const [],
-      surgeryNameFilter: const ['الكل'],
+      surgeryRegionFilter: const ['الكل'],
       userSurgeries: const [],
       selectedSurgeryDetails: null,
       isDeleteRequest: false,
@@ -44,7 +44,7 @@ class SurgeriesViewState extends Equatable {
     String? responseMessage,
     RequestStatus? requestStatus,
     List<int>? yearsFilter,
-    List<String>? surgeryNameFilter,
+    List<String>? surgeryRegionFilter,
     List<SurgeryModel>? userSurgeries,
     SurgeryModel? selectedSurgeryDetails,
     bool? isDeleteRequest,
@@ -55,7 +55,7 @@ class SurgeriesViewState extends Equatable {
       responseMessage: responseMessage ?? this.responseMessage,
       requestStatus: requestStatus ?? this.requestStatus,
       yearsFilter: yearsFilter ?? this.yearsFilter,
-      surgeryNameFilter: surgeryNameFilter ?? this.surgeryNameFilter,
+      surgeryRegionFilter: surgeryRegionFilter ?? this.surgeryRegionFilter,
       userSurgeries: userSurgeries ?? this.userSurgeries,
       selectedSurgeryDetails: selectedSurgeryDetails,
       isDeleteRequest: isDeleteRequest ?? this.isDeleteRequest,
@@ -69,7 +69,7 @@ class SurgeriesViewState extends Equatable {
         responseMessage,
         requestStatus,
         yearsFilter,
-        surgeryNameFilter,
+        surgeryRegionFilter,
         userSurgeries,
         selectedSurgeryDetails,
         isDeleteRequest,

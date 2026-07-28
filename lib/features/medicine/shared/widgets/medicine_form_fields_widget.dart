@@ -56,6 +56,23 @@ class _MedicinesDataEntryFormFieldsWidgetState
               },
             ),
             verticalSpacing(16),
+            Text(
+              "تاريخ إنتهاء الدواء",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            DateTimePickerContainer(
+              //* optional field: no warning border when empty
+              placeholderText: state.medicineEndDate ?? "يوم / شهر / سنة",
+              //* cannot end before it started
+              firstDate: _endDateLowerBound(state.medicineStartDate),
+              onDateSelected: (pickedDate) {
+                context
+                    .read<MedicinesDataEntryCubit>()
+                    .updateEndMedicineDate(pickedDate);
+              },
+            ),
+            verticalSpacing(16),
             UserSelectionContainer(
               isEditMode: state.isEditMode,
               containerBorderColor: state.selectedMedicineName == null
@@ -291,6 +308,18 @@ class _MedicinesDataEntryFormFieldsWidgetState
         );
       },
     );
+  }
+
+  /// Earliest date selectable as the medicine end date: the day the medicine
+  /// started. Returns null when the start date is unset, is not a real date
+  /// (the app's "no data entered" placeholder), or is in the future — the
+  /// picker's last selectable date is today, and a lower bound after it would
+  /// assert.
+  DateTime? _endDateLowerBound(String? startDate) {
+    if (startDate == null || startDate.isEmpty) return null;
+    final parsed = DateTime.tryParse(startDate);
+    if (parsed == null || parsed.isAfter(DateTime.now())) return null;
+    return parsed;
   }
 
   Widget buildAddNewComplainButtonBlocBuilder() {

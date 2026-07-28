@@ -21,6 +21,9 @@ class UserMedicalHistoryDetailsModel extends Equatable {
   final List<NutritionTrackingModuleModel>? nutritionTrackingModule;
   final List<PhysicalActivityModuleModel>? physicalActivityModule;
   final SupplementsModuleModel? supplementsModule;
+  final List<VaccineModel>? vaccines;
+  final List<RiskyBehaviourModel>? riskyBehaviour;
+  final MonthlyHealthSurveyModel? monthlyHealthSurvey;
 
   const UserMedicalHistoryDetailsModel({
     this.basicInformation,
@@ -39,6 +42,9 @@ class UserMedicalHistoryDetailsModel extends Equatable {
     this.nutritionTrackingModule,
     this.physicalActivityModule,
     this.supplementsModule,
+    this.vaccines,
+    this.riskyBehaviour,
+    this.monthlyHealthSurvey,
   });
 
   factory UserMedicalHistoryDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -61,7 +67,12 @@ class UserMedicalHistoryDetailsModel extends Equatable {
       mentalIllnessModule == null &&
       (nutritionTrackingModule == null || nutritionTrackingModule!.isEmpty) &&
       (physicalActivityModule == null || physicalActivityModule!.isEmpty) &&
-      supplementsModule == null;
+      supplementsModule == null &&
+      (vaccines == null || vaccines!.isEmpty) &&
+      (riskyBehaviour == null || riskyBehaviour!.isEmpty) &&
+      (monthlyHealthSurvey == null ||
+          monthlyHealthSurvey!.rows == null ||
+          monthlyHealthSurvey!.rows!.isEmpty);
 
   @override
   List<Object?> get props => [
@@ -81,6 +92,9 @@ class UserMedicalHistoryDetailsModel extends Equatable {
         nutritionTrackingModule,
         physicalActivityModule,
         supplementsModule,
+        vaccines,
+        riskyBehaviour,
+        monthlyHealthSurvey,
       ];
 }
 
@@ -744,4 +758,98 @@ class SupplementModel extends Equatable {
         planType,
         noOfDaysDoseTaken,
       ];
+}
+
+@JsonSerializable()
+class VaccineModel extends Equatable {
+  final String? date;
+  final String? abbreviationCode;
+  final String? vaccineName;
+  final String? vaccineCategory;
+  final String? dose;
+  final String? targetDisease;
+  final String? vaccineActionDescription;
+
+  const VaccineModel({
+    this.date,
+    this.abbreviationCode,
+    this.vaccineName,
+    this.vaccineCategory,
+    this.dose,
+    this.targetDisease,
+    this.vaccineActionDescription,
+  });
+
+  factory VaccineModel.fromJson(Map<String, dynamic> json) =>
+      _$VaccineModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VaccineModelToJson(this);
+
+  @override
+  List<Object?> get props => [
+        date,
+        abbreviationCode,
+        vaccineName,
+        vaccineCategory,
+        dose,
+        targetDisease,
+        vaccineActionDescription,
+      ];
+}
+
+@JsonSerializable()
+class RiskyBehaviourModel extends Equatable {
+  final String? startDate;
+  final String? section;
+  final String? type;
+  final String? usageRate;
+  final String? status;
+
+  const RiskyBehaviourModel({
+    this.startDate,
+    this.section,
+    this.type,
+    this.usageRate,
+    this.status,
+  });
+
+  factory RiskyBehaviourModel.fromJson(Map<String, dynamic> json) =>
+      _$RiskyBehaviourModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RiskyBehaviourModelToJson(this);
+
+  @override
+  List<Object?> get props => [startDate, section, type, usageRate, status];
+}
+
+@JsonSerializable(explicitToJson: true)
+class MonthlyHealthSurveyModel extends Equatable {
+  final List<String>? columns;
+  final List<MonthlyHealthSurveyRowModel>? rows;
+
+  const MonthlyHealthSurveyModel({this.columns, this.rows});
+
+  factory MonthlyHealthSurveyModel.fromJson(Map<String, dynamic> json) =>
+      _$MonthlyHealthSurveyModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MonthlyHealthSurveyModelToJson(this);
+
+  @override
+  List<Object?> get props => [columns, rows];
+}
+
+@JsonSerializable()
+class MonthlyHealthSurveyRowModel extends Equatable {
+  final String? question;
+  final List<String?>? answersOverMonths;
+
+  const MonthlyHealthSurveyRowModel({this.question, this.answersOverMonths});
+
+  factory MonthlyHealthSurveyRowModel.fromJson(Map<String, dynamic> json) =>
+      _$MonthlyHealthSurveyRowModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MonthlyHealthSurveyRowModelToJson(this);
+
+  @override
+  List<Object?> get props => [question, answersOverMonths];
 }

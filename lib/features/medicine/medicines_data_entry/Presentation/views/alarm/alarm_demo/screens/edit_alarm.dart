@@ -247,8 +247,8 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   }
 
   Future<void> saveAlarmsCreatedPerMedicineInLocalStorage() async {
-    final box = Hive.box<List<MedicineAlarmModel>>(
-        MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
+    final box =
+        Hive.box(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
     // Read existing alarms safely (empty list if box has no data)
     final existingAlarms =

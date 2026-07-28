@@ -19,6 +19,10 @@ class MedicinesDataEntryState extends Equatable {
   final UserMedicalHistoryDetailsModel? userMedicalProfileHistory;
   final CompatibilityAnalysisModel? compatibilityAnalysis;
   final String? medicineStartDate;
+
+  /// Optional: set only when the user already knows when the medicine ends.
+  /// Normally a medicine is ended later from the medicine details screen.
+  final String? medicineEndDate;
   final String? selectedMedicineName;
   final String? selectedMedicalForm;
   final String? selectedDose;
@@ -80,6 +84,7 @@ class MedicinesDataEntryState extends Equatable {
     this.message = '',
     this.isEditMode = false,
     this.medicineStartDate,
+    this.medicineEndDate,
     this.selectedMedicineName,
     this.selectedMedicalForm,
     this.selectedDose,
@@ -134,6 +139,7 @@ class MedicinesDataEntryState extends Equatable {
           message: '',
           isEditMode: false,
           medicineStartDate: null,
+          medicineEndDate: null,
           selectedMedicineName: null,
           selectedMedicalForm: null,
           selectedDose: null,
@@ -187,6 +193,7 @@ class MedicinesDataEntryState extends Equatable {
     String? message,
     bool? isEditMode,
     String? medicineStartDate,
+    String? medicineEndDate,
     String? selectedMedicineName,
     String? selectedMedicalForm,
     String? selectedDose,
@@ -251,6 +258,7 @@ class MedicinesDataEntryState extends Equatable {
       message: message ?? this.message,
       isEditMode: isEditMode ?? this.isEditMode,
       medicineStartDate: medicineStartDate ?? this.medicineStartDate,
+      medicineEndDate: medicineEndDate ?? this.medicineEndDate,
       selectedMedicineName: selectedMedicineName ?? this.selectedMedicineName,
       selectedMedicalForm: selectedMedicalForm ?? this.selectedMedicalForm,
       selectedDose: selectedDose ?? this.selectedDose,
@@ -317,6 +325,7 @@ class MedicinesDataEntryState extends Equatable {
         message,
         isEditMode,
         medicineStartDate,
+        medicineEndDate,
         selectedMedicineName,
         selectedMedicalForm,
         selectedDose,

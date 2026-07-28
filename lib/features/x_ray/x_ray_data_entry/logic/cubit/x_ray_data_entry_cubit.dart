@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/x_ray/data/models/body_parts_response_model.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
@@ -198,7 +199,23 @@ class XRayDataEntryCubit extends Cubit<XRayDataEntryState> {
         emitRadiologyDoctorNames(),
         emitRadiologyCenters(),
         emitHospitalNames(),
+        emitModuleGuidanceData(),
       ],
+    );
+  }
+
+  /// Loads the module's guidance video + text shown in the data entry app bar.
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.imagingRadiologyDataEntry.name,
+    );
+    response.when(
+      success: (response) {
+        safeEmit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(moduleGuidanceData: null));
+      },
     );
   }
 

@@ -43,6 +43,8 @@ class MedicinesApiConstants {
 
   static const getMedicineActiveStatus =
       "MedicineUserEntryPage/GetMedicineActiveStatus";
+  /// PUT body: `{ "endDate": 'yyyy-MM-dd', "isActiveMedicine": bool }`.
+  /// The response echoes the same `endDate` / `isActiveMedicine` pair.
   static const updateMedicineStatus =
       "MedicineUserEntryPage/UpdateMedicineStatus";
 

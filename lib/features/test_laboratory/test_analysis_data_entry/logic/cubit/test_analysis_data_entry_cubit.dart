@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_analysis_request_body_model.dart';
 import 'package:we_care/features/test_laboratory/data/models/test_table_model.dart';
@@ -45,7 +46,23 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
       emitDoctorNames(),
       emitLabCenters(),
       emitHospitalNames(),
+      emitModuleGuidanceData(),
     ]);
+  }
+
+  /// Loads the module's guidance video + text shown in the data entry app bar.
+  Future<void> emitModuleGuidanceData() async {
+    final response = await sharedRepo.getModuleGuidance(
+      WeCareMedicalModules.labTestsDataEntry.name,
+    );
+    response.when(
+      success: (response) {
+        safeEmit(state.copyWith(moduleGuidanceData: response));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(moduleGuidanceData: null));
+      },
+    );
   }
 
   void loadAnalysisDataForEditing(

@@ -5,11 +5,11 @@ part 'get_surgeries_filters_response_model.g.dart';
 @JsonSerializable()
 class GetSurgeriesFiltersResponseModel {
   List<int>? years;
-  List<String>? surgeryNames;
+  List<String>? surgeryRegion;
 
   GetSurgeriesFiltersResponseModel({
     this.years,
-    this.surgeryNames,
+    this.surgeryRegion,
   });
 
   factory GetSurgeriesFiltersResponseModel.fromJson(

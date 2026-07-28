@@ -15,12 +15,16 @@ class DateTimePickerContainer extends StatefulWidget {
   final Color containerBorderColor;
   final bool? isForInsuranceExpiry;
 
+  /// Earliest selectable date. Defaults to 1900 when not set.
+  final DateTime? firstDate;
+
   const DateTimePickerContainer({
     super.key,
     required this.placeholderText,
     this.onDateSelected,
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
     this.isForInsuranceExpiry = false,
+    this.firstDate,
   });
 
   @override
@@ -32,10 +36,11 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
   final DateFormat dateFormat = DateFormat('yyyy-MM-dd', 'en');
 
   Future<void> _selectDate(BuildContext context) async {
+    final firstSelectableDate = widget.firstDate ?? DateTime(1900);
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: firstSelectableDate,
       lastDate: widget.isForInsuranceExpiry!
           ? DateTime.now().add(const Duration(days: 3650)) // 10 سنوات لقدام
           : DateTime.now(),

@@ -6,6 +6,11 @@ part 'medicine_data_entry_request_body.g.dart';
 @JsonSerializable()
 class MedicineDataEntryRequestBody {
   final String startDate;
+
+  /// Optional medicine end date ('yyyy-MM-dd'). Sent as null when the user does
+  /// not set one, since ending a medicine is normally done later from the
+  /// medicine details screen.
+  final String? endDate;
   final String medicineName;
   final String usageMethod;
   final String dosageFrequency;
@@ -22,6 +27,7 @@ class MedicineDataEntryRequestBody {
 
   MedicineDataEntryRequestBody({
     required this.startDate,
+    this.endDate,
     required this.medicineName,
     required this.usageMethod,
     required this.dosageFrequency,

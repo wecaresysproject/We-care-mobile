@@ -4,6 +4,10 @@ import 'package:we_care/features/medicine/data/models/get_all_user_medicines_res
 import 'package:we_care/features/medicine/data/models/get_medicines_filters_response_model.dart';
 import 'package:we_care/features/medicine/medicines_services.dart';
 
+/// The medicine continuity status plus, when the backend provides it, the date
+/// the medicine ended ('yyyy-MM-dd'). [endDate] is null when unknown.
+typedef MedicineStatusResult = ({bool isActiveMedicine, String? endDate});
+
 class MedicinesViewRepo {
   MedicinesViewRepo(
     MedicinesServices medicinesServices,
@@ -94,7 +98,7 @@ class MedicinesViewRepo {
     }
   }
 
-  Future<ApiResult<bool>> getMedicineActiveStatus({
+  Future<ApiResult<MedicineStatusResult>> getMedicineActiveStatus({
     required String medicineId,
     required String userType,
     required String language,
@@ -105,18 +109,21 @@ class MedicinesViewRepo {
         userType,
         language,
       );
-      return ApiResult.success(response["isActiveMedicine"]);
+      return ApiResult.success(_medicineStatusFrom(response));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
 
-  Future<ApiResult<bool>> updateMedicineStatus({
+  /// Updates the medicine continuity status. When ending a medicine, [endDate]
+  /// is the user-picked end date ('yyyy-MM-dd'), sent under the `endDate` body
+  /// key and echoed back under the same key.
+  Future<ApiResult<MedicineStatusResult>> updateMedicineStatus({
     required String medicineId,
     required String userType,
     required String language,
     required bool isActiveMedicine,
-    required String date,
+    required String endDate,
   }) async {
     try {
       final response = await _medicinesServices.updateMedicineStatus(
@@ -124,13 +131,31 @@ class MedicinesViewRepo {
         userType,
         language,
         {
-          "startDate": date,
+          "endDate": endDate,
           "isActiveMedicine": isActiveMedicine,
         },
       );
-      return ApiResult.success(response["isActiveMedicine"]);
+      return ApiResult.success(_medicineStatusFrom(response));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
+  }
+
+  /// Reads `isActiveMedicine` and `endDate` from the response, tolerating both
+  /// shapes these two endpoints return (fields at the root, or wrapped in a
+  /// `data` envelope) and always taking the pair from the same payload. A
+  /// missing or empty `endDate` yields null instead of throwing.
+  MedicineStatusResult _medicineStatusFrom(dynamic response) {
+    final Map root = response is Map ? response : const {};
+    final data = root['data'];
+    final Map source = data is Map ? data : root;
+    final rawEndDate = source['endDate'] ?? root['endDate'];
+    return (
+      isActiveMedicine:
+          (source['isActiveMedicine'] ?? root['isActiveMedicine']) == true,
+      endDate: (rawEndDate is String && rawEndDate.isNotEmpty)
+          ? rawEndDate.split('T').first
+          : null,
+    );
   }
 }

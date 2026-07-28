@@ -87,7 +87,7 @@ abstract class SurgeriesService {
   @GET(SurgeriesApiConstants.getFilteredSurgeries)
   Future<GetUserSurgeriesResponseModal> getFilteredSurgeries(
       @Query("language") String language,
-      @Query("surgeryName") String? surgeryName,
+      @Query("surgeryRegion") String? surgeryRegion,
       @Query("year") int? year);
 
   @DELETE(SurgeriesApiConstants.deleteSurgeryById)

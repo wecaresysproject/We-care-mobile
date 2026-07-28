@@ -19,7 +19,4 @@ class AllergyApiConstants {
   static const getAllergyDiseases = "/v1/All-allergies";
   static const getSingleAllergyDetailsById = "/v1/user-allergies";
   static const updateAllergyDocumentById = "/v1/allergy-data";
-  //filters
-  static const getSurgeriesFilters = "/ViewSectionSurgery/surgery-info";
-  static const getFilteredSurgeries = "/ViewSectionSurgery/filter";
 }
