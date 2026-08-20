@@ -13,6 +13,8 @@ import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/image_uploader_section_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/options_selector_shared_container_widget.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/word_limit_text_field_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -76,7 +78,76 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
               controller: cubit.additionalMedicalComplains,
               hintText: "اكتب باختصار اى معلومات مهمة اخرى",
             ),
+            verticalSpacing(16),
+
+            //* حقول اختيارية تخص الشكاوى الإضافية
+            UserSelectionContainer(
+              allowManualEntry: true,
+              categoryLabel: "المنطقة الاساسية",
+              initialValue: state.additionalComplaintRegion.isEmptyOrNull
+                  ? null
+                  : state.additionalComplaintRegion,
+              containerHintText: state.additionalComplaintRegion.isEmptyOrNull
+                  ? "اختر المنطقة الاساسية"
+                  : state.additionalComplaintRegion!,
+              options: state.complaintRegions,
+              loadingState: state.complaintRegionsLoadingState,
+              onRetryPressed: () async => await cubit.emitAllComplaintRegions(),
+              bottomSheetTitle: "اختر المنطقة الاساسية",
+              searchHintText: "ابحث عن المنطقة الاساسية",
+              userEntryLabelText: "اضف المنطقة من عندك",
+              onOptionSelected: (value) =>
+                  cubit.updateAdditionalComplaintRegion(value),
+              onDismiss: () => cubit.updateAdditionalComplaintRegion(null),
+            ),
+            verticalSpacing(16),
+
+            UserSelectionContainer(
+              allowManualEntry: true,
+              categoryLabel: "طبيعة الشكوى",
+              initialValue: state.additionalComplaintNature.isEmptyOrNull
+                  ? null
+                  : state.additionalComplaintNature,
+              containerHintText: state.additionalComplaintNature.isEmptyOrNull
+                  ? "اختر طبيعة الشكوى"
+                  : state.additionalComplaintNature!,
+              options: const [
+                "مستمرة",
+                "متقطعة",
+                "تزايد مع الوقت",
+                "تتناقص مع الوقت",
+              ],
+              bottomSheetTitle: "اختر طبيعة الشكوى",
+              searchHintText: "ابحث عن طبيعة الشكوى",
+              userEntryLabelText: "اضف الوصف من عندك",
+              onOptionSelected: (value) =>
+                  cubit.updateAdditionalComplaintNature(value),
+              onDismiss: () => cubit.updateAdditionalComplaintNature(null),
+            ),
+            verticalSpacing(16),
+
+            Text(
+              "حدة الشكوى",
+              style: AppTextStyles.font18blackWight500,
+            ),
             verticalSpacing(10),
+            OptionSelectorWidget(
+              options: const [
+                "قليلة",
+                "متوسطة",
+                "شديدة",
+                "شديدة جدا",
+                "غير محتملة",
+              ],
+              initialSelectedOption:
+                  state.additionalComplaintSeverity.isEmptyOrNull
+                      ? null
+                      : state.additionalComplaintSeverity,
+              onOptionSelected: (value) =>
+                  cubit.updateAdditionalComplaintSeverity(value),
+              onDismiss: () => cubit.updateAdditionalComplaintSeverity(null),
+            ),
+            verticalSpacing(16),
 
             Text(
               "صور الشكاوي (${state.uploadedComplainsImages.length}/8)",
@@ -88,7 +159,7 @@ class EmergencyComplaintDataEntryFormFields extends StatelessWidget {
                 EmergencyComplaintsDataEntryState>(
               statusSelector: (state) => state.uploadImageRequestStatus,
               uploadedSelector: (state) => state.uploadedComplainsImages,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<EmergencyComplaintsDataEntryCubit>()

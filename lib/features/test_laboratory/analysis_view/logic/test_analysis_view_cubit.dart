@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/debouncer.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_similar_tests_response_model.dart';
 import 'package:we_care/features/test_laboratory/data/repos/test_analysis_view_repo.dart';
 
 class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
@@ -24,7 +25,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     await emitTests();
     await emitYearsFilter();
     await emitGroupNamesFilter();
-    await emitTestCodesFilter();
+    await emitEnglishTestNamesFilter();
     await emitModuleGuidanceData();
   }
 
@@ -101,7 +102,7 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
 
     final filtered = state.originalList.where((item) {
       return item.testName.toLowerCase().contains(q) ||
-          item.code.toLowerCase().contains(q);
+          item.testNameEnglish.toLowerCase().contains(q);
     }).toList();
 
     emit(
@@ -150,14 +151,14 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  Future<void> emitTestCodesFilter() async {
+  Future<void> emitEnglishTestNamesFilter() async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
-    final response = await testAnalysisViewRepo.getTestCodesFilter();
+    final response = await testAnalysisViewRepo.getEnglishTestNamesFilter();
     response.when(success: (response) async {
       emit(state.copyWith(
         requestStatus: RequestStatus.success,
-        codesFilter: response,
+        englishTestNamesFilter: response,
       ));
     }, failure: (error) {
       emit(state.copyWith(
@@ -166,11 +167,12 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  Future<void> emitFilteredData(int? year, String? group, String? code) async {
+  Future<void> emitFilteredData(
+      int? year, String? group, String? englishTestName) async {
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await testAnalysisViewRepo.getFilteredTests(year,
-        groupName: group, testCode: code);
+        groupName: group, englishTestName: englishTestName);
 
     response.when(success: (response) async {
       emit(state.copyWith(
@@ -241,37 +243,124 @@ class TestAnalysisViewCubit extends Cubit<TestAnalysisViewState> {
     });
   }
 
-  void toggleEditing(String id, String currentResult) {
+  /// A test whose `writtenPercent` came back as a real number is edited with
+  /// the number pad. One that came back null has no percentage to type, so the
+  /// user picks a descriptive result from the catalogue instead.
+  Future<void> startEditingResult(SimilarTests test) async {
+    final isNumeric = test.writtenPercent != null;
+
     emit(state.copyWith(
-      isEditing: !state.isEditing,
-      editingId: id,
-      currentResult: currentResult,
+      isEditing: true,
+      editingId: () => test.id,
+      currentResult: () =>
+          test.writtenPercent?.toString() ?? test.resultAsText,
+      editMode: () =>
+          isNumeric ? ResultEditMode.numeric : ResultEditMode.descriptive,
+      // Start from whatever is already recorded so reopening the editor shows
+      // the current choice rather than an empty field.
+      selectedChoiceForEdit: () => isNumeric ? null : test.resultAsText,
+      editingTestChoices: const [],
+    ));
+
+    resultEditingController.text =
+        isNumeric ? test.writtenPercent!.toString() : '';
+
+    if (!isNumeric) {
+      await emitTestChoices(testName: test.testName);
+    }
+  }
+
+  void cancelEditingResult() {
+    resultEditingController.clear();
+    emit(state.copyWith(
+      isEditing: false,
+      editingId: () => null,
+      currentResult: () => null,
+      editMode: () => null,
+      selectedChoiceForEdit: () => null,
+      editingTestChoices: const [],
+      isLoadingEditChoices: false,
     ));
   }
 
-  Future<void> updateTestResult(
-      {required String id,
-      required String testName,
-      required double result}) async {
+  Future<void> emitTestChoices({required String testName}) async {
+    emit(state.copyWith(isLoadingEditChoices: true));
+
+    final response =
+        await testAnalysisViewRepo.getTestChoices(testName: testName);
+
+    response.when(
+      success: (choices) {
+        emit(state.copyWith(
+          editingTestChoices: choices,
+          isLoadingEditChoices: false,
+        ));
+      },
+      failure: (error) {
+        emit(state.copyWith(
+          editingTestChoices: const [],
+          isLoadingEditChoices: false,
+          message: error.errors.first,
+        ));
+      },
+    );
+  }
+
+  void selectDescriptiveResult(String choice) {
+    emit(state.copyWith(selectedChoiceForEdit: () => choice));
+  }
+
+  Future<void> updateTestResult({required String testName}) async {
+    final id = state.editingId;
+    if (id == null) return;
+
+    final isNumeric = state.editMode == ResultEditMode.numeric;
+    final typedPercent =
+        isNumeric ? double.tryParse(resultEditingController.text.trim()) : null;
+
+    // Guard both editors: the numeric one used to `double.parse` straight from
+    // the controller and threw on empty or malformed input.
+    if (isNumeric && typedPercent == null) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        message: "من فضلك أدخل نتيجة رقمية صحيحة",
+      ));
+      return;
+    }
+    if (!isNumeric && state.selectedChoiceForEdit == null) {
+      emit(state.copyWith(
+        requestStatus: RequestStatus.failure,
+        message: "من فضلك اختر نتيجة وصفية",
+      ));
+      return;
+    }
+
     emit(state.copyWith(requestStatus: RequestStatus.loading));
 
     final response = await testAnalysisViewRepo.editTestResultByIdAndName(
-        id: id, testName: testName, result: result);
+      id: id,
+      testName: testName,
+      writtenPercent: typedPercent,
+      selectedChoice: isNumeric ? null : state.selectedChoiceForEdit,
+      testChoices: isNumeric ? const [] : state.editingTestChoices,
+    );
 
-    response.when(success: (response) async {
-      await emitGetSimilarTests(testName: testName);
-      emit(state.copyWith(
-        requestStatus: RequestStatus.success,
-        message: response,
-      ));
-    }, failure: (error) {
-      emit(state.copyWith(
-        requestStatus: RequestStatus.failure,
-        message: error.errors.first,
-      ));
-    });
-    emit(
-        state.copyWith(isEditing: false, editingId: null, currentResult: null));
+    await response.when(
+      success: (message) async {
+        // Close the editor *before* refetching: the list only rebuilds while
+        // `isEditing` is false, so refreshing first left the card showing the
+        // old value until the screen was reopened.
+        cancelEditingResult();
+        await emitGetSimilarTests(testName: testName);
+        emit(state.copyWith(message: message));
+      },
+      failure: (error) async {
+        emit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+        ));
+      },
+    );
   }
 
   @override

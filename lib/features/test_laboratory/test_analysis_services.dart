@@ -39,12 +39,12 @@ abstract class TestAnalysisSerices {
     @Query('pageSize') int pageSize,
   );
 
-  @GET(TestAnalysisApiConstants.getFilteredTestsByYear)
-  Future<GetUserAnalysisReponseModel> getFilteredTestsByYear(
+  @GET(TestAnalysisApiConstants.getFilteredTests)
+  Future<GetUserAnalysisReponseModel> getFilteredTests(
     @Query('language') String language,
     @Query('year') int? year,
     @Query('groupTestName') String? groupName,
-    @Query('codeName') String? testCode,
+    @Query('testName') String? testEnglishName,
   );
 
   @GET(TestAnalysisApiConstants.getTestbyId)
@@ -89,6 +89,8 @@ abstract class TestAnalysisSerices {
   Future<TestCodeModel> getTestEnglishNames(
     @Query("language") String language,
   );
+  @GET(TestAnalysisApiConstants.getUserEnglishTestNames)
+  Future<dynamic> getUserEnglishTestNames();
   @GET(TestAnalysisApiConstants.getTestByGroupNamesEndpoint)
   Future<TestGroupModel> getListOfTestGroupNames(
     @Query("language") String language,
@@ -101,13 +103,17 @@ abstract class TestAnalysisSerices {
     @Query("UserType") String userType,
   );
 
+  @GET(TestAnalysisApiConstants.getTestChoices)
+  Future<dynamic> getTestChoices(
+    @Query("testName") String testName,
+  );
+
   @GET(TestAnalysisApiConstants.getTableOfDataEndpoint)
   Future<TestTableReponseModel> getTableDetails(
     @Query("language") String language,
     @Query("userType") String? userType,
     @Query("testName") String? testNameQuery,
     @Query("groupName") String? groupNameQuery,
-    @Query("testName") String? testNameENQuery,
   );
   @GET("http://147.93.57.70/api/countries")
   Future<dynamic> getCountries(

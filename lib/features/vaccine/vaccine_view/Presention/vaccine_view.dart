@@ -10,6 +10,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
+import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_details_view.dart';
 import 'package:we_care/features/vaccine/vaccine_view/logic/vaccine_view_cubit.dart';
 import 'package:we_care/features/vaccine/vaccine_view/logic/vaccne_view_state.dart';
 import 'package:we_care/features/x_ray/x_ray_view/Presentation/views/widgets/x_ray_data_filters_row.dart';
@@ -173,7 +174,7 @@ Widget buildTable(
         ],
         rows: vaccinesData.map((data) {
           return DataRow(cells: [
-            _buildDataCell(data.date ?? "-"),
+            _buildDateCell(context, data, moduleGuidanceData),
             _buildDataCell(data.vaccineName ?? "-"),
             _buildDataCell(data.abbreviationCode ?? "-"),
             _buildDataCell(data.vaccineCategory ?? "-"),
@@ -208,6 +209,61 @@ DataColumn _buildDataColumn(String label) {
       ),
     ),
   );
+}
+
+/// The date is the row's entry point into [VaccineDetailsView] — rendered as a
+/// link so it reads as tappable.
+DataCell _buildDateCell(
+  BuildContext context,
+  UserVaccineModel data,
+  ModuleGuidanceDataModel? moduleGuidanceData,
+) {
+  final documentId = data.id;
+  return DataCell(
+    Center(
+      child: Text(
+        data.date ?? "-",
+        maxLines: 3,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: AppColorsManager.mainDarkBlue,
+          decoration: documentId == null
+              ? TextDecoration.none
+              : TextDecoration.underline,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ),
+    onTap: documentId == null
+        ? null
+        : () => _navigateToVaccineDetailsView(
+              context,
+              documentId,
+              moduleGuidanceData,
+            ),
+  );
+}
+
+Future<void> _navigateToVaccineDetailsView(
+  BuildContext context,
+  String documentId,
+  ModuleGuidanceDataModel? moduleGuidanceData,
+) async {
+  final cubit = context.read<VaccineViewCubit>();
+  final result = await Navigator.push<bool>(
+    context,
+    MaterialPageRoute(
+      builder: (_) => VaccineDetailsView(
+        documentId: documentId,
+        guidanceData: moduleGuidanceData,
+      ),
+    ),
+  );
+
+  if (result == true) {
+    await cubit.emitUserVaccinesData();
+  }
 }
 
 DataCell _buildDataCell(String value) {

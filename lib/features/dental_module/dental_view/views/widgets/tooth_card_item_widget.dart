@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/dental_module/data/models/get_tooth_documents_reponse_model.dart';
+import 'package:we_care/features/dental_module/dental_mouth_regions.dart';
 
 class ToothCardItemWidget extends StatelessWidget {
   final ToothDocument item;
@@ -16,6 +17,10 @@ class ToothCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// للمناطق (اللثة/الفكين) بنعرض اسم المنطقة، وللأسنان بنفضل نعرض رقم السن.
+    final regionName = DentalMouthRegions.nameOf(item.teethNumber);
+    final isRegion = regionName != null;
+
     return InkWell(
       onTap: onArrowTap,
       child: Container(
@@ -51,7 +56,7 @@ class ToothCardItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                'السن ${item.teethNumber}',
+                regionName ?? 'السن ${item.teethNumber}',
                 style: AppTextStyles.font14BlueWeight700
                     .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
@@ -70,13 +75,13 @@ class ToothCardItemWidget extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            'السن :',
+                            isRegion ? 'المنطقة :' : 'السن :',
                             style: AppTextStyles.font14BlueWeight700
                                 .copyWith(fontSize: 14.sp),
                           ),
                           SizedBox(width: 8.w),
                           Text(
-                            item.teethNumber!,
+                            regionName ?? item.teethNumber!,
                             style: AppTextStyles.font14blackWeight400
                                 .copyWith(fontSize: 14.sp),
                           ),

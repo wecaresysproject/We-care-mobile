@@ -228,11 +228,9 @@ class ChronicDiseaseModel {
 @JsonSerializable()
 class ComplaintsModule {
   final List<MainComplaint>? mainComplaints;
-  final List<AdditionalComplaint>? additionalComplaints;
 
   ComplaintsModule({
     this.mainComplaints,
-    this.additionalComplaints,
   });
 
   factory ComplaintsModule.fromJson(Map<String, dynamic> json) =>
@@ -255,6 +253,11 @@ class MainComplaint {
   @JsonKey(name: "severityOfComplaint")
   final String severity;
 
+  /// Sole source of the العضو / طبيعة الشكوى / حدة الشكوى columns in the PDF.
+  /// Null whenever the complaint was recorded without these details.
+  @JsonKey(name: "additionalComplaintDetails")
+  final AdditionalComplaintDetails? additionalComplaintDetails;
+
   MainComplaint({
     required this.date,
     this.complaintImage,
@@ -262,12 +265,36 @@ class MainComplaint {
     required this.complaintTitle,
     required this.complaintNature,
     required this.severity,
+    this.additionalComplaintDetails,
   });
 
   factory MainComplaint.fromJson(Map<String, dynamic> json) =>
       _$MainComplaintFromJson(json);
 
   Map<String, dynamic> toJson() => _$MainComplaintToJson(this);
+}
+
+@JsonSerializable()
+class AdditionalComplaintDetails {
+  @JsonKey(name: "symptoms_LocationOfPainOrComplaint")
+  final String? organ;
+
+  @JsonKey(name: "natureOfComplaint")
+  final String? complaintNature;
+
+  @JsonKey(name: "severityOfComplaint")
+  final String? severity;
+
+  AdditionalComplaintDetails({
+    this.organ,
+    this.complaintNature,
+    this.severity,
+  });
+
+  factory AdditionalComplaintDetails.fromJson(Map<String, dynamic> json) =>
+      _$AdditionalComplaintDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdditionalComplaintDetailsToJson(this);
 }
 
 @JsonSerializable()
@@ -355,9 +382,23 @@ class MedicalTestModel {
   Map<String, dynamic> toJson() => _$MedicalTestModelToJson(this);
 }
 
+/// نتيجة التحليل ممكن ترجع رقم (تحاليل رقمية) أو نص (تحاليل وصفية زي
+/// "أبيض / رمادي" و "Moderate") — والسيرفر بيبعت الاتنين في نفس الحقل.
+/// فبنستقبل أي نوع وبنحوّله لنص، لأن التقرير بيعرضه نص في كل الأحوال.
+/// الأرقام الصحيحة بتتعرض من غير كسور (12.0 → "12").
+String? _testResultValueFromJson(dynamic value) {
+  if (value == null) return null;
+  if (value is num) {
+    return value % 1 == 0 ? value.toInt().toString() : value.toString();
+  }
+  final text = value.toString().trim();
+  return text.isEmpty ? null : text;
+}
+
 @JsonSerializable()
 class MedicalTestResultModel {
-  final double? value;
+  @JsonKey(fromJson: _testResultValueFromJson)
+  final String? value;
   final String? testDate;
 
   MedicalTestResultModel({

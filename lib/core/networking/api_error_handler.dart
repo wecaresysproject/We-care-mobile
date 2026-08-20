@@ -59,6 +59,12 @@ class ApiErrorHandler {
     try {
       return ApiErrorModel.fromJson(data);
     } catch (_) {
+      // Some endpoints report failures as {"success": false, "message": "..."}
+      // with no `errors` list — surface that message instead of a generic one.
+      final message = data['message'];
+      if (message is String && message.isNotEmpty) {
+        return ApiErrorModel(success: false, errors: [message]);
+      }
       return ApiErrorModel(errors: ["Unexpected server response format"]);
     }
   }

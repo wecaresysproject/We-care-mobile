@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
@@ -18,7 +19,8 @@ import 'package:we_care/generated/l10n.dart';
 
 part 'essential_data_entry_state.dart';
 
-class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
+class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState>
+    with SafeEmitMixin<EssentialDataEntryState> {
   final AppSharedRepo _sharedRepo;
   final EssentialInfoDataEntryRepo essentialInfoDataEntryRepo;
 
@@ -74,6 +76,42 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     'O (غير معروف +/–)',
   ];
 
+  /// نص الـ controller بعد التنظيف، أو placeholder لو فاضى.
+  String _textOrPlaceholder(TextEditingController controller, S localization) {
+    final text = controller.text.trim();
+    return text.isNotEmpty ? text : localization.no_data_entered;
+  }
+
+  /// تفاصيل التأمين — مصدر واحد للإضافة والتعديل عشان الاتنين يبعتوا نفس الحقول.
+  /// بنقرا من الـ controllers مباشرة لأنها هى اللى المستخدم بيكتب فيها فعلياً.
+  InsuranceDetails _buildInsuranceDetails(S localization) {
+    final hasInsurance = state.hasMedicalInsurance ?? false;
+
+    if (!hasInsurance) {
+      return InsuranceDetails(
+        insuranceStatus: false,
+        insuranceCompany: localization.no_data_entered,
+        insuranceCoverageExpiryDate: localization.no_data_entered,
+        insuranceCardPhotoUrl: localization.no_data_entered,
+        additionalInsuranceTerms: localization.no_data_entered,
+      );
+    }
+
+    return InsuranceDetails(
+      insuranceStatus: true,
+      insuranceCompany:
+          _textOrPlaceholder(insuranceCompanyController, localization),
+      insuranceCoverageExpiryDate:
+          state.insuranceEndDate ?? localization.no_data_entered,
+      insuranceCardPhotoUrl:
+          state.insuranceCardPhotoUrl ?? localization.no_data_entered,
+      additionalInsuranceTerms: _textOrPlaceholder(
+        additionalInsuranceConditionsController,
+        localization,
+      ),
+    );
+  }
+
   Future<void> emitDoctorNames() async {
     final response = await _sharedRepo.getAllDoctors(
       userType: UserTypes.patient.name.firstLetterToUpperCase,
@@ -82,14 +120,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             doctors: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -99,39 +137,42 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   Future<void> submitEditsOnUserEssentialInfo(S localization) async {
-    emit(state.copyWith(submissionStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
     try {
       final updatedModel = UserEssentialInfoRequestBodyModel(
         gender: state.selectedGender,
-        familyDoctorPhoneNumber: familyDoctorPhoneNumberController.text.trim(),
-        fullName: fullNameController.text.trim(),
-        dateOfBirth: state.birthDate!,
-        nationalID: nationalIdController.text.trim(),
-        email: emailController.text.trim(),
-        personalPhotoUrl: state.userPersonalImage!,
-        country: state.selectedNationality!,
-        city: state.selectedCity!,
-        areaOrDistrict: exactLocation.text.trim(), //!check it later
-        bloodType: state.selectedBloodType!,
-        insuranceDetails: InsuranceDetails(
-          insuranceStatus: state.hasMedicalInsurance!,
-          insuranceCompany: insuranceCompanyController.text,
-          insuranceCoverageExpiryDate: state.insuranceEndDate!,
-          insuranceCardPhotoUrl: state.insuranceCardPhotoUrl,
-          additionalInsuranceTerms:
-              additionalInsuranceConditionsController.text.trim(),
+        familyDoctorPhoneNumber: _textOrPlaceholder(
+          familyDoctorPhoneNumberController,
+          localization,
         ),
-        disabilityLevel: state.disabilityLevel!,
-        disabilityType: disabilityTypeDetailsController.text.trim(),
-        socialStatus: state.socialStatus!,
-        numberOfChildren: int.parse(numberOfChildrenController.text.isEmpty
-            ? '0'
-            : numberOfChildrenController.text),
-        familyDoctorName: state.selectedFamilyDoctorName!,
-        workHours: noOfWoringHours.text.trim(),
-        emergencyContact1: mainEmergencyPhoneController.text.trim(),
-        emergencyContact2: anotherEmergencyPhoneController.text.trim(),
+        fullName: _textOrPlaceholder(fullNameController, localization),
+        dateOfBirth: state.birthDate ?? localization.no_data_entered,
+        nationalID: _textOrPlaceholder(nationalIdController, localization),
+        email: _textOrPlaceholder(emailController, localization),
+        personalPhotoUrl:
+            state.userPersonalImage ?? localization.no_data_entered,
+        country: state.selectedNationality ?? localization.no_data_entered,
+        city: state.selectedCity ?? localization.no_data_entered,
+        areaOrDistrict:
+            _textOrPlaceholder(exactLocation, localization), //!check it later
+        bloodType: state.selectedBloodType ?? localization.no_data_entered,
+        insuranceDetails: _buildInsuranceDetails(localization),
+        disabilityLevel: state.disabilityLevel ?? localization.no_data_entered,
+        disabilityType: _textOrPlaceholder(
+          disabilityTypeDetailsController,
+          localization,
+        ),
+        socialStatus: state.socialStatus ?? localization.no_data_entered,
+        numberOfChildren:
+            int.tryParse(numberOfChildrenController.text.trim()) ?? 0,
+        familyDoctorName:
+            state.selectedFamilyDoctorName ?? localization.no_data_entered,
+        workHours: _textOrPlaceholder(noOfWoringHours, localization),
+        emergencyContact1:
+            _textOrPlaceholder(mainEmergencyPhoneController, localization),
+        emergencyContact2:
+            _textOrPlaceholder(anotherEmergencyPhoneController, localization),
       );
 
       final response = await essentialInfoDataEntryRepo.updateUserEssentialInfo(
@@ -141,7 +182,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
       response.when(
         success: (message) {
-          emit(
+          safeEmit(
             state.copyWith(
               message: message,
               submissionStatus: RequestStatus.success,
@@ -149,7 +190,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           );
         },
         failure: (error) {
-          emit(
+          safeEmit(
             state.copyWith(
               message: error.errors.first,
               submissionStatus: RequestStatus.failure,
@@ -158,7 +199,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         },
       );
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: e.toString(),
           submissionStatus: RequestStatus.failure,
@@ -169,7 +210,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
   Future<void> loadUserPersonalDetailsDataForEditing(
       UserEssentialInfoData editingModel) async {
-    emit(
+    safeEmit(
       state.copyWith(
         birthDate: editingModel.dateOfBirth,
         selectedGender: editingModel.gender,
@@ -189,34 +230,38 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         selectedFamilyDoctorName: editingModel.familyDoctorName,
       ),
     );
-    fullNameController.text = editingModel.fullName!;
-    nationalIdController.text = editingModel.nationalID!;
-    emailController.text = editingModel.email!;
-    exactLocation.text = editingModel.areaOrDistrict!;
+    fullNameController.text = editingModel.fullName ?? '';
+    nationalIdController.text = editingModel.nationalID ?? '';
+    emailController.text = editingModel.email ?? '';
+    exactLocation.text = editingModel.areaOrDistrict ?? '';
     userAddress.text =
-        editingModel.areaOrDistrict!; //! الحي او الشياخة من العرض الاول
+        editingModel.areaOrDistrict ?? ''; //! الحي او الشياخة من العرض الاول
 
     insuranceCompanyController.text = editingModel.insuranceCompany ?? '';
     additionalInsuranceConditionsController.text =
         editingModel.additionalTerms ?? '';
 
-    disabilityTypeDetailsController.text = "مش موجود في العرض";
-    noOfWoringHours.text = editingModel.workHours!;
+    disabilityTypeDetailsController.text = editingModel.disabilityType ?? '';
+    noOfWoringHours.text = editingModel.workHours ?? '';
 
     familyDoctorPhoneNumberController.text =
-        editingModel.familyDoctorPhoneNumber!;
-    numberOfChildrenController.text = editingModel.numberOfChildren.toString();
+        editingModel.familyDoctorPhoneNumber ?? '';
+    numberOfChildrenController.text =
+        (editingModel.numberOfChildren ?? 0).toString();
 
-    mainEmergencyPhoneController.text = editingModel.emergencyContact1!;
-    anotherEmergencyPhoneController.text = editingModel.emergencyContact2!;
+    mainEmergencyPhoneController.text = editingModel.emergencyContact1 ?? '';
+    anotherEmergencyPhoneController.text = editingModel.emergencyContact2 ?? '';
     validateRequiredFields();
     await initialRequests();
   }
 
-  initialRequests() async {
-    Future.wait(
+  Future<void> initialRequests() async {
+    await Future.wait(
       [
         emitCountriesData(),
+        //! لازم تتنادى هنا كمان عشان في حالة التعديل تكون قائمة المدن متحمّلة
+        //! على حسب دولة المستخدم المحفوظة، مش فاضية لحد ما يغيّر الدولة
+        emitCitiesData(),
         emitDoctorNames(),
         emitModuleGuidanceData(),
       ],
@@ -230,14 +275,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             moduleGuidanceData: null,
           ),
@@ -247,7 +292,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   Future<void> uploadProfileImage({required String imagePath}) async {
-    emit(
+    safeEmit(
       state.copyWith(
         profileImageUploadStatus: UploadImageRequestStatus.initial,
       ),
@@ -259,7 +304,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: response.message,
             userPersonalImage: response.imageUrl,
@@ -268,7 +313,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             profileImageUploadStatus: UploadImageRequestStatus.failure,
@@ -279,7 +324,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   Future<void> uploadInsuranceCardImage({required String imagePath}) async {
-    emit(
+    safeEmit(
       state.copyWith(
         insuranceImageUploadStatus: UploadImageRequestStatus.initial,
       ),
@@ -291,7 +336,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
     );
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: response.message,
             insuranceCardPhotoUrl: response.imageUrl,
@@ -300,7 +345,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
             insuranceImageUploadStatus: UploadImageRequestStatus.failure,
@@ -311,64 +356,41 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   Future<void> postUserBasicData(S localization) async {
-    emit(state.copyWith(submissionStatus: RequestStatus.loading));
+    safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
     try {
       final model = UserEssentialInfoRequestBodyModel(
         gender: state.selectedGender ?? localization.no_data_entered,
-        familyDoctorPhoneNumber:
-            familyDoctorPhoneNumberController.text.trim().isNotEmpty
-                ? familyDoctorPhoneNumberController.text.trim()
-                : localization.no_data_entered,
-        fullName: fullNameController.text.trim().isNotEmpty
-            ? fullNameController.text.trim()
-            : localization.no_data_entered,
+        familyDoctorPhoneNumber: _textOrPlaceholder(
+          familyDoctorPhoneNumberController,
+          localization,
+        ),
+        fullName: _textOrPlaceholder(fullNameController, localization),
         dateOfBirth: state.birthDate ?? localization.no_data_entered,
-        nationalID: nationalIdController.text.trim().isNotEmpty
-            ? nationalIdController.text.trim()
-            : localization.no_data_entered,
-        email: emailController.text.trim().isNotEmpty
-            ? emailController.text.trim()
-            : localization.no_data_entered,
+        nationalID: _textOrPlaceholder(nationalIdController, localization),
+        email: _textOrPlaceholder(emailController, localization),
         personalPhotoUrl:
             state.userPersonalImage ?? localization.no_data_entered,
         country: state.selectedNationality ?? localization.no_data_entered,
         city: state.selectedCity ?? localization.no_data_entered,
-        areaOrDistrict: exactLocation.text.trim().isNotEmpty
-            ? exactLocation.text.trim()
-            : localization.no_data_entered,
+        areaOrDistrict: _textOrPlaceholder(exactLocation, localization),
         bloodType: state.selectedBloodType ?? localization.no_data_entered,
-        insuranceDetails: InsuranceDetails(
-          insuranceStatus: state.hasMedicalInsurance ?? false,
-          insuranceCompany:
-              state.insuranceCompany ?? localization.no_data_entered,
-          insuranceCoverageExpiryDate:
-              state.insuranceEndDate ?? localization.no_data_entered,
-          insuranceCardPhotoUrl:
-              state.insuranceCardPhotoUrl ?? localization.no_data_entered,
-          additionalInsuranceTerms:
-              additionalInsuranceConditionsController.text.trim().isNotEmpty
-                  ? additionalInsuranceConditionsController.text.trim()
-                  : localization.no_data_entered,
-        ),
+        insuranceDetails: _buildInsuranceDetails(localization),
         disabilityLevel: state.disabilityLevel ?? localization.no_data_entered,
-        disabilityType: (disabilityTypeDetailsController.text.trim().isNotEmpty
-            ? disabilityTypeDetailsController.text.trim()
-            : localization.no_data_entered),
+        disabilityType: _textOrPlaceholder(
+          disabilityTypeDetailsController,
+          localization,
+        ),
         socialStatus: state.socialStatus ?? localization.no_data_entered,
-        numberOfChildren: int.tryParse(numberOfChildrenController.text) ?? 0,
+        numberOfChildren:
+            int.tryParse(numberOfChildrenController.text.trim()) ?? 0,
         familyDoctorName:
             state.selectedFamilyDoctorName ?? localization.no_data_entered,
-        workHours: noOfWoringHours.text.trim().isNotEmpty
-            ? noOfWoringHours.text.trim()
-            : localization.no_data_entered,
-        emergencyContact1: mainEmergencyPhoneController.text.trim().isNotEmpty
-            ? mainEmergencyPhoneController.text.trim()
-            : localization.no_data_entered,
+        workHours: _textOrPlaceholder(noOfWoringHours, localization),
+        emergencyContact1:
+            _textOrPlaceholder(mainEmergencyPhoneController, localization),
         emergencyContact2:
-            anotherEmergencyPhoneController.text.trim().isNotEmpty
-                ? anotherEmergencyPhoneController.text.trim()
-                : localization.no_data_entered,
+            _textOrPlaceholder(anotherEmergencyPhoneController, localization),
       );
 
       final response = await essentialInfoDataEntryRepo.postUserEssentialInfo(
@@ -378,7 +400,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
       response.when(
         success: (message) {
-          emit(
+          safeEmit(
             state.copyWith(
               message: message,
               submissionStatus: RequestStatus.success,
@@ -386,7 +408,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
           );
         },
         failure: (error) {
-          emit(
+          safeEmit(
             state.copyWith(
               message: error.errors.first,
               submissionStatus: RequestStatus.failure,
@@ -395,7 +417,7 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
         },
       );
     } catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           message: e.toString(),
           submissionStatus: RequestStatus.failure,
@@ -411,14 +433,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             countriesNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -436,14 +458,14 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
     response.when(
       success: (response) {
-        emit(
+        safeEmit(
           state.copyWith(
             citiesNames: response,
           ),
         );
       },
       failure: (error) {
-        emit(
+        safeEmit(
           state.copyWith(
             message: error.errors.first,
           ),
@@ -454,11 +476,11 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
 
   // Update functions
   void updateIsMarriedOrNot(String? val) =>
-      emit(state.copyWith(socialStatus: val));
+      safeEmit(state.copyWith(socialStatus: val));
 
   void updateGender(String? val) {
     log("gender : $val");
-    emit(
+    safeEmit(
       state.copyWith(
         selectedGender: val,
       ),
@@ -466,64 +488,70 @@ class EssentialDataEntryCubit extends Cubit<EssentialDataEntryState> {
   }
 
   void updateFamilyDoctorName(String? val) =>
-      emit(state.copyWith(selectedFamilyDoctorName: val));
+      safeEmit(state.copyWith(selectedFamilyDoctorName: val));
 
   void updateDisabilityLevel(String? val) =>
-      emit(state.copyWith(disabilityLevel: val));
+      safeEmit(state.copyWith(disabilityLevel: val));
 
   void updateNationality(String? val) =>
-      emit(state.copyWith(selectedNationality: val));
+      safeEmit(state.copyWith(selectedNationality: val));
 
-  void updateCity(String? val) => emit(state.copyWith(selectedCity: val));
+  void updateCity(String? val) => safeEmit(state.copyWith(selectedCity: val));
 
   void updateMaritalStatus(String? val) =>
-      emit(state.copyWith(selectedMaritalStatus: val));
+      safeEmit(state.copyWith(selectedMaritalStatus: val));
 
   void updateInsuranceEndDate(String? val) =>
-      emit(state.copyWith(insuranceEndDate: val));
+      safeEmit(state.copyWith(insuranceEndDate: val));
 
   void updateBloodType(String? val) =>
-      emit(state.copyWith(selectedBloodType: val));
+      safeEmit(state.copyWith(selectedBloodType: val));
 
   void updateWeeklyWorkingHours(String? val) =>
-      emit(state.copyWith(weeklyWorkingHours: val));
+      safeEmit(state.copyWith(weeklyWorkingHours: val));
 
-  void updateBirthDate(String? val) => emit(state.copyWith(birthDate: val));
+  void updateBirthDate(String? val) => safeEmit(state.copyWith(birthDate: val));
 
   void updateInsuranceCompanyName(String? val) =>
-      emit(state.copyWith(insuranceCompany: val));
+      safeEmit(state.copyWith(insuranceCompany: val));
 
   // Yes/No updates
   void updateHasMedicalInsurance(bool? val, S locale) {
-    {
-      emit(state.copyWith(hasMedicalInsurance: val));
-      if (val == false) {
-        // Clear insurance-specific fields
-        emit(
-          state.copyWith(
-            insuranceCompany: null,
-            insuranceEndDate: null,
-            insuranceAdditionalConditions: null,
-            insuranceCardImagePath: null,
-          ),
-        );
-      }
+    if (val == false) {
+      // مسح بيانات التأمين من الـ state ومن الـ controllers مع بعض،
+      // لأن الـ submit بيقرا من الـ controllers فلو سيبناها هتتبعت تانى.
+      insuranceCompanyController.clear();
+      additionalInsuranceConditionsController.clear();
+
+      safeEmit(
+        state.copyWith(
+          hasMedicalInsurance: val,
+          insuranceCompany: null,
+          insuranceEndDate: null,
+          insuranceAdditionalConditions: null,
+          insuranceCardImagePath: null,
+          insuranceCardPhotoUrl: null,
+        ),
+      );
+      return;
     }
+
+    safeEmit(state.copyWith(hasMedicalInsurance: val));
   }
 
   // Validation (simple: require name, birth date, national id, mobile)
   void validateRequiredFields() {
     final bool isValid = fullNameController.text.trim().isNotEmpty;
 
-    emit(state.copyWith(isFormValidated: isValid));
+    safeEmit(state.copyWith(isFormValidated: isValid));
   }
 
-  void onRemoveProfileImage() => emit(
+  void onRemoveProfileImage() => safeEmit(
         state.copyWith(
           userPersonalImage: "",
         ),
       );
-  void onRemoveInsuranceCardImage() => emit(
+  void onRemoveInsuranceCardImage() => safeEmit(
         state.copyWith(
           insuranceCardPhotoUrl: "",
         ),

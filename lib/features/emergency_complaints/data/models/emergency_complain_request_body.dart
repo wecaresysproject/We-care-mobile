@@ -11,6 +11,10 @@ class EmergencyComplainRequestBody {
   final List<MedicalComplaint> userMedicalComplaint;
   final String? personalNote;
   final String? additionalMedicalComplains;
+
+  /// تفاصيل اختيارية تخص "شكاوي طبية إضافية"
+  /// (المنطقة الاساسية / طبيعة الشكوى / حدة الشكوى)
+  final AdditionalComplaintDetails? additionalComplaintDetails;
   final SimilarComplaint? similarComplaint;
   @JsonKey(name: 'medications')
   final Medications? medication;
@@ -22,6 +26,7 @@ class EmergencyComplainRequestBody {
     required this.dateOfComplaint,
     required this.userMedicalComplaint,
     this.additionalMedicalComplains,
+    this.additionalComplaintDetails,
     this.personalNote,
     this.similarComplaint,
     this.medication,
@@ -33,6 +38,25 @@ class EmergencyComplainRequestBody {
       _$EmergencyComplainRequestBodyFromJson(json);
 
   Map<String, dynamic> toJson() => _$EmergencyComplainRequestBodyToJson(this);
+}
+
+@JsonSerializable()
+class AdditionalComplaintDetails {
+  @JsonKey(name: 'symptoms_LocationOfPainOrComplaint')
+  final String? symptomsRegion; // الأعراض المرضية - المنطقة الاساسية
+  final String? natureOfComplaint; // طبيعة الشكوى
+  final String? severityOfComplaint; // حدة الشكوى
+
+  const AdditionalComplaintDetails({
+    this.symptomsRegion,
+    this.natureOfComplaint,
+    this.severityOfComplaint,
+  });
+
+  factory AdditionalComplaintDetails.fromJson(Map<String, dynamic> json) =>
+      _$AdditionalComplaintDetailsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdditionalComplaintDetailsToJson(this);
 }
 
 @JsonSerializable()

@@ -1,6 +1,10 @@
 // essential_data_entry_state.dart
 part of 'essential_data_entry_cubit.dart';
 
+/// Sentinel بيفرّق بين "الحقل مش متبعت لـ copyWith" و "متبعت null عشان يتمسح".
+/// من غيره الـ `?? this.field` بيرجّع القيمة القديمة ومينفعش تمسح حقل خالص.
+const Object _keepCurrentValue = Object();
+
 class EssentialDataEntryState extends Equatable {
   final String? birthDate;
   final String? nationalIdIssueDate;
@@ -129,10 +133,12 @@ class EssentialDataEntryState extends Equatable {
     bool? isFormValidated,
     RequestStatus? submissionStatus,
     String? message,
-    String? insuranceCompany,
-    String? insuranceEndDate,
-    String? insuranceAdditionalConditions,
-    String? insuranceCardImagePath,
+    // الحقول دى بتتمسح لما المستخدم يقول إنه ملوش تأمين، فبتاخد الـ sentinel
+    Object? insuranceCompany = _keepCurrentValue,
+    Object? insuranceEndDate = _keepCurrentValue,
+    Object? insuranceAdditionalConditions = _keepCurrentValue,
+    Object? insuranceCardImagePath = _keepCurrentValue,
+    Object? insuranceCardPhotoUrl = _keepCurrentValue,
     String? weeklyWorkingHours,
     String? socialStatus,
     bool? isEditMode,
@@ -146,7 +152,6 @@ class EssentialDataEntryState extends Equatable {
     UploadImageRequestStatus? profileImageUploadStatus,
     UploadImageRequestStatus? insuranceImageUploadStatus,
     bool? isPictureSelected,
-    String? insuranceCardPhotoUrl,
     String? selectedFamilyDoctorName,
     ModuleGuidanceDataModel? moduleGuidanceData,
   }) {
@@ -165,12 +170,20 @@ class EssentialDataEntryState extends Equatable {
       submissionStatus: submissionStatus ?? this.submissionStatus,
       message: message ?? this.message,
       selectedCity: selectedCity ?? this.selectedCity,
-      insuranceCompany: insuranceCompany ?? this.insuranceCompany,
-      insuranceEndDate: insuranceEndDate ?? this.insuranceEndDate,
+      insuranceCompany: identical(insuranceCompany, _keepCurrentValue)
+          ? this.insuranceCompany
+          : insuranceCompany as String?,
+      insuranceEndDate: identical(insuranceEndDate, _keepCurrentValue)
+          ? this.insuranceEndDate
+          : insuranceEndDate as String?,
       insuranceAdditionalConditions:
-          insuranceAdditionalConditions ?? this.insuranceAdditionalConditions,
+          identical(insuranceAdditionalConditions, _keepCurrentValue)
+              ? this.insuranceAdditionalConditions
+              : insuranceAdditionalConditions as String?,
       insuranceCardImagePath:
-          insuranceCardImagePath ?? this.insuranceCardImagePath,
+          identical(insuranceCardImagePath, _keepCurrentValue)
+              ? this.insuranceCardImagePath
+              : insuranceCardImagePath as String?,
       weeklyWorkingHours: weeklyWorkingHours ?? this.weeklyWorkingHours,
       socialStatus: socialStatus ?? this.socialStatus,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -182,8 +195,9 @@ class EssentialDataEntryState extends Equatable {
       userPersonalImage: userPersonalImage ?? this.userPersonalImage,
       disabilityLevel: disabilityLevel ?? this.disabilityLevel,
       isPictureSelected: isPictureSelected ?? this.isPictureSelected,
-      insuranceCardPhotoUrl:
-          insuranceCardPhotoUrl ?? this.insuranceCardPhotoUrl,
+      insuranceCardPhotoUrl: identical(insuranceCardPhotoUrl, _keepCurrentValue)
+          ? this.insuranceCardPhotoUrl
+          : insuranceCardPhotoUrl as String?,
       profileImageUploadStatus:
           profileImageUploadStatus ?? this.profileImageUploadStatus,
       insuranceImageUploadStatus:

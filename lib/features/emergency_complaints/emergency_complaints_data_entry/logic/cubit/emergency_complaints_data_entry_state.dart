@@ -33,6 +33,13 @@ class EmergencyComplaintsDataEntryState extends Equatable {
   final UploadImageRequestStatus uploadImageRequestStatus;
   final ModuleGuidanceDataModel? moduleGuidanceData;
 
+  //* حقول اختيارية تخص "شكاوي طبية إضافية"
+  final String? additionalComplaintRegion; // الأعراض المرضية - المنطقة الاساسية
+  final String? additionalComplaintNature; // طبيعة الشكوى
+  final String? additionalComplaintSeverity; // حدة الشكوى
+  final List<String> complaintRegions;
+  final OptionsLoadingState complaintRegionsLoadingState;
+
   const EmergencyComplaintsDataEntryState({
     this.emergencyComplaintsDataEntryStatus = RequestStatus.initial,
     this.isFormValidated = false,
@@ -57,6 +64,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     this.uploadedComplainsImages = const [],
     this.uploadImageRequestStatus = UploadImageRequestStatus.initial,
     this.moduleGuidanceData,
+    this.additionalComplaintRegion,
+    this.additionalComplaintNature,
+    this.additionalComplaintSeverity,
+    this.complaintRegions = const [],
+    this.complaintRegionsLoadingState = OptionsLoadingState.loaded,
   }) : super();
 
   const EmergencyComplaintsDataEntryState.initialState()
@@ -84,6 +96,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
           uploadedComplainsImages: const [],
           uploadImageRequestStatus: UploadImageRequestStatus.initial,
           moduleGuidanceData: null,
+          additionalComplaintRegion: null,
+          additionalComplaintNature: null,
+          additionalComplaintSeverity: null,
+          complaintRegions: const [],
+          complaintRegionsLoadingState: OptionsLoadingState.loaded,
         );
 
   EmergencyComplaintsDataEntryState copyWith({
@@ -115,6 +132,11 @@ class EmergencyComplaintsDataEntryState extends Equatable {
     List<String>? uploadedComplainsImages,
     UploadImageRequestStatus? uploadImageRequestStatus,
     ModuleGuidanceDataModel? moduleGuidanceData,
+    String? additionalComplaintRegion,
+    String? additionalComplaintNature,
+    String? additionalComplaintSeverity,
+    List<String>? complaintRegions,
+    OptionsLoadingState? complaintRegionsLoadingState,
   }) {
     return EmergencyComplaintsDataEntryState(
       emergencyComplaintsDataEntryStatus: emergencyComplaintsDataEntryStatus ??
@@ -150,6 +172,15 @@ class EmergencyComplaintsDataEntryState extends Equatable {
       uploadImageRequestStatus:
           uploadImageRequestStatus ?? this.uploadImageRequestStatus,
       moduleGuidanceData: moduleGuidanceData ?? this.moduleGuidanceData,
+      additionalComplaintRegion:
+          additionalComplaintRegion ?? this.additionalComplaintRegion,
+      additionalComplaintNature:
+          additionalComplaintNature ?? this.additionalComplaintNature,
+      additionalComplaintSeverity:
+          additionalComplaintSeverity ?? this.additionalComplaintSeverity,
+      complaintRegions: complaintRegions ?? this.complaintRegions,
+      complaintRegionsLoadingState:
+          complaintRegionsLoadingState ?? this.complaintRegionsLoadingState,
     );
   }
 
@@ -178,5 +209,10 @@ class EmergencyComplaintsDataEntryState extends Equatable {
         uploadedComplainsImages,
         uploadImageRequestStatus,
         moduleGuidanceData,
+        additionalComplaintRegion,
+        additionalComplaintNature,
+        additionalComplaintSeverity,
+        complaintRegions,
+        complaintRegionsLoadingState,
       ];
 }

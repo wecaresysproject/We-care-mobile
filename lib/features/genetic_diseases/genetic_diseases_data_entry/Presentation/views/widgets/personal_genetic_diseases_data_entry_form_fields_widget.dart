@@ -144,7 +144,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                 GeneticDiseasesDataEntryState>(
               statusSelector: (state) => state.firstImageRequestStatus,
               uploadedSelector: (state) => state.firstImageUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<GeneticDiseasesDataEntryCubit>()
@@ -170,7 +170,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                 GeneticDiseasesDataEntryState>(
               statusSelector: (state) => state.secondImageRequestStatus,
               uploadedSelector: (state) => state.secondImageUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<GeneticDiseasesDataEntryCubit>()
@@ -223,7 +223,7 @@ class _PersonalGeneticDiseasesDataEntryFormFieldsWidgetState
                 GeneticDiseasesDataEntryState>(
               statusSelector: (state) => state.uploadReportStatus,
               uploadedSelector: (state) => state.reportsUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<GeneticDiseasesDataEntryCubit>()

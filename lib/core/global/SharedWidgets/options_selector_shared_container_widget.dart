@@ -11,6 +11,10 @@ class OptionSelectorWidget extends StatefulWidget {
   final Color containerValidationColor;
   final double? answersFontSize;
 
+  /// لو اتبعت، بيظهر زرار "إلغاء الاختيار" بعد ما المستخدم يختار قيمة.
+  /// بيستخدم مع الحقول الاختيارية عشان يقدر يرجع الحقل فاضى تانى.
+  final VoidCallback? onDismiss;
+
   const OptionSelectorWidget({
     super.key,
     required this.options,
@@ -19,6 +23,7 @@ class OptionSelectorWidget extends StatefulWidget {
     this.containerValidationColor =
         AppColorsManager.textfieldOutsideBorderColor,
     this.answersFontSize = 14,
+    this.onDismiss,
   });
 
   @override
@@ -43,11 +48,38 @@ class OptionSelectorWidgetState extends State<OptionSelectorWidget> {
     }
   }
 
+  void _clearSelection() {
+    setState(() {
+      _selectedOption = null;
+    });
+    widget.onDismiss?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        //* بيظهر بس لو الحقل اختيارى وفيه قيمة متحددة
+        if (widget.onDismiss != null && _selectedOption != null)
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: GestureDetector(
+              onTap: _clearSelection,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 6.h),
+                child: Text(
+                  "إلغاء الاختيار",
+                  style: AppTextStyles.font16DarkGreyWeight400.copyWith(
+                    color: AppColorsManager.warningColor,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
         Container(
           width: double.infinity,
           padding: EdgeInsets.fromLTRB(7.w, 15.h, 7.w, 10.h),

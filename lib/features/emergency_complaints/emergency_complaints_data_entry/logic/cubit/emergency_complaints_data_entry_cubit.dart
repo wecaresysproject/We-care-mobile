@@ -28,6 +28,7 @@ class EmergencyComplaintsDataEntryCubit
         ) {
     additionalMedicalComplains.addListener(validateRequiredFields);
     emitModuleGuidanceData();
+    emitAllComplaintRegions();
   }
 
   // ignore: unused_field
@@ -59,6 +60,37 @@ class EmergencyComplaintsDataEntryCubit
         ),
       );
     }
+  }
+
+  /// خيارات "الأعراض المرضية - المنطقة الاساسية" الخاصة بالشكاوى الإضافية
+  Future<void> emitAllComplaintRegions() async {
+    emit(
+      state.copyWith(
+        complaintRegionsLoadingState: OptionsLoadingState.loading,
+      ),
+    );
+    final response = await _emergencyDataEntryRepo.getAllPlacesOfComplaints(
+      language: AppStrings.arabicLang,
+    );
+    if (isClosed) return; //* المستخدم ممكن يقفل الشاشة قبل ما الريكوست يرجع
+    response.when(
+      success: (regions) {
+        emit(
+          state.copyWith(
+            complaintRegions: regions,
+            complaintRegionsLoadingState: OptionsLoadingState.loaded,
+          ),
+        );
+      },
+      failure: (error) {
+        emit(
+          state.copyWith(
+            message: error.errors.first,
+            complaintRegionsLoadingState: OptionsLoadingState.error,
+          ),
+        );
+      },
+    );
   }
 
   Future<void> emitAllMedicinesNames() async {
@@ -160,7 +192,11 @@ class EmergencyComplaintsDataEntryCubit
         await _emergencyDataEntryRepo.editSpecifcEmergencyDocumentDataDetails(
       requestBody: EmergencyComplainRequestBody(
         complainsImages: state.uploadedComplainsImages,
-        additionalMedicalComplains: additionalMedicalComplains.text,
+        additionalMedicalComplains:
+            additionalMedicalComplains.text.trim().isEmpty
+                ? locale.no_data_entered
+                : additionalMedicalComplains.text.trim(),
+        additionalComplaintDetails: _buildAdditionalComplaintDetails(locale),
         dateOfComplaint: state.complaintAppearanceDate!,
         medication: Medications(
           medicationName: state.secondQuestionAnswer
@@ -240,8 +276,16 @@ class EmergencyComplaintsDataEntryCubit
             ? true
             : false;
 
+    final additionalDetails = emergencyComplaint.additionalComplaintDetails;
+
     emit(
       state.copyWith(
+        additionalComplaintRegion:
+            _valueOrEmpty(additionalDetails?.symptomsRegion, locale),
+        additionalComplaintNature:
+            _valueOrEmpty(additionalDetails?.natureOfComplaint, locale),
+        additionalComplaintSeverity:
+            _valueOrEmpty(additionalDetails?.severityOfComplaint, locale),
         complaintAppearanceDate: emergencyComplaint.date,
         medicalComplaints: emergencyComplaint.mainSymptoms,
         firstQuestionAnswer: firstQuestionAnswer,
@@ -282,6 +326,7 @@ class EmergencyComplaintsDataEntryCubit
             ? ''
             : emergencyComplaint.additionalMedicalComplains ?? '';
     await emitModuleGuidanceData();
+    validateRequiredFields();
   }
 
   Future<void> storeTempUserPastComplaints(
@@ -317,9 +362,11 @@ class EmergencyComplaintsDataEntryCubit
         personalNote: personalInfoController.text.isEmpty
             ? locale.no_data_entered
             : personalInfoController.text,
-        additionalMedicalComplains: additionalMedicalComplains.text.isEmpty
-            ? locale.no_data_entered
-            : additionalMedicalComplains.text,
+        additionalMedicalComplains:
+            additionalMedicalComplains.text.trim().isEmpty
+                ? locale.no_data_entered
+                : additionalMedicalComplains.text.trim(),
+        additionalComplaintDetails: _buildAdditionalComplaintDetails(locale),
         medication: Medications(
           medicationName: state.selectedMedicineName ?? locale.no_data_entered,
           dosage: medicineDoseController.text.isEmpty
@@ -399,6 +446,40 @@ class EmergencyComplaintsDataEntryCubit
     validateRequiredFields();
   }
 
+  //* الحقول الاختيارية الخاصة بـ "شكاوي طبية إضافية"
+  /// [region] بـ null معناها إلغاء الاختيار
+  void updateAdditionalComplaintRegion(String? region) {
+    emit(state.copyWith(additionalComplaintRegion: region ?? ''));
+  }
+
+  void updateAdditionalComplaintNature(String? nature) {
+    emit(state.copyWith(additionalComplaintNature: nature ?? ''));
+  }
+
+  void updateAdditionalComplaintSeverity(String? severity) {
+    emit(state.copyWith(additionalComplaintSeverity: severity ?? ''));
+  }
+
+  /// بيحول القيم اللى راجعة من الباك اند لقيمة فاضية لو مفيش بيانات متسجلة
+  String _valueOrEmpty(String? value, S locale) =>
+      value == null || value == locale.no_data_entered ? '' : value;
+
+  /// كل الحقول اختيارية، فلو المستخدم مدخلش حاجة بنبعت [S.no_data_entered]
+  /// زى باقى الأقسام الاختيارية فى نفس الـ endpoint
+  AdditionalComplaintDetails _buildAdditionalComplaintDetails(S locale) {
+    return AdditionalComplaintDetails(
+      symptomsRegion: state.additionalComplaintRegion.isEmptyOrNull
+          ? locale.no_data_entered
+          : state.additionalComplaintRegion,
+      natureOfComplaint: state.additionalComplaintNature.isEmptyOrNull
+          ? locale.no_data_entered
+          : state.additionalComplaintNature,
+      severityOfComplaint: state.additionalComplaintSeverity.isEmptyOrNull
+          ? locale.no_data_entered
+          : state.additionalComplaintSeverity,
+    );
+  }
+
   void updateIfHasSameComplaintBeforeDate(String? date) {
     emit(state.copyWith(previousComplaintDate: date));
   }
@@ -456,7 +537,7 @@ class EmergencyComplaintsDataEntryCubit
         state.isCurrentlyTakingMedication == null ||
         state.hasReceivedEmergencyCareBefore == null ||
         (state.medicalComplaints.isEmpty &&
-            additionalMedicalComplains.text.isEmpty)) {
+            additionalMedicalComplains.text.trim().isEmpty)) {
       emit(
         state.copyWith(
           isFormValidated: false,

@@ -43,7 +43,7 @@ abstract class GeneticDiseasesServices {
   );
 
   @MultiPart()
-  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
+  @POST("http://147.93.57.70/api/FileUpload/upload-image")
   Future<UploadImageResponseModel> uploadFirstImage(
     @Part(name: "image") File image,
     @Header("Content-Type") String contentType,
@@ -57,7 +57,7 @@ abstract class GeneticDiseasesServices {
     @Query("language") String language,
   );
   @MultiPart()
-  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
+  @POST("http://147.93.57.70/api/FileUpload/upload-report")
   Future<UploadReportResponseModel> uploadReportImage(
     @Part(name: 'report') File image,
     @Header("Content-Type") String contentType,

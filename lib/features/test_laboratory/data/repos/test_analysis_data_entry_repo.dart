@@ -102,15 +102,15 @@ class TestAnalysisDataEntryRepo {
     required String userType,
     String? testNameQuery,
     String? groupNameQuery,
-    String? codeQuery,
+    String? englishTestNameQuery,
   }) async {
     try {
       final response = await _testAnalysisSerices.getTableDetails(
         language,
         userType,
-        testNameQuery,
+        // الاسم بالعربي والاسم بالإنجليزي بيتبعتوا في نفس الـ query param
+        testNameQuery ?? englishTestNameQuery,
         groupNameQuery,
-        codeQuery,
       );
       log(" xxx getTableDetails response : $response");
       return ApiResult.success(response.testTableRowsData);

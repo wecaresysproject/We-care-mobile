@@ -131,20 +131,17 @@ class VaccineDataEntryRepo {
     }
   }
 
+  /// Updates one of the user's vaccine entries. Returns the API's own message.
   Future<ApiResult<String>> editVaccineData({
     required VaccineModuleRequestBody requestBody,
-    required String language,
-    required String userType,
     required String vaccineId,
   }) async {
     try {
-      final response = await _vaccineApiServices.updateVaccineDataEntry(
-        requestBody,
-        language,
-        userType,
+      final response = await _vaccineApiServices.updateVaccineUserEntry(
         vaccineId,
+        requestBody,
       );
-      return ApiResult.success(response["message"]);
+      return ApiResult.success(response["message"] as String);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

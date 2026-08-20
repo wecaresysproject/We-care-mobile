@@ -15,7 +15,7 @@ class TestAnalysisApiConstants {
 
   static const getUserTests = "/lab-tests/summary";
 
-  static const getFilteredTestsByYear = "/lab-tests/filter";
+  static const getFilteredTests = "/lab-tests/filter";
 
   static const getTestbyId = "/lab-tests/doc";
 
@@ -30,7 +30,11 @@ class TestAnalysisApiConstants {
       "/flutter/SortsAnalysis/group-names";
   static const getTestAnnotationsEndpoint = "/flutter/SortsAnalysis/codes";
   static const getAllEnglishTestNamesEndpoint = "/lab-tests/AllEnglishTestName";
+  static const getUserEnglishTestNames = "/lab-tests/UserTestNames";
   static const getTestNamesEndpoint = "/flutter/SortsAnalysis/test-names";
+
+  /// Descriptive result options for a test that has no numeric percentage.
+  static const getTestChoices = "/flutter/SortsAnalysis/test-choices";
   static const getTableOfDataEndpoint = "/flutter/SortsAnalysis/test-info";
 
   static const postTestAnalysisEndpoint = "/lab-tests";

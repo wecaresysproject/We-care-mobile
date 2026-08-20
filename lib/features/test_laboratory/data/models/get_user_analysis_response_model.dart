@@ -19,7 +19,7 @@ class GetUserAnalysisReponseModel {
 class AnalysisSummarizedData {
   String id;
   String testName;
-  String code;
+  String testNameEnglish;
   String? standardRate;
   String testDate;
   @JsonKey(name: 'writtenPercent')
@@ -29,7 +29,7 @@ class AnalysisSummarizedData {
   AnalysisSummarizedData({
     required this.id,
     required this.testName,
-    required this.code,
+    required this.testNameEnglish,
     required this.standardRate,
     required this.testDate,
     required this.result,

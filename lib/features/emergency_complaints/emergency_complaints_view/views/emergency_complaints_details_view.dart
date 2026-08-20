@@ -136,19 +136,71 @@ class EmergencyComplaintsDetailsView extends StatelessWidget {
                       );
                     },
                   ),
-                  if (complaint.additionalMedicalComplains.isNotEmptyOrNull &&
-                      complaint.additionalMedicalComplains !=
-                          context.translate.no_data_entered) ...[
+                  if (complaint.additionalMedicalComplains.isFilled ||
+                      complaint.additionalComplaintDetails?.symptomsRegion
+                              .isFilled ==
+                          true ||
+                      complaint.additionalComplaintDetails?.natureOfComplaint
+                              .isFilled ==
+                          true ||
+                      complaint.additionalComplaintDetails?.severityOfComplaint
+                              .isFilled ==
+                          true) ...[
                     SectionTitleContainer(
                       title: "شكاوى إضافية",
                       iconPath: 'assets/images/notes_icon.png',
                     ),
-                    DetailsViewInfoTile(
-                      title: "شكاوى إضافية",
-                      value: complaint.additionalMedicalComplains!,
-                      icon: 'assets/images/notes_icon.png',
-                      isExpanded: true,
-                    ),
+                    if (complaint.additionalMedicalComplains.isFilled)
+                      DetailsViewInfoTile(
+                        title: "شكاوى إضافية",
+                        value: complaint.additionalMedicalComplains!,
+                        icon: 'assets/images/notes_icon.png',
+                        isExpanded: true,
+                      ),
+                    if (complaint.additionalComplaintDetails?.symptomsRegion
+                            .isFilled ==
+                        true) ...[
+                      verticalSpacing(16),
+                      DetailsViewInfoTile(
+                        title: "الأعراض المرضية - المنطقة الاساسية",
+                        value: complaint
+                            .additionalComplaintDetails!.symptomsRegion!,
+                        icon: 'assets/images/symptoms_icon.png',
+                        isExpanded: true,
+                      ),
+                    ],
+                    if (complaint.additionalComplaintDetails?.natureOfComplaint
+                                .isFilled ==
+                            true ||
+                        complaint.additionalComplaintDetails
+                                ?.severityOfComplaint.isFilled ==
+                            true) ...[
+                      verticalSpacing(16),
+                      Row(
+                        children: [
+                          if (complaint.additionalComplaintDetails
+                                  ?.natureOfComplaint.isFilled ==
+                              true)
+                            DetailsViewInfoTile(
+                              title: "طبيعة الشكوى",
+                              value: complaint.additionalComplaintDetails!
+                                  .natureOfComplaint!,
+                              icon: 'assets/images/file_icon.png',
+                            ),
+                          Spacer(),
+                          if (complaint.additionalComplaintDetails
+                                  ?.severityOfComplaint.isFilled ==
+                              true)
+                            DetailsViewInfoTile(
+                              title: "حدة الشكوى",
+                              value: complaint.additionalComplaintDetails!
+                                  .severityOfComplaint!,
+                              icon: 'assets/images/heart_rate_search_icon.png',
+                            ),
+                        ],
+                      ),
+                    ],
+                    verticalSpacing(16),
                   ],
                   // شكاوى مشابهه سابقا
                   if (complaint.similarComplaint.dateOfComplaint.isFilled ||
@@ -467,6 +519,19 @@ Future<void> shareEmergencyComplaint(
         cleanValue(context, c.additionalMedicalComplains) == null
             ? null
             : "- ${cleanValue(context, c.additionalMedicalComplains)}",
+        cleanValue(context, c.additionalComplaintDetails?.symptomsRegion) ==
+                null
+            ? null
+            : "- المنطقة الاساسية: ${cleanValue(context, c.additionalComplaintDetails?.symptomsRegion)}",
+        cleanValue(context, c.additionalComplaintDetails?.natureOfComplaint) ==
+                null
+            ? null
+            : "- طبيعة الشكوى: ${cleanValue(context, c.additionalComplaintDetails?.natureOfComplaint)}",
+        cleanValue(context,
+                    c.additionalComplaintDetails?.severityOfComplaint) ==
+                null
+            ? null
+            : "- حدة الشكوى: ${cleanValue(context, c.additionalComplaintDetails?.severityOfComplaint)}",
       ],
     );
 

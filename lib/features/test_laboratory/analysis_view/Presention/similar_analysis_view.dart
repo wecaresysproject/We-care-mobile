@@ -46,9 +46,17 @@ class SimilarAnalysisView extends StatelessWidget {
           }
           final similarTestsResponse = state.getSimilarTestsResponseModel!.data;
 
-          final isWrittenPercentTest = similarTestsResponse.similarTests
-              .where((e) => e.writtenPercent != null)
-              .toList();
+//* الجراف: من الأقدم للأحدث (من الشمال لليمين)
+          final testsOldestFirst = [...similarTestsResponse.similarTests]..sort(
+              (a, b) => _parseTestDate(a.testDate)
+                  .compareTo(_parseTestDate(b.testDate)),
+            );
+
+//* الكروت: من الأحدث للأقدم
+          final testsNewestFirst = testsOldestFirst.reversed.toList();
+
+          final isWrittenPercentTest =
+              testsOldestFirst.where((e) => e.writtenPercent != null).toList();
 
 // 2️⃣ لو مفيش قيم → متعملش chart خالص
           List<AnalysisData> dynamicChartData = [];
@@ -69,7 +77,7 @@ class SimilarAnalysisView extends StatelessWidget {
 
 // نفس الـ standard rate
           String standardRateStr =
-              similarTestsResponse.similarTests[0].standardRate ?? "لا يوجد";
+              testsNewestFirst.first.standardRate ?? "لا يوجد";
 
           return Scaffold(
             appBar: AppBar(
@@ -131,36 +139,22 @@ class SimilarAnalysisView extends StatelessWidget {
                     verticalSpacing(16),
                     ListView.builder(
                         shrinkWrap: true,
-                        itemCount: similarTestsResponse.similarTests.length,
+                        itemCount: testsNewestFirst.length,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+                          final test = testsNewestFirst[index];
                           return SimilarAnalysisCard(
-                            id: similarTestsResponse.similarTests[index].id,
-                            testName: similarTestsResponse
-                                .similarTests[index].testName,
-                            date: [
-                              similarTestsResponse.similarTests[index].testDate
-                            ],
-                            names: [
-                              similarTestsResponse.similarTests[index].code
-                            ],
-                            ranges: [
-                              similarTestsResponse
-                                      .similarTests[index].standardRate ??
-                                  "--"
-                            ],
+                            test: test,
+                            date: [test.testDate],
+                            names: [test.code],
+                            ranges: [test.standardRate ?? "--"],
                             results: [
-                              similarTestsResponse
-                                      .similarTests[index].writtenPercent
-                                      ?.toString() ??
-                                  similarTestsResponse
-                                      .similarTests[index].resultAsText ??
+                              test.writtenPercent?.toString() ??
+                                  test.resultAsText ??
                                   "--",
                             ],
-                            interpretation: similarTestsResponse
-                                .similarTests[index].interpretation,
-                            recommendation: similarTestsResponse
-                                .similarTests[index].recommendation,
+                            interpretation: test.interpretation,
+                            recommendation: test.recommendation,
                           );
                         }),
                     verticalSpacing(12),
@@ -182,6 +176,10 @@ class SimilarAnalysisView extends StatelessWidget {
     );
   }
 }
+
+//* تواريخ التحاليل بتيجي بصيغة yyyy-MM-dd، وأي تاريخ غير صالح بيتعامل كأقدم قيمة
+DateTime _parseTestDate(String date) =>
+    DateTime.tryParse(date) ?? DateTime.fromMillisecondsSinceEpoch(0);
 
 class InterpretationDetailsContainerWithTitleRow extends StatelessWidget {
   const InterpretationDetailsContainerWithTitleRow(

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
+import 'package:we_care/features/vaccine/data/models/get_vaccine_details_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/vaccine_api_constants.dart';
 
@@ -51,6 +52,22 @@ abstract class VaccineApiServices {
     @Query('dateFrom') String? dateFrom,
     @Query('dateTo') String? dateTo,
   );
+  @GET(VaccineApiConstants.getVaccineUserEntryById)
+  Future<GetVaccineDetailsResponseModel> getVaccineUserEntryById(
+    @Query('id') String id,
+  );
+
+  @PUT(VaccineApiConstants.updateVaccineUserEntry)
+  Future<dynamic> updateVaccineUserEntry(
+    @Query('id') String id,
+    @Body() VaccineModuleRequestBody requestBody,
+  );
+
+  @DELETE(VaccineApiConstants.deleteVaccineUserEntry)
+  Future<dynamic> deleteVaccineUserEntry(
+    @Query('id') String id,
+  );
+
   @GET(VaccineApiConstants.getUserSubmissionDates)
   Future<dynamic> getUserSubmissionDates();
 
