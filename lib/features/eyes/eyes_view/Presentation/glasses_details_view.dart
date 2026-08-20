@@ -174,7 +174,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                         icon: 'assets/images/right_lense.png',
                         lensData: {
                           "قصر النظر": data.rightEye.myopiaDegree,
-                          "طول القصر": data.rightEye.hyperopiaDegree,
+                          "طول النظر": data.rightEye.hyperopiaDegree,
                           "الاستجماتزم": data.rightEye.astigmatismDegree,
                           "محور الاستجماتزم": data.rightEye.astigmatismAxis,
                           "الإضافة البؤرية": data.rightEye.nearAddition,
@@ -194,7 +194,7 @@ class EyesGlassesDetailsView extends StatelessWidget {
                         icon: 'assets/images/left_lense.png',
                         lensData: {
                           "قصر النظر": data.leftEye.myopiaDegree,
-                          "طول القصر": data.leftEye.hyperopiaDegree,
+                          "طول النظر": data.leftEye.hyperopiaDegree,
                           "الاستجماتزم": data.leftEye.astigmatismDegree,
                           "محور الاستجماتزم": data.leftEye.astigmatismAxis,
                           "الإضافة البؤرية": data.leftEye.nearAddition,
@@ -247,7 +247,7 @@ Future<void> shareEyeGlassesDetails(
 
 👁️ العدسة اليمنى
 قصر النظر: ${data.rightEye.myopiaDegree}
-طول القصر: ${data.rightEye.hyperopiaDegree}
+طول النظر: ${data.rightEye.hyperopiaDegree}
 الاستجماتزم: ${data.rightEye.astigmatismDegree}
 محور الاستجماتزم: ${data.rightEye.astigmatismAxis}
 الإضافة البؤرية: ${data.rightEye.nearAddition}
@@ -262,7 +262,7 @@ Future<void> shareEyeGlassesDetails(
 
 👁️ العدسة اليسرى
 قصر النظر: ${data.leftEye.myopiaDegree}
-طول القصر: ${data.leftEye.hyperopiaDegree}
+طول النظر: ${data.leftEye.hyperopiaDegree}
 الاستجماتزم: ${data.leftEye.astigmatismDegree}
 محور الاستجماتزم: ${data.leftEye.astigmatismAxis}
 الإضافة البؤرية: ${data.leftEye.nearAddition}

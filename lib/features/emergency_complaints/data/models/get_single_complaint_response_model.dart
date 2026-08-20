@@ -13,6 +13,7 @@ class DetailedComplaintModel {
   List<MedicalComplaint> mainSymptoms;
   String personalNote;
   String? additionalMedicalComplains;
+  AdditionalComplaintDetails? additionalComplaintDetails;
   SimilarComplaint similarComplaint;
   Medications medications;
   EmergencyIntervention emergencyIntervention;
@@ -30,6 +31,7 @@ class DetailedComplaintModel {
     required this.emergencyIntervention,
     required this.additionalMedicalComplains,
     required this.complainsImages,
+    this.additionalComplaintDetails,
   });
 
   factory DetailedComplaintModel.fromJson(Map<String, dynamic> json) =>

@@ -107,23 +107,11 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                     children: categoriesView.asMap().entries.map((entry) {
                       final index = entry.key;
                       final dummyCategory = entry.value;
-                      final filterData =
-                          state.categoryFilters[dummyCategory.title];
                       final status =
                           state.categoryFiltersStatus[dummyCategory.title] ??
                               RequestStatus.initial;
 
-                      // Use dynamic data if available, otherwise fallback to dummy list for title/image
-                      final category = MedicalCategoryModel(
-                        title: dummyCategory.title,
-                        image: dummyCategory.image,
-                        selectionType: filterData?.selectionType ??
-                            dummyCategory.selectionType,
-                        radioOptions: filterData?.radioOptions ??
-                            dummyCategory.radioOptions,
-                        filterSections: filterData?.filterSections ??
-                            dummyCategory.filterSections,
-                      );
+                      final category = _mergedCategory(dummyCategory, state);
 
                       final isExpanded = _expandedStates[index] ?? false;
                       final isSelected = _selectedStates[index] ?? false;
@@ -137,21 +125,40 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                               iconPath: category.image,
                               isExpanded: isExpanded,
                               isSelected: isSelected,
-                              onExpandToggle: () {
-                                setState(() {
-                                  _expandedStates[index] = !isExpanded;
-                                });
-                                if (!isExpanded) {
-                                  context
-                                      .read<MedicalReportGenerationCubit>()
-                                      .fetchCategoryFilters(
-                                          dummyCategory.title, 'ar');
-                                }
-                              },
+                              onExpandToggle: () => _onExpandToggle(
+                                context,
+                                index: index,
+                                dummyCategory: dummyCategory,
+                                isExpanded: isExpanded,
+                              ),
                               onCheckboxToggle: () {
+                                final bool willBeSelected = !isSelected;
+
+                                // الموديول مفتوح وبياناته ظاهرة قدام المستخدم →
+                                // التعليم بيتمدّد لكل البيانات اللي جواه.
+                                // مقفول (أو لسه بيحمّل) → بنعلّم على الموديول بس،
+                                // عشان منعلّمش على بيانات هو أصلاً مشفهاش.
+                                final bool cascadeToInnerData = isExpanded &&
+                                    status != RequestStatus.loading;
+
+                                List<String> skippedMessages = const [];
+
                                 setState(() {
-                                  _selectedStates[index] = !isSelected;
+                                  _selectedStates[index] = willBeSelected;
+                                  if (cascadeToInnerData) {
+                                    skippedMessages = willBeSelected
+                                        ? _selectAllInnerData(
+                                            index: index,
+                                            category: category,
+                                          )
+                                        : _clearAllInnerData(index);
+                                  }
                                 });
+
+                                if (skippedMessages.isNotEmpty) {
+                                  _showAutoClearToast(
+                                      context, skippedMessages.join(" و "));
+                                }
 
                                 _syncSelectionToCubit(
                                     context, index, dummyCategory.title, state);
@@ -185,6 +192,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                         }
                                         _selectedOptionValues[index] =
                                             currentSelected;
+                                        _syncCategoryCheckboxToInnerData(
+                                          index: index,
+                                          category: category,
+                                        );
                                       });
 
                                       _syncSelectionToCubit(context, index,
@@ -229,6 +240,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                           categoryFilters[key] = selectedValues;
                                           _selectedFilters[index] =
                                               categoryFilters;
+                                          _syncCategoryCheckboxToInnerData(
+                                            index: index,
+                                            category: category,
+                                          );
                                         },
                                       );
 
@@ -258,6 +273,191 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
         ),
       ),
     );
+  }
+
+  /// بيبني التصنيف اللي هيتعرض: بيانات السيرفر لو وصلت، وإلا الداتا الافتراضية.
+  MedicalCategoryModel _mergedCategory(
+    MedicalCategoryModel dummyCategory,
+    MedicalReportGenerationState state,
+  ) {
+    final filterData = state.categoryFilters[dummyCategory.title];
+    return MedicalCategoryModel(
+      title: dummyCategory.title,
+      image: dummyCategory.image,
+      selectionType: filterData?.selectionType ?? dummyCategory.selectionType,
+      radioOptions: filterData?.radioOptions ?? dummyCategory.radioOptions,
+      filterSections:
+          filterData?.filterSections ?? dummyCategory.filterSections,
+    );
+  }
+
+  /// فتح/قفل التصنيف. لو اتفتح وهو متعلّم أصلاً (المستخدم علّم عليه وهو مقفول)
+  /// بنستنى الفلاتر توصل الأول، وبعدين نعلّم على كل البيانات اللي ظهرتله —
+  /// عشان اللي شايفه يبقى متسق مع علامة الموديول.
+  Future<void> _onExpandToggle(
+    BuildContext context, {
+    required int index,
+    required MedicalCategoryModel dummyCategory,
+    required bool isExpanded,
+  }) async {
+    final bool willExpand = !isExpanded;
+    setState(() {
+      _expandedStates[index] = willExpand;
+    });
+    if (!willExpand) return;
+
+    final cubit = context.read<MedicalReportGenerationCubit>();
+    await cubit.fetchCategoryFilters(dummyCategory.title, 'ar');
+    if (!context.mounted) return;
+
+    // مش متعلّم → مفيش تعليم تلقائي.
+    if (!(_selectedStates[index] ?? false)) return;
+
+    // المستخدم عدّل جوه التصنيف قبل كده → مانمسحش اختياراته بتعليم شامل.
+    final bool hasInnerSelection = (_selectedOptionValues[index]?.isNotEmpty ??
+            false) ||
+        (_selectedFilters[index]?.values.any((values) => values.isNotEmpty) ??
+            false);
+    if (hasInnerSelection) return;
+
+    final category = _mergedCategory(dummyCategory, cubit.state);
+    List<String> skippedMessages = const [];
+    setState(() {
+      skippedMessages = _selectAllInnerData(index: index, category: category);
+    });
+
+    if (skippedMessages.isNotEmpty) {
+      _showAutoClearToast(context, skippedMessages.join(" و "));
+    }
+    _syncSelectionToCubit(context, index, dummyCategory.title, cubit.state);
+  }
+
+  /// الفلاتر المتعارضة جوه التصنيف الواحد — اختيار قيمة في أي واحد منهم
+  /// بيمسح التاني (نفس القاعدة اللي في [_handleFilterMutualExclusion]).
+  /// عند "تعليم الكل" بنملأ الأول في المجموعة بس وبنسيب اللي بعده فاضي
+  /// عشان منكسرش القاعدة دي ونبعت للسيرفر اختيارات متضاربة.
+  static const Map<String, List<List<String>>> _exclusiveFilterGroups = {
+    "الشكاوى الطارئة": [
+      ["العضو", "الشكوى"]
+    ],
+    "روشتة الأطباء": [
+      ["التخصص", "اسم الطبيب"]
+    ],
+    "الأشعة": [
+      ["منطقة الأشعة", "نوع الأشعة"]
+    ],
+    "العيون": [
+      ["المنطقه", "الأعراض"]
+    ],
+  };
+
+  /// بيعلّم على كل البيانات الظاهرة جوه التصنيف: كل خيارات الـ selection
+  /// وكل قيم كل فلتر. بيرجّع رسائل بالفلاتر اللي اتخطّت بسبب التعارض
+  /// عشان نوضّح للمستخدم ليه مش كله اتعلّم.
+  List<String> _selectAllInnerData({
+    required int index,
+    required MedicalCategoryModel category,
+  }) {
+    _selectedOptionValues[index] = category.radioOptions.toSet();
+
+    final sections =
+        category.filterSections ?? const <MedicalFilterSectionModel>[];
+    final blockedTitles = _blockedFilterTitles(category);
+    final Map<String, Set<String>> selectedFilters = {};
+    final List<String> skippedMessages = [];
+
+    for (int sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+      for (final filter in sections[sectionIndex].filters) {
+        if (filter.values.isEmpty) continue;
+
+        final keptInstead = blockedTitles[filter.title];
+        if (keptInstead != null) {
+          skippedMessages.add(
+              "تم تعليم '$keptInstead' فقط — '${filter.displayTitle ?? filter.title}' لا يمكن اختيارهما معًا");
+          continue;
+        }
+
+        selectedFilters["${sectionIndex}_${filter.title}"] =
+            filter.values.toSet();
+      }
+    }
+
+    _selectedFilters[index] = selectedFilters;
+    AppLogger.debug(
+        "[SELECT ALL] '${category.title}' → الخيارات: ${_selectedOptionValues[index]} | الفلاتر: ${selectedFilters.keys}");
+    return skippedMessages;
+  }
+
+  /// بيرجّع علامة الموديول متسقة مع اللي جواه: متعلّمة بس لما كل البيانات
+  /// الظاهرة تكون متعلّمة. أول ما المستخدم يشيل أي نقطة جوه التصنيف،
+  /// علامة الموديول بتتشال — لأنه مبقاش "الكل".
+  /// لازم تتنده جوه [setState].
+  void _syncCategoryCheckboxToInnerData({
+    required int index,
+    required MedicalCategoryModel category,
+  }) {
+    final selectedOptions = _selectedOptionValues[index] ?? const <String>{};
+    final selectedFilters =
+        _selectedFilters[index] ?? const <String, Set<String>>{};
+    final blockedTitles = _blockedFilterTitles(category);
+    final sections =
+        category.filterSections ?? const <MedicalFilterSectionModel>[];
+
+    bool hasInnerData = category.radioOptions.isNotEmpty;
+    bool isEverythingSelected =
+        selectedOptions.containsAll(category.radioOptions);
+
+    for (int sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
+      for (final filter in sections[sectionIndex].filters) {
+        if (filter.values.isEmpty) continue;
+        hasInnerData = true;
+
+        // الفلاتر المتعارضة بتتخطّى وقت التعليم الشامل، فكونها فاضية
+        // هو الوضع الطبيعي مش نقص في التعليم.
+        if (blockedTitles.containsKey(filter.title)) continue;
+
+        final selected = selectedFilters["${sectionIndex}_${filter.title}"];
+        if (selected == null || !selected.containsAll(filter.values)) {
+          isEverythingSelected = false;
+        }
+      }
+    }
+
+    // تصنيف من غير بيانات جواه → علامته مالهاش علاقة بحاجة، نسيبها زي ما هي.
+    if (!hasInnerData) return;
+
+    _selectedStates[index] = isEverythingSelected;
+  }
+
+  /// بيشيل أي تعليم جوه التصنيف لما المستخدم يفك تعليم الموديول وهو مفتوح.
+  List<String> _clearAllInnerData(int index) {
+    _selectedOptionValues[index] = {};
+    _selectedFilters[index] = {};
+    return const [];
+  }
+
+  /// لكل مجموعة فلاتر متعارضة: بنحتفظ بأول فلتر موجود فعلاً في التصنيف
+  /// وبنرجّع باقي أعضاء المجموعة كـ {الفلتر المتخطّى: الفلتر المحتَفظ بيه}.
+  Map<String, String> _blockedFilterTitles(MedicalCategoryModel category) {
+    final groups = _exclusiveFilterGroups[category.title];
+    if (groups == null) return const {};
+
+    final availableTitles = <String>{
+      for (final section
+          in category.filterSections ?? const <MedicalFilterSectionModel>[])
+        for (final filter in section.filters)
+          if (filter.values.isNotEmpty) filter.title,
+    };
+
+    final Map<String, String> blocked = {};
+    for (final group in groups) {
+      final present = group.where(availableTitles.contains).toList();
+      if (present.length < 2) continue;
+      for (final title in present.skip(1)) {
+        blocked[title] = present.first;
+      }
+    }
+    return blocked;
   }
 
   /// نحدد الموديول عن طريق الـ enum (بدل مقارنة نصوص) وننده دالة المزامنة

@@ -15,7 +15,7 @@ abstract class EyesModuleServices {
   factory EyesModuleServices(Dio dio, {String? baseUrl}) = _EyesModuleServices;
 
   @MultiPart()
-  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-report")
+  @POST("http://147.93.57.70/api/FileUpload/upload-report")
   Future<UploadReportResponseModel> uploadReportImage(
     @Part() File report,
     @Header("Content-Type") String contentType,
@@ -23,7 +23,7 @@ abstract class EyesModuleServices {
   );
 
   @MultiPart()
-  @POST("http://147.93.57.70:5299/m2/api/FileUpload/upload-image")
+  @POST("http://147.93.57.70/api/FileUpload/upload-image")
   Future<UploadImageResponseModel> uploadMedicalExaminationImage(
     @Part() File image,
     @Header("Content-Type") String contentType,

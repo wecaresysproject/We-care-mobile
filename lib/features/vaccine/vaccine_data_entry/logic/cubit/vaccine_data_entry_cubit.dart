@@ -4,6 +4,7 @@ import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
+import 'package:we_care/features/vaccine/data/models/get_vaccine_details_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/vaccine_request_body_model.dart';
 import 'package:we_care/features/vaccine/data/repos/vaccine_data_entry_repo.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
@@ -21,24 +22,40 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
 // جهة تلقي التطعيم
   final vaccinationLocationController = TextEditingController();
   final personalNotesController = TextEditingController();
-  // Future<void> loadVaccineDataForEditing(
-  //     UserVaccineModel editingVaccineData) async {
-  //   safeEmit(
-  //     state.copyWith(
-  //       vaccineDateSelection: editingVaccineData.vaccineDate,
-  //       selectedVaccineName: editingVaccineData.vaccineName,
-  //       selectedVaccineCategory: editingVaccineData.vaccineCategory,
-  //       selectedCountryName: editingVaccineData.country,
-  //       selectedDoseArrangement: editingVaccineData.dose,
-  //       vaccinePerfectAge: editingVaccineData.vaccinePerfectAge,
-  //       isEditMode: true,
-  //       editedVaccineId: editingVaccineData.id,
-  //     ),
-  //   );
-  //   personalNotesController.text = editingVaccineData.notes;
-  //   vaccinationLocationController.text = editingVaccineData.regionForVaccine!;
-  //   await intialRequestsForVaccineDataEntry();
-  // }
+
+  /// Pre-fills the form from an existing entry so it can be edited in place.
+  ///
+  /// The three selection fields cascade (generation → target age → vaccine
+  /// name), so their option lists have to be fetched in order before the
+  /// pickers can show the saved values.
+  Future<void> loadVaccineDataForEditing(
+    VaccineUserEntryDetailsModel editingVaccineData,
+  ) async {
+    safeEmit(
+      state.copyWith(
+        isEditMode: true,
+        editedVaccineId: editingVaccineData.id,
+        vaccineDateSelection: editingVaccineData.date,
+        selectedBirthGeneration: editingVaccineData.generation,
+        selectedTargetGroup: editingVaccineData.targetAge,
+        selectedVaccineName: editingVaccineData.vaccineName,
+        selectedVaccineCategory: editingVaccineData.vaccineCategory,
+        selectedCountryName: editingVaccineData.country,
+        vaccinePerfectAge: editingVaccineData.perfectAge,
+      ),
+    );
+
+    vaccinationLocationController.text =
+        editingVaccineData.vaccinationProvider ?? '';
+    personalNotesController.text = editingVaccineData.additionalInfo ?? '';
+
+    await intialRequestsForVaccineDataEntry();
+    // Populate the dependent dropdowns without clearing the saved selections.
+    await emitTargetGroups();
+    await emitVaccineNames();
+    await emitVaccineDetails();
+    validateRequiredFields();
+  }
 
   Future<void> submitEditVaccineData(S localozation) async {
     safeEmit(
@@ -70,8 +87,6 @@ class VaccineDataEntryCubit extends Cubit<VaccineDataEntryState> {
             ? localozation.no_data_entered
             : personalNotesController.text,
       ),
-      language: AppStrings.arabicLang,
-      userType: UserTypes.patient.name.firstLetterToUpperCase,
       vaccineId: state.editedVaccineId!,
     );
     response.when(

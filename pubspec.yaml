@@ -63,6 +63,8 @@ dependencies:
   url_launcher: ^6.3.2
   screenshot: ^3.0.0
   pdf: ^3.11.0
+  # used directly to pre-normalize text that package:pdf's RTL shaping crashes on
+  bidi: ^2.0.13
   printing: ^5.11.0
   intl: ^0.20.2
   web_socket_channel: ^3.0.3

@@ -29,15 +29,38 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   final postSurgeryInstructions = TextEditingController();
   final reportTextController = TextEditingController();
 
+  /// Free-text technique, used only when the selected surgery has no
+  /// predefined catalogue to pick from.
+  final techniqueController = TextEditingController();
+
+  /// Optional fields are persisted with a "no data" sentinel. It must never be
+  /// hydrated back into an editable field, or the user sees it as something
+  /// they typed and it gets written back verbatim.
+  String? _withoutNoDataSentinel(String? value) {
+    final trimmed = value?.trim();
+    if (trimmed == null ||
+        trimmed.isEmpty ||
+        trimmed == S.current.no_data_entered) {
+      return null;
+    }
+    return trimmed;
+  }
+
   Future<void> loadPastSurgeryDataForEditing(SurgeryModel pastSurgery) async {
+    final savedTechnique = _withoutNoDataSentinel(pastSurgery.usedTechnique);
+
     emit(
       state.copyWith(
         surgeryDateSelection: pastSurgery.surgeryDate,
         surgeryBodyPartSelection: pastSurgery.surgeryRegion,
         selectedSubSurgery: pastSurgery.subSurgeryRegion,
         surgeryNameSelection: pastSurgery.surgeryName,
-        selectedTechUsed: pastSurgery.usedTechnique,
-        surgeryPurpose: pastSurgery.purpose,
+        selectedTechUsed: () => savedTechnique,
+        // Straight to `loading`, never `initial`: a loaded record already has a
+        // technique, and it must not sit hidden for the several sequential
+        // requests below before resolution starts.
+        techniqueResolution: TechniqueResolutionState.loading,
+        surgeryPurpose: () => pastSurgery.purpose,
         reportsImageUploadedUrls: pastSurgery.medicalReportImage,
         selectedSurgeryStatus: pastSurgery.surgeryStatus,
         selectedHospitalCenter: pastSurgery.hospitalCenter,
@@ -51,11 +74,18 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     personalNotesController.text = pastSurgery.additionalNotes;
     suergeryDescriptionController.text = pastSurgery.surgeryDescription;
     reportTextController.text = pastSurgery.writtenReport ?? "";
+    techniqueController.text = savedTechnique ?? "";
 
     postSurgeryInstructions.text = pastSurgery.postSurgeryInstructions;
 
     validateRequiredFields();
     await intialRequestsForDataEntry();
+
+    // The saved record already carries region + sub-region + name, which is
+    // everything the lookup needs. Without this the field would resolve to
+    // "no catalogue" for *every* edited record and silently downgrade a
+    // predefined surgery's technique to optional free text.
+    await emitGetAllTechUsed();
   }
 
   /// Update Field Values
@@ -111,7 +141,19 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> updateSurgeryName(String? name) async {
-    emit(state.copyWith(surgeryNameSelection: name));
+    // Everything downstream of the surgery name — the technique catalogue, the
+    // chosen technique, the derived purpose — belongs to the *previous*
+    // surgery and must not survive onto this one.
+    emit(
+      state.copyWith(
+        surgeryNameSelection: name,
+        allTechUsed: const [],
+        selectedTechUsed: () => null,
+        surgeryPurpose: () => null,
+        techniqueOptionsLoadFailed: false,
+      ),
+    );
+    techniqueController.clear();
     validateRequiredFields();
     await emitGetAllTechUsed();
   }
@@ -121,7 +163,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> updateSelectedTechUsed(String? val) async {
-    emit(state.copyWith(selectedTechUsed: val));
+    emit(state.copyWith(selectedTechUsed: () => val));
     await emitSurgeryPurpose();
     validateRequiredFields();
   }
@@ -132,14 +174,25 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       region: state.surgeryBodyPartSelection!,
       subRegion: value!,
     );
+    // A name picked under the old sub-region resolves against a different
+    // catalogue now, so re-resolve rather than leave the field asserting a
+    // requirement that no longer holds.
+    if (state.surgeryNameSelection != null) {
+      await emitGetAllTechUsed();
+    }
     validateRequiredFields();
+  }
+
+  /// Re-runs the lookup after a failure, from the retry affordance on the
+  /// free-text fallback.
+  Future<void> retryTechniqueResolution() async {
+    await emitGetAllTechUsed();
   }
 
   Future<void> intialRequestsForDataEntry() async {
     await emitModuleGuidanceData();
     await emitGetAllSurgeriesRegions();
     await emitCountriesData();
-    // await emitGetSurgeryStatus();
     await emitDoctorNames();
     await emitHospitalNames();
   }
@@ -225,31 +278,67 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> emitGetAllTechUsed() async {
+    final region = state.surgeryBodyPartSelection;
+    final subRegion = state.selectedSubSurgery;
+    final surgeryName = state.surgeryNameSelection;
+
+    // A custom name can be typed before the region chain is complete, so these
+    // are genuinely nullable here — there is nothing to resolve against yet.
+    if (region == null || subRegion == null || surgeryName == null) {
+      emit(
+        state.copyWith(
+          allTechUsed: const [],
+          techniqueResolution: TechniqueResolutionState.initial,
+          techniqueOptionsLoadFailed: false,
+        ),
+      );
+      validateRequiredFields();
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        techniqueResolution: TechniqueResolutionState.loading,
+        techniqueOptionsLoadFailed: false,
+      ),
+    );
+    validateRequiredFields();
+
     final response = await _surgeriesDataEntryRepo.getAllTechUsed(
       language: AppStrings.arabicLang,
-      region: state.surgeryBodyPartSelection!,
-      subRegion: state.selectedSubSurgery!,
-      surgeryName: state.surgeryNameSelection!,
+      region: region,
+      subRegion: subRegion,
+      surgeryName: surgeryName,
     );
     response.when(
       success: (response) {
         emit(
           state.copyWith(
             allTechUsed: response,
+            techniqueResolution: response.isEmpty
+                ? TechniqueResolutionState.noPredefinedOptions
+                : TechniqueResolutionState.hasPredefinedOptions,
+            techniqueOptionsLoadFailed: false,
           ),
         );
       },
       failure: (error) {
+        // Collapse failure into the manual path: the user is never blocked on
+        // a lookup they can't control. The flag only drives a retry hint.
         emit(
           state.copyWith(
+            allTechUsed: const [],
+            techniqueResolution: TechniqueResolutionState.noPredefinedOptions,
+            techniqueOptionsLoadFailed: true,
             message: error.errors.first,
           ),
         );
       },
     );
+    validateRequiredFields();
   }
 
-  Future<void> submitUpdatedSurgery() async {
+  Future<void> submitUpdatedSurgery(S locale) async {
     emit(
       state.copyWith(
         surgeriesDataEntryStatus: RequestStatus.loading,
@@ -263,7 +352,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         surgeryRegion: state.surgeryBodyPartSelection!,
         subSurgeryRegion: state.selectedSubSurgery!,
         surgeryName: state.surgeryNameSelection!,
-        usedTechnique: state.selectedTechUsed!,
+        usedTechnique: _usedTechniqueForSubmission(locale),
         additionalNotes: personalNotesController.text,
         surgeryDescription: suergeryDescriptionController.text,
         postSurgeryInstructions: postSurgeryInstructions.text,
@@ -295,28 +384,6 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       },
     );
   }
-
-  // Future<void> emitGetSurgeryStatus() async {
-  //   final response = await _surgeriesDataEntryRepo.getSurgeryStatus(
-  //     language: AppStrings.arabicLang,
-  //   );
-  //   response.when(
-  //     success: (response) {
-  //       emit(
-  //         state.copyWith(
-  //           allSurgeryStatuses: response,
-  //         ),
-  //       );
-  //     },
-  //     failure: (error) {
-  //       emit(
-  //         state.copyWith(
-  //           message: error.errors.first,
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   Future<void> emitHospitalNames() async {
     final response = await sharedRepo.getHospitalNames(
@@ -436,6 +503,14 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
   }
 
   Future<void> emitSurgeryPurpose() async {
+    // The purpose is only derivable for a catalogued surgery + technique pair.
+    // Anything else has no purpose to fetch, and leaving the previous one in
+    // place would attribute it to the wrong operation.
+    if (!state.isTechniqueRequired || state.selectedTechUsed == null) {
+      emit(state.copyWith(surgeryPurpose: () => null));
+      return;
+    }
+
     final response = await _surgeriesDataEntryRepo.getSurgeryPurpose(
       language: AppStrings.arabicLang,
       region: state.surgeryBodyPartSelection!,
@@ -450,7 +525,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       success: (response) {
         emit(
           state.copyWith(
-            surgeryPurpose: response,
+            surgeryPurpose: () => response,
           ),
         );
         AppLogger.info("xxx: surgeryPurpose: $response");
@@ -458,6 +533,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
       failure: (error) {
         emit(
           state.copyWith(
+            surgeryPurpose: () => null,
             message: error.errors.first,
           ),
         );
@@ -467,23 +543,33 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
 
   /// state.isXRayPictureSelected == false => image rejected
   void validateRequiredFields() {
-    if (state.surgeryDateSelection == null ||
-        state.surgeryNameSelection == null ||
-        state.surgeryBodyPartSelection == null ||
-        state.selectedTechUsed == null ||
-        state.selectedSubSurgery == null) {
-      emit(
-        state.copyWith(
-          isFormValidated: false,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          isFormValidated: true,
-        ),
-      );
+    // The technique is only required once we know a catalogue exists for it.
+    // While resolution is still pending we can't know either way, so the form
+    // stays blocked rather than guessing.
+    final isTechniqueSatisfied = state.isTechniqueResolved &&
+        (!state.isTechniqueRequired || state.selectedTechUsed != null);
+
+    final isValid = state.surgeryDateSelection != null &&
+        state.surgeryNameSelection != null &&
+        state.surgeryBodyPartSelection != null &&
+        state.selectedSubSurgery != null &&
+        isTechniqueSatisfied;
+
+    emit(
+      state.copyWith(
+        isFormValidated: isValid,
+      ),
+    );
+  }
+
+  /// Where the submitted technique comes from depends on which control the
+  /// user was actually given.
+  String _usedTechniqueForSubmission(S locale) {
+    if (state.isTechniqueRequired) {
+      return state.selectedTechUsed ?? locale.no_data_entered;
     }
+    final typed = techniqueController.text.trim();
+    return typed.isEmpty ? locale.no_data_entered : typed;
   }
 
   Future<void> postModuleData(S locale) async {
@@ -497,7 +583,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         surgeryName: state.surgeryNameSelection!,
         surgeryRegion: state.surgeryBodyPartSelection!,
         subSurgeryRegion: state.selectedSubSurgery!,
-        usedTechnique: state.selectedTechUsed!,
+        usedTechnique: _usedTechniqueForSubmission(locale),
         surgeryDescription: suergeryDescriptionController.text.isEmpty
             ? locale.no_data_entered
             : suergeryDescriptionController.text,
@@ -506,9 +592,9 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
         hospitalCenter: state.selectedHospitalCenter ?? locale.no_data_entered,
         surgeonName: state.surgeonName ?? locale.no_data_entered,
         anesthesiologistName: state.internistName ?? locale.no_data_entered,
-        postSurgeryInstructions: suergeryDescriptionController.text.isEmpty
+        postSurgeryInstructions: postSurgeryInstructions.text.isEmpty
             ? locale.no_data_entered
-            : suergeryDescriptionController.text,
+            : postSurgeryInstructions.text,
         country: state.selectedCountryName ?? locale.no_data_entered,
         additionalNotes: personalNotesController.text.isEmpty
             ? locale.no_data_entered
@@ -541,6 +627,7 @@ class SurgeryDataEntryCubit extends Cubit<SurgeryDataEntryState> {
     suergeryDescriptionController.dispose();
     postSurgeryInstructions.dispose();
     reportTextController.dispose();
+    techniqueController.dispose();
     return super.close();
   }
 }

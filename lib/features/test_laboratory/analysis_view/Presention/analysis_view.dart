@@ -128,14 +128,15 @@ class MedicalAnalysisView extends StatelessWidget {
         FilterConfig(
             title: 'السنة', options: state.yearsFilter, isYearFilter: true),
         FilterConfig(title: 'المجموعة', options: state.groupNamesFilter ?? []),
-        FilterConfig(title: 'الرمز', options: state.codesFilter ?? []),
+        FilterConfig(
+            title: 'الاسم (En)', options: state.englishTestNamesFilter ?? []),
       ],
       onApply: (selectedFilters) {
         AppLogger.debug("Selected Filters: $selectedFilters");
         context.read<TestAnalysisViewCubit>().emitFilteredData(
             selectedFilters['السنة'],
             selectedFilters['المجموعة'],
-            selectedFilters['الرمز']);
+            selectedFilters['الاسم (En)']);
       },
     );
   }
@@ -226,7 +227,7 @@ class MedicalAnalysisView extends StatelessWidget {
                     onTap: () => _navigateToDetailsView(context, data),
                   ),
                   _buildDataCellCenter(data.testName, maxLines: 4),
-                  _buildDataCellCenter(data.code),
+                  _buildDataCellCenter(data.testNameEnglish),
                   _buildDataCellCenter(data.standardRate ?? '-',
                       color: Colors.black),
                   DataCell(

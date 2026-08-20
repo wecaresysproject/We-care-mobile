@@ -17,7 +17,10 @@ class ReportUploaderSection<CubitType extends StateStreamable<StateType>,
   final void Function(String imagePath) onRemove;
 
   final int maxImages;
-  final String resultMessage;
+
+  /// يُقرأ من الـ state اللحظية داخل الـ listener، مش من قيمة متمررة وقت البناء،
+  /// لأن الـ listener بيشتغل قبل ما الـ parent يعمل rebuild فبتوصل رسالة قديمة.
+  final String Function(StateType) messageSelector;
 
   const ReportUploaderSection({
     super.key,
@@ -25,7 +28,7 @@ class ReportUploaderSection<CubitType extends StateStreamable<StateType>,
     required this.onUpload,
     required this.uploadedSelector,
     required this.onRemove,
-    required this.resultMessage,
+    required this.messageSelector,
     this.maxImages = 8,
   });
 
@@ -60,16 +63,17 @@ class ReportUploaderSection<CubitType extends StateStreamable<StateType>,
                   statusSelector(previous) != statusSelector(current),
               listener: (context, state) async {
                 final status = statusSelector(state);
+                final message = messageSelector(state);
 
                 if (status == UploadReportRequestStatus.success) {
                   await showSuccess(
-                    resultMessage,
+                    message,
                   );
                 }
 
                 if (status == UploadReportRequestStatus.failure) {
                   await showError(
-                    resultMessage,
+                    message,
                   );
                 }
               },

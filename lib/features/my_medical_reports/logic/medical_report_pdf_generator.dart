@@ -368,12 +368,16 @@ class MedicalReportPdfGenerator {
     final geneticModule = reportData.data.geneticDiseases;
     if (geneticModule == null) return pw.SizedBox.shrink();
 
-    final hasFamilyDiseases = geneticModule.familyGeneticDiseases != null &&
-        geneticModule.familyGeneticDiseases!.isNotEmpty;
+    final familyDiseases = geneticModule.familyGeneticDiseases ?? [];
+    final expectedDiseases = geneticModule.myExpectedGeneticDiseases ?? [];
 
-    if (!hasFamilyDiseases) {
+    if (familyDiseases.isEmpty && expectedDiseases.isEmpty) {
       return pw.SizedBox.shrink();
     }
+
+    final expectedMap = {
+      for (var e in expectedDiseases) e.geneticDisease: e.probabilityLevel
+    };
 
     return pw.Container(
       padding: sectionPadding,
@@ -389,63 +393,120 @@ class MedicalReportPdfGenerator {
           pw.SizedBox(height: 12),
 
           /// ================= FAMILY DISEASES TABLE =================
-          pw.Text(
-            'الامراض الوراثية العائلية',
-            style: pw.TextStyle(
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 14,
-              color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-            ),
-          ),
-
-          pw.SizedBox(height: 6),
-
-          /// Header Row
-          pw.Container(
-            padding: const pw.EdgeInsets.symmetric(vertical: 6),
-            decoration: pw.BoxDecoration(
-              color: PdfColors.grey100,
-              border: pw.TableBorder.all(
-                color: PdfColors.grey300,
-                width: 0.5,
+          if (familyDiseases.isNotEmpty) ...[
+            pw.Text(
+              'الامراض الوراثية العائلية',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               ),
             ),
-            child: pw.Row(
-              children: [
-                _buildHeaderCell('المرض الوراثي', flex: 3),
-                _buildHeaderCell('الأقارب المصابون', flex: 3),
-                _buildHeaderCell('حالة المريض', flex: 3),
-                _buildHeaderCell('احتمالية الإصابة', flex: 3),
-              ],
+
+            pw.SizedBox(height: 6),
+
+            /// Header Row
+            pw.Container(
+              padding: const pw.EdgeInsets.symmetric(vertical: 6),
+              decoration: pw.BoxDecoration(
+                color: PdfColors.grey100,
+                border: pw.TableBorder.all(
+                  color: PdfColors.grey300,
+                  width: 0.5,
+                ),
+              ),
+              child: pw.Row(
+                children: [
+                  _buildHeaderCell('المرض الوراثي', flex: 3),
+                  _buildHeaderCell('الأقارب المصابون', flex: 3),
+                  _buildHeaderCell('حالة المريض', flex: 3),
+                  _buildHeaderCell('احتمالية الإصابة', flex: 3),
+                ],
+              ),
             ),
-          ),
 
-          ...geneticModule.familyGeneticDiseases!.map(
-            (item) {
-              final expectedMap = {
-                for (var e in geneticModule.myExpectedGeneticDiseases ?? [])
-                  e.geneticDisease: e.probabilityLevel
-              };
+            ...familyDiseases.map(
+              (item) {
+                final probability = expectedMap[item.geneticDisease] ?? "--";
 
-              final probability = expectedMap[item.geneticDisease] ?? "--";
+                final membersNames = (item.members ?? []).map((m) {
+                  final memberCode = (m.code != null && m.code!.isNotEmpty)
+                      ? getFamilyMemberCode(m.code!)
+                      : "غير معروف";
+                  final nameStr = (m.name != null && m.name!.isNotEmpty)
+                      ? " : ${m.name}"
+                      : "";
+                  return "- $memberCode$nameStr";
+                }).join('\n');
 
-              final membersNames = (item.members ?? []).map((m) {
-                final memberCode = (m.code != null && m.code!.isNotEmpty)
-                    ? getFamilyMemberCode(m.code!)
-                    : "غير معروف";
-                final nameStr = (m.name != null && m.name!.isNotEmpty)
-                    ? " : ${m.name}"
-                    : "";
-                return "- $memberCode$nameStr";
-              }).join('\n');
+                final membersStatuses = (item.members ?? []).map((m) {
+                  return (m.diseaseStatus != null &&
+                          m.diseaseStatus!.isNotEmpty)
+                      ? '- ${m.diseaseStatus}'
+                      : "--";
+                }).join('\n');
 
-              final membersStatuses = (item.members ?? []).map((m) {
-                return (m.diseaseStatus != null && m.diseaseStatus!.isNotEmpty)
-                    ? '- ${m.diseaseStatus}'
-                    : "--";
-              }).join('\n');
+                return pw.Column(
+                  children: [
+                    pw.Padding(
+                      padding: const pw.EdgeInsets.symmetric(vertical: 4),
+                      child: pw.Row(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          _buildValueCell(_safeText(item.geneticDisease),
+                              flex: 3),
+                          _buildValueCell(_safeText(membersNames), flex: 3),
+                          _buildValueCell(_safeText(membersStatuses), flex: 3),
+                          _buildValueCell(_safeText(probability), flex: 3),
+                        ],
+                      ),
+                    ),
+                    pw.Divider(
+                      color: PdfColors.grey300,
+                      height: 1,
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
 
-              return pw.Column(
+          /// ================= EXPECTED DISEASES TABLE =================
+          if (expectedDiseases.isNotEmpty) ...[
+            if (familyDiseases.isNotEmpty) pw.SizedBox(height: 16),
+            pw.Text(
+              'الامراض الوراثية المتوقعة',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 14,
+                color:
+                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+              ),
+            ),
+
+            pw.SizedBox(height: 6),
+
+            /// Header Row
+            pw.Container(
+              padding: const pw.EdgeInsets.symmetric(vertical: 6),
+              decoration: pw.BoxDecoration(
+                color: PdfColors.grey100,
+                border: pw.TableBorder.all(
+                  color: PdfColors.grey300,
+                  width: 0.5,
+                ),
+              ),
+              child: pw.Row(
+                children: [
+                  _buildHeaderCell('المرض الوراثي', flex: 6),
+                  _buildHeaderCell('احتمالية الإصابة', flex: 6),
+                ],
+              ),
+            ),
+
+            ...expectedDiseases.map(
+              (item) => pw.Column(
                 children: [
                   pw.Padding(
                     padding: const pw.EdgeInsets.symmetric(vertical: 4),
@@ -453,10 +514,9 @@ class MedicalReportPdfGenerator {
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         _buildValueCell(_safeText(item.geneticDisease),
-                            flex: 3),
-                        _buildValueCell(_safeText(membersNames), flex: 3),
-                        _buildValueCell(_safeText(membersStatuses), flex: 3),
-                        _buildValueCell(_safeText(probability), flex: 3),
+                            flex: 6),
+                        _buildValueCell(_safeText(item.probabilityLevel),
+                            flex: 6),
                       ],
                     ),
                   ),
@@ -465,9 +525,9 @@ class MedicalReportPdfGenerator {
                     height: 1,
                   ),
                 ],
-              );
-            },
-          ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -750,8 +810,8 @@ class MedicalReportPdfGenerator {
               return [
                 _safeText(behaviour.status, fallback: 'مستمر'),
                 _safeText(behaviour.usageRate),
-                _formatRiskyBehaviourDuration(
-                    behaviour.startDate, behaviour.status),
+                sanitizeTextForPdf(_formatRiskyBehaviourDuration(
+                    behaviour.startDate, behaviour.status)),
                 _safeText(behaviour.type),
                 _safeText(behaviour.section),
                 _safeText(behaviour.startDate),
@@ -1009,7 +1069,7 @@ class MedicalReportPdfGenerator {
     return pw.Padding(
       padding: const pw.EdgeInsets.all(6),
       child: pw.Text(
-        text,
+        sanitizeTextForPdf(text),
         style: pw.TextStyle(
           fontSize: 10,
           fontWeight: isHeader ? pw.FontWeight.bold : pw.FontWeight.normal,
@@ -1470,7 +1530,10 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildHeader(pw.ImageProvider profileImage,
       pw.ImageProvider logoImage, MedicalReportResponseModel reportData) {
-    final name = reportData.userName ?? 'غير معروف';
+    // Sanitize the whole line, not just the name: bidi shapes what it is
+    // handed, and a name spliced into a literal is a string nobody verified.
+    final nameLine =
+        sanitizeTextForPdf('الاسم : ${reportData.userName ?? 'غير معروف'}');
 
     return pw.Container(
       color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
@@ -1499,7 +1562,7 @@ class MedicalReportPdfGenerator {
                 ),
                 pw.SizedBox(height: 6),
                 pw.Text(
-                  'الاسم : $name',
+                  nameLine,
                   style: pw.TextStyle(
                     color: PdfColors.white,
                     fontSize: 14,
@@ -1625,7 +1688,7 @@ class MedicalReportPdfGenerator {
         )),
       ),
       child: pw.Text(
-        title,
+        sanitizeTextForPdf(title),
         style: pw.TextStyle(
           fontSize: 16,
           fontWeight: pw.FontWeight.bold,
@@ -1695,7 +1758,7 @@ class MedicalReportPdfGenerator {
         mainAxisSize: pw.MainAxisSize.min,
         children: [
           pw.Text(
-            label,
+            sanitizeTextForPdf(label),
             style: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
@@ -1708,7 +1771,7 @@ class MedicalReportPdfGenerator {
             style: const pw.TextStyle(fontSize: 14),
           ),
           pw.Text(
-            value,
+            sanitizeTextForPdf(value),
             style: const pw.TextStyle(
               fontSize: 14,
             ),
@@ -1798,7 +1861,7 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            group.categoryName,
+            sanitizeTextForPdf(group.categoryName),
             style: pw.TextStyle(
               color: PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
               fontWeight: pw.FontWeight.bold,
@@ -1824,14 +1887,14 @@ class MedicalReportPdfGenerator {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      value,
+                      sanitizeTextForPdf(value),
                       style: pw.TextStyle(
                         fontSize: 15,
                         fontWeight: pw.FontWeight.bold,
                       ),
                     ),
                     pw.Text(
-                      reading.formattedDate,
+                      sanitizeTextForPdf(reading.formattedDate),
                       style: const pw.TextStyle(
                         fontSize: 12,
                         color: PdfColors.black,
@@ -1869,47 +1932,49 @@ class MedicalReportPdfGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // ✅ Title Header
-          _buildSectionHeader('الشكاوى الطارئة'),
+          _buildSectionHeader('الشكاوى المرضية'),
           pw.SizedBox(height: 12),
 
           // ✅ Header Row Titles
           _buildComplaintsHeaderRow(),
 
           // ✅ Main Complaints Rows
-          ...module.mainComplaints!.map((complaint) {
-            return pw.Column(
-              children: [
-                _buildComplaintRow(complaint, complaintImages),
-                pw.Divider(color: PdfColors.grey300),
-              ],
-            );
-          }),
-
-          // ✅ Additional Complaints (if exists)
-          if (module.additionalComplaints != null &&
-              module.additionalComplaints!.isNotEmpty) ...[
-            pw.SizedBox(height: 20),
-            pw.Text(
-              "شكاوى إضافية",
-              style: pw.TextStyle(
-                fontSize: 15,
-                fontWeight: pw.FontWeight.bold,
-                color:
-                    PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
-              ),
-            ),
-            pw.SizedBox(height: 12),
-            _buildAdditionalComplaintsHeaderRow(),
-            pw.Divider(color: PdfColors.grey400),
-            ...module.additionalComplaints!.map((complaint) {
+          ...module.mainComplaints!.map(
+            (complaint) {
               return pw.Column(
                 children: [
-                  _buildAdditionalComplaintRow(complaint, complaintImages),
+                  _buildComplaintRow(complaint, complaintImages),
                   pw.Divider(color: PdfColors.grey300),
                 ],
               );
-            }),
-          ]
+            },
+          ),
+
+          // // ✅ Additional Complaints (if exists)
+          // if (module.additionalComplaints != null &&
+          //     module.additionalComplaints!.isNotEmpty) ...[
+          //   pw.SizedBox(height: 20),
+          //   pw.Text(
+          //     "شكاوى إضافية",
+          //     style: pw.TextStyle(
+          //       fontSize: 15,
+          //       fontWeight: pw.FontWeight.bold,
+          //       color:
+          //           PdfColor.fromInt(AppColorsManager.mainDarkBlue.toARGB32()),
+          //     ),
+          //   ),
+          //   pw.SizedBox(height: 12),
+          //   _buildAdditionalComplaintsHeaderRow(),
+          //   pw.Divider(color: PdfColors.grey400),
+          //   ...module.additionalComplaints!.map((complaint) {
+          //     return pw.Column(
+          //       children: [
+          //         _buildAdditionalComplaintRow(complaint, complaintImages),
+          //         pw.Divider(color: PdfColors.grey300),
+          //       ],
+          //     );
+          //   }),
+          // ]
         ],
       ),
     );
@@ -1943,8 +2008,24 @@ class MedicalReportPdfGenerator {
 // ✅ Complaint Row (Main Complaints)
 //////////////////////////////////////////////////////////////////
 
+  /// Shown for العضو / طبيعة الشكوى / حدة الشكوى when the complaint carries no
+  /// `additionalComplaintDetails`.
+  static const String _complaintDetailNotEntered = "لم يتم ادخال";
+
+  /// These three columns are read only from `additionalComplaintDetails` — the
+  /// top-level `partOfPlaceOfComplaints` / `natureOfComplaint` /
+  /// `severityOfComplaint` are deliberately not used as a fallback.
+  String _complaintDetail(String? value) {
+    final trimmed = value?.trim();
+    return (trimmed == null || trimmed.isEmpty)
+        ? _complaintDetailNotEntered
+        : trimmed;
+  }
+
   pw.Widget _buildComplaintRow(
       MainComplaint complaint, Map<String, pw.MemoryImage> complaintImages) {
+    final details = complaint.additionalComplaintDetails;
+
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 8),
       child: pw.Row(
@@ -1961,63 +2042,16 @@ class MedicalReportPdfGenerator {
             alignRight: true,
           ),
           _buildValueCell(
-            complaint.organ,
+            _complaintDetail(details?.organ),
             flex: 2,
           ),
           _buildValueCell(
-            complaint.complaintNature,
+            _complaintDetail(details?.complaintNature),
             flex: 2,
           ),
           _buildValueCell(
-            complaint.severity,
+            _complaintDetail(details?.severity),
             flex: 2,
-          ),
-          _buildImageCell(complaint.complaintImage, complaintImages, flex: 2),
-        ],
-      ),
-    );
-  }
-
-//////////////////////////////////////////////////////////////////
-// ✅ Header Row (Additional Complaints)
-//////////////////////////////////////////////////////////////////
-
-  pw.Widget _buildAdditionalComplaintsHeaderRow() {
-    return pw.Container(
-      padding: pw.EdgeInsets.symmetric(vertical: 8),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.grey100,
-        border: pw.TableBorder.all(color: PdfColors.grey300, width: 0.5),
-      ),
-      child: pw.Row(
-        children: [
-          _buildHeaderCell("التاريخ", flex: 2),
-          _buildHeaderCell("الشكوى", flex: 6),
-          _buildHeaderCell("صورة الشكوي", flex: 2),
-        ],
-      ),
-    );
-  }
-
-//////////////////////////////////////////////////////////////////
-// ✅ Complaint Row (Additional Complaints)
-//////////////////////////////////////////////////////////////////
-
-  pw.Widget _buildAdditionalComplaintRow(AdditionalComplaint complaint,
-      Map<String, pw.MemoryImage> complaintImages) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(vertical: 8),
-      child: pw.Row(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          _buildValueCell(
-            complaint.date,
-            flex: 2,
-          ),
-          _buildValueCell(
-            complaint.complaintTitle,
-            flex: 6,
-            alignRight: true,
           ),
           _buildImageCell(complaint.complaintImage, complaintImages, flex: 2),
         ],
@@ -2034,7 +2068,7 @@ class MedicalReportPdfGenerator {
     return pw.Expanded(
       flex: flex,
       child: pw.Text(
-        text,
+        sanitizeTextForPdf(text),
         style: pw.TextStyle(
           fontSize: fontSize,
           fontWeight: pw.FontWeight.bold,
@@ -2123,7 +2157,7 @@ class MedicalReportPdfGenerator {
       child: pw.Padding(
         padding: pw.EdgeInsets.symmetric(horizontal: horizentalPadding),
         child: pw.Text(
-          text,
+          sanitizeTextForPdf(text),
           style: pw.TextStyle(
             fontSize: fontSize,
             color: PdfColors.black,
@@ -2382,7 +2416,8 @@ class MedicalReportPdfGenerator {
       return fallback;
     }
 
-    return v;
+    final safe = sanitizeTextForPdf(v);
+    return safe.isEmpty ? fallback : safe;
   }
 
   pw.Widget _buildSurgeriesSection(MedicalReportResponseModel reportData,
@@ -2605,9 +2640,11 @@ class MedicalReportPdfGenerator {
 
   pw.Widget _buildTestResultWidget(MedicalTestResultModel? result) {
     final hasValue = result?.value != null;
-    final valueText = hasValue ? result!.value.toString() : "لا يوجد";
-    final dateText =
-        result?.testDate != null ? _formatResultDate(result!.testDate!) : "";
+    final valueText =
+        hasValue ? sanitizeTextForPdf(result!.value.toString()) : "لا يوجد";
+    final dateText = result?.testDate != null
+        ? sanitizeTextForPdf(_formatResultDate(result!.testDate!))
+        : "";
 
     return pw.Column(
       mainAxisSize: pw.MainAxisSize.min,
@@ -2693,14 +2730,6 @@ class MedicalReportPdfGenerator {
         }
       }
     }
-    if (module.additionalComplaints != null) {
-      for (var c in module.additionalComplaints!) {
-        if (c.complaintImage != null && c.complaintImage!.isNotEmpty) {
-          urls.add(c.complaintImage!);
-        }
-      }
-    }
-
     for (var url in urls) {
       try {
         final ByteData data = await NetworkAssetBundle(Uri.parse(url)).load("");
@@ -3025,8 +3054,9 @@ class MedicalReportPdfGenerator {
 
     for (final entry in nutritionModule) {
       final dateStr = entry.dateRange != null
-          ? "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
-              "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}"
+          ? sanitizeTextForPdf(
+              "من تاريخ : ${_formatNutritionDate(entry.dateRange!.from)}"
+              "  الى تاريخ: ${_formatNutritionDate(entry.dateRange!.to)}")
           : "--";
 
       final items = entry.nutritionReport ?? [];

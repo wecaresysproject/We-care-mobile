@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/similar_analysis_view.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_cubit.dart';
 import 'package:we_care/features/test_laboratory/analysis_view/logic/test_analysis_view_state.dart';
+import 'package:we_care/features/test_laboratory/data/models/get_similar_tests_response_model.dart';
 
 class SimilarAnalysisCard extends StatelessWidget {
   final List<String> date;
@@ -15,8 +18,7 @@ class SimilarAnalysisCard extends StatelessWidget {
   final List<String> results;
   final String interpretation;
   final String recommendation;
-  final String id;
-  final String testName;
+  final SimilarTests test;
 
   const SimilarAnalysisCard({
     super.key,
@@ -26,14 +28,22 @@ class SimilarAnalysisCard extends StatelessWidget {
     required this.results,
     required this.interpretation,
     required this.recommendation,
-    required this.testName,
-    required this.id,
+    required this.test,
   });
+
+  String get id => test.id;
+  String get testName => test.testName;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TestAnalysisViewCubit, TestAnalysisViewState>(
-      buildWhen: (previous, current) => previous.isEditing != current.isEditing,
+      buildWhen: (previous, current) =>
+          previous.isEditing != current.isEditing ||
+          previous.editingId != current.editingId ||
+          previous.editMode != current.editMode ||
+          previous.editingTestChoices != current.editingTestChoices ||
+          previous.isLoadingEditChoices != current.isLoadingEditChoices ||
+          previous.selectedChoiceForEdit != current.selectedChoiceForEdit,
       builder: (context, state) {
         final cubit = context.read<TestAnalysisViewCubit>();
         final isEditing = state.isEditing && state.editingId == id;
@@ -89,32 +99,15 @@ class SimilarAnalysisCard extends StatelessWidget {
               // verticalSpacing(8),
               // InterpretationDetailsContainerWithTitleRow(
               //     content: recommendation, title: 'التوصيات'),
-              if (isEditing)
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 16.0),
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextField(
-                    keyboardType: TextInputType.number,
-                    controller: context
-                        .read<TestAnalysisViewCubit>()
-                        .resultEditingController,
-                    decoration: InputDecoration(
-                      labelText: 'النتيجة الجديدة',
-                    ),
-                  ),
-                ),
+              if (isEditing) _buildResultEditor(context, state),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: TextButton(
                   onPressed: () {
                     if (isEditing) {
-                      cubit.toggleEditing(id, results[0]);
+                      cubit.cancelEditingResult();
                     } else {
-                      cubit.toggleEditing(id, results[0]);
+                      cubit.startEditingResult(test);
                     }
                   },
                   child: Text(
@@ -126,13 +119,7 @@ class SimilarAnalysisCard extends StatelessWidget {
               ),
               if (isEditing)
                 ElevatedButton(
-                  onPressed: () {
-                    cubit.updateTestResult(
-                      id: id,
-                      testName: testName,
-                      result: double.parse(cubit.resultEditingController.text),
-                    );
-                  },
+                  onPressed: () => cubit.updateTestResult(testName: testName),
                   child: Text(
                     'حفظ',
                     style: AppTextStyles.font14whiteWeight600,
@@ -142,6 +129,53 @@ class SimilarAnalysisCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  /// Number pad for a test that carries a percentage; descriptive picker for
+  /// one that doesn't. The cubit decides which — see [ResultEditMode].
+  Widget _buildResultEditor(BuildContext context, TestAnalysisViewState state) {
+    if (state.editMode == ResultEditMode.numeric) {
+      return Container(
+        margin: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: TextField(
+          keyboardType: TextInputType.number,
+          controller:
+              context.read<TestAnalysisViewCubit>().resultEditingController,
+          decoration: InputDecoration(
+            labelText: 'النتيجة الجديدة',
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: UserSelectionContainer(
+        categoryLabel: 'النتيجة الوصفية الجديدة',
+        initialValue: state.selectedChoiceForEdit,
+        options: state.editingTestChoices,
+        loadingState: state.isLoadingEditChoices
+            ? OptionsLoadingState.loading
+            : OptionsLoadingState.loaded,
+        containerHintText:
+            state.selectedChoiceForEdit ?? 'اختر نتيجة وصفية جديدة',
+        bottomSheetTitle: 'اختر نتيجة وصفية جديدة',
+        searchHintText: 'ابحث عن النتيجة',
+        onOptionSelected: (value) => context
+            .read<TestAnalysisViewCubit>()
+            .selectDescriptiveResult(value),
+      ),
     );
   }
 

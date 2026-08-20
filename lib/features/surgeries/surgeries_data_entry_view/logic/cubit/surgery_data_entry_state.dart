@@ -1,5 +1,24 @@
 part of 'surgery_data_entry_cubit.dart';
 
+/// How the "التقنية المستخدمة" field should behave for the currently selected
+/// surgery. The cubit owns this decision so the UI never has to infer it from
+/// [SurgeryDataEntryState.allTechUsed] being empty — an empty list on its own
+/// cannot tell "still loading" from "custom surgery" from "lookup failed".
+enum TechniqueResolutionState {
+  /// No surgery name picked yet — we genuinely don't know what the field is.
+  initial,
+
+  /// Resolving the technique catalogue for the chosen surgery.
+  loading,
+
+  /// A curated catalogue exists — required dropdown.
+  hasPredefinedOptions,
+
+  /// No catalogue to choose from (custom surgery, empty catalogue, or a failed
+  /// lookup) — optional free text.
+  noPredefinedOptions,
+}
+
 @immutable
 class SurgeryDataEntryState extends Equatable {
   final RequestStatus surgeriesDataEntryStatus;
@@ -22,6 +41,12 @@ class SurgeryDataEntryState extends Equatable {
   final List<String> hospitals;
   final List<String> allSurgeryStatuses;
   final String? selectedTechUsed; //المنطقة المختاره للعمليات الفرعية
+  final TechniqueResolutionState techniqueResolution;
+
+  /// True when the last technique lookup failed. Purely an affordance for
+  /// offering a retry — it never changes which control renders, so a failed
+  /// lookup can't block the user.
+  final bool techniqueOptionsLoadFailed;
   final String? surgeryPurpose;
   final String? selectedSurgeryStatus;
   final bool isEditMode;
@@ -50,6 +75,8 @@ class SurgeryDataEntryState extends Equatable {
     this.allTechUsed = const [],
     this.allSurgeryStatuses = const [],
     this.selectedTechUsed,
+    this.techniqueResolution = TechniqueResolutionState.initial,
+    this.techniqueOptionsLoadFailed = false,
     this.surgeryPurpose,
     this.selectedSurgeryStatus,
     this.isEditMode = false,
@@ -81,6 +108,8 @@ class SurgeryDataEntryState extends Equatable {
           allTechUsed: const [],
           allSurgeryStatuses: const [],
           selectedTechUsed: null,
+          techniqueResolution: TechniqueResolutionState.initial,
+          techniqueOptionsLoadFailed: false,
           surgeryPurpose: null,
           selectedSurgeryStatus: null,
           isEditMode: false,
@@ -92,6 +121,23 @@ class SurgeryDataEntryState extends Equatable {
           hospitals: const [],
           moduleGuidanceData: null,
         );
+
+  /// The field is absent only before a surgery has ever been picked; from then
+  /// on it is always on screen in some form, so a value the user already has
+  /// can never become unreachable.
+  bool get isTechniqueFieldVisible =>
+      techniqueResolution != TechniqueResolutionState.initial;
+
+  bool get isTechniqueRequired =>
+      techniqueResolution == TechniqueResolutionState.hasPredefinedOptions;
+
+  bool get isTechniqueResolved =>
+      techniqueResolution == TechniqueResolutionState.hasPredefinedOptions ||
+      techniqueResolution == TechniqueResolutionState.noPredefinedOptions;
+
+  /// The purpose is derived server-side from the full surgery + technique
+  /// tuple, so there is nothing to show for a custom surgery.
+  bool get isSurgeryPurposeVisible => surgeryPurpose?.isNotEmpty ?? false;
 
   SurgeryDataEntryState copyWith({
     RequestStatus? surgeriesDataEntryStatus,
@@ -111,8 +157,16 @@ class SurgeryDataEntryState extends Equatable {
     String? selectedSubSurgery,
     List<String>? allTechUsed,
     List<String>? allSurgeryStatuses,
-    String? selectedTechUsed,
-    String? surgeryPurpose,
+
+    /// Passed as a getter rather than a bare value so these can actually be
+    /// reset to null. With the plain `value ?? this.value` form used by every
+    /// other field here, `null` means "leave unchanged" and clearing is a
+    /// silent no-op — which is how a technique from a previously selected
+    /// surgery used to survive onto the next one.
+    ValueGetter<String?>? selectedTechUsed,
+    ValueGetter<String?>? surgeryPurpose,
+    TechniqueResolutionState? techniqueResolution,
+    bool? techniqueOptionsLoadFailed,
     String? selectedSurgeryStatus,
     bool? isEditMode,
     String? updatedSurgeryId,
@@ -145,8 +199,13 @@ class SurgeryDataEntryState extends Equatable {
       selectedSubSurgery: selectedSubSurgery ?? this.selectedSubSurgery,
       allTechUsed: allTechUsed ?? this.allTechUsed,
       allSurgeryStatuses: allSurgeryStatuses ?? this.allSurgeryStatuses,
-      selectedTechUsed: selectedTechUsed ?? this.selectedTechUsed,
-      surgeryPurpose: surgeryPurpose ?? this.surgeryPurpose,
+      selectedTechUsed:
+          selectedTechUsed != null ? selectedTechUsed() : this.selectedTechUsed,
+      techniqueResolution: techniqueResolution ?? this.techniqueResolution,
+      techniqueOptionsLoadFailed:
+          techniqueOptionsLoadFailed ?? this.techniqueOptionsLoadFailed,
+      surgeryPurpose:
+          surgeryPurpose != null ? surgeryPurpose() : this.surgeryPurpose,
       selectedSurgeryStatus:
           selectedSurgeryStatus ?? this.selectedSurgeryStatus,
       isEditMode: isEditMode ?? this.isEditMode,
@@ -181,6 +240,8 @@ class SurgeryDataEntryState extends Equatable {
         allTechUsed,
         allSurgeryStatuses,
         selectedTechUsed,
+        techniqueResolution,
+        techniqueOptionsLoadFailed,
         surgeryPurpose,
         selectedSurgeryStatus,
         isEditMode,

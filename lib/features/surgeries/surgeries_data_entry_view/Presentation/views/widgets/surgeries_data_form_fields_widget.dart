@@ -7,6 +7,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
+import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/details_view_info_tile.dart';
 import 'package:we_care/core/global/SharedWidgets/report_uploader_section_widget.dart';
@@ -120,34 +121,22 @@ class _SuergeriesDataEntryFormFieldsState
               bottomSheetTitle: "اختر اسم العملية",
               searchHintText: "ابحث عن اسم العملية",
             ),
-            verticalSpacing(16),
-            UserSelectionContainer(
-              containerBorderColor: state.selectedTechUsed == null
-                  ? AppColorsManager.warningColor
-                  : AppColorsManager.textfieldOutsideBorderColor,
-              categoryLabel: "التقنية المستخدمة", // Another Dropdown Example
-              containerHintText:
-                  state.selectedTechUsed ?? "اختر التقنية المستخدمة",
-              options: state.allTechUsed,
-              onOptionSelected: (value) {
-                context
-                    .read<SurgeryDataEntryCubit>()
-                    .updateSelectedTechUsed(value);
-                log("xxx:Selected: $value");
-              },
-              bottomSheetTitle: "اختر التقنية المستخدمة",
-              searchHintText: "ابحث عن التقنية المستخدمة",
-            ),
-            verticalSpacing(16),
-            Text(
-              "الهدف من الاجراء",
-              style: AppTextStyles.font18blackWight500,
-            ),
-            verticalSpacing(10),
-            CustomContainer(
-              value: state.surgeryPurpose ?? "الهدف من الاجراء",
-              isExpanded: true,
-            ),
+            if (state.isTechniqueFieldVisible) ...[
+              verticalSpacing(16),
+              _buildTechniqueUsedField(context, state),
+            ],
+            if (state.isSurgeryPurposeVisible) ...[
+              verticalSpacing(16),
+              Text(
+                "الهدف من الاجراء",
+                style: AppTextStyles.font18blackWight500,
+              ),
+              verticalSpacing(10),
+              CustomContainer(
+                value: state.surgeryPurpose!,
+                isExpanded: true,
+              ),
+            ],
             verticalSpacing(16),
 
             Text(
@@ -237,7 +226,7 @@ class _SuergeriesDataEntryFormFieldsState
             ReportUploaderSection<SurgeryDataEntryCubit, SurgeryDataEntryState>(
               statusSelector: (state) => state.surgeryUploadReportStatus,
               uploadedSelector: (state) => state.reportsImageUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<SurgeryDataEntryCubit>()
@@ -385,6 +374,97 @@ class _SuergeriesDataEntryFormFieldsState
     );
   }
 
+  /// Renders whichever control the cubit says this surgery's technique needs.
+  /// The decision itself lives in [SurgeryDataEntryState.techniqueResolution] —
+  /// this only draws it.
+  Widget _buildTechniqueUsedField(
+    BuildContext context,
+    SurgeryDataEntryState state,
+  ) {
+    const label = "التقنية المستخدمة";
+    const bottomSheetTitle = "اختر التقنية المستخدمة";
+    const searchHintText = "ابحث عن التقنية المستخدمة";
+
+    switch (state.techniqueResolution) {
+      case TechniqueResolutionState.initial:
+        return const SizedBox.shrink();
+
+      case TechniqueResolutionState.loading:
+        return UserSelectionContainer(
+          categoryLabel: label,
+          options: const [],
+          loadingState: OptionsLoadingState.loading,
+          containerHintText: bottomSheetTitle,
+          bottomSheetTitle: bottomSheetTitle,
+          searchHintText: searchHintText,
+          onOptionSelected: (_) {},
+        );
+
+      case TechniqueResolutionState.hasPredefinedOptions:
+        return UserSelectionContainer(
+          // Feeds the container's internal selection so clearing the technique
+          // in the cubit actually clears what's displayed.
+          initialValue: state.selectedTechUsed,
+          containerBorderColor: state.selectedTechUsed == null
+              ? AppColorsManager.warningColor
+              : AppColorsManager.textfieldOutsideBorderColor,
+          categoryLabel: label,
+          containerHintText: state.selectedTechUsed ?? bottomSheetTitle,
+          options: state.allTechUsed,
+          onOptionSelected: (value) {
+            context.read<SurgeryDataEntryCubit>().updateSelectedTechUsed(value);
+            log("xxx:Selected: $value");
+          },
+          bottomSheetTitle: bottomSheetTitle,
+          searchHintText: searchHintText,
+        );
+
+      case TechniqueResolutionState.noPredefinedOptions:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "$label (اختياري)",
+              style: AppTextStyles.font18blackWight500,
+            ),
+            verticalSpacing(10),
+            CustomTextField(
+              hintText: "اكتب التقنية المستخدمة",
+              controller:
+                  context.read<SurgeryDataEntryCubit>().techniqueController,
+              validator: (_) => null,
+            ),
+            if (state.techniqueOptionsLoadFailed) ...[
+              verticalSpacing(8),
+              GestureDetector(
+                onTap: () => context
+                    .read<SurgeryDataEntryCubit>()
+                    .retryTechniqueResolution(),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.refresh,
+                      size: 18,
+                      color: AppColorsManager.warningColor,
+                    ),
+                    horizontalSpacing(6),
+                    Expanded(
+                      child: Text(
+                        "تعذر تحميل قائمة التقنيات، يمكنك كتابتها يدويًا أو إعادة المحاولة",
+                        style: AppTextStyles.font14whiteWeight600.copyWith(
+                          color: AppColorsManager.warningColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        );
+    }
+  }
+
   Widget submitSurgeryEntryButtonBlocConsumer() {
     return BlocConsumer<SurgeryDataEntryCubit, SurgeryDataEntryState>(
       listenWhen: (prev, curr) =>
@@ -414,7 +494,7 @@ class _SuergeriesDataEntryFormFieldsState
               state.isEditMode
                   ? await context
                       .read<SurgeryDataEntryCubit>()
-                      .submitUpdatedSurgery()
+                      .submitUpdatedSurgery(context.translate)
                   : await context.read<SurgeryDataEntryCubit>().postModuleData(
                         context.translate,
                       );

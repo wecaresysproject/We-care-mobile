@@ -254,7 +254,7 @@ class _DentalDataFormFieldsWidgetState
             ReportUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
               statusSelector: (state) => state.uploadReportStatus,
               uploadedSelector: (state) => state.reportsImageUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -277,7 +277,7 @@ class _DentalDataFormFieldsWidgetState
             ImageUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
               statusSelector: (state) => state.xRayImageRequestStatus,
               uploadedSelector: (state) => state.xrayImagesUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<DentalDataEntryCubit>()
@@ -314,7 +314,7 @@ class _DentalDataFormFieldsWidgetState
             ImageUploaderSection<DentalDataEntryCubit, DentalDataEntryState>(
               statusSelector: (state) => state.lymphAnalysisImageStatus,
               uploadedSelector: (state) => state.lymphAnalysisImagesUploadedUrl,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<DentalDataEntryCubit>()

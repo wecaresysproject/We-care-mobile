@@ -25,6 +25,9 @@ class GetUserVaccinesResponseModel extends Equatable {
 
 @JsonSerializable()
 class UserVaccineModel extends Equatable {
+  /// Document id of the user's vaccine entry — used to fetch the full record
+  /// from `/Vaccine/vaccine-user-entry?id=...`.
+  final String? id;
   final String? date;
   final String? vaccineName;
   final String? vaccineCategory;
@@ -40,6 +43,7 @@ class UserVaccineModel extends Equatable {
   final String? additionalInfo;
 
   const UserVaccineModel({
+    this.id,
     this.date,
     this.vaccineName,
     this.vaccineCategory,
@@ -60,6 +64,7 @@ class UserVaccineModel extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         date,
         vaccineName,
         vaccineCategory,

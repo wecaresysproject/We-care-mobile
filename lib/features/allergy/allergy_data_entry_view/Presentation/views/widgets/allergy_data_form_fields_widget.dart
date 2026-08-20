@@ -282,7 +282,7 @@ class _AllergyDataFormFieldsWidgetState
             ReportUploaderSection<AllergyDataEntryCubit, AllergyDataEntryState>(
               statusSelector: (state) => state.uploadReportStatus,
               uploadedSelector: (state) => state.reportsUploadedUrls,
-              resultMessage: state.message,
+              messageSelector: (state) => state.message,
               onRemove: (imagePath) {
                 context
                     .read<AllergyDataEntryCubit>()

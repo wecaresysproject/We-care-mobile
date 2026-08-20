@@ -162,7 +162,7 @@ class _PrescriptionDataEntryFormFieldsState
                 statusSelector: (state) => state.prescriptionImageRequestStatus,
                 uploadedSelector: (state) =>
                     state.prescriptionPictureUploadedUrl,
-                resultMessage: state.message,
+                messageSelector: (state) => state.message,
                 hasValidation: true,
                 onRemove: (imagePath) {
                   context

@@ -324,12 +324,10 @@ class PrescriptionDataEntryCubit extends Cubit<PrescriptionDataEntryState> {
     final response = await _prescriptionDataEntryRepo.postPrescriptionDataEntry(
       PrescriptionRequestBodyModel(
         prescriptionDate: state.preceriptionDateSelection!,
-
         userType: UserTypes.patient.name.firstLetterToUpperCase,
         language: AppStrings.arabicLang,
         doctorName: state.doctorNameSelection ?? localozation.no_data_entered,
         country: state.selectedCountryName ?? localozation.no_data_entered,
-
         cause: symptomsAccompanyingComplaintController.text.isNotEmpty
             ? symptomsAccompanyingComplaintController.text
             : localozation.no_data_entered,

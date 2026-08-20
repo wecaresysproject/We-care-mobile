@@ -177,7 +177,7 @@ class XRayDetailsView extends StatelessWidget {
                       icon: 'assets/images/doctor_icon.png'),
                   DetailsViewInfoTile(
                     isExpanded: true,
-                    title: "مركز الأشاعة  / المستشفي",
+                    title: "مركز  الأشعة  / المستشفي",
                     value: radiologyData.hospital ??
                         radiologyData.radiologyCenter ??
                         "",

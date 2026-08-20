@@ -7,7 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_bar.dart';
 import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
+import 'package:we_care/features/vaccine/data/models/get_vaccine_details_response_model.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/widgets/vaccine_data_form_fields_widget.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_cubit.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/logic/cubit/vaccine_data_entry_state.dart';
@@ -17,7 +17,7 @@ class VaccineDataEntryView extends StatelessWidget {
     super.key,
     this.editingVaccineData,
   });
-  final UserVaccineModel? editingVaccineData;
+  final VaccineUserEntryDetailsModel? editingVaccineData;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class VaccineDataEntryView extends StatelessWidget {
       create: (context) {
         var cubit = getIt<VaccineDataEntryCubit>();
         if (editingVaccineData != null) {
-          // cubit.loadVaccineDataForEditing(editingVaccineData!);
+          cubit.loadVaccineDataForEditing(editingVaccineData!);
         } else {
           cubit.intialRequestsForVaccineDataEntry();
         }

@@ -127,7 +127,7 @@ import 'package:we_care/features/surgeries/surgeries_view/views/surgeries_view.d
 import 'package:we_care/features/test_laboratory/analysis_view/Presention/analysis_view.dart';
 import 'package:we_care/features/test_laboratory/data/models/get_analysis_by_id_response_model.dart';
 import 'package:we_care/features/test_laboratory/test_analysis_data_entry/Presentation/views/test_analysis_data_entry_view.dart';
-import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
+import 'package:we_care/features/vaccine/data/models/get_vaccine_details_response_model.dart';
 import 'package:we_care/features/vaccine/vaccine_data_entry/Presentation/views/vaccine_data_entry_view.dart';
 import 'package:we_care/features/vaccine/vaccine_view/Presention/vaccine_view.dart';
 import 'package:we_care/features/x_ray/data/models/user_radiology_data_reponse_model.dart';
@@ -141,6 +141,21 @@ import '../../features/home_tab/Presentation/views/view_or_edit_medical_record_v
 import '../../features/login/Presentation/views/login_view.dart';
 import '../../features/otp/Presentation/views/otp_view.dart';
 import '../../features/show_data_entry_types/Presentation/views/medical_categories_data_entry_types_view.dart';
+import '../../features/online_doctor/presentation/views/doctor_search_view.dart';
+import '../../features/online_doctor/data/models/doctor_model.dart';
+import '../../features/online_doctor/presentation/views/book_appointment_view.dart';
+import '../../features/online_doctor/presentation/views/checkout_view.dart';
+import '../../features/online_doctor/presentation/views/doctor_profile_view.dart';
+import '../../features/online_doctor/presentation/views/doctors_list_view.dart';
+import '../../features/online_doctor/presentation/views/medical_examination_view.dart';
+import '../../features/online_doctor/data/models/booking_history_model.dart';
+import '../../features/online_doctor/data/models/booking_model.dart';
+import '../../features/online_doctor/presentation/views/examination_call_view.dart';
+import '../../features/online_doctor/presentation/views/examination_room_view.dart';
+import '../../features/online_doctor/presentation/views/booking_details_view.dart';
+import '../../features/online_doctor/presentation/views/bookings_history_view.dart';
+import '../../features/online_doctor/presentation/views/my_bookings_view.dart';
+import '../../features/online_doctor/presentation/views/online_doctor_view.dart';
 import '../../features/sign_up/Presentation/views/sign_up_view.dart';
 import '../../features/user_type/Presentation/views/user_type_view.dart';
 import '../global/SharedWidgets/bottom_nav_bar.dart';
@@ -274,7 +289,7 @@ class AppRouter {
           ),
         );
       case Routes.vaccineDataEntryView:
-        final vaccineDetails = arguments as UserVaccineModel?;
+        final vaccineDetails = arguments as VaccineUserEntryDetailsModel?;
         return MaterialPageRoute(
           builder: (context) => VaccineDataEntryView(
             editingVaccineData: vaccineDetails,
@@ -856,6 +871,60 @@ class AppRouter {
             },
             child: const WhoCanAccessModulePermissionsView(),
           ),
+        );
+
+      //! طبيبك أون لاين
+      case Routes.onlineDoctorView:
+        return MaterialPageRoute(
+          builder: (_) => const OnlineDoctorView(),
+        );
+      case Routes.doctorSearchView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorSearchView(),
+        );
+      case Routes.myBookingsView:
+        return MaterialPageRoute(
+          builder: (_) => const MyBookingsView(),
+        );
+      case Routes.bookingsHistoryView:
+        return MaterialPageRoute(
+          builder: (_) => const BookingsHistoryView(),
+        );
+      case Routes.bookingDetailsView:
+        final booking = arguments as BookingHistoryModel;
+        return MaterialPageRoute(
+          builder: (_) => BookingDetailsView(booking: booking),
+        );
+      case Routes.medicalExaminationView:
+        return MaterialPageRoute(
+          builder: (_) => const MedicalExaminationView(),
+        );
+      case Routes.examinationRoomView:
+        final booking = arguments as BookingModel;
+        return MaterialPageRoute(
+          builder: (_) => ExaminationRoomView(booking: booking),
+        );
+      case Routes.examinationCallView:
+        final booking = arguments as BookingModel;
+        return MaterialPageRoute(
+          builder: (_) => ExaminationCallView(booking: booking),
+        );
+      case Routes.doctorsListView:
+        final specialization = arguments as String? ?? '';
+        return MaterialPageRoute(
+          builder: (_) => DoctorsListView(specialization: specialization),
+        );
+      case Routes.doctorProfileView:
+        return MaterialPageRoute(
+          builder: (_) => DoctorProfileView(doctor: arguments as DoctorModel),
+        );
+      case Routes.bookAppointmentView:
+        return MaterialPageRoute(
+          builder: (_) => BookAppointmentView(doctor: arguments as DoctorModel),
+        );
+      case Routes.checkoutView:
+        return MaterialPageRoute(
+          builder: (_) => CheckoutView(doctor: arguments as DoctorModel),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

@@ -55,6 +55,59 @@ class VaccineViewCubit extends Cubit<VaccineViewState> {
     );
   }
 
+  /// Loads the full record behind one row of the vaccines table.
+  Future<void> emitVaccineDetailsById(String vaccineId) async {
+    safeEmit(state.copyWith(
+      requestStatus: RequestStatus.loading,
+      isDeleteRequest: false,
+    ));
+
+    final result = await _vaccinesRepo.getVaccineUserEntryById(vaccineId);
+
+    result.when(
+      success: (details) {
+        safeEmit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          selectedVaccine: details,
+          isDeleteRequest: false,
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+          isDeleteRequest: false,
+        ));
+      },
+    );
+  }
+
+  Future<void> deleteVaccineUserEntry(String vaccineId) async {
+    safeEmit(state.copyWith(
+      requestStatus: RequestStatus.loading,
+      isDeleteRequest: true,
+    ));
+
+    final result = await _vaccinesRepo.deleteVaccineUserEntry(vaccineId);
+
+    result.when(
+      success: (successMessage) {
+        safeEmit(state.copyWith(
+          requestStatus: RequestStatus.success,
+          message: successMessage,
+          isDeleteRequest: true,
+        ));
+      },
+      failure: (error) {
+        safeEmit(state.copyWith(
+          requestStatus: RequestStatus.failure,
+          message: error.errors.first,
+          isDeleteRequest: true,
+        ));
+      },
+    );
+  }
+
   // Future<void> emitVaccineById(String vaccineId) async {
   //   emit(state.copyWith(requestStatus: RequestStatus.loading));
 

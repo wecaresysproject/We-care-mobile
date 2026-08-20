@@ -154,4 +154,18 @@ class Routes {
   static const whoCanAccessMyRecordView = '/whoCanAccessMyRecordView';
   static const whoCanAccessModulePermissionsView =
       '/whoCanAccessModulePermissionsView';
+
+  //! طبيبك أون لاين
+  static const onlineDoctorView = '/onlineDoctorView';
+  static const doctorSearchView = '/doctorSearchView';
+  static const myBookingsView = '/myBookingsView';
+  static const bookingsHistoryView = '/bookingsHistoryView';
+  static const bookingDetailsView = '/bookingDetailsView';
+  static const medicalExaminationView = '/medicalExaminationView';
+  static const examinationRoomView = '/examinationRoomView';
+  static const examinationCallView = '/examinationCallView';
+  static const doctorsListView = '/doctorsListView';
+  static const doctorProfileView = '/doctorProfileView';
+  static const bookAppointmentView = '/bookAppointmentView';
+  static const checkoutView = '/checkoutView';
 }

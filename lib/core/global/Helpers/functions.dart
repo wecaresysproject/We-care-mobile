@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bidi/bidi.dart' as bidi;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -161,31 +162,155 @@ Future<void> stopSound() async {
   }
 }
 
+/// Readable replacements for characters that would otherwise be expanded into
+/// their raw Unicode decomposition by [sanitizeTextForPdf]. '½' decomposes to
+/// "1⁄2" using U+2044 FRACTION SLASH, which Cairo has no glyph for, so we spell
+/// these out instead. The leading space keeps "2½ حبة" readable as "2 1/2 حبة".
+const _pdfPrettyReplacements = {
+  '½': ' 1/2',
+  '¼': ' 1/4',
+  '¾': ' 3/4',
+  '⅓': ' 1/3',
+  '⅔': ' 2/3',
+  '⅛': ' 1/8',
+  '⅜': ' 3/8',
+  '⅝': ' 5/8',
+  '⅞': ' 7/8',
+};
+
+/// Makes [input] safe to render inside a generated PDF.
+///
+/// `package:pdf` shapes RTL text through `package:bidi`, which keeps two
+/// parallel arrays while normalizing — one indexed by decomposed code point,
+/// one by original code point. Any character whose Unicode *compatibility*
+/// decomposition expands to more than one code point desynchronizes them and
+/// throws `RangeError (length)`, aborting the whole export. Around 930 code
+/// points do this, including Unicode fractions (½), Arabic presentation forms
+/// (ﻻ, ﷺ), ℃, …, ™, №, roman numerals and fullwidth forms.
+///
+/// Pre-expanding those characters keeps the arrays aligned. Canonical
+/// decompositions (é, آ) recompose correctly inside bidi and are left as-is,
+/// since expanding them would strand combining marks the font may not cover.
+String sanitizeTextForPdf(String? input) {
+  if (input == null || input.isEmpty) return '';
+
+  // Fast path. No code point below U+0080 can trip bidi (asserted in
+  // pdf_text_sanitizer_test.dart), and most of a report — dates, codes,
+  // numbers, image URLs — is pure ASCII. Skipping the rewrite and the
+  // verification pass here keeps this cheap enough to call on every cell.
+  var isAscii = true;
+  for (var i = 0; i < input.length; i++) {
+    if (input.codeUnitAt(i) > 0x7F) {
+      isAscii = false;
+      break;
+    }
+  }
+  if (isAscii) return input;
+
+  String text = input;
+  _pdfPrettyReplacements.forEach((key, value) {
+    text = text.replaceAll(key, value);
+  });
+
+  final buffer = StringBuffer();
+  for (final rune in text.runes) {
+    _expandForBidi(rune, buffer, 0);
+  }
+  final expanded = buffer.toString();
+
+  // Verifying the whole string is not enough: `package:pdf` cuts a text span at
+  // every rune the font has no glyph for (`_preProcessSpans`) and runs bidi on
+  // each fragment separately, so a rune that only survives thanks to its
+  // neighbours can still abort the export once it lands at a fragment edge.
+  final fragmentSafe = _dropFragmentUnsafeRunes(expanded);
+
+  // A handful of exotic code points (combining Greek marks, CJK vertical forms)
+  // still trip bidi after expansion — drop them rather than fail the export.
+  return _isBidiSafe(fragmentSafe)
+      ? fragmentSafe
+      : _dropBidiUnsafeRunes(fragmentSafe);
+}
+
+/// Per-rune verdicts, cached — a report reuses the same few hundred runes over
+/// and over, and each verdict costs three bidi passes.
+final Map<int, bool> _fragmentSafeRunes = {};
+
+/// Whether [rune] survives bidi alone and at either edge of a fragment.
+bool _isRuneFragmentSafe(int rune) => _fragmentSafeRunes.putIfAbsent(rune, () {
+      final ch = String.fromCharCode(rune);
+      return _isBidiSafe(ch) && _isBidiSafe('ا$ch') && _isBidiSafe('$chا');
+    });
+
+String _dropFragmentUnsafeRunes(String text) {
+  var needsFilter = false;
+  for (final rune in text.runes) {
+    if (!_isRuneFragmentSafe(rune)) {
+      needsFilter = true;
+      break;
+    }
+  }
+  if (!needsFilter) return text;
+
+  final kept = StringBuffer();
+  for (final rune in text.runes) {
+    if (_isRuneFragmentSafe(rune)) kept.writeCharCode(rune);
+  }
+  return kept.toString();
+}
+
+void _expandForBidi(int rune, StringBuffer out, int depth) {
+  final mapping = bidi.getDecompositionMapping(rune);
+  if (depth > 8 ||
+      mapping == null ||
+      mapping.length < 2 ||
+      bidi.getDecompositionType(rune) == null) {
+    out.writeCharCode(rune);
+    return;
+  }
+  for (final part in mapping) {
+    _expandForBidi(part, out, depth + 1);
+  }
+}
+
+bool _isBidiSafe(String text) {
+  try {
+    bidi.logicalToVisual(text);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+/// Safety net for anything expansion did not settle. Each rune is probed on its
+/// own rather than against the accumulated prefix, so a long paragraph costs one
+/// bidi pass per rune instead of one per prefix. The result is verified once
+/// more, and falls back to ASCII — which bidi always accepts — rather than let a
+/// single glyph abort the export.
+String _dropBidiUnsafeRunes(String text) {
+  final kept = StringBuffer();
+  for (final rune in text.runes) {
+    final ch = String.fromCharCode(rune);
+    if (_isBidiSafe(ch) && _isBidiSafe('ا$ch') && _isBidiSafe('$chا')) {
+      kept.writeCharCode(rune);
+    }
+  }
+
+  final result = kept.toString();
+  if (_isBidiSafe(result)) return result;
+
+  return String.fromCharCodes(result.codeUnits.where((unit) => unit < 0x80));
+}
+
 String sanitizeDosageForPdf(String? input) {
   if (input == null || input.trim().isEmpty) {
     return "لا يوجد";
   }
 
-  String text = input;
-
   // ----------------------------
   // 1️⃣ Replace Unicode Fractions
+  //    (and anything else bidi chokes on)
   // ----------------------------
-  const fractionMap = {
-    '½': ' 1/2',
-    '¼': ' 1/4',
-    '¾': ' 3/4',
-    '⅓': ' 1/3',
-    '⅔': ' 2/3',
-    '⅛': ' 1/8',
-    '⅜': ' 3/8',
-    '⅝': ' 5/8',
-    '⅞': ' 7/8',
-  };
-
-  fractionMap.forEach((key, value) {
-    text = text.replaceAll(key, value);
-  });
+  String text = sanitizeTextForPdf(input);
 
   // ----------------------------------
   // 2️⃣ Normalize Arabic Numbers → EN
@@ -226,8 +351,13 @@ String sanitizeDosageForPdf(String? input) {
 }
 
 Future<void> launchYouTubeVideo(String? url) async {
+  await launchExternalUrl(url);
+}
+
+/// Opens [url] in the browser or its matching app. No-op for empty/invalid urls.
+Future<void> launchExternalUrl(String? url) async {
   if (url == null || url.trim().isEmpty) {
-    AppLogger.error("YouTube URL is null or empty");
+    AppLogger.error("URL is null or empty");
     return;
   }
 
@@ -236,10 +366,10 @@ Future<void> launchYouTubeVideo(String? url) async {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      AppLogger.error("Could not launch YouTube URL: $url");
+      AppLogger.error("Could not launch URL: $url");
     }
   } catch (e) {
-    AppLogger.error("Error launching YouTube URL: $e");
+    AppLogger.error("Error launching URL: $e");
   }
 }
 

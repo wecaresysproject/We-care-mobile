@@ -2,7 +2,7 @@ class EyesApiConstants {
   static const baseUrl = "http://147.93.57.70/api";
   //Data Entry
   // static const getCountries = "/api/EnterSectionSurgery/countries";
-  static const uploadReportEndpoint = "/m2/api/FileUpload/upload-report";
+  static const uploadReportEndpoint = "/FileUpload/upload-report";
   static const postGlassesEssentialDataEntryEndPoint =
       "/EyesDataEntry/submit-glasses-essential";
 

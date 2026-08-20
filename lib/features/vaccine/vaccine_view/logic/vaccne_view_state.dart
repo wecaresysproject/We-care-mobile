@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/models/module_guidance_response_model.dart';
 import 'package:we_care/features/vaccine/data/models/get_user_vaccines_response_model.dart';
+import 'package:we_care/features/vaccine/data/models/get_vaccine_details_response_model.dart';
 
 class VaccineViewState extends Equatable {
   final RequestStatus requestStatus;
@@ -9,7 +10,7 @@ class VaccineViewState extends Equatable {
   final List<UserVaccineModel> userVaccines;
   final List<int> yearsFilter;
   final List<String> vaccineTypesFilter;
-  final UserVaccineModel? selectedVaccine;
+  final VaccineUserEntryDetailsModel? selectedVaccine;
   final bool isDeleteRequest;
   final bool isLoadingMore;
   final ModuleGuidanceDataModel? moduleGuidanceData;
@@ -60,7 +61,7 @@ class VaccineViewState extends Equatable {
     List<int>? yearsFilter,
     List<String>? vaccineTypesFilter,
     List<String>? userSubmissionDates,
-    UserVaccineModel? selectedVaccine,
+    VaccineUserEntryDetailsModel? selectedVaccine,
     String? selectedDateFrom,
     String? selectedDateTo,
     bool? isDeleteRequest,

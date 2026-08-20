@@ -52,9 +52,7 @@ class ComplaintCardItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Text(
-                item.mainSymptoms.isNotEmpty
-                    ? item.mainSymptoms.first.symptomsRegion.substring(2)
-                    : 'لم يتم تحديد مكان الشكوي',
+                getComplaintRegionText(item),
                 style: AppTextStyles.font14BlueWeight700
                     .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
@@ -133,6 +131,26 @@ class ComplaintCardItem extends StatelessWidget {
       ),
     );
   }
+
+  /// عنوان الكارت: منطقة أول شكوى مُسجلة، ولو مفيش شكاوى مُهيكلة
+  /// بنرجع لمنطقة "الشكاوى الإضافية" قبل ما نقول إن المكان مش محدد
+  String getComplaintRegionText(DetailedComplaintModel item) {
+    if (item.mainSymptoms.isNotEmpty) {
+      return _withoutLeadingEmoji(item.mainSymptoms.first.symptomsRegion);
+    }
+
+    final additionalRegion = item.additionalComplaintDetails?.symptomsRegion;
+    if (additionalRegion.isFilled) {
+      return _withoutLeadingEmoji(additionalRegion!);
+    }
+
+    return 'لم يتم تحديد مكان الشكوي';
+  }
+
+  /// أسماء المناطق الراجعة من الباك اند بتبدأ بإيموجي (مثال: "🧠 رأس والدماغ")
+  /// وبنشيله لو موجود بس، لأن المستخدم ممكن يكون كاتب المنطقة بنفسه من غير إيموجي
+  String _withoutLeadingEmoji(String region) =>
+      region.replaceFirst(RegExp(r'^[^\p{L}\p{N}]+', unicode: true), '').trim();
 
   String getComplaintText(
     DetailedComplaintModel item,

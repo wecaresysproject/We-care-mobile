@@ -19,7 +19,10 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
   final void Function(String imagePath) onRemove;
 
   final int maxImages;
-  final String resultMessage;
+
+  /// يُقرأ من الـ state اللحظية داخل الـ listener، مش من قيمة متمررة وقت البناء،
+  /// لأن الـ listener بيشتغل قبل ما الـ parent يعمل rebuild فبتوصل رسالة قديمة.
+  final String Function(StateType) messageSelector;
   final bool hasValidation;
 
   const ImageUploaderSection({
@@ -28,7 +31,7 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
     required this.onUpload,
     required this.uploadedSelector,
     required this.onRemove,
-    required this.resultMessage,
+    required this.messageSelector,
     this.hasValidation = false,
     this.maxImages = 8,
   });
@@ -64,16 +67,17 @@ class ImageUploaderSection<CubitType extends StateStreamable<StateType>,
                   statusSelector(previous) != statusSelector(current),
               listener: (context, state) async {
                 final status = statusSelector(state);
+                final message = messageSelector(state);
 
                 if (status == UploadImageRequestStatus.success) {
                   await showSuccess(
-                    resultMessage,
+                    message,
                   );
                 }
 
                 if (status == UploadImageRequestStatus.failure) {
                   await showError(
-                    resultMessage,
+                    message,
                   );
                 }
               },

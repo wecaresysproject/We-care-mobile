@@ -375,7 +375,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         ),
         chronicDiseases: ChronicDiseasesSelectionRequestBody(
           getAll: state.chronicDiseasesGetAll,
-          diseases: state.chronicDiseasesSelectedValues,
+          diseaseNames: state.chronicDiseasesSelectedValues,
         ),
         urgentComplaints: UrgentComplaintsSelectionRequestBody(
           attachImages: state.urgentComplaintsAttachImages,
@@ -609,8 +609,7 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
       case MedicalModule.vaccinations:
         return _medicalReportRepo.getVaccinationsFilters(language, userType);
       case MedicalModule.riskyBehaviors:
-        return _medicalReportRepo.getRiskyBehavioursFilters(
-            language, userType);
+        return _medicalReportRepo.getRiskyBehavioursFilters(language, userType);
       default:
         // موديولات من غير API فلاتر (زي جودة الحياة — checkbox بس)
         return null;

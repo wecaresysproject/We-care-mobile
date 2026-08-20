@@ -8,6 +8,7 @@ import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.d
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/features/dental_module/dental_mouth_regions.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_state.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_operation_details_view.dart';
@@ -70,6 +71,19 @@ class ToothOperationsView extends StatelessWidget {
                       ),
                     ],
                   ),
+                  verticalSpacing(8),
+
+                  /// اسم المنطقة/السن اللى المستخدم ضغط عليه، عشان يعرف
+                  /// هو بيبص على بيانات إيه من غير ما يرجع للمخطط.
+                  Text(
+                    DentalMouthRegions.dataTitleFor(selectedTooth.toString()),
+                    style: AppTextStyles.font18blackWight500.copyWith(
+                      color: AppColorsManager.mainDarkBlue,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  verticalSpacing(8),
                   if (state.requestStatus == RequestStatus.loading)
                     Expanded(
                       child: Center(

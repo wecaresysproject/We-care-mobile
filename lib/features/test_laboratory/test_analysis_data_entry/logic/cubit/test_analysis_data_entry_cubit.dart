@@ -460,7 +460,7 @@ class TestAnalysisDataEntryCubit extends Cubit<TestAnalysisDataEntryState> {
     final response = await _testAnalysisDataEntryRepo.getTableDetails(
       language: AppStrings.arabicLang,
       userType: UserTypes.patient.name.firstLetterToUpperCase,
-      codeQuery: state.isTestNameEnSelected,
+      englishTestNameQuery: state.isTestNameEnSelected,
       groupNameQuery: state.isTestGroupNameSelected,
       testNameQuery: state.isTestNameSelected,
     );

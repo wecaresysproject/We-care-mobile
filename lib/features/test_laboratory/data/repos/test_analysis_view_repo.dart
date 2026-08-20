@@ -32,9 +32,11 @@ class TestAnalysisViewRepo {
     }
   }
 
-  Future<ApiResult<List<String>>> getTestCodesFilter() async {
+  /// Options for the "الاسم (En)" filter — the same english test names list the
+  /// lab tests data entry module uses.
+  Future<ApiResult<List<String>>> getEnglishTestNamesFilter() async {
     try {
-      final response = await testAnalysisSerices.getAllUserTestCodes();
+      final response = await testAnalysisSerices.getUserEnglishTestNames();
       return ApiResult.success(
           (response["data"] as List).map((e) => e as String).toList());
     } catch (error) {
@@ -54,10 +56,10 @@ class TestAnalysisViewRepo {
   }
 
   Future<ApiResult<GetUserAnalysisReponseModel>> getFilteredTests(int? year,
-      {String? groupName, String? testCode}) async {
+      {String? groupName, String? englishTestName}) async {
     try {
-      final response = await testAnalysisSerices.getFilteredTestsByYear(
-          AppStrings.arabicLang, year, groupName, testCode);
+      final response = await testAnalysisSerices.getFilteredTests(
+          AppStrings.arabicLang, year, groupName, englishTestName);
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -85,13 +87,39 @@ class TestAnalysisViewRepo {
     }
   }
 
-  Future<ApiResult<String>> editTestResultByIdAndName(
-      {required String id,
-      required String testName,
-      required double result}) async {
+  /// Descriptive result options for a test whose `writtenPercent` is null.
+  Future<ApiResult<List<String>>> getTestChoices(
+      {required String testName}) async {
+    try {
+      final response = await testAnalysisSerices.getTestChoices(testName);
+      return ApiResult.success(
+          (response["data"] as List).map((e) => e as String).toList());
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// Pass [writtenPercent] for a numeric result, or [selectedChoice] together
+  /// with the [testChoices] it was picked from for a descriptive one.
+  Future<ApiResult<String>> editTestResultByIdAndName({
+    required String id,
+    required String testName,
+    double? writtenPercent,
+    String? selectedChoice,
+    List<String> testChoices = const [],
+  }) async {
     try {
       final response = await testAnalysisSerices.editTestResultByIdAndName(
-          id, AppStrings.arabicLang, testName, {"writtenPercent": result});
+        id,
+        AppStrings.arabicLang,
+        testName,
+        {
+          "hasApercentage": writtenPercent != null,
+          "testChoices": testChoices,
+          "writtenPercent": writtenPercent,
+          "selectedChoice": selectedChoice,
+        },
+      );
       return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
