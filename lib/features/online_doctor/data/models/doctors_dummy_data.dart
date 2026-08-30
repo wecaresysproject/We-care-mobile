@@ -2,9 +2,11 @@ import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_profile_entries.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_review_model.dart';
+import 'package:we_care/features/online_doctor/data/models/nearest_appointment_model.dart';
 
-//! بيانات وهمية مؤقتة لحد ما endpoint البحث عن طبيب يجهز.
-//! الأسماء والتقييمات والصور مش حقيقية — الصور من randomuser.me.
+//! بيانات وهمية مؤقتة — قايمة الأطباء وملف الطبيب بقوا من الـ API،
+//! ودى فاضلة بس لفلو الحجوزات (`doctorFromBookingInfo`) لحد ما endpoints
+//! الحجوزات تجهز. الأسماء والتقييمات والصور مش حقيقية — الصور من randomuser.me.
 
 const List<String> _doctorNames = [
   "د/ أحمد محمود مصطفى",
@@ -46,28 +48,12 @@ const List<int> _likesCounts = [15, 24, 18, 30, 20, 20, 12, 32, 28, 16];
 
 const List<int> _commentsCounts = [50, 80, 50, 120, 95, 95, 40, 32, 110, 35];
 
-const List<String> _nearestAppointmentDates = [
-  "الأحد 26 مايو",
-  "الإثنين 27 مايو",
-  "الأربعاء 29 مايو",
-  "غدا 25 مايو",
-  "الجمعة 31 مايو",
-];
-
-const List<String> _nearestAppointmentTimes = [
-  "10:30",
-  "02:00",
-  "11:00",
-  "09:00",
-  "04:30",
-];
-
-const List<String> _nearestAppointmentPeriods = [
-  "صباحاً",
-  "مساءً",
-  "صباحاً",
-  "صباحاً",
-  "مساءً",
+const List<NearestAppointmentModel> _nearestAppointments = [
+  NearestAppointmentModel(date: "2026-05-26", time: "10:30"),
+  NearestAppointmentModel(date: "2026-05-27", time: "14:00"),
+  NearestAppointmentModel(date: "2026-05-29", time: "11:00"),
+  NearestAppointmentModel(date: "2026-05-25", time: "09:00"),
+  NearestAppointmentModel(date: "2026-05-31", time: "16:30"),
 ];
 
 const List<int> _yearsOfExperience = [8, 12, 15, 6, 10, 20, 9, 7, 18, 11];
@@ -98,22 +84,22 @@ const List<int> _consultationFees = [
   550
 ];
 
-const List<String> _workingDays = [
-  "الأحد - الثلاثاء - الخميس",
-  "السبت - الاثنين - الأربعاء",
-  "الأحد - الأربعاء",
+const List<List<String>> _workingDays = [
+  ["الأحد", "الثلاثاء", "الخميس"],
+  ["السبت", "الاثنين", "الأربعاء"],
+  ["الأحد", "الأربعاء"],
 ];
 
-const List<String> _workingHours = [
-  "من 9:00 ص - 2:00 م",
-  "من 10:00 ص - 3:00 م",
-  "من 4:00 م - 9:00 م",
+const List<List<String>> _workingHours = [
+  ["09:00 - 14:00"],
+  ["10:00 - 15:00"],
+  ["16:00 - 21:00"],
 ];
 
-const List<String> _locations = [
-  "مصر - القاهرة",
-  "مصر - الجيزة",
-  "مصر - الإسكندرية",
+const List<DoctorLocationModel> _locations = [
+  DoctorLocationModel(country: "مصر", city: "القاهرة"),
+  DoctorLocationModel(country: "مصر", city: "الجيزة"),
+  DoctorLocationModel(country: "مصر", city: "الإسكندرية"),
 ];
 
 const List<String> _hospitals = [
@@ -248,15 +234,14 @@ List<DoctorMembershipModel> _medicalAssociations(
   return [
     DoctorMembershipModel(
       association: "الجمعية المصرية لـ$specialization",
-      membershipType: "عضو عامل",
-      scope: "مصر",
-      sinceYear: "${graduation + 6}",
+      membershipLevel: "عضو عامل",
+      membershipNumber: "EG-${1000 + position}",
+      year: "${graduation + 6}",
     ),
     DoctorMembershipModel(
       association: "الجمعية الأوروبية لـ$specialization",
-      membershipType: "عضو دولى",
-      scope: "أوروبا",
-      sinceYear: "${graduation + 12}",
+      membershipLevel: "عضو دولى",
+      year: "${graduation + 12}",
     ),
   ];
 }
@@ -270,15 +255,13 @@ List<DoctorResearchModel> _research(int position, String specialization) {
       title: "تأثير $subSpecialization على جودة الحياة",
       type: "بحث علمى",
       year: "${graduation + 16}",
-      actionLabel: "عرض البحث",
-      url: "https://scholar.google.com",
+      referenceUrl: "https://scholar.google.com",
     ),
     DoctorResearchModel(
       title: "رسالة دكتوراه: نتائج $subSpecialization",
-      type: "رسالة دكتوراه",
+      type: "رسالة علمية",
       year: "${graduation + 9}",
-      actionLabel: "عرض الرسالة",
-      url: "https://scholar.google.com",
+      referenceUrl: "https://scholar.google.com",
     ),
   ];
 }
@@ -291,11 +274,13 @@ List<DoctorAwardModel> _awards(int position, String specialization) {
     DoctorAwardModel(
       title: "جائزة أفضل بحث فى $specialization",
       issuer: university,
+      country: "مصر",
       year: "${graduation + 15}",
     ),
     DoctorAwardModel(
       title: "شهادة تقدير للتميز الأكاديمى والمهنى",
       issuer: university,
+      country: "مصر",
       year: "${graduation + 13}",
     ),
   ];
@@ -304,16 +289,13 @@ List<DoctorAwardModel> _awards(int position, String specialization) {
 List<DoctorMediaModel> _mediaAppearances(String specialization) {
   return [
     DoctorMediaModel(
-      title: "نصائح للوقاية من أمراض $specialization",
+      subject: "نصائح للوقاية من أمراض $specialization",
       type: "فيديو",
-      platform: "YouTube",
-      actionLabel: "مشاهدة الفيديو",
       url: "https://www.youtube.com",
     ),
     DoctorMediaModel(
-      title: "متى تحتاج إلى ${_subSpecialization(specialization)}؟",
-      type: "مقال طبى",
-      actionLabel: "قراءة المقال",
+      subject: "متى تحتاج إلى ${_subSpecialization(specialization)}؟",
+      type: "مقال",
       url: "https://www.who.int",
     ),
   ];
@@ -346,11 +328,35 @@ List<String> _medicalInterests(String specialization) => [
       "خطط العلاج طويلة المدى",
     ];
 
-List<String> _professionalExperience(int position, String specialization) => [
-      "${_yearsOfExperience[position]} أعوام خبرة فى $specialization",
-      "أكثر من ${_patientsCounts[position]} حالة تمت متابعتها",
-      "استشارى زائر بـ${_hospitals[(position + 1) % _hospitals.length]}",
-    ];
+List<DoctorExperienceModel> _professionalExperience(
+  int position,
+  String specialization,
+) {
+  final graduation = _graduationYear(position);
+
+  return [
+    DoctorExperienceModel(
+      position: "طبيب مقيم $specialization",
+      workplace: _hospitals[position % _hospitals.length],
+      fromDate: "$graduation-01-01",
+      toDate: "${graduation + 4}-12-31",
+      country: "مصر",
+    ),
+    DoctorExperienceModel(
+      position: "أخصائى $specialization",
+      workplace: _hospitals[(position + 1) % _hospitals.length],
+      fromDate: "${graduation + 5}-01-01",
+      toDate: "${graduation + 11}-12-31",
+      country: "مصر",
+    ),
+    DoctorExperienceModel(
+      position: "${_degrees[position % _degrees.length]} $specialization",
+      workplace: _hospitals[(position + 2) % _hospitals.length],
+      fromDate: "${graduation + 12}-01-01",
+      country: "مصر",
+    ),
+  ];
+}
 
 List<DoctorReviewModel> _reviewsFor(int position) {
   return List.generate(3, (index) {
@@ -362,14 +368,28 @@ List<DoctorReviewModel> _reviewsFor(int position) {
   });
 }
 
+/// بيحوّل "مصر - القاهرة" المخزنة مع الحجز لموديل المكان.
+DoctorLocationModel _locationFromLabel(String label) {
+  final parts = label
+      .split(" - ")
+      .map((part) => part.trim())
+      .where((part) => part.isNotEmpty)
+      .toList();
+  return DoctorLocationModel(
+    country: parts.isNotEmpty ? parts.first : "",
+    city: parts.length > 1 ? parts.last : "",
+  );
+}
+
 DoctorModel _buildDoctor(int position, String specialization) {
   //* الأطباء غير المتاحين أون لاين هما نفسهم اللى مش بيقبلوا حجوزات دلوقتى.
   final isOnline = position % 3 != 2;
 
   return DoctorModel(
+    id: "dummy-doctor-$position",
     name: _doctorNames[position],
-    specialization: specialization,
-    subSpecialization: _subSpecialization(specialization),
+    specialty: specialization,
+    subSpecialty: [_subSpecialization(specialization)],
     degree: _degrees[position % _degrees.length],
     academicTitle: _academicTitles[position % _academicTitles.length],
     hospital: _hospitals[position % _hospitals.length],
@@ -378,7 +398,7 @@ DoctorModel _buildDoctor(int position, String specialization) {
     rating: _ratings[position],
     likesCount: _likesCounts[position],
     commentsCount: _commentsCounts[position],
-    imageUrl: _doctorImageUrls[position],
+    profileImage: _doctorImageUrls[position],
     yearsOfExperience: _yearsOfExperience[position],
     patientsCount: _patientsCounts[position],
     about: _aboutText(position, specialization),
@@ -395,13 +415,9 @@ DoctorModel _buildDoctor(int position, String specialization) {
     awards: _awards(position, specialization),
     mediaAppearances: _mediaAppearances(specialization),
     isOnline: isOnline,
-    isAcceptingBookings: isOnline,
-    nearestAppointmentDate:
-        _nearestAppointmentDates[position % _nearestAppointmentDates.length],
-    nearestAppointmentTime:
-        _nearestAppointmentTimes[position % _nearestAppointmentTimes.length],
-    nearestAppointmentPeriod: _nearestAppointmentPeriods[
-        position % _nearestAppointmentPeriods.length],
+    acceptsBookings: isOnline,
+    nearestAvailableAppointment:
+        _nearestAppointments[position % _nearestAppointments.length],
     reviews: _reviewsFor(position),
   );
 }
@@ -410,7 +426,7 @@ DoctorModel _buildDoctor(int position, String specialization) {
 /// "حجز موعد جديد مع الطبيب" فى تفاصيل السجل يفتح فلو الحجز
 /// لنفس الطبيب مباشرة من غير ما يعدى على البحث.
 /// البيانات المعروضة فى الكارت بتيجى من الحجز نفسه، والتفاصيل الناقصة
-/// بتتولد بنفس منطق البيانات الوهمية لحد ما الـ API يجهز.
+/// بتتولد بنفس منطق البيانات الوهمية لحد ما endpoints الحجوزات تجهز.
 DoctorModel doctorFromBookingInfo(
   BookingDoctorInfo info, {
   int? consultationFee,
@@ -421,18 +437,19 @@ DoctorModel doctorFromBookingInfo(
   final specialization = info.specialization;
 
   return DoctorModel(
+    id: "dummy-booking-doctor-$position",
     name: info.name,
-    specialization: specialization,
-    subSpecialization: _subSpecialization(specialization),
+    specialty: specialization,
+    subSpecialty: [_subSpecialization(specialization)],
     degree: _degrees[position % _degrees.length],
     academicTitle: info.academicTitle,
     hospital: info.hospital,
     isVerified: true,
-    location: info.location,
+    location: _locationFromLabel(info.location),
     rating: rating ?? _ratings[position],
     likesCount: _likesCounts[position],
     commentsCount: commentsCount ?? _commentsCounts[position],
-    imageUrl: info.imageUrl,
+    profileImage: info.imageUrl,
     yearsOfExperience: _yearsOfExperience[position],
     patientsCount: _patientsCounts[position],
     about: _aboutText(position, specialization),
@@ -449,18 +466,15 @@ DoctorModel doctorFromBookingInfo(
     awards: _awards(position, specialization),
     mediaAppearances: _mediaAppearances(specialization),
     isOnline: info.isOnline,
-    isAcceptingBookings: true,
-    nearestAppointmentDate:
-        _nearestAppointmentDates[position % _nearestAppointmentDates.length],
-    nearestAppointmentTime:
-        _nearestAppointmentTimes[position % _nearestAppointmentTimes.length],
-    nearestAppointmentPeriod: _nearestAppointmentPeriods[
-        position % _nearestAppointmentPeriods.length],
+    acceptsBookings: true,
+    nearestAvailableAppointment:
+        _nearestAppointments[position % _nearestAppointments.length],
     reviews: _reviewsFor(position),
   );
 }
 
-/// بترجّع قايمة أطباء وهمية للتخصص المطلوب.
+/// بترجّع قايمة أطباء وهمية للتخصص المطلوب — قايمة الأطباء الحقيقية بقت
+/// من الـ API، ودى فاضلة للاختبارات المحلية بس.
 List<DoctorModel> doctorsForSpecialization(String specialization) {
   final normalizedSpecialization = specialization.replaceAll('\n', ' ');
   final seed = _seedFor(normalizedSpecialization);

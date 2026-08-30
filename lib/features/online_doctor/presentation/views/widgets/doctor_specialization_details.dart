@@ -24,23 +24,28 @@ class DoctorSpecializationDetails extends StatelessWidget {
       child: Column(
         children: [
           _SpecializationRow(
-            iconAsset: doctorSpecializationImage(doctor.specialization),
+            iconAsset: doctorSpecializationImage(doctor.specialty),
             icon: Icons.medical_services_rounded,
             title: "التخصص الرئيسي",
-            value: doctor.specialization,
+            value: doctor.specialty,
           ),
-          const _RowDivider(),
-          _SpecializationRow(
-            icon: Icons.zoom_in_rounded,
-            title: "التخصص الدقيق",
-            value: doctor.subSpecialization,
-          ),
-          const _RowDivider(),
-          _SpecializationRow(
-            icon: Icons.monitor_heart_rounded,
-            title: "الاهتمامات الطبية / السريرية",
-            items: doctor.medicalInterests,
-          ),
+          //* الأقسام الفاضية بتتخفى — الـ API بيرجّع `[]` مش `null`.
+          if (doctor.subSpecialty.isNotEmpty) ...[
+            const _RowDivider(),
+            _SpecializationRow(
+              icon: Icons.zoom_in_rounded,
+              title: "التخصص الدقيق",
+              items: doctor.subSpecialty,
+            ),
+          ],
+          if (doctor.medicalInterests.isNotEmpty) ...[
+            const _RowDivider(),
+            _SpecializationRow(
+              icon: Icons.monitor_heart_rounded,
+              title: "الاهتمامات الطبية / السريرية",
+              items: doctor.medicalInterests,
+            ),
+          ],
         ],
       ),
     );

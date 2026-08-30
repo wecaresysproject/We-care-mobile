@@ -135,6 +135,9 @@ const List<String> _arabicMonths = [
 
 String arabicMonthName(int month) => _arabicMonths[month - 1];
 
+/// اسم اليوم بالعربى — [weekday] زى `DateTime.weekday` (الإثنين = 1).
+String arabicWeekdayName(int weekday) => _arabicWeekdays[weekday - 1];
+
 /// "16 أغسطس 2026" — من غير اسم اليوم.
 String arabicShortDateLabel(DateTime date) =>
     "${date.day} ${arabicMonthName(date.month)} ${date.year}";

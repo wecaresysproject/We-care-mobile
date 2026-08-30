@@ -85,7 +85,8 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
                             onTap: () async {
                               await context.pushNamed(
                                 Routes.doctorsListView,
-                                arguments: specialization["title"] as String,
+                                arguments:
+                                    specialization["identifierName"] as String,
                               );
                             },
                           );

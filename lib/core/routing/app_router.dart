@@ -910,13 +910,15 @@ class AppRouter {
           builder: (_) => ExaminationCallView(booking: booking),
         );
       case Routes.doctorsListView:
-        final specialization = arguments as String? ?? '';
+        final specialtyIdentifier = arguments as String? ?? '';
         return MaterialPageRoute(
-          builder: (_) => DoctorsListView(specialization: specialization),
+          builder: (_) =>
+              DoctorsListView(specialtyIdentifier: specialtyIdentifier),
         );
       case Routes.doctorProfileView:
+        final doctorId = arguments as String;
         return MaterialPageRoute(
-          builder: (_) => DoctorProfileView(doctor: arguments as DoctorModel),
+          builder: (_) => DoctorProfileView(doctorId: doctorId),
         );
       case Routes.bookAppointmentView:
         return MaterialPageRoute(

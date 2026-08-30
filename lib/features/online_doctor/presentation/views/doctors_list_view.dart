@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
+import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
-import 'package:we_care/features/online_doctor/data/models/doctors_dummy_data.dart';
+import 'package:we_care/features/online_doctor/data/models/doctor_summary_model.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/doctors_list_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_card_item.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_sort_dropdown.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_specializations_app_bar.dart';
@@ -13,25 +18,36 @@ import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctors_rating_footnote.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
-class DoctorsListView extends StatefulWidget {
-  const DoctorsListView({super.key, required this.specialization});
+class DoctorsListView extends StatelessWidget {
+  const DoctorsListView({super.key, required this.specialtyIdentifier});
 
-  /// التخصص اللى المستخدم دخل منه — بيتبعت من شاشة تخصصات الأطباء.
-  final String specialization;
+  /// الـ `identifierName` بتاع التخصص اللى المستخدم اختاره من شاشة التخصصات —
+  /// بيتبعت للـ API زى ما هو (مثال: `internalMedicine`).
+  final String specialtyIdentifier;
 
   @override
-  State<DoctorsListView> createState() => _DoctorsListViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<DoctorsListCubit>(
+      create: (_) =>
+          getIt<DoctorsListCubit>()..getDoctorsBySpecialty(specialtyIdentifier),
+      child: const _DoctorsListBody(),
+    );
+  }
 }
 
-class _DoctorsListViewState extends State<DoctorsListView> {
-  final TextEditingController _searchController = TextEditingController();
+class _DoctorsListBody extends StatefulWidget {
+  const _DoctorsListBody();
 
-  late final List<DoctorModel> _allDoctors =
-      doctorsForSpecialization(widget.specialization);
+  @override
+  State<_DoctorsListBody> createState() => _DoctorsListBodyState();
+}
+
+class _DoctorsListBodyState extends State<_DoctorsListBody> {
+  final TextEditingController _searchController = TextEditingController();
 
   String _searchQuery = "";
 
-  /// المعيار المفعّل حاليًا — `null` يعنى الترتيب الافتراضى زى ما جه من الداتا.
+  /// المعيار المفعّل حاليًا — `null` يعنى الترتيب الافتراضى زى ما جه من الـ API.
   DoctorSortField? _sortField;
   DoctorSortDirection _sortDirection = DoctorSortDirection.descending;
 
@@ -41,11 +57,14 @@ class _DoctorsListViewState extends State<DoctorsListView> {
     super.dispose();
   }
 
-  List<DoctorModel> get _visibleDoctors {
+  /// البحث بالاسم والترتيب بيتعملوا محليًا على القايمة اللى جت من الـ API.
+  List<DoctorSummaryModel> _visibleDoctors(
+    List<DoctorSummaryModel> allDoctors,
+  ) {
     final query = _searchQuery.trim();
     final doctors = query.isEmpty
-        ? [..._allDoctors]
-        : _allDoctors.where((doctor) => doctor.name.contains(query)).toList();
+        ? [...allDoctors]
+        : allDoctors.where((doctor) => doctor.name.contains(query)).toList();
 
     final sortField = _sortField;
     if (sortField != null) {
@@ -74,10 +93,50 @@ class _DoctorsListViewState extends State<DoctorsListView> {
     });
   }
 
+  Widget _buildDoctors(BuildContext context, DoctorsListState state) {
+    switch (state.requestStatus) {
+      case RequestStatus.initial:
+      case RequestStatus.loading:
+        return Center(
+          child: CircularProgressIndicator(
+            color: AppColorsManager.mainDarkBlue,
+          ),
+        );
+      case RequestStatus.failure:
+        return ErrorViewWidget(
+          errorMessage: state.errorMessage,
+          onRetry: context.read<DoctorsListCubit>().retry,
+        );
+      case RequestStatus.success:
+        if (state.doctors.isEmpty) {
+          return const _EmptyMessage(
+            "لا يوجد أطباء متاحون في هذا التخصص حاليًا",
+          );
+        }
+        final doctors = _visibleDoctors(state.doctors);
+        if (doctors.isEmpty) {
+          return const _EmptyMessage("لا يوجد طبيب بهذا الاسم");
+        }
+        return ListView.separated(
+          itemCount: doctors.length,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.only(top: 4.h, bottom: 12.h),
+          separatorBuilder: (_, __) => verticalSpacing(16),
+          itemBuilder: (context, index) => DoctorCardItem(
+            doctor: doctors[index],
+            onTap: () async {
+              await context.pushNamed(
+                Routes.doctorProfileView,
+                arguments: doctors[index].id,
+              );
+            },
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final doctors = _visibleDoctors;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -137,33 +196,31 @@ class _DoctorsListViewState extends State<DoctorsListView> {
               ),
               verticalSpacing(16),
               Expanded(
-                child: doctors.isEmpty
-                    ? Center(
-                        child: Text(
-                          "لا يوجد طبيب بهذا الاسم",
-                          style: AppTextStyles.font16BlackSemiBold,
-                        ),
-                      )
-                    : ListView.separated(
-                        itemCount: doctors.length,
-                        physics: const BouncingScrollPhysics(),
-                        padding: EdgeInsets.only(top: 4.h, bottom: 12.h),
-                        separatorBuilder: (_, __) => verticalSpacing(16),
-                        itemBuilder: (context, index) => DoctorCardItem(
-                          doctor: doctors[index],
-                          onTap: () async {
-                            await context.pushNamed(
-                              Routes.doctorProfileView,
-                              arguments: doctors[index],
-                            );
-                          },
-                        ),
-                      ),
+                child: BlocBuilder<DoctorsListCubit, DoctorsListState>(
+                  builder: _buildDoctors,
+                ),
               ),
               const DoctorsRatingFootnote(),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyMessage extends StatelessWidget {
+  const _EmptyMessage(this.message);
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: AppTextStyles.font16BlackSemiBold,
       ),
     );
   }

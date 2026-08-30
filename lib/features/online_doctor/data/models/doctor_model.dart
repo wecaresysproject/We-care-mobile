@@ -1,64 +1,95 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_profile_entries.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_review_model.dart';
+import 'package:we_care/features/online_doctor/data/models/nearest_appointment_model.dart';
 
 part 'doctor_model.g.dart';
 
+/// ملف الطبيب الكامل زى ما بيرجع من `GET /OnlineDoctor/profile?doctorId=` —
+/// بيتعرض فى شاشة "ملف الطبيب" وبيتبعت لفلو الحجز.
 @JsonSerializable()
 class DoctorModel {
+  final String id;
   final String name;
 
-  /// التخصص الرئيسى بالعربى زى ما بيتعرض تحت اسم الطبيب.
-  final String specialization;
+  /// رابط صورة الطبيب — `null` لو مفيش صورة.
+  final String? profileImage;
 
-  /// التخصص الدقيق — مثال: "جراحات الأنف والجيوب الأنفية".
-  final String subSpecialization;
+  /// الطبيب موثّق من إدارة التطبيق.
+  @JsonKey(defaultValue: false)
+  final bool isVerified;
+
+  /// المستخدم الحالى مضيف الطبيب للمفضلة.
+  final bool isFavorite;
+
+  /// الطبيب متاح أون لاين دلوقتى ولا لأ.
+  @JsonKey(defaultValue: false)
+  final bool isOnline;
+
+  /// بيقبل حجوزات حاليًا ولا لأ.
+  @JsonKey(defaultValue: false)
+  final bool acceptsBookings;
+
+  /// التخصص الرئيسى بالعربى زى ما بيتعرض تحت اسم الطبيب — مثال: "أمراض القلب".
+  @JsonKey(defaultValue: '')
+  final String specialty;
+
+  /// التخصصات الدقيقة — مثال: ["القسطرة القلبية", "كهرباء القلب"].
+  final List<String> subSpecialty;
 
   /// الدرجة العلمية — "استشارى" أو "أخصائى".
+  @JsonKey(defaultValue: '')
   final String degree;
 
   /// الدرجة الوظيفية — مثال: "أستاذ مساعد".
+  @JsonKey(defaultValue: '')
   final String academicTitle;
 
   /// جهة العمل — مثال: "مستشفى عين شمس التخصصى".
+  @JsonKey(defaultValue: '')
   final String hospital;
 
-  /// الطبيب موثّق من إدارة التطبيق.
-  final bool isVerified;
+  /// مكان الممارسة — `null` لو مش متسجل.
+  final DoctorLocationModel? location;
 
-  /// مكان الممارسة — مثال: "مصر - القاهرة".
-  final String location;
+  @JsonKey(defaultValue: 0)
+  final int yearsOfExperience;
 
   /// متوسط التقييم من 5 — مثال: 4.8.
+  @JsonKey(defaultValue: 0.0)
   final double rating;
 
+  @JsonKey(defaultValue: 0)
   final int likesCount;
 
+  @JsonKey(defaultValue: 0)
   final int commentsCount;
 
-  /// رابط صورة الطبيب — بيتعرض بـ `CachedNetworkImage`.
-  final String imageUrl;
-
-  final int yearsOfExperience;
+  @JsonKey(defaultValue: 0)
   final int patientsCount;
 
-  /// نبذة "تعرف على الطبيب".
-  final String about;
+  /// أقرب موعد متاح — `null` لو مفيش.
+  final NearestAppointmentModel? nearestAvailableAppointment;
+
+  /// أيام العمل الأسبوعية — مثال: ["السبت", "الثلاثاء"].
+  final List<String> workingDays;
+
+  /// فترات العمل — مثال: ["17:00 - 21:00", "16:00 - 20:00"].
+  final List<String> workingHours;
 
   /// تكلفة الكشف بالجنيه.
+  @JsonKey(defaultValue: 0)
   final int consultationFee;
 
-  /// أيام العمل الأسبوعية — مثال: "الأحد - الثلاثاء - الخميس".
-  final String workingDays;
-
-  /// ساعات العمل — مثال: "من 9:00 ص - 2:00 م".
-  final String workingHours;
+  /// نبذة "تعرف على الطبيب".
+  @JsonKey(defaultValue: '')
+  final String about;
 
   /// التخصص والاهتمامات الطبية.
   final List<String> medicalInterests;
 
   /// الخبرة المهنية.
-  final List<String> professionalExperience;
+  final List<DoctorExperienceModel> professionalExperience;
 
   /// اللغات اللى الطبيب بيتكلمها.
   final List<String> languages;
@@ -81,60 +112,68 @@ class DoctorModel {
   /// ميديا ومقالات.
   final List<DoctorMediaModel> mediaAppearances;
 
-  /// الطبيب متاح أون لاين دلوقتى ولا لأ.
-  final bool isOnline;
-
-  /// بيقبل حجوزات حاليًا ولا لأ.
-  final bool isAcceptingBookings;
-
-  /// أقرب موعد متاح — مثال: "الأحد 26 مايو".
-  final String nearestAppointmentDate;
-
-  /// ميعاد أقرب موعد متاح — مثال: "10:30".
-  final String nearestAppointmentTime;
-
-  /// الفترة — "صباحاً" أو "مساءً".
-  final String nearestAppointmentPeriod;
-
   final List<DoctorReviewModel> reviews;
 
+  /// العيادات الخاصة — لسه مش معروضة فى الـ UI.
+  final List<DoctorPracticeLocationModel> clinics;
+
+  /// المستشفيات والمراكز — لسه مش معروضة فى الـ UI.
+  final List<DoctorPracticeLocationModel> hospitalsCenters;
+
   const DoctorModel({
+    required this.id,
     required this.name,
-    required this.specialization,
-    required this.subSpecialization,
+    required this.specialty,
     required this.degree,
     required this.academicTitle,
     required this.hospital,
     required this.isVerified,
-    required this.location,
+    required this.isOnline,
+    required this.acceptsBookings,
     required this.rating,
     required this.likesCount,
     required this.commentsCount,
-    required this.imageUrl,
     required this.yearsOfExperience,
     required this.patientsCount,
-    required this.about,
     required this.consultationFee,
-    required this.workingDays,
-    required this.workingHours,
-    required this.medicalInterests,
-    required this.professionalExperience,
-    required this.languages,
-    required this.education,
-    required this.certificates,
-    required this.medicalAssociations,
-    required this.research,
-    required this.awards,
-    required this.mediaAppearances,
-    required this.isOnline,
-    required this.isAcceptingBookings,
-    required this.nearestAppointmentDate,
-    required this.nearestAppointmentTime,
-    required this.nearestAppointmentPeriod,
-    required this.reviews,
+    required this.about,
+    this.profileImage,
+    this.isFavorite = false,
+    this.subSpecialty = const [],
+    this.location,
+    this.nearestAvailableAppointment,
+    this.workingDays = const [],
+    this.workingHours = const [],
+    this.medicalInterests = const [],
+    this.professionalExperience = const [],
+    this.languages = const [],
+    this.education = const [],
+    this.certificates = const [],
+    this.medicalAssociations = const [],
+    this.research = const [],
+    this.awards = const [],
+    this.mediaAppearances = const [],
+    this.reviews = const [],
+    this.clinics = const [],
+    this.hospitalsCenters = const [],
   });
 
   factory DoctorModel.fromJson(Map<String, dynamic> json) =>
       _$DoctorModelFromJson(json);
   Map<String, dynamic> toJson() => _$DoctorModelToJson(this);
+
+  /// رابط الصورة للـ `CachedNetworkImage` — فاضى لو مفيش صورة عشان يعرض البديل.
+  String get imageUrl => profileImage ?? '';
+
+  /// "مصر - القاهرة" — فاضى لو المكان مش متسجل.
+  String get locationLabel => location?.label ?? '';
+
+  /// التخصصات الدقيقة فى سطر واحد.
+  String get subSpecialtyLabel => subSpecialty.join(" - ");
+
+  /// "السبت - الثلاثاء - الأحد".
+  String get workingDaysLabel => workingDays.join(" - ");
+
+  /// "17:00 - 21:00 / 16:00 - 20:00".
+  String get workingHoursLabel => workingHours.join(" / ");
 }
