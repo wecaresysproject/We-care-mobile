@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
+import 'package:we_care/features/online_doctor/data/models/doctor_summary_model.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
 /// كارت الطبيب فى شاشة "البحث عن طبيب" — بيانات الطبيب فى البداية،
@@ -16,7 +16,7 @@ class DoctorCardItem extends StatelessWidget {
     this.onTap,
   });
 
-  final DoctorModel doctor;
+  final DoctorSummaryModel doctor;
   final VoidCallback? onTap;
 
   @override
@@ -63,7 +63,7 @@ class DoctorCardItem extends StatelessWidget {
 class _DoctorSummary extends StatelessWidget {
   const _DoctorSummary({required this.doctor});
 
-  final DoctorModel doctor;
+  final DoctorSummaryModel doctor;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +93,7 @@ class _DoctorSummary extends StatelessWidget {
                   ),
                   verticalSpacing(4),
                   Text(
-                    "${doctor.degree} ${doctor.specialization}",
+                    doctor.specialty,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.font14blackWeight400.copyWith(
@@ -104,7 +104,7 @@ class _DoctorSummary extends StatelessWidget {
                   ),
                   verticalSpacing(6),
                   Text(
-                    "${doctor.academicTitle} - ${doctor.hospital}",
+                    doctor.workplace,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.font12blackWeight400.copyWith(
@@ -170,7 +170,7 @@ class _DoctorPhoto extends StatelessWidget {
 class _DoctorStatsRow extends StatelessWidget {
   const _DoctorStatsRow({required this.doctor});
 
-  final DoctorModel doctor;
+  final DoctorSummaryModel doctor;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +242,14 @@ class _StatsDivider extends StatelessWidget {
 class _DoctorAvailability extends StatelessWidget {
   const _DoctorAvailability({required this.doctor});
 
-  final DoctorModel doctor;
+  final DoctorSummaryModel doctor;
+
+  /// "الخميس 27 أغسطس - 04:00 مساءً" — أو رسالة لو مفيش موعد متاح.
+  String get _nearestAppointmentLabel {
+    final appointment = doctor.nearestAvailableAppointment;
+    if (appointment == null) return "لا يوجد موعد متاح حاليًا";
+    return "${appointment.dateLabel} - ${appointment.timeLabel}";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -256,13 +263,13 @@ class _DoctorAvailability extends StatelessWidget {
           _StatusBadge(isOnline: doctor.isOnline),
           verticalSpacing(2),
           _AvailabilityRow(
-            icon: doctor.isAcceptingBookings
+            icon: doctor.acceptsBookings
                 ? Icons.check_circle_rounded
                 : Icons.block_rounded,
-            iconColor: doctor.isAcceptingBookings
+            iconColor: doctor.acceptsBookings
                 ? OnlineDoctorTheme.onlineGreen
                 : OnlineDoctorTheme.offlineRed,
-            label: doctor.isAcceptingBookings
+            label: doctor.acceptsBookings
                 ? "يقبل حجوزات حالياً"
                 : "لا يقبل حجوزات حالياً",
           ),
@@ -276,8 +283,7 @@ class _DoctorAvailability extends StatelessWidget {
           _AvailabilityRow(
             icon: Icons.access_time_rounded,
             iconColor: AppColorsManager.mainDarkBlue,
-            label:
-                "${doctor.nearestAppointmentDate} - ${doctor.nearestAppointmentTime}",
+            label: _nearestAppointmentLabel,
           ),
         ],
       ),

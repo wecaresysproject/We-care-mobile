@@ -52,7 +52,7 @@ class DoctorProfileHeaderCard extends StatelessWidget {
                 ),
                 verticalSpacing(4),
                 Text(
-                  doctor.specialization,
+                  doctor.specialty,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -70,7 +70,7 @@ class DoctorProfileHeaderCard extends StatelessWidget {
                 verticalSpacing(4),
                 _IconLine(
                   icon: Icons.location_on_outlined,
-                  text: doctor.location,
+                  text: doctor.locationLabel,
                 ),
                 verticalSpacing(10),
                 _StatsRow(doctor: doctor),

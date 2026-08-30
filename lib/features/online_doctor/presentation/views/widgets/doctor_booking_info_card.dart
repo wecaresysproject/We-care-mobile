@@ -50,9 +50,9 @@ class DoctorBookingInfoCard extends StatelessWidget {
                   child: _BookingInfoColumn(
                     icon: Icons.access_time_rounded,
                     label: "أقرب موعد متاح",
-                    value: doctor.nearestAppointmentDate,
-                    hint:
-                        "${doctor.nearestAppointmentTime} ${doctor.nearestAppointmentPeriod}",
+                    value: doctor.nearestAvailableAppointment?.dateLabel ??
+                        "لا يوجد موعد متاح",
+                    hint: doctor.nearestAvailableAppointment?.timeLabel,
                   ),
                 ),
                 const _ColumnDivider(),
@@ -60,8 +60,12 @@ class DoctorBookingInfoCard extends StatelessWidget {
                   child: _BookingInfoColumn(
                     icon: Icons.calendar_month_rounded,
                     label: "أيام العمل الأسبوعية",
-                    value: doctor.workingDays,
-                    hint: doctor.workingHours,
+                    value: doctor.workingDaysLabel.isEmpty
+                        ? "غير محدد"
+                        : doctor.workingDaysLabel,
+                    hint: doctor.workingHoursLabel.isEmpty
+                        ? null
+                        : doctor.workingHoursLabel,
                   ),
                 ),
                 const _ColumnDivider(),

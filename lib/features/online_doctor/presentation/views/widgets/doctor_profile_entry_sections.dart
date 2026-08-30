@@ -3,6 +3,15 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_profile_entries.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_entry_tile.dart';
 
+/// بيجمّع الأجزاء غير الفاضية بـ " — " — `null` لو كلها فاضية عشان السطر يتخفى.
+String? _joinNonEmpty(List<String?> parts) {
+  final filled = parts
+      .where((part) => part != null && part.trim().isNotEmpty)
+      .map((part) => part!.trim())
+      .toList();
+  return filled.isEmpty ? null : filled.join(" — ");
+}
+
 /// عمود بيرص عناصر القسم ببعضها بمسافة ثابتة.
 class _EntriesColumn extends StatelessWidget {
   const _EntriesColumn({required this.children});
@@ -38,9 +47,11 @@ class DoctorQualificationsList extends StatelessWidget {
           DoctorProfileEntryTile(
             index: index + 1,
             title: qualifications[index].title,
-            subtitle: "${qualifications[index].institution} — "
-                "${qualifications[index].country}",
-            trailingLine: qualifications[index].year,
+            subtitle: _joinNonEmpty([
+              qualifications[index].institution,
+              qualifications[index].country,
+            ]),
+            trailingLine: _joinNonEmpty([qualifications[index].year]),
           ),
       ],
     );
@@ -61,9 +72,11 @@ class DoctorCertificatesList extends StatelessWidget {
           DoctorProfileEntryTile(
             index: index + 1,
             title: certificates[index].title,
-            subtitle: "${certificates[index].issuer} — "
-                "${certificates[index].country}",
-            trailingLine: certificates[index].year,
+            subtitle: _joinNonEmpty([
+              certificates[index].issuer,
+              certificates[index].country,
+            ]),
+            trailingLine: _joinNonEmpty([certificates[index].year]),
           ),
       ],
     );
@@ -84,9 +97,15 @@ class DoctorMembershipsList extends StatelessWidget {
           DoctorProfileEntryTile(
             index: index + 1,
             title: memberships[index].association,
-            subtitle: "${memberships[index].membershipType} — "
-                "${memberships[index].scope}",
-            trailingLine: "منذ ${memberships[index].sinceYear}",
+            subtitle: _joinNonEmpty([
+              memberships[index].membershipLevel,
+              if (memberships[index].membershipNumber?.trim().isNotEmpty ??
+                  false)
+                "رقم العضوية: ${memberships[index].membershipNumber}",
+            ]),
+            trailingLine: memberships[index].year.trim().isEmpty
+                ? null
+                : "منذ ${memberships[index].year}",
           ),
       ],
     );
@@ -106,9 +125,9 @@ class DoctorResearchList extends StatelessWidget {
         for (final item in research)
           DoctorProfileEntryTile(
             title: item.title,
-            subtitle: "${item.type} — ${item.year}",
-            actionLabel: item.url == null ? null : item.actionLabel,
-            onActionTap: () async => launchExternalUrl(item.url),
+            subtitle: _joinNonEmpty([item.type, item.year]),
+            actionLabel: item.referenceUrl == null ? null : item.actionLabel,
+            onActionTap: () async => launchExternalUrl(item.referenceUrl),
           ),
       ],
     );
@@ -128,8 +147,10 @@ class DoctorAwardsList extends StatelessWidget {
         for (final award in awards)
           DoctorProfileEntryTile(
             title: award.title,
-            subtitle: award.issuer,
-            trailingLine: award.year,
+            subtitle: _joinNonEmpty([award.issuer, award.country]),
+            trailingLine: _joinNonEmpty([award.year]),
+            actionLabel: award.referenceUrl == null ? null : "عرض الجائزة",
+            onActionTap: () async => launchExternalUrl(award.referenceUrl),
           ),
       ],
     );
@@ -148,10 +169,8 @@ class DoctorMediaList extends StatelessWidget {
       children: [
         for (final item in media)
           DoctorProfileEntryTile(
-            title: item.title,
-            subtitle: item.platform == null
-                ? item.type
-                : "${item.type} — ${item.platform}",
+            title: item.subject,
+            subtitle: _joinNonEmpty([item.type]),
             actionLabel: item.url == null ? null : item.actionLabel,
             onActionTap: () async => launchExternalUrl(item.url),
           ),

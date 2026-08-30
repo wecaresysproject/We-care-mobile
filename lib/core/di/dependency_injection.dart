@@ -82,6 +82,10 @@ import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
+import 'package:we_care/features/online_doctor/data/repos/online_doctor_repo.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/doctors_list_cubit.dart';
+import 'package:we_care/features/online_doctor/online_doctor_services.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_data_entry_repo.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
 import 'package:we_care/features/physical_activaty/physical_activaty_data_entry/logic/cubit/physical_activaty_data_entry_cubit.dart';
@@ -395,6 +399,12 @@ void setupAppCubits() {
       getIt<AppSharedRepo>(),
     ),
   );
+  getIt.registerFactory<DoctorsListCubit>(
+    () => DoctorsListCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<DoctorProfileCubit>(
+    () => DoctorProfileCubit(getIt<OnlineDoctorRepo>()),
+  );
   getIt.registerFactory<NutrationViewCubit>(
     () => NutrationViewCubit(
       getIt<NutrationViewRepo>(),
@@ -705,6 +715,11 @@ void setupAppRepos() {
       allergyServices: getIt<AllergyServices>(),
     ),
   );
+  getIt.registerLazySingleton<OnlineDoctorRepo>(
+    () => OnlineDoctorRepo(
+      onlineDoctorServices: getIt<OnlineDoctorServices>(),
+    ),
+  );
   getIt.registerLazySingleton<NutrationDataEntryRepo>(
     () => NutrationDataEntryRepo(
       getIt<NutrationServices>(),
@@ -859,6 +874,11 @@ void setupAppServices() {
   );
   getIt.registerLazySingleton<AllergyServices>(
     () => AllergyServices(
+      dio,
+    ),
+  );
+  getIt.registerLazySingleton<OnlineDoctorServices>(
+    () => OnlineDoctorServices(
       dio,
     ),
   );

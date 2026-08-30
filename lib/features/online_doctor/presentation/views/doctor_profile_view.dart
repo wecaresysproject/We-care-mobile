@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_booking_info_card.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_languages_chips.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_app_bar.dart';
@@ -16,30 +21,39 @@ import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_specialization_details.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
-class DoctorProfileView extends StatefulWidget {
-  const DoctorProfileView({super.key, required this.doctor});
+/// شاشة "ملف الطبيب" — بتجيب البروفايل بالـ [doctorId] الجاى من قايمة الأطباء.
+class DoctorProfileView extends StatelessWidget {
+  const DoctorProfileView({super.key, required this.doctorId});
 
-  final DoctorModel doctor;
+  final String doctorId;
 
   @override
-  State<DoctorProfileView> createState() => _DoctorProfileViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<DoctorProfileCubit>(
+      create: (_) => getIt<DoctorProfileCubit>()..getDoctorProfile(doctorId),
+      child: const _DoctorProfileBody(),
+    );
+  }
 }
 
-class _DoctorProfileViewState extends State<DoctorProfileView> {
-  //! لسه محليّة — هتتربط بالباك إند لما endpoint المفضلة يجهز.
-  bool _isFavorite = false;
+class _DoctorProfileBody extends StatelessWidget {
+  const _DoctorProfileBody();
 
-  DoctorModel get _doctor => widget.doctor;
+  String _shareText(DoctorModel doctor) =>
+      "${doctor.name}\n${doctor.degree} ${doctor.specialty}\n"
+      "${doctor.academicTitle} - ${doctor.hospital}\n${doctor.locationLabel}";
 
-  String get _shareText =>
-      "${_doctor.name}\n${_doctor.degree} ${_doctor.specialization}\n"
-      "${_doctor.academicTitle} - ${_doctor.hospital}\n${_doctor.location}";
-
-  Future<void> _shareDoctorProfile() async {
-    await Share.share(_shareText);
+  Future<void> _shareDoctorProfile(DoctorModel doctor) async {
+    await Share.share(_shareText(doctor));
   }
 
-  Future<void> _showMoreOptions() async {
+  Future<void> _showMoreOptions(
+    BuildContext context,
+    DoctorModel doctor,
+  ) async {
+    final cubit = context.read<DoctorProfileCubit>();
+    final isFavorite = cubit.state.isFavorite;
+
     final action = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.white,
@@ -57,10 +71,10 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
               onTap: () => Navigator.of(context).pop("share"),
             ),
             _MoreOptionTile(
-              icon: _isFavorite
+              icon: isFavorite
                   ? Icons.favorite_rounded
                   : Icons.favorite_border_rounded,
-              title: _isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة",
+              title: isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة",
               onTap: () => Navigator.of(context).pop("favorite"),
             ),
             verticalSpacing(8),
@@ -70,134 +84,186 @@ class _DoctorProfileViewState extends State<DoctorProfileView> {
     );
 
     if (action == "share") {
-      await _shareDoctorProfile();
+      await _shareDoctorProfile(doctor);
     } else if (action == "favorite") {
-      _toggleFavorite();
+      await cubit.toggleFavorite();
     }
   }
 
-  void _toggleFavorite() {
-    setState(() => _isFavorite = !_isFavorite);
-    showSuccess(
-      _isFavorite ? "تمت الإضافة إلى المفضلة" : "تمت الإزالة من المفضلة",
+  Widget _buildContent(BuildContext context, DoctorProfileState state) {
+    final cubit = context.read<DoctorProfileCubit>();
+    final doctor = state.doctor;
+
+    if (state.requestStatus == RequestStatus.failure) {
+      return ErrorViewWidget(
+        errorMessage: state.errorMessage,
+        onRetry: cubit.retry,
+      );
+    }
+    if (doctor == null) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
+      );
+    }
+    return _DoctorProfileContent(
+      doctor: doctor,
+      isFavorite: state.isFavorite,
+      onFavoriteToggled: cubit.toggleFavorite,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 0),
-              child: DoctorProfileAppBar(
-                title: "ملف الطبيب",
-                onSharePressed: _shareDoctorProfile,
-                onMorePressed: _showMoreOptions,
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 12.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    DoctorProfileHeaderCard(
-                      doctor: _doctor,
-                      isFavorite: _isFavorite,
-                      onFavoriteToggled: _toggleFavorite,
-                    ),
-                    verticalSpacing(10),
-                    DoctorBookingInfoCard(doctor: _doctor),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "نبذة عن الطبيب",
-                      icon: Icons.person_rounded,
-                      body: _doctor.about,
-                      initiallyExpanded: true,
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "التخصص والاهتمامات الطبية",
-                      iconAsset: "assets/images/doctor_stethoscope_icon.png",
-                      content: DoctorSpecializationDetails(doctor: _doctor),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "الخبرة المهنية",
-                      icon: Icons.work_rounded,
-                      items: _doctor.professionalExperience,
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "اللغات",
-                      icon: Icons.language_rounded,
-                      content: DoctorLanguagesChips(
-                        languages: _doctor.languages,
-                      ),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "التعليم والمؤهلات",
-                      icon: Icons.school_rounded,
-                      content: DoctorQualificationsList(
-                        qualifications: _doctor.education,
-                      ),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "الدورات والشهادات المهنية",
-                      icon: Icons.assignment_ind_rounded,
-                      content: DoctorCertificatesList(
-                        certificates: _doctor.certificates,
-                      ),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "الجمعيات الطبية",
-                      icon: Icons.groups_rounded,
-                      content: DoctorMembershipsList(
-                        memberships: _doctor.medicalAssociations,
-                      ),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "الأبحاث والرسائل العلمية",
-                      icon: Icons.biotech_rounded,
-                      content: DoctorResearchList(research: _doctor.research),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "الجوائز والتكريمات",
-                      icon: Icons.emoji_events_rounded,
-                      content: DoctorAwardsList(awards: _doctor.awards),
-                    ),
-                    verticalSpacing(10),
-                    DoctorProfileExpandableSection(
-                      title: "ميديا ومقالات",
-                      icon: Icons.menu_book_rounded,
-                      content: DoctorMediaList(
-                        media: _doctor.mediaAppearances,
-                      ),
-                    ),
-                  ],
+    return BlocConsumer<DoctorProfileCubit, DoctorProfileState>(
+      listenWhen: (previous, current) =>
+          previous.favoriteStatus != current.favoriteStatus,
+      listener: (context, state) {
+        if (state.favoriteStatus == RequestStatus.success) {
+          showSuccess(state.favoriteMessage);
+        } else if (state.favoriteStatus == RequestStatus.failure) {
+          showError(state.favoriteMessage);
+        }
+      },
+      builder: (context, state) {
+        final doctor = state.doctor;
+
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 0),
+                  child: DoctorProfileAppBar(
+                    title: "ملف الطبيب",
+                    onSharePressed: doctor == null
+                        ? null
+                        : () => _shareDoctorProfile(doctor),
+                    onMorePressed: doctor == null
+                        ? null
+                        : () => _showMoreOptions(context, doctor),
+                  ),
                 ),
-              ),
+                Expanded(child: _buildContent(context, state)),
+                if (doctor != null)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 10.h),
+                    child: _BookAppointmentButton(
+                      onPressed: () => Navigator.of(context).pushNamed(
+                        Routes.bookAppointmentView,
+                        arguments: doctor,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10.w, 0, 10.w, 10.h),
-              child: _BookAppointmentButton(
-                onPressed: () => Navigator.of(context).pushNamed(
-                  Routes.bookAppointmentView,
-                  arguments: _doctor,
-                ),
-              ),
-            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// محتوى الملف بعد ما البروفايل يوصل — الأقسام الفاضية بتتخفى زى ما الـ API
+/// بيرجّع `[]` مش `null`.
+class _DoctorProfileContent extends StatelessWidget {
+  const _DoctorProfileContent({
+    required this.doctor,
+    required this.isFavorite,
+    required this.onFavoriteToggled,
+  });
+
+  final DoctorModel doctor;
+  final bool isFavorite;
+  final VoidCallback onFavoriteToggled;
+
+  @override
+  Widget build(BuildContext context) {
+    final sections = <Widget>[
+      DoctorProfileHeaderCard(
+        doctor: doctor,
+        isFavorite: isFavorite,
+        onFavoriteToggled: onFavoriteToggled,
+      ),
+      DoctorBookingInfoCard(doctor: doctor),
+      if (doctor.about.trim().isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "نبذة عن الطبيب",
+          icon: Icons.person_rounded,
+          body: doctor.about,
+          initiallyExpanded: true,
+        ),
+      DoctorProfileExpandableSection(
+        title: "التخصص والاهتمامات الطبية",
+        iconAsset: "assets/images/doctor_stethoscope_icon.png",
+        content: DoctorSpecializationDetails(doctor: doctor),
+      ),
+      if (doctor.professionalExperience.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "الخبرة المهنية",
+          icon: Icons.work_rounded,
+          items: [
+            for (final experience in doctor.professionalExperience)
+              experience.label,
           ],
         ),
+      if (doctor.languages.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "اللغات",
+          icon: Icons.language_rounded,
+          content: DoctorLanguagesChips(languages: doctor.languages),
+        ),
+      if (doctor.education.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "التعليم والمؤهلات",
+          icon: Icons.school_rounded,
+          content: DoctorQualificationsList(qualifications: doctor.education),
+        ),
+      if (doctor.certificates.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "الدورات والشهادات المهنية",
+          icon: Icons.assignment_ind_rounded,
+          content: DoctorCertificatesList(certificates: doctor.certificates),
+        ),
+      if (doctor.medicalAssociations.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "الجمعيات الطبية",
+          icon: Icons.groups_rounded,
+          content: DoctorMembershipsList(
+            memberships: doctor.medicalAssociations,
+          ),
+        ),
+      if (doctor.research.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "الأبحاث والرسائل العلمية",
+          icon: Icons.biotech_rounded,
+          content: DoctorResearchList(research: doctor.research),
+        ),
+      if (doctor.awards.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "الجوائز والتكريمات",
+          icon: Icons.emoji_events_rounded,
+          content: DoctorAwardsList(awards: doctor.awards),
+        ),
+      if (doctor.mediaAppearances.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "ميديا ومقالات",
+          icon: Icons.menu_book_rounded,
+          content: DoctorMediaList(media: doctor.mediaAppearances),
+        ),
+    ];
+
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var index = 0; index < sections.length; index++) ...[
+            if (index != 0) verticalSpacing(10),
+            sections[index],
+          ],
+        ],
       ),
     );
   }
