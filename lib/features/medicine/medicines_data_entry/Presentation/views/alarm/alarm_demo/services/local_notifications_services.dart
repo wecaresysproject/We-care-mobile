@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 
@@ -160,6 +162,9 @@ class LocalNotificationService {
 
   static void _navigateBasedOnFcmPayload(
       Map<String, dynamic> bodyJson, String pageRoute) {
+    //* Patient-only destinations: ignore taps while a doctor is signed in.
+    if (currentUserType != UserTypes.patient) return;
+
     AppLogger.debug('🚀 === FCM NAVIGATION ATTEMPT ===');
     AppLogger.debug(
         '🚀 Navigator key available: ${_navigatorKey?.currentState != null}');

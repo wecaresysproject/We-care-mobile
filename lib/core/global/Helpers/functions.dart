@@ -9,10 +9,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/app_strings.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
+import 'package:we_care/core/routing/routes.dart';
 
 ///
 final formatter = NumberFormat.decimalPattern('ar');
@@ -379,6 +383,40 @@ mixin SafeEmitMixin<T> on Cubit<T> {
       emit(state);
     }
   }
+}
+
+//* ---------------- User type & session ----------------
+
+/// The first screen a logged-in user lands on, based on [currentUserType].
+String get homeRouteForCurrentUser => currentUserType == UserTypes.doctor
+    ? Routes.doctorHomeView
+    : Routes.bottomNavBar;
+
+/// Persists [currentUserType]. Call it wherever the auth token is saved, so a
+/// stored token always comes with the account type it belongs to.
+Future<void> saveCurrentUserType() async {
+  await CacheHelper.setData(AuthApiConstants.userTypeKey, currentUserType.name);
+}
+
+/// Restores the saved account type on startup. Falls back to patient, e.g. for
+/// sessions saved before the doctor flow existed.
+Future<void> restoreCurrentUserType() async {
+  final String savedType =
+      await CacheHelper.getString(AuthApiConstants.userTypeKey);
+  currentUserType = UserTypes.values.firstWhere(
+    (type) => type.name == savedType,
+    orElse: () => UserTypes.patient,
+  );
+}
+
+/// Clears the local session after logout: auth token, cached data and the
+/// Dio auth header. [AppStrings.hasRunBefore] is written back so the next
+/// launch isn't treated as a fresh install, which would wipe a new login.
+Future<void> clearUserSession() async {
+  await CacheHelper.clearAllSecuredData();
+  await CacheHelper.clearAllData();
+  await CacheHelper.setData(AppStrings.hasRunBefore, true);
+  DioServices.clearAuthToken();
 }
 
 //* output dd/MM/yyyy from yyyy-MM-ddTHH:mm:ss.SSSSSSZ

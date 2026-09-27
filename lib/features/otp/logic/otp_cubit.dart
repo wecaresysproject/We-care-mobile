@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/features/otp/data/models/resend_otp_request_body.dart';
@@ -28,6 +29,7 @@ class OtpCubit extends Cubit<OtpState> {
     response.when(success: (response) async {
       await CacheHelper.setSecuredString(
           AuthApiConstants.userTokenKey, response.data.token);
+      await saveCurrentUserType();
       emit(state.copyWith(
         message: response.message,
         otpStatus: RequestStatus.success,

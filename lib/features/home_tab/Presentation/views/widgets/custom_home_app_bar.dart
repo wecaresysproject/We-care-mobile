@@ -52,7 +52,7 @@ class HomeCustomAppBarWidget extends StatelessWidget {
                               RequestStatus.success) {
                             if (!context.mounted) return;
                             await context.pushNamedAndRemoveUntil(
-                              Routes.loginView,
+                              Routes.userTypesView,
                               predicate: (route) => false,
                             );
                           } else if (state.logoutRequestStatus ==

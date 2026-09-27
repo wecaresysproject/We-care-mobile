@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="160" viewBox="0 0 200 160">
+  <defs>
+    <linearGradient id="blob" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E1E0F9"/>
+      <stop offset="1" stop-color="#EEEDFC"/>
+    </linearGradient>
+    <linearGradient id="xray" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2F6FD6"/>
+      <stop offset="1" stop-color="#1B4CA8"/>
+    </linearGradient>
+    <linearGradient id="scrub" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#46A0EC"/>
+      <stop offset="1" stop-color="#2B7BD0"/>
+    </linearGradient>
+    <linearGradient id="tube" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7C6CF0"/>
+      <stop offset="1" stop-color="#5140C8"/>
+    </linearGradient>
+    <g id="ribs" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round">
+      <path d="M0 -16 V18"/>
+      <path d="M-2 -10 C-10 -12 -16 -6 -16 2 M2 -10 C10 -12 16 -6 16 2"/>
+      <path d="M-2 -3 C-10 -5 -15 0 -15 7 M2 -3 C10 -5 15 0 15 7"/>
+      <path d="M-2 4 C-9 2 -13 7 -13 12 M2 4 C9 2 13 7 13 12"/>
+      <path d="M-2 11 C-7 10 -10 13 -10 16 M2 11 C7 10 10 13 10 16"/>
+    </g>
+  </defs>
+  <path d="M8 104 C0 64 26 28 70 22 C112 16 164 26 180 62 C192 90 170 106 178 126 C184 140 196 150 200 160 H18 C24 140 12 124 8 104 Z" fill="url(#blob)"/>
+  <circle cx="102" cy="42" r="26" fill="#D6D9F6" opacity="0.8"/>
+  <!-- therapist + patient -->
+  <path d="M84 70 C84 56 92 50 100 50 C108 50 114 56 114 70 Z" fill="url(#scrub)"/>
+  <circle cx="100" cy="38" r="9" fill="#F4C6A4"/>
+  <path d="M91 36 C91 26 109 26 109 36 C104 32 96 32 91 36 Z" fill="#1E4C8A"/>
+  <path d="M106 56 L122 50" stroke="#F4C6A4" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="124" cy="46" r="6" fill="#F4C6A4"/>
+  <path d="M116 70 C116 60 120 54 126 54 C132 54 136 60 136 70 Z" fill="#6FB4EE"/>
+  <path d="M82 70 H140" stroke="#2A5FB0" stroke-width="4" stroke-linecap="round"/>
+  <!-- nurse -->
+  <path d="M12 132 C12 110 24 100 42 100 C60 100 72 110 72 132 Z" fill="url(#scrub)"/>
+  <path d="M34 100 L42 114 L50 100 Z" fill="#E8F2FC"/>
+  <rect x="36" y="88" width="12" height="14" rx="3" fill="#E7AE8A"/>
+  <ellipse cx="42" cy="80" rx="15" ry="17" fill="#F6CBAA"/>
+  <path d="M26 82 C22 64 34 58 42 58 C52 58 62 64 58 82 C56 72 50 68 42 68 C34 68 28 72 26 82 Z" fill="#1E3F7A"/>
+  <path d="M28 64 C28 50 56 50 56 64 C50 60 34 60 28 64 Z" fill="#FFFFFF" stroke="#D0DCEA" stroke-width="1.2"/>
+  <path d="M39.5 53 H44.5 V55.5 H47 V60.5 H44.5 V63 H39.5 V60.5 H37 V55.5 H39.5 Z" transform="translate(0 -1)" fill="#2F7BD6"/>
+  <circle cx="58" cy="118" r="4" fill="#DDEBFA"/>
+  <!-- x-ray top right -->
+  <rect x="140" y="30" width="46" height="54" rx="4" fill="#123C8A"/>
+  <rect x="144" y="34" width="38" height="46" rx="2" fill="url(#xray)"/>
+  <use href="#ribs" transform="translate(163 57) scale(0.85)"/>
+  <!-- x-ray center -->
+  <rect x="82" y="92" width="58" height="62" rx="5" fill="#123C8A"/>
+  <rect x="87" y="97" width="48" height="52" rx="3" fill="url(#xray)"/>
+  <use href="#ribs" transform="translate(111 123) scale(1.05)"/>
+  <!-- test tube -->
+  <rect x="148" y="100" width="20" height="5" rx="2.5" fill="#5140C8"/>
+  <path d="M151 105 H165 V144 C165 152 151 152 151 144 Z" fill="#F4F2FF" stroke="#5140C8" stroke-width="2.5"/>
+  <path d="M152.3 122 H163.7 V144 C163.7 150.5 152.3 150.5 152.3 144 Z" fill="url(#tube)"/>
+</svg>

@@ -4,7 +4,16 @@
       "Bash(pkill -9 -f \"dart run repro_ab_tablehelper.dart\")",
       "Bash(git status *)",
       "Bash(python3 -)",
-      "Bash(git switch *)"
+      "Bash(git switch *)",
+      "Bash(find ~/.pub-cache/hosted/pub.dev -maxdepth 1 -name \"pdf-*\" -o -maxdepth 1 -name \"barcode-*\" | head)",
+      "Read(//Users/kareemabdeen1/.pub-cache/hosted/pub.dev/**)",
+      "Bash(grep -n -A1 \"pw.Text\\($\" lib/features/my_medical_reports/logic/medical_report_pdf_generator.dart)",
+      "Bash(grep -v \"^--$\")",
+      "Bash(flutter test *)",
+      "Bash(awk 'NR>=240 && NR<=365 {printf \"%d\\\\t%s\\\\n\", NR, $0}' /Users/kareemabdeen1/.pub-cache/hosted/pub.dev/bidi-2.0.13/lib/src/paragraph.dart)",
+      "Bash(awk 'NR>=880 && NR<=960 {printf \"%d\\\\t%s\\\\n\", NR, $0}' /Users/kareemabdeen1/.pub-cache/hosted/pub.dev/pdf-3.11.3/lib/src/widgets/text.dart)",
+      "Bash(awk 'NR>=670 && NR<=760 {printf \"%d\\\\t%s\\\\n\",NR,$0}' lib/features/my_medical_reports/logic/medical_report_pdf_generator.dart)",
+      "Bash(awk 'NR>=1240 && NR<=1320 {printf \"%d\\\\t%s\\\\n\",NR,$0}' lib/features/my_medical_reports/logic/medical_report_pdf_generator.dart)"
     ]
   }
 }

@@ -1,10 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/Services/fcm_token_manager.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/shared_repo.dart';
-import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
 
 import 'home_state.dart';
@@ -106,16 +105,11 @@ class HomeCubit extends Cubit<HomeState> {
 
     result.when(
       success: (_) async {
-        // 1. Clear all secure storage (auth token + FCM cached token)
-        await CacheHelper.clearAllSecuredData();
+        // 1. Clear the local session: secure storage (auth token + FCM cached
+        //    token), SharedPreferences and the live Dio auth header
+        await clearUserSession();
 
-        // 2. Clear SharedPreferences (user flags / preferences)
-        await CacheHelper.clearAllData();
-
-        // 3. Remove Authorization header from live Dio instance
-        DioServices.clearAuthToken();
-
-        // 4. Stop FCM token refresh listener
+        // 2. Stop FCM token refresh listener
         await _fcmTokenManager.clearCachedToken();
 
         AppLogger.info('HomeCubit: Logout cleanup completed successfully');

@@ -773,6 +773,2876 @@ class S {
   String get no {
     return Intl.message('No', name: 'no', desc: '', args: []);
   }
+
+  /// `Medical File`
+  String get medicalFileTab {
+    return Intl.message(
+      'Medical File',
+      name: 'medicalFileTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medicine Interaction`
+  String get medicineInteractionTab {
+    return Intl.message(
+      'Medicine Interaction',
+      name: 'medicineInteractionTab',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting`
+  String get waitingLabel {
+    return Intl.message('Waiting', name: 'waitingLabel', desc: '', args: []);
+  }
+
+  /// `Follow-ups`
+  String get followUpsLabel {
+    return Intl.message(
+      'Follow-ups',
+      name: 'followUpsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current`
+  String get currentBookingsLabelLine1 {
+    return Intl.message(
+      'Current',
+      name: 'currentBookingsLabelLine1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bookings`
+  String get currentBookingsLabelLine2 {
+    return Intl.message(
+      'Bookings',
+      name: 'currentBookingsLabelLine2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allowed`
+  String get allowedBookingsLabelLine1 {
+    return Intl.message(
+      'Allowed',
+      name: 'allowedBookingsLabelLine1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bookings`
+  String get allowedBookingsLabelLine2 {
+    return Intl.message(
+      'Bookings',
+      name: 'allowedBookingsLabelLine2',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data Completion`
+  String get dataCompletionLabel {
+    return Intl.message(
+      'Data Completion',
+      name: 'dataCompletionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Achieved`
+  String get achievedLabel {
+    return Intl.message('Achieved', name: 'achievedLabel', desc: '', args: []);
+  }
+
+  /// `Monthly Target Examinations`
+  String get monthlyTargetExaminationsLabel {
+    return Intl.message(
+      'Monthly Target Examinations',
+      name: 'monthlyTargetExaminationsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Examinations`
+  String get monthlyExaminationsSectionTitle {
+    return Intl.message(
+      'Monthly Examinations',
+      name: 'monthlyExaminationsSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Target`
+  String get monthlyTargetLabel {
+    return Intl.message(
+      'Target',
+      name: 'monthlyTargetLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exams out of {total}`
+  String examinationsOutOfTotalLabel(Object total) {
+    return Intl.message(
+      'Exams out of $total',
+      name: 'examinationsOutOfTotalLabel',
+      desc: '',
+      args: [total],
+    );
+  }
+
+  /// `Achievement rate {rate}%`
+  String achievementRateLabel(Object rate) {
+    return Intl.message(
+      'Achievement rate $rate%',
+      name: 'achievementRateLabel',
+      desc: '',
+      args: [rate],
+    );
+  }
+
+  /// `Appearances`
+  String get appearancesLabel {
+    return Intl.message(
+      'Appearances',
+      name: 'appearancesLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Shares`
+  String get sharesLabel {
+    return Intl.message('Shares', name: 'sharesLabel', desc: '', args: []);
+  }
+
+  /// `Watches`
+  String get watchesLabel {
+    return Intl.message('Watches', name: 'watchesLabel', desc: '', args: []);
+  }
+
+  /// `Per Month`
+  String get perMonthLabel {
+    return Intl.message('Per Month', name: 'perMonthLabel', desc: '', args: []);
+  }
+
+  /// `Per Year`
+  String get perYearLabel {
+    return Intl.message('Per Year', name: 'perYearLabel', desc: '', args: []);
+  }
+
+  /// `Edit Examination Value`
+  String get editExaminationValueAction {
+    return Intl.message(
+      'Edit Examination Value',
+      name: 'editExaminationValueAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate Online Session`
+  String get activateOnlineSessionAction {
+    return Intl.message(
+      'Activate Online Session',
+      name: 'activateOnlineSessionAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Basic Data`
+  String get basicDataAction {
+    return Intl.message(
+      'Basic Data',
+      name: 'basicDataAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Message to Doctor`
+  String get messageToDoctorAction {
+    return Intl.message(
+      'Message to Doctor',
+      name: 'messageToDoctorAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient Files`
+  String get patientFilesAction {
+    return Intl.message(
+      'Patient Files',
+      name: 'patientFilesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Exam Statistics`
+  String get onlineExamStatsAction {
+    return Intl.message(
+      'Online Exam Statistics',
+      name: 'onlineExamStatsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Comments`
+  String get commentsTitle {
+    return Intl.message('Comments', name: 'commentsTitle', desc: '', args: []);
+  }
+
+  /// `View More`
+  String get viewMore {
+    return Intl.message('View More', name: 'viewMore', desc: '', args: []);
+  }
+
+  /// `Raters`
+  String get ratersLabel {
+    return Intl.message('Raters', name: 'ratersLabel', desc: '', args: []);
+  }
+
+  /// `Bookings`
+  String get bookingsTitle {
+    return Intl.message('Bookings', name: 'bookingsTitle', desc: '', args: []);
+  }
+
+  /// `Manage today's appointments and waiting patients`
+  String get bookingsSubtitle {
+    return Intl.message(
+      'Manage today\'s appointments and waiting patients',
+      name: 'bookingsSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Today's Appointments`
+  String get todayAppointmentsTitle {
+    return Intl.message(
+      'Today\'s Appointments',
+      name: 'todayAppointmentsTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Waiting List`
+  String get waitingListTitle {
+    return Intl.message(
+      'Waiting List',
+      name: 'waitingListTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count} patients`
+  String patientsCountLabel(Object count) {
+    return Intl.message(
+      '$count patients',
+      name: 'patientsCountLabel',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Exam`
+  String get examinationBadgeLabel {
+    return Intl.message(
+      'Exam',
+      name: 'examinationBadgeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consultation`
+  String get consultationBadgeLabel {
+    return Intl.message(
+      'Consultation',
+      name: 'consultationBadgeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time has come`
+  String get appointmentDueLabel {
+    return Intl.message(
+      'Time has come',
+      name: 'appointmentDueLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{minutes} min remaining`
+  String minutesRemainingLabel(Object minutes) {
+    return Intl.message(
+      '$minutes min remaining',
+      name: 'minutesRemainingLabel',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `{minutes} min late`
+  String minutesLateLabel(Object minutes) {
+    return Intl.message(
+      '$minutes min late',
+      name: 'minutesLateLabel',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `{minutes} min ago`
+  String minutesAgoLabel(Object minutes) {
+    return Intl.message(
+      '$minutes min ago',
+      name: 'minutesAgoLabel',
+      desc: '',
+      args: [minutes],
+    );
+  }
+
+  /// `Allow Entry`
+  String get allowEntryAction {
+    return Intl.message(
+      'Allow Entry',
+      name: 'allowEntryAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accept`
+  String get acceptAction {
+    return Intl.message('Accept', name: 'acceptAction', desc: '', args: []);
+  }
+
+  /// `Reject`
+  String get rejectAction {
+    return Intl.message('Reject', name: 'rejectAction', desc: '', args: []);
+  }
+
+  /// `Tap Allow Entry when you're ready to receive the patient`
+  String get todayInfoBannerText {
+    return Intl.message(
+      'Tap Allow Entry when you\'re ready to receive the patient',
+      name: 'todayInfoBannerText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accepting a patient adds them to today's appointments, so you can allow them in when ready`
+  String get waitingInfoBannerText {
+    return Intl.message(
+      'Accepting a patient adds them to today\'s appointments, so you can allow them in when ready',
+      name: 'waitingInfoBannerText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Examination in progress`
+  String get examinationInProgressLabel {
+    return Intl.message(
+      'Examination in progress',
+      name: 'examinationInProgressLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Microphone`
+  String get microphoneAction {
+    return Intl.message(
+      'Microphone',
+      name: 'microphoneAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get cameraAction {
+    return Intl.message('Camera', name: 'cameraAction', desc: '', args: []);
+  }
+
+  /// `End Examination`
+  String get endExaminationAction {
+    return Intl.message(
+      'End Examination',
+      name: 'endExaminationAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Speaker`
+  String get speakerAction {
+    return Intl.message('Speaker', name: 'speakerAction', desc: '', args: []);
+  }
+
+  /// `All data is encrypted and secure`
+  String get encryptedDataNoticeText {
+    return Intl.message(
+      'All data is encrypted and secure',
+      name: 'encryptedDataNoticeText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Medicine Approval`
+  String get newMedicineApprovalAction {
+    return Intl.message(
+      'New Medicine Approval',
+      name: 'newMedicineApprovalAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Medicines Approval`
+  String get myMedicinesApprovalAction {
+    return Intl.message(
+      'My Medicines Approval',
+      name: 'myMedicinesApprovalAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prepare Medical Report`
+  String get prepareMedicalReportAction {
+    return Intl.message(
+      'Prepare Medical Report',
+      name: 'prepareMedicalReportAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical File`
+  String get medicalFileAction {
+    return Intl.message(
+      'Medical File',
+      name: 'medicalFileAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Prescription`
+  String get prescriptionAction {
+    return Intl.message(
+      'Prescription',
+      name: 'prescriptionAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Basic Data`
+  String get basicDataTitle {
+    return Intl.message(
+      'Basic Data',
+      name: 'basicDataTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank Information`
+  String get bankInfoAction {
+    return Intl.message(
+      'Bank Information',
+      name: 'bankInfoAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Specialty`
+  String get medicalSpecialtyAction {
+    return Intl.message(
+      'Medical Specialty',
+      name: 'medicalSpecialtyAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Basic Data`
+  String get basicDataMenuAction {
+    return Intl.message(
+      'Basic Data',
+      name: 'basicDataMenuAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Association Membership`
+  String get membershipAction {
+    return Intl.message(
+      'Medical Association Membership',
+      name: 'membershipAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Professional Experience`
+  String get experienceAction {
+    return Intl.message(
+      'Professional Experience',
+      name: 'experienceAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awards & Honors`
+  String get awardsAction {
+    return Intl.message(
+      'Awards & Honors',
+      name: 'awardsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legal References`
+  String get legalReferencesAction {
+    return Intl.message(
+      'Legal References',
+      name: 'legalReferencesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Research & Publications`
+  String get researchAndMessagesAction {
+    return Intl.message(
+      'Research & Publications',
+      name: 'researchAndMessagesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Booking & Contact`
+  String get bookingAndContactAction {
+    return Intl.message(
+      'Booking & Contact',
+      name: 'bookingAndContactAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Booking Settings`
+  String get bookingSettingsAction {
+    return Intl.message(
+      'Booking Settings',
+      name: 'bookingSettingsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Service Prices`
+  String get servicePricesAction {
+    return Intl.message(
+      'Service Prices',
+      name: 'servicePricesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Examination Target`
+  String get monthlyExaminationTargetAction {
+    return Intl.message(
+      'Monthly Examination Target',
+      name: 'monthlyExaminationTargetAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Certificates`
+  String get certificatesAction {
+    return Intl.message(
+      'Certificates',
+      name: 'certificatesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Professional Licenses`
+  String get professionalLicensesAction {
+    return Intl.message(
+      'Professional Licenses',
+      name: 'professionalLicensesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Media & Articles`
+  String get mediaAndArticlesAction {
+    return Intl.message(
+      'Media & Articles',
+      name: 'mediaAndArticlesAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Statements`
+  String get accountStatementsAction {
+    return Intl.message(
+      'Account Statements',
+      name: 'accountStatementsAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logoutAction {
+    return Intl.message('Logout', name: 'logoutAction', desc: '', args: []);
+  }
+
+  /// `Manage Your Medical Work Easily`
+  String get manageMedicalWorkEasilyTitle {
+    return Intl.message(
+      'Manage Your Medical Work Easily',
+      name: 'manageMedicalWorkEasilyTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Everything You Need in One Place`
+  String get everythingInOnePlaceSubtitle {
+    return Intl.message(
+      'Everything You Need in One Place',
+      name: 'everythingInOnePlaceSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Photo`
+  String get basicDataFormPhotoLabel {
+    return Intl.message(
+      'Photo',
+      name: 'basicDataFormPhotoLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name`
+  String get basicDataFormNameLabel {
+    return Intl.message(
+      'Name',
+      name: 'basicDataFormNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Father's Name`
+  String get basicDataFormFatherNameLabel {
+    return Intl.message(
+      'Father\'s Name',
+      name: 'basicDataFormFatherNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Family Name`
+  String get basicDataFormFamilyNameLabel {
+    return Intl.message(
+      'Family Name',
+      name: 'basicDataFormFamilyNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your name`
+  String get basicDataFormEnterName {
+    return Intl.message(
+      'Enter your name',
+      name: 'basicDataFormEnterName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Job Grade`
+  String get basicDataFormJobGradeLabel {
+    return Intl.message(
+      'Job Grade',
+      name: 'basicDataFormJobGradeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your job grade`
+  String get basicDataFormChooseJobGrade {
+    return Intl.message(
+      'Choose your job grade',
+      name: 'basicDataFormChooseJobGrade',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Academic Degree`
+  String get basicDataFormAcademicDegreeLabel {
+    return Intl.message(
+      'Academic Degree',
+      name: 'basicDataFormAcademicDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your academic degree`
+  String get basicDataFormChooseAcademicDegree {
+    return Intl.message(
+      'Choose your academic degree',
+      name: 'basicDataFormChooseAcademicDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gender`
+  String get basicDataFormGenderLabel {
+    return Intl.message(
+      'Gender',
+      name: 'basicDataFormGenderLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Male`
+  String get basicDataFormMale {
+    return Intl.message('Male', name: 'basicDataFormMale', desc: '', args: []);
+  }
+
+  /// `Female`
+  String get basicDataFormFemale {
+    return Intl.message(
+      'Female',
+      name: 'basicDataFormFemale',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date of Birth`
+  String get basicDataFormBirthDateLabel {
+    return Intl.message(
+      'Date of Birth',
+      name: 'basicDataFormBirthDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day / Month / Year`
+  String get basicDataFormBirthDatePlaceholder {
+    return Intl.message(
+      'Day / Month / Year',
+      name: 'basicDataFormBirthDatePlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get basicDataFormCountryLabel {
+    return Intl.message(
+      'Country',
+      name: 'basicDataFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get basicDataFormChooseCountry {
+    return Intl.message(
+      'Choose',
+      name: 'basicDataFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Governorate`
+  String get basicDataFormGovernorateLabel {
+    return Intl.message(
+      'Governorate',
+      name: 'basicDataFormGovernorateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get basicDataFormChooseGovernorate {
+    return Intl.message(
+      'Choose',
+      name: 'basicDataFormChooseGovernorate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `City`
+  String get basicDataFormCityLabel {
+    return Intl.message(
+      'City',
+      name: 'basicDataFormCityLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get basicDataFormChooseCity {
+    return Intl.message(
+      'Choose',
+      name: 'basicDataFormChooseCity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Professional Mobile Number`
+  String get basicDataFormProfessionalMobileLabel {
+    return Intl.message(
+      'Professional Mobile Number',
+      name: 'basicDataFormProfessionalMobileLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App Contact Mobile Number`
+  String get basicDataFormContactMobileLabel {
+    return Intl.message(
+      'App Contact Mobile Number',
+      name: 'basicDataFormContactMobileLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID / Passport Number`
+  String get basicDataFormNationalIdLabel {
+    return Intl.message(
+      'National ID / Passport Number',
+      name: 'basicDataFormNationalIdLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your national ID number`
+  String get basicDataFormEnterNationalId {
+    return Intl.message(
+      'Enter your national ID number',
+      name: 'basicDataFormEnterNationalId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID / Passport Photo`
+  String get basicDataFormNationalIdPhotoLabel {
+    return Intl.message(
+      'National ID / Passport Photo',
+      name: 'basicDataFormNationalIdPhotoLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Spoken Languages`
+  String get basicDataFormLanguagesLabel {
+    return Intl.message(
+      'Spoken Languages',
+      name: 'basicDataFormLanguagesLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose languages`
+  String get basicDataFormChooseLanguages {
+    return Intl.message(
+      'Choose languages',
+      name: 'basicDataFormChooseLanguages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search for a language`
+  String get basicDataFormSearchLanguages {
+    return Intl.message(
+      'Search for a language',
+      name: 'basicDataFormSearchLanguages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Short Bio`
+  String get basicDataFormBioLabel {
+    return Intl.message(
+      'Short Bio',
+      name: 'basicDataFormBioLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Briefly write your bio`
+  String get basicDataFormEnterBio {
+    return Intl.message(
+      'Briefly write your bio',
+      name: 'basicDataFormEnterBio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count}/500 characters`
+  String basicDataFormBioCharCount(int count) {
+    return Intl.message(
+      '$count/500 characters',
+      name: 'basicDataFormBioCharCount',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Submit`
+  String get basicDataFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'basicDataFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Main Specialty`
+  String get medicalSpecialtyFormMainSpecialtyLabel {
+    return Intl.message(
+      'Main Specialty',
+      name: 'medicalSpecialtyFormMainSpecialtyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your main specialty`
+  String get medicalSpecialtyFormChooseMainSpecialty {
+    return Intl.message(
+      'Choose your main specialty',
+      name: 'medicalSpecialtyFormChooseMainSpecialty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sub-specialty`
+  String get medicalSpecialtyFormSubSpecialtyLabel {
+    return Intl.message(
+      'Sub-specialty',
+      name: 'medicalSpecialtyFormSubSpecialtyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your sub-specialty`
+  String get medicalSpecialtyFormEnterSubSpecialty {
+    return Intl.message(
+      'Enter your sub-specialty',
+      name: 'medicalSpecialtyFormEnterSubSpecialty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clinical / Medical Interests`
+  String get medicalSpecialtyFormInterestsLabel {
+    return Intl.message(
+      'Clinical / Medical Interests',
+      name: 'medicalSpecialtyFormInterestsLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your clinical / medical interests`
+  String get medicalSpecialtyFormEnterInterests {
+    return Intl.message(
+      'Enter your clinical / medical interests',
+      name: 'medicalSpecialtyFormEnterInterests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country Name`
+  String get bankInfoFormCountryLabel {
+    return Intl.message(
+      'Country Name',
+      name: 'bankInfoFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose`
+  String get bankInfoFormChooseCountry {
+    return Intl.message(
+      'Choose',
+      name: 'bankInfoFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User Name`
+  String get bankInfoFormUserNameLabel {
+    return Intl.message(
+      'User Name',
+      name: 'bankInfoFormUserNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the user name`
+  String get bankInfoFormEnterUserName {
+    return Intl.message(
+      'Enter the user name',
+      name: 'bankInfoFormEnterUserName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bank Name`
+  String get bankInfoFormBankNameLabel {
+    return Intl.message(
+      'Bank Name',
+      name: 'bankInfoFormBankNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the bank name`
+  String get bankInfoFormEnterBankName {
+    return Intl.message(
+      'Enter the bank name',
+      name: 'bankInfoFormEnterBankName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Branch`
+  String get bankInfoFormBranchNameLabel {
+    return Intl.message(
+      'Branch',
+      name: 'bankInfoFormBranchNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the branch name`
+  String get bankInfoFormEnterBranchName {
+    return Intl.message(
+      'Enter the branch name',
+      name: 'bankInfoFormEnterBranchName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Account Number`
+  String get bankInfoFormAccountNumberLabel {
+    return Intl.message(
+      'Account Number',
+      name: 'bankInfoFormAccountNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the account number`
+  String get bankInfoFormEnterAccountNumber {
+    return Intl.message(
+      'Enter the account number',
+      name: 'bankInfoFormEnterAccountNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IBAN`
+  String get bankInfoFormIbanLabel {
+    return Intl.message(
+      'IBAN',
+      name: 'bankInfoFormIbanLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the IBAN number`
+  String get bankInfoFormEnterIban {
+    return Intl.message(
+      'Enter the IBAN number',
+      name: 'bankInfoFormEnterIban',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another bank account`
+  String get bankInfoFormAddAnotherAccountAction {
+    return Intl.message(
+      'Add another bank account',
+      name: 'bankInfoFormAddAnotherAccountAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get bankInfoFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'bankInfoFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Granting Body`
+  String get certificatesFormGrantingBodyLabel {
+    return Intl.message(
+      'Granting Body',
+      name: 'certificatesFormGrantingBodyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the granting body name`
+  String get certificatesFormEnterGrantingBody {
+    return Intl.message(
+      'Enter the granting body name',
+      name: 'certificatesFormEnterGrantingBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get certificatesFormCountryLabel {
+    return Intl.message(
+      'Country',
+      name: 'certificatesFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the country`
+  String get certificatesFormChooseCountry {
+    return Intl.message(
+      'Choose the country',
+      name: 'certificatesFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date Obtained`
+  String get certificatesFormObtainedDateLabel {
+    return Intl.message(
+      'Date Obtained',
+      name: 'certificatesFormObtainedDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the date you obtained the certificate`
+  String get certificatesFormChooseObtainedDate {
+    return Intl.message(
+      'Enter the date you obtained the certificate',
+      name: 'certificatesFormChooseObtainedDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get certificatesFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'certificatesFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bachelor's Degree`
+  String get certificatesFormBachelorSectionTitle {
+    return Intl.message(
+      'Bachelor\'s Degree',
+      name: 'certificatesFormBachelorSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bachelor's Degree`
+  String get certificatesFormBachelorDegreeLabel {
+    return Intl.message(
+      'Bachelor\'s Degree',
+      name: 'certificatesFormBachelorDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the degree`
+  String get certificatesFormChooseBachelorDegree {
+    return Intl.message(
+      'Choose the degree',
+      name: 'certificatesFormChooseBachelorDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another bachelor's degree if available`
+  String get certificatesFormAddAnotherBachelorAction {
+    return Intl.message(
+      'Add another bachelor\'s degree if available',
+      name: 'certificatesFormAddAnotherBachelorAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diploma`
+  String get certificatesFormDiplomaSectionTitle {
+    return Intl.message(
+      'Diploma',
+      name: 'certificatesFormDiplomaSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diploma Degree`
+  String get certificatesFormDiplomaDegreeLabel {
+    return Intl.message(
+      'Diploma Degree',
+      name: 'certificatesFormDiplomaDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the degree`
+  String get certificatesFormChooseDiplomaDegree {
+    return Intl.message(
+      'Choose the degree',
+      name: 'certificatesFormChooseDiplomaDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another diploma if available`
+  String get certificatesFormAddAnotherDiplomaAction {
+    return Intl.message(
+      'Add another diploma if available',
+      name: 'certificatesFormAddAnotherDiplomaAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master's Degree`
+  String get certificatesFormMasterSectionTitle {
+    return Intl.message(
+      'Master\'s Degree',
+      name: 'certificatesFormMasterSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Master's Degree`
+  String get certificatesFormMasterDegreeLabel {
+    return Intl.message(
+      'Master\'s Degree',
+      name: 'certificatesFormMasterDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the degree`
+  String get certificatesFormChooseMasterDegree {
+    return Intl.message(
+      'Choose the degree',
+      name: 'certificatesFormChooseMasterDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another master's degree if available`
+  String get certificatesFormAddAnotherMasterAction {
+    return Intl.message(
+      'Add another master\'s degree if available',
+      name: 'certificatesFormAddAnotherMasterAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctorate`
+  String get certificatesFormDoctorateSectionTitle {
+    return Intl.message(
+      'Doctorate',
+      name: 'certificatesFormDoctorateSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctorate Degree`
+  String get certificatesFormDoctorateDegreeLabel {
+    return Intl.message(
+      'Doctorate Degree',
+      name: 'certificatesFormDoctorateDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the degree`
+  String get certificatesFormChooseDoctorateDegree {
+    return Intl.message(
+      'Choose the degree',
+      name: 'certificatesFormChooseDoctorateDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another doctorate if available`
+  String get certificatesFormAddAnotherDoctorateAction {
+    return Intl.message(
+      'Add another doctorate if available',
+      name: 'certificatesFormAddAnotherDoctorateAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fellowship`
+  String get certificatesFormFellowshipSectionTitle {
+    return Intl.message(
+      'Fellowship',
+      name: 'certificatesFormFellowshipSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fellowship Degree`
+  String get certificatesFormFellowshipDegreeLabel {
+    return Intl.message(
+      'Fellowship Degree',
+      name: 'certificatesFormFellowshipDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the degree`
+  String get certificatesFormChooseFellowshipDegree {
+    return Intl.message(
+      'Choose the degree',
+      name: 'certificatesFormChooseFellowshipDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another fellowship if available`
+  String get certificatesFormAddAnotherFellowshipAction {
+    return Intl.message(
+      'Add another fellowship if available',
+      name: 'certificatesFormAddAnotherFellowshipAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Board Certifications / Professional Courses`
+  String get certificatesFormBoardCertificationSectionTitle {
+    return Intl.message(
+      'Board Certifications / Professional Courses',
+      name: 'certificatesFormBoardCertificationSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Course Name / Professional Certificate`
+  String get certificatesFormBoardCertificationDegreeLabel {
+    return Intl.message(
+      'Course Name / Professional Certificate',
+      name: 'certificatesFormBoardCertificationDegreeLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the course / specialized certificate name`
+  String get certificatesFormEnterBoardCertificationDegree {
+    return Intl.message(
+      'Enter the course / specialized certificate name',
+      name: 'certificatesFormEnterBoardCertificationDegree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another course / certificate if available`
+  String get certificatesFormAddAnotherBoardCertificationAction {
+    return Intl.message(
+      'Add another course / certificate if available',
+      name: 'certificatesFormAddAnotherBoardCertificationAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Media & Articles`
+  String get mediaArticlesFormSectionTitle {
+    return Intl.message(
+      'Media & Articles',
+      name: 'mediaArticlesFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Title`
+  String get mediaArticlesFormTitleLabel {
+    return Intl.message(
+      'Title',
+      name: 'mediaArticlesFormTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the title`
+  String get mediaArticlesFormEnterTitle {
+    return Intl.message(
+      'Enter the title',
+      name: 'mediaArticlesFormEnterTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subject`
+  String get mediaArticlesFormSubjectLabel {
+    return Intl.message(
+      'Subject',
+      name: 'mediaArticlesFormSubjectLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the subject`
+  String get mediaArticlesFormEnterSubject {
+    return Intl.message(
+      'Enter the subject',
+      name: 'mediaArticlesFormEnterSubject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Media & Articles Link`
+  String get mediaArticlesFormLinkLabel {
+    return Intl.message(
+      'Media & Articles Link',
+      name: 'mediaArticlesFormLinkLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the media/articles link`
+  String get mediaArticlesFormEnterLink {
+    return Intl.message(
+      'Enter the media/articles link',
+      name: 'mediaArticlesFormEnterLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another if available`
+  String get mediaArticlesFormAddAnotherAction {
+    return Intl.message(
+      'Add another if available',
+      name: 'mediaArticlesFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get mediaArticlesFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'mediaArticlesFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Research & Papers`
+  String get researchAndPapersFormSectionTitle {
+    return Intl.message(
+      'Research & Papers',
+      name: 'researchAndPapersFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Research & Papers`
+  String get researchAndPapersFormTitleLabel {
+    return Intl.message(
+      'Your Research & Papers',
+      name: 'researchAndPapersFormTitleLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your research & papers`
+  String get researchAndPapersFormEnterTitle {
+    return Intl.message(
+      'Enter your research & papers',
+      name: 'researchAndPapersFormEnterTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get researchAndPapersFormYearLabel {
+    return Intl.message(
+      'Year',
+      name: 'researchAndPapersFormYearLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the year`
+  String get researchAndPapersFormEnterYear {
+    return Intl.message(
+      'Enter the year',
+      name: 'researchAndPapersFormEnterYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Research Link / DOI / PMID`
+  String get researchAndPapersFormLinkLabel {
+    return Intl.message(
+      'Research Link / DOI / PMID',
+      name: 'researchAndPapersFormLinkLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the research link or Digital Object Identifier`
+  String get researchAndPapersFormEnterLink {
+    return Intl.message(
+      'Enter the research link or Digital Object Identifier',
+      name: 'researchAndPapersFormEnterLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another research if available`
+  String get researchAndPapersFormAddAnotherAction {
+    return Intl.message(
+      'Add another research if available',
+      name: 'researchAndPapersFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get researchAndPapersFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'researchAndPapersFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Professional Experience`
+  String get experienceFormSectionTitle {
+    return Intl.message(
+      'Professional Experience',
+      name: 'experienceFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position`
+  String get experienceFormPositionLabel {
+    return Intl.message(
+      'Position',
+      name: 'experienceFormPositionLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the position name`
+  String get experienceFormEnterPosition {
+    return Intl.message(
+      'Enter the position name',
+      name: 'experienceFormEnterPosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Place`
+  String get experienceFormWorkPlaceLabel {
+    return Intl.message(
+      'Work Place',
+      name: 'experienceFormWorkPlaceLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the work place`
+  String get experienceFormEnterWorkPlace {
+    return Intl.message(
+      'Enter the work place',
+      name: 'experienceFormEnterWorkPlace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Work Duration`
+  String get experienceFormDurationLabel {
+    return Intl.message(
+      'Work Duration',
+      name: 'experienceFormDurationLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From`
+  String get experienceFormFromLabel {
+    return Intl.message(
+      'From',
+      name: 'experienceFormFromLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To`
+  String get experienceFormToLabel {
+    return Intl.message(
+      'To',
+      name: 'experienceFormToLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the date`
+  String get experienceFormChooseDate {
+    return Intl.message(
+      'Enter the date',
+      name: 'experienceFormChooseDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get experienceFormCountryLabel {
+    return Intl.message(
+      'Country',
+      name: 'experienceFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the country name`
+  String get experienceFormChooseCountry {
+    return Intl.message(
+      'Choose the country name',
+      name: 'experienceFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another experience if available`
+  String get experienceFormAddAnotherAction {
+    return Intl.message(
+      'Add another experience if available',
+      name: 'experienceFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get experienceFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'experienceFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Professional Licenses`
+  String get professionalLicensesFormSectionTitle {
+    return Intl.message(
+      'Professional Licenses',
+      name: 'professionalLicensesFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctor's Syndicate Registration Number`
+  String get professionalLicensesFormLicenseNumberLabel {
+    return Intl.message(
+      'Doctor\'s Syndicate Registration Number',
+      name: 'professionalLicensesFormLicenseNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the registration number`
+  String get professionalLicensesFormEnterLicenseNumber {
+    return Intl.message(
+      'Enter the registration number',
+      name: 'professionalLicensesFormEnterLicenseNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License Country`
+  String get professionalLicensesFormCountryLabel {
+    return Intl.message(
+      'License Country',
+      name: 'professionalLicensesFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the license country`
+  String get professionalLicensesFormChooseCountry {
+    return Intl.message(
+      'Choose the license country',
+      name: 'professionalLicensesFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Licensing Authority`
+  String get professionalLicensesFormLicensingAuthorityLabel {
+    return Intl.message(
+      'Licensing Authority',
+      name: 'professionalLicensesFormLicensingAuthorityLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the licensing authority name`
+  String get professionalLicensesFormEnterLicensingAuthority {
+    return Intl.message(
+      'Enter the licensing authority name',
+      name: 'professionalLicensesFormEnterLicensingAuthority',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License Number`
+  String get professionalLicensesFormRegistrationNumberLabel {
+    return Intl.message(
+      'License Number',
+      name: 'professionalLicensesFormRegistrationNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the license number`
+  String get professionalLicensesFormEnterRegistrationNumber {
+    return Intl.message(
+      'Enter the license number',
+      name: 'professionalLicensesFormEnterRegistrationNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License Date`
+  String get professionalLicensesFormLicenseDateLabel {
+    return Intl.message(
+      'License Date',
+      name: 'professionalLicensesFormLicenseDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day/ Month / Year`
+  String get professionalLicensesFormChooseDate {
+    return Intl.message(
+      'Day/ Month / Year',
+      name: 'professionalLicensesFormChooseDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License Valid Until`
+  String get professionalLicensesFormExpiryDateLabel {
+    return Intl.message(
+      'License Valid Until',
+      name: 'professionalLicensesFormExpiryDateLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License`
+  String get professionalLicensesFormLicenseImageLabel {
+    return Intl.message(
+      'License',
+      name: 'professionalLicensesFormLicenseImageLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attach a photo from device`
+  String get professionalLicensesFormAttachImageAction {
+    return Intl.message(
+      'Attach a photo from device',
+      name: 'professionalLicensesFormAttachImageAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another license if available`
+  String get professionalLicensesFormAddAnotherAction {
+    return Intl.message(
+      'Add another license if available',
+      name: 'professionalLicensesFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get professionalLicensesFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'professionalLicensesFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Association Membership`
+  String get membershipFormSectionTitle {
+    return Intl.message(
+      'Medical Association Membership',
+      name: 'membershipFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get membershipFormCountryLabel {
+    return Intl.message(
+      'Country',
+      name: 'membershipFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the country name`
+  String get membershipFormChooseCountry {
+    return Intl.message(
+      'Choose the country name',
+      name: 'membershipFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Association`
+  String get membershipFormAssociationNameLabel {
+    return Intl.message(
+      'Association',
+      name: 'membershipFormAssociationNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the association name`
+  String get membershipFormEnterAssociationName {
+    return Intl.message(
+      'Enter the association name',
+      name: 'membershipFormEnterAssociationName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Membership Number`
+  String get membershipFormNumberLabel {
+    return Intl.message(
+      'Membership Number',
+      name: 'membershipFormNumberLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the membership number`
+  String get membershipFormEnterNumber {
+    return Intl.message(
+      'Enter the membership number',
+      name: 'membershipFormEnterNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Membership Level`
+  String get membershipFormLevelLabel {
+    return Intl.message(
+      'Membership Level',
+      name: 'membershipFormLevelLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the membership level`
+  String get membershipFormChooseLevel {
+    return Intl.message(
+      'Choose the membership level',
+      name: 'membershipFormChooseLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get membershipFormYearLabel {
+    return Intl.message(
+      'Year',
+      name: 'membershipFormYearLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the year`
+  String get membershipFormEnterYear {
+    return Intl.message(
+      'Enter the year',
+      name: 'membershipFormEnterYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another membership if available`
+  String get membershipFormAddAnotherAction {
+    return Intl.message(
+      'Add another membership if available',
+      name: 'membershipFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get membershipFormSubmit {
+    return Intl.message(
+      'Submit',
+      name: 'membershipFormSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awards & Honors`
+  String get awardsFormSectionTitle {
+    return Intl.message(
+      'Awards & Honors',
+      name: 'awardsFormSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Awards & Honors`
+  String get awardsFormAwardNameLabel {
+    return Intl.message(
+      'Awards & Honors',
+      name: 'awardsFormAwardNameLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your awards & honors`
+  String get awardsFormEnterAwardName {
+    return Intl.message(
+      'Enter your awards & honors',
+      name: 'awardsFormEnterAwardName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Country`
+  String get awardsFormCountryLabel {
+    return Intl.message(
+      'Country',
+      name: 'awardsFormCountryLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the country name`
+  String get awardsFormChooseCountry {
+    return Intl.message(
+      'Choose the country name',
+      name: 'awardsFormChooseCountry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Granting Body`
+  String get awardsFormGrantingBodyLabel {
+    return Intl.message(
+      'Granting Body',
+      name: 'awardsFormGrantingBodyLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the granting body name`
+  String get awardsFormEnterGrantingBody {
+    return Intl.message(
+      'Enter the granting body name',
+      name: 'awardsFormEnterGrantingBody',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year`
+  String get awardsFormYearLabel {
+    return Intl.message(
+      'Year',
+      name: 'awardsFormYearLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter the year`
+  String get awardsFormEnterYear {
+    return Intl.message(
+      'Enter the year',
+      name: 'awardsFormEnterYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add another award if available`
+  String get awardsFormAddAnotherAction {
+    return Intl.message(
+      'Add another award if available',
+      name: 'awardsFormAddAnotherAction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Submit`
+  String get awardsFormSubmit {
+    return Intl.message('Submit', name: 'awardsFormSubmit', desc: '', args: []);
+  }
+
+  /// `Set your examination and consultation prices based on the patient's location and service type`
+  String get servicePricesFormBannerSubtitle {
+    return Intl.message(
+      'Set your examination and consultation prices based on the patient\'s location and service type',
+      name: 'servicePricesFormBannerSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Examination`
+  String get servicePricesFormExaminationSectionTitle {
+    return Intl.message(
+      'Examination',
+      name: 'servicePricesFormExaminationSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set the examination price for patients inside and outside Egypt`
+  String get servicePricesFormExaminationSectionSubtitle {
+    return Intl.message(
+      'Set the examination price for patients inside and outside Egypt',
+      name: 'servicePricesFormExaminationSectionSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Examination price inside Egypt`
+  String get servicePricesFormExaminationPriceInsideEgyptLabel {
+    return Intl.message(
+      'Examination price inside Egypt',
+      name: 'servicePricesFormExaminationPriceInsideEgyptLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Examination price outside Egypt`
+  String get servicePricesFormExaminationPriceOutsideEgyptLabel {
+    return Intl.message(
+      'Examination price outside Egypt',
+      name: 'servicePricesFormExaminationPriceOutsideEgyptLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Consultation`
+  String get servicePricesFormConsultationSectionTitle {
+    return Intl.message(
+      'Consultation',
+      name: 'servicePricesFormConsultationSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set whether you offer a follow-up consultation after the examination`
+  String get servicePricesFormConsultationSectionSubtitle {
+    return Intl.message(
+      'Set whether you offer a follow-up consultation after the examination',
+      name: 'servicePricesFormConsultationSectionSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you offer a follow-up consultation?`
+  String get servicePricesFormOffersFollowUpLabel {
+    return Intl.message(
+      'Do you offer a follow-up consultation?',
+      name: 'servicePricesFormOffersFollowUpLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follow-up consultation validity`
+  String get servicePricesFormValidityLabel {
+    return Intl.message(
+      'Follow-up consultation validity',
+      name: 'servicePricesFormValidityLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The number of days a patient can book a follow-up consultation after the examination`
+  String get servicePricesFormValidityHint {
+    return Intl.message(
+      'The number of days a patient can book a follow-up consultation after the examination',
+      name: 'servicePricesFormValidityHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the number of days`
+  String get servicePricesFormChooseValidity {
+    return Intl.message(
+      'Choose the number of days',
+      name: 'servicePricesFormChooseValidity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{days} days`
+  String servicePricesFormValidityDaysValue(int days) {
+    return Intl.message(
+      '$days days',
+      name: 'servicePricesFormValidityDaysValue',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Important notes`
+  String get servicePricesFormNotesTitle {
+    return Intl.message(
+      'Important notes',
+      name: 'servicePricesFormNotesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The examination is a paid service and its price is set per country.`
+  String get servicePricesFormNoteExaminationPaid {
+    return Intl.message(
+      'The examination is a paid service and its price is set per country.',
+      name: 'servicePricesFormNoteExaminationPaid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The follow-up consultation (if offered) is usually free, according to the doctor's policy.`
+  String get servicePricesFormNoteConsultationFree {
+    return Intl.message(
+      'The follow-up consultation (if offered) is usually free, according to the doctor\'s policy.',
+      name: 'servicePricesFormNoteConsultationFree',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Once the follow-up consultation validity period ends, the patient can no longer book a new follow-up consultation.`
+  String get servicePricesFormNoteValidityExpiry {
+    return Intl.message(
+      'Once the follow-up consultation validity period ends, the patient can no longer book a new follow-up consultation.',
+      name: 'servicePricesFormNoteValidityExpiry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Settings`
+  String get servicePricesFormSaveSettings {
+    return Intl.message(
+      'Save Settings',
+      name: 'servicePricesFormSaveSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set your booking and appointment details according to your schedule and preferences`
+  String get bookingSettingsFormBannerSubtitle {
+    return Intl.message(
+      'Set your booking and appointment details according to your schedule and preferences',
+      name: 'bookingSettingsFormBannerSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily Bookings`
+  String get bookingSettingsFormDailyLimitTitle {
+    return Intl.message(
+      'Daily Bookings',
+      name: 'bookingSettingsFormDailyLimitTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allowed daily bookings`
+  String get bookingSettingsFormDailyLimitLabel {
+    return Intl.message(
+      'Allowed daily bookings',
+      name: 'bookingSettingsFormDailyLimitLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The maximum number of bookings patients can make in a single day`
+  String get bookingSettingsFormDailyLimitHint {
+    return Intl.message(
+      'The maximum number of bookings patients can make in a single day',
+      name: 'bookingSettingsFormDailyLimitHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `bookings/day`
+  String get bookingSettingsFormDailyLimitUnit {
+    return Intl.message(
+      'bookings/day',
+      name: 'bookingSettingsFormDailyLimitUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly Booking Days`
+  String get bookingSettingsFormWeeklyDaysTitle {
+    return Intl.message(
+      'Weekly Booking Days',
+      name: 'bookingSettingsFormWeeklyDaysTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the days you accept bookings`
+  String get bookingSettingsFormWeeklyDaysSubtitle {
+    return Intl.message(
+      'Choose the days you accept bookings',
+      name: 'bookingSettingsFormWeeklyDaysSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Weekly Booking Times`
+  String get bookingSettingsFormWeeklyTimesTitle {
+    return Intl.message(
+      'Weekly Booking Times',
+      name: 'bookingSettingsFormWeeklyTimesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set the booking time ranges for each day of the week`
+  String get bookingSettingsFormWeeklyTimesSubtitle {
+    return Intl.message(
+      'Set the booking time ranges for each day of the week',
+      name: 'bookingSettingsFormWeeklyTimesSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not available`
+  String get bookingSettingsFormNotAvailable {
+    return Intl.message(
+      'Not available',
+      name: 'bookingSettingsFormNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a time range`
+  String get bookingSettingsFormAddTimeRange {
+    return Intl.message(
+      'Add a time range',
+      name: 'bookingSettingsFormAddTimeRange',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appointment Interval`
+  String get bookingSettingsFormIntervalTitle {
+    return Intl.message(
+      'Appointment Interval',
+      name: 'bookingSettingsFormIntervalTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The time gap between the appointment slots shown to patients for booking..`
+  String get bookingSettingsFormIntervalSubtitle {
+    return Intl.message(
+      'The time gap between the appointment slots shown to patients for booking..',
+      name: 'bookingSettingsFormIntervalSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `minutes`
+  String get bookingSettingsFormIntervalUnit {
+    return Intl.message(
+      'minutes',
+      name: 'bookingSettingsFormIntervalUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes`
+  String get bookingSettingsFormNotesTitle {
+    return Intl.message(
+      'Notes',
+      name: 'bookingSettingsFormNotesTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `These settings are used to display appointments to patients and to control your daily booking count and monthly targets.`
+  String get bookingSettingsFormNoteUsage {
+    return Intl.message(
+      'These settings are used to display appointments to patients and to control your daily booking count and monthly targets.',
+      name: 'bookingSettingsFormNoteUsage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save Settings`
+  String get bookingSettingsFormSaveSettings {
+    return Intl.message(
+      'Save Settings',
+      name: 'bookingSettingsFormSaveSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start time`
+  String get bookingSettingsFormStartTimeSheetTitle {
+    return Intl.message(
+      'Start time',
+      name: 'bookingSettingsFormStartTimeSheetTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End time`
+  String get bookingSettingsFormEndTimeSheetTitle {
+    return Intl.message(
+      'End time',
+      name: 'bookingSettingsFormEndTimeSheetTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set the target number of examinations for the month`
+  String get monthlyExaminationTargetFormBannerSubtitle {
+    return Intl.message(
+      'Set the target number of examinations for the month',
+      name: 'monthlyExaminationTargetFormBannerSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Goal`
+  String get monthlyExaminationTargetFormGoalSectionTitle {
+    return Intl.message(
+      'Monthly Goal',
+      name: 'monthlyExaminationTargetFormGoalSectionTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The target number of examinations for a single month`
+  String get monthlyExaminationTargetFormGoalSectionSubtitle {
+    return Intl.message(
+      'The target number of examinations for a single month',
+      name: 'monthlyExaminationTargetFormGoalSectionSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `exams`
+  String get monthlyExaminationTargetFormGoalUnit {
+    return Intl.message(
+      'exams',
+      name: 'monthlyExaminationTargetFormGoalUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose the target count`
+  String get monthlyExaminationTargetFormChooseGoal {
+    return Intl.message(
+      'Choose the target count',
+      name: 'monthlyExaminationTargetFormChooseGoal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `of target`
+  String get monthlyExaminationTargetFormOfTarget {
+    return Intl.message(
+      'of target',
+      name: 'monthlyExaminationTargetFormOfTarget',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Current Achievement`
+  String get monthlyExaminationTargetFormCurrentAchievementTitle {
+    return Intl.message(
+      'Current Achievement',
+      name: 'monthlyExaminationTargetFormCurrentAchievementTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Achieved exams`
+  String get monthlyExaminationTargetFormAchievedCaption {
+    return Intl.message(
+      'Achieved exams',
+      name: 'monthlyExaminationTargetFormAchievedCaption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly goal`
+  String get monthlyExaminationTargetFormGoalCaption {
+    return Intl.message(
+      'Monthly goal',
+      name: 'monthlyExaminationTargetFormGoalCaption',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The completion percentage will be shown on the home page so you can track your monthly performance instantly and automatically.`
+  String get monthlyExaminationTargetFormInfoBanner {
+    return Intl.message(
+      'The completion percentage will be shown on the home page so you can track your monthly performance instantly and automatically.',
+      name: 'monthlyExaminationTargetFormInfoBanner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monthly Target History`
+  String get monthlyExaminationTargetFormHistoryTitle {
+    return Intl.message(
+      'Monthly Target History',
+      name: 'monthlyExaminationTargetFormHistoryTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Month`
+  String get monthlyExaminationTargetFormHistoryColumnMonth {
+    return Intl.message(
+      'Month',
+      name: 'monthlyExaminationTargetFormHistoryColumnMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Goal`
+  String get monthlyExaminationTargetFormHistoryColumnGoal {
+    return Intl.message(
+      'Goal',
+      name: 'monthlyExaminationTargetFormHistoryColumnGoal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Achieved`
+  String get monthlyExaminationTargetFormHistoryColumnAchieved {
+    return Intl.message(
+      'Achieved',
+      name: 'monthlyExaminationTargetFormHistoryColumnAchieved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completion`
+  String get monthlyExaminationTargetFormHistoryColumnCompletion {
+    return Intl.message(
+      'Completion',
+      name: 'monthlyExaminationTargetFormHistoryColumnCompletion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get monthlyExaminationTargetFormRetry {
+    return Intl.message(
+      'Retry',
+      name: 'monthlyExaminationTargetFormRetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saturday`
+  String get daySaturday {
+    return Intl.message('Saturday', name: 'daySaturday', desc: '', args: []);
+  }
+
+  /// `Sunday`
+  String get daySunday {
+    return Intl.message('Sunday', name: 'daySunday', desc: '', args: []);
+  }
+
+  /// `Monday`
+  String get dayMonday {
+    return Intl.message('Monday', name: 'dayMonday', desc: '', args: []);
+  }
+
+  /// `Tuesday`
+  String get dayTuesday {
+    return Intl.message('Tuesday', name: 'dayTuesday', desc: '', args: []);
+  }
+
+  /// `Wednesday`
+  String get dayWednesday {
+    return Intl.message('Wednesday', name: 'dayWednesday', desc: '', args: []);
+  }
+
+  /// `Thursday`
+  String get dayThursday {
+    return Intl.message('Thursday', name: 'dayThursday', desc: '', args: []);
+  }
+
+  /// `Friday`
+  String get dayFriday {
+    return Intl.message('Friday', name: 'dayFriday', desc: '', args: []);
+  }
+
+  /// `This account type is coming soon`
+  String get userTypeComingSoon {
+    return Intl.message(
+      'This account type is coming soon',
+      name: 'userTypeComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Welcome to WeCare`
+  String get userTypeWelcomeTitle {
+    return Intl.message(
+      'Welcome to WeCare',
+      name: 'userTypeWelcomeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your account type to continue`
+  String get userTypeWelcomeSubtitle {
+    return Intl.message(
+      'Choose your account type to continue',
+      name: 'userTypeWelcomeSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Patient`
+  String get userTypePatientTitle {
+    return Intl.message(
+      'Patient',
+      name: 'userTypePatientTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage your medical records and follow up on your health better`
+  String get userTypePatientDescription {
+    return Intl.message(
+      'Manage your medical records and follow up on your health better',
+      name: 'userTypePatientDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Doctor`
+  String get userTypeDoctorTitle {
+    return Intl.message(
+      'Doctor',
+      name: 'userTypeDoctorTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage your appointments and patient files easily and securely`
+  String get userTypeDoctorDescription {
+    return Intl.message(
+      'Manage your appointments and patient files easily and securely',
+      name: 'userTypeDoctorDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Medical Service Provider`
+  String get userTypeProviderTitle {
+    return Intl.message(
+      'Medical Service Provider',
+      name: 'userTypeProviderTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manage your services such as speech therapy, physiotherapy, nursing, radiology and lab tests`
+  String get userTypeProviderDescription {
+    return Intl.message(
+      'Manage your services such as speech therapy, physiotherapy, nursing, radiology and lab tests',
+      name: 'userTypeProviderDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Together towards better healthcare`
+  String get userTypeFooter {
+    return Intl.message(
+      'Together towards better healthcare',
+      name: 'userTypeFooter',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

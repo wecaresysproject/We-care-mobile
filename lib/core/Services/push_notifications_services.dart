@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
@@ -90,6 +92,9 @@ class PushNotificationsService {
     GlobalKey<NavigatorState> navigatorKey,
     RemoteMessage message,
   ) {
+    //* Patient-only destinations: ignore taps while a doctor is signed in.
+    if (currentUserType != UserTypes.patient) return;
+
     try {
       final msgPayload = message.data['payload'] as String?;
       if (msgPayload == null) {

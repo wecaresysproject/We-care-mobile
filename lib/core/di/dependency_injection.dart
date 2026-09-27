@@ -31,6 +31,36 @@ import 'package:we_care/features/dental_module/data/repos/dental_repo.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/logic/cubit/dental_data_entry_cubit.dart';
 import 'package:we_care/features/dental_module/dental_services.dart';
 import 'package:we_care/features/dental_module/dental_view/logic/dental_view_cubit.dart';
+import 'package:we_care/features/doctor/awards/data/repos/awards_repo.dart';
+import 'package:we_care/features/doctor/awards/logic/cubit/awards_cubit.dart';
+import 'package:we_care/features/doctor/bank_info/data/repos/bank_info_repo.dart';
+import 'package:we_care/features/doctor/bank_info/logic/cubit/bank_info_cubit.dart';
+import 'package:we_care/features/doctor/basic_data/data/repos/doctor_basic_data_repo.dart';
+import 'package:we_care/features/doctor/basic_data/logic/cubit/doctor_basic_data_cubit.dart';
+import 'package:we_care/features/doctor/booking_settings/data/repos/booking_settings_repo.dart';
+import 'package:we_care/features/doctor/booking_settings/logic/cubit/booking_settings_cubit.dart';
+import 'package:we_care/features/doctor/bookings/data/repos/bookings_repo.dart';
+import 'package:we_care/features/doctor/bookings/logic/cubit/bookings_cubit.dart';
+import 'package:we_care/features/doctor/certificates/data/repos/certificates_repo.dart';
+import 'package:we_care/features/doctor/certificates/logic/cubit/certificates_cubit.dart';
+import 'package:we_care/features/doctor/experience/data/repos/experience_repo.dart';
+import 'package:we_care/features/doctor/experience/logic/cubit/experience_cubit.dart';
+import 'package:we_care/features/doctor/home/data/repos/doctor_home_repo.dart';
+import 'package:we_care/features/doctor/home/logic/cubit/doctor_home_cubit.dart';
+import 'package:we_care/features/doctor/media_articles/data/repos/media_articles_repo.dart';
+import 'package:we_care/features/doctor/media_articles/logic/cubit/media_articles_cubit.dart';
+import 'package:we_care/features/doctor/medical_specialty/data/repos/medical_specialty_repo.dart';
+import 'package:we_care/features/doctor/medical_specialty/logic/cubit/medical_specialty_cubit.dart';
+import 'package:we_care/features/doctor/membership/data/repos/membership_repo.dart';
+import 'package:we_care/features/doctor/membership/logic/cubit/membership_cubit.dart';
+import 'package:we_care/features/doctor/monthly_examination_target/data/repos/monthly_examination_target_repo.dart';
+import 'package:we_care/features/doctor/monthly_examination_target/logic/cubit/monthly_examination_target_cubit.dart';
+import 'package:we_care/features/doctor/professional_licenses/data/repos/professional_licenses_repo.dart';
+import 'package:we_care/features/doctor/professional_licenses/logic/cubit/professional_licenses_cubit.dart';
+import 'package:we_care/features/doctor/research_and_papers/data/repos/research_and_papers_repo.dart';
+import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_and_papers_cubit.dart';
+import 'package:we_care/features/doctor/service_prices/data/repos/service_prices_repo.dart';
+import 'package:we_care/features/doctor/service_prices/logic/cubit/service_prices_cubit.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
@@ -516,6 +546,90 @@ void setupAppCubits() {
       getIt<AccessManagementRepository>(),
     ),
   );
+  //! Doctor
+  getIt.registerFactory<DoctorHomeCubit>(
+    () => DoctorHomeCubit(
+      getIt<DoctorHomeRepo>(),
+    ),
+  );
+  getIt.registerFactory<BookingsCubit>(
+    () => BookingsCubit(
+      getIt<BookingsRepo>(),
+    ),
+  );
+  getIt.registerFactory<DoctorBasicDataCubit>(
+    () => DoctorBasicDataCubit(
+      getIt<AppSharedRepo>(),
+      getIt<DoctorBasicDataRepo>(),
+    ),
+  );
+  getIt.registerFactory<BankInfoCubit>(
+    () => BankInfoCubit(
+      getIt<AppSharedRepo>(),
+      getIt<BankInfoRepo>(),
+    ),
+  );
+  getIt.registerFactory<CertificatesCubit>(
+    () => CertificatesCubit(
+      getIt<AppSharedRepo>(),
+      getIt<CertificatesRepo>(),
+    ),
+  );
+  getIt.registerFactory<MediaArticlesCubit>(
+    () => MediaArticlesCubit(
+      getIt<MediaArticlesRepo>(),
+    ),
+  );
+  getIt.registerFactory<ExperienceCubit>(
+    () => ExperienceCubit(
+      getIt<AppSharedRepo>(),
+      getIt<ExperienceRepo>(),
+    ),
+  );
+  getIt.registerFactory<ProfessionalLicensesCubit>(
+    () => ProfessionalLicensesCubit(
+      getIt<AppSharedRepo>(),
+      getIt<ProfessionalLicensesRepo>(),
+    ),
+  );
+  getIt.registerFactory<ResearchAndPapersCubit>(
+    () => ResearchAndPapersCubit(
+      getIt<ResearchAndPapersRepo>(),
+    ),
+  );
+  getIt.registerFactory<MembershipCubit>(
+    () => MembershipCubit(
+      getIt<AppSharedRepo>(),
+      getIt<MembershipRepo>(),
+    ),
+  );
+  getIt.registerFactory<AwardsCubit>(
+    () => AwardsCubit(
+      getIt<AppSharedRepo>(),
+      getIt<AwardsRepo>(),
+    ),
+  );
+  getIt.registerFactory<MedicalSpecialtyCubit>(
+    () => MedicalSpecialtyCubit(
+      getIt<AppSharedRepo>(),
+      getIt<MedicalSpecialtyRepo>(),
+    ),
+  );
+  getIt.registerFactory<ServicePricesCubit>(
+    () => ServicePricesCubit(
+      getIt<ServicePricesRepo>(),
+    ),
+  );
+  getIt.registerFactory<BookingSettingsCubit>(
+    () => BookingSettingsCubit(
+      getIt<BookingSettingsRepo>(),
+    ),
+  );
+  getIt.registerFactory<MonthlyExaminationTargetCubit>(
+    () => MonthlyExaminationTargetCubit(
+      getIt<MonthlyExaminationTargetRepo>(),
+    ),
+  );
 }
 
 void setupAppRepos() {
@@ -802,6 +916,54 @@ void setupAppRepos() {
     () => AccessManagementRepository(
       getIt<AccessManagementService>(),
     ),
+  );
+  //! Doctor
+  getIt.registerLazySingleton<DoctorHomeRepo>(
+    () => DoctorHomeRepo(
+      getIt<AuthApiServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<BookingsRepo>(
+    () => BookingsRepo(),
+  );
+  getIt.registerLazySingleton<DoctorBasicDataRepo>(
+    () => DoctorBasicDataRepo(),
+  );
+  getIt.registerLazySingleton<BankInfoRepo>(
+    () => BankInfoRepo(),
+  );
+  getIt.registerLazySingleton<CertificatesRepo>(
+    () => CertificatesRepo(),
+  );
+  getIt.registerLazySingleton<MediaArticlesRepo>(
+    () => MediaArticlesRepo(),
+  );
+  getIt.registerLazySingleton<ExperienceRepo>(
+    () => ExperienceRepo(),
+  );
+  getIt.registerLazySingleton<ProfessionalLicensesRepo>(
+    () => ProfessionalLicensesRepo(),
+  );
+  getIt.registerLazySingleton<ResearchAndPapersRepo>(
+    () => ResearchAndPapersRepo(),
+  );
+  getIt.registerLazySingleton<MembershipRepo>(
+    () => MembershipRepo(),
+  );
+  getIt.registerLazySingleton<AwardsRepo>(
+    () => AwardsRepo(),
+  );
+  getIt.registerLazySingleton<MedicalSpecialtyRepo>(
+    () => MedicalSpecialtyRepo(),
+  );
+  getIt.registerLazySingleton<ServicePricesRepo>(
+    () => ServicePricesRepo(),
+  );
+  getIt.registerLazySingleton<BookingSettingsRepo>(
+    () => BookingSettingsRepo(),
+  );
+  getIt.registerLazySingleton<MonthlyExaminationTargetRepo>(
+    () => MonthlyExaminationTargetRepo(),
   );
 }
 

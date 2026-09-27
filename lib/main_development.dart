@@ -13,6 +13,7 @@ import 'package:we_care/core/Services/push_notifications_services.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
@@ -111,6 +112,9 @@ Future<void> checkIfLoggedInUser() async {
   } else {
     isLoggedInUser = true;
   }
+
+  //* Restore the account type saved with the token (defaults to patient).
+  await restoreCurrentUserType();
 }
 
 Future<void> checkAndroidScheduleExactAlarmPermission() async {

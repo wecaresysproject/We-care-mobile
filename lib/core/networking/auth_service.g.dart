@@ -22,9 +22,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<SignUpResponseModel> signup(
-      SignUpRequestBodyModel signupRequestBody) async {
+    SignUpRequestBodyModel signupRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(signupRequestBody.toJson());
@@ -47,9 +49,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<VerifyOtpResponseModel> verifyOtp(
-      VerifyOtpRequestBodyModel verifyOtpRequestBody) async {
+    VerifyOtpRequestBodyModel verifyOtpRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(verifyOtpRequestBody.toJson());
@@ -72,9 +76,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<LoginResponseModel> login(
-      LoginRequestBodyModel loginRequestBody) async {
+    LoginRequestBodyModel loginRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(loginRequestBody.toJson());
@@ -97,9 +103,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<ResendOtpResponseModel> resendOtp(
-      ResendOtpRequestBody resendOtpRequestBody) async {
+    ResendOtpRequestBody resendOtpRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(resendOtpRequestBody.toJson());
@@ -122,9 +130,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<CreateNewPasswordResponseModel> createNewPassword(
-      CreateNewPasswordRequestBody createNewPasswordRequestBody) async {
+    CreateNewPasswordRequestBody createNewPasswordRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(createNewPasswordRequestBody.toJson());
@@ -147,9 +157,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<ChangePasswordResponseModel> changePassword(
-      ChangePasswordRequestBodyModel changePasswordRequestBodyModel) async {
+    ChangePasswordRequestBodyModel changePasswordRequestBodyModel,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(changePasswordRequestBodyModel.toJson());
@@ -172,9 +184,11 @@ class _AuthApiServices implements AuthApiServices {
 
   @override
   Future<ForgetPasswordResponseModel> forgetPassword(
-      ForgetPasswordRequestBodyModel forgetPasswordRequestBody) async {
+    ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
+    String userType,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(forgetPasswordRequestBody.toJson());
@@ -196,9 +210,9 @@ class _AuthApiServices implements AuthApiServices {
   }
 
   @override
-  Future<dynamic> logout() async {
+  Future<dynamic> logout(String userType) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userType': userType};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch(_setStreamType<dynamic>(Options(

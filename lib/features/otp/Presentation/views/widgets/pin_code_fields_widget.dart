@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 
 import '../../../../../core/global/Helpers/app_enums.dart';
 import '../../../../../core/global/Helpers/app_toasts.dart';
@@ -45,7 +46,7 @@ class PinCodeFieldsWidget extends StatelessWidget {
           );
         } else {
           await context.pushNamedAndRemoveUntil(
-            Routes.bottomNavBar,
+            homeRouteForCurrentUser,
             predicate: (Route<dynamic> route) =>
                 false, // Remove all previous screens
           );

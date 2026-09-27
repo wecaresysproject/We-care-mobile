@@ -168,4 +168,24 @@ class Routes {
   static const doctorProfileView = '/doctorProfileView';
   static const bookAppointmentView = '/bookAppointmentView';
   static const checkoutView = '/checkoutView';
+
+  //! Doctor
+  static const doctorHomeView = '/doctorHomeView';
+  static const doctorBookingsView = '/doctorBookingsView';
+  static const doctorVideoCallView = '/doctorVideoCallView';
+  static const doctorBasicDataView = '/doctorBasicDataView';
+  static const doctorBasicDataFormView = '/doctorBasicDataFormView';
+  static const medicalSpecialtyFormView = '/medicalSpecialtyFormView';
+  static const bankInfoFormView = '/bankInfoFormView';
+  static const certificatesFormView = '/certificatesFormView';
+  static const mediaArticlesFormView = '/mediaArticlesFormView';
+  static const experienceFormView = '/experienceFormView';
+  static const professionalLicensesFormView = '/professionalLicensesFormView';
+  static const researchAndPapersFormView = '/researchAndPapersFormView';
+  static const membershipFormView = '/membershipFormView';
+  static const awardsFormView = '/awardsFormView';
+  static const servicePricesFormView = '/servicePricesFormView';
+  static const bookingSettingsFormView = '/bookingSettingsFormView';
+  static const monthlyExaminationTargetFormView =
+      '/monthlyExaminationTargetFormView';
 }

@@ -31,12 +31,14 @@ class AppSharedRepo {
     }
   }
 
+  /// [userType] defaults to the patient user type.
   Future<ApiResult<List<String>>> getCountriesData({
     required String language,
+    String? userType,
   }) async {
     try {
       final response = await _sharedServices.getCountriesNames(
-        UserTypes.patient.name.firstLetterToUpperCase,
+        userType ?? UserTypes.patient.name.firstLetterToUpperCase,
         language,
       );
       final countries = (response['data'] as List)
@@ -65,11 +67,14 @@ class AppSharedRepo {
     }
   }
 
+  /// [userType] defaults to the patient user type.
   Future<ApiResult<List<String>>> getCitiesBasedOnCountryName(
-      {required String language, required String countryName}) async {
+      {required String language,
+      required String countryName,
+      String? userType}) async {
     try {
       final response = await _sharedServices.getCitiesBasedOnCountryName(
-        UserTypes.patient.name.firstLetterToUpperCase,
+        userType ?? UserTypes.patient.name.firstLetterToUpperCase,
         language,
         countryName,
       );

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/Services/fcm_token_manager.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/networking/dio_serices.dart';
 import 'package:we_care/features/login/Data/models/login_response_model.dart';
 
@@ -39,10 +40,13 @@ class LoginCubit extends Cubit<LoginState> {
     response.when(success: (response) async {
       await saveUserToken(response);
 
-      // Sync FCM token with backend after successful login
-      final fcmTokenManager = getIt<FcmTokenManager>();
-      await fcmTokenManager.syncFcmToken();
-      fcmTokenManager.startTokenRefreshListener();
+      // Sync FCM token with backend after successful login (patients only;
+      // the backend has no push flow for doctors)
+      if (currentUserType == UserTypes.patient) {
+        final fcmTokenManager = getIt<FcmTokenManager>();
+        await fcmTokenManager.syncFcmToken();
+        fcmTokenManager.startTokenRefreshListener();
+      }
 
       emit(
         state.copyWith(
@@ -62,6 +66,7 @@ class LoginCubit extends Cubit<LoginState> {
     await CacheHelper.setSecuredString(
         AuthApiConstants.userTokenKey, response.userData.token);
     DioServices.setTokenIntoHeaderAfterLogin(response.userData.token);
+    await saveCurrentUserType();
   }
 
   void onDialCodeChanged(CountryCode country) {

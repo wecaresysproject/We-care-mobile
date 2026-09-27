@@ -1,3 +1,5 @@
+import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/features/otp/data/models/resend_otp_request_body.dart';
 import 'package:we_care/features/otp/data/models/resend_otp_response_model.dart';
 import 'package:we_care/features/otp/data/models/verify_otp_request_body_model.dart';
@@ -17,7 +19,10 @@ class OtpRepository {
     VerifyOtpRequestBodyModel requestBody,
   ) async {
     try {
-      final response = await _authApiServices.verifyOtp(requestBody);
+      final response = await _authApiServices.verifyOtp(
+        requestBody,
+        currentUserType.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
@@ -28,7 +33,10 @@ class OtpRepository {
     ResendOtpRequestBody requestBody,
   ) async {
     try {
-      final response = await _authApiServices.resendOtp(requestBody);
+      final response = await _authApiServices.resendOtp(
+        requestBody,
+        currentUserType.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
