@@ -12,6 +12,7 @@ class AppCustomButton extends StatelessWidget {
     this.isEnabled = false,
     this.isLoading = false,
     this.textFontSize = 22,
+    this.icon,
   });
 
   final String title;
@@ -19,6 +20,9 @@ class AppCustomButton extends StatelessWidget {
   final bool isEnabled;
   final bool isLoading;
   final double textFontSize;
+
+  /// Optional trailing icon drawn after [title].
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +49,28 @@ class AppCustomButton extends StatelessWidget {
                       strokeWidth: 2.5,
                     ),
                   )
-                : Text(
-                    title,
-                    style: AppTextStyles.font22MainBlueWeight700.copyWith(
-                      color: Colors.white,
-                      fontSize: textFontSize,
-                    ),
-                  ),
+                : icon == null
+                    ? _buildTitle()
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildTitle(),
+                          SizedBox(width: 8.w),
+                          Icon(icon, color: Colors.white, size: textFontSize),
+                        ],
+                      ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Text(
+      title,
+      style: AppTextStyles.font22MainBlueWeight700.copyWith(
+        color: Colors.white,
+        fontSize: textFontSize,
       ),
     );
   }

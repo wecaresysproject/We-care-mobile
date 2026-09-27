@@ -54,8 +54,9 @@ class _LoginViewState extends State<LoginView> {
                     if (state.loginStatus == RequestStatus.success) {
                       await showSuccess(state.message);
                       if (!context.mounted) return;
-                      await context.pushReplacementNamed(
-                        Routes.bottomNavBar,
+                      await context.pushNamedAndRemoveUntil(
+                        homeRouteForCurrentUser,
+                        predicate: (Route<dynamic> route) => false,
                       );
                     } else if (state.loginStatus == RequestStatus.failure) {
                       await showError(state.message);

@@ -1,5 +1,7 @@
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/networking/auth_service.dart';
 import 'package:we_care/features/home_tab/models/message_notification_model.dart';
 import 'package:we_care/features/home_tab/services/home_service.dart';
@@ -45,7 +47,9 @@ class HomeRepository {
 
   Future<ApiResult<dynamic>> logout() async {
     try {
-      final response = await _authApiServices.logout();
+      final response = await _authApiServices.logout(
+        currentUserType.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(response["message"]);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

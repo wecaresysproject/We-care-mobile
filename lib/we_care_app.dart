@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/Services/fcm_token_manager.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/SharedWidgets/bottom_nav_bar.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -29,9 +30,10 @@ class _WeCareAppState extends State<WeCareApp> {
     _initFcmTokenSync();
   }
 
-  /// Syncs FCM token with backend on app startup if user is already logged in.
+  /// Syncs FCM token with backend on app startup if a patient is already
+  /// logged in (the backend has no push flow for doctors).
   void _initFcmTokenSync() {
-    if (isLoggedInUser) {
+    if (isLoggedInUser && currentUserType == UserTypes.patient) {
       final fcmTokenManager = getIt<FcmTokenManager>();
       fcmTokenManager.syncFcmToken();
       fcmTokenManager.startTokenRefreshListener();
@@ -69,7 +71,14 @@ class _WeCareAppState extends State<WeCareApp> {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: S.delegate.supportedLocales,
-          initialRoute: isLoggedInUser ? Routes.bottomNavBar : Routes.loginView,
+          initialRoute:
+              isLoggedInUser ? homeRouteForCurrentUser : Routes.userTypesView,
+          //* Push only the initial route itself. The default behaviour also
+          //* pushes '/' underneath it, which AppRouter resolves to NotFoundView.
+          onGenerateInitialRoutes: (initialRoute) => [
+            widget.appRouter
+                .onGenerateRoutes(RouteSettings(name: initialRoute))!,
+          ],
           theme: ThemeData(
             ///Later handle text field theme here to be same for all app
             //TODO: handle it later in seperate file

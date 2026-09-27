@@ -27,6 +27,23 @@ import 'package:we_care/features/chronic_disease/data/models/post_chronic_diseas
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_anatomy_diagram_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_data_entry_view/Presentation/views/dental_data_entry_view.dart';
 import 'package:we_care/features/dental_module/dental_view/views/tooth_anatomy_view.dart';
+import 'package:we_care/features/doctor/awards/presentation/views/awards_form_view.dart';
+import 'package:we_care/features/doctor/bank_info/presentation/views/bank_info_form_view.dart';
+import 'package:we_care/features/doctor/basic_data/presentation/views/basic_data_view.dart';
+import 'package:we_care/features/doctor/basic_data/presentation/views/doctor_basic_data_form_view.dart';
+import 'package:we_care/features/doctor/booking_settings/presentation/views/booking_settings_form_view.dart';
+import 'package:we_care/features/doctor/bookings/presentation/views/bookings_view.dart';
+import 'package:we_care/features/doctor/certificates/presentation/views/certificates_form_view.dart';
+import 'package:we_care/features/doctor/experience/presentation/views/experience_form_view.dart';
+import 'package:we_care/features/doctor/home/presentation/views/doctor_app_shell.dart';
+import 'package:we_care/features/doctor/media_articles/presentation/views/media_articles_form_view.dart';
+import 'package:we_care/features/doctor/medical_specialty/presentation/views/medical_specialty_form_view.dart';
+import 'package:we_care/features/doctor/membership/presentation/views/membership_form_view.dart';
+import 'package:we_care/features/doctor/monthly_examination_target/presentation/views/monthly_examination_target_view.dart';
+import 'package:we_care/features/doctor/professional_licenses/presentation/views/professional_licenses_form_view.dart';
+import 'package:we_care/features/doctor/research_and_papers/presentation/views/research_and_papers_form_view.dart';
+import 'package:we_care/features/doctor/service_prices/presentation/views/service_prices_form_view.dart';
+import 'package:we_care/features/doctor/video_call/presentation/views/video_call_view.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/emergency_complaints_data_entry_view.dart';
@@ -927,6 +944,78 @@ class AppRouter {
       case Routes.checkoutView:
         return MaterialPageRoute(
           builder: (_) => CheckoutView(doctor: arguments as DoctorModel),
+        );
+      //! Doctor
+      case Routes.doctorHomeView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorAppShell(),
+        );
+      case Routes.doctorBookingsView:
+        return MaterialPageRoute(
+          builder: (_) => const BookingsView(),
+        );
+      case Routes.doctorVideoCallView:
+        return MaterialPageRoute(
+          builder: (_) => VideoCallView(
+            elapsedLabel:
+                arguments?[AppStrings.elapsedLabelArgumentKey] ?? '00:00',
+          ),
+        );
+      case Routes.doctorBasicDataView:
+        return MaterialPageRoute(
+          builder: (_) => const BasicDataView(),
+        );
+      case Routes.doctorBasicDataFormView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorBasicDataFormView(),
+        );
+      case Routes.medicalSpecialtyFormView:
+        return MaterialPageRoute(
+          builder: (_) => const MedicalSpecialtyFormView(),
+        );
+      case Routes.bankInfoFormView:
+        return MaterialPageRoute(
+          builder: (_) => const BankInfoFormView(),
+        );
+      case Routes.certificatesFormView:
+        return MaterialPageRoute(
+          builder: (_) => const CertificatesFormView(),
+        );
+      case Routes.mediaArticlesFormView:
+        return MaterialPageRoute(
+          builder: (_) => const MediaArticlesFormView(),
+        );
+      case Routes.experienceFormView:
+        return MaterialPageRoute(
+          builder: (_) => const ExperienceFormView(),
+        );
+      case Routes.professionalLicensesFormView:
+        return MaterialPageRoute(
+          builder: (_) => const ProfessionalLicensesFormView(),
+        );
+      case Routes.researchAndPapersFormView:
+        return MaterialPageRoute(
+          builder: (_) => const ResearchAndPapersFormView(),
+        );
+      case Routes.membershipFormView:
+        return MaterialPageRoute(
+          builder: (_) => const MembershipFormView(),
+        );
+      case Routes.awardsFormView:
+        return MaterialPageRoute(
+          builder: (_) => const AwardsFormView(),
+        );
+      case Routes.servicePricesFormView:
+        return MaterialPageRoute(
+          builder: (_) => const ServicePricesFormView(),
+        );
+      case Routes.bookingSettingsFormView:
+        return MaterialPageRoute(
+          builder: (_) => const BookingSettingsFormView(),
+        );
+      case Routes.monthlyExaminationTargetFormView:
+        return MaterialPageRoute(
+          builder: (_) => const MonthlyExaminationTargetView(),
         );
       default:
         return MaterialPageRoute(builder: (_) => NotFoundView());

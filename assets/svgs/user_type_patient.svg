@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="160" viewBox="0 0 200 160">
+  <defs>
+    <linearGradient id="blob" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D6E9FB"/>
+      <stop offset="1" stop-color="#E9F3FD"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3E93E6"/>
+      <stop offset="1" stop-color="#2670C8"/>
+    </linearGradient>
+    <linearGradient id="heart" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AAEF5"/>
+      <stop offset="1" stop-color="#1C63C9"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F8D2B4"/>
+      <stop offset="1" stop-color="#F0BC98"/>
+    </linearGradient>
+  </defs>
+  <path d="M12 96 C4 58 30 22 76 16 C120 10 162 30 170 64 C176 90 160 104 170 124 C178 140 196 150 200 160 H22 C28 140 18 120 12 96 Z" fill="url(#blob)"/>
+  <path d="M0 160 C20 146 44 150 64 138 C90 124 120 140 150 160 Z" fill="#CFE4FA" opacity="0.7"/>
+  <path d="M40 160 C40 124 60 108 100 105 C140 108 160 124 160 160 Z" fill="url(#shirt)"/>
+  <path d="M88 96 H112 V110 C106 116 94 116 88 110 Z" fill="#E7AE8A"/>
+  <ellipse cx="75.5" cy="70" rx="5" ry="7" fill="#EDB692"/>
+  <ellipse cx="124.5" cy="70" rx="5" ry="7" fill="#EDB692"/>
+  <ellipse cx="100" cy="68" rx="24" ry="29" fill="url(#skin)"/>
+  <path d="M75 66 C70 40 86 30 102 31 C122 30 132 44 126 66 C123 56 118 50 110 48 C100 52 88 50 80 50 C77 55 76 60 75 66 Z" fill="#1E4C8A"/>
+  <path d="M80 50 C90 38 110 36 122 46" fill="none" stroke="#2A63A8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M145 150 C112 128 110 106 124 98 C134 92 142 98 145 104 C148 98 156 92 166 98 C180 106 178 128 145 150 Z" fill="url(#heart)" stroke="#FFFFFF" stroke-width="3.5" stroke-linejoin="round"/>
+  <polyline points="126,118 136,118 140,110 145,128 150,113 153,118 164,118" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,5 +1,7 @@
+import '../../../../core/global/Helpers/extensions.dart';
 import '../../../../core/networking/api_error_handler.dart';
 import '../../../../core/networking/api_result.dart';
+import '../../../../core/networking/auth_api_constants.dart';
 import '../../../../core/networking/auth_service.dart';
 import '../models/forget_password_request_body_model.dart';
 import '../models/forget_password_response_model.dart';
@@ -13,8 +15,10 @@ class ForgetPasswordRepo {
   Future<ApiResult<ForgetPasswordResponseModel>> forgetPassword(
       ForgetPasswordRequestBodyModel forgetPasswordRequestBody) async {
     try {
-      final response =
-          await _authApiServices.forgetPassword(forgetPasswordRequestBody);
+      final response = await _authApiServices.forgetPassword(
+        forgetPasswordRequestBody,
+        currentUserType.name.firstLetterToUpperCase,
+      );
       return ApiResult.success(response);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

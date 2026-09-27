@@ -26,39 +26,48 @@ abstract class AuthApiServices {
   @POST(AuthApiConstants.signUpEndPoint)
   Future<SignUpResponseModel> signup(
     @Body() SignUpRequestBodyModel signupRequestBody,
+    @Query("userType") String userType,
   );
 
   @POST(AuthApiConstants.verifyOtpEndPoint)
   Future<VerifyOtpResponseModel> verifyOtp(
     @Body() VerifyOtpRequestBodyModel verifyOtpRequestBody,
+    @Query("userType") String userType,
   );
   @POST(AuthApiConstants.loginEndPoint)
   Future<LoginResponseModel> login(
     @Body() LoginRequestBodyModel loginRequestBody,
+    @Query("userType") String userType,
   );
 
   @POST(AuthApiConstants.resendOtpEndPoint)
   Future<ResendOtpResponseModel> resendOtp(
     @Body() ResendOtpRequestBody resendOtpRequestBody,
+    @Query("userType") String userType,
   );
 
   @PUT(AuthApiConstants.createNewPasswordEndPoint)
   Future<CreateNewPasswordResponseModel> createNewPassword(
     @Body() CreateNewPasswordRequestBody createNewPasswordRequestBody,
+    @Query("userType") String userType,
   );
 
   @PUT(AuthApiConstants.changePasswordEndPoint)
   Future<ChangePasswordResponseModel> changePassword(
     @Body() ChangePasswordRequestBodyModel changePasswordRequestBodyModel,
+    @Query("userType") String userType,
   );
 
   @POST(AuthApiConstants.forgotPasswordEndPoint)
   Future<ForgetPasswordResponseModel> forgetPassword(
     @Body() ForgetPasswordRequestBodyModel forgetPasswordRequestBody,
+    @Query("userType") String userType,
   );
 
   @POST(AuthApiConstants.logoutEndPoint)
-  Future<dynamic> logout();
+  Future<dynamic> logout(
+    @Query("userType") String userType,
+  );
 
   @POST("http://147.93.57.70/api/Statistics/fcm-token")
   Future<dynamic> updateFcmToken(

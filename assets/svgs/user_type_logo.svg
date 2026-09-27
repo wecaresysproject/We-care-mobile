@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="150" viewBox="0 0 180 150">
+  <defs>
+    <linearGradient id="n" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1A3F86"/>
+      <stop offset="1" stop-color="#0E2A62"/>
+    </linearGradient>
+  </defs>
+  <g id="wing" fill="url(#n)">
+    <path d="M84 30 C62 14 34 8 2 6 C18 20 44 32 82 42 Z"/>
+    <path d="M84 44 C62 34 40 30 14 28 C30 42 52 50 84 55 Z"/>
+    <path d="M85 57 C66 50 50 48 28 48 C42 60 60 66 86 67 Z"/>
+    <path d="M86 69 C72 64 60 64 44 65 C56 74 70 78 87 77 Z"/>
+  </g>
+  <use href="#wing" transform="translate(180 0) scale(-1 1)"/>
+  <circle cx="90" cy="13" r="7.5" fill="url(#n)"/>
+  <path d="M86.5 20 H93.5 V132 L90 146 L86.5 132 Z" fill="url(#n)"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M78 42 C64 50 70 62 90 70 C112 79 112 91 90 99 C70 106 72 117 90 124 C100 128 98 134 92 138" stroke="#FFFFFF" stroke-width="10"/>
+    <path d="M102 42 C116 50 110 62 90 70 C68 79 68 91 90 99 C110 106 108 117 90 124 C80 128 82 134 88 138" stroke="#FFFFFF" stroke-width="10"/>
+    <path d="M78 42 C64 50 70 62 90 70 C112 79 112 91 90 99 C70 106 72 117 90 124 C100 128 98 134 92 138" stroke="url(#n)" stroke-width="5.5"/>
+    <path d="M102 42 C116 50 110 62 90 70 C68 79 68 91 90 99 C110 106 108 117 90 124 C80 128 82 134 88 138" stroke="url(#n)" stroke-width="5.5"/>
+  </g>
+  <ellipse cx="80" cy="40" rx="7" ry="4.5" transform="rotate(-20 80 40)" fill="url(#n)" stroke="#FFFFFF" stroke-width="1.5"/>
+  <ellipse cx="100" cy="40" rx="7" ry="4.5" transform="rotate(20 100 40)" fill="url(#n)" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>
