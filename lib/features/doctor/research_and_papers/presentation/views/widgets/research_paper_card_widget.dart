@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
+import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_paper_form_entry.dart';
@@ -16,10 +16,12 @@ class ResearchPaperCardWidget extends StatelessWidget {
   const ResearchPaperCardWidget({
     super.key,
     required this.entry,
+    required this.onYearChanged,
     this.onRemove,
   });
 
   final ResearchPaperFormEntry entry;
+  final ValueChanged<String> onYearChanged;
   final VoidCallback? onRemove;
 
   @override
@@ -63,17 +65,9 @@ class ResearchPaperCardWidget extends StatelessWidget {
           style: AppTextStyles.font18blackWight500,
         ),
         verticalSpacing(10),
-        CustomTextField(
-          controller: entry.yearController,
-          hintText: localization.researchAndPapersFormEnterYear,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(4),
-          ],
-          validator: (val) => (val == null || val.trim().isEmpty)
-              ? localization.required_field
-              : null,
+        DateTimePickerContainer(
+          placeholderText: localization.researchAndPapersFormChooseYear,
+          onDateSelected: onYearChanged,
         ),
         verticalSpacing(18),
 

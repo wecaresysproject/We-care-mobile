@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
+import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
@@ -21,6 +22,7 @@ class MembershipCardWidget extends StatelessWidget {
     required this.membershipLevels,
     required this.onCountryChanged,
     required this.onMembershipLevelChanged,
+    required this.onYearChanged,
     this.onRemove,
   });
 
@@ -29,6 +31,7 @@ class MembershipCardWidget extends StatelessWidget {
   final List<String> membershipLevels;
   final ValueChanged<String?> onCountryChanged;
   final ValueChanged<String?> onMembershipLevelChanged;
+  final ValueChanged<String> onYearChanged;
   final VoidCallback? onRemove;
 
   @override
@@ -113,17 +116,9 @@ class MembershipCardWidget extends StatelessWidget {
           style: AppTextStyles.font18blackWight500,
         ),
         verticalSpacing(10),
-        CustomTextField(
-          controller: entry.yearController,
-          hintText: localization.membershipFormEnterYear,
-          keyboardType: TextInputType.number,
-          inputFormatters: [
-            FilteringTextInputFormatter.digitsOnly,
-            LengthLimitingTextInputFormatter(4),
-          ],
-          validator: (val) => (val == null || val.trim().isEmpty)
-              ? localization.required_field
-              : null,
+        DateTimePickerContainer(
+          placeholderText: localization.membershipFormChooseYear,
+          onDateSelected: onYearChanged,
         ),
       ],
     );
