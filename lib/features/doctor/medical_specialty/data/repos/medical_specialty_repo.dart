@@ -1,18 +1,21 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/doctor/medical_specialty/data/models/medical_specialty_request_body_model.dart';
+import 'package:we_care/features/doctor/doctor_services.dart';
 
-/// TODO: no backend contract exists yet for submitting the doctor "medical
-/// specialty" form — confirm the endpoint and request/response shape, then
-/// replace this stub with a real Retrofit service call (see `AppSharedRepo`
-/// for the wrapping pattern).
 class MedicalSpecialtyRepo {
+  final DoctorServices _doctorServices;
+
+  MedicalSpecialtyRepo(this._doctorServices);
+
   Future<ApiResult<String>> submitMedicalSpecialty(
     MedicalSpecialtyRequestBodyModel model,
   ) async {
     try {
-      throw UnimplementedError(
-        'Medical specialty submission endpoint is not defined yet.',
+      final response = await _doctorServices.postMedicalSpecialty(model);
+      final message = response is Map ? response['message'] : null;
+      return ApiResult.success(
+        message is String ? message : 'تم حفظ البيانات بنجاح',
       );
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

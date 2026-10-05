@@ -44,7 +44,7 @@ class ServicePricesCubit extends Cubit<ServicePricesState>
       offersFollowUpConsultation: state.offersFollowUpConsultation,
       followUpConsultationValidityDays: state.offersFollowUpConsultation
           ? state.followUpConsultationValidityDays
-          : null,
+          : 0,
     );
 
     final response = await _servicePricesRepo.submitServicePrices(model);
