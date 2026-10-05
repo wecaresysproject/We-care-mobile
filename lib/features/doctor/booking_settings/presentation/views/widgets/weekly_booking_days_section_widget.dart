@@ -11,9 +11,11 @@ import 'package:we_care/features/doctor/booking_settings/presentation/views/widg
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/weekday_label.dart';
 import 'package:we_care/generated/l10n.dart';
 
-/// Section 2 — "Weekly Booking Days": one switch per weekday.
+/// Section 3 — "Weekly Booking Days": one switch per weekday.
 class WeeklyBookingDaysSectionWidget extends StatelessWidget {
   const WeeklyBookingDaysSectionWidget({super.key});
+
+  static const _daysPerRow = 4;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class WeeklyBookingDaysSectionWidget extends StatelessWidget {
           BookingSettingsSectionHeaderWidget(
             icon: Icons.event_note_outlined,
             title: localization.bookingSettingsFormWeeklyDaysTitle,
-            stepNumber: 2,
+            stepNumber: 3,
             badgeBackgroundColor: AppColorsManager.basicDataSkyBadgeBackground,
             badgeIconColor: AppColorsManager.basicDataSkyBadgeIcon,
           ),
@@ -56,21 +58,29 @@ class WeeklyBookingDaysSectionWidget extends StatelessWidget {
                 schedule.day: schedule.isEnabled,
             },
             builder: (context, enabledByDay) {
-              return Wrap(
-                alignment: WrapAlignment.spaceBetween,
-                runSpacing: 16.h,
+              final days = Weekday.values;
+              return Column(
                 children: [
-                  for (final day in Weekday.values)
-                    SizedBox(
-                      width: 64.w,
-                      child: BookingDaySwitchWidget(
-                        label: weekdayLabel(context, day),
-                        value: enabledByDay[day] ?? false,
-                        onChanged: (_) => context
-                            .read<BookingSettingsCubit>()
-                            .toggleDayEnabled(day),
-                      ),
+                  for (var start = 0;
+                      start < days.length;
+                      start += _daysPerRow) ...[
+                    if (start > 0) verticalSpacing(16),
+                    // spaceEvenly: equal gaps between days and at both
+                    // edges, computed per row regardless of its day count.
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        for (final day in days.skip(start).take(_daysPerRow))
+                          BookingDaySwitchWidget(
+                            label: weekdayLabel(context, day),
+                            value: enabledByDay[day] ?? false,
+                            onChanged: (_) => context
+                                .read<BookingSettingsCubit>()
+                                .toggleDayEnabled(day),
+                          ),
+                      ],
                     ),
+                  ],
                 ],
               );
             },
