@@ -60,6 +60,13 @@ class AwardsCubit extends Cubit<AwardsState> with SafeEmitMixin<AwardsState> {
     _touch();
   }
 
+  /// [date] comes from the date picker as `yyyy-MM-dd`; only the year is kept.
+  void updateAwardYear(Key entryKey, String date) {
+    final entry = state.entries.firstWhere((entry) => entry.key == entryKey);
+    entry.selectedYear = DateTime.parse(date).year.toString();
+    _touch();
+  }
+
   void _touch() {
     safeEmit(state.copyWith(entries: [...state.entries]));
   }

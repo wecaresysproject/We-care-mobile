@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -138,6 +139,8 @@ class _SubmitButton extends StatelessWidget {
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
+          if (!context.mounted) return;
+          context.pop(result: true);
         } else if (state.submissionStatus == RequestStatus.failure) {
           await showError(state.message!);
         }

@@ -11,22 +11,21 @@ class MembershipFormEntry {
   final Key key;
   String? selectedCountry;
   String? selectedMembershipLevel;
+  String? selectedYear;
 
   final associationNameController = TextEditingController();
   final membershipNumberController = TextEditingController();
-  final yearController = TextEditingController();
 
   MembershipModel toModel() => MembershipModel(
         countryName: selectedCountry ?? '',
         associationName: associationNameController.text.trim(),
         membershipNumber: membershipNumberController.text.trim(),
         membershipLevel: selectedMembershipLevel ?? '',
-        year: yearController.text.trim(),
+        year: selectedYear ?? '',
       );
 
   void dispose() {
     associationNameController.dispose();
     membershipNumberController.dispose();
-    yearController.dispose();
   }
 }

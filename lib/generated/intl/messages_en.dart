@@ -79,15 +79,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "awardsFormChooseCountry": MessageLookupByLibrary.simpleMessage(
       "Choose the country name",
     ),
+    "awardsFormChooseYear": MessageLookupByLibrary.simpleMessage(
+      "Choose the year",
+    ),
     "awardsFormCountryLabel": MessageLookupByLibrary.simpleMessage("Country"),
     "awardsFormEnterAwardName": MessageLookupByLibrary.simpleMessage(
       "Enter your awards & honors",
     ),
     "awardsFormEnterGrantingBody": MessageLookupByLibrary.simpleMessage(
       "Enter the granting body name",
-    ),
-    "awardsFormEnterYear": MessageLookupByLibrary.simpleMessage(
-      "Enter the year",
     ),
     "awardsFormGrantingBodyLabel": MessageLookupByLibrary.simpleMessage(
       "Granting Body",
@@ -327,20 +327,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Board Certifications / Professional Courses",
         ),
-    "certificatesFormChooseBachelorDegree":
-        MessageLookupByLibrary.simpleMessage("Choose the degree"),
     "certificatesFormChooseCountry": MessageLookupByLibrary.simpleMessage(
       "Choose the country",
-    ),
-    "certificatesFormChooseDiplomaDegree": MessageLookupByLibrary.simpleMessage(
-      "Choose the degree",
-    ),
-    "certificatesFormChooseDoctorateDegree":
-        MessageLookupByLibrary.simpleMessage("Choose the degree"),
-    "certificatesFormChooseFellowshipDegree":
-        MessageLookupByLibrary.simpleMessage("Choose the degree"),
-    "certificatesFormChooseMasterDegree": MessageLookupByLibrary.simpleMessage(
-      "Choose the degree",
     ),
     "certificatesFormChooseObtainedDate": MessageLookupByLibrary.simpleMessage(
       "Enter the date you obtained the certificate",
@@ -358,12 +346,25 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("Doctorate Degree"),
     "certificatesFormDoctorateSectionTitle":
         MessageLookupByLibrary.simpleMessage("Doctorate"),
+    "certificatesFormEnterBachelorDegree": MessageLookupByLibrary.simpleMessage(
+      "Enter the degree name",
+    ),
     "certificatesFormEnterBoardCertificationDegree":
         MessageLookupByLibrary.simpleMessage(
           "Enter the course / specialized certificate name",
         ),
+    "certificatesFormEnterDiplomaDegree": MessageLookupByLibrary.simpleMessage(
+      "Enter the degree name",
+    ),
+    "certificatesFormEnterDoctorateDegree":
+        MessageLookupByLibrary.simpleMessage("Enter the degree name"),
+    "certificatesFormEnterFellowshipDegree":
+        MessageLookupByLibrary.simpleMessage("Enter the degree name"),
     "certificatesFormEnterGrantingBody": MessageLookupByLibrary.simpleMessage(
       "Enter the granting body name",
+    ),
+    "certificatesFormEnterMasterDegree": MessageLookupByLibrary.simpleMessage(
+      "Enter the degree name",
     ),
     "certificatesFormFellowshipDegreeLabel":
         MessageLookupByLibrary.simpleMessage("Fellowship Degree"),
@@ -604,6 +605,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "membershipFormChooseLevel": MessageLookupByLibrary.simpleMessage(
       "Choose the membership level",
     ),
+    "membershipFormChooseYear": MessageLookupByLibrary.simpleMessage(
+      "Choose the year",
+    ),
     "membershipFormCountryLabel": MessageLookupByLibrary.simpleMessage(
       "Country",
     ),
@@ -612,9 +616,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "membershipFormEnterNumber": MessageLookupByLibrary.simpleMessage(
       "Enter the membership number",
-    ),
-    "membershipFormEnterYear": MessageLookupByLibrary.simpleMessage(
-      "Enter the year",
     ),
     "membershipFormLevelLabel": MessageLookupByLibrary.simpleMessage(
       "Membership Level",
@@ -793,14 +794,14 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Add another research if available",
         ),
+    "researchAndPapersFormChooseYear": MessageLookupByLibrary.simpleMessage(
+      "Choose the year",
+    ),
     "researchAndPapersFormEnterLink": MessageLookupByLibrary.simpleMessage(
       "Enter the research link or Digital Object Identifier",
     ),
     "researchAndPapersFormEnterTitle": MessageLookupByLibrary.simpleMessage(
       "Enter your research & papers",
-    ),
-    "researchAndPapersFormEnterYear": MessageLookupByLibrary.simpleMessage(
-      "Enter the year",
     ),
     "researchAndPapersFormLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Research Link / DOI / PMID",

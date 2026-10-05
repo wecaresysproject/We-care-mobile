@@ -10,11 +10,10 @@ import 'package:we_care/features/doctor/booking_settings/presentation/views/widg
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_value_field_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
-/// Section 1 — "Daily Bookings": the max-bookings-per-day value, picked by
-/// hand or calculated from the interval and the weekly days/times (see
-/// [BookingValueSource]).
-class DailyBookingsLimitSectionWidget extends StatelessWidget {
-  const DailyBookingsLimitSectionWidget({super.key});
+/// Section 2 — "Appointment Interval": picked by hand, or calculated from
+/// the daily limit and the weekly days/times (see [BookingValueSource]).
+class BookingIntervalSectionWidget extends StatelessWidget {
+  const BookingIntervalSectionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +34,9 @@ class DailyBookingsLimitSectionWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BookingSettingsSectionHeaderWidget(
-            icon: Icons.groups_outlined,
-            title: localization.bookingSettingsFormDailyLimitTitle,
-            stepNumber: 1,
+            icon: Icons.access_time_rounded,
+            title: localization.bookingSettingsFormIntervalTitle,
+            stepNumber: 2,
             badgeBackgroundColor: AppColorsManager.basicDataBlueBadgeBackground,
             badgeIconColor: AppColorsManager.basicDataBlueBadgeIcon,
           ),
@@ -45,12 +44,10 @@ class DailyBookingsLimitSectionWidget extends StatelessWidget {
           BlocBuilder<BookingSettingsCubit, BookingSettingsState>(
             buildWhen: (prev, curr) =>
                 prev.valueSource != curr.valueSource ||
-                prev.effectiveMaxDailyBookings !=
-                    curr.effectiveMaxDailyBookings,
+                prev.effectiveIntervalMinutes != curr.effectiveIntervalMinutes,
             builder: (context, state) {
               final cubit = context.read<BookingSettingsCubit>();
-              final isManual =
-                  state.valueSource == BookingValueSource.dailyBookings;
+              final isManual = state.valueSource == BookingValueSource.interval;
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +56,7 @@ class DailyBookingsLimitSectionWidget extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          localization.bookingSettingsFormDailyLimitLabel,
+                          'مدة الموعد الواحد',
                           style: AppTextStyles.font14blackWeight600,
                         ),
                       ),
@@ -68,35 +65,27 @@ class DailyBookingsLimitSectionWidget extends StatelessWidget {
                         width: 140.w,
                         child: BookingValueFieldWidget(
                           isManual: isManual,
-                          value: state.effectiveMaxDailyBookings,
-                          unit: localization.bookingSettingsFormDailyLimitUnit,
-                          options: BookingSettingsCubit.maxDailyBookingsOptions,
+                          value: state.effectiveIntervalMinutes,
+                          unit: localization.bookingSettingsFormIntervalUnit,
+                          options: BookingSettingsCubit.intervalMinutesOptions,
                           bottomSheetTitle:
-                              localization.bookingSettingsFormDailyLimitLabel,
-                          onSelected: cubit.updateMaxDailyBookings,
+                              localization.bookingSettingsFormIntervalTitle,
+                          onSelected: cubit.updateIntervalMinutes,
                         ),
                       ),
                     ],
                   ),
                   verticalSpacing(8),
-                  // Full card width + scaleDown so the hint always stays on
-                  // one line.
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      localization.bookingSettingsFormDailyLimitHint,
-                      style: AppTextStyles.font13GreyWeight400,
-                      maxLines: 1,
-                    ),
+                  Text(
+                    localization.bookingSettingsFormIntervalSubtitle,
+                    style: AppTextStyles.font13GreyWeight400,
                   ),
                   if (!isManual) ...[
                     verticalSpacing(4),
                     BookingCalculatedNoteWidget(
-                      hasValue: state.effectiveMaxDailyBookings != null,
-                      onSetManually: () => cubit.selectValueSource(
-                        BookingValueSource.dailyBookings,
-                      ),
+                      hasValue: state.effectiveIntervalMinutes != null,
+                      onSetManually: () =>
+                          cubit.selectValueSource(BookingValueSource.interval),
                     ),
                   ],
                 ],

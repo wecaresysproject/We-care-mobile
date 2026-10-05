@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/features/doctor/booking_settings/data/models/booking_settings_request_body_model.dart';
+import 'package:we_care/features/doctor/booking_settings/data/models/booking_value_source.dart';
 import 'package:we_care/features/doctor/booking_settings/data/models/time_range_model.dart';
 import 'package:we_care/features/doctor/booking_settings/data/models/weekday.dart';
 import 'package:we_care/features/doctor/booking_settings/data/models/weekday_schedule_model.dart';
@@ -25,6 +26,23 @@ class BookingSettingsCubit extends Cubit<BookingSettingsState>
 
   void updateIntervalMinutes(int value) =>
       safeEmit(state.copyWith(intervalMinutes: value));
+
+  /// Makes [source] the hand-picked value and locks the other one. The newly
+  /// manual value starts from what was just calculated, so nothing jumps.
+  void selectValueSource(BookingValueSource source) {
+    if (source == state.valueSource) return;
+    safeEmit(
+      state.copyWith(
+        valueSource: source,
+        maxDailyBookings: source == BookingValueSource.dailyBookings
+            ? state.calculatedMaxDailyBookings
+            : null,
+        intervalMinutes: source == BookingValueSource.interval
+            ? state.calculatedIntervalMinutes
+            : null,
+      ),
+    );
+  }
 
   void toggleDayEnabled(Weekday day) {
     safeEmit(
@@ -73,11 +91,12 @@ class BookingSettingsCubit extends Cubit<BookingSettingsState>
   }
 
   Future<void> submitBookingSettings() async {
+    if (!state.canSubmit) return;
     safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
     final model = BookingSettingsRequestBodyModel(
-      maxDailyBookings: state.maxDailyBookings,
-      intervalMinutes: state.intervalMinutes,
+      maxDailyBookings: state.effectiveMaxDailyBookings!,
+      intervalMinutes: state.effectiveIntervalMinutes!,
       weeklySchedule: state.weeklySchedule,
     );
 

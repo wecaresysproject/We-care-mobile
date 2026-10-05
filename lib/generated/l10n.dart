@@ -2064,11 +2064,11 @@ class S {
     );
   }
 
-  /// `Choose the degree`
-  String get certificatesFormChooseBachelorDegree {
+  /// `Enter the degree name`
+  String get certificatesFormEnterBachelorDegree {
     return Intl.message(
-      'Choose the degree',
-      name: 'certificatesFormChooseBachelorDegree',
+      'Enter the degree name',
+      name: 'certificatesFormEnterBachelorDegree',
       desc: '',
       args: [],
     );
@@ -2104,11 +2104,11 @@ class S {
     );
   }
 
-  /// `Choose the degree`
-  String get certificatesFormChooseDiplomaDegree {
+  /// `Enter the degree name`
+  String get certificatesFormEnterDiplomaDegree {
     return Intl.message(
-      'Choose the degree',
-      name: 'certificatesFormChooseDiplomaDegree',
+      'Enter the degree name',
+      name: 'certificatesFormEnterDiplomaDegree',
       desc: '',
       args: [],
     );
@@ -2144,11 +2144,11 @@ class S {
     );
   }
 
-  /// `Choose the degree`
-  String get certificatesFormChooseMasterDegree {
+  /// `Enter the degree name`
+  String get certificatesFormEnterMasterDegree {
     return Intl.message(
-      'Choose the degree',
-      name: 'certificatesFormChooseMasterDegree',
+      'Enter the degree name',
+      name: 'certificatesFormEnterMasterDegree',
       desc: '',
       args: [],
     );
@@ -2184,11 +2184,11 @@ class S {
     );
   }
 
-  /// `Choose the degree`
-  String get certificatesFormChooseDoctorateDegree {
+  /// `Enter the degree name`
+  String get certificatesFormEnterDoctorateDegree {
     return Intl.message(
-      'Choose the degree',
-      name: 'certificatesFormChooseDoctorateDegree',
+      'Enter the degree name',
+      name: 'certificatesFormEnterDoctorateDegree',
       desc: '',
       args: [],
     );
@@ -2224,11 +2224,11 @@ class S {
     );
   }
 
-  /// `Choose the degree`
-  String get certificatesFormChooseFellowshipDegree {
+  /// `Enter the degree name`
+  String get certificatesFormEnterFellowshipDegree {
     return Intl.message(
-      'Choose the degree',
-      name: 'certificatesFormChooseFellowshipDegree',
+      'Enter the degree name',
+      name: 'certificatesFormEnterFellowshipDegree',
       desc: '',
       args: [],
     );
@@ -2414,11 +2414,11 @@ class S {
     );
   }
 
-  /// `Enter the year`
-  String get researchAndPapersFormEnterYear {
+  /// `Choose the year`
+  String get researchAndPapersFormChooseYear {
     return Intl.message(
-      'Enter the year',
-      name: 'researchAndPapersFormEnterYear',
+      'Choose the year',
+      name: 'researchAndPapersFormChooseYear',
       desc: '',
       args: [],
     );
@@ -2854,11 +2854,11 @@ class S {
     );
   }
 
-  /// `Enter the year`
-  String get membershipFormEnterYear {
+  /// `Choose the year`
+  String get membershipFormChooseYear {
     return Intl.message(
-      'Enter the year',
-      name: 'membershipFormEnterYear',
+      'Choose the year',
+      name: 'membershipFormChooseYear',
       desc: '',
       args: [],
     );
@@ -2964,11 +2964,11 @@ class S {
     );
   }
 
-  /// `Enter the year`
-  String get awardsFormEnterYear {
+  /// `Choose the year`
+  String get awardsFormChooseYear {
     return Intl.message(
-      'Enter the year',
-      name: 'awardsFormEnterYear',
+      'Choose the year',
+      name: 'awardsFormChooseYear',
       desc: '',
       args: [],
     );

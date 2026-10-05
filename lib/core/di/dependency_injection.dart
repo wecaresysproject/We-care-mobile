@@ -43,6 +43,7 @@ import 'package:we_care/features/doctor/bookings/data/repos/bookings_repo.dart';
 import 'package:we_care/features/doctor/bookings/logic/cubit/bookings_cubit.dart';
 import 'package:we_care/features/doctor/certificates/data/repos/certificates_repo.dart';
 import 'package:we_care/features/doctor/certificates/logic/cubit/certificates_cubit.dart';
+import 'package:we_care/features/doctor/doctor_services.dart';
 import 'package:we_care/features/doctor/experience/data/repos/experience_repo.dart';
 import 'package:we_care/features/doctor/experience/logic/cubit/experience_cubit.dart';
 import 'package:we_care/features/doctor/home/data/repos/doctor_home_repo.dart';
@@ -927,43 +928,69 @@ void setupAppRepos() {
     () => BookingsRepo(),
   );
   getIt.registerLazySingleton<DoctorBasicDataRepo>(
-    () => DoctorBasicDataRepo(),
+    () => DoctorBasicDataRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<BankInfoRepo>(
-    () => BankInfoRepo(),
+    () => BankInfoRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<CertificatesRepo>(
-    () => CertificatesRepo(),
+    () => CertificatesRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<MediaArticlesRepo>(
-    () => MediaArticlesRepo(),
+    () => MediaArticlesRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<ExperienceRepo>(
-    () => ExperienceRepo(),
+    () => ExperienceRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<ProfessionalLicensesRepo>(
-    () => ProfessionalLicensesRepo(),
+    () => ProfessionalLicensesRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<ResearchAndPapersRepo>(
-    () => ResearchAndPapersRepo(),
+    () => ResearchAndPapersRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<MembershipRepo>(
-    () => MembershipRepo(),
+    () => MembershipRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<AwardsRepo>(
-    () => AwardsRepo(),
+    () => AwardsRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<MedicalSpecialtyRepo>(
-    () => MedicalSpecialtyRepo(),
+    () => MedicalSpecialtyRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<ServicePricesRepo>(
-    () => ServicePricesRepo(),
+    () => ServicePricesRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<BookingSettingsRepo>(
-    () => BookingSettingsRepo(),
+    () => BookingSettingsRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<MonthlyExaminationTargetRepo>(
-    () => MonthlyExaminationTargetRepo(),
+    () => MonthlyExaminationTargetRepo(
+      getIt<DoctorServices>(),
+    ),
   );
 }
 
@@ -1038,6 +1065,9 @@ void setupAppServices() {
     () => AllergyServices(
       dio,
     ),
+  );
+  getIt.registerLazySingleton<DoctorServices>(
+    () => DoctorServices(dio),
   );
   getIt.registerLazySingleton<OnlineDoctorServices>(
     () => OnlineDoctorServices(

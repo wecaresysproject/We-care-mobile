@@ -9,20 +9,19 @@ class ResearchPaperFormEntry {
   ResearchPaperFormEntry() : key = UniqueKey();
 
   final Key key;
+  String? selectedYear;
 
   final titleController = TextEditingController();
-  final yearController = TextEditingController();
   final doiOrLinkController = TextEditingController();
 
   ResearchPaperModel toModel() => ResearchPaperModel(
         title: titleController.text.trim(),
-        year: yearController.text.trim(),
+        year: selectedYear ?? '',
         doiOrLink: doiOrLinkController.text.trim(),
       );
 
   void dispose() {
     titleController.dispose();
-    yearController.dispose();
     doiOrLinkController.dispose();
   }
 }

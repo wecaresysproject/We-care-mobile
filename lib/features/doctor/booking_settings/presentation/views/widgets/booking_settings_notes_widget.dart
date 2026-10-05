@@ -6,7 +6,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_settings_section_header_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
-/// Section 4 — "Notes": the closing info box explaining how these settings
+/// Section 5 — "Notes": the closing info box explaining how these settings
 /// are used.
 class BookingSettingsNotesWidget extends StatelessWidget {
   const BookingSettingsNotesWidget({super.key});
@@ -32,7 +32,7 @@ class BookingSettingsNotesWidget extends StatelessWidget {
           BookingSettingsSectionHeaderWidget(
             icon: Icons.lightbulb_outline,
             title: localization.bookingSettingsFormNotesTitle,
-            stepNumber: 4,
+            stepNumber: 5,
             badgeBackgroundColor:
                 AppColorsManager.basicDataAmberBadgeBackground,
             badgeIconColor: AppColorsManager.basicDataAmberBadgeIcon,

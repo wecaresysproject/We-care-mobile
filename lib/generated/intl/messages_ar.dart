@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "awardsFormChooseCountry": MessageLookupByLibrary.simpleMessage(
       "اختر اسم الدولة",
     ),
+    "awardsFormChooseYear": MessageLookupByLibrary.simpleMessage("اختر السنة"),
     "awardsFormCountryLabel": MessageLookupByLibrary.simpleMessage("الدولة"),
     "awardsFormEnterAwardName": MessageLookupByLibrary.simpleMessage(
       "اكتب الجوائز والتكريمات الخاصة بك",
@@ -84,7 +85,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "awardsFormEnterGrantingBody": MessageLookupByLibrary.simpleMessage(
       "اكتب اسم الجهة المانحة",
     ),
-    "awardsFormEnterYear": MessageLookupByLibrary.simpleMessage("اكتب السنة"),
     "awardsFormGrantingBodyLabel": MessageLookupByLibrary.simpleMessage(
       "الجهة المانحة",
     ),
@@ -319,20 +319,8 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "الدورات التخصصية والشهادات المهنية",
         ),
-    "certificatesFormChooseBachelorDegree":
-        MessageLookupByLibrary.simpleMessage("اختر الدرجة"),
     "certificatesFormChooseCountry": MessageLookupByLibrary.simpleMessage(
       "اختر الدولة",
-    ),
-    "certificatesFormChooseDiplomaDegree": MessageLookupByLibrary.simpleMessage(
-      "اختر الدرجة",
-    ),
-    "certificatesFormChooseDoctorateDegree":
-        MessageLookupByLibrary.simpleMessage("اختر الدرجة"),
-    "certificatesFormChooseFellowshipDegree":
-        MessageLookupByLibrary.simpleMessage("اختر الدرجة"),
-    "certificatesFormChooseMasterDegree": MessageLookupByLibrary.simpleMessage(
-      "اختر الدرجة",
     ),
     "certificatesFormChooseObtainedDate": MessageLookupByLibrary.simpleMessage(
       "اكتب تاريخ حصولك على الشهادة",
@@ -350,12 +338,25 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage("درجة الدكتوراة"),
     "certificatesFormDoctorateSectionTitle":
         MessageLookupByLibrary.simpleMessage("الدكتوراة"),
+    "certificatesFormEnterBachelorDegree": MessageLookupByLibrary.simpleMessage(
+      "اكتب اسم الدرجة",
+    ),
     "certificatesFormEnterBoardCertificationDegree":
         MessageLookupByLibrary.simpleMessage(
           "اكتب اسم الدورة / الشهادة التخصصية",
         ),
+    "certificatesFormEnterDiplomaDegree": MessageLookupByLibrary.simpleMessage(
+      "اكتب اسم الدرجة",
+    ),
+    "certificatesFormEnterDoctorateDegree":
+        MessageLookupByLibrary.simpleMessage("اكتب اسم الدرجة"),
+    "certificatesFormEnterFellowshipDegree":
+        MessageLookupByLibrary.simpleMessage("اكتب اسم الدرجة"),
     "certificatesFormEnterGrantingBody": MessageLookupByLibrary.simpleMessage(
       "اكتب اسم الجهة المانحة",
+    ),
+    "certificatesFormEnterMasterDegree": MessageLookupByLibrary.simpleMessage(
+      "اكتب اسم الدرجة",
     ),
     "certificatesFormFellowshipDegreeLabel":
         MessageLookupByLibrary.simpleMessage("درجة الزمالة"),
@@ -581,6 +582,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "membershipFormChooseLevel": MessageLookupByLibrary.simpleMessage(
       "اختر مستوى العضوية",
     ),
+    "membershipFormChooseYear": MessageLookupByLibrary.simpleMessage(
+      "اختر السنة",
+    ),
     "membershipFormCountryLabel": MessageLookupByLibrary.simpleMessage(
       "الدولة",
     ),
@@ -589,9 +593,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "membershipFormEnterNumber": MessageLookupByLibrary.simpleMessage(
       "اكتب رقم العضوية",
-    ),
-    "membershipFormEnterYear": MessageLookupByLibrary.simpleMessage(
-      "اكتب السنة",
     ),
     "membershipFormLevelLabel": MessageLookupByLibrary.simpleMessage(
       "مستوى العضوية",
@@ -759,14 +760,14 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "researchAndPapersFormAddAnotherAction":
         MessageLookupByLibrary.simpleMessage("أضف بحث اخر ان وجد"),
+    "researchAndPapersFormChooseYear": MessageLookupByLibrary.simpleMessage(
+      "اختر السنة",
+    ),
     "researchAndPapersFormEnterLink": MessageLookupByLibrary.simpleMessage(
       "اكتب رابط البحث أو Digital Object Identifier",
     ),
     "researchAndPapersFormEnterTitle": MessageLookupByLibrary.simpleMessage(
       "اكتب أبحاثك ورسائلك",
-    ),
-    "researchAndPapersFormEnterYear": MessageLookupByLibrary.simpleMessage(
-      "اكتب السنة",
     ),
     "researchAndPapersFormLinkLabel": MessageLookupByLibrary.simpleMessage(
       "رابط البحث / DOI / PMID",

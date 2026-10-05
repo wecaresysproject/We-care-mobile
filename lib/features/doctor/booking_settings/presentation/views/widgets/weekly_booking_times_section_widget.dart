@@ -5,13 +5,11 @@ import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/booking_settings/logic/cubit/booking_settings_cubit.dart';
-import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_interval_card_widget.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_settings_section_header_widget.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/weekday_schedule_row_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
-/// Section 3 — "Weekly Booking Times": the per-day time-range list beside
-/// the appointment-interval card.
+/// Section 4 — "Weekly Booking Times": the per-day time-range list.
 class WeeklyBookingTimesSectionWidget extends StatelessWidget {
   const WeeklyBookingTimesSectionWidget({super.key});
 
@@ -36,7 +34,7 @@ class WeeklyBookingTimesSectionWidget extends StatelessWidget {
           BookingSettingsSectionHeaderWidget(
             icon: Icons.event_available_outlined,
             title: localization.bookingSettingsFormWeeklyTimesTitle,
-            stepNumber: 3,
+            stepNumber: 4,
             badgeBackgroundColor: AppColorsManager.basicDataSkyBadgeBackground,
             badgeIconColor: AppColorsManager.basicDataSkyBadgeIcon,
           ),
@@ -49,32 +47,7 @@ class WeeklyBookingTimesSectionWidget extends StatelessWidget {
             ),
           ),
           verticalSpacing(16),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 560.w;
-              final scheduleList = _WeekdayScheduleList();
-              final intervalCard = const BookingIntervalCardWidget();
-
-              if (!isWide) {
-                return Column(
-                  children: [
-                    scheduleList,
-                    verticalSpacing(16),
-                    intervalCard,
-                  ],
-                );
-              }
-
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(flex: 3, child: scheduleList),
-                  horizontalSpacing(16),
-                  Expanded(flex: 2, child: intervalCard),
-                ],
-              );
-            },
-          ),
+          const _WeekdayScheduleList(),
         ],
       ),
     );

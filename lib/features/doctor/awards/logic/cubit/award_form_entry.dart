@@ -10,21 +10,20 @@ class AwardFormEntry {
 
   final Key key;
   String? selectedCountry;
+  String? selectedYear;
 
   final awardNameController = TextEditingController();
   final grantingBodyController = TextEditingController();
-  final yearController = TextEditingController();
 
   AwardModel toModel() => AwardModel(
         awardName: awardNameController.text.trim(),
         countryName: selectedCountry ?? '',
         grantingBody: grantingBodyController.text.trim(),
-        year: yearController.text.trim(),
+        year: selectedYear ?? '',
       );
 
   void dispose() {
     awardNameController.dispose();
     grantingBodyController.dispose();
-    yearController.dispose();
   }
 }
