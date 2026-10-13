@@ -161,6 +161,7 @@ import '../../features/show_data_entry_types/Presentation/views/medical_categori
 import '../../features/online_doctor/presentation/views/doctor_search_view.dart';
 import '../../features/online_doctor/data/models/doctor_model.dart';
 import '../../features/online_doctor/presentation/views/book_appointment_view.dart';
+import '../../features/online_doctor/data/models/book_appointment_request.dart';
 import '../../features/online_doctor/presentation/views/checkout_view.dart';
 import '../../features/online_doctor/presentation/views/doctor_profile_view.dart';
 import '../../features/online_doctor/presentation/views/doctors_list_view.dart';
@@ -171,8 +172,11 @@ import '../../features/online_doctor/presentation/views/examination_call_view.da
 import '../../features/online_doctor/presentation/views/examination_room_view.dart';
 import '../../features/online_doctor/presentation/views/booking_details_view.dart';
 import '../../features/online_doctor/presentation/views/bookings_history_view.dart';
+import '../../features/online_doctor/presentation/views/edit_booking_comment_view.dart';
+import '../../features/online_doctor/presentation/views/edit_booking_rating_view.dart';
 import '../../features/online_doctor/presentation/views/my_bookings_view.dart';
 import '../../features/online_doctor/presentation/views/online_doctor_view.dart';
+import '../../features/online_doctor/presentation/views/reschedule_appointment_view.dart';
 import '../../features/sign_up/Presentation/views/sign_up_view.dart';
 import '../../features/user_type/Presentation/views/user_type_view.dart';
 import '../global/SharedWidgets/bottom_nav_bar.dart';
@@ -903,6 +907,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const MyBookingsView(),
         );
+      case Routes.rescheduleAppointmentView:
+        final booking = arguments as BookingModel;
+        return MaterialPageRoute(
+          builder: (_) => RescheduleAppointmentView(booking: booking),
+        );
       case Routes.bookingsHistoryView:
         return MaterialPageRoute(
           builder: (_) => const BookingsHistoryView(),
@@ -911,6 +920,16 @@ class AppRouter {
         final booking = arguments as BookingHistoryModel;
         return MaterialPageRoute(
           builder: (_) => BookingDetailsView(booking: booking),
+        );
+      case Routes.editBookingRatingView:
+        final booking = arguments as BookingHistoryModel;
+        return MaterialPageRoute(
+          builder: (_) => EditBookingRatingView(booking: booking),
+        );
+      case Routes.editBookingCommentView:
+        final booking = arguments as BookingHistoryModel;
+        return MaterialPageRoute(
+          builder: (_) => EditBookingCommentView(booking: booking),
         );
       case Routes.medicalExaminationView:
         return MaterialPageRoute(
@@ -943,7 +962,8 @@ class AppRouter {
         );
       case Routes.checkoutView:
         return MaterialPageRoute(
-          builder: (_) => CheckoutView(doctor: arguments as DoctorModel),
+          builder: (_) =>
+              CheckoutView(request: arguments as BookAppointmentRequest),
         );
       //! Doctor
       case Routes.doctorHomeView:

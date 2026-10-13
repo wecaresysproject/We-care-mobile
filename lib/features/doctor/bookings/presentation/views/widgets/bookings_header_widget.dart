@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/features/doctor/bookings/presentation/views/widgets/patient_avatar_widget.dart';
+// import 'package:we_care/features/doctor/bookings/presentation/views/widgets/patient_avatar_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class BookingsHeaderWidget extends StatelessWidget {
@@ -62,33 +63,39 @@ class BookingsHeaderWidget extends StatelessWidget {
             SizedBox(width: 44.w),
           ],
         ),
-        SizedBox(height: 16.h),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              color: AppColorsManager.scaffoldBackGroundColor,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: AppColorsManager.shimmerBase),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(doctorName, style: AppTextStyles.font12blackWeight500),
-                    SizedBox(height: 2.h),
-                    Text(specialty, style: AppTextStyles.font13GreyWeight400),
-                  ],
-                ),
-                SizedBox(width: 8.w),
-                PatientAvatarWidget(photoUrl: doctorPhotoUrl, size: 40),
-              ],
-            ),
-          ),
-        ),
+        verticalSpacing(20),
+        //! كارت الطبيب (الصورة والاسم والتخصص) متوقف مؤقتًا — الـ API لسه مش
+        //! بيرجّع `doctor`. يرجع لما الـ backend يضيفه.
+        // if (doctorName.trim().isNotEmpty) ...[
+        //   SizedBox(height: 16.h),
+        //   Align(
+        //     alignment: Alignment.centerRight,
+        //     child: Container(
+        //       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+        //       decoration: BoxDecoration(
+        //         color: AppColorsManager.scaffoldBackGroundColor,
+        //         borderRadius: BorderRadius.circular(12.r),
+        //         border: Border.all(color: AppColorsManager.shimmerBase),
+        //       ),
+        //       child: Row(
+        //         mainAxisSize: MainAxisSize.min,
+        //         children: [
+        //           Column(
+        //             crossAxisAlignment: CrossAxisAlignment.end,
+        //             children: [
+        //               Text(doctorName,
+        //                   style: AppTextStyles.font12blackWeight500),
+        //               SizedBox(height: 2.h),
+        //               Text(specialty, style: AppTextStyles.font13GreyWeight400),
+        //             ],
+        //           ),
+        //           SizedBox(width: 8.w),
+        //           PatientAvatarWidget(photoUrl: doctorPhotoUrl, size: 40),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ],
     );
   }

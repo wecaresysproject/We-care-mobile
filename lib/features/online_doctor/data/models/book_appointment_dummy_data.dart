@@ -1,59 +1,56 @@
 import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_slot_model.dart';
+import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/data/models/data_access_module_option.dart';
 
 //! بيانات وهمية مؤقتة لحد ما endpoints الحجز والدفع تجهز.
 
+/// توقيتات كل يوم متاح — عدد الأيام بعد النهارده، وبدايات المواعيد
+/// (ساعة، دقيقة). كل ميعاد مدته [BookingModel.slotDuration].
+const List<(int, List<(int, int)>)> _availableSlotsByDayOffset = [
+  (0, [(12, 30), (14, 0), (18, 0)]),
+  (2, [(13, 30), (15, 0), (17, 30), (20, 0)]),
+  (4, [(12, 30), (16, 0)]),
+  (6, [(11, 0), (13, 0), (19, 0)]),
+  (8, [(14, 0), (17, 0)]),
+];
+
 /// الأيام المتاحة للحجز مرتبة من الأقرب للأبعد — أول يوم بيظهر على اليمين،
 /// وتوقيتات اليوم المختار بتظهر تحت صف الأيام.
-const List<AppointmentDayModel> availableAppointmentDays = [
-  AppointmentDayModel(
-    dayLabel: "اليوم",
-    slots: [
-      AppointmentTimeSlot(fromTime: "12:30م", toTime: "1م"),
-      AppointmentTimeSlot(fromTime: "2م", toTime: "2:30م"),
-      AppointmentTimeSlot(fromTime: "6م", toTime: "6:30م"),
-    ],
-  ),
-  AppointmentDayModel(
-    dayLabel: "الثلاثاء",
-    dateLabel: "١٠ / ٧",
-    slots: [
-      AppointmentTimeSlot(fromTime: "1:30م", toTime: "2م"),
-      AppointmentTimeSlot(fromTime: "3م", toTime: "3:30م"),
-      AppointmentTimeSlot(fromTime: "5:30م", toTime: "6م"),
-      AppointmentTimeSlot(fromTime: "8م", toTime: "8:30م"),
-    ],
-  ),
-  AppointmentDayModel(
-    dayLabel: "الخميس",
-    dateLabel: "١٣ / ٧",
-    slots: [
-      AppointmentTimeSlot(fromTime: "12:30م", toTime: "1م"),
-      AppointmentTimeSlot(fromTime: "4م", toTime: "4:30م"),
-    ],
-  ),
-  AppointmentDayModel(
-    dayLabel: "السبت",
-    dateLabel: "١٥ / ٧",
-    slots: [
-      AppointmentTimeSlot(fromTime: "11ص", toTime: "11:30ص"),
-      AppointmentTimeSlot(fromTime: "1م", toTime: "1:30م"),
-      AppointmentTimeSlot(fromTime: "7م", toTime: "7:30م"),
-    ],
-  ),
-  AppointmentDayModel(
-    dayLabel: "الإثنين",
-    dateLabel: "١٧ / ٧",
-    slots: [
-      AppointmentTimeSlot(fromTime: "2م", toTime: "2:30م"),
-      AppointmentTimeSlot(fromTime: "5م", toTime: "5:30م"),
-    ],
-  ),
-];
+///
+/// بتتبنى نسبةً للنهارده وبنفس شكل endpoint المواعيد المتاحة: المواعيد
+/// اللى وقتها فات مش بترجع، واليوم اللى مفيهوش مواعيد مش بيظهر.
+List<AppointmentDayModel> buildAvailableAppointmentDaysDummyData() {
+  final now = DateTime.now();
+  final days = <AppointmentDayModel>[];
+
+  for (final (dayOffset, slotStarts) in _availableSlotsByDayOffset) {
+    final date = DateTime(now.year, now.month, now.day + dayOffset);
+    final slots = <AppointmentTimeSlot>[];
+
+    for (final (hour, minute) in slotStarts) {
+      final startsAt = DateTime(date.year, date.month, date.day, hour, minute);
+      if (!startsAt.isAfter(now)) continue;
+      slots.add(
+        AppointmentTimeSlot(
+          startsAt: startsAt,
+          endsAt: startsAt.add(BookingModel.slotDuration),
+        ),
+      );
+    }
+
+    if (slots.isNotEmpty) {
+      days.add(AppointmentDayModel(date: date, slots: slots));
+    }
+  }
+
+  return days;
+}
 
 /// المدة اللى الطبيب هيقدر يشوف فيها بيانات المريض بعد الكشف —
 /// أول عنصر بيظهر على اليمين، والصف بيتسحب أفقيًا لباقى المدد.
+///
+/// نفس ترتيب [dataAccessDurationsInHours].
 const List<String> dataAccessDurations = [
   "12 ساعة",
   "يوم",
@@ -65,6 +62,20 @@ const List<String> dataAccessDurations = [
   "أسبوع",
   "10 أيام",
   "أسبوعين",
+];
+
+/// قيمة كل مدة فى [dataAccessDurations] بالساعات — دى اللى بتتبعت للـ API.
+const List<int> dataAccessDurationsInHours = [
+  12,
+  24,
+  48,
+  72,
+  96,
+  120,
+  144,
+  168,
+  240,
+  336,
 ];
 
 /// الموديولات اللى المريض بيختار منها اللى يسمح للطبيب يشوفه (صلاحيات الطبيب).

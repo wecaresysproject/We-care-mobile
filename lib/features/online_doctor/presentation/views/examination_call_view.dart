@@ -416,7 +416,8 @@ class _CallControlsRow extends StatelessWidget {
           onPressed: onMicPressed,
         ),
         _CallControlButton(
-          icon: isCameraOn ? Icons.videocam_rounded : Icons.videocam_off_rounded,
+          icon:
+              isCameraOn ? Icons.videocam_rounded : Icons.videocam_off_rounded,
           label: "الكاميرا",
           isActive: isCameraOn,
           onPressed: onCameraPressed,
@@ -430,7 +431,8 @@ class _CallControlsRow extends StatelessWidget {
           onPressed: onEndCallPressed,
         ),
         _CallControlButton(
-          icon: isSpeakerOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
+          icon:
+              isSpeakerOn ? Icons.volume_up_rounded : Icons.volume_off_rounded,
           label: "مكبر الصوت",
           isActive: isSpeakerOn,
           onPressed: onSpeakerPressed,
@@ -545,7 +547,8 @@ class _CallBottomPanel extends StatelessWidget {
                 Expanded(
                   child: _CallShortcutCard(
                     title: "أسئلتي للطبيب",
-                    description: "مراجعة الأسئلة التي أضفتها ومتابعة ما تم مناقشه",
+                    description:
+                        "مراجعة الأسئلة التي أضفتها ومتابعة ما تم مناقشه",
                     icon: Icons.quiz_rounded,
                     accentColor: OnlineDoctorTheme.accentBlue,
                     surfaceColor: OnlineDoctorTheme.iconTint,

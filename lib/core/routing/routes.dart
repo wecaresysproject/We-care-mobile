@@ -159,8 +159,11 @@ class Routes {
   static const onlineDoctorView = '/onlineDoctorView';
   static const doctorSearchView = '/doctorSearchView';
   static const myBookingsView = '/myBookingsView';
+  static const rescheduleAppointmentView = '/rescheduleAppointmentView';
   static const bookingsHistoryView = '/bookingsHistoryView';
   static const bookingDetailsView = '/bookingDetailsView';
+  static const editBookingRatingView = '/editBookingRatingView';
+  static const editBookingCommentView = '/editBookingCommentView';
   static const medicalExaminationView = '/medicalExaminationView';
   static const examinationRoomView = '/examinationRoomView';
   static const examinationCallView = '/examinationCallView';

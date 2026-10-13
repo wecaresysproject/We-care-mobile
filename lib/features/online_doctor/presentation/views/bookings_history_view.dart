@@ -1,51 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
+import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/online_doctor/data/models/booking_history_model.dart';
-import 'package:we_care/features/online_doctor/data/models/bookings_history_dummy_data.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/bookings_history_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_history_card_item.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_history_filter_dropdown.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
 /// شاشة "السجل السابق" — كل الكشوفات والاستشارات اللى تمت عبر التطبيق،
 /// مع فلترين بإسم الطبيب وبالتخصص، وكل كارت بيفتح شاشة تفاصيله.
-class BookingsHistoryView extends StatefulWidget {
+class BookingsHistoryView extends StatelessWidget {
   const BookingsHistoryView({super.key});
 
   @override
-  State<BookingsHistoryView> createState() => _BookingsHistoryViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<BookingsHistoryCubit>(
+      create: (_) => getIt<BookingsHistoryCubit>()..loadHistory(),
+      child: const _BookingsHistoryBody(),
+    );
+  }
 }
 
-class _BookingsHistoryViewState extends State<BookingsHistoryView> {
-  final List<BookingHistoryModel> _historyBookings = bookingsHistoryDummyData;
-
-  String? _selectedDoctorName;
-  String? _selectedSpecialization;
-
-  /// القيم المتاحة فى الفلترين — من غير تكرار وبترتيب ظهورها فى السجل.
-  List<String> get _doctorNames =>
-      _historyBookings.map((b) => b.doctor.name).toSet().toList();
-
-  List<String> get _specializations =>
-      _historyBookings.map((b) => b.doctor.specialization).toSet().toList();
-
-  List<BookingHistoryModel> get _filteredBookings => _historyBookings
-      .where(
-        (b) =>
-            (_selectedDoctorName == null ||
-                b.doctor.name == _selectedDoctorName) &&
-            (_selectedSpecialization == null ||
-                b.doctor.specialization == _selectedSpecialization),
-      )
-      .toList();
+class _BookingsHistoryBody extends StatelessWidget {
+  const _BookingsHistoryBody();
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<BookingsHistoryCubit>();
+    final state = context.watch<BookingsHistoryCubit>().state;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -64,10 +55,16 @@ class _BookingsHistoryViewState extends State<BookingsHistoryView> {
                     child: BookingHistoryFilterDropdown(
                       placeholder: "إسم الطبيب",
                       icon: Icons.person_outline_rounded,
-                      options: _doctorNames,
-                      selectedValue: _selectedDoctorName,
-                      onSelected: (value) =>
-                          setState(() => _selectedDoctorName = value),
+                      options: [
+                        for (final doctor in state.filters.doctors) doctor.name,
+                      ],
+                      selectedValue: state.selectedDoctor?.name,
+                      // القايمة بتعرض الاسم، والـ API بيتفلتر بالـ id.
+                      onSelected: (name) => cubit.selectDoctor(
+                        state.filters.doctors
+                            .where((doctor) => doctor.name == name)
+                            .firstOrNull,
+                      ),
                     ),
                   ),
                   horizontalSpacing(10),
@@ -76,10 +73,9 @@ class _BookingsHistoryViewState extends State<BookingsHistoryView> {
                       placeholder: "التخصص",
                       iconAsset:
                           "assets/images/doctor_examination_tool_icon.png",
-                      options: _specializations,
-                      selectedValue: _selectedSpecialization,
-                      onSelected: (value) =>
-                          setState(() => _selectedSpecialization = value),
+                      options: state.filters.specialties,
+                      selectedValue: state.selectedSpecialty,
+                      onSelected: cubit.selectSpecialty,
                     ),
                   ),
                 ],
@@ -91,22 +87,31 @@ class _BookingsHistoryViewState extends State<BookingsHistoryView> {
               child: const _HistoryScopeNote(),
             ),
             verticalSpacing(14),
-            Expanded(child: _buildHistoryList()),
+            Expanded(child: _buildHistoryList(context, state)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHistoryList() {
-    final filteredBookings = _filteredBookings;
-    if (filteredBookings.isEmpty) {
-      return _EmptyFilteredHistory(
-        onClearFilters: () => setState(() {
-          _selectedDoctorName = null;
-          _selectedSpecialization = null;
-        }),
+  Widget _buildHistoryList(BuildContext context, BookingsHistoryState state) {
+    final cubit = context.read<BookingsHistoryCubit>();
+    if (state.requestStatus == RequestStatus.failure) {
+      return ErrorViewWidget(
+        errorMessage: state.errorMessage,
+        onRetry: cubit.getBookingsHistory,
       );
+    }
+    if (state.requestStatus != RequestStatus.success) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColorsManager.mainDarkBlue),
+      );
+    }
+    final filteredBookings = state.bookings;
+    if (filteredBookings.isEmpty) {
+      return state.hasActiveFilters
+          ? _EmptyFilteredHistory(onClearFilters: cubit.clearFilters)
+          : const _EmptyHistory();
     }
 
     return ListView.separated(
@@ -118,12 +123,10 @@ class _BookingsHistoryViewState extends State<BookingsHistoryView> {
         final booking = filteredBookings[index];
         return BookingHistoryCardItem(
           booking: booking,
-          onViewDetailsPressed: () async {
-            await context.pushNamed(
-              Routes.bookingDetailsView,
-              arguments: booking,
-            );
-          },
+          onViewDetailsPressed: () => context.pushNamed(
+            Routes.bookingDetailsView,
+            arguments: booking,
+          ),
         );
       },
     );
@@ -205,6 +208,24 @@ class _HistoryScopeNote extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// حالة فاضية لما المريض ملوش أى مواعيد سابقة.
+class _EmptyHistory extends StatelessWidget {
+  const _EmptyHistory();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        "لا توجد مواعيد سابقة حتى الآن",
+        style: AppTextStyles.font14blackWeight400.copyWith(
+          fontWeight: FontWeight.w600,
+          color: OnlineDoctorTheme.headingColor,
+        ),
       ),
     );
   }

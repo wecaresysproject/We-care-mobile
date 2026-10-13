@@ -1,14 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
-import 'package:we_care/features/online_doctor/data/models/my_bookings_dummy_data.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/upcoming_bookings_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_card_item.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
@@ -17,16 +22,26 @@ import 'package:we_care/features/online_doctor/presentation/views/widgets/online
 /// مع إلغاء/تعديل الكشوفات ودايالوج تأكيد الإلغاء والحالة الفاضية.
 /// "دخول عند الطبيب" بيفتح شاشة غرفة الكشف بحجز الكارت فى أى وقت —
 /// الدخول الفعلى للمكالمة بيتفعل جواها عند حلول الموعد.
-class UpcomingBookingsList extends StatefulWidget {
+class UpcomingBookingsList extends StatelessWidget {
   const UpcomingBookingsList({super.key});
 
   @override
-  State<UpcomingBookingsList> createState() => _UpcomingBookingsListState();
+  Widget build(BuildContext context) {
+    return BlocProvider<UpcomingBookingsCubit>(
+      create: (_) => getIt<UpcomingBookingsCubit>()..getUpcomingBookings(),
+      child: const _UpcomingBookingsBody(),
+    );
+  }
 }
 
-class _UpcomingBookingsListState extends State<UpcomingBookingsList> {
-  late final List<BookingModel> _bookings = buildMyBookingsDummyData();
+class _UpcomingBookingsBody extends StatefulWidget {
+  const _UpcomingBookingsBody();
 
+  @override
+  State<_UpcomingBookingsBody> createState() => _UpcomingBookingsBodyState();
+}
+
+class _UpcomingBookingsBodyState extends State<_UpcomingBookingsBody> {
   /// تكة بتحدث العد التنازلى وبتنقل الكروت بين القسمين لما موعدها يحين.
   Timer? _countdownTicker;
 
@@ -56,12 +71,34 @@ class _UpcomingBookingsListState extends State<UpcomingBookingsList> {
     final isConfirmed = await _showCancelBookingDialog(booking);
     if (isConfirmed != true || !mounted) return;
 
-    setState(() => _bookings.remove(booking));
-    _showMessage("تم إلغاء الموعد بنجاح");
+    context.read<UpcomingBookingsCubit>().cancelBooking(booking);
   }
 
-  //! تعديل الموعد محتاج endpoints المواعيد المتاحة — هيتفعل مع ربط الحجوزات.
-  void _onEditPressed() => _showMessage("تعديل الموعد سيكون متاحاً قريباً");
+  void _onCancelStatusChanged(
+    BuildContext context,
+    UpcomingBookingsState state,
+  ) {
+    if (state.cancelStatus == RequestStatus.success) {
+      _showMessage("تم إلغاء الموعد بنجاح");
+    } else if (state.cancelStatus == RequestStatus.failure) {
+      showError(state.cancelMessage);
+    }
+  }
+
+  /// بيفتح شاشة "تعديل الموعد" — لو التعديل اتأكد من الـ API بترجّع الحجز
+  /// بميعاده الجديد، والكارت بيتحدث بيه ويتعاد ترتيبه مع باقى المواعيد.
+  Future<void> _onEditPressed(BookingModel booking) async {
+    final updatedBooking = await context.pushNamed(
+      Routes.rescheduleAppointmentView,
+      arguments: booking,
+    );
+    if (updatedBooking is! BookingModel || !mounted) return;
+
+    context
+        .read<UpcomingBookingsCubit>()
+        .replaceBooking(booking, updatedBooking);
+    _showMessage("تم تعديل الموعد بنجاح");
+  }
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context)
@@ -97,11 +134,43 @@ class _UpcomingBookingsListState extends State<UpcomingBookingsList> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<UpcomingBookingsCubit, UpcomingBookingsState>(
+      listenWhen: (previous, current) =>
+          previous.cancelStatus != current.cancelStatus,
+      listener: _onCancelStatusChanged,
+      builder: (context, state) {
+        if (state.requestStatus == RequestStatus.failure) {
+          return ErrorViewWidget(
+            errorMessage: state.errorMessage,
+            onRetry: context.read<UpcomingBookingsCubit>().getUpcomingBookings,
+          );
+        }
+        if (state.requestStatus != RequestStatus.success) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: AppColorsManager.mainDarkBlue,
+            ),
+          );
+        }
+        // الكروت بتفضل ظاهرة وباهتة ومش بتتضغط لحد ما طلب الإلغاء يخلص.
+        final isCancelling = state.cancelStatus == RequestStatus.loading;
+        return AbsorbPointer(
+          absorbing: isCancelling,
+          child: Opacity(
+            opacity: isCancelling ? 0.5 : 1,
+            child: _buildBookingsList(state.bookings),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBookingsList(List<BookingModel> bookings) {
     final now = DateTime.now();
 
-    final waitingBookings = _bookings.where((b) => b.isUpcoming(now)).toList()
+    final waitingBookings = bookings.where((b) => b.isUpcoming(now)).toList()
       ..sort((a, b) => a.appointmentDateTime.compareTo(b.appointmentDateTime));
-    final timeNowBookings = _bookings.where((b) => b.isTimeNow(now)).toList()
+    final timeNowBookings = bookings.where((b) => b.isTimeNow(now)).toList()
       ..sort((a, b) => a.appointmentDateTime.compareTo(b.appointmentDateTime));
 
     if (waitingBookings.isEmpty && timeNowBookings.isEmpty) {
@@ -141,7 +210,8 @@ class _UpcomingBookingsListState extends State<UpcomingBookingsList> {
           onCancelPressed: booking.type.isExamination
               ? () => _onCancelPressed(booking)
               : null,
-          onEditPressed: booking.type.isExamination ? _onEditPressed : null,
+          onEditPressed:
+              booking.type.isExamination ? () => _onEditPressed(booking) : null,
         ),
         verticalSpacing(12),
       ],

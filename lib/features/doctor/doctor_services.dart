@@ -87,4 +87,17 @@ abstract class DoctorServices {
   Future<dynamic> postMedicalSpecialty(
     @Body() MedicalSpecialtyRequestBodyModel requestBody,
   );
+
+  @GET(DoctorApiConstants.getDoctorBookings)
+  Future<dynamic> getDoctorBookings();
+
+  @POST(DoctorApiConstants.acceptWaitingPatient)
+  Future<dynamic> acceptWaitingPatient(
+    @Query("bookingId") String bookingId,
+  );
+
+  @POST(DoctorApiConstants.rejectWaitingPatient)
+  Future<dynamic> rejectWaitingPatient(
+    @Query("bookingId") String bookingId,
+  );
 }

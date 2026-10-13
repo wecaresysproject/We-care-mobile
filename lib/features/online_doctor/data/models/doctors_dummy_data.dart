@@ -437,7 +437,7 @@ DoctorModel doctorFromBookingInfo(
   final specialization = info.specialization;
 
   return DoctorModel(
-    id: "dummy-booking-doctor-$position",
+    id: info.id.isNotEmpty ? info.id : "dummy-booking-doctor-$position",
     name: info.name,
     specialty: specialization,
     subSpecialty: [_subSpecialization(specialization)],

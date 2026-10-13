@@ -6,6 +6,13 @@ enum BookingType {
   /// استشارة متابعة مجانية مرتبطة بكشف سابق — خضرا، ومن غير إلغاء أو تعديل.
   freeFollowUpConsultation;
 
+  /// قيمة `type` فى الـ API هى نفس اسم الـ enum — أى قيمة مش معروفة
+  /// بتتعامل ككشف أون لاين.
+  static BookingType fromApi(String? value) => BookingType.values.firstWhere(
+        (type) => type.name == value,
+        orElse: () => BookingType.onlineExamination,
+      );
+
   bool get isExamination => this == BookingType.onlineExamination;
 
   /// اسم النوع فى بادچ الكارت وهو مستنى — "كشف أون لاين" / "استشارة متابعة مجانية".
@@ -35,8 +42,29 @@ class BookingDoctorInfo {
     required this.location,
     required this.imageUrl,
     required this.isOnline,
+    this.id = '',
   });
 
+  /// كائن `doctor` اللى بيرجع جوه أى حجز.
+  factory BookingDoctorInfo.fromJson(Map<String, dynamic> json) {
+    final location = json['location'] as Map<String, dynamic>? ?? const {};
+    return BookingDoctorInfo(
+      id: json['id']?.toString() ?? '',
+      name: json['name'] as String? ?? '',
+      specialization: json['specialty'] as String? ?? '',
+      academicTitle: json['academicTitle'] as String? ?? '',
+      hospital: json['hospital'] as String? ?? '',
+      location: [location['country'], location['governorate']]
+          .whereType<String>()
+          .where((part) => part.trim().isNotEmpty)
+          .join(" - "),
+      imageUrl: json['profileImage'] as String? ?? '',
+      isOnline: json['isOnline'] as bool? ?? false,
+    );
+  }
+
+  /// بيتستخدم فى "حجز موعد جديد مع الطبيب" وفلتر الطبيب.
+  final String id;
   final String name;
   final String specialization;
   final String academicTitle;
@@ -56,7 +84,10 @@ class BookingModel {
     required this.appointmentDateTime,
     this.examinationFee,
     this.linkedExaminationDate,
-  })  : assert(
+    this.bookingId = '',
+    DateTime? endsAt,
+  })  : _endsAt = endsAt,
+        assert(
           type == BookingType.onlineExamination || examinationFee == null,
           "تكلفة الكشف للكشف الأون لاين بس",
         ),
@@ -66,9 +97,34 @@ class BookingModel {
           "تاريخ الكشف المرتبط للاستشارات بس",
         );
 
+  /// عنصر واحد من endpoint المواعيد القادمة. التكلفة وتاريخ الكشف المرتبط
+  /// بيتاخدوا حسب النوع بس، حتى لو الـ API رجّعهم للنوع التانى.
+  factory BookingModel.fromJson(Map<String, dynamic> json) {
+    final type = BookingType.fromApi(json['type'] as String?);
+    final linkedDate = json['linkedExaminationDate'] as String?;
+    final endsAt = json['endsAt'] as String?;
+    return BookingModel(
+      bookingId: json['bookingId']?.toString() ?? '',
+      type: type,
+      doctor: BookingDoctorInfo.fromJson(
+        json['doctor'] as Map<String, dynamic>? ?? const {},
+      ),
+      appointmentDateTime: parseBookingInstant(json['startsAt'] as String),
+      endsAt: endsAt == null ? null : parseBookingInstant(endsAt),
+      examinationFee:
+          type.isExamination ? (json['fee'] as num?)?.toInt() : null,
+      linkedExaminationDate: type.isExamination || linkedDate == null
+          ? null
+          : DateTime.tryParse(linkedDate),
+    );
+  }
+
+  /// بيتستخدم فى التفاصيل والإلغاء والتعديل وغرفة الكشف.
+  final String bookingId;
   final BookingType type;
   final BookingDoctorInfo doctor;
   final DateTime appointmentDateTime;
+  final DateTime? _endsAt;
 
   /// تكلفة الكشف بالجنيه — للكشف الأون لاين بس.
   final int? examinationFee;
@@ -76,8 +132,30 @@ class BookingModel {
   /// تاريخ الكشف اللى الاستشارة المجانية مرتبطة بيه — للاستشارات بس.
   final DateTime? linkedExaminationDate;
 
-  /// مدة الموعد — الكارت بيفضل فى حالة "حان وقت الموعد" طولها،
-  /// وبعدها بينتقل لـ"السجل السابق". نفس مدة الـ slots فى شاشة الحجز.
+  /// مدة الموعد زى ما راجعة من الـ API — أو [slotDuration] لو مش معروفة.
+  Duration get duration =>
+      _endsAt?.difference(appointmentDateTime) ?? slotDuration;
+
+  /// نهاية الموعد — الكارت بيفضل فى حالة "حان وقت الموعد" لحد عندها.
+  DateTime get endsAt => appointmentDateTime.add(duration);
+
+  /// نسخة من الحجز بميعاد جديد — بعد "تعديل الموعد".
+  BookingModel copyWith({
+    required DateTime appointmentDateTime,
+    DateTime? endsAt,
+  }) =>
+      BookingModel(
+        bookingId: bookingId,
+        type: type,
+        doctor: doctor,
+        appointmentDateTime: appointmentDateTime,
+        // من غير [endsAt] الميعاد الجديد بياخد نفس مدة القديم.
+        endsAt: endsAt ?? appointmentDateTime.add(duration),
+        examinationFee: examinationFee,
+        linkedExaminationDate: linkedExaminationDate,
+      );
+
+  /// مدة الموعد الافتراضية لو الـ API مرجّعش `endsAt`.
   static const Duration slotDuration = Duration(minutes: 30);
 
   /// الموعد لسه جاى — بيتعرض فى قسم "يتبقى على الموعد".
@@ -85,12 +163,10 @@ class BookingModel {
 
   /// الموعد بدأ ولسه فى وقته — بيتعرض فى قسم "حان وقت الموعد".
   bool isTimeNow(DateTime now) =>
-      !appointmentDateTime.isAfter(now) &&
-      now.isBefore(appointmentDateTime.add(slotDuration));
+      !appointmentDateTime.isAfter(now) && now.isBefore(endsAt);
 
   /// الموعد خلص — مكانه تاب "السجل السابق".
-  bool isPast(DateTime now) =>
-      !now.isBefore(appointmentDateTime.add(slotDuration));
+  bool isPast(DateTime now) => !now.isBefore(endsAt);
 
   Duration remaining(DateTime now) => appointmentDateTime.difference(now);
 
@@ -107,6 +183,10 @@ class BookingModel {
     return "مرتبطة بكشف يوم ${arabicShortDateLabel(linkedDate)}";
   }
 }
+
+/// `startsAt` / `endsAt` بيرجعوا ISO 8601 بالـ offset — بنحوّلهم لتوقيت الجهاز
+/// عشان العد التنازلى يتحسب من نفس اللحظة.
+DateTime parseBookingInstant(String value) => DateTime.parse(value).toLocal();
 
 const List<String> _arabicWeekdays = [
   "الإثنين",

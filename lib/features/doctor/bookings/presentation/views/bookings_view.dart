@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/bookings/logic/cubit/bookings_cubit.dart';
@@ -23,9 +24,18 @@ class BookingsView extends StatelessWidget {
           // Directionality wrap for the full rationale.
           child: Directionality(
             textDirection: TextDirection.ltr,
-            child: BlocBuilder<BookingsCubit, BookingsState>(
+            child: BlocConsumer<BookingsCubit, BookingsState>(
+              listenWhen: (previous, current) =>
+                  previous.actionStatus != current.actionStatus,
+              listener: (context, state) {
+                if (state.actionStatus == RequestStatus.failure) {
+                  showError(state.actionMessage);
+                }
+              },
               buildWhen: (previous, current) =>
-                  previous.status != current.status,
+                  previous.status != current.status ||
+                  previous.bookings != current.bookings ||
+                  previous.processingBookingId != current.processingBookingId,
               builder: (context, state) {
                 switch (state.status) {
                   case RequestStatus.initial:
@@ -38,7 +48,10 @@ class BookingsView extends StatelessWidget {
                           context.read<BookingsCubit>().getBookings(),
                     );
                   case RequestStatus.success:
-                    return BookingsContentWidget(bookings: state.bookings!);
+                    return BookingsContentWidget(
+                      bookings: state.bookings!,
+                      processingBookingId: state.processingBookingId,
+                    );
                 }
               },
             ),

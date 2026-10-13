@@ -162,6 +162,117 @@ class DoctorModel {
       _$DoctorModelFromJson(json);
   Map<String, dynamic> toJson() => _$DoctorModelToJson(this);
 
+  /// بيحوّل رد `GET /OnlineDoctor/profile` المتقسّم لأقسام (`basicData`،
+  /// `medicalSpecialty`، `booking`...) للشكل المسطّح اللى الـ UI بيستخدمه.
+  factory DoctorModel.fromProfileJson(Map<String, dynamic> json) {
+    final basicData = _mapOf(json['basicData']);
+    final medicalSpecialty = _mapOf(json['medicalSpecialty']);
+    final booking = _mapOf(json['booking']);
+    final servicePrices = _mapOf(json['servicePrices']);
+    final certificates = _mapOf(json['certificates']);
+    final enabledDays = _listOfMaps(booking['weeklySchedule'])
+        .where((day) => day['isEnabled'] == true)
+        .toList();
+    final nearestAppointment = booking['nearestAppointment'];
+
+    return DoctorModel(
+      id: _stringOf(json['doctorId']),
+      name: _stringOf(json['fullName']),
+      isFavorite: json['isFavorite'] as bool? ?? false,
+      profileImage: _nullableStringOf(basicData['personalPhotoUrl']),
+      isVerified: json['isVerified'] as bool? ?? false,
+      isOnline: booking['isOnline'] as bool? ?? false,
+      acceptsBookings: booking['acceptsBookings'] as bool? ?? false,
+      specialty: _nullableStringOf(medicalSpecialty['mainSpecialtyName']) ??
+          _stringOf(medicalSpecialty['mainSpecialty']),
+      subSpecialty: _singleOrEmpty(medicalSpecialty['subSpecialty']),
+      degree: _stringOf(basicData['academicDegree']),
+      academicTitle: _stringOf(basicData['jobGrade']),
+      hospital: '',
+      location: DoctorLocationModel(
+        country: _stringOf(basicData['country']),
+        governorate: _stringOf(basicData['governorate']),
+        city: _stringOf(basicData['city']),
+      ),
+      yearsOfExperience: (json['yearsOfExperience'] as num?)?.toInt() ?? 0,
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      likesCount: (json['likes'] as num?)?.toInt() ?? 0,
+      commentsCount: (json['comments'] as num?)?.toInt() ?? 0,
+      patientsCount: (json['patientsCount'] as num?)?.toInt() ?? 0,
+      nearestAvailableAppointment: nearestAppointment is Map
+          ? NearestAppointmentModel.fromJson(
+              Map<String, dynamic>.from(nearestAppointment))
+          : null,
+      workingDays: enabledDays
+          .map((day) =>
+              _nullableStringOf(day['arabicDay']) ?? _stringOf(day['day']))
+          .toList(),
+      workingHours: enabledDays
+          .expand((day) => _listOfMaps(day['timeRanges']))
+          .map((range) =>
+              "${_stringOf(range['startTime'])} - ${_stringOf(range['endTime'])}")
+          .toSet()
+          .toList(),
+      consultationFee:
+          (servicePrices['examinationPriceInsideEgypt'] as num?)?.toInt() ?? 0,
+      about: _stringOf(basicData['shortBio']),
+      medicalInterests: _singleOrEmpty(medicalSpecialty['clinicalInterests']),
+      professionalExperience: _listOfMaps(json['experiences'])
+          .map((e) => DoctorExperienceModel(
+                position: _stringOf(e['position']),
+                workplace: _stringOf(e['workPlace']),
+                fromDate: _stringOf(e['fromDate']),
+                toDate: _stringOf(e['toDate']),
+                country: _stringOf(e['countryName']),
+              ))
+          .toList(),
+      languages: (basicData['spokenLanguages'] as List? ?? const [])
+          .map(_stringOf)
+          .toList(),
+      education: _degreeKeys
+          .expand((key) => _listOfMaps(certificates[key]))
+          .map((e) => DoctorQualificationModel(
+                title: _stringOf(e['degreeTitle']),
+                institution: _stringOf(e['grantingBody']),
+                country: _stringOf(e['countryName']),
+                year: _yearOf(_stringOf(e['obtainedDate'])),
+              ))
+          .toList(),
+      medicalAssociations: _listOfMaps(json['memberships'])
+          .map((e) => DoctorMembershipModel(
+                association: _stringOf(e['associationName']),
+                membershipLevel: _stringOf(e['membershipLevel']),
+                membershipNumber: _nullableStringOf(e['membershipNumber']),
+                year: _stringOf(e['year']),
+              ))
+          .toList(),
+      research: _listOfMaps(json['researchPapers'])
+          .map((e) => DoctorResearchModel(
+                title: _stringOf(e['title']),
+                type: '',
+                year: _stringOf(e['year']),
+                referenceUrl: _nullableStringOf(e['doiOrLink']),
+              ))
+          .toList(),
+      awards: _listOfMaps(json['awards'])
+          .map((e) => DoctorAwardModel(
+                title: _stringOf(e['awardName']),
+                issuer: _stringOf(e['grantingBody']),
+                country: _nullableStringOf(e['countryName']),
+                year: _stringOf(e['year']),
+              ))
+          .toList(),
+      mediaAppearances: _listOfMaps(json['mediaArticles'])
+          .map((e) => DoctorMediaModel(
+                subject:
+                    _nullableStringOf(e['title']) ?? _stringOf(e['subject']),
+                type: '',
+                url: _nullableStringOf(e['mediaLink']),
+              ))
+          .toList(),
+    );
+  }
+
   /// رابط الصورة للـ `CachedNetworkImage` — فاضى لو مفيش صورة عشان يعرض البديل.
   String get imageUrl => profileImage ?? '';
 
@@ -177,3 +288,35 @@ class DoctorModel {
   /// "17:00 - 21:00 / 16:00 - 20:00".
   String get workingHoursLabel => workingHours.join(" / ");
 }
+
+/// مفاتيح الدرجات العلمية جوه `certificates` بترتيب عرضها.
+const List<String> _degreeKeys = [
+  'bachelor',
+  'diploma',
+  'master',
+  'doctorate',
+  'fellowship',
+  'boardCertification',
+];
+
+Map<String, dynamic> _mapOf(dynamic value) =>
+    value is Map ? Map<String, dynamic>.from(value) : const {};
+
+List<Map<String, dynamic>> _listOfMaps(dynamic value) => value is List
+    ? value.whereType<Map>().map(Map<String, dynamic>.from).toList()
+    : const [];
+
+String _stringOf(dynamic value) => value?.toString().trim() ?? '';
+
+/// `null` لو القيمة مش موجودة أو فاضية.
+String? _nullableStringOf(dynamic value) {
+  final text = _stringOf(value);
+  return text.isEmpty ? null : text;
+}
+
+List<String> _singleOrEmpty(dynamic value) {
+  final text = _stringOf(value);
+  return text.isEmpty ? const [] : [text];
+}
+
+String _yearOf(String date) => date.length >= 4 ? date.substring(0, 4) : date;
