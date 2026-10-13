@@ -114,8 +114,16 @@ import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
 import 'package:we_care/features/online_doctor/data/repos/online_doctor_repo.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/appointment_room_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/book_appointment_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/booking_details_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/bookings_history_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/doctors_list_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_comment_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_rating_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/reschedule_appointment_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/upcoming_bookings_cubit.dart';
 import 'package:we_care/features/online_doctor/online_doctor_services.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_data_entry_repo.dart';
 import 'package:we_care/features/physical_activaty/data/repos/physical_activaty_view_repo.dart';
@@ -435,6 +443,30 @@ void setupAppCubits() {
   );
   getIt.registerFactory<DoctorProfileCubit>(
     () => DoctorProfileCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<BookAppointmentCubit>(
+    () => BookAppointmentCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<UpcomingBookingsCubit>(
+    () => UpcomingBookingsCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<BookingsHistoryCubit>(
+    () => BookingsHistoryCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<BookingDetailsCubit>(
+    () => BookingDetailsCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<RescheduleAppointmentCubit>(
+    () => RescheduleAppointmentCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<EditBookingRatingCubit>(
+    () => EditBookingRatingCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<EditBookingCommentCubit>(
+    () => EditBookingCommentCubit(getIt<OnlineDoctorRepo>()),
+  );
+  getIt.registerFactory<AppointmentRoomCubit>(
+    () => AppointmentRoomCubit(getIt<OnlineDoctorRepo>()),
   );
   getIt.registerFactory<NutrationViewCubit>(
     () => NutrationViewCubit(
@@ -925,7 +957,9 @@ void setupAppRepos() {
     ),
   );
   getIt.registerLazySingleton<BookingsRepo>(
-    () => BookingsRepo(),
+    () => BookingsRepo(
+      getIt<DoctorServices>(),
+    ),
   );
   getIt.registerLazySingleton<DoctorBasicDataRepo>(
     () => DoctorBasicDataRepo(

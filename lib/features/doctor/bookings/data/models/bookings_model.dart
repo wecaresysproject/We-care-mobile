@@ -1,10 +1,7 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:we_care/features/doctor/bookings/data/models/today_appointment_model.dart';
+import 'package:we_care/features/doctor/bookings/data/models/appointment_type.dart';
 import 'package:we_care/features/doctor/bookings/data/models/waiting_patient_model.dart';
 
-part 'bookings_model.g.dart';
-
-@JsonSerializable()
 class BookingsModel {
   BookingsModel({
     required this.doctorName,
@@ -14,10 +11,32 @@ class BookingsModel {
     required this.waitingPatients,
   });
 
+  /// `data` of the doctor bookings endpoint — `appointments[]` and
+  /// `waitingList[]`. The backend sends no `doctor` object yet, so the header
+  /// fields stay empty until it does.
+  factory BookingsModel.fromJson(Map<String, dynamic> json) {
+    final doctor = json['doctor'] as Map<String, dynamic>? ?? const {};
+    return BookingsModel(
+      doctorName: doctor['name'] as String? ?? '',
+      specialty: doctor['specialty'] as String? ?? '',
+      doctorPhotoUrl: bookingsImageUrl(doctor['profileImage']),
+      todayAppointments: (json['appointments'] as List? ?? const [])
+          .map((e) => TodayAppointmentModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      waitingPatients: (json['waitingList'] as List? ?? const [])
+          .map((e) => WaitingPatientModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
   final String doctorName;
   final String specialty;
   final String? doctorPhotoUrl;
+
+  /// Sorted by `startsAt` ascending, as the API returns them.
   final List<TodayAppointmentModel> todayAppointments;
+
+  /// Oldest `requestedAt` first, as the API returns them.
   final List<WaitingPatientModel> waitingPatients;
 
   BookingsModel copyWith({
@@ -32,9 +51,4 @@ class BookingsModel {
       waitingPatients: waitingPatients ?? this.waitingPatients,
     );
   }
-
-  factory BookingsModel.fromJson(Map<String, dynamic> json) =>
-      _$BookingsModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BookingsModelToJson(this);
 }

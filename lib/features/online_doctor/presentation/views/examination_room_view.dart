@@ -1,63 +1,80 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/online_doctor/data/models/appointment_room_model.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/appointment_room_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_type_badge.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
 /// شاشة غرفة الكشف — بتتفتح من زرار "دخول عند الطبيب" فى كارت الحجز:
 /// ملخص الطبيب والموعد، زرار الدخول للمكالمة (بيتفعل فى وقت الموعد)،
 /// إدارة المشاركين فى المحادثة، أسئلة المستخدم للطبيب، وتنويهات مهمة.
-class ExaminationRoomView extends StatefulWidget {
+class ExaminationRoomView extends StatelessWidget {
   const ExaminationRoomView({super.key, required this.booking});
+
+  /// الحجز اللى اتفتحت منه الشاشة — بيتعرض على طول لحد ما بيانات الغرفة
+  /// (المشاركين والأسئلة) توصل من الـ API.
+  final BookingModel booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<AppointmentRoomCubit>(
+      create: (_) =>
+          getIt<AppointmentRoomCubit>()..getAppointmentRoom(booking.bookingId),
+      child: _ExaminationRoomBody(booking: booking),
+    );
+  }
+}
+
+class _ExaminationRoomBody extends StatefulWidget {
+  const _ExaminationRoomBody({required this.booking});
 
   final BookingModel booking;
 
   @override
-  State<ExaminationRoomView> createState() => _ExaminationRoomViewState();
+  State<_ExaminationRoomBody> createState() => _ExaminationRoomBodyState();
 }
 
-class _ExaminationRoomViewState extends State<ExaminationRoomView> {
+class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
+  /// نسخة الشاشة من الحجز — بتتحدث لما بيانات الغرفة توصل.
+  late BookingModel _booking = widget.booking;
+
   /// أقصى عدد مشاركين غير المريض فى محادثة الكشف.
-  static const int maxParticipants = 3;
+  int _maxParticipants = AppointmentRoomModel.defaultMaxParticipants;
 
-  //! المشاركون والأسئلة لسه محليين — هيتربطوا بـ endpoints الحجز مع التكامل.
-  final List<_Participant> _participants = [
-    const _Participant(
-      name: "أحمد علي",
-      relation: "أب",
-      imageUrl: "https://randomuser.me/api/portraits/men/52.jpg",
-    ),
-    const _Participant(
-      name: "منى أحمد",
-      relation: "زوجة",
-      imageUrl: "https://randomuser.me/api/portraits/women/65.jpg",
-    ),
-    const _Participant(
-      name: "محمد علي",
-      relation: "أخ",
-      imageUrl: "https://randomuser.me/api/portraits/men/22.jpg",
-    ),
-  ];
-
-  final List<String> _questions = [
-    "هل أحتاج إلى الاستمرار على الدواء الحالي؟",
-    "هل هناك فحوصات إضافية مطلوبة؟",
-    "ما سبب هذه الأعراض التي أشعر بها مؤخراً؟",
-  ];
+  //! المشاركون بيتحملوا من الـ API، لكن إضافتهم وإزالتهم لسه محليين على
+  //! الشاشة لحد ما الـ endpoints بتاعتهم تتربط.
+  List<RoomParticipantModel> _participants = [];
 
   /// "عرض جميع الأسئلة" — القايمة بتعرض أول 3 بس لحد ما المستخدم يفردها.
   bool _showAllQuestions = false;
 
-  BookingModel get _booking => widget.booking;
-
   String get _typeName => _booking.type.shortName;
+
+  void _onRoomStateChanged(BuildContext context, AppointmentRoomState state) {
+    final room = state.room;
+    if (state.requestStatus == RequestStatus.success && room != null) {
+      setState(() {
+        _booking = room.booking;
+        _maxParticipants = room.maxParticipants;
+        _participants = List.of(room.participants);
+      });
+    } else if (state.requestStatus == RequestStatus.failure) {
+      showError(state.errorMessage);
+    }
+  }
 
   Future<void> _onEnterRoomPressed() async {
     if (_booking.isTimeNow(DateTime.now())) {
@@ -71,11 +88,11 @@ class _ExaminationRoomViewState extends State<ExaminationRoomView> {
   }
 
   Future<void> _onAddParticipantPressed() async {
-    if (_participants.length >= maxParticipants) {
-      _showMessage("لا يمكن إضافة أكثر من $maxParticipants مشاركين");
+    if (_participants.length >= _maxParticipants) {
+      _showMessage("لا يمكن إضافة أكثر من $_maxParticipants مشاركين");
       return;
     }
-    final participant = await showDialog<_Participant>(
+    final participant = await showDialog<RoomParticipantModel>(
       context: context,
       barrierColor: Colors.white.withValues(alpha: 0.4),
       builder: (_) => const _AddParticipantDialog(),
@@ -84,24 +101,36 @@ class _ExaminationRoomViewState extends State<ExaminationRoomView> {
     setState(() => _participants.add(participant));
   }
 
-  void _onRemoveParticipant(_Participant participant) {
+  void _onRemoveParticipant(RoomParticipantModel participant) {
     setState(() => _participants.remove(participant));
   }
 
   Future<void> _onAddQuestionPressed() async {
     final question = await _showQuestionDialog();
     if (question == null || !mounted) return;
-    setState(() => _questions.add(question));
+    context.read<AppointmentRoomCubit>().addQuestion(question);
   }
 
   Future<void> _onEditQuestion(int index) async {
-    final question = await _showQuestionDialog(initialText: _questions[index]);
-    if (question == null || !mounted) return;
-    setState(() => _questions[index] = question);
+    final cubit = context.read<AppointmentRoomCubit>();
+    final current = cubit.state.questions[index];
+    final question = await _showQuestionDialog(initialText: current.text);
+    if (question == null || question == current.text || !mounted) return;
+    cubit.editQuestion(question: current, text: question);
   }
 
   void _onDeleteQuestion(int index) {
-    setState(() => _questions.removeAt(index));
+    final cubit = context.read<AppointmentRoomCubit>();
+    cubit.deleteQuestion(cubit.state.questions[index]);
+  }
+
+  void _onQuestionStateChanged(
+    BuildContext context,
+    AppointmentRoomState state,
+  ) {
+    if (state.questionRequestStatus == RequestStatus.failure) {
+      showError(state.questionErrorMessage);
+    }
   }
 
   Future<String?> _showQuestionDialog({String? initialText}) {
@@ -135,72 +164,99 @@ class _ExaminationRoomViewState extends State<ExaminationRoomView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
-              child: _ExaminationRoomAppBar(typeName: _typeName),
-            ),
-            verticalSpacing(12),
-            Expanded(
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
-                children: [
-                  _DoctorSummaryCard(booking: _booking),
-                  verticalSpacing(14),
-                  _EnterRoomCard(
-                    booking: _booking,
-                    onEnterPressed: _onEnterRoomPressed,
-                  ),
-                  verticalSpacing(14),
-                  _ParticipantsSection(
-                    typeName: _typeName,
-                    participants: _participants,
-                    maxParticipants: maxParticipants,
-                    onAddPressed: _onAddParticipantPressed,
-                    onRemovePressed: _onRemoveParticipant,
-                  ),
-                  verticalSpacing(14),
-                  _QuestionsSection(
-                    typeName: _typeName,
-                    questions: _questions,
-                    showAll: _showAllQuestions,
-                    onToggleShowAll: () => setState(
-                      () => _showAllQuestions = !_showAllQuestions,
-                    ),
-                    onAddPressed: _onAddQuestionPressed,
-                    onEditPressed: _onEditQuestion,
-                    onDeletePressed: _onDeleteQuestion,
-                  ),
-                  verticalSpacing(14),
-                  _ImportantNotesCard(typeName: _typeName),
-                ],
+    final roomState = context.watch<AppointmentRoomCubit>().state;
+    final isLoading = roomState.requestStatus == RequestStatus.loading;
+    final isSavingQuestion =
+        roomState.questionRequestStatus == RequestStatus.loading;
+
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AppointmentRoomCubit, AppointmentRoomState>(
+          listenWhen: (previous, current) =>
+              previous.requestStatus != current.requestStatus,
+          listener: _onRoomStateChanged,
+        ),
+        BlocListener<AppointmentRoomCubit, AppointmentRoomState>(
+          listenWhen: (previous, current) =>
+              previous.questionRequestStatus != current.questionRequestStatus,
+          listener: _onQuestionStateChanged,
+        ),
+      ],
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
+                child: _ExaminationRoomAppBar(typeName: _typeName),
               ),
-            ),
-          ],
+              verticalSpacing(12),
+              Expanded(
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 24.h),
+                  children: [
+                    _DoctorSummaryCard(booking: _booking),
+                    verticalSpacing(14),
+                    _EnterRoomCard(
+                      booking: _booking,
+                      onEnterPressed: _onEnterRoomPressed,
+                    ),
+                    verticalSpacing(14),
+                    if (isLoading)
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 32.h),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                        ),
+                      )
+                    else ...[
+                      _ParticipantsSection(
+                        typeName: _typeName,
+                        participants: _participants,
+                        maxParticipants: _maxParticipants,
+                        onAddPressed: _onAddParticipantPressed,
+                        onRemovePressed: _onRemoveParticipant,
+                      ),
+                      verticalSpacing(14),
+                      // طلب واحد على الأسئلة فى المرة — القسم بيتقفل لحد
+                      // ما الـ API يرد.
+                      AbsorbPointer(
+                        absorbing: isSavingQuestion,
+                        child: AnimatedOpacity(
+                          opacity: isSavingQuestion ? 0.5 : 1,
+                          duration: const Duration(milliseconds: 150),
+                          child: _QuestionsSection(
+                            typeName: _typeName,
+                            questions: [
+                              for (final question in roomState.questions)
+                                question.text,
+                            ],
+                            showAll: _showAllQuestions,
+                            onToggleShowAll: () => setState(
+                              () => _showAllQuestions = !_showAllQuestions,
+                            ),
+                            onAddPressed: _onAddQuestionPressed,
+                            onEditPressed: _onEditQuestion,
+                            onDeletePressed: _onDeleteQuestion,
+                          ),
+                        ),
+                      ),
+                    ],
+                    verticalSpacing(14),
+                    _ImportantNotesCard(typeName: _typeName),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-/// مشارك واحد فى محادثة الكشف — اسم وصلة قرابة وصورة اختيارية.
-class _Participant {
-  const _Participant({
-    required this.name,
-    required this.relation,
-    this.imageUrl,
-  });
-
-  final String name;
-  final String relation;
-
-  /// المشارك المضاف يدويًا من غير صورة — بيظهر بأول حرف من اسمه.
-  final String? imageUrl;
 }
 
 /// سهم رجوع، "الكشف" وتحتها "اجتماعك الطبى مع الطبيب"، وأيقونة استفهام فى النهاية.
@@ -242,7 +298,8 @@ class _ExaminationRoomAppBar extends StatelessWidget {
           height: 34.w,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: AppColorsManager.mainDarkBlue, width: 1.5),
+            border:
+                Border.all(color: AppColorsManager.mainDarkBlue, width: 1.5),
           ),
           child: Icon(
             Icons.question_mark_rounded,
@@ -695,10 +752,10 @@ class _ParticipantsSection extends StatelessWidget {
   });
 
   final String typeName;
-  final List<_Participant> participants;
+  final List<RoomParticipantModel> participants;
   final int maxParticipants;
   final VoidCallback onAddPressed;
-  final void Function(_Participant participant) onRemovePressed;
+  final void Function(RoomParticipantModel participant) onRemovePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -809,16 +866,32 @@ class _ParticipantsSection extends StatelessWidget {
 }
 
 /// كارت "أنت" — المريض صاحب الحجز، ومعلم عليه "الأساسى".
-class _PatientCard extends StatelessWidget {
+class _PatientCard extends StatefulWidget {
   const _PatientCard();
 
-  //! صورة المريض dummy لحد ما تتربط ببروفايل المستخدم.
-  static const String _patientImageUrl =
-      "https://randomuser.me/api/portraits/women/44.jpg";
+  @override
+  State<_PatientCard> createState() => _PatientCardState();
+}
+
+class _PatientCardState extends State<_PatientCard> {
+  /// صورة المستخدم المحفوظة من البيانات الأساسية — من غيرها بيظهر أول حرف.
+  String? _patientImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatientImage();
+  }
+
+  Future<void> _loadPatientImage() async {
+    final photo = await CacheHelper.getString("userPhoto");
+    if (!mounted || photo.trim().isEmpty) return;
+    setState(() => _patientImageUrl = photo);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const _PersonCardShell(
+    return _PersonCardShell(
       avatar: _PersonAvatar(
         name: "أنت",
         imageUrl: _patientImageUrl,
@@ -826,7 +899,7 @@ class _PatientCard extends StatelessWidget {
       ),
       name: "أنت",
       relation: "المريض",
-      badge: _PersonBadge(
+      badge: const _PersonBadge(
         label: "الأساسي",
         backgroundColor: OnlineDoctorTheme.iconTint,
         contentColor: OnlineDoctorTheme.accentBlue,
@@ -842,7 +915,7 @@ class _ParticipantCard extends StatelessWidget {
     required this.onRemovePressed,
   });
 
-  final _Participant participant;
+  final RoomParticipantModel participant;
   final VoidCallback onRemovePressed;
 
   @override
@@ -1193,9 +1266,8 @@ class _QuestionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleCount = showAll
-        ? questions.length
-        : questions.length.clamp(0, collapsedCount);
+    final visibleCount =
+        showAll ? questions.length : questions.length.clamp(0, collapsedCount);
 
     return Container(
       padding: EdgeInsets.all(14.r),
@@ -1586,7 +1658,7 @@ class _ImportantNotesCard extends StatelessWidget {
   }
 }
 
-/// دايالوج إضافة مشارك — اسم وصلة قرابة، وبيرجع `_Participant` عند التأكيد.
+/// دايالوج إضافة مشارك — اسم وصلة قرابة، وبيرجع `RoomParticipantModel` عند التأكيد.
 class _AddParticipantDialog extends StatefulWidget {
   const _AddParticipantDialog();
 
@@ -1609,7 +1681,9 @@ class _AddParticipantDialogState extends State<_AddParticipantDialog> {
     final name = _nameController.text.trim();
     final relation = _relationController.text.trim();
     if (name.isEmpty || relation.isEmpty) return;
-    Navigator.of(context).pop(_Participant(name: name, relation: relation));
+    Navigator.of(context).pop(
+      RoomParticipantModel(name: name, relation: relation),
+    );
   }
 
   @override

@@ -10,9 +10,16 @@ import 'package:we_care/features/doctor/bookings/presentation/views/widgets/pati
 import 'package:we_care/generated/l10n.dart';
 
 class TodayAppointmentRowWidget extends StatelessWidget {
-  const TodayAppointmentRowWidget({super.key, required this.appointment});
+  const TodayAppointmentRowWidget({
+    super.key,
+    required this.appointment,
+    required this.now,
+  });
 
   final TodayAppointmentModel appointment;
+
+  /// The instant the minute counter is computed against.
+  final DateTime now;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +29,8 @@ class TodayAppointmentRowWidget extends StatelessWidget {
         Row(
           children: [
             AppointmentTimeStatusWidget(
-              status: appointment.timeStatus,
-              minutes: appointment.statusMinutes,
+              status: appointment.timeStatus(now),
+              minutes: appointment.statusMinutes(now),
             ),
             SizedBox(width: 8.w),
             Expanded(

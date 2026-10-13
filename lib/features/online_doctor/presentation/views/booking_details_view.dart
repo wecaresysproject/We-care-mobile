@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
@@ -10,6 +14,7 @@ import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_history_model.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctors_dummy_data.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/booking_details_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_type_badge.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
@@ -19,9 +24,76 @@ import 'package:we_care/features/online_doctor/presentation/views/widgets/online
 class BookingDetailsView extends StatelessWidget {
   const BookingDetailsView({super.key, required this.booking});
 
+  /// عنصر السجل اللى اتفتحت منه الشاشة — بيتعرض على طول لحد ما التفاصيل
+  /// الكاملة (الروشتة والتقييم والتعليق) توصل من الـ API.
   final BookingHistoryModel booking;
 
-  void _showComingSoonMessage(BuildContext context, String message) {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<BookingDetailsCubit>(
+      create: (_) =>
+          getIt<BookingDetailsCubit>()..getBookingDetails(booking.bookingId),
+      child: _BookingDetailsBody(booking: booking),
+    );
+  }
+}
+
+class _BookingDetailsBody extends StatefulWidget {
+  const _BookingDetailsBody({required this.booking});
+
+  final BookingHistoryModel booking;
+
+  @override
+  State<_BookingDetailsBody> createState() => _BookingDetailsBodyState();
+}
+
+class _BookingDetailsBodyState extends State<_BookingDetailsBody> {
+  /// نسخة الشاشة من الموعد — بتتحدث لما التفاصيل توصل، وبعد تعديل
+  /// التقييم أو التعليق.
+  late BookingHistoryModel _booking = widget.booking;
+
+  void _onDetailsStateChanged(BuildContext context, BookingDetailsState state) {
+    final booking = state.booking;
+    if (state.requestStatus == RequestStatus.success && booking != null) {
+      setState(() => _booking = booking);
+    } else if (state.requestStatus == RequestStatus.failure) {
+      showError(state.errorMessage);
+    }
+  }
+
+  /// بيفتح شاشة "تعديل التقييم" — لو الحفظ اتأكد من الـ API بترجّع الموعد
+  /// بالتقييم الجديد وتاريخه.
+  Future<void> _onEditRatingPressed() async {
+    final ratedBooking = await context.pushNamed(
+      Routes.editBookingRatingView,
+      arguments: _booking,
+    );
+    if (ratedBooking is! BookingHistoryModel || !mounted) return;
+
+    _updateBooking(ratedBooking);
+    _showMessage("تم حفظ تقييمك بنجاح");
+  }
+
+  /// بيفتح شاشة "تعديل التعليق" — لو الحفظ اتأكد من الـ API بترجّع الموعد
+  /// بالتعليق الجديد وتاريخه.
+  Future<void> _onEditCommentPressed() async {
+    final commentedBooking = await context.pushNamed(
+      Routes.editBookingCommentView,
+      arguments: _booking,
+    );
+    if (commentedBooking is! BookingHistoryModel || !mounted) return;
+
+    _updateBooking(commentedBooking);
+    _showMessage("تم حفظ تعليقك بنجاح");
+  }
+
+  /// التقييم والتعليق بيتحفظوا على السيرفر من شاشاتهم — هنا الشاشة بتتحدث
+  /// بالنسخة اللى الـ API أكدها.
+  void _updateBooking(BookingHistoryModel updatedBooking) {
+    setState(() => _booking = updatedBooking);
+  }
+
+  void _showMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
@@ -44,106 +116,104 @@ class BookingDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
-              child: Row(
-                children: [
-                  const CustomBackArrow(),
-                  Expanded(
-                    child: Text(
-                      booking.detailsTitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.font20blackWeight600.copyWith(
-                        fontSize: 19.sp,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  //! مشاركة تفاصيل الموعد لسه محتاجة صيغة متفق عليها —
-                  //! الزرار موجود زى التصميم وهيتفعل معاها.
-                  Material(
-                    color: OnlineDoctorTheme.iconTint,
-                    borderRadius: BorderRadius.circular(12.r),
-                    child: InkWell(
-                      onTap: () => _showComingSoonMessage(
-                        context,
-                        "مشاركة تفاصيل الموعد ستتوفر قريباً",
-                      ),
-                      borderRadius: BorderRadius.circular(12.r),
-                      child: SizedBox(
-                        width: 40.w,
-                        height: 40.h,
-                        child: Icon(
-                          Icons.share_outlined,
-                          size: 19.sp,
-                          color: AppColorsManager.mainDarkBlue,
+    final booking = _booking;
+
+    return BlocListener<BookingDetailsCubit, BookingDetailsState>(
+      listenWhen: (previous, current) =>
+          previous.requestStatus != current.requestStatus,
+      listener: _onDetailsStateChanged,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 0),
+                child: Row(
+                  children: [
+                    const CustomBackArrow(),
+                    Expanded(
+                      child: Text(
+                        booking.detailsTitle,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.font20blackWeight600.copyWith(
+                          fontSize: 19.sp,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    //! مشاركة تفاصيل الموعد لسه محتاجة صيغة متفق عليها —
+                    //! الزرار موجود زى التصميم وهيتفعل معاها.
+                    Material(
+                      color: OnlineDoctorTheme.iconTint,
+                      borderRadius: BorderRadius.circular(12.r),
+                      child: InkWell(
+                        onTap: () => _showMessage(
+                          "مشاركة تفاصيل الموعد ستتوفر قريباً",
+                        ),
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: SizedBox(
+                          width: 40.w,
+                          height: 40.h,
+                          child: Icon(
+                            Icons.share_outlined,
+                            size: 19.sp,
+                            color: AppColorsManager.mainDarkBlue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            verticalSpacing(14),
-            Expanded(
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
-                children: [
-                  _DoctorHeaderCard(booking: booking),
-                  verticalSpacing(12),
-                  _AppointmentInfoCard(booking: booking),
-                  verticalSpacing(12),
-                  _PrescriptionCard(
-                    booking: booking,
-                    onDownloadPressed: () => _showComingSoonMessage(
-                      context,
-                      "عرض وتحميل الروشتة سيتوفر مع ربط الروشتات",
+              verticalSpacing(14),
+              Expanded(
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 8.h),
+                  children: [
+                    _DoctorHeaderCard(booking: booking),
+                    verticalSpacing(12),
+                    _AppointmentInfoCard(booking: booking),
+                    verticalSpacing(12),
+                    _PrescriptionCard(
+                      booking: booking,
+                      onDownloadPressed: () =>
+                          launchExternalUrl(booking.prescriptionFileUrl),
                     ),
-                  ),
-                  verticalSpacing(12),
-                  _UserRatingCard(
-                    booking: booking,
-                    onEditPressed: () => _showComingSoonMessage(
-                      context,
-                      "تعديل التقييم سيتوفر قريباً",
+                    verticalSpacing(12),
+                    _UserRatingCard(
+                      booking: booking,
+                      onEditPressed: _onEditRatingPressed,
                     ),
-                  ),
-                  verticalSpacing(12),
-                  _UserCommentCard(
-                    booking: booking,
-                    onEditPressed: () => _showComingSoonMessage(
-                      context,
-                      "تعديل التعليق سيتوفر قريباً",
+                    verticalSpacing(12),
+                    _UserCommentCard(
+                      booking: booking,
+                      onEditPressed: _onEditCommentPressed,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
-              child: _BookNewAppointmentButton(
-                // بيفتح شاشة "حجز موعد" لنفس الطبيب مباشرة — المواعيد المتاحة
-                // وطريقة الدفع والموديولز المسموح بها — من غير المرور بالبحث.
-                onPressed: () async {
-                  await context.pushNamed(
-                    Routes.bookAppointmentView,
-                    arguments: doctorFromBookingInfo(
-                      booking.doctor,
-                      consultationFee: booking.examinationFee,
-                      rating: booking.doctorRating,
-                      commentsCount: booking.doctorCommentsCount,
-                    ),
-                  );
-                },
+              Padding(
+                padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 20.h),
+                child: _BookNewAppointmentButton(
+                  // بيفتح شاشة "حجز موعد" لنفس الطبيب مباشرة — المواعيد المتاحة
+                  // وطريقة الدفع والموديولز المسموح بها — من غير المرور بالبحث.
+                  onPressed: () async {
+                    await context.pushNamed(
+                      Routes.bookAppointmentView,
+                      arguments: doctorFromBookingInfo(
+                        booking.doctor,
+                        consultationFee: booking.examinationFee,
+                        rating: booking.doctorRating,
+                        commentsCount: booking.doctorCommentsCount,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -571,7 +641,7 @@ class _PrescriptionCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (issuedDate != null)
+            if (issuedDate != null && booking.prescriptionFileUrl != null)
               InkWell(
                 onTap: onDownloadPressed,
                 borderRadius: BorderRadius.circular(8.r),

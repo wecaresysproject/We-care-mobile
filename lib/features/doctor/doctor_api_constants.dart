@@ -40,4 +40,14 @@ class DoctorApiConstants {
 
   /// التخصص الطبى (الرئيسى والفرعى والاهتمامات).
   static const postMedicalSpecialty = "/DoctorUserForDoctor/medical-specialty";
+
+  /// شاشة الحجوزات — بيانات الطبيب ومواعيد اليوم وقائمة الانتظار، من غير
+  /// parameters.
+  static const getDoctorBookings = "/DoctorBookings/bookings";
+
+  /// قبول مريض من قائمة الانتظار — `POST` و`?bookingId=` من غير body.
+  static const acceptWaitingPatient = "/DoctorBookings/waiting-list/accept";
+
+  /// رفض مريض من قائمة الانتظار — `POST` و`?bookingId=` من غير body.
+  static const rejectWaitingPatient = "/DoctorBookings/waiting-list/reject";
 }

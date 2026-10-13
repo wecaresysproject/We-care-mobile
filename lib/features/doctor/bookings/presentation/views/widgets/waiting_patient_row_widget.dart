@@ -11,13 +11,24 @@ class WaitingPatientRowWidget extends StatelessWidget {
   const WaitingPatientRowWidget({
     super.key,
     required this.patient,
+    required this.now,
+    required this.isProcessing,
     required this.onAccept,
     required this.onReject,
   });
 
   final WaitingPatientModel patient;
-  final VoidCallback onAccept;
-  final VoidCallback onReject;
+
+  /// The instant "منذ N دقيقة" is computed against.
+  final DateTime now;
+
+  /// This patient's accept / reject request is running — a loader replaces
+  /// the two buttons.
+  final bool isProcessing;
+
+  /// `null` while any accept / reject request is running.
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +44,7 @@ class WaitingPatientRowWidget extends StatelessWidget {
                     size: 11.r, color: AppColorsManager.placeHolderColor),
                 SizedBox(width: 3.w),
                 Text(
-                  S.of(context).minutesAgoLabel(patient.waitingMinutes),
+                  S.of(context).minutesAgoLabel(patient.waitingMinutes(now)),
                   style: AppTextStyles.font13GreyWeight400,
                 ),
               ],
@@ -70,23 +81,37 @@ class WaitingPatientRowWidget extends StatelessWidget {
         SizedBox(height: 8.h),
         Row(
           children: [
-            _ActionButton(
-              label: S.of(context).rejectAction,
-              icon: Icons.close,
-              backgroundColor: AppColorsManager.rejectButtonBackground,
-              borderColor: AppColorsManager.rejectButtonBorder,
-              foregroundColor: AppColorsManager.rejectButtonText,
-              onTap: onReject,
-            ),
-            SizedBox(width: 8.w),
-            _ActionButton(
-              label: S.of(context).acceptAction,
-              icon: Icons.check,
-              backgroundColor: AppColorsManager.acceptButtonBackground,
-              borderColor: AppColorsManager.acceptButtonBorder,
-              foregroundColor: AppColorsManager.acceptButtonText,
-              onTap: onAccept,
-            ),
+            if (isProcessing)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                child: SizedBox(
+                  width: 18.r,
+                  height: 18.r,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: AppColorsManager.mainDarkBlue,
+                  ),
+                ),
+              )
+            else ...[
+              _ActionButton(
+                label: S.of(context).rejectAction,
+                icon: Icons.close,
+                backgroundColor: AppColorsManager.rejectButtonBackground,
+                borderColor: AppColorsManager.rejectButtonBorder,
+                foregroundColor: AppColorsManager.rejectButtonText,
+                onTap: onReject,
+              ),
+              SizedBox(width: 8.w),
+              _ActionButton(
+                label: S.of(context).acceptAction,
+                icon: Icons.check,
+                backgroundColor: AppColorsManager.acceptButtonBackground,
+                borderColor: AppColorsManager.acceptButtonBorder,
+                foregroundColor: AppColorsManager.acceptButtonText,
+                onTap: onAccept,
+              ),
+            ],
             const Spacer(),
             AppointmentTypeBadgeWidget(type: patient.type),
           ],
@@ -111,7 +136,7 @@ class _ActionButton extends StatelessWidget {
   final Color backgroundColor;
   final Color borderColor;
   final Color foregroundColor;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

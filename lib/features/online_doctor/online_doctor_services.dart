@@ -28,4 +28,78 @@ abstract class OnlineDoctorServices {
   Future<dynamic> removeDoctorFromFavorites(
     @Query("doctorId") String doctorId,
   );
+
+  @GET(OnlineDoctorApiConstants.getDoctorAvailability)
+  Future<dynamic> getDoctorAvailability(
+    @Query("doctorId") String doctorId,
+  );
+
+  @POST(OnlineDoctorApiConstants.bookAppointment)
+  Future<dynamic> bookAppointment(
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @GET(OnlineDoctorApiConstants.getUpcomingBookings)
+  Future<dynamic> getUpcomingBookings();
+
+  @GET(OnlineDoctorApiConstants.getBookingsHistory)
+  Future<dynamic> getBookingsHistory(
+    @Query("doctorId") String? doctorId,
+    @Query("specialty") String? specialty,
+  );
+
+  @GET(OnlineDoctorApiConstants.getBookingsHistoryFilters)
+  Future<dynamic> getBookingsHistoryFilters();
+
+  @GET(OnlineDoctorApiConstants.getBookingDetails)
+  Future<dynamic> getBookingDetails(
+    @Query("bookingId") String bookingId,
+  );
+
+  @POST(OnlineDoctorApiConstants.cancelBooking)
+  Future<dynamic> cancelBooking(
+    @Query("bookingId") String bookingId,
+  );
+
+  @PUT(OnlineDoctorApiConstants.rescheduleBooking)
+  Future<dynamic> rescheduleBooking(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @PUT(OnlineDoctorApiConstants.saveBookingRating)
+  Future<dynamic> saveBookingRating(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @PUT(OnlineDoctorApiConstants.saveBookingComment)
+  Future<dynamic> saveBookingComment(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @GET(OnlineDoctorApiConstants.getAppointmentRoom)
+  Future<dynamic> getAppointmentRoom(
+    @Query("bookingId") String bookingId,
+  );
+
+  @POST(OnlineDoctorApiConstants.bookingQuestions)
+  Future<dynamic> addBookingQuestion(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @PUT(OnlineDoctorApiConstants.bookingQuestions)
+  Future<dynamic> editBookingQuestion(
+    @Query("bookingId") String bookingId,
+    @Query("questionId") String questionId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @DELETE(OnlineDoctorApiConstants.bookingQuestions)
+  Future<dynamic> deleteBookingQuestion(
+    @Query("bookingId") String bookingId,
+    @Query("questionId") String questionId,
+  );
 }

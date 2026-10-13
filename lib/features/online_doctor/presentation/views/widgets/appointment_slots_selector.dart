@@ -39,8 +39,8 @@ class AppointmentSlotsSelector extends StatefulWidget {
 class _AppointmentSlotsSelectorState extends State<AppointmentSlotsSelector> {
   final _daysController = ScrollController();
 
-  /// عرض كارت اليوم + المسافة اللى بعده.
-  double get _stepExtent => 90.w + 16.w;
+  /// عرض كارت اليوم + المسافة اللى بعده — بيتحسب من المساحة المتاحة فى الـ build.
+  double _stepExtent = 0;
 
   @override
   void dispose() {
@@ -69,38 +69,46 @@ class _AppointmentSlotsSelectorState extends State<AppointmentSlotsSelector> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _DaysArrow(
               pointsForward: false,
               onTap: () => _scrollDaysBy(-_stepExtent),
             ),
-            SizedBox(
-              // 3 كروت × 90 + مسافتين × 16 — نفس عرض التصميم.
-              width: 90.w * 3 + 16.w * 2,
-              child: SingleChildScrollView(
-                controller: _daysController,
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  children: [
-                    for (var index = 0;
-                        index < widget.days.length;
-                        index++) ...[
-                      if (index != 0) horizontalSpacing(16),
-                      SizedBox(
-                        width: 90.w,
-                        child: _DayCard(
-                          day: widget.days[index],
-                          isSelected: widget.selectedDayIndex == index,
-                          onTap: () => widget.onDaySelected(index),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
+            horizontalSpacing(8),
+            Expanded(
+              // 3 كروت ظاهرة بينهم مسافتين × 16 — العرض بيتقسم على المساحة
+              // المتاحة بين السهمين عشان الصف ميعملش overflow على الشاشات الضيقة.
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final cardWidth = (constraints.maxWidth - 16.w * 2) / 3;
+                  _stepExtent = cardWidth + 16.w;
+
+                  return SingleChildScrollView(
+                    controller: _daysController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        for (var index = 0;
+                            index < widget.days.length;
+                            index++) ...[
+                          if (index != 0) horizontalSpacing(16),
+                          SizedBox(
+                            width: cardWidth,
+                            child: _DayCard(
+                              day: widget.days[index],
+                              isSelected: widget.selectedDayIndex == index,
+                              onTap: () => widget.onDaySelected(index),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
+            horizontalSpacing(8),
             _DaysArrow(
               pointsForward: true,
               onTap: () => _scrollDaysBy(_stepExtent),

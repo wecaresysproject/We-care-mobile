@@ -1,26 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/app_custom_button.dart';
 import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
+import 'package:we_care/features/online_doctor/data/models/book_appointment_request.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/book_appointment_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/checkout_card_data_fields.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/checkout_payment_dialogs.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/checkout_summary_card.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_specializations_app_bar.dart';
 
 /// شاشة "الدفع" — بتظهر بعد اختيار "بطاقة بنكية" فى شاشة "حجز موعد".
-class CheckoutView extends StatefulWidget {
-  const CheckoutView({super.key, required this.doctor});
+class CheckoutView extends StatelessWidget {
+  const CheckoutView({super.key, required this.request});
 
-  final DoctorModel doctor;
+  /// اختيارات المريض من شاشة "حجز موعد" — الحجز بيتبعت من هنا بعد الدفع.
+  final BookAppointmentRequest request;
 
   @override
-  State<CheckoutView> createState() => _CheckoutViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<BookAppointmentCubit>(
+      create: (_) => getIt<BookAppointmentCubit>(),
+      child: _CheckoutBody(request: request),
+    );
+  }
 }
 
-class _CheckoutViewState extends State<CheckoutView> {
+class _CheckoutBody extends StatefulWidget {
+  const _CheckoutBody({required this.request});
+
+  final BookAppointmentRequest request;
+
+  @override
+  State<_CheckoutBody> createState() => _CheckoutBodyState();
+}
+
+class _CheckoutBodyState extends State<_CheckoutBody> {
   final _cardNumberController = TextEditingController();
   final _cardHolderController = TextEditingController();
   final _expiryMonthController = TextEditingController();
@@ -74,7 +94,8 @@ class _CheckoutViewState extends State<CheckoutView> {
         _cvvController.text.length == 3;
   }
 
-  //! لسه بيحاكى انتظار الدفع بمهلة ثانيتين — هيتربط بـ endpoint الدفع لما يجهز.
+  //! الدفع نفسه لسه متجاوَز — بيانات البطاقة مش بتتبعت، والـ backend بيأكد
+  //! الحجز على طول لحد ما endpoint الدفع يجهز.
   Future<void> _onCompletePayment() async {
     _paymentCancelled = false;
     // قفل الدايالوج بأى طريقة — حتى زرار الرجوع فى أندرويد — بيعتبر إلغاء.
@@ -83,11 +104,18 @@ class _CheckoutViewState extends State<CheckoutView> {
       onCancel: () => context.pop(),
     ).then((_) => _paymentCancelled = true);
 
-    await Future.delayed(const Duration(seconds: 2));
+    final cubit = context.read<BookAppointmentCubit>();
+    await cubit.bookAppointment(widget.request);
     if (!mounted || _paymentCancelled) return;
 
-    context.pop(); // قفل دايالوج التحميل قبل عرض النجاح.
-    showCheckoutSuccessDialog(context, onGoToBookings: _goToMyBookings);
+    context.pop(); // قفل دايالوج التحميل قبل عرض النتيجة.
+    if (cubit.state.bookingStatus == RequestStatus.success) {
+      showCheckoutSuccessDialog(context, onGoToBookings: _goToMyBookings);
+      return;
+    }
+    showError(cubit.state.bookingMessage);
+    // الرجوع بـ`true` بيخلى شاشة "حجز موعد" تحمّل المواعيد المتاحة من جديد.
+    Navigator.of(context).pop(true);
   }
 
   /// بيرجع لشاشة "طبيبك أون لاين" وبيفتح "حجوزاتى" — شاشات الحجز خلص دورها.
@@ -120,7 +148,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.w),
                       child: CheckoutSummaryCard(
-                        bookingPrice: widget.doctor.consultationFee,
+                        bookingPrice: widget.request.doctor.consultationFee,
                         programFee: _programFee,
                       ),
                     ),

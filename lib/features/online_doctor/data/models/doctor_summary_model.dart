@@ -7,7 +7,10 @@ part 'doctor_summary_model.g.dart';
 /// الملف الكامل بيتجاب بـ [id] من endpoint البروفايل.
 @JsonSerializable()
 class DoctorSummaryModel {
+  @JsonKey(name: 'doctorId')
   final String id;
+
+  @JsonKey(name: 'fullName')
   final String name;
 
   /// التخصص/اللقب المعروض تحت الاسم — مثال: "أخصائي باطنة".
@@ -23,10 +26,10 @@ class DoctorSummaryModel {
   @JsonKey(defaultValue: 0.0)
   final double rating;
 
-  @JsonKey(defaultValue: 0)
+  @JsonKey(name: 'likes', defaultValue: 0)
   final int likesCount;
 
-  @JsonKey(defaultValue: 0)
+  @JsonKey(name: 'comments', defaultValue: 0)
   final int commentsCount;
 
   /// متاح لاستشارة أون لاين دلوقتى.
@@ -38,6 +41,7 @@ class DoctorSummaryModel {
   final bool acceptsBookings;
 
   /// `null` لو مفيش موعد متاح.
+  @JsonKey(name: 'nearestAppointment')
   final NearestAppointmentModel? nearestAvailableAppointment;
 
   const DoctorSummaryModel({
