@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
-import 'package:we_care/generated/l10n.dart';
 
 /// Top overlay row on the video call screen: shield icon, live status pill
 /// ("الكشف جاري | 00:00") and the more-options icon.
 class VideoCallTopBarWidget extends StatelessWidget {
-  const VideoCallTopBarWidget({super.key, required this.elapsedLabel});
+  const VideoCallTopBarWidget({
+    super.key,
+    required this.statusLabel,
+    required this.elapsedLabel,
+  });
 
+  final String statusLabel;
   final String elapsedLabel;
 
   @override
@@ -42,7 +46,7 @@ class VideoCallTopBarWidget extends StatelessWidget {
                 SizedBox(width: 6.w),
                 Flexible(
                   child: Text(
-                    S.of(context).examinationInProgressLabel,
+                    statusLabel,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: pillTextStyle,

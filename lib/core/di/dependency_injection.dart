@@ -62,6 +62,8 @@ import 'package:we_care/features/doctor/research_and_papers/data/repos/research_
 import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_and_papers_cubit.dart';
 import 'package:we_care/features/doctor/service_prices/data/repos/service_prices_repo.dart';
 import 'package:we_care/features/doctor/service_prices/logic/cubit/service_prices_cubit.dart';
+import 'package:we_care/features/doctor/video_call/data/repos/video_call_repo.dart';
+import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/logic/cubit/emergency_complaint_details_cubit.dart';
@@ -122,6 +124,7 @@ import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.
 import 'package:we_care/features/online_doctor/logic/cubit/doctors_list_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_comment_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_rating_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/reschedule_appointment_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/upcoming_bookings_cubit.dart';
 import 'package:we_care/features/online_doctor/online_doctor_services.dart';
@@ -465,6 +468,9 @@ void setupAppCubits() {
   getIt.registerFactory<EditBookingCommentCubit>(
     () => EditBookingCommentCubit(getIt<OnlineDoctorRepo>()),
   );
+  getIt.registerFactory<ExaminationCallCubit>(
+    () => ExaminationCallCubit(getIt<OnlineDoctorRepo>()),
+  );
   getIt.registerFactory<AppointmentRoomCubit>(
     () => AppointmentRoomCubit(getIt<OnlineDoctorRepo>()),
   );
@@ -588,6 +594,11 @@ void setupAppCubits() {
   getIt.registerFactory<BookingsCubit>(
     () => BookingsCubit(
       getIt<BookingsRepo>(),
+    ),
+  );
+  getIt.registerFactory<DoctorVideoCallCubit>(
+    () => DoctorVideoCallCubit(
+      getIt<VideoCallRepo>(),
     ),
   );
   getIt.registerFactory<DoctorBasicDataCubit>(
@@ -958,6 +969,11 @@ void setupAppRepos() {
   );
   getIt.registerLazySingleton<BookingsRepo>(
     () => BookingsRepo(
+      getIt<DoctorServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<VideoCallRepo>(
+    () => VideoCallRepo(
       getIt<DoctorServices>(),
     ),
   );

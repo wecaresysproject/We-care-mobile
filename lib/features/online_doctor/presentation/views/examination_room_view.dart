@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -77,7 +78,9 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
   }
 
   Future<void> _onEnterRoomPressed() async {
-    if (_booking.isTimeNow(DateTime.now())) {
+    //! bypass مؤقت لتجربة مكالمة الفيديو — فى الـ debug الدخول متاح قبل
+    //! الموعد. يتشال بعد ما التجربة تخلص.
+    if (kDebugMode || _booking.isTimeNow(DateTime.now())) {
       await context.pushNamed(
         Routes.examinationCallView,
         arguments: _booking,

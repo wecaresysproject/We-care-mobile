@@ -11,11 +11,10 @@ class WaitingPatientModel {
 
   /// One `waitingPatients[]` item.
   factory WaitingPatientModel.fromJson(Map<String, dynamic> json) {
-    final patient = json['patient'] as Map<String, dynamic>? ?? const {};
     return WaitingPatientModel(
       id: json['bookingId']?.toString() ?? '',
-      patientName: patient['name'] as String? ?? '',
-      patientPhotoUrl: bookingsImageUrl(patient['profileImage']),
+      patientName: json['patientName'] as String? ?? '',
+      patientPhotoUrl: bookingsImageUrl(json['patientImageUrl']),
       type: AppointmentType.fromApi(json['type'] as String?),
       requestedAt: parseBookingsInstant(json['requestedAt']) ?? DateTime.now(),
     );

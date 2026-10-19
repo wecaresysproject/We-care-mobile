@@ -66,8 +66,11 @@ class TodayAppointmentRowWidget extends StatelessWidget {
         Row(
           children: [
             _AllowEntryButton(
-              onTap: () =>
-                  Navigator.pushNamed(context, Routes.doctorVideoCallView),
+              onTap: () => Navigator.pushNamed(
+                context,
+                Routes.doctorVideoCallView,
+                arguments: appointment.id,
+              ),
             ),
             const Spacer(),
             AppointmentTypeBadgeWidget(type: appointment.type),

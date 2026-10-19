@@ -13,7 +13,6 @@ class AppStrings {
   static const rubikFontFamily = "Rubik";
   static const isForgetPasswordFlowArgumentKey = "isForgetPasswordFlow";
   static const phoneNumberArgumentKey = "phoneNumber";
-  static const elapsedLabelArgumentKey = "elapsedLabel";
   static const contentTypeKey = "Content-Type";
   static const contentTypeMultiPartValue = "multipart/form-data";
   static const hasRunBefore = 'hasRunBefore';

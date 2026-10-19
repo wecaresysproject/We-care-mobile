@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:uuid/uuid.dart';
+import 'package:we_care/core/Database/cach_helper.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
-import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
-import 'package:we_care/core/networking/dio_serices.dart';
+import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/features/contact_support/data/models/chat_message_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -26,25 +26,24 @@ class ContactSupportRepository {
   // Expose messages stream
   Stream<List<ChatMessage>> get messagesStream => _messagesController.stream;
 
-  ContactSupportRepository() {
-    _initWebSocket();
-  }
-  String? _extractAccessToken() {
-    final authHeader = DioServices.getUserToken();
-    if (authHeader.isEmptyOrNull) return null;
+  /// Opens the WebSocket and completes once the connection is established.
+  /// Throws if the connection can't be opened.
+  Future<void> connect() async {
+    // Read the token from secure storage: the Dio default header is only
+    // populated right after login, so it's empty on a restored session.
+    final String token =
+        await CacheHelper.getSecuredString(AuthApiConstants.userTokenKey);
 
-    // Remove "Bearer "
-    return authHeader.replaceFirst('Bearer ', '');
+    _channel = WebSocketChannel.connect(
+      Uri.parse('$kDummyWebSocketUrl?access_token=$token'),
+    );
+    await _channel!.ready;
+
+    _listenToChannel();
   }
 
-  void _initWebSocket() {
+  void _listenToChannel() {
     try {
-      final token = _extractAccessToken();
-
-      _channel = WebSocketChannel.connect(
-        Uri.parse('$kDummyWebSocketUrl?access_token=$token'),
-      );
-
       /// Send SignalR handshake
       final handshakePayload =
           '${jsonEncode({"protocol": "json", "version": 1})}\u001e';

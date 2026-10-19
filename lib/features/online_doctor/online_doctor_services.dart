@@ -102,4 +102,9 @@ abstract class OnlineDoctorServices {
     @Query("bookingId") String bookingId,
     @Query("questionId") String questionId,
   );
+
+  @GET(OnlineDoctorApiConstants.getVideoMeeting)
+  Future<dynamic> getVideoMeeting(
+    @Query("appointmentId") String appointmentId,
+  );
 }

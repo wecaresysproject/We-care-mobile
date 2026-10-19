@@ -43,6 +43,7 @@ import 'package:we_care/features/doctor/monthly_examination_target/presentation/
 import 'package:we_care/features/doctor/professional_licenses/presentation/views/professional_licenses_form_view.dart';
 import 'package:we_care/features/doctor/research_and_papers/presentation/views/research_and_papers_form_view.dart';
 import 'package:we_care/features/doctor/service_prices/presentation/views/service_prices_form_view.dart';
+import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/video_call_view.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
 import 'package:we_care/features/emergency_complaints/emergency_complaints_data_entry/Presentation/views/create_new_complaint_details_data_entry_view.dart';
@@ -168,6 +169,7 @@ import '../../features/online_doctor/presentation/views/doctors_list_view.dart';
 import '../../features/online_doctor/presentation/views/medical_examination_view.dart';
 import '../../features/online_doctor/data/models/booking_history_model.dart';
 import '../../features/online_doctor/data/models/booking_model.dart';
+import '../../features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import '../../features/online_doctor/presentation/views/examination_call_view.dart';
 import '../../features/online_doctor/presentation/views/examination_room_view.dart';
 import '../../features/online_doctor/presentation/views/booking_details_view.dart';
@@ -943,7 +945,11 @@ class AppRouter {
       case Routes.examinationCallView:
         final booking = arguments as BookingModel;
         return MaterialPageRoute(
-          builder: (_) => ExaminationCallView(booking: booking),
+          builder: (_) => BlocProvider<ExaminationCallCubit>(
+            create: (_) => getIt<ExaminationCallCubit>()
+              ..loadMeeting(booking.bookingId),
+            child: ExaminationCallView(booking: booking),
+          ),
         );
       case Routes.doctorsListView:
         final specialtyIdentifier = arguments as String? ?? '';
@@ -975,10 +981,12 @@ class AppRouter {
           builder: (_) => const BookingsView(),
         );
       case Routes.doctorVideoCallView:
+        final appointmentId = arguments as String;
         return MaterialPageRoute(
-          builder: (_) => VideoCallView(
-            elapsedLabel:
-                arguments?[AppStrings.elapsedLabelArgumentKey] ?? '00:00',
+          builder: (_) => BlocProvider<DoctorVideoCallCubit>(
+            create: (_) =>
+                getIt<DoctorVideoCallCubit>()..openMeeting(appointmentId),
+            child: VideoCallView(appointmentId: appointmentId),
           ),
         );
       case Routes.doctorBasicDataView:

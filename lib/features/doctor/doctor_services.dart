@@ -100,4 +100,19 @@ abstract class DoctorServices {
   Future<dynamic> rejectWaitingPatient(
     @Query("bookingId") String bookingId,
   );
+
+  @POST(DoctorApiConstants.createVideoMeeting)
+  Future<dynamic> createVideoMeeting(
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @POST(DoctorApiConstants.startVideoMeeting)
+  Future<dynamic> startVideoMeeting(
+    @Query("appointmentId") String appointmentId,
+  );
+
+  @POST(DoctorApiConstants.endVideoMeeting)
+  Future<dynamic> endVideoMeeting(
+    @Query("appointmentId") String appointmentId,
+  );
 }

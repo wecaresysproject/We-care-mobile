@@ -32,7 +32,13 @@ class BookingsRepo {
       final data = response is Map ? response['data'] : null;
       return ApiResult.success(
         data is Map<String, dynamic> && data['startsAt'] is String
-            ? TodayAppointmentModel.fromJson(data)
+            // The accept response may omit the patient fields — keep the
+            // waiting entry's name/photo in that case.
+            ? TodayAppointmentModel.fromJson({
+                'patientName': patient.patientName,
+                'patientImageUrl': patient.patientPhotoUrl,
+                ...data,
+              })
             : TodayAppointmentModel(
                 id: patient.id,
                 patientName: patient.patientName,
