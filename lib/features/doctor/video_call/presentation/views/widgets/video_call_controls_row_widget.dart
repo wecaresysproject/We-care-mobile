@@ -4,21 +4,27 @@ import 'package:we_care/features/doctor/video_call/presentation/views/widgets/vi
 import 'package:we_care/generated/l10n.dart';
 
 /// The mic / camera / end-call / speaker control row at the bottom of the
-/// video call screen. Mic/camera/speaker are local UI toggles only; ending
-/// the call pops back to the bookings screen.
-class VideoCallControlsRowWidget extends StatefulWidget {
-  const VideoCallControlsRowWidget({super.key});
+/// video call screen. Mic and camera mirror the live Jitsi room state; the
+/// speaker is a local UI toggle only.
+class VideoCallControlsRowWidget extends StatelessWidget {
+  const VideoCallControlsRowWidget({
+    super.key,
+    required this.isMicOn,
+    required this.isCameraOn,
+    required this.isSpeakerOn,
+    required this.onMicPressed,
+    required this.onCameraPressed,
+    required this.onSpeakerPressed,
+    required this.onEndCallPressed,
+  });
 
-  @override
-  State<VideoCallControlsRowWidget> createState() =>
-      _VideoCallControlsRowWidgetState();
-}
-
-class _VideoCallControlsRowWidgetState
-    extends State<VideoCallControlsRowWidget> {
-  bool _isMicMuted = false;
-  bool _isCameraOff = false;
-  bool _isSpeakerOn = true;
+  final bool isMicOn;
+  final bool isCameraOn;
+  final bool isSpeakerOn;
+  final VoidCallback onMicPressed;
+  final VoidCallback onCameraPressed;
+  final VoidCallback onSpeakerPressed;
+  final VoidCallback onEndCallPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +33,16 @@ class _VideoCallControlsRowWidgetState
       children: [
         Expanded(
           child: VideoCallControlButtonWidget(
-            icon: _isMicMuted ? Icons.mic_off : Icons.mic,
+            icon: isMicOn ? Icons.mic : Icons.mic_off,
             label: S.of(context).microphoneAction,
-            onTap: () => setState(() => _isMicMuted = !_isMicMuted),
+            onTap: onMicPressed,
           ),
         ),
         Expanded(
           child: VideoCallControlButtonWidget(
-            icon: _isCameraOff ? Icons.videocam_off : Icons.videocam,
+            icon: isCameraOn ? Icons.videocam : Icons.videocam_off,
             label: S.of(context).cameraAction,
-            onTap: () => setState(() => _isCameraOff = !_isCameraOff),
+            onTap: onCameraPressed,
           ),
         ),
         Expanded(
@@ -45,14 +51,14 @@ class _VideoCallControlsRowWidgetState
             label: S.of(context).endExaminationAction,
             backgroundColor: AppColorsManager.videoCallEndButtonBackground,
             iconColor: AppColorsManager.scaffoldBackGroundColor,
-            onTap: () => Navigator.of(context).pop(),
+            onTap: onEndCallPressed,
           ),
         ),
         Expanded(
           child: VideoCallControlButtonWidget(
-            icon: _isSpeakerOn ? Icons.volume_up : Icons.volume_off,
+            icon: isSpeakerOn ? Icons.volume_up : Icons.volume_off,
             label: S.of(context).speakerAction,
-            onTap: () => setState(() => _isSpeakerOn = !_isSpeakerOn),
+            onTap: onSpeakerPressed,
           ),
         ),
       ],

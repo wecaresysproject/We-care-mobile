@@ -2,16 +2,20 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/examination_call_cubit.dart';
+import 'package:we_care/features/online_doctor/presentation/views/widgets/jitsi_meeting_view.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
+import 'package:we_care/features/online_doctor/video_call_logger.dart';
 
-/// شاشة مكالمة الكشف — فيديو الطبيب بملء الشاشة، شريط الحالة والمؤقت فوق،
-/// معاينة كاميرا المستخدم، أزرار التحكم فى المكالمة، وكارتى "ملفى الطبى"
-/// و"أسئلتى للطبيب" تحت.
+/// شاشة مكالمة الكشف — فيديو Jitsi جوه WebView، شريط الحالة والمؤقت فوق،
+/// أزرار التحكم فى المكالمة، وكارتى "ملفى الطبى" و"أسئلتى للطبيب" تحت.
 class ExaminationCallView extends StatefulWidget {
   const ExaminationCallView({super.key, required this.booking});
 
@@ -22,31 +26,53 @@ class ExaminationCallView extends StatefulWidget {
 }
 
 class _ExaminationCallViewState extends State<ExaminationCallView> {
-  //! صورة المستخدم فى معاينة الكاميرا dummy لحد ما بث الفيديو الفعلى يتربط.
-  static const String _patientImageUrl =
-      "https://randomuser.me/api/portraits/women/44.jpg";
+  final JitsiMeetingController _jitsiController = JitsiMeetingController();
 
-  /// مؤقت مدة المكالمة — بيعد من لحظة الدخول.
+  /// مؤقت مدة المكالمة — بيعد من لحظة دخول الغرفة فعلياً.
   Timer? _callTicker;
   Duration _elapsed = Duration.zero;
 
+  /// `null` لحد ما المستخدم يرد على طلب الكاميرا والميكروفون.
+  bool? _hasMediaPermissions;
+
+  /// المستخدم دخل غرفة Jitsi فعلياً (`videoConferenceJoined`).
+  bool _isJoined = false;
+
+  /// الطبيب (أو أى طرف تانى) موجود فى الغرفة.
+  bool _isRemoteParticipantInRoom = false;
+
   bool _isMicOn = true;
   bool _isCameraOn = true;
+
+  //! مكبر الصوت شكلى — صفحة الويب متقدرش تغيّر مخرج الصوت على الموبايل.
   bool _isSpeakerOn = true;
+
+  /// المستخدم طلب الخروج — `videoConferenceLeft` ساعتها يقفل الشاشة بدل ما
+  /// يستنى Jitsi يرجع يتصل.
+  bool _isHangingUp = false;
 
   @override
   void initState() {
     super.initState();
-    _callTicker = Timer.periodic(
-      const Duration(seconds: 1),
-      (_) => setState(() => _elapsed += const Duration(seconds: 1)),
+    VideoCallLogger.info(
+      'call screen opened → bookingId=${widget.booking.bookingId}',
     );
+    _requestMediaPermissions();
   }
 
   @override
   void dispose() {
     _callTicker?.cancel();
+    VideoCallLogger.info(
+      'call screen closed → joined=$_isJoined elapsed=$_elapsedLabel',
+    );
     super.dispose();
+  }
+
+  Future<void> _requestMediaPermissions() async {
+    final isGranted = await requestCallMediaPermissions();
+    if (!mounted) return;
+    setState(() => _hasMediaPermissions = isGranted);
   }
 
   String get _typeName => widget.booking.type.shortName;
@@ -59,10 +85,88 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
     return "$minutes:$seconds";
   }
 
-  String get _statusLabel =>
-      widget.booking.type.isExamination ? "الكشف جاري" : "الاستشارة جارية";
+  String _statusLabelFor(ExaminationCallStatus status) {
+    if (status == ExaminationCallStatus.waitingForDoctor) {
+      return "في انتظار الطبيب";
+    }
+    if (status == ExaminationCallStatus.ended) return "انتهى $_typeName";
+    if (!_isJoined) return "جاري الاتصال";
+    if (!_isRemoteParticipantInRoom) return "في انتظار الطبيب";
+    return widget.booking.type.isExamination ? "الكشف جاري" : "الاستشارة جارية";
+  }
 
-  void _onEndCallPressed() => Navigator.of(context).pop();
+  void _onJitsiEvent(String name, Map<String, dynamic> data) {
+    if (!mounted) return;
+
+    switch (name) {
+      case 'videoConferenceJoined':
+        _callTicker?.cancel();
+        _callTicker = Timer.periodic(
+          const Duration(seconds: 1),
+          (_) => setState(() => _elapsed += const Duration(seconds: 1)),
+        );
+        setState(() => _isJoined = true);
+        _refreshRemoteParticipants();
+      case 'participantJoined':
+      case 'participantLeft':
+        _refreshRemoteParticipants();
+      case 'audioMuteStatusChanged':
+        setState(() => _isMicOn = data['muted'] != true);
+      case 'videoMuteStatusChanged':
+        setState(() => _isCameraOn = data['muted'] != true);
+      case 'externalApiLoadFailed':
+        _showMessage("تعذر الاتصال بخادم المكالمة");
+      case 'cameraError':
+        _showMessage("تعذر تشغيل الكاميرا");
+      case 'micError':
+        _showMessage("تعذر تشغيل الميكروفون");
+      case 'videoConferenceLeft':
+        _onConferenceLeft();
+      case 'readyToClose':
+        _closeScreen();
+    }
+  }
+
+  /// Jitsi بيخرج من الغرفة كمان لما الاتصال يقع، وبعدين يعمل reload ويدخل
+  /// تانى لوحده — الشاشة متتقفلش غير لما المستخدم ينهى المكالمة.
+  void _onConferenceLeft() {
+    if (_isHangingUp) {
+      _closeScreen();
+      return;
+    }
+    VideoCallLogger.warning('left room unexpectedly → waiting to rejoin');
+    setState(() {
+      _isJoined = false;
+      _isRemoteParticipantInRoom = false;
+    });
+  }
+
+  Future<void> _refreshRemoteParticipants() async {
+    final participants = await _jitsiController.participantsCount();
+    if (!mounted) return;
+    setState(() => _isRemoteParticipantInRoom = participants > 1);
+  }
+
+  void _runJitsiCommand(String command) {
+    if (!_isJoined) return;
+    _jitsiController.runCommand(command);
+  }
+
+  void _onEndCallPressed() {
+    VideoCallLogger.info('end call pressed → joined=$_isJoined');
+    if (_isJoined) {
+      // الخروج بيكمل من حدث `videoConferenceLeft`.
+      _isHangingUp = true;
+      _runJitsiCommand('hangup');
+      return;
+    }
+    _closeScreen();
+  }
+
+  void _closeScreen() {
+    if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
+    Navigator.of(context).pop();
+  }
 
   //! ملخص الملف الطبى وأسئلة المستخدم أثناء المكالمة هيتفعلوا مع ربط الغرفة.
   void _onMedicalFilePressed() =>
@@ -92,104 +196,235 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
       );
   }
 
+  /// رسالة الحالة اللى بتغطى الفيديو لحد ما المستخدم يدخل الغرفة — `null`
+  /// لما الفيديو يبقى ظاهر.
+  _CallNotice? _noticeFor(ExaminationCallState state) {
+    if (_hasMediaPermissions == false) {
+      return _CallNotice(
+        message: "يجب السماح باستخدام الكاميرا والميكروفون لبدء $_typeName",
+        actionLabel: "فتح الإعدادات",
+        onActionPressed: openAppSettings,
+      );
+    }
+    switch (state.status) {
+      case ExaminationCallStatus.loading:
+        return const _CallNotice(isLoading: true);
+      case ExaminationCallStatus.waitingForDoctor:
+        return _CallNotice(
+          message: "الطبيب لم يبدأ $_typeName بعد",
+          isLoading: true,
+        );
+      case ExaminationCallStatus.ended:
+        return _CallNotice(message: "انتهى $_typeName");
+      case ExaminationCallStatus.failure:
+        return _CallNotice(
+          message: state.errorMessage,
+          actionLabel: "إعادة المحاولة",
+          onActionPressed: () => context
+              .read<ExaminationCallCubit>()
+              .loadMeeting(widget.booking.bookingId),
+        );
+      case ExaminationCallStatus.ready:
+        if (_hasMediaPermissions == null || !_isJoined) {
+          return const _CallNotice(isLoading: true);
+        }
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // فيديو الطبيب — صورته بملء الشاشة لحد ما بث الفيديو الفعلى يتربط.
-          Positioned.fill(
-            child: CachedNetworkImage(
-              imageUrl: widget.booking.doctor.imageUrl,
-              fit: BoxFit.cover,
-              placeholder: (context, url) => Container(
-                color: const Color(0xFF2B2F33),
-                alignment: Alignment.center,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.white.withAlpha(150),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: const Color(0xFF2B2F33),
-                alignment: Alignment.center,
-                child: Icon(
-                  Icons.videocam_off_rounded,
-                  size: 48.sp,
-                  color: Colors.white.withAlpha(120),
-                ),
-              ),
-            ),
-          ),
-          // تظليل خفيف تحت عشان أزرار التحكم والتسميات البيضا تبان.
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.black.withValues(alpha: 0.25),
-                    Colors.transparent,
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.35),
+      body: BlocBuilder<ExaminationCallCubit, ExaminationCallState>(
+        builder: (context, state) {
+          final meeting = state.meeting;
+          final canOpenRoom = state.status == ExaminationCallStatus.ready &&
+              meeting != null &&
+              _hasMediaPermissions == true;
+          final notice = _noticeFor(state);
+
+          return Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    if (canOpenRoom)
+                      Positioned.fill(
+                        child: JitsiMeetingView(
+                          meeting: meeting,
+                          controller: _jitsiController,
+                          onEvent: _onJitsiEvent,
+                          displayName: "المريض",
+                        ),
+                      ),
+                    // صورة الطبيب بتغطى الفيديو لحد ما المستخدم يدخل الغرفة.
+                    if (notice != null)
+                      Positioned.fill(
+                        child: _CallPlaceholder(
+                          imageUrl: widget.booking.doctor.imageUrl,
+                          notice: notice,
+                        ),
+                      ),
+                    // تظليل خفيف عشان أزرار التحكم والتسميات البيضا تبان —
+                    // من غير ما يمنع اللمس عن الفيديو.
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withValues(alpha: 0.25),
+                                Colors.transparent,
+                                Colors.transparent,
+                                Colors.black.withValues(alpha: 0.35),
+                              ],
+                              stops: const [0, 0.2, 0.65, 1],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SafeArea(
+                      bottom: false,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
+                            child: _CallTopBar(
+                              statusLabel: _statusLabelFor(state.status),
+                              elapsedLabel: _elapsedLabel,
+                            ),
+                          ),
+                          const Spacer(),
+                          const _EncryptionChip(),
+                          verticalSpacing(16),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24.w),
+                            child: _CallControlsRow(
+                              typeName: _typeName,
+                              isMicOn: _isMicOn,
+                              isCameraOn: _isCameraOn,
+                              isSpeakerOn: _isSpeakerOn,
+                              onMicPressed: () =>
+                                  _runJitsiCommand('toggleAudio'),
+                              onCameraPressed: () =>
+                                  _runJitsiCommand('toggleVideo'),
+                              onSpeakerPressed: () => setState(
+                                () => _isSpeakerOn = !_isSpeakerOn,
+                              ),
+                              onEndCallPressed: _onEndCallPressed,
+                            ),
+                          ),
+                          verticalSpacing(14),
+                        ],
+                      ),
+                    ),
                   ],
-                  stops: const [0, 0.2, 0.65, 1],
                 ),
               ),
-            ),
-          ),
-          SafeArea(
-            bottom: false,
+              _CallBottomPanel(
+                onMedicalFilePressed: _onMedicalFilePressed,
+                onQuestionsPressed: _onQuestionsPressed,
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// محتوى رسالة الحالة فوق الفيديو — نص اختيارى، مؤشر تحميل، وزرار اختيارى.
+class _CallNotice {
+  const _CallNotice({
+    this.message = '',
+    this.isLoading = false,
+    this.actionLabel,
+    this.onActionPressed,
+  });
+
+  final String message;
+  final bool isLoading;
+  final String? actionLabel;
+  final VoidCallback? onActionPressed;
+}
+
+/// صورة الطبيب معتمة وعليها رسالة الحالة — بتظهر لحد ما الفيديو يشتغل.
+class _CallPlaceholder extends StatelessWidget {
+  const _CallPlaceholder({required this.imageUrl, required this.notice});
+
+  final String imageUrl;
+  final _CallNotice notice;
+
+  @override
+  Widget build(BuildContext context) {
+    final actionLabel = notice.actionLabel;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          placeholder: (context, url) =>
+              Container(color: const Color(0xFF2B2F33)),
+          errorWidget: (context, url, error) =>
+              Container(color: const Color(0xFF2B2F33)),
+        ),
+        ColoredBox(color: Colors.black.withValues(alpha: 0.6)),
+        Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.w),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
-                  child: _CallTopBar(
-                    statusLabel: _statusLabel,
-                    elapsedLabel: _elapsedLabel,
+                if (notice.isLoading)
+                  CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white.withAlpha(200),
                   ),
-                ),
-                verticalSpacing(14),
-                Align(
-                  alignment: AlignmentDirectional.topEnd,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _SelfPreviewCard(
-                      imageUrl: _patientImageUrl,
-                      isCameraOn: _isCameraOn,
+                if (notice.isLoading && notice.message.isNotEmpty)
+                  verticalSpacing(16),
+                if (notice.message.isNotEmpty)
+                  Text(
+                    notice.message,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.font14whiteWeight600.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
-                const Spacer(),
-                const _EncryptionChip(),
-                verticalSpacing(16),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.w),
-                  child: _CallControlsRow(
-                    typeName: _typeName,
-                    isMicOn: _isMicOn,
-                    isCameraOn: _isCameraOn,
-                    isSpeakerOn: _isSpeakerOn,
-                    onMicPressed: () => setState(() => _isMicOn = !_isMicOn),
-                    onCameraPressed: () =>
-                        setState(() => _isCameraOn = !_isCameraOn),
-                    onSpeakerPressed: () =>
-                        setState(() => _isSpeakerOn = !_isSpeakerOn),
-                    onEndCallPressed: _onEndCallPressed,
+                if (actionLabel != null) ...[
+                  verticalSpacing(14),
+                  TextButton(
+                    onPressed: notice.onActionPressed,
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: AppColorsManager.mainDarkBlue,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 8.h,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                    ),
+                    child: Text(
+                      actionLabel,
+                      style: AppTextStyles.font14whiteWeight600.copyWith(
+                        fontSize: 13.sp,
+                        color: AppColorsManager.mainDarkBlue,
+                      ),
+                    ),
                   ),
-                ),
-                verticalSpacing(14),
-                _CallBottomPanel(
-                  onMedicalFilePressed: _onMedicalFilePressed,
-                  onQuestionsPressed: _onQuestionsPressed,
-                ),
+                ],
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -277,72 +512,6 @@ class _RoundGlassButton extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: Icon(icon, size: 20.sp, color: Colors.white),
-    );
-  }
-}
-
-/// معاينة كاميرا المستخدم — كارت صغير فى الركن، وبيتعتم لما الكاميرا تتقفل.
-class _SelfPreviewCard extends StatelessWidget {
-  const _SelfPreviewCard({required this.imageUrl, required this.isCameraOn});
-
-  final String imageUrl;
-  final bool isCameraOn;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 104.w,
-      height: 138.h,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: const Color(0xFF2B2F33),
-        borderRadius: BorderRadius.circular(18.r),
-        border: Border.all(color: Colors.white, width: 2),
-      ),
-      child: Stack(
-        children: [
-          if (isCameraOn)
-            Positioned.fill(
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    Container(color: const Color(0xFF2B2F33)),
-                errorWidget: (context, url, error) => Icon(
-                  Icons.person_rounded,
-                  size: 40.sp,
-                  color: Colors.white.withAlpha(120),
-                ),
-              ),
-            )
-          else
-            Center(
-              child: Icon(
-                Icons.videocam_off_rounded,
-                size: 28.sp,
-                color: Colors.white.withAlpha(150),
-              ),
-            ),
-          // زرار قلب الكاميرا — شكلى لحد ما بث الفيديو الفعلى يتربط.
-          PositionedDirectional(
-            bottom: 6.h,
-            end: 6.w,
-            child: Container(
-              width: 26.w,
-              height: 26.w,
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.45),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.flip_camera_ios_rounded,
-                size: 14.sp,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

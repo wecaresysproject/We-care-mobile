@@ -50,4 +50,14 @@ class DoctorApiConstants {
 
   /// رفض مريض من قائمة الانتظار — `POST` و`?bookingId=` من غير body.
   static const rejectWaitingPatient = "/DoctorBookings/waiting-list/reject";
+
+  /// إنشاء اجتماع الفيديو لموعد — `POST` و`appointmentId` فى الـ body،
+  /// وبيرجّع الاجتماع الموجود لو اتعمل قبل كده.
+  static const createVideoMeeting = "/Video/create";
+
+  /// تسجيل بدء اجتماع الفيديو — `POST` و`?appointmentId=` من غير body.
+  static const startVideoMeeting = "/Video/start";
+
+  /// تسجيل انتهاء اجتماع الفيديو — `POST` و`?appointmentId=` من غير body.
+  static const endVideoMeeting = "/Video/end";
 }

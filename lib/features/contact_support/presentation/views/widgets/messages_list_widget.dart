@@ -22,7 +22,9 @@ class _MessagesListWidgetState extends State<MessagesListWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ContactSupportCubit, ContactSupportState>(
-      buildWhen: (previous, current) => previous.messages != current.messages,
+      buildWhen: (previous, current) =>
+          previous.messages != current.messages ||
+          previous.requestStatus != current.requestStatus,
       listener: (context, state) {
         if (state.requestStatus == RequestStatus.success) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

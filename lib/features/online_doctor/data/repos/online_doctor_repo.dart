@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_room_model.dart';
@@ -8,6 +9,7 @@ import 'package:we_care/features/online_doctor/data/models/booking_history_model
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_summary_model.dart';
+import 'package:we_care/features/online_doctor/data/models/video_meeting_model.dart';
 import 'package:we_care/features/online_doctor/online_doctor_services.dart';
 
 class OnlineDoctorRepo {
@@ -247,6 +249,26 @@ class OnlineDoctorRepo {
       return ApiResult.success(
         AppointmentRoomModel.fromJson(response['data'] as Map<String, dynamic>),
       );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// اجتماع الفيديو بتاع الموعد — `null` لو الطبيب لسه منشأهوش (`404`).
+  Future<ApiResult<VideoMeetingModel?>> getVideoMeeting({
+    required String appointmentId,
+  }) async {
+    try {
+      final response =
+          await _onlineDoctorServices.getVideoMeeting(appointmentId);
+      return ApiResult.success(
+        VideoMeetingModel.fromJson(response['data'] as Map<String, dynamic>),
+      );
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        return const ApiResult.success(null);
+      }
+      return ApiResult.failure(ApiErrorHandler.handle(error));
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

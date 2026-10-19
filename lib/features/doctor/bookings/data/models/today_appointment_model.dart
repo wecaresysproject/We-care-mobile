@@ -12,11 +12,10 @@ class TodayAppointmentModel {
 
   /// One `todayAppointments[]` item — also the `data` of accept.
   factory TodayAppointmentModel.fromJson(Map<String, dynamic> json) {
-    final patient = json['patient'] as Map<String, dynamic>? ?? const {};
     return TodayAppointmentModel(
       id: json['bookingId']?.toString() ?? '',
-      patientName: patient['name'] as String? ?? '',
-      patientPhotoUrl: bookingsImageUrl(patient['profileImage']),
+      patientName: json['patientName'] as String? ?? '',
+      patientPhotoUrl: bookingsImageUrl(json['patientImageUrl']),
       type: AppointmentType.fromApi(json['type'] as String?),
       startsAt: parseBookingsInstant(json['startsAt']) ?? DateTime.now(),
     );

@@ -30,7 +30,13 @@ class ContactSupportCubit extends Cubit<ContactSupportState> {
           );
         },
       );
+      await repository.connect();
+      if (isClosed) return;
+      // Connected: stop loading even if the conversation has no messages yet
+      emit(state.copyWith(requestStatus: RequestStatus.success));
     } catch (e) {
+      AppLogger.error('Failed to connect to chat: $e');
+      if (isClosed) return;
       emit(
         state.copyWith(
           requestStatus: RequestStatus.failure,
