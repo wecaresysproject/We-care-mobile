@@ -115,4 +115,9 @@ abstract class DoctorServices {
   Future<dynamic> endVideoMeeting(
     @Query("appointmentId") String appointmentId,
   );
+
+  @GET(DoctorApiConstants.getBookingPatientAccess)
+  Future<dynamic> getBookingPatientAccess(
+    @Query("bookingId") String bookingId,
+  );
 }

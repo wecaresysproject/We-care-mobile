@@ -60,4 +60,9 @@ class DoctorApiConstants {
 
   /// تسجيل انتهاء اجتماع الفيديو — `POST` و`?appointmentId=` من غير body.
   static const endVideoMeeting = "/Video/end";
+
+  /// صلاحيات الطبيب على الملف الطبى لمريض الحجز (الموديولات المسموحة
+  /// وميعاد انتهاء الوصول) — `?bookingId=`.
+  static const getBookingPatientAccess =
+      "/DoctorBookings/bookings/patient-access";
 }
