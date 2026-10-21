@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -267,8 +268,11 @@ class BiometricHistoryView extends StatelessWidget {
     return [
       _buildColumn("التاريخ"),
       _buildColumn("القياس القديم"),
-      _buildColumn("تعديل"),
-      _buildColumn("حذف"),
+      // A doctor viewing a patient's file is read-only.
+      if (!CareContextManager.isReadOnly) ...[
+        _buildColumn("تعديل"),
+        _buildColumn("حذف"),
+      ],
     ];
   }
 
@@ -279,8 +283,10 @@ class BiometricHistoryView extends StatelessWidget {
         cells: [
           _buildCell(item.formattedDate ?? item.originalDate),
           _buildCell(getBiometricValue(item)),
-          _buildEditCell(context, item),
-          _buildDeleteCell(context, item.originalDate),
+          if (!CareContextManager.isReadOnly) ...[
+            _buildEditCell(context, item),
+            _buildDeleteCell(context, item.originalDate),
+          ],
         ],
       );
     }).toList();
