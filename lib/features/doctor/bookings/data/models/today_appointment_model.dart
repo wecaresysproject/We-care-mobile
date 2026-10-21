@@ -8,6 +8,7 @@ class TodayAppointmentModel {
     required this.patientPhotoUrl,
     required this.type,
     required this.startsAt,
+    this.dataAccessExpiresAt,
   });
 
   /// One `todayAppointments[]` item — also the `data` of accept.
@@ -18,6 +19,7 @@ class TodayAppointmentModel {
       patientPhotoUrl: bookingsImageUrl(json['patientImageUrl']),
       type: AppointmentType.fromApi(json['type'] as String?),
       startsAt: parseBookingsInstant(json['startsAt']) ?? DateTime.now(),
+      dataAccessExpiresAt: parseBookingsInstant(json['dataAccessExpiresAt']),
     );
   }
 
@@ -27,6 +29,14 @@ class TodayAppointmentModel {
   final String? patientPhotoUrl;
   final AppointmentType type;
   final DateTime startsAt;
+
+  /// End of the patient's data-access window — null when the patient
+  /// granted no access (or the backend doesn't send it yet).
+  final DateTime? dataAccessExpiresAt;
+
+  /// The doctor can still open the patient's medical file.
+  bool hasOpenDataAccess(DateTime now) =>
+      dataAccessExpiresAt != null && now.isBefore(dataAccessExpiresAt!);
 
   /// "09:00 ص".
   String get bookingTimeLabel => bookingClockLabel(startsAt);

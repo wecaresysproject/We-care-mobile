@@ -4,6 +4,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/doctor/bookings/data/models/today_appointment_model.dart';
+import 'package:we_care/features/doctor/patient_medical_file/presentation/patient_medical_file_launcher.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/appointment_time_status_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/appointment_type_badge_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/patient_avatar_widget.dart';
@@ -72,6 +73,15 @@ class TodayAppointmentRowWidget extends StatelessWidget {
                 arguments: appointment.id,
               ),
             ),
+            if (appointment.hasOpenDataAccess(now)) ...[
+              SizedBox(width: 8.w),
+              _MedicalFileButton(
+                onTap: () => PatientMedicalFileLauncher.open(
+                  context,
+                  bookingId: appointment.id,
+                ),
+              ),
+            ],
             const Spacer(),
             AppointmentTypeBadgeWidget(type: appointment.type),
           ],
@@ -105,6 +115,41 @@ class _AllowEntryButton extends StatelessWidget {
               Text(
                 S.of(context).allowEntryAction,
                 style: AppTextStyles.font12WhiteWeight700,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MedicalFileButton extends StatelessWidget {
+  const _MedicalFileButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColorsManager.videoCallMedicalFileTileBackground,
+      borderRadius: BorderRadius.circular(10.r),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10.r),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.folder_shared_outlined,
+                  size: 14.r, color: AppColorsManager.basicDataGreenBadgeIcon),
+              SizedBox(width: 4.w),
+              Text(
+                'الملف الطبي',
+                style: AppTextStyles.font12WhiteWeight700.copyWith(
+                  color: AppColorsManager.basicDataGreenBadgeIcon,
+                ),
               ),
             ],
           ),
