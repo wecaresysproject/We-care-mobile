@@ -12,9 +12,18 @@ class GlobalCareContextBanner extends StatelessWidget {
 
   const GlobalCareContextBanner({super.key, required this.child});
 
+  /// "3:05 م" — local time of the access end.
+  static String _timeLabel(DateTime time) {
+    final local = time.toLocal();
+    final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+    final minute = local.minute.toString().padLeft(2, '0');
+    return '$hour:$minute ${local.hour < 12 ? 'ص' : 'م'}';
+  }
+
   void _showExitConfirmation(CareContext activeContext) {
     final context = navigatorKey.currentContext;
     if (context == null) return;
+    final isDoctor = activeContext.source == CareAccessSource.doctorBooking;
 
     showModalBottomSheet(
       context: context,
@@ -32,7 +41,7 @@ class GlobalCareContextBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  'إنهاء الرعاية',
+                  isDoctor ? 'إغلاق الملف' : 'إنهاء الرعاية',
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -42,7 +51,9 @@ class GlobalCareContextBanner extends StatelessWidget {
                 ),
                 SizedBox(height: 16.h),
                 Text(
-                  'أنت حالياً تتصفح الملف الطبي لـ ${activeContext.patientName}. هل تريد العودة إلى ملفك الطبي الشخصي؟',
+                  isDoctor
+                      ? 'هل تريد إغلاق الملف الطبي للمريض ${activeContext.patientName}؟'
+                      : 'أنت حالياً تتصفح الملف الطبي لـ ${activeContext.patientName}. هل تريد العودة إلى ملفك الطبي الشخصي؟',
                   style: TextStyle(
                     fontSize: 14.sp,
                     height: 1.5,
@@ -79,6 +90,12 @@ class GlobalCareContextBanner extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(ctx); // Close the bottom sheet
+                          if (isDoctor) {
+                            // Back to the call/bookings screen that opened
+                            // the file — never reset the stack mid-call.
+                            activeContext.onClose?.call(null);
+                            return;
+                          }
                           CareContextManager.exit();
 
                           // Navigate back to the home view and clear the stack
@@ -122,7 +139,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           elevation: 0,
                         ),
                         child: Text(
-                          'إنهاء الرعاية',
+                          isDoctor ? 'إغلاق الملف' : 'إنهاء الرعاية',
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -149,6 +166,8 @@ class GlobalCareContextBanner extends StatelessWidget {
         if (activeContext == null) {
           return child;
         }
+        final isDoctor =
+            activeContext.source == CareAccessSource.doctorBooking;
 
         return Column(
           children: [
@@ -171,7 +190,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(
-                        Icons.person,
+                        isDoctor ? Icons.visibility_outlined : Icons.person,
                         color: AppColorsManager.mainDarkBlue,
                         size: 20.sp,
                       ),
@@ -182,15 +201,26 @@ class GlobalCareContextBanner extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'أنت الآن تتصفح ملف طبي لشخص آخر ',
+                              isDoctor
+                                  ? 'أنت تتصفح الملف الطبي للمريض ${activeContext.patientName} — صلاحية عرض فقط'
+                                  : 'أنت الآن تتصفح ملف طبي لشخص آخر ',
                               style: TextStyle(
                                 color: AppColorsManager.mainDarkBlue,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12.sp,
                               ),
-                              maxLines: 1,
+                              maxLines: isDoctor ? 2 : 1,
                               overflow: TextOverflow.ellipsis,
                             ),
+                            if (isDoctor && activeContext.expiresAt != null)
+                              Text(
+                                'متاح حتى ${_timeLabel(activeContext.expiresAt!)}',
+                                style: TextStyle(
+                                  color: AppColorsManager.mainDarkBlue
+                                      .withValues(alpha: 0.7),
+                                  fontSize: 11.sp,
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -204,7 +234,7 @@ class GlobalCareContextBanner extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
-                          'خروج من الرعاية',
+                          isDoctor ? 'إغلاق الملف' : 'خروج من الرعاية',
                           style: AppTextStyles.font12blackWeight400.copyWith(
                             color: AppColorsManager.mainDarkBlue,
                             fontSize: 13.sp,

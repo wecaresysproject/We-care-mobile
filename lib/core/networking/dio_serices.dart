@@ -143,6 +143,15 @@ class DioServices {
 
           handler.next(options);
         },
+        onError: (error, handler) {
+          // The doctor's access to the patient's file was revoked or expired.
+          if (error.response?.statusCode == 403 &&
+              CareContextManager.isDoctorAccess) {
+            CareContextManager.activeContext?.onClose
+                ?.call('انتهت صلاحية الوصول لملف المريض');
+          }
+          handler.next(error);
+        },
       ),
     );
   }
