@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/jitsi_meeting_view.dart';
@@ -168,9 +169,12 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
     Navigator.of(context).pop();
   }
 
-  //! ملخص الملف الطبى وأسئلة المستخدم أثناء المكالمة هيتفعلوا مع ربط الغرفة.
+  /// Opens the patient's own medical file on top of the call, so the call
+  /// keeps running underneath and back returns to it.
   void _onMedicalFilePressed() =>
-      _showMessage("فتح ملفك الطبي أثناء $_typeName سيتوفر قريباً");
+      Navigator.of(context).pushNamed(Routes.medicalCategoriesTypesView);
+
+  //! أسئلة المستخدم أثناء المكالمة هتتفعل مع ربط الغرفة.
 
   void _onQuestionsPressed() =>
       _showMessage("مراجعة أسئلتك أثناء $_typeName ستتوفر قريباً");
