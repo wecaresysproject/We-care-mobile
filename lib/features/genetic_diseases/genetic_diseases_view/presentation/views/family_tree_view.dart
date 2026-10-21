@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -215,21 +216,22 @@ class FamilyTreeView extends StatelessWidget {
                 },
               ),
               verticalSpacing(24),
-              Align(
-                alignment: Alignment.topLeft,
-                child: SizedBox(
-                  width: 100.w,
-                  height: 35.h,
-                  child: CustomActionButton(
-                    onTap: () async {
-                      await Navigator.pushNamed(
-                          context, Routes.familyTreeViewFromDataEntry);
-                    },
-                    title: 'تعديل',
-                    icon: 'assets/images/edit.png',
+              if (!CareContextManager.isReadOnly)
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: 100.w,
+                    height: 35.h,
+                    child: CustomActionButton(
+                      onTap: () async {
+                        await Navigator.pushNamed(
+                            context, Routes.familyTreeViewFromDataEntry);
+                      },
+                      title: 'تعديل',
+                      icon: 'assets/images/edit.png',
+                    ),
                   ),
                 ),
-              ),
               verticalSpacing(20),
               BlocBuilder<GeneticsDiseasesViewCubit, GeneticsDiseasesViewState>(
                 builder: (context, state) {

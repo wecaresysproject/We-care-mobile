@@ -7,7 +7,10 @@ import 'package:we_care/generated/l10n.dart';
 /// Bottom-sheet quick-action grid on the video call screen: 4 tiles on the
 /// first row, 2 wider tiles on the second — matching the reference design.
 class VideoCallActionsGridWidget extends StatelessWidget {
-  const VideoCallActionsGridWidget({super.key});
+  const VideoCallActionsGridWidget({super.key, this.onMedicalFileTap});
+
+  /// Opens the patient's medical file (read-only, allowed modules only).
+  final VoidCallback? onMedicalFileTap;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +60,7 @@ class VideoCallActionsGridWidget extends StatelessWidget {
                   backgroundColor:
                       AppColorsManager.videoCallMedicalFileTileBackground,
                   iconColor: AppColorsManager.basicDataGreenBadgeIcon,
+                  onTap: onMedicalFileTap,
                 ),
               ),
             ],

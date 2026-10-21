@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -188,24 +189,25 @@ class _BehaviorItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            IconButton(
-              onPressed: () async {
-                await Navigator.pushNamed(
-                  context,
-                  Routes.riskyBehaviorsDataEntryView,
-                  arguments: behavior,
-                );
-                if (!context.mounted) return;
-                context.read<RiskyBehaviorsViewCubit>().emitBehaviors();
-              },
-              icon: Icon(
-                Icons.edit,
-                color: AppColorsManager.mainDarkBlue,
-                size: 18.sp,
+            if (!CareContextManager.isReadOnly)
+              IconButton(
+                onPressed: () async {
+                  await Navigator.pushNamed(
+                    context,
+                    Routes.riskyBehaviorsDataEntryView,
+                    arguments: behavior,
+                  );
+                  if (!context.mounted) return;
+                  context.read<RiskyBehaviorsViewCubit>().emitBehaviors();
+                },
+                icon: Icon(
+                  Icons.edit,
+                  color: AppColorsManager.mainDarkBlue,
+                  size: 18.sp,
+                ),
+                constraints: const BoxConstraints(),
+                padding: EdgeInsets.zero,
               ),
-              constraints: const BoxConstraints(),
-              padding: EdgeInsets.zero,
-            ),
           ],
         ),
         verticalSpacing(8),

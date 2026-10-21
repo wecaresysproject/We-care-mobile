@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
@@ -41,7 +42,8 @@ class ViewAppBar extends StatelessWidget {
             onSubmitted: onSearchSubmitted,
             onCleared: onSearchCleared,
           ),
-          ...(isItemSelectionMode
+          // A doctor viewing a patient's file is read-only.
+          ...(isItemSelectionMode && !CareContextManager.isReadOnly
               ? [
                   Container(
                     margin: EdgeInsets.all(10),

@@ -62,6 +62,7 @@ import 'package:we_care/features/doctor/research_and_papers/data/repos/research_
 import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_and_papers_cubit.dart';
 import 'package:we_care/features/doctor/service_prices/data/repos/service_prices_repo.dart';
 import 'package:we_care/features/doctor/service_prices/logic/cubit/service_prices_cubit.dart';
+import 'package:we_care/features/doctor/patient_medical_file/data/repos/patient_medical_file_repo.dart';
 import 'package:we_care/features/doctor/video_call/data/repos/video_call_repo.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
@@ -974,6 +975,11 @@ void setupAppRepos() {
   );
   getIt.registerLazySingleton<VideoCallRepo>(
     () => VideoCallRepo(
+      getIt<DoctorServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<PatientMedicalFileRepo>(
+    () => PatientMedicalFileRepo(
       getIt<DoctorServices>(),
     ),
   );

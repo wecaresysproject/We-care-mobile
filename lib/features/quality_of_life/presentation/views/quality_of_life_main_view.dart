@@ -34,8 +34,11 @@ class QualityOfLifeMainView extends StatelessWidget {
           children: [
             const QualityOfLifeAppBar(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-            _buildDataEntrySection(context, hasAccess: hasDataEntryAccess),
-            verticalSpacing(24),
+            // A doctor viewing a patient's file is read-only.
+            if (!CareContextManager.isReadOnly) ...[
+              _buildDataEntrySection(context, hasAccess: hasDataEntryAccess),
+              verticalSpacing(24),
+            ],
             _buildDataViewSection(context, hasAccess: hasViewAccess),
             verticalSpacing(40),
           ],

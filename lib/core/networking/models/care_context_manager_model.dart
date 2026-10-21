@@ -15,17 +15,30 @@ class CareContextManager {
   static List<ModulePermissionDto>? get currentActiveProfilePermissions =>
       activeContextNotifier.value?.modulePermissions;
 
+  /// A doctor is browsing a patient's file through a booking.
+  static bool get isDoctorAccess =>
+      activeContextNotifier.value?.source == CareAccessSource.doctorBooking;
+
+  /// Add, edit and delete actions must be hidden.
+  static bool get isReadOnly => isDoctorAccess;
+
   static void enter({
     required String accessId,
     required String patientId,
     required String patientName,
     required List<ModulePermissionDto> modulePermissions,
+    CareAccessSource source = CareAccessSource.family,
+    DateTime? expiresAt,
+    void Function(String? reason)? onClose,
   }) {
     activeContextNotifier.value = CareContext(
       accessId: accessId,
       patientId: patientId,
       patientName: patientName,
       modulePermissions: modulePermissions,
+      source: source,
+      expiresAt: expiresAt,
+      onClose: onClose,
     );
   }
 
@@ -76,16 +89,35 @@ class CareContextManager {
   }
 }
 
+enum CareAccessSource {
+  /// Family/delegated access from the "allowed care access" feature.
+  family,
+
+  /// A doctor's read-only access granted by the patient when booking.
+  doctorBooking,
+}
+
 class CareContext {
   final String accessId;
   final String patientId;
   final String patientName;
   final List<ModulePermissionDto> modulePermissions;
+  final CareAccessSource source;
+
+  /// When the access ends — only set for [CareAccessSource.doctorBooking].
+  final DateTime? expiresAt;
+
+  /// Leaves the file and returns to the screen that opened it. [reason] is
+  /// shown to the user when access was cut (expired / revoked).
+  final void Function(String? reason)? onClose;
 
   const CareContext({
     required this.accessId,
     required this.patientId,
     required this.patientName,
     required this.modulePermissions,
+    this.source = CareAccessSource.family,
+    this.expiresAt,
+    this.onClose,
   });
 }

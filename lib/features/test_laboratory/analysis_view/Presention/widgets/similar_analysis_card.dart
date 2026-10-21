@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -100,23 +101,24 @@ class SimilarAnalysisCard extends StatelessWidget {
               // InterpretationDetailsContainerWithTitleRow(
               //     content: recommendation, title: 'التوصيات'),
               if (isEditing) _buildResultEditor(context, state),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: TextButton(
-                  onPressed: () {
-                    if (isEditing) {
-                      cubit.cancelEditingResult();
-                    } else {
-                      cubit.startEditingResult(test);
-                    }
-                  },
-                  child: Text(
-                    isEditing ? 'إلغاء' : 'تعديل النتيجه',
-                    style: AppTextStyles.font14BlueWeight700
-                        .copyWith(decoration: TextDecoration.underline),
+              if (!CareContextManager.isReadOnly)
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      if (isEditing) {
+                        cubit.cancelEditingResult();
+                      } else {
+                        cubit.startEditingResult(test);
+                      }
+                    },
+                    child: Text(
+                      isEditing ? 'إلغاء' : 'تعديل النتيجه',
+                      style: AppTextStyles.font14BlueWeight700
+                          .copyWith(decoration: TextDecoration.underline),
+                    ),
                   ),
                 ),
-              ),
               if (isEditing)
                 ElevatedButton(
                   onPressed: () => cubit.updateTestResult(testName: testName),

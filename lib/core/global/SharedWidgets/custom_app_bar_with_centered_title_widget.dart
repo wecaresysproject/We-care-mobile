@@ -5,6 +5,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_action_button_widget.da
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 
 class AppBarWithCenteredTitle extends StatelessWidget
     implements PreferredSizeWidget {
@@ -121,11 +122,14 @@ class AppBarWithCenteredTitle extends StatelessWidget
         ],
         const Spacer(),
 
-        if (!showShareButtonOnly) _buildDeleteButton(context),
-        if (!showShareButtonOnly) horizontalSpacing(8.w),
-        _buildShareButton(),
-        horizontalSpacing(8.w),
-        if (!showShareButtonOnly) _buildEditButton(),
+        // A doctor viewing a patient's file is read-only.
+        if (!CareContextManager.isReadOnly) ...[
+          if (!showShareButtonOnly) _buildDeleteButton(context),
+          if (!showShareButtonOnly) horizontalSpacing(8.w),
+          _buildShareButton(),
+          horizontalSpacing(8.w),
+          if (!showShareButtonOnly) _buildEditButton(),
+        ],
       ],
     );
   }

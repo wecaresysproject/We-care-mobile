@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
+import 'package:we_care/features/doctor/patient_medical_file/presentation/patient_medical_file_launcher.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_actions_grid_widget.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_controls_row_widget.dart';
@@ -67,6 +69,8 @@ class _VideoCallViewState extends State<VideoCallView> {
   @override
   void dispose() {
     _callTicker?.cancel();
+    // Never leave the patient's file open once the call screen is gone.
+    if (CareContextManager.isDoctorAccess) CareContextManager.exit();
     VideoCallLogger.info(
       'doctor call screen closed → joined=$_isJoined elapsed=$_elapsedLabel',
     );
@@ -295,7 +299,12 @@ class _VideoCallViewState extends State<VideoCallView> {
               ),
               child: SafeArea(
                 top: false,
-                child: const VideoCallActionsGridWidget(),
+                child: VideoCallActionsGridWidget(
+                  onMedicalFileTap: () => PatientMedicalFileLauncher.open(
+                    context,
+                    bookingId: widget.appointmentId,
+                  ),
+                ),
               ),
             ),
           ],
