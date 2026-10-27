@@ -1,3 +1,5 @@
+import 'package:we_care/features/online_doctor/data/models/call_participant_role.dart';
+
 /// اجتماع الفيديو المرتبط بموعد واحد — الغرفة ورابطها بيتولدوا فى الـ Backend.
 class VideoMeetingModel {
   const VideoMeetingModel({
@@ -7,6 +9,8 @@ class VideoMeetingModel {
     required this.status,
     this.startedAt,
     this.endedAt,
+    this.displayName = '',
+    this.role,
   });
 
   factory VideoMeetingModel.fromJson(Map<String, dynamic> json) {
@@ -17,6 +21,8 @@ class VideoMeetingModel {
       status: VideoMeetingStatus.fromApi(json['status'] as String?),
       startedAt: DateTime.tryParse(json['startedAt'] as String? ?? ''),
       endedAt: DateTime.tryParse(json['endedAt'] as String? ?? ''),
+      displayName: json['displayName'] as String? ?? '',
+      role: CallParticipantRole.fromApi(json['role'] as String?),
     );
   }
 
@@ -28,6 +34,12 @@ class VideoMeetingModel {
   final VideoMeetingStatus status;
   final DateTime? startedAt;
   final DateTime? endedAt;
+
+  /// الاسم الحقيقى للى طالب الاجتماع — فاضى لو الـ Backend مرجّعهوش.
+  final String displayName;
+
+  /// دور اللى طالب الاجتماع — `null` لو الـ Backend مرجّعهوش.
+  final CallParticipantRole? role;
 
   /// دومين سيرفر Jitsi (بالـ port لو موجود) — فاضى لو الرابط مش صالح.
   String get domain => Uri.tryParse(meetingUrl)?.authority ?? '';

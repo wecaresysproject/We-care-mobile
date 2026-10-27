@@ -79,7 +79,11 @@ import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presenta
 import 'package:we_care/features/genetic_diseases/genetic_diseases_view/presentation/views/personal_genatic_diseases_screen.dart';
 import 'package:we_care/features/home_tab/Presentation/views/ai_consultation_screen.dart';
 import 'package:we_care/features/home_tab/Presentation/views/medicines_compatibility_view.dart';
-import 'package:we_care/features/home_tab/Presentation/views/notifications_view.dart';
+import 'package:we_care/features/notifications/data/models/app_notification_model.dart';
+import 'package:we_care/features/notifications/logic/notifications_cubit.dart';
+import 'package:we_care/features/notifications/presentation/views/meeting_invitation_details_view.dart';
+import 'package:we_care/features/notifications/presentation/views/notification_details_view.dart';
+import 'package:we_care/features/notifications/presentation/views/notifications_view.dart';
 import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/disable_we_care_mental_health_umbrella_view.dart';
 import 'package:we_care/features/medical_illnesses/medical_illnesses_data_entry_view/Presentation/views/enable_we_care_mental_health_umbrella_view.dart';
@@ -172,6 +176,7 @@ import '../../features/online_doctor/data/models/booking_model.dart';
 import '../../features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import '../../features/online_doctor/presentation/views/examination_call_view.dart';
 import '../../features/online_doctor/presentation/views/examination_room_view.dart';
+import '../../features/online_doctor/presentation/views/participant_call_view.dart';
 import '../../features/online_doctor/presentation/views/booking_details_view.dart';
 import '../../features/online_doctor/presentation/views/bookings_history_view.dart';
 import '../../features/online_doctor/presentation/views/edit_booking_comment_view.dart';
@@ -760,7 +765,21 @@ class AppRouter {
         );
       case Routes.notificationsScreen:
         return MaterialPageRoute(
-          builder: (_) => const NotificationsView(),
+          builder: (_) => BlocProvider<NotificationsCubit>(
+            create: (_) => getIt<NotificationsCubit>()..loadNotifications(),
+            child: const NotificationsView(),
+          ),
+        );
+      case Routes.meetingInvitationDetailsView:
+        final notification = arguments as AppNotificationModel;
+        return MaterialPageRoute(
+          builder: (_) =>
+              MeetingInvitationDetailsView(notification: notification),
+        );
+      case Routes.notificationDetailsView:
+        final notification = arguments as AppNotificationModel;
+        return MaterialPageRoute(
+          builder: (_) => NotificationDetailsView(notification: notification),
         );
       case Routes.newMedicationCompatibilityView:
         return MaterialPageRoute(
@@ -949,6 +968,15 @@ class AppRouter {
             create: (_) => getIt<ExaminationCallCubit>()
               ..loadMeeting(booking.bookingId),
             child: ExaminationCallView(booking: booking),
+          ),
+        );
+      case Routes.participantCallView:
+        final appointmentId = arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<ExaminationCallCubit>(
+            create: (_) =>
+                getIt<ExaminationCallCubit>()..loadMeeting(appointmentId),
+            child: ParticipantCallView(appointmentId: appointmentId),
           ),
         );
       case Routes.doctorsListView:

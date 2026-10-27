@@ -47,10 +47,14 @@ class SearchPhoneNumberUser extends Equatable {
   final String fullName;
   final String phoneNumber;
 
+  /// صورة المستخدم — `null` لو مرفعش صورة.
+  final String? profileImage;
+
   const SearchPhoneNumberUser({
     required this.userId,
     required this.fullName,
     required this.phoneNumber,
+    this.profileImage,
   });
 
   factory SearchPhoneNumberUser.fromJson(Map<String, dynamic> json) =>
@@ -59,5 +63,5 @@ class SearchPhoneNumberUser extends Equatable {
   Map<String, dynamic> toJson() => _$SearchPhoneNumberUserToJson(this);
 
   @override
-  List<Object?> get props => [userId, fullName, phoneNumber];
+  List<Object?> get props => [userId, fullName, phoneNumber, profileImage];
 }

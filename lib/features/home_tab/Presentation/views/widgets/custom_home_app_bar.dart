@@ -16,6 +16,7 @@ import 'package:we_care/features/essential_info/essential_info_view/logic/%20ess
 import 'package:we_care/features/essential_info/essential_info_view/logic/essential_info_view_state.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_cubit.dart';
 import 'package:we_care/features/home_tab/cubits/home/home_state.dart';
+import 'package:we_care/features/notifications/logic/unread_notifications_counter.dart';
 
 class HomeCustomAppBarWidget extends StatelessWidget {
   const HomeCustomAppBarWidget({super.key});
@@ -199,11 +200,13 @@ class HomeCustomAppBarWidget extends StatelessWidget {
 
           SizedBox(width: 8.w),
           GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, Routes.notificationsScreen);
+            onTap: () async {
+              await Navigator.pushNamed(context, Routes.notificationsScreen);
+              UnreadNotificationsCounter.refresh();
             },
-            child: NotificationIcon(
-              count: 2,
+            child: ValueListenableBuilder<int>(
+              valueListenable: UnreadNotificationsCounter.count,
+              builder: (context, count, _) => NotificationIcon(count: count),
             ),
           ),
           SizedBox(width: 8.w),
@@ -322,37 +325,38 @@ class NotificationIcon extends StatelessWidget {
           ),
         ),
 
-        // Notification badge
-        Positioned(
-          top: -5,
-          right: -5,
-          child: Container(
-            height: 18,
-            width: 18,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0xffF1F3F6),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Center(
-              child: FittedBox(
-                child: Text(
-                  "$count",
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.font18blackWight500.copyWith(
-                    color: AppColorsManager.placeHolderColor,
+        // Notification badge — مابيظهرش لو مفيش رسائل غير مقروءة.
+        if (count > 0)
+          Positioned(
+            top: -5,
+            right: -5,
+            child: Container(
+              height: 18,
+              width: 18,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xffF1F3F6),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: FittedBox(
+                  child: Text(
+                    count > 99 ? "99+" : "$count",
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.font18blackWight500.copyWith(
+                      color: AppColorsManager.placeHolderColor,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

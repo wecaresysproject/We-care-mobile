@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
+import 'package:we_care/core/Services/fcm_notification_router.dart';
+import 'package:we_care/features/notifications/logic/unread_notifications_counter.dart';
 import 'package:we_care/features/medicine/medicines_data_entry/Presentation/views/alarm/alarm_demo/services/local_notifications_services.dart';
 import 'package:we_care/firebase_options.dart';
 
@@ -59,6 +59,10 @@ class PushNotificationsService {
             "Foreground notification message.data['pageRoute']: ${message.data['pageRoute']}");
         if (message.notification != null) {
           LocalNotificationService.showForgroundFcmNotification(message);
+          // رسالة جديدة اتحفظت فى صفحة الرسائل — الجرس يتحدث.
+          if (currentUserType == UserTypes.patient) {
+            UnreadNotificationsCounter.refresh();
+          }
 
           // _navigateBasedOnNotification(navigatorKey, message);
         }
@@ -92,9 +96,6 @@ class PushNotificationsService {
     GlobalKey<NavigatorState> navigatorKey,
     RemoteMessage message,
   ) {
-    //* Patient-only destinations: ignore taps while a doctor is signed in.
-    if (currentUserType != UserTypes.patient) return;
-
     try {
       final msgPayload = message.data['payload'] as String?;
       if (msgPayload == null) {
@@ -113,33 +114,12 @@ class PushNotificationsService {
       AppLogger.info("Received notification for pageRoute: $pageRoute");
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        switch (pageRoute) {
-          case Routes.mentalUmbrellaHealthQuestionnairePage:
-            final fcmMessage = FcmMessageModel.fromJson(bodyJson);
-            AppLogger.info(
-              'FCM Questions:\n${fcmMessage.questions.map((q) => q.toJson().toString()).join('\n')}',
-            );
-            AppLogger.info("FCM Patch Number: ${fcmMessage.patchNumber}");
-            navigatorKey.currentState?.pushNamed(
-              Routes.mentalUmbrellaHealthQuestionnairePage,
-              arguments: {
-                'questions': fcmMessage.questions,
-                'patchNumber': fcmMessage.patchNumber,
-              },
-            );
-
-            break;
-
-          case Routes.mentalIllnessFollowUpReports: // مثال لصفحة أخرى
-            navigatorKey.currentState?.pushNamed(
-              Routes.mentalIllnessFollowUpReports,
-            );
-            break;
-
-          default:
-            AppLogger.error("Unknown pageRoute: $pageRoute");
-            break;
+        final navigator = navigatorKey.currentState;
+        if (navigator == null) {
+          AppLogger.error("Navigator not ready for notification tap");
+          return;
         }
+        FcmNotificationRouter.navigate(navigator, bodyJson);
       });
     } catch (e, stack) {
       AppLogger.error("Error navigating from notification: $e");

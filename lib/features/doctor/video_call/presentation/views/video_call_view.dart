@@ -13,6 +13,7 @@ import 'package:we_care/features/doctor/video_call/presentation/views/widgets/vi
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_controls_row_widget.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_notice_widget.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_stage_widget.dart';
+import 'package:we_care/features/online_doctor/data/models/call_participant_role.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/jitsi_meeting_view.dart';
 import 'package:we_care/features/online_doctor/video_call_logger.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -145,9 +146,12 @@ class _VideoCallViewState extends State<VideoCallView> {
   }
 
   Future<void> _refreshPatientPresence() async {
-    final participants = await _jitsiController.participantsCount();
+    // المشاركين ممكن يدخلوا قبل المريض — الحالة بتستنى المريض نفسه.
+    final isPatientInRoom = await _jitsiController.hasParticipantWithRole(
+      CallParticipantRole.patient,
+    );
     if (!mounted) return;
-    setState(() => _isPatientInRoom = participants > 1);
+    setState(() => _isPatientInRoom = isPatientInRoom);
   }
 
   void _runJitsiCommand(String command) {
@@ -269,7 +273,8 @@ class _VideoCallViewState extends State<VideoCallView> {
                             meeting: meeting,
                             controller: _jitsiController,
                             onEvent: _onJitsiEvent,
-                            displayName: "الطبيب",
+                            displayName: CallParticipantRole.doctor
+                                .displayNameFor(meeting.displayName),
                           )
                         : null,
                     notice: _noticeFor(state),

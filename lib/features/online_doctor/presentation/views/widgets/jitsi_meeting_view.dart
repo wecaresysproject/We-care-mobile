@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:we_care/features/online_doctor/data/models/call_participant_role.dart';
 import 'package:we_care/features/online_doctor/data/models/video_meeting_model.dart';
 import 'package:we_care/features/online_doctor/video_call_logger.dart';
 
@@ -47,6 +48,38 @@ class JitsiMeetingController {
     final participants = count is num ? count.toInt() : 0;
     VideoCallLogger.info('participants in room → $participants');
     return participants;
+  }
+
+  /// أدوار كل اللى فى الغرفة (المستخدم نفسه ضمنهم) من أسمائهم جوه Jitsi —
+  /// `null` لو سيرفر Jitsi مش بيدعم `getParticipantsInfo`.
+  Future<List<CallParticipantRole?>?> participantRoles() async {
+    final result = await _webViewController?.evaluateJavascript(
+      source: "(function(){try{return JSON.stringify(api.getParticipantsInfo());}"
+          "catch(e){return null;}})()",
+    );
+    if (result is! String) return null;
+    try {
+      final participants = jsonDecode(result);
+      if (participants is! List) return null;
+      final roles = [
+        for (final participant in participants)
+          CallParticipantRole.ofDisplayName(
+            participant is Map ? '${participant['displayName'] ?? ''}' : '',
+          ),
+      ];
+      VideoCallLogger.info('participant roles → $roles');
+      return roles;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// فيه حد بالدور [role] فى الغرفة — ولو أدوار الغرفة مش متاحة بيرجع
+  /// لعدد اللى فى الغرفة (أكتر من واحد).
+  Future<bool> hasParticipantWithRole(CallParticipantRole role) async {
+    final roles = await participantRoles();
+    if (roles == null) return await participantsCount() > 1;
+    return roles.contains(role);
   }
 }
 

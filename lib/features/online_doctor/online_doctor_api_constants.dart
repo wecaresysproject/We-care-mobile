@@ -53,6 +53,11 @@ class OnlineDoctorApiConstants {
   /// التعديل والحذف، ونص السؤال فى الـ body.
   static const bookingQuestions = "/PatientBooking/bookings/questions";
 
+  /// المشاركين فى محادثة موعد قادم — `POST` للإضافة و`DELETE` للإزالة بنفس
+  /// المسار؛ `?bookingId=` دايمًا و`&participantId=` فى الإزالة، و`userId`
+  /// و`relation` فى body الإضافة.
+  static const bookingParticipants = "/PatientBooking/bookings/participants";
+
   /// اجتماع الفيديو المرتبط بالموعد — `?appointmentId=`. بيرجّعه لطرفى
   /// الحجز، و`404` لو الطبيب لسه منشأهوش.
   static const getVideoMeeting = "/Video";
