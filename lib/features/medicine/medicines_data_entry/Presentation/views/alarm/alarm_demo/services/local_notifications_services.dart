@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart';
-import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
-import 'package:we_care/core/networking/auth_api_constants.dart';
-import 'package:we_care/core/routing/routes.dart';
-import 'package:we_care/features/medical_illnesses/data/models/fcm_message_model.dart';
+import 'package:we_care/core/Services/fcm_notification_router.dart';
 
 class LocalNotificationService {
   static const _iosCategoryId = 'sample_category';
@@ -162,9 +159,6 @@ class LocalNotificationService {
 
   static void _navigateBasedOnFcmPayload(
       Map<String, dynamic> bodyJson, String pageRoute) {
-    //* Patient-only destinations: ignore taps while a doctor is signed in.
-    if (currentUserType != UserTypes.patient) return;
-
     AppLogger.debug('🚀 === FCM NAVIGATION ATTEMPT ===');
     AppLogger.debug(
         '🚀 Navigator key available: ${_navigatorKey?.currentState != null}');
@@ -174,37 +168,7 @@ class LocalNotificationService {
       return;
     }
 
-    try {
-      switch (pageRoute) {
-        case Routes.mentalUmbrellaHealthQuestionnairePage:
-          final fcmMessage = FcmMessageModel.fromJson(bodyJson);
-          AppLogger.debug(
-              '✅ FCM Message parsed, questions: ${fcmMessage.questions.length}');
-
-          _navigatorKey!.currentState!.pushNamed(
-            Routes.mentalUmbrellaHealthQuestionnairePage,
-            arguments: {
-              'questions': fcmMessage.questions,
-              'patchNumber': fcmMessage.patchNumber,
-            },
-          );
-          AppLogger.debug('✅ Navigation to questionnaire completed');
-          break;
-
-        case Routes.mentalIllnessFollowUpReports:
-          _navigatorKey!.currentState!
-              .pushNamed(Routes.mentalIllnessFollowUpReports);
-          AppLogger.debug('✅ Navigation to follow-up reports completed');
-          break;
-
-        default:
-          AppLogger.error("❌ Unknown FCM pageRoute: $pageRoute");
-          break;
-      }
-    } catch (e, stack) {
-      AppLogger.error('❌ FCM Navigation error: $e');
-      AppLogger.error('❌ Stack trace: $stack');
-    }
+    FcmNotificationRouter.navigate(_navigatorKey!.currentState!, bodyJson);
   }
 
   static Future<void> _requestPermissions() async {

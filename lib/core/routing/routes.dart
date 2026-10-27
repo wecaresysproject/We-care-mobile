@@ -132,6 +132,8 @@ class Routes {
   static const supplementsFollowUpPlansView = '/supplementsPlansView';
   static const supplementsReportTableView = '/supplementsReportTableView';
   static const notificationsScreen = '/notificationsScreen';
+  static const notificationDetailsView = '/notificationDetailsView';
+  static const meetingInvitationDetailsView = '/meetingInvitationDetailsView';
   static const newMedicationCompatibilityView =
       '/newMedicationCompatibilityView';
   static const caloriesFollowUpReportView = '/caloriesFollowUpReportView';

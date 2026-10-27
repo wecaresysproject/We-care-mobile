@@ -116,6 +116,9 @@ import 'package:we_care/features/nutration/data/repos/nutration_data_entry_repo.
 import 'package:we_care/features/nutration/data/repos/nutration_view_repo.dart';
 import 'package:we_care/features/nutration/nutration_services.dart';
 import 'package:we_care/features/nutration/nutration_view/logic/nutration_view_cubit.dart';
+import 'package:we_care/features/notifications/data/repos/notifications_repo.dart';
+import 'package:we_care/features/notifications/logic/notifications_cubit.dart';
+import 'package:we_care/features/notifications/notifications_services.dart';
 import 'package:we_care/features/online_doctor/data/repos/online_doctor_repo.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/appointment_room_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/participant_search_cubit.dart';
@@ -478,6 +481,9 @@ void setupAppCubits() {
   );
   getIt.registerFactory<ParticipantSearchCubit>(
     () => ParticipantSearchCubit(getIt<AccessManagementRepository>()),
+  );
+  getIt.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(getIt<NotificationsRepo>()),
   );
   getIt.registerFactory<NutrationViewCubit>(
     () => NutrationViewCubit(
@@ -883,6 +889,9 @@ void setupAppRepos() {
       onlineDoctorServices: getIt<OnlineDoctorServices>(),
     ),
   );
+  getIt.registerLazySingleton<NotificationsRepo>(
+    () => NotificationsRepo(getIt<NotificationsServices>()),
+  );
   getIt.registerLazySingleton<NutrationDataEntryRepo>(
     () => NutrationDataEntryRepo(
       getIt<NutrationServices>(),
@@ -1133,6 +1142,9 @@ void setupAppServices() {
     () => OnlineDoctorServices(
       dio,
     ),
+  );
+  getIt.registerLazySingleton<NotificationsServices>(
+    () => NotificationsServices(dio),
   );
   getIt.registerLazySingleton<NutrationServices>(
     () => NutrationServices(

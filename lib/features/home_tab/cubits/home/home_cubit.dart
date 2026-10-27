@@ -5,6 +5,7 @@ import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/home_tab/repositories/home_repository.dart';
+import 'package:we_care/features/notifications/logic/unread_notifications_counter.dart';
 
 import 'home_state.dart';
 
@@ -20,6 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
     await Future.wait([
       getMessageNotifications(),
       getAds(),
+      UnreadNotificationsCounter.refresh(),
     ]);
   }
 
