@@ -17,6 +17,16 @@ class AppointmentRoomState extends Equatable {
   /// رسالة فشل آخر طلب على الأسئلة — بتتعرض كـ toast.
   final String questionErrorMessage;
 
+  /// المشاركين غير المريض — بيبدأوا من رد الغرفة وبيتحدثوا من رد كل
+  /// إضافة أو إزالة من غير إعادة تحميل الغرفة.
+  final List<RoomParticipantModel> participants;
+
+  /// حالة آخر طلب إضافة/إزالة مشارك.
+  final RequestStatus participantRequestStatus;
+
+  /// رسالة آخر طلب على المشاركين — نجاح أو فشل، وبتتعرض كـ toast.
+  final String participantMessage;
+
   const AppointmentRoomState({
     this.requestStatus = RequestStatus.initial,
     this.room,
@@ -24,6 +34,9 @@ class AppointmentRoomState extends Equatable {
     this.questions = const [],
     this.questionRequestStatus = RequestStatus.initial,
     this.questionErrorMessage = '',
+    this.participants = const [],
+    this.participantRequestStatus = RequestStatus.initial,
+    this.participantMessage = '',
   });
 
   AppointmentRoomState copyWith({
@@ -33,6 +46,9 @@ class AppointmentRoomState extends Equatable {
     List<RoomQuestionModel>? questions,
     RequestStatus? questionRequestStatus,
     String? questionErrorMessage,
+    List<RoomParticipantModel>? participants,
+    RequestStatus? participantRequestStatus,
+    String? participantMessage,
   }) {
     return AppointmentRoomState(
       requestStatus: requestStatus ?? this.requestStatus,
@@ -42,6 +58,10 @@ class AppointmentRoomState extends Equatable {
       questionRequestStatus:
           questionRequestStatus ?? this.questionRequestStatus,
       questionErrorMessage: questionErrorMessage ?? this.questionErrorMessage,
+      participants: participants ?? this.participants,
+      participantRequestStatus:
+          participantRequestStatus ?? this.participantRequestStatus,
+      participantMessage: participantMessage ?? this.participantMessage,
     );
   }
 
@@ -53,5 +73,8 @@ class AppointmentRoomState extends Equatable {
         questions,
         questionRequestStatus,
         questionErrorMessage,
+        participants,
+        participantRequestStatus,
+        participantMessage,
       ];
 }

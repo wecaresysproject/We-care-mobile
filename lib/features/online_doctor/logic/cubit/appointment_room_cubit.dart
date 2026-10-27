@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
+import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_room_model.dart';
 import 'package:we_care/features/online_doctor/data/repos/online_doctor_repo.dart';
 
@@ -31,6 +32,7 @@ class AppointmentRoomCubit extends Cubit<AppointmentRoomState> {
             requestStatus: RequestStatus.success,
             room: room,
             questions: room.questions,
+            participants: room.participants,
           ),
         );
       },
@@ -99,6 +101,79 @@ class AppointmentRoomCubit extends Cubit<AppointmentRoomState> {
           if (!identical(current, question)) current,
       ]),
       failure: (error) => _emitQuestionFailure(error.errors.first),
+    );
+  }
+
+  /// المشارك الجديد بيتضاف فى آخر القايمة، والـ Backend بيبعتله إشعار.
+  Future<void> addParticipant({
+    required SearchPhoneNumberUser user,
+    required String relation,
+  }) async {
+    if (!_startParticipantRequest()) return;
+
+    final result = await _onlineDoctorRepo.addBookingParticipant(
+      bookingId: _bookingId,
+      user: user,
+      relation: relation,
+    );
+    if (isClosed) return;
+
+    result.when(
+      success: (participant) => _emitParticipants(
+        [...state.participants, participant],
+        message: "تمت إضافة ${participant.name} وسيصله إشعار بالموعد",
+      ),
+      failure: (error) => _emitParticipantFailure(error.errors.first),
+    );
+  }
+
+  Future<void> removeParticipant(RoomParticipantModel participant) async {
+    if (!_startParticipantRequest()) return;
+
+    final result = await _onlineDoctorRepo.removeBookingParticipant(
+      bookingId: _bookingId,
+      participantId: participant.participantId,
+    );
+    if (isClosed) return;
+
+    result.when(
+      success: (_) => _emitParticipants(
+        [
+          for (final current in state.participants)
+            if (!identical(current, participant)) current,
+        ],
+        message: "تمت إزالة ${participant.name}",
+      ),
+      failure: (error) => _emitParticipantFailure(error.errors.first),
+    );
+  }
+
+  /// طلب واحد على المشاركين فى المرة — بيرجّع `false` لو فيه طلب شغال.
+  bool _startParticipantRequest() {
+    if (state.participantRequestStatus == RequestStatus.loading) return false;
+    emit(state.copyWith(participantRequestStatus: RequestStatus.loading));
+    return true;
+  }
+
+  void _emitParticipants(
+    List<RoomParticipantModel> participants, {
+    required String message,
+  }) {
+    emit(
+      state.copyWith(
+        participantRequestStatus: RequestStatus.success,
+        participants: participants,
+        participantMessage: message,
+      ),
+    );
+  }
+
+  void _emitParticipantFailure(String message) {
+    emit(
+      state.copyWith(
+        participantRequestStatus: RequestStatus.failure,
+        participantMessage: message,
+      ),
     );
   }
 

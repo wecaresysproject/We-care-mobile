@@ -103,6 +103,18 @@ abstract class OnlineDoctorServices {
     @Query("questionId") String questionId,
   );
 
+  @POST(OnlineDoctorApiConstants.bookingParticipants)
+  Future<dynamic> addBookingParticipant(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @DELETE(OnlineDoctorApiConstants.bookingParticipants)
+  Future<dynamic> removeBookingParticipant(
+    @Query("bookingId") String bookingId,
+    @Query("participantId") String participantId,
+  );
+
   @GET(OnlineDoctorApiConstants.getVideoMeeting)
   Future<dynamic> getVideoMeeting(
     @Query("appointmentId") String appointmentId,

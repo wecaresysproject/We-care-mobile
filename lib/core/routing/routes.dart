@@ -167,6 +167,7 @@ class Routes {
   static const medicalExaminationView = '/medicalExaminationView';
   static const examinationRoomView = '/examinationRoomView';
   static const examinationCallView = '/examinationCallView';
+  static const participantCallView = '/participantCallView';
   static const doctorsListView = '/doctorsListView';
   static const doctorProfileView = '/doctorProfileView';
   static const bookAppointmentView = '/bookAppointmentView';

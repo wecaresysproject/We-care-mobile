@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
@@ -33,6 +34,8 @@ class SelectedUserCard extends StatelessWidget {
         ),
         child: Row(
           children: [
+            _UserAvatar(user: user),
+            SizedBox(width: 10.w),
             // Details
             Expanded(
               child: Column(
@@ -72,6 +75,40 @@ class SelectedUserCard extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// صورة المستخدم، ومن غيرها أول حرف من اسمه.
+class _UserAvatar extends StatelessWidget {
+  const _UserAvatar({required this.user});
+
+  final SearchPhoneNumberUser user;
+
+  @override
+  Widget build(BuildContext context) {
+    final image = user.profileImage?.trim() ?? '';
+    final initial = Container(
+      color: const Color(0xFFE5EEFF),
+      alignment: Alignment.center,
+      child: Text(
+        user.fullName.trim().isEmpty ? '?' : user.fullName.trim()[0],
+        style: AppTextStyles.font14BlueWeight700.copyWith(fontSize: 16.sp),
+      ),
+    );
+    return ClipOval(
+      child: SizedBox(
+        width: 42.w,
+        height: 42.w,
+        child: image.isEmpty
+            ? initial
+            : CachedNetworkImage(
+                imageUrl: image,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => initial,
+                errorWidget: (_, __, ___) => initial,
+              ),
       ),
     );
   }

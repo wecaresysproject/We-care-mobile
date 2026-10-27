@@ -45,20 +45,25 @@ class RoomParticipantModel {
     required this.relation,
     this.imageUrl,
     this.participantId = '',
+    this.userId = '',
   });
 
   factory RoomParticipantModel.fromJson(Map<String, dynamic> json) {
     final image = json['profileImage'] as String?;
     return RoomParticipantModel(
       participantId: json['participantId']?.toString() ?? '',
+      userId: json['userId']?.toString() ?? '',
       name: json['name'] as String? ?? '',
       relation: json['relation'] as String? ?? '',
       imageUrl: image == null || image.trim().isEmpty ? null : image,
     );
   }
 
-  /// هيتستخدم فى endpoint إزالة المشارك — فاضى للمشارك المضاف محليًا.
+  /// بيتستخدم فى endpoint إزالة المشارك.
   final String participantId;
+
+  /// حساب المشارك فى السيستم — بيمنع إضافة نفس الشخص مرتين.
+  final String userId;
   final String name;
   final String relation;
 

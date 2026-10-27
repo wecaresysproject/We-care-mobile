@@ -172,6 +172,7 @@ import '../../features/online_doctor/data/models/booking_model.dart';
 import '../../features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import '../../features/online_doctor/presentation/views/examination_call_view.dart';
 import '../../features/online_doctor/presentation/views/examination_room_view.dart';
+import '../../features/online_doctor/presentation/views/participant_call_view.dart';
 import '../../features/online_doctor/presentation/views/booking_details_view.dart';
 import '../../features/online_doctor/presentation/views/bookings_history_view.dart';
 import '../../features/online_doctor/presentation/views/edit_booking_comment_view.dart';
@@ -949,6 +950,15 @@ class AppRouter {
             create: (_) => getIt<ExaminationCallCubit>()
               ..loadMeeting(booking.bookingId),
             child: ExaminationCallView(booking: booking),
+          ),
+        );
+      case Routes.participantCallView:
+        final appointmentId = arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<ExaminationCallCubit>(
+            create: (_) =>
+                getIt<ExaminationCallCubit>()..loadMeeting(appointmentId),
+            child: ParticipantCallView(appointmentId: appointmentId),
           ),
         );
       case Routes.doctorsListView:

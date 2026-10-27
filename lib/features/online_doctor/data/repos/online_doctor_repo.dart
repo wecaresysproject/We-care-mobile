@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_room_model.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_slot_model.dart';
 import 'package:we_care/features/online_doctor/data/models/book_appointment_request.dart';
@@ -320,6 +321,57 @@ class OnlineDoctorRepo {
   }) async {
     try {
       await _onlineDoctorServices.deleteBookingQuestion(bookingId, questionId);
+      return const ApiResult.success(true);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// بيضيف [user] كمشارك فى محادثة الموعد وبيرجّعه بالـ `participantId`
+  /// بتاعه — الـ Backend هو اللى بيبعتله إشعار الإضافة.
+  Future<ApiResult<RoomParticipantModel>> addBookingParticipant({
+    required String bookingId,
+    required SearchPhoneNumberUser user,
+    required String relation,
+  }) async {
+    try {
+      final response = await _onlineDoctorServices.addBookingParticipant(
+        bookingId,
+        {"userId": user.userId, "relation": relation},
+      );
+      final data = response is Map ? response['data'] : null;
+      final sent = RoomParticipantModel(
+        userId: user.userId.toString(),
+        name: user.fullName,
+        relation: relation,
+        imageUrl: user.profileImage,
+      );
+      if (data is! Map<String, dynamic>) return ApiResult.success(sent);
+      // أى حقل الرد مرجّعهوش بياخد القيمة المبعوتة.
+      final saved = RoomParticipantModel.fromJson(data);
+      return ApiResult.success(
+        RoomParticipantModel(
+          participantId: saved.participantId,
+          userId: saved.userId.isEmpty ? sent.userId : saved.userId,
+          name: saved.name.isEmpty ? sent.name : saved.name,
+          relation: saved.relation.isEmpty ? sent.relation : saved.relation,
+          imageUrl: saved.imageUrl ?? sent.imageUrl,
+        ),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<bool>> removeBookingParticipant({
+    required String bookingId,
+    required String participantId,
+  }) async {
+    try {
+      await _onlineDoctorServices.removeBookingParticipant(
+        bookingId,
+        participantId,
+      );
       return const ApiResult.success(true);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));

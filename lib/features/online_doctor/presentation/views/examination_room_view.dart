@@ -13,9 +13,12 @@ import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
+import 'package:we_care/features/allowed_care_access/data/models/search_phone_number_response.dart';
+import 'package:we_care/features/allowed_care_access/presentation/views/widgets/selected_user_card.dart';
 import 'package:we_care/features/online_doctor/data/models/appointment_room_model.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/appointment_room_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/participant_search_cubit.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/booking_type_badge.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/online_doctor_theme.dart';
 
@@ -55,10 +58,6 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
   /// أقصى عدد مشاركين غير المريض فى محادثة الكشف.
   int _maxParticipants = AppointmentRoomModel.defaultMaxParticipants;
 
-  //! المشاركون بيتحملوا من الـ API، لكن إضافتهم وإزالتهم لسه محليين على
-  //! الشاشة لحد ما الـ endpoints بتاعتهم تتربط.
-  List<RoomParticipantModel> _participants = [];
-
   /// "عرض جميع الأسئلة" — القايمة بتعرض أول 3 بس لحد ما المستخدم يفردها.
   bool _showAllQuestions = false;
 
@@ -70,7 +69,6 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
       setState(() {
         _booking = room.booking;
         _maxParticipants = room.maxParticipants;
-        _participants = List.of(room.participants);
       });
     } else if (state.requestStatus == RequestStatus.failure) {
       showError(state.errorMessage);
@@ -91,21 +89,66 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
   }
 
   Future<void> _onAddParticipantPressed() async {
-    if (_participants.length >= _maxParticipants) {
+    final cubit = context.read<AppointmentRoomCubit>();
+    if (cubit.state.participants.length >= _maxParticipants) {
       _showMessage("لا يمكن إضافة أكثر من $_maxParticipants مشاركين");
       return;
     }
-    final participant = await showDialog<RoomParticipantModel>(
+    final newParticipant = await showDialog<_NewParticipant>(
       context: context,
       barrierColor: Colors.white.withValues(alpha: 0.4),
-      builder: (_) => const _AddParticipantDialog(),
+      builder: (_) => BlocProvider<ParticipantSearchCubit>(
+        create: (_) => getIt<ParticipantSearchCubit>(),
+        child: _AddParticipantDialog(
+          addedUserIds: {
+            for (final participant in cubit.state.participants)
+              participant.userId,
+          },
+        ),
+      ),
     );
-    if (participant == null || !mounted) return;
-    setState(() => _participants.add(participant));
+    if (newParticipant == null || !mounted) return;
+    cubit.addParticipant(
+      user: newParticipant.user,
+      relation: newParticipant.relation,
+    );
   }
 
-  void _onRemoveParticipant(RoomParticipantModel participant) {
-    setState(() => _participants.remove(participant));
+  Future<void> _onRemoveParticipant(RoomParticipantModel participant) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierColor: Colors.white.withValues(alpha: 0.4),
+      builder: (dialogContext) => _RoomDialogShell(
+        icon: Icons.person_remove_rounded,
+        iconColor: OnlineDoctorTheme.countdownAmber,
+        iconSurface: OnlineDoctorTheme.countdownSurface,
+        title: "إزالة مشارك",
+        confirmLabel: "إزالة",
+        onConfirmPressed: () => Navigator.of(dialogContext).pop(true),
+        child: Text(
+          "هل تريد إزالة ${participant.name} من محادثة $_typeName؟",
+          textAlign: TextAlign.center,
+          style: AppTextStyles.font14blackWeight400.copyWith(
+            fontSize: 13.sp,
+            height: 1.6,
+            color: OnlineDoctorTheme.sectionBodyText,
+          ),
+        ),
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    context.read<AppointmentRoomCubit>().removeParticipant(participant);
+  }
+
+  void _onParticipantStateChanged(
+    BuildContext context,
+    AppointmentRoomState state,
+  ) {
+    if (state.participantRequestStatus == RequestStatus.success) {
+      showSuccess(state.participantMessage);
+    } else if (state.participantRequestStatus == RequestStatus.failure) {
+      showError(state.participantMessage);
+    }
   }
 
   Future<void> _onAddQuestionPressed() async {
@@ -171,6 +214,8 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
     final isLoading = roomState.requestStatus == RequestStatus.loading;
     final isSavingQuestion =
         roomState.questionRequestStatus == RequestStatus.loading;
+    final isSavingParticipant =
+        roomState.participantRequestStatus == RequestStatus.loading;
 
     return MultiBlocListener(
       listeners: [
@@ -183,6 +228,12 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
           listenWhen: (previous, current) =>
               previous.questionRequestStatus != current.questionRequestStatus,
           listener: _onQuestionStateChanged,
+        ),
+        BlocListener<AppointmentRoomCubit, AppointmentRoomState>(
+          listenWhen: (previous, current) =>
+              previous.participantRequestStatus !=
+              current.participantRequestStatus,
+          listener: _onParticipantStateChanged,
         ),
       ],
       child: Scaffold(
@@ -217,12 +268,21 @@ class _ExaminationRoomBodyState extends State<_ExaminationRoomBody> {
                         ),
                       )
                     else ...[
-                      _ParticipantsSection(
-                        typeName: _typeName,
-                        participants: _participants,
-                        maxParticipants: _maxParticipants,
-                        onAddPressed: _onAddParticipantPressed,
-                        onRemovePressed: _onRemoveParticipant,
+                      // طلب واحد على المشاركين فى المرة — القسم بيتقفل لحد
+                      // ما الـ API يرد.
+                      AbsorbPointer(
+                        absorbing: isSavingParticipant,
+                        child: AnimatedOpacity(
+                          opacity: isSavingParticipant ? 0.5 : 1,
+                          duration: const Duration(milliseconds: 150),
+                          child: _ParticipantsSection(
+                            typeName: _typeName,
+                            participants: roomState.participants,
+                            maxParticipants: _maxParticipants,
+                            onAddPressed: _onAddParticipantPressed,
+                            onRemovePressed: _onRemoveParticipant,
+                          ),
+                        ),
                       ),
                       verticalSpacing(14),
                       // طلب واحد على الأسئلة فى المرة — القسم بيتقفل لحد
@@ -850,7 +910,7 @@ class _ParticipantsSection extends StatelessWidget {
               horizontalSpacing(5),
               Flexible(
                 child: Text(
-                  "سيتم دعوة المشاركين للانضمام إلى محادثة $typeName",
+                  "سيصل للمشاركين إشعار بموعد $typeName ورابط الدخول",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.font12blackWeight400.copyWith(
@@ -1661,31 +1721,54 @@ class _ImportantNotesCard extends StatelessWidget {
   }
 }
 
-/// دايالوج إضافة مشارك — اسم وصلة قرابة، وبيرجع `RoomParticipantModel` عند التأكيد.
+/// المشارك اللى اتختار من دايالوج الإضافة — المستخدم وصلة قرابته.
+typedef _NewParticipant = ({SearchPhoneNumberUser user, String relation});
+
+/// دايالوج إضافة مشارك — بحث عن مستخدم برقم موبايله، اختياره من النتايج،
+/// وصلة القرابة. بيرجع [_NewParticipant] عند التأكيد.
 class _AddParticipantDialog extends StatefulWidget {
-  const _AddParticipantDialog();
+  const _AddParticipantDialog({required this.addedUserIds});
+
+  /// حسابات المشاركين الحاليين — عشان نفس الشخص مايتضافش مرتين.
+  final Set<String> addedUserIds;
 
   @override
   State<_AddParticipantDialog> createState() => _AddParticipantDialogState();
 }
 
 class _AddParticipantDialogState extends State<_AddParticipantDialog> {
-  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _relationController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _phoneController.dispose();
     _relationController.dispose();
     super.dispose();
   }
 
+  void _onSearchPressed() {
+    FocusScope.of(context).unfocus();
+    context.read<ParticipantSearchCubit>().search(_phoneController.text);
+  }
+
   void _onConfirmPressed() {
-    final name = _nameController.text.trim();
+    final user = context.read<ParticipantSearchCubit>().state.selectedUser;
     final relation = _relationController.text.trim();
-    if (name.isEmpty || relation.isEmpty) return;
-    Navigator.of(context).pop(
-      RoomParticipantModel(name: name, relation: relation),
+    if (user == null) {
+      showError("ابحث برقم الموبايل واختر الشخص أولًا");
+      return;
+    }
+    if (widget.addedUserIds.contains(user.userId.toString())) {
+      showError("${user.fullName} مضاف بالفعل");
+      return;
+    }
+    if (relation.isEmpty) {
+      showError("اكتب صلة القرابة");
+      return;
+    }
+    Navigator.of(context).pop<_NewParticipant>(
+      (user: user, relation: relation),
     );
   }
 
@@ -1699,17 +1782,113 @@ class _AddParticipantDialogState extends State<_AddParticipantDialog> {
       confirmLabel: "إضافة",
       onConfirmPressed: _onConfirmPressed,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _DialogTextField(
-            controller: _nameController,
-            hint: "اسم المشارك",
+            controller: _phoneController,
+            hint: "رقم موبايل المشارك",
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.search,
+            onSubmitted: (_) => _onSearchPressed(),
+            suffixIcon: IconButton(
+              onPressed: _onSearchPressed,
+              icon: Icon(
+                Icons.search_rounded,
+                size: 22.sp,
+                color: AppColorsManager.mainDarkBlue,
+              ),
+            ),
           ),
+          verticalSpacing(10),
+          const _ParticipantSearchResults(),
           verticalSpacing(10),
           _DialogTextField(
             controller: _relationController,
             hint: "صلة القرابة — أب، زوجة، أخ...",
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// نتايج البحث برقم الموبايل — تحميل، رسالة فشل، "لا يوجد مستخدم"، أو
+/// كروت المستخدمين واللى اتختار عليه علامة.
+class _ParticipantSearchResults extends StatelessWidget {
+  const _ParticipantSearchResults();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ParticipantSearchCubit, ParticipantSearchState>(
+      builder: (context, state) {
+        switch (state.searchStatus) {
+          case RequestStatus.initial:
+            return const SizedBox.shrink();
+          case RequestStatus.loading:
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: Center(
+                child: SizedBox(
+                  width: 22.w,
+                  height: 22.w,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: AppColorsManager.mainDarkBlue,
+                  ),
+                ),
+              ),
+            );
+          case RequestStatus.failure:
+            return _SearchMessage(
+              message: state.errorMessage,
+              color: AppColorsManager.warningColor,
+            );
+          case RequestStatus.success:
+            if (state.results.isEmpty) {
+              return const _SearchMessage(
+                message: "لا يوجد مستخدم بهذا الرقم",
+                color: OnlineDoctorTheme.mutedText,
+              );
+            }
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 180.h),
+              child: ListView.separated(
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: state.results.length,
+                separatorBuilder: (_, __) => verticalSpacing(8),
+                itemBuilder: (context, index) {
+                  final user = state.results[index];
+                  return SelectedUserCard(
+                    user: user,
+                    isSelected: user == state.selectedUser,
+                    onTap: () =>
+                        context.read<ParticipantSearchCubit>().selectUser(user),
+                  );
+                },
+              ),
+            );
+        }
+      },
+    );
+  }
+}
+
+class _SearchMessage extends StatelessWidget {
+  const _SearchMessage({required this.message, required this.color});
+
+  final String message;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      message,
+      textAlign: TextAlign.center,
+      style: AppTextStyles.font12blackWeight400.copyWith(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w600,
+        color: color,
       ),
     );
   }
@@ -1787,7 +1966,8 @@ class _RoomDialogShell extends StatelessWidget {
       elevation: 0,
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
-      child: Padding(
+      // قابل للسكرول عشان الكيبورد مايغطيش زرار التأكيد.
+      child: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -1846,23 +2026,35 @@ class _DialogTextField extends StatelessWidget {
     required this.controller,
     required this.hint,
     this.maxLines = 1,
+    this.keyboardType,
+    this.textInputAction,
+    this.onSubmitted,
+    this.suffixIcon,
   });
 
   final TextEditingController controller;
   final String hint;
   final int maxLines;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      onSubmitted: onSubmitted,
       style: AppTextStyles.font14blackWeight400.copyWith(
         fontSize: 13.sp,
         color: OnlineDoctorTheme.headingColor,
       ),
       decoration: InputDecoration(
         hintText: hint,
+        suffixIcon: suffixIcon,
         hintStyle: AppTextStyles.font12blackWeight400.copyWith(
           fontSize: 12.sp,
           color: OnlineDoctorTheme.mutedText,
