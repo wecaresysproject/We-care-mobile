@@ -265,6 +265,8 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
                           onEvent: _onJitsiEvent,
                           displayName: CallParticipantRole.patient
                               .displayNameFor(meeting.displayName),
+                          // الطبيب كبير، والمريض والمشاركين صغيرين.
+                          stageRoles: const [CallParticipantRole.doctor],
                         ),
                       ),
                     // صورة الطبيب بتغطى الفيديو لحد ما المستخدم يدخل الغرفة.
