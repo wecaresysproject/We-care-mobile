@@ -10,6 +10,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/media_articles/logic/cubit/media_articles_cubit.dart';
 import 'package:we_care/features/doctor/media_articles/presentation/views/widgets/media_article_card_widget.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_section_container_widget.dart';
 import 'package:we_care/generated/l10n.dart';
 
@@ -122,7 +123,10 @@ class _SubmitButton extends StatelessWidget {
       listenWhen: (prev, curr) =>
           curr.submissionStatus == RequestStatus.success ||
           curr.submissionStatus == RequestStatus.failure,
-      buildWhen: (prev, curr) => prev.submissionStatus != curr.submissionStatus,
+      buildWhen: (prev, curr) =>
+          prev.submissionStatus != curr.submissionStatus ||
+          prev.isEditMode != curr.isEditMode ||
+          prev.hasChanges != curr.hasChanges,
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
@@ -135,8 +139,11 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<MediaArticlesCubit>();
         return AppCustomButton(
-          title: S.of(context).mediaArticlesFormSubmit,
-          isEnabled: state.submissionStatus != RequestStatus.loading,
+          title: state.isEditMode
+              ? profileFormSaveChangesTitle
+              : S.of(context).mediaArticlesFormSubmit,
+          isEnabled: state.submissionStatus != RequestStatus.loading &&
+              state.hasChanges,
           isLoading: state.submissionStatus == RequestStatus.loading,
           onPressed: () {
             if (cubit.formKey.currentState?.validate() ?? false) {

@@ -8,6 +8,7 @@ import 'package:we_care/features/doctor/service_prices/logic/cubit/service_price
 import 'package:we_care/features/doctor/service_prices/presentation/views/widgets/service_prices_banner_widget.dart';
 import 'package:we_care/features/doctor/service_prices/presentation/views/widgets/service_prices_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class ServicePricesFormView extends StatelessWidget {
   const ServicePricesFormView({super.key});
@@ -15,7 +16,7 @@ class ServicePricesFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ServicePricesCubit>(),
+      create: (_) => getIt<ServicePricesCubit>()..loadInitialData(),
       child: Scaffold(
         backgroundColor: AppColorsManager.scaffoldBackGroundColor,
         body: SafeArea(
@@ -33,7 +34,15 @@ class ServicePricesFormView extends StatelessWidget {
                 verticalSpacing(20),
                 const ServicePricesBannerWidget(),
                 verticalSpacing(18),
-                const ServicePricesFormFields(),
+                BlocBuilder<ServicePricesCubit, ServicePricesState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<ServicePricesCubit>().loadInitialData,
+                    child: const ServicePricesFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

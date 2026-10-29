@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/medical_specialty/logic/cubit/medical_specialty_cubit.dart';
 import 'package:we_care/features/doctor/medical_specialty/presentation/views/widgets/medical_specialty_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class MedicalSpecialtyFormView extends StatelessWidget {
   const MedicalSpecialtyFormView({super.key});
@@ -30,7 +31,16 @@ class MedicalSpecialtyFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const MedicalSpecialtyFormFields(),
+                BlocBuilder<MedicalSpecialtyCubit, MedicalSpecialtyState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry:
+                        context.read<MedicalSpecialtyCubit>().loadInitialData,
+                    child: const MedicalSpecialtyFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

@@ -6,6 +6,9 @@ class ServicePricesState extends Equatable {
     required this.followUpConsultationValidityDays,
     required this.submissionStatus,
     required this.message,
+    required this.loadStatus,
+    required this.isEditMode,
+    required this.hasChanges,
   });
 
   factory ServicePricesState.initial() => const ServicePricesState(
@@ -13,6 +16,9 @@ class ServicePricesState extends Equatable {
         followUpConsultationValidityDays: 7,
         submissionStatus: RequestStatus.initial,
         message: null,
+        loadStatus: RequestStatus.initial,
+        isEditMode: false,
+        hasChanges: true,
       );
 
   final bool offersFollowUpConsultation;
@@ -21,11 +27,25 @@ class ServicePricesState extends Equatable {
   final RequestStatus submissionStatus;
   final String? message;
 
+  /// Status of loading the saved prices. The form shows only on success.
+  final RequestStatus loadStatus;
+
+  /// True when the doctor already saved service prices before, so the form
+  /// opened pre-filled and the button reads "حفظ التعديلات".
+  final bool isEditMode;
+
+  /// Whether the form differs from the saved data. Always true outside
+  /// [isEditMode].
+  final bool hasChanges;
+
   ServicePricesState copyWith({
     bool? offersFollowUpConsultation,
     int? Function()? followUpConsultationValidityDays,
     RequestStatus? submissionStatus,
     String? message,
+    RequestStatus? loadStatus,
+    bool? isEditMode,
+    bool? hasChanges,
   }) {
     return ServicePricesState(
       offersFollowUpConsultation:
@@ -35,6 +55,9 @@ class ServicePricesState extends Equatable {
           : this.followUpConsultationValidityDays,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       message: message ?? this.message,
+      loadStatus: loadStatus ?? this.loadStatus,
+      isEditMode: isEditMode ?? this.isEditMode,
+      hasChanges: hasChanges ?? this.hasChanges,
     );
   }
 
@@ -44,5 +67,8 @@ class ServicePricesState extends Equatable {
         followUpConsultationValidityDays,
         submissionStatus,
         message,
+        loadStatus,
+        isEditMode,
+        hasChanges,
       ];
 }

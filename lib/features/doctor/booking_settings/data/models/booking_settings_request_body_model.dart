@@ -15,6 +15,9 @@ class BookingSettingsRequestBodyModel {
     required this.weeklySchedule,
   });
 
+  factory BookingSettingsRequestBodyModel.fromJson(Map<String, dynamic> json) =>
+      _$BookingSettingsRequestBodyModelFromJson(json);
+
   Map<String, dynamic> toJson() =>
       _$BookingSettingsRequestBodyModelToJson(this);
 }

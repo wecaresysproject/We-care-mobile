@@ -18,6 +18,14 @@ class DateTimePickerContainer extends StatefulWidget {
   /// Earliest selectable date. Defaults to 1900 when not set.
   final DateTime? firstDate;
 
+  /// Pre-selected date, e.g. a value loaded from the server for editing.
+  final DateTime? initialDate;
+
+  /// How the selected date is shown in the field. Defaults to `yyyy-MM-dd`;
+  /// pass `yyyy` for year-only fields. The value sent to [onDateSelected] is
+  /// always `yyyy-MM-dd`.
+  final String? displayPattern;
+
   const DateTimePickerContainer({
     super.key,
     required this.placeholderText,
@@ -25,6 +33,8 @@ class DateTimePickerContainer extends StatefulWidget {
     this.containerBorderColor = AppColorsManager.textfieldOutsideBorderColor,
     this.isForInsuranceExpiry = false,
     this.firstDate,
+    this.initialDate,
+    this.displayPattern,
   });
 
   @override
@@ -35,15 +45,39 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
   DateTime? selectedDate;
   final DateFormat dateFormat = DateFormat('yyyy-MM-dd', 'en');
 
+  @override
+  void initState() {
+    super.initState();
+    selectedDate = widget.initialDate;
+  }
+
+  @override
+  void didUpdateWidget(covariant DateTimePickerContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialDate != oldWidget.initialDate &&
+        widget.initialDate != null) {
+      selectedDate = widget.initialDate;
+    }
+  }
+
   Future<void> _selectDate(BuildContext context) async {
     final firstSelectableDate = widget.firstDate ?? DateTime(1900);
+    final lastSelectableDate = widget.isForInsuranceExpiry!
+        ? DateTime.now().add(const Duration(days: 3650)) // 10 سنوات لقدام
+        : DateTime.now();
+    // A saved date loaded from the server can fall outside the selectable
+    // range; showDatePicker asserts on that, so start from the nearest edge.
+    var initialPickerDate = selectedDate ?? DateTime.now();
+    if (initialPickerDate.isBefore(firstSelectableDate)) {
+      initialPickerDate = firstSelectableDate;
+    } else if (initialPickerDate.isAfter(lastSelectableDate)) {
+      initialPickerDate = lastSelectableDate;
+    }
     DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate ?? DateTime.now(),
+      initialDate: initialPickerDate,
       firstDate: firstSelectableDate,
-      lastDate: widget.isForInsuranceExpiry!
-          ? DateTime.now().add(const Duration(days: 3650)) // 10 سنوات لقدام
-          : DateTime.now(),
+      lastDate: lastSelectableDate,
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -112,7 +146,8 @@ class DatePickerContainerState extends State<DateTimePickerContainer> {
             child: Text(
               selectedDate == null
                   ? widget.placeholderText
-                  : dateFormat.format(selectedDate!),
+                  : DateFormat(widget.displayPattern ?? 'yyyy-MM-dd', 'en')
+                      .format(selectedDate!),
               style: AppTextStyles.font16DarkGreyWeight400.copyWith(
                 color: selectedDate != null //TODO: !check it later
                     ? AppColorsManager.textColor

@@ -14,6 +14,10 @@ class MedicalSpecialtyRequestBodyModel {
     required this.clinicalInterests,
   });
 
+  factory MedicalSpecialtyRequestBodyModel.fromJson(
+          Map<String, dynamic> json) =>
+      _$MedicalSpecialtyRequestBodyModelFromJson(json);
+
   Map<String, dynamic> toJson() =>
       _$MedicalSpecialtyRequestBodyModelToJson(this);
 }

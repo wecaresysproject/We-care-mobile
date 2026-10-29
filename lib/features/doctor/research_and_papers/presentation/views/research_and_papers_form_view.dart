@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_and_papers_cubit.dart';
 import 'package:we_care/features/doctor/research_and_papers/presentation/views/widgets/research_and_papers_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class ResearchAndPapersFormView extends StatelessWidget {
   const ResearchAndPapersFormView({super.key});
@@ -14,7 +15,7 @@ class ResearchAndPapersFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ResearchAndPapersCubit>(),
+      create: (_) => getIt<ResearchAndPapersCubit>()..loadInitialData(),
       child: Scaffold(
         backgroundColor: AppColorsManager.scaffoldBackGroundColor,
         body: SafeArea(
@@ -30,7 +31,16 @@ class ResearchAndPapersFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const ResearchAndPapersFormFields(),
+                BlocBuilder<ResearchAndPapersCubit, ResearchAndPapersState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry:
+                        context.read<ResearchAndPapersCubit>().loadInitialData,
+                    child: const ResearchAndPapersFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

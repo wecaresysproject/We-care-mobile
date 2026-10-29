@@ -5,6 +5,13 @@ class ResearchPapersRequestBodyModel {
 
   ResearchPapersRequestBodyModel({required this.researchPapers});
 
+  factory ResearchPapersRequestBodyModel.fromJson(Map<String, dynamic> json) =>
+      ResearchPapersRequestBodyModel(
+        researchPapers: (json['researchPapers'] as List? ?? const [])
+            .map((e) => ResearchPaperModel.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+
   Map<String, dynamic> toJson() => {
         'researchPapers':
             researchPapers.map((paper) => paper.toJson()).toList(),

@@ -18,5 +18,8 @@ class ExperienceModel {
     required this.countryName,
   });
 
+  factory ExperienceModel.fromJson(Map<String, dynamic> json) =>
+      _$ExperienceModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$ExperienceModelToJson(this);
 }

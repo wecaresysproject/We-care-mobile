@@ -6,6 +6,19 @@ class CertificatesRequestBodyModel {
 
   CertificatesRequestBodyModel({required this.sections});
 
+  /// Reads all six section keys; a missing key counts as an empty section.
+  factory CertificatesRequestBodyModel.fromJson(Map<String, dynamic> json) =>
+      CertificatesRequestBodyModel(
+        sections: {
+          for (final section in CertificateSectionType.values)
+            section: (json[section.name] as List? ?? const [])
+                .map(
+                  (e) => CertificateModel.fromJson(e as Map<String, dynamic>),
+                )
+                .toList(),
+        },
+      );
+
   Map<String, dynamic> toJson() => sections.map(
         (section, certificates) => MapEntry(
           section.name,

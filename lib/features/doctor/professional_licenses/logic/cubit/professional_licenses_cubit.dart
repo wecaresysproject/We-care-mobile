@@ -11,6 +11,7 @@ import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/doctor/professional_licenses/data/models/licenses_request_body_model.dart';
 import 'package:we_care/features/doctor/professional_licenses/data/repos/professional_licenses_repo.dart';
 import 'package:we_care/features/doctor/professional_licenses/logic/cubit/license_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 
 part 'professional_licenses_state.dart';
 
@@ -23,9 +24,55 @@ class ProfessionalLicensesCubit extends Cubit<ProfessionalLicensesState>
   final ProfessionalLicensesRepo _licensesRepo;
 
   final formKey = GlobalKey<FormState>();
+  final _changesTracker = ProfileFormChangesTracker();
 
+  /// Loads the dropdown options and the doctor's saved licenses together.
   Future<void> loadInitialData() async {
-    await emitCountriesData();
+    safeEmit(state.copyWith(loadStatus: RequestStatus.loading));
+    await Future.wait([emitCountriesData(), _loadSavedLicenses()]);
+  }
+
+  Future<void> _loadSavedLicenses() async {
+    final response = await _licensesRepo.getLicenses();
+    response.when(
+      success: (licenses) {
+        if (licenses.isEmpty) {
+          safeEmit(state.copyWith(loadStatus: RequestStatus.success));
+          return;
+        }
+        for (final entry in state.entries) {
+          entry.dispose();
+        }
+        final entries = licenses.map(LicenseFormEntry.fromModel).toList();
+        for (final entry in entries) {
+          entry.addTextListener(_updateHasChanges);
+        }
+        _changesTracker.setBaseline(_buildRequestBody(entries).toJson());
+        safeEmit(state.copyWith(
+          entries: entries,
+          loadStatus: RequestStatus.success,
+          isEditMode: true,
+          hasChanges: false,
+        ));
+      },
+      failure: (error) => safeEmit(state.copyWith(
+        loadStatus: RequestStatus.failure,
+        message: error.errors.first,
+      )),
+    );
+  }
+
+  LicensesRequestBodyModel _buildRequestBody(List<LicenseFormEntry> entries) =>
+      LicensesRequestBodyModel(
+        licenses: entries.map((entry) => entry.toModel()).toList(),
+      );
+
+  void _updateHasChanges() {
+    final hasChanges =
+        _changesTracker.hasChanges(_buildRequestBody(state.entries).toJson());
+    if (hasChanges != state.hasChanges) {
+      safeEmit(state.copyWith(hasChanges: hasChanges));
+    }
   }
 
   Future<void> emitCountriesData() async {
@@ -41,9 +88,9 @@ class ProfessionalLicensesCubit extends Cubit<ProfessionalLicensesState>
   }
 
   void addLicense() {
-    safeEmit(state.copyWith(
-      entries: [...state.entries, LicenseFormEntry()],
-    ));
+    final entry = LicenseFormEntry()..addTextListener(_updateHasChanges);
+    safeEmit(state.copyWith(entries: [...state.entries, entry]));
+    _updateHasChanges();
   }
 
   void removeLicense(Key entryKey) {
@@ -55,6 +102,7 @@ class ProfessionalLicensesCubit extends Cubit<ProfessionalLicensesState>
     safeEmit(state.copyWith(
       entries: state.entries.where((entry) => entry.key != entryKey).toList(),
     ));
+    _updateHasChanges();
   }
 
   void updateLicenseCountry(Key entryKey, String? country) {
@@ -96,6 +144,7 @@ class ProfessionalLicensesCubit extends Cubit<ProfessionalLicensesState>
           message: result.message,
           entries: [...state.entries],
         ));
+        _updateHasChanges();
       },
       failure: (error) {
         entry.licenseImageUploadStatus = UploadImageRequestStatus.failure;
@@ -115,14 +164,13 @@ class ProfessionalLicensesCubit extends Cubit<ProfessionalLicensesState>
 
   void _touch() {
     safeEmit(state.copyWith(entries: [...state.entries]));
+    _updateHasChanges();
   }
 
   Future<void> submitLicenses() async {
     safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
-    final model = LicensesRequestBodyModel(
-      licenses: state.entries.map((entry) => entry.toModel()).toList(),
-    );
+    final model = _buildRequestBody(state.entries);
 
     final response = await _licensesRepo.submitLicenses(model);
     response.when(

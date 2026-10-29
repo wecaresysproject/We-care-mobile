@@ -9,6 +9,7 @@ import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/doctor/bank_info/data/models/bank_info_request_body_model.dart';
 import 'package:we_care/features/doctor/bank_info/data/repos/bank_info_repo.dart';
 import 'package:we_care/features/doctor/bank_info/logic/cubit/bank_account_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 
 part 'bank_info_state.dart';
 
@@ -21,9 +22,58 @@ class BankInfoCubit extends Cubit<BankInfoState>
   final BankInfoRepo _bankInfoRepo;
 
   final formKey = GlobalKey<FormState>();
+  final _changesTracker = ProfileFormChangesTracker();
 
+  /// Loads the dropdown options and the doctor's saved bank accounts together.
   Future<void> loadInitialData() async {
-    await emitCountriesData();
+    safeEmit(state.copyWith(loadStatus: RequestStatus.loading));
+    await Future.wait([emitCountriesData(), _loadSavedBankAccounts()]);
+  }
+
+  Future<void> _loadSavedBankAccounts() async {
+    final response = await _bankInfoRepo.getBankInfo();
+    response.when(
+      success: (bankAccounts) {
+        if (bankAccounts.isEmpty) {
+          safeEmit(state.copyWith(loadStatus: RequestStatus.success));
+          return;
+        }
+        for (final account in state.accounts) {
+          account.dispose();
+        }
+        final accounts =
+            bankAccounts.map(BankAccountFormEntry.fromModel).toList();
+        for (final account in accounts) {
+          account.addTextListener(_updateHasChanges);
+        }
+        _changesTracker.setBaseline(_buildRequestBody(accounts).toJson());
+        safeEmit(state.copyWith(
+          accounts: accounts,
+          loadStatus: RequestStatus.success,
+          isEditMode: true,
+          hasChanges: false,
+        ));
+      },
+      failure: (error) => safeEmit(state.copyWith(
+        loadStatus: RequestStatus.failure,
+        message: error.errors.first,
+      )),
+    );
+  }
+
+  BankInfoRequestBodyModel _buildRequestBody(
+    List<BankAccountFormEntry> accounts,
+  ) =>
+      BankInfoRequestBodyModel(
+        bankAccounts: accounts.map((account) => account.toModel()).toList(),
+      );
+
+  void _updateHasChanges() {
+    final hasChanges =
+        _changesTracker.hasChanges(_buildRequestBody(state.accounts).toJson());
+    if (hasChanges != state.hasChanges) {
+      safeEmit(state.copyWith(hasChanges: hasChanges));
+    }
   }
 
   Future<void> emitCountriesData() async {
@@ -39,9 +89,9 @@ class BankInfoCubit extends Cubit<BankInfoState>
   }
 
   void addBankAccount() {
-    safeEmit(
-      state.copyWith(accounts: [...state.accounts, BankAccountFormEntry()]),
-    );
+    final account = BankAccountFormEntry()..addTextListener(_updateHasChanges);
+    safeEmit(state.copyWith(accounts: [...state.accounts, account]));
+    _updateHasChanges();
   }
 
   void removeBankAccount(Key entryKey) {
@@ -55,6 +105,7 @@ class BankInfoCubit extends Cubit<BankInfoState>
             state.accounts.where((account) => account.key != entryKey).toList(),
       ),
     );
+    _updateHasChanges();
   }
 
   void updateAccountCountry(Key entryKey, String? country) {
@@ -62,14 +113,13 @@ class BankInfoCubit extends Cubit<BankInfoState>
         state.accounts.firstWhere((account) => account.key == entryKey);
     account.selectedCountry = country;
     safeEmit(state.copyWith(accounts: [...state.accounts]));
+    _updateHasChanges();
   }
 
   Future<void> submitBankInfo() async {
     safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
-    final model = BankInfoRequestBodyModel(
-      bankAccounts: state.accounts.map((account) => account.toModel()).toList(),
-    );
+    final model = _buildRequestBody(state.accounts);
 
     final response = await _bankInfoRepo.submitBankInfo(model);
     response.when(

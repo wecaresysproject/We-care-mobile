@@ -9,6 +9,7 @@ import 'package:we_care/core/global/SharedWidgets/custom_textfield.dart';
 import 'package:we_care/core/global/SharedWidgets/user_selection_container_shared_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/features/doctor/medical_specialty/logic/cubit/medical_specialty_cubit.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class MedicalSpecialtyFormFields extends StatelessWidget {
@@ -34,6 +35,7 @@ class MedicalSpecialtyFormFields extends StatelessWidget {
               UserSelectionContainer(
                 containerHintText: state.selectedMainSpecialty ??
                     localization.medicalSpecialtyFormChooseMainSpecialty,
+                initialValue: state.selectedMainSpecialty,
                 options: state.mainSpecialties,
                 onOptionSelected: cubit.updateMainSpecialty,
                 bottomSheetTitle:
@@ -83,7 +85,10 @@ class _SubmitButton extends StatelessWidget {
       listenWhen: (prev, curr) =>
           curr.submissionStatus == RequestStatus.success ||
           curr.submissionStatus == RequestStatus.failure,
-      buildWhen: (prev, curr) => prev.submissionStatus != curr.submissionStatus,
+      buildWhen: (prev, curr) =>
+          prev.submissionStatus != curr.submissionStatus ||
+          prev.isEditMode != curr.isEditMode ||
+          prev.hasChanges != curr.hasChanges,
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
@@ -96,8 +101,11 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<MedicalSpecialtyCubit>();
         return AppCustomButton(
-          title: S.of(context).basicDataFormSubmit,
-          isEnabled: state.submissionStatus != RequestStatus.loading,
+          title: state.isEditMode
+              ? profileFormSaveChangesTitle
+              : S.of(context).basicDataFormSubmit,
+          isEnabled: state.submissionStatus != RequestStatus.loading &&
+              state.hasChanges,
           isLoading: state.submissionStatus == RequestStatus.loading,
           onPressed: () {
             if (cubit.formKey.currentState?.validate() ?? false) {

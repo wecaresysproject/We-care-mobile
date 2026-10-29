@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/media_articles/logic/cubit/media_articles_cubit.dart';
 import 'package:we_care/features/doctor/media_articles/presentation/views/widgets/media_articles_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class MediaArticlesFormView extends StatelessWidget {
   const MediaArticlesFormView({super.key});
@@ -14,7 +15,7 @@ class MediaArticlesFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<MediaArticlesCubit>(),
+      create: (_) => getIt<MediaArticlesCubit>()..loadInitialData(),
       child: Scaffold(
         backgroundColor: AppColorsManager.scaffoldBackGroundColor,
         body: SafeArea(
@@ -30,7 +31,15 @@ class MediaArticlesFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const MediaArticlesFormFields(),
+                BlocBuilder<MediaArticlesCubit, MediaArticlesState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<MediaArticlesCubit>().loadInitialData,
+                    child: const MediaArticlesFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

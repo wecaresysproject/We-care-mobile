@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/basic_data/logic/cubit/doctor_basic_data_cubit.dart';
 import 'package:we_care/features/doctor/basic_data/presentation/views/widgets/doctor_basic_data_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class DoctorBasicDataFormView extends StatelessWidget {
   const DoctorBasicDataFormView({super.key});
@@ -30,7 +31,16 @@ class DoctorBasicDataFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const DoctorBasicDataFormFields(),
+                BlocBuilder<DoctorBasicDataCubit, DoctorBasicDataState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry:
+                        context.read<DoctorBasicDataCubit>().loadInitialData,
+                    child: const DoctorBasicDataFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

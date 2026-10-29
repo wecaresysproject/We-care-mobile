@@ -120,4 +120,43 @@ abstract class DoctorServices {
   Future<dynamic> getBookingPatientAccess(
     @Query("bookingId") String bookingId,
   );
+
+  // ── Doctor profile modules: GET on the same path as each POST, returns the
+  // saved data so the form opens pre-filled.
+
+  @GET(DoctorApiConstants.postBasicData)
+  Future<dynamic> getBasicData();
+
+  @GET(DoctorApiConstants.postMedicalSpecialty)
+  Future<dynamic> getMedicalSpecialty();
+
+  @GET(DoctorApiConstants.postCertificates)
+  Future<dynamic> getCertificates();
+
+  @GET(DoctorApiConstants.postMemberships)
+  Future<dynamic> getMemberships();
+
+  @GET(DoctorApiConstants.postExperiences)
+  Future<dynamic> getExperiences();
+
+  @GET(DoctorApiConstants.postLicenses)
+  Future<dynamic> getLicenses();
+
+  @GET(DoctorApiConstants.postResearchPapers)
+  Future<dynamic> getResearchPapers();
+
+  @GET(DoctorApiConstants.postAwards)
+  Future<dynamic> getAwards();
+
+  @GET(DoctorApiConstants.postMediaArticles)
+  Future<dynamic> getMediaArticles();
+
+  @GET(DoctorApiConstants.postBankInfo)
+  Future<dynamic> getBankInfo();
+
+  @GET(DoctorApiConstants.postBookingSettings)
+  Future<dynamic> getBookingSettings();
+
+  @GET(DoctorApiConstants.postServicePrices)
+  Future<dynamic> getServicePrices();
 }

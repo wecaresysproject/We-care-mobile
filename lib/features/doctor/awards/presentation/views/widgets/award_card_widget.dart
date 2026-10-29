@@ -7,6 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/awards/logic/cubit/award_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// One award's fields. Rendered directly inside the section's
@@ -99,6 +100,8 @@ class AwardCardWidget extends StatelessWidget {
         verticalSpacing(10),
         DateTimePickerContainer(
           placeholderText: localization.awardsFormChooseYear,
+          initialDate: parseProfileYear(entry.selectedYear),
+          displayPattern: 'yyyy',
           onDateSelected: onYearChanged,
         ),
       ],

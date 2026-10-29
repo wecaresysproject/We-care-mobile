@@ -16,6 +16,7 @@ import 'package:we_care/features/doctor/basic_data/presentation/views/widgets/ba
 import 'package:we_care/features/doctor/basic_data/presentation/views/widgets/basic_data_national_id_photo_section_widget.dart';
 import 'package:we_care/features/doctor/basic_data/presentation/views/widgets/basic_data_phone_with_country_code_field_widget.dart';
 import 'package:we_care/features/doctor/basic_data/presentation/views/widgets/basic_data_profile_photo_section_widget.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 class DoctorBasicDataFormFields extends StatelessWidget {
@@ -83,6 +84,7 @@ class DoctorBasicDataFormFields extends StatelessWidget {
                 categoryLabel: localization.basicDataFormJobGradeLabel,
                 containerHintText: state.selectedJobGrade ??
                     localization.basicDataFormChooseJobGrade,
+                initialValue: state.selectedJobGrade,
                 options: kJobGradeOptions,
                 onOptionSelected: cubit.updateJobGrade,
                 bottomSheetTitle: localization.basicDataFormChooseJobGrade,
@@ -95,6 +97,7 @@ class DoctorBasicDataFormFields extends StatelessWidget {
                 categoryLabel: localization.basicDataFormAcademicDegreeLabel,
                 containerHintText: state.selectedAcademicDegree ??
                     localization.basicDataFormChooseAcademicDegree,
+                initialValue: state.selectedAcademicDegree,
                 options: kAcademicDegreeOptions,
                 onOptionSelected: cubit.updateAcademicDegree,
                 bottomSheetTitle:
@@ -122,8 +125,8 @@ class DoctorBasicDataFormFields extends StatelessWidget {
               ),
               verticalSpacing(10),
               DateTimePickerContainer(
-                placeholderText: state.birthDate ??
-                    localization.basicDataFormBirthDatePlaceholder,
+                placeholderText: localization.basicDataFormBirthDatePlaceholder,
+                initialDate: parseProfileDate(state.birthDate),
                 onDateSelected: cubit.updateBirthDate,
               ),
               verticalSpacing(18),
@@ -137,6 +140,7 @@ class DoctorBasicDataFormFields extends StatelessWidget {
                       categoryLabel: localization.basicDataFormCountryLabel,
                       containerHintText: state.selectedCountry ??
                           localization.basicDataFormChooseCountry,
+                      initialValue: state.selectedCountry,
                       options: state.countriesNames,
                       onOptionSelected: (val) async {
                         cubit.updateCountry(val);
@@ -152,6 +156,7 @@ class DoctorBasicDataFormFields extends StatelessWidget {
                       categoryLabel: localization.basicDataFormGovernorateLabel,
                       containerHintText: state.selectedGovernorate ??
                           localization.basicDataFormChooseGovernorate,
+                      initialValue: state.selectedGovernorate,
                       options: const [],
                       allowManualEntry: true,
                       onOptionSelected: cubit.updateGovernorate,
@@ -167,6 +172,7 @@ class DoctorBasicDataFormFields extends StatelessWidget {
                       categoryLabel: localization.basicDataFormCityLabel,
                       containerHintText: state.selectedCity ??
                           localization.basicDataFormChooseCity,
+                      initialValue: state.selectedCity,
                       options: state.citiesNames,
                       onOptionSelected: cubit.updateCity,
                       bottomSheetTitle: localization.basicDataFormChooseCity,
@@ -185,7 +191,8 @@ class DoctorBasicDataFormFields extends StatelessWidget {
               verticalSpacing(10),
               BasicDataPhoneWithCountryCodeField(
                 controller: cubit.professionalMobileController,
-                onCountryCodeChanged: (code) {},
+                initialCountryCode: state.professionalMobileCountryCode,
+                onCountryCodeChanged: cubit.updateProfessionalMobileCountryCode,
               ),
               verticalSpacing(18),
 
@@ -197,7 +204,8 @@ class DoctorBasicDataFormFields extends StatelessWidget {
               verticalSpacing(10),
               BasicDataPhoneWithCountryCodeField(
                 controller: cubit.contactMobileController,
-                onCountryCodeChanged: (code) {},
+                initialCountryCode: state.contactMobileCountryCode,
+                onCountryCodeChanged: cubit.updateContactMobileCountryCode,
               ),
               verticalSpacing(18),
 
@@ -260,7 +268,10 @@ class _SubmitButton extends StatelessWidget {
       listenWhen: (prev, curr) =>
           curr.submissionStatus == RequestStatus.success ||
           curr.submissionStatus == RequestStatus.failure,
-      buildWhen: (prev, curr) => prev.submissionStatus != curr.submissionStatus,
+      buildWhen: (prev, curr) =>
+          prev.submissionStatus != curr.submissionStatus ||
+          prev.isEditMode != curr.isEditMode ||
+          prev.hasChanges != curr.hasChanges,
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
@@ -273,8 +284,11 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<DoctorBasicDataCubit>();
         return AppCustomButton(
-          title: S.of(context).basicDataFormSubmit,
-          isEnabled: state.submissionStatus != RequestStatus.loading,
+          title: state.isEditMode
+              ? profileFormSaveChangesTitle
+              : S.of(context).basicDataFormSubmit,
+          isEnabled: state.submissionStatus != RequestStatus.loading &&
+              state.hasChanges,
           isLoading: state.submissionStatus == RequestStatus.loading,
           onPressed: () {
             if (cubit.formKey.currentState?.validate() ?? false) {

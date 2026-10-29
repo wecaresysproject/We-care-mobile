@@ -10,6 +10,7 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/global/shared_repo.dart';
 import 'package:we_care/features/doctor/basic_data/data/models/doctor_basic_data_request_body_model.dart';
 import 'package:we_care/features/doctor/basic_data/data/repos/doctor_basic_data_repo.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 
 part 'doctor_basic_data_state.dart';
 
@@ -38,12 +39,25 @@ const List<String> kJobGradeOptions = [
 class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
     with SafeEmitMixin<DoctorBasicDataState> {
   DoctorBasicDataCubit(this._sharedRepo, this._basicDataRepo)
-      : super(DoctorBasicDataState.initial());
+      : super(DoctorBasicDataState.initial()) {
+    for (final controller in [
+      firstNameController,
+      fatherNameController,
+      familyNameController,
+      professionalMobileController,
+      contactMobileController,
+      nationalIdController,
+      shortBioController,
+    ]) {
+      controller.addListener(_updateHasChanges);
+    }
+  }
 
   final AppSharedRepo _sharedRepo;
   final DoctorBasicDataRepo _basicDataRepo;
 
   final formKey = GlobalKey<FormState>();
+  final _changesTracker = ProfileFormChangesTracker();
 
   final firstNameController = TextEditingController();
   final fatherNameController = TextEditingController();
@@ -53,8 +67,99 @@ class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
   final nationalIdController = TextEditingController();
   final shortBioController = TextEditingController();
 
+  /// Loads the dropdown options and the doctor's saved basic data together.
   Future<void> loadInitialData() async {
-    await emitCountriesData();
+    safeEmit(state.copyWith(loadStatus: RequestStatus.loading));
+    await Future.wait([emitCountriesData(), _loadSavedBasicData()]);
+  }
+
+  Future<void> _loadSavedBasicData() async {
+    final response = await _basicDataRepo.getBasicData();
+    await response.when(
+      success: (model) async {
+        if (model == null) {
+          safeEmit(state.copyWith(loadStatus: RequestStatus.success));
+          return;
+        }
+        firstNameController.text = model.firstName;
+        fatherNameController.text = model.fatherName;
+        familyNameController.text = model.familyName;
+        professionalMobileController.text = model.professionalMobileNumber;
+        contactMobileController.text = model.contactMobileNumber;
+        nationalIdController.text = model.nationalIdOrPassportNumber;
+        shortBioController.text = model.shortBio;
+
+        String? orNull(String value) => value.isEmpty ? null : value;
+        safeEmit(state.copyWith(
+          profileImageUrl: orNull(model.personalPhotoUrl),
+          selectedJobGrade: orNull(model.jobGrade),
+          selectedAcademicDegree: orNull(model.academicDegree),
+          selectedGender: orNull(model.gender),
+          birthDate: orNull(model.birthDate),
+          selectedCountry: orNull(model.country),
+          selectedGovernorate: orNull(model.governorate),
+          selectedCity: orNull(model.city),
+          professionalMobileCountryCode:
+              orNull(model.professionalMobileCountryCode),
+          contactMobileCountryCode: orNull(model.contactMobileCountryCode),
+          nationalIdImageUrl: orNull(model.nationalIdOrPassportPhotoUrl),
+          selectedLanguages: List<String>.from(model.spokenLanguages),
+        ));
+
+        // The cities list depends on the country, so load it for the saved
+        // country before showing the form.
+        await emitCitiesData();
+
+        _changesTracker.setBaseline(_comparableJson());
+        safeEmit(state.copyWith(
+          loadStatus: RequestStatus.success,
+          isEditMode: true,
+          hasChanges: false,
+        ));
+      },
+      failure: (error) async => safeEmit(state.copyWith(
+        loadStatus: RequestStatus.failure,
+        message: error.errors.first,
+      )),
+    );
+  }
+
+  DoctorBasicDataRequestBodyModel _buildRequestBody() =>
+      DoctorBasicDataRequestBodyModel(
+        personalPhotoUrl: state.profileImageUrl ?? '',
+        firstName: firstNameController.text.trim(),
+        fatherName: fatherNameController.text.trim(),
+        familyName: familyNameController.text.trim(),
+        jobGrade: state.selectedJobGrade ?? '',
+        academicDegree: state.selectedAcademicDegree ?? '',
+        gender: state.selectedGender ?? '',
+        birthDate: state.birthDate ?? '',
+        country: state.selectedCountry ?? '',
+        governorate: state.selectedGovernorate ?? '',
+        city: state.selectedCity ?? '',
+        professionalMobileCountryCode: state.professionalMobileCountryCode,
+        professionalMobileNumber: professionalMobileController.text.trim(),
+        contactMobileCountryCode: state.contactMobileCountryCode,
+        contactMobileNumber: contactMobileController.text.trim(),
+        nationalIdOrPassportNumber: nationalIdController.text.trim(),
+        nationalIdOrPassportPhotoUrl: state.nationalIdImageUrl ?? '',
+        spokenLanguages: state.selectedLanguages,
+        shortBio: shortBioController.text.trim(),
+      );
+
+  /// The request JSON used to detect changes. Languages are sorted so that
+  /// removing a language and adding it back counts as unchanged.
+  Map<String, dynamic> _comparableJson() {
+    final json = _buildRequestBody().toJson();
+    json['spokenLanguages'] = [...state.selectedLanguages]..sort();
+    return json;
+  }
+
+  void _updateHasChanges() {
+    final hasChanges = _changesTracker.hasChanges(_comparableJson());
+    if (hasChanges != state.hasChanges) {
+      safeEmit(state.copyWith(hasChanges: hasChanges));
+    }
   }
 
   Future<void> emitCountriesData() async {
@@ -82,24 +187,50 @@ class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
     );
   }
 
-  void updateJobGrade(String? val) =>
-      safeEmit(state.copyWith(selectedJobGrade: val));
+  void updateJobGrade(String? val) {
+    safeEmit(state.copyWith(selectedJobGrade: val));
+    _updateHasChanges();
+  }
 
-  void updateAcademicDegree(String? val) =>
-      safeEmit(state.copyWith(selectedAcademicDegree: val));
+  void updateAcademicDegree(String? val) {
+    safeEmit(state.copyWith(selectedAcademicDegree: val));
+    _updateHasChanges();
+  }
 
-  void updateGender(String? val) =>
-      safeEmit(state.copyWith(selectedGender: val));
+  void updateGender(String? val) {
+    safeEmit(state.copyWith(selectedGender: val));
+    _updateHasChanges();
+  }
 
-  void updateBirthDate(String? val) => safeEmit(state.copyWith(birthDate: val));
+  void updateBirthDate(String? val) {
+    safeEmit(state.copyWith(birthDate: val));
+    _updateHasChanges();
+  }
 
-  void updateCountry(String? val) =>
-      safeEmit(state.copyWith(selectedCountry: val, selectedCity: null));
+  void updateCountry(String? val) {
+    safeEmit(state.copyWith(selectedCountry: val, selectedCity: null));
+    _updateHasChanges();
+  }
 
-  void updateGovernorate(String? val) =>
-      safeEmit(state.copyWith(selectedGovernorate: val));
+  void updateGovernorate(String? val) {
+    safeEmit(state.copyWith(selectedGovernorate: val));
+    _updateHasChanges();
+  }
 
-  void updateCity(String? val) => safeEmit(state.copyWith(selectedCity: val));
+  void updateCity(String? val) {
+    safeEmit(state.copyWith(selectedCity: val));
+    _updateHasChanges();
+  }
+
+  void updateProfessionalMobileCountryCode(String code) {
+    safeEmit(state.copyWith(professionalMobileCountryCode: code));
+    _updateHasChanges();
+  }
+
+  void updateContactMobileCountryCode(String code) {
+    safeEmit(state.copyWith(contactMobileCountryCode: code));
+    _updateHasChanges();
+  }
 
   void toggleSpokenLanguage(String language) {
     final current = List<String>.from(state.selectedLanguages);
@@ -109,12 +240,14 @@ class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
       current.add(language);
     }
     safeEmit(state.copyWith(selectedLanguages: current));
+    _updateHasChanges();
   }
 
   void removeSpokenLanguage(String language) {
     final current = List<String>.from(state.selectedLanguages)
       ..remove(language);
     safeEmit(state.copyWith(selectedLanguages: current));
+    _updateHasChanges();
   }
 
   Future<void> uploadProfileImage({required String imagePath}) async {
@@ -142,9 +275,13 @@ class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
         ),
       ),
     );
+    _updateHasChanges();
   }
 
-  void removeProfileImage() => safeEmit(state.copyWith(profileImageUrl: ''));
+  void removeProfileImage() {
+    safeEmit(state.copyWith(profileImageUrl: ''));
+    _updateHasChanges();
+  }
 
   Future<void> uploadNationalIdImage({required String imagePath}) async {
     safeEmit(
@@ -172,35 +309,18 @@ class DoctorBasicDataCubit extends Cubit<DoctorBasicDataState>
         ),
       ),
     );
+    _updateHasChanges();
   }
 
-  void removeNationalIdImage() =>
-      safeEmit(state.copyWith(nationalIdImageUrl: ''));
+  void removeNationalIdImage() {
+    safeEmit(state.copyWith(nationalIdImageUrl: ''));
+    _updateHasChanges();
+  }
 
   Future<void> submitBasicData() async {
     safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
-    final model = DoctorBasicDataRequestBodyModel(
-      personalPhotoUrl: state.profileImageUrl ?? '',
-      firstName: firstNameController.text.trim(),
-      fatherName: fatherNameController.text.trim(),
-      familyName: familyNameController.text.trim(),
-      jobGrade: state.selectedJobGrade ?? '',
-      academicDegree: state.selectedAcademicDegree ?? '',
-      gender: state.selectedGender ?? '',
-      birthDate: state.birthDate ?? '',
-      country: state.selectedCountry ?? '',
-      governorate: state.selectedGovernorate ?? '',
-      city: state.selectedCity ?? '',
-      professionalMobileCountryCode: state.professionalMobileCountryCode,
-      professionalMobileNumber: professionalMobileController.text.trim(),
-      contactMobileCountryCode: state.contactMobileCountryCode,
-      contactMobileNumber: contactMobileController.text.trim(),
-      nationalIdOrPassportNumber: nationalIdController.text.trim(),
-      nationalIdOrPassportPhotoUrl: state.nationalIdImageUrl ?? '',
-      spokenLanguages: state.selectedLanguages,
-      shortBio: shortBioController.text.trim(),
-    );
+    final model = _buildRequestBody();
 
     final response = await _basicDataRepo.submitBasicData(model);
     response.when(

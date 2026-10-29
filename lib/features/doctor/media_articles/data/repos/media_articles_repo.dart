@@ -1,12 +1,27 @@
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
+import 'package:we_care/features/doctor/media_articles/data/models/media_article_model.dart';
 import 'package:we_care/features/doctor/media_articles/data/models/media_articles_request_body_model.dart';
 import 'package:we_care/features/doctor/doctor_services.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 
 class MediaArticlesRepo {
   final DoctorServices _doctorServices;
 
   MediaArticlesRepo(this._doctorServices);
+
+  /// The doctor's saved media and articles; empty when the module wasn't filled yet.
+  Future<ApiResult<List<MediaArticleModel>>> getMediaArticles() async {
+    try {
+      final response = await _doctorServices.getMediaArticles();
+      final data = profileResponseData(response);
+      if (data is! Map<String, dynamic>) return ApiResult.success(const []);
+      return ApiResult.success(
+          MediaArticlesRequestBodyModel.fromJson(data).mediaArticles);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
 
   Future<ApiResult<String>> submitMediaArticles(
     MediaArticlesRequestBodyModel model,

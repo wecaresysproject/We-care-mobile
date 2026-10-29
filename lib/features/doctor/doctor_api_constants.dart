@@ -1,3 +1,5 @@
+/// The doctor profile module paths (`basic-data` … `service-prices`) serve
+/// both `POST` (save, replaces the saved data) and `GET` (read it back).
 class DoctorApiConstants {
   static const baseUrl = "http://147.93.57.70/api";
 

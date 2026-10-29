@@ -46,6 +46,9 @@ class DoctorBasicDataRequestBodyModel {
     required this.shortBio,
   });
 
+  factory DoctorBasicDataRequestBodyModel.fromJson(Map<String, dynamic> json) =>
+      _$DoctorBasicDataRequestBodyModelFromJson(json);
+
   Map<String, dynamic> toJson() =>
       _$DoctorBasicDataRequestBodyModelToJson(this);
 }

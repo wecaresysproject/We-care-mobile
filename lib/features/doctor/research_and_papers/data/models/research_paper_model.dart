@@ -14,5 +14,8 @@ class ResearchPaperModel {
     required this.doiOrLink,
   });
 
+  factory ResearchPaperModel.fromJson(Map<String, dynamic> json) =>
+      _$ResearchPaperModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$ResearchPaperModelToJson(this);
 }
