@@ -16,5 +16,8 @@ class CertificateModel {
     required this.obtainedDate,
   });
 
+  factory CertificateModel.fromJson(Map<String, dynamic> json) =>
+      _$CertificateModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$CertificateModelToJson(this);
 }

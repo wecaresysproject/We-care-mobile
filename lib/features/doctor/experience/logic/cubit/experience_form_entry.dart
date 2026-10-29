@@ -8,6 +8,17 @@ import 'package:we_care/features/doctor/experience/data/models/experience_model.
 class ExperienceFormEntry {
   ExperienceFormEntry() : key = UniqueKey();
 
+  /// An entry filled with an experience loaded from the server.
+  factory ExperienceFormEntry.fromModel(ExperienceModel model) {
+    final entry = ExperienceFormEntry()
+      ..selectedCountry = model.countryName.isEmpty ? null : model.countryName
+      ..fromDate = model.fromDate.isEmpty ? null : model.fromDate
+      ..toDate = model.toDate.isEmpty ? null : model.toDate;
+    entry.positionController.text = model.position;
+    entry.workPlaceController.text = model.workPlace;
+    return entry;
+  }
+
   final Key key;
   String? selectedCountry;
   String? fromDate;
@@ -23,6 +34,12 @@ class ExperienceFormEntry {
         toDate: toDate ?? '',
         countryName: selectedCountry ?? '',
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    positionController.addListener(listener);
+    workPlaceController.addListener(listener);
+  }
 
   void dispose() {
     positionController.dispose();

@@ -7,6 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/experience/logic/cubit/experience_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// One experience's fields. Rendered directly inside the section's
@@ -101,6 +102,7 @@ class ExperienceCardWidget extends StatelessWidget {
                   verticalSpacing(6),
                   DateTimePickerContainer(
                     placeholderText: localization.experienceFormChooseDate,
+                    initialDate: parseProfileDate(entry.fromDate),
                     onDateSelected: onFromDateChanged,
                   ),
                 ],
@@ -118,6 +120,7 @@ class ExperienceCardWidget extends StatelessWidget {
                   verticalSpacing(6),
                   DateTimePickerContainer(
                     placeholderText: localization.experienceFormChooseDate,
+                    initialDate: parseProfileDate(entry.toDate),
                     onDateSelected: onToDateChanged,
                   ),
                 ],

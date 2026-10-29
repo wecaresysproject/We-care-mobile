@@ -22,5 +22,8 @@ class LicenseModel {
     required this.licenseImageUrl,
   });
 
+  factory LicenseModel.fromJson(Map<String, dynamic> json) =>
+      _$LicenseModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$LicenseModelToJson(this);
 }

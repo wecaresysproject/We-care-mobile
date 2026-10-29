@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/membership/logic/cubit/membership_cubit.dart';
 import 'package:we_care/features/doctor/membership/presentation/views/widgets/membership_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class MembershipFormView extends StatelessWidget {
   const MembershipFormView({super.key});
@@ -30,7 +31,15 @@ class MembershipFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const MembershipFormFields(),
+                BlocBuilder<MembershipCubit, MembershipState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<MembershipCubit>().loadInitialData,
+                    child: const MembershipFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

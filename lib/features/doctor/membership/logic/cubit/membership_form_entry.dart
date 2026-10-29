@@ -8,6 +8,18 @@ import 'package:we_care/features/doctor/membership/data/models/membership_model.
 class MembershipFormEntry {
   MembershipFormEntry() : key = UniqueKey();
 
+  /// An entry filled with a membership loaded from the server.
+  factory MembershipFormEntry.fromModel(MembershipModel model) {
+    final entry = MembershipFormEntry()
+      ..selectedCountry = model.countryName.isEmpty ? null : model.countryName
+      ..selectedMembershipLevel =
+          model.membershipLevel.isEmpty ? null : model.membershipLevel
+      ..selectedYear = model.year.isEmpty ? null : model.year;
+    entry.associationNameController.text = model.associationName;
+    entry.membershipNumberController.text = model.membershipNumber;
+    return entry;
+  }
+
   final Key key;
   String? selectedCountry;
   String? selectedMembershipLevel;
@@ -23,6 +35,12 @@ class MembershipFormEntry {
         membershipLevel: selectedMembershipLevel ?? '',
         year: selectedYear ?? '',
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    associationNameController.addListener(listener);
+    membershipNumberController.addListener(listener);
+  }
 
   void dispose() {
     associationNameController.dispose();

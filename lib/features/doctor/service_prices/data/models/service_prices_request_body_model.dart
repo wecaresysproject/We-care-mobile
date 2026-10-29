@@ -16,5 +16,8 @@ class ServicePricesRequestBodyModel {
     required this.followUpConsultationValidityDays,
   });
 
+  factory ServicePricesRequestBodyModel.fromJson(Map<String, dynamic> json) =>
+      _$ServicePricesRequestBodyModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$ServicePricesRequestBodyModelToJson(this);
 }

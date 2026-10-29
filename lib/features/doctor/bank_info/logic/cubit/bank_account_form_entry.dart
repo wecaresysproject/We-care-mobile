@@ -9,6 +9,19 @@ import 'package:we_care/features/doctor/bank_info/data/models/bank_account_model
 class BankAccountFormEntry {
   BankAccountFormEntry({this.selectedCountry}) : key = UniqueKey();
 
+  /// An entry filled with a bank account loaded from the server.
+  factory BankAccountFormEntry.fromModel(BankAccountModel model) {
+    final entry = BankAccountFormEntry(
+      selectedCountry: model.countryName.isEmpty ? null : model.countryName,
+    );
+    entry.userNameController.text = model.userName;
+    entry.bankNameController.text = model.bankName;
+    entry.branchNameController.text = model.branchName;
+    entry.accountNumberController.text = model.accountNumber;
+    entry.ibanController.text = model.iban;
+    return entry;
+  }
+
   final Key key;
   String? selectedCountry;
 
@@ -26,6 +39,15 @@ class BankAccountFormEntry {
         accountNumber: accountNumberController.text.trim(),
         iban: ibanController.text.trim(),
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    userNameController.addListener(listener);
+    bankNameController.addListener(listener);
+    branchNameController.addListener(listener);
+    accountNumberController.addListener(listener);
+    ibanController.addListener(listener);
+  }
 
   void dispose() {
     userNameController.dispose();

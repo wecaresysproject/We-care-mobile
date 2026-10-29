@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/certificates/logic/cubit/certificates_cubit.dart';
 import 'package:we_care/features/doctor/certificates/presentation/views/widgets/certificates_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class CertificatesFormView extends StatelessWidget {
   const CertificatesFormView({super.key});
@@ -30,7 +31,15 @@ class CertificatesFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const CertificatesFormFields(),
+                BlocBuilder<CertificatesCubit, CertificatesState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<CertificatesCubit>().loadInitialData,
+                    child: const CertificatesFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

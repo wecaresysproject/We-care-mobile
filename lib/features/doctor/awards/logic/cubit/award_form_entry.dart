@@ -8,6 +8,16 @@ import 'package:we_care/features/doctor/awards/data/models/award_model.dart';
 class AwardFormEntry {
   AwardFormEntry() : key = UniqueKey();
 
+  /// An entry filled with an award loaded from the server.
+  factory AwardFormEntry.fromModel(AwardModel model) {
+    final entry = AwardFormEntry()
+      ..selectedCountry = model.countryName.isEmpty ? null : model.countryName
+      ..selectedYear = model.year.isEmpty ? null : model.year;
+    entry.awardNameController.text = model.awardName;
+    entry.grantingBodyController.text = model.grantingBody;
+    return entry;
+  }
+
   final Key key;
   String? selectedCountry;
   String? selectedYear;
@@ -21,6 +31,12 @@ class AwardFormEntry {
         grantingBody: grantingBodyController.text.trim(),
         year: selectedYear ?? '',
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    awardNameController.addListener(listener);
+    grantingBodyController.addListener(listener);
+  }
 
   void dispose() {
     awardNameController.dispose();

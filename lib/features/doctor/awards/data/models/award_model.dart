@@ -16,5 +16,8 @@ class AwardModel {
     required this.year,
   });
 
+  factory AwardModel.fromJson(Map<String, dynamic> json) =>
+      _$AwardModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$AwardModelToJson(this);
 }

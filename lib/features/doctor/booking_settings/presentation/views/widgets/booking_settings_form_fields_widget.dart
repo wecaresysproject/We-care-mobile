@@ -10,6 +10,7 @@ import 'package:we_care/features/doctor/booking_settings/presentation/views/widg
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/daily_bookings_limit_section_widget.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/weekly_booking_days_section_widget.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/weekly_booking_times_section_widget.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// Composes the five numbered Booking Settings sections and the save
@@ -50,7 +51,9 @@ class _SubmitButton extends StatelessWidget {
           curr.submissionStatus == RequestStatus.failure,
       buildWhen: (prev, curr) =>
           prev.submissionStatus != curr.submissionStatus ||
-          prev.canSubmit != curr.canSubmit,
+          prev.canSubmit != curr.canSubmit ||
+          prev.isEditMode != curr.isEditMode ||
+          prev.hasChanges != curr.hasChanges,
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
@@ -63,10 +66,13 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<BookingSettingsCubit>();
         return AppCustomButton(
-          title: S.of(context).bookingSettingsFormSaveSettings,
+          title: state.isEditMode
+              ? profileFormSaveChangesTitle
+              : S.of(context).bookingSettingsFormSaveSettings,
           icon: Icons.save_outlined,
           isEnabled: state.canSubmit &&
-              state.submissionStatus != RequestStatus.loading,
+              state.submissionStatus != RequestStatus.loading &&
+              state.hasChanges,
           isLoading: state.submissionStatus == RequestStatus.loading,
           onPressed: cubit.submitBookingSettings,
         );

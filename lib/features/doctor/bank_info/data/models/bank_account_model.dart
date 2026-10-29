@@ -20,5 +20,8 @@ class BankAccountModel {
     required this.iban,
   });
 
+  factory BankAccountModel.fromJson(Map<String, dynamic> json) =>
+      _$BankAccountModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$BankAccountModelToJson(this);
 }

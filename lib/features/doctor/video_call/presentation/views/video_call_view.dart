@@ -275,6 +275,8 @@ class _VideoCallViewState extends State<VideoCallView> {
                             onEvent: _onJitsiEvent,
                             displayName: CallParticipantRole.doctor
                                 .displayNameFor(meeting.displayName),
+                            // المريض كبير، والطبيب والمشاركين صغيرين.
+                            stageRoles: const [CallParticipantRole.patient],
                           )
                         : null,
                     notice: _noticeFor(state),

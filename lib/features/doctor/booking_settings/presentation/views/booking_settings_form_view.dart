@@ -8,6 +8,7 @@ import 'package:we_care/features/doctor/booking_settings/logic/cubit/booking_set
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_settings_banner_widget.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/widgets/booking_settings_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class BookingSettingsFormView extends StatelessWidget {
   const BookingSettingsFormView({super.key});
@@ -15,7 +16,7 @@ class BookingSettingsFormView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<BookingSettingsCubit>(),
+      create: (_) => getIt<BookingSettingsCubit>()..loadInitialData(),
       child: Scaffold(
         backgroundColor: AppColorsManager.scaffoldBackGroundColor,
         body: SafeArea(
@@ -33,7 +34,16 @@ class BookingSettingsFormView extends StatelessWidget {
                 verticalSpacing(20),
                 const BookingSettingsBannerWidget(),
                 verticalSpacing(18),
-                const BookingSettingsFormFields(),
+                BlocBuilder<BookingSettingsCubit, BookingSettingsState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry:
+                        context.read<BookingSettingsCubit>().loadInitialData,
+                    child: const BookingSettingsFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

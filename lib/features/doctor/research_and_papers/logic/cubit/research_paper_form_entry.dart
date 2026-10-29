@@ -8,6 +8,15 @@ import 'package:we_care/features/doctor/research_and_papers/data/models/research
 class ResearchPaperFormEntry {
   ResearchPaperFormEntry() : key = UniqueKey();
 
+  /// An entry filled with a research paper loaded from the server.
+  factory ResearchPaperFormEntry.fromModel(ResearchPaperModel model) {
+    final entry = ResearchPaperFormEntry()
+      ..selectedYear = model.year.isEmpty ? null : model.year;
+    entry.titleController.text = model.title;
+    entry.doiOrLinkController.text = model.doiOrLink;
+    return entry;
+  }
+
   final Key key;
   String? selectedYear;
 
@@ -19,6 +28,12 @@ class ResearchPaperFormEntry {
         year: selectedYear ?? '',
         doiOrLink: doiOrLinkController.text.trim(),
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    titleController.addListener(listener);
+    doiOrLinkController.addListener(listener);
+  }
 
   void dispose() {
     titleController.dispose();

@@ -216,6 +216,13 @@ class _ParticipantCallViewState extends State<ParticipantCallView> {
                     onEvent: _onJitsiEvent,
                     displayName: CallParticipantRole.participant
                         .displayNameFor(meeting.displayName),
+                    // الطبيب أو المريض كبير حسب مين بيتكلم، والمشاركين
+                    // صغيرين.
+                    stageRoles: const [
+                      CallParticipantRole.doctor,
+                      CallParticipantRole.patient,
+                    ],
+                    followSpeaker: true,
                   ),
                 ),
               if (notice != null)

@@ -10,6 +10,7 @@ import 'package:we_care/features/doctor/certificates/data/models/certificate_sec
 import 'package:we_care/features/doctor/certificates/data/models/certificates_request_body_model.dart';
 import 'package:we_care/features/doctor/certificates/data/repos/certificates_repo.dart';
 import 'package:we_care/features/doctor/certificates/logic/cubit/certificate_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 
 part 'certificates_state.dart';
 
@@ -22,9 +23,78 @@ class CertificatesCubit extends Cubit<CertificatesState>
   final CertificatesRepo _certificatesRepo;
 
   final formKey = GlobalKey<FormState>();
+  final _changesTracker = ProfileFormChangesTracker();
 
+  /// Loads the dropdown options and the doctor's saved certificates together.
   Future<void> loadInitialData() async {
-    await emitCountriesData();
+    safeEmit(state.copyWith(loadStatus: RequestStatus.loading));
+    await Future.wait([emitCountriesData(), _loadSavedCertificates()]);
+  }
+
+  Future<void> _loadSavedCertificates() async {
+    final response = await _certificatesRepo.getCertificates();
+    response.when(
+      success: (savedSections) {
+        final hasSavedData =
+            savedSections.values.any((certificates) => certificates.isNotEmpty);
+        if (!hasSavedData) {
+          safeEmit(state.copyWith(loadStatus: RequestStatus.success));
+          return;
+        }
+        for (final entries in state.sections.values) {
+          for (final entry in entries) {
+            entry.dispose();
+          }
+        }
+        // Every section keeps at least one card, like the empty form, so a
+        // section saved as `[]` gets one empty placeholder entry. It's part of
+        // the baseline too, so an untouched form still counts as unchanged.
+        final sections = {
+          for (final section in CertificateSectionType.values)
+            section: (savedSections[section] ?? const []).isEmpty
+                ? [CertificateFormEntry()]
+                : savedSections[section]!
+                    .map(CertificateFormEntry.fromModel)
+                    .toList(),
+        };
+        for (final entries in sections.values) {
+          for (final entry in entries) {
+            entry.addTextListener(_updateHasChanges);
+          }
+        }
+        _changesTracker.setBaseline(_buildRequestBody(sections).toJson());
+        safeEmit(state.copyWith(
+          sections: sections,
+          loadStatus: RequestStatus.success,
+          isEditMode: true,
+          hasChanges: false,
+        ));
+      },
+      failure: (error) => safeEmit(state.copyWith(
+        loadStatus: RequestStatus.failure,
+        message: error.errors.first,
+      )),
+    );
+  }
+
+  CertificatesRequestBodyModel _buildRequestBody(
+    Map<CertificateSectionType, List<CertificateFormEntry>> sections,
+  ) =>
+      CertificatesRequestBodyModel(
+        sections: sections.map(
+          (section, entries) => MapEntry(
+            section,
+            entries.map((entry) => entry.toModel()).toList(),
+          ),
+        ),
+      );
+
+  void _updateHasChanges() {
+    final hasChanges =
+        _changesTracker.hasChanges(_buildRequestBody(state.sections).toJson());
+    if (hasChanges != state.hasChanges) {
+      safeEmit(state.copyWith(hasChanges: hasChanges));
+    }
   }
 
   Future<void> emitCountriesData() async {
@@ -43,8 +113,10 @@ class CertificatesCubit extends Cubit<CertificatesState>
     final sections =
         Map<CertificateSectionType, List<CertificateFormEntry>>.from(
             state.sections);
-    sections[section] = [...sections[section]!, CertificateFormEntry()];
+    final entry = CertificateFormEntry()..addTextListener(_updateHasChanges);
+    sections[section] = [...sections[section]!, entry];
     safeEmit(state.copyWith(sections: sections));
+    _updateHasChanges();
   }
 
   void removeCertificate(CertificateSectionType section, Key entryKey) {
@@ -60,6 +132,7 @@ class CertificatesCubit extends Cubit<CertificatesState>
     sections[section] =
         entries.where((entry) => entry.key != entryKey).toList();
     safeEmit(state.copyWith(sections: sections));
+    _updateHasChanges();
   }
 
   void updateCertificateCountry(
@@ -90,19 +163,13 @@ class CertificatesCubit extends Cubit<CertificatesState>
             state.sections);
     sections[section] = [...sections[section]!];
     safeEmit(state.copyWith(sections: sections));
+    _updateHasChanges();
   }
 
   Future<void> submitCertificates() async {
     safeEmit(state.copyWith(submissionStatus: RequestStatus.loading));
 
-    final model = CertificatesRequestBodyModel(
-      sections: state.sections.map(
-        (section, entries) => MapEntry(
-          section,
-          entries.map((entry) => entry.toModel()).toList(),
-        ),
-      ),
-    );
+    final model = _buildRequestBody(state.sections);
 
     final response = await _certificatesRepo.submitCertificates(model);
     response.when(

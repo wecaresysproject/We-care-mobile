@@ -9,6 +9,23 @@ import 'package:we_care/features/doctor/professional_licenses/data/models/licens
 class LicenseFormEntry {
   LicenseFormEntry() : key = UniqueKey();
 
+  /// An entry filled with a license loaded from the server. A saved image
+  /// URL is marked as uploaded so the existing preview shows it.
+  factory LicenseFormEntry.fromModel(LicenseModel model) {
+    final hasImage = model.licenseImageUrl.isNotEmpty;
+    final entry = LicenseFormEntry()
+      ..selectedCountry = model.countryName.isEmpty ? null : model.countryName
+      ..licenseDate = model.licenseDate.isEmpty ? null : model.licenseDate
+      ..expiryDate = model.expiryDate.isEmpty ? null : model.expiryDate
+      ..licenseImageUrl = hasImage ? model.licenseImageUrl : null
+      ..licenseImageUploadStatus =
+          hasImage ? UploadImageRequestStatus.success : null;
+    entry.licenseNumberController.text = model.licenseNumber;
+    entry.licensingAuthorityController.text = model.licensingAuthority;
+    entry.registrationNumberController.text = model.registrationNumber;
+    return entry;
+  }
+
   final Key key;
   String? selectedCountry;
   String? licenseDate;
@@ -29,6 +46,13 @@ class LicenseFormEntry {
         expiryDate: expiryDate ?? '',
         licenseImageUrl: licenseImageUrl ?? '',
       );
+
+  /// Calls [listener] whenever one of this entry's text fields changes.
+  void addTextListener(VoidCallback listener) {
+    licenseNumberController.addListener(listener);
+    licensingAuthorityController.addListener(listener);
+    registrationNumberController.addListener(listener);
+  }
 
   void dispose() {
     licenseNumberController.dispose();

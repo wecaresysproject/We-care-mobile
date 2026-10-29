@@ -54,7 +54,8 @@ class JitsiMeetingController {
   /// `null` لو سيرفر Jitsi مش بيدعم `getParticipantsInfo`.
   Future<List<CallParticipantRole?>?> participantRoles() async {
     final result = await _webViewController?.evaluateJavascript(
-      source: "(function(){try{return JSON.stringify(api.getParticipantsInfo());}"
+      source:
+          "(function(){try{return JSON.stringify(api.getParticipantsInfo());}"
           "catch(e){return null;}})()",
     );
     if (result is! String) return null;
@@ -92,6 +93,8 @@ class JitsiMeetingView extends StatelessWidget {
     required this.controller,
     required this.onEvent,
     required this.displayName,
+    this.stageRoles = const [],
+    this.followSpeaker = false,
   });
 
   final VideoMeetingModel meeting;
@@ -102,6 +105,14 @@ class JitsiMeetingView extends StatelessWidget {
   /// Jitsi الافتراضى "Fellow Jitster" فمنقدرش نميّز مين اللى فى الغرفة.
   final String displayName;
 
+  /// الأدوار اللى ينفع تتعرض فى الشاشة الكبيرة، بالأولوية — اللى فى الأول
+  /// بيتثبت لما يدخل، والباقى بيظهر صغير فى الشريط. فاضية = سلوك Jitsi العادى.
+  final List<CallParticipantRole> stageRoles;
+
+  /// الشاشة الكبيرة بتنتقل لأى حد من [stageRoles] بيتكلم دلوقتى، بدل ما
+  /// تفضل ثابتة على الأولوية.
+  final bool followSpeaker;
+
   /// اسم الـ handler اللى صفحة Jitsi بتبعت عليه أحداثها لـ Flutter.
   static const String _eventHandler = 'jitsiEvent';
 
@@ -109,6 +120,8 @@ class JitsiMeetingView extends StatelessWidget {
     final domain = jsonEncode(meeting.domain);
     final room = jsonEncode(meeting.room);
     final name = jsonEncode(displayName);
+    final stageLabels = jsonEncode([for (final role in stageRoles) role.label]);
+    final followSpeaker = jsonEncode(this.followSpeaker);
     return '''
 <!DOCTYPE html>
 <html>
@@ -122,6 +135,73 @@ class JitsiMeetingView extends StatelessWidget {
 <script>
 var api = null;
 var started = false;
+// الشاشة الكبيرة: مين يتثبت فيها حسب الدور المكتوب جنب الاسم ("أحمد · المريض").
+var stageLabels = $stageLabels;
+var followSpeaker = $followSpeaker;
+var people = {};
+var pinnedId = null;
+function stageRank(name) {
+  name = (name || '').trim();
+  for (var i = 0; i < stageLabels.length; i++) {
+    var label = stageLabels[i];
+    if (name === label || name.slice(-(label.length + 3)) === ' · ' + label) return i;
+  }
+  return -1;
+}
+function pin(id) {
+  if (!api || !id || id === pinnedId) return;
+  pinnedId = id;
+  api.executeCommand('pinParticipant', id);
+  send('stagePinned', { id: id, displayName: people[id] || '' });
+}
+function refreshPeople() {
+  try {
+    api.getParticipantsInfo().forEach(function (p) {
+      people[p.participantId] = p.displayName || p.formattedDisplayName || '';
+    });
+  } catch (e) {}
+}
+// بيثبت أعلى دور موجود فى الغرفة، إلا لو اللى متثبت لسه موجود وينفع يفضل.
+function chooseStage() {
+  if (!stageLabels.length) return;
+  if (pinnedId && people[pinnedId] !== undefined && stageRank(people[pinnedId]) >= 0) return;
+  pinnedId = null;
+  var best = null, bestRank = 999;
+  Object.keys(people).forEach(function (id) {
+    var rank = stageRank(people[id]);
+    if (rank >= 0 && rank < bestRank) { best = id; bestRank = rank; }
+  });
+  if (best) pin(best);
+}
+function onStageEvent(name, data) {
+  data = data || {};
+  switch (name) {
+    case 'videoConferenceJoined':
+      api.executeCommand('setTileView', false);
+      refreshPeople();
+      chooseStage();
+      break;
+    case 'participantJoined':
+      people[data.id] = data.displayName || '';
+      chooseStage();
+      break;
+    case 'displayNameChange':
+      if (people[data.id] !== undefined) people[data.id] = data.displayname || data.displayName || '';
+      chooseStage();
+      break;
+    case 'participantLeft':
+      delete people[data.id];
+      if (pinnedId === data.id) pinnedId = null;
+      chooseStage();
+      break;
+    case 'dominantSpeakerChanged':
+      if (followSpeaker && people[data.id] !== undefined && stageRank(people[data.id]) >= 0) pin(data.id);
+      break;
+    case 'tileViewChanged':
+      if (data.enabled) api.executeCommand('setTileView', false);
+      break;
+  }
+}
 function send(name, data) {
   window.flutter_inappwebview.callHandler('$_eventHandler', name, JSON.stringify(data || {}));
 }
@@ -142,6 +222,8 @@ function start() {
     height: '100%',
     userInfo: { displayName: $name },
     configOverwrite: {
+      // من غير Tile view عشان الشاشة ماتتقسمش لمربعات متساوية.
+      disableTileView: true,
       prejoinConfig: { enabled: false },
       disableDeepLinking: true,
       toolbarButtons: [],
@@ -160,6 +242,12 @@ function start() {
     'cameraError', 'micError', 'errorOccurred', 'readyToClose'
   ].forEach(function (name) {
     api.addListener(name, function (data) { send(name, data); });
+  });
+  [
+    'videoConferenceJoined', 'participantJoined', 'participantLeft',
+    'displayNameChange', 'dominantSpeakerChanged', 'tileViewChanged'
+  ].forEach(function (name) {
+    api.addListener(name, function (data) { onStageEvent(name, data); });
   });
   send('apiCreated');
 }

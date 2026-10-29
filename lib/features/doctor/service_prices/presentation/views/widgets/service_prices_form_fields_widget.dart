@@ -12,6 +12,7 @@ import 'package:we_care/features/doctor/service_prices/logic/cubit/service_price
 import 'package:we_care/features/doctor/service_prices/presentation/views/widgets/currency_amount_field_widget.dart';
 import 'package:we_care/features/doctor/service_prices/presentation/views/widgets/follow_up_validity_selector_widget.dart';
 import 'package:we_care/features/doctor/service_prices/presentation/views/widgets/service_prices_notes_widget.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_section_container_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_yes_no_toggle_widget.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -175,7 +176,10 @@ class _SubmitButton extends StatelessWidget {
       listenWhen: (prev, curr) =>
           curr.submissionStatus == RequestStatus.success ||
           curr.submissionStatus == RequestStatus.failure,
-      buildWhen: (prev, curr) => prev.submissionStatus != curr.submissionStatus,
+      buildWhen: (prev, curr) =>
+          prev.submissionStatus != curr.submissionStatus ||
+          prev.isEditMode != curr.isEditMode ||
+          prev.hasChanges != curr.hasChanges,
       listener: (context, state) async {
         if (state.submissionStatus == RequestStatus.success) {
           await showSuccess(state.message!);
@@ -188,9 +192,12 @@ class _SubmitButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<ServicePricesCubit>();
         return AppCustomButton(
-          title: S.of(context).servicePricesFormSaveSettings,
+          title: state.isEditMode
+              ? profileFormSaveChangesTitle
+              : S.of(context).servicePricesFormSaveSettings,
           icon: Icons.save_outlined,
-          isEnabled: state.submissionStatus != RequestStatus.loading,
+          isEnabled: state.submissionStatus != RequestStatus.loading &&
+              state.hasChanges,
           isLoading: state.submissionStatus == RequestStatus.loading,
           onPressed: () {
             if (cubit.formKey.currentState?.validate() ?? false) {

@@ -14,5 +14,8 @@ class MediaArticleModel {
     required this.mediaLink,
   });
 
+  factory MediaArticleModel.fromJson(Map<String, dynamic> json) =>
+      _$MediaArticleModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$MediaArticleModelToJson(this);
 }

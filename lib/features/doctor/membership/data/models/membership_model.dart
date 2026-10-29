@@ -18,5 +18,8 @@ class MembershipModel {
     required this.year,
   });
 
+  factory MembershipModel.fromJson(Map<String, dynamic> json) =>
+      _$MembershipModelFromJson(json);
+
   Map<String, dynamic> toJson() => _$MembershipModelToJson(this);
 }

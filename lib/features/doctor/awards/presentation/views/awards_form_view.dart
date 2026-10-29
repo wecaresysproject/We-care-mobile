@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/awards/logic/cubit/awards_cubit.dart';
 import 'package:we_care/features/doctor/awards/presentation/views/widgets/awards_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class AwardsFormView extends StatelessWidget {
   const AwardsFormView({super.key});
@@ -30,7 +31,15 @@ class AwardsFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const AwardsFormFields(),
+                BlocBuilder<AwardsCubit, AwardsState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<AwardsCubit>().loadInitialData,
+                    child: const AwardsFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

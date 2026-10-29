@@ -17,6 +17,7 @@ import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/professional_licenses/logic/cubit/license_form_entry.dart';
 import 'package:we_care/features/doctor/professional_licenses/logic/cubit/professional_licenses_cubit.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// One license's fields. Rendered directly inside the section's
@@ -130,6 +131,7 @@ class LicenseCardWidget extends StatelessWidget {
         verticalSpacing(10),
         DateTimePickerContainer(
           placeholderText: localization.professionalLicensesFormChooseDate,
+          initialDate: parseProfileDate(entry.licenseDate),
           onDateSelected: onLicenseDateChanged,
         ),
         verticalSpacing(18),
@@ -143,6 +145,7 @@ class LicenseCardWidget extends StatelessWidget {
         DateTimePickerContainer(
           placeholderText: localization.professionalLicensesFormChooseDate,
           isForInsuranceExpiry: true,
+          initialDate: parseProfileDate(entry.expiryDate),
           onDateSelected: onExpiryDateChanged,
         ),
         verticalSpacing(18),

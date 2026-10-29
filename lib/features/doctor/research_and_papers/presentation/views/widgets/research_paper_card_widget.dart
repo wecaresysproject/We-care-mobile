@@ -6,6 +6,7 @@ import 'package:we_care/core/global/SharedWidgets/date_time_picker_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/research_and_papers/logic/cubit/research_paper_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// One research/paper's fields. Rendered directly inside the section's
@@ -67,6 +68,8 @@ class ResearchPaperCardWidget extends StatelessWidget {
         verticalSpacing(10),
         DateTimePickerContainer(
           placeholderText: localization.researchAndPapersFormChooseYear,
+          initialDate: parseProfileYear(entry.selectedYear),
+          displayPattern: 'yyyy',
           onDateSelected: onYearChanged,
         ),
         verticalSpacing(18),

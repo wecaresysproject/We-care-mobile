@@ -7,6 +7,7 @@ import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/experience/logic/cubit/experience_cubit.dart';
 import 'package:we_care/features/doctor/experience/presentation/views/widgets/experience_form_fields_widget.dart';
 import 'package:we_care/features/doctor/shared/widgets/app_doctor_profile_header_widget.dart';
+import 'package:we_care/features/doctor/shared/widgets/profile_form_load_state_widget.dart';
 
 class ExperienceFormView extends StatelessWidget {
   const ExperienceFormView({super.key});
@@ -30,7 +31,15 @@ class ExperienceFormView extends StatelessWidget {
                   isOnline: true,
                 ),
                 verticalSpacing(20),
-                const ExperienceFormFields(),
+                BlocBuilder<ExperienceCubit, ExperienceState>(
+                  buildWhen: (prev, curr) => prev.loadStatus != curr.loadStatus,
+                  builder: (context, state) => ProfileFormLoadStateWidget(
+                    loadStatus: state.loadStatus,
+                    errorMessage: state.message,
+                    onRetry: context.read<ExperienceCubit>().loadInitialData,
+                    child: const ExperienceFormFields(),
+                  ),
+                ),
               ],
             ),
           ),

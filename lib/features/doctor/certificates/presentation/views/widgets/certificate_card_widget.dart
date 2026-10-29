@@ -7,6 +7,7 @@ import 'package:we_care/core/global/SharedWidgets/user_selection_container_share
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/features/doctor/certificates/logic/cubit/certificate_form_entry.dart';
+import 'package:we_care/features/doctor/shared/logic/profile_form_edit_helpers.dart';
 import 'package:we_care/generated/l10n.dart';
 
 /// One certificate's fields. Rendered directly inside the section's
@@ -100,6 +101,7 @@ class CertificateCardWidget extends StatelessWidget {
         verticalSpacing(10),
         DateTimePickerContainer(
           placeholderText: localization.certificatesFormChooseObtainedDate,
+          initialDate: parseProfileDate(entry.obtainedDate),
           onDateSelected: onDateChanged,
         ),
       ],

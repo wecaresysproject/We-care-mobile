@@ -24,6 +24,9 @@ class DoctorBasicDataState extends Equatable {
     required this.nationalIdImageUploadStatus,
     required this.submissionStatus,
     required this.message,
+    required this.loadStatus,
+    required this.isEditMode,
+    required this.hasChanges,
   });
 
   factory DoctorBasicDataState.initial() => const DoctorBasicDataState(
@@ -45,6 +48,9 @@ class DoctorBasicDataState extends Equatable {
         nationalIdImageUploadStatus: null,
         submissionStatus: RequestStatus.initial,
         message: null,
+        loadStatus: RequestStatus.initial,
+        isEditMode: false,
+        hasChanges: true,
       );
 
   final List<String> countriesNames;
@@ -69,6 +75,17 @@ class DoctorBasicDataState extends Equatable {
   final RequestStatus submissionStatus;
   final String? message;
 
+  /// Status of loading the saved basic data. The form shows only on success.
+  final RequestStatus loadStatus;
+
+  /// True when the doctor already saved basic data before, so the form opened
+  /// pre-filled and the button reads "حفظ التعديلات".
+  final bool isEditMode;
+
+  /// Whether the form differs from the saved data. Always true outside
+  /// [isEditMode].
+  final bool hasChanges;
+
   DoctorBasicDataState copyWith({
     List<String>? countriesNames,
     List<String>? citiesNames,
@@ -88,6 +105,9 @@ class DoctorBasicDataState extends Equatable {
     UploadImageRequestStatus? nationalIdImageUploadStatus,
     RequestStatus? submissionStatus,
     String? message,
+    RequestStatus? loadStatus,
+    bool? isEditMode,
+    bool? hasChanges,
   }) {
     return DoctorBasicDataState(
       countriesNames: countriesNames ?? this.countriesNames,
@@ -129,6 +149,9 @@ class DoctorBasicDataState extends Equatable {
           nationalIdImageUploadStatus ?? this.nationalIdImageUploadStatus,
       submissionStatus: submissionStatus ?? this.submissionStatus,
       message: message ?? this.message,
+      loadStatus: loadStatus ?? this.loadStatus,
+      isEditMode: isEditMode ?? this.isEditMode,
+      hasChanges: hasChanges ?? this.hasChanges,
     );
   }
 
@@ -152,5 +175,8 @@ class DoctorBasicDataState extends Equatable {
         nationalIdImageUploadStatus,
         submissionStatus,
         message,
+        loadStatus,
+        isEditMode,
+        hasChanges,
       ];
 }
