@@ -13,14 +13,30 @@ class BookingPatientAccessModel {
 
   factory BookingPatientAccessModel.fromJson(Map<String, dynamic> json) {
     final permissions = json['modulePermissions'] as List<dynamic>? ?? [];
+    final modulePermissions = [
+      for (final item in permissions)
+        _permissionFromJson(item as Map<String, dynamic>),
+    ];
+    // Basic information is always granted to the booking's doctor (the
+    // patient never picks it). Added here until the backend sends it.
+    final hasBasicInformation = modulePermissions.any(
+      (p) => p.moduleNameIdentifier == MedicalModule.basicInformation,
+    );
+    if (!hasBasicInformation) {
+      modulePermissions.add(
+        ModulePermissionDto(
+          moduleName: MedicalModule.basicInformation.name,
+          permission: 'VIEW_ONLY',
+          isEnabledModule: true,
+          moduleNameIdentifier: MedicalModule.basicInformation,
+        ),
+      );
+    }
     return BookingPatientAccessModel(
       patientId: json['patientId']?.toString() ?? '',
       patientName: json['patientName'] as String? ?? '',
       expiresAt: DateTime.tryParse(json['accessExpiresAt']?.toString() ?? ''),
-      modulePermissions: [
-        for (final item in permissions)
-          _permissionFromJson(item as Map<String, dynamic>),
-      ],
+      modulePermissions: modulePermissions,
     );
   }
 
@@ -48,7 +64,15 @@ class BookingPatientAccessModel {
   bool get isExpired =>
       expiresAt == null || !DateTime.now().isBefore(expiresAt!);
 
+  /// Basic information alone doesn't count: it is granted to every booking.
   bool get hasAnyModule => modulePermissions.any(
-        (p) => p.isEnabledModule && p.moduleNameIdentifier != null,
+        (p) =>
+            p.isEnabledModule &&
+            p.moduleNameIdentifier != null &&
+            p.moduleNameIdentifier != MedicalModule.basicInformation,
+      );
+
+  bool allows(MedicalModule module) => modulePermissions.any(
+        (p) => p.isEnabledModule && p.moduleNameIdentifier == module,
       );
 }

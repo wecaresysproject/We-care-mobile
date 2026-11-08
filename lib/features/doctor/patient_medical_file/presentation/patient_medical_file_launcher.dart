@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
 import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/doctor/patient_medical_file/data/models/booking_patient_access_model.dart';
@@ -18,14 +19,22 @@ import 'package:we_care/features/doctor/patient_medical_file/data/repos/patient_
 class PatientMedicalFileLauncher {
   PatientMedicalFileLauncher._();
 
-  static const _expiredMessage = 'انتهت صلاحية الوصول لملف المريض';
-  static const _noAccessMessage = 'المريض لم يسمح بالوصول لملفه الطبي';
+  static const expiredMessage = 'انتهت صلاحية الوصول لملف المريض';
+  static const noAccessMessage = 'المريض لم يسمح بالوصول لملفه الطبي';
+
+  static String moduleNotAllowedMessage(MedicalModule module) =>
+      'المريض لم يسمح بالوصول إلى ${module.nameAr}';
 
   static bool _isOpening = false;
 
+  /// [route] is the patient screen to open (the medical file by default, or
+  /// the medical report / medicines compatibility). When [requiredModule] is
+  /// set, the screen only opens if the patient allowed that module.
   static Future<void> open(
     BuildContext context, {
     required String bookingId,
+    String route = Routes.medicalCategoriesTypesView,
+    MedicalModule? requiredModule,
   }) async {
     if (_isOpening || CareContextManager.isCareModeActive) return;
     _isOpening = true;
@@ -34,8 +43,8 @@ class PatientMedicalFileLauncher {
     final returnRoute = ModalRoute.of(context);
 
     _showLoading(context);
-    final result =
-        await getIt<PatientMedicalFileRepo>().getBookingPatientAccess(bookingId);
+    final result = await getIt<PatientMedicalFileRepo>()
+        .getBookingPatientAccess(bookingId);
     navigator.pop(); // loading dialog
     _isOpening = false;
 
@@ -48,11 +57,15 @@ class PatientMedicalFileLauncher {
     );
     if (access == null) return;
     if (access.isExpired) {
-      showError(_expiredMessage);
+      showError(expiredMessage);
       return;
     }
     if (!access.hasAnyModule) {
-      showError(_noAccessMessage);
+      showError(noAccessMessage);
+      return;
+    }
+    if (requiredModule != null && !access.allows(requiredModule)) {
+      showError(moduleNotAllowedMessage(requiredModule));
       return;
     }
 
@@ -74,11 +87,11 @@ class PatientMedicalFileLauncher {
     if (expiresAt != null) {
       expiryTimer = Timer(
         expiresAt.difference(DateTime.now()),
-        () => close(_expiredMessage),
+        () => close(expiredMessage),
       );
     }
 
-    await navigator.pushNamed(Routes.medicalCategoriesTypesView);
+    await navigator.pushNamed(route);
 
     // Back on the opening screen (back arrow, banner or expiry).
     expiryTimer?.cancel();

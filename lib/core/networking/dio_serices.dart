@@ -144,9 +144,12 @@ class DioServices {
           handler.next(options);
         },
         onError: (error, handler) {
-          // The doctor's access to the patient's file was revoked or expired.
+          // Close the patient's file only when the doctor's access itself is
+          // gone (expired, or no booking with this patient). Any other 403,
+          // e.g. an endpoint not open to doctors, just fails that request.
           if (error.response?.statusCode == 403 &&
-              CareContextManager.isDoctorAccess) {
+              CareContextManager.isDoctorAccess &&
+              _isPatientAccessLost(error.response?.data)) {
             CareContextManager.activeContext?.onClose
                 ?.call('انتهت صلاحية الوصول لملف المريض');
           }
@@ -154,6 +157,20 @@ class DioServices {
         },
       ),
     );
+  }
+
+  /// The backend's 403 messages that mean the doctor lost access to the
+  /// patient's file.
+  static const _patientAccessLostMessages = [
+    'patient medical file access has expired',
+    "you are not authorized to access this patient's medical file",
+  ];
+
+  static bool _isPatientAccessLost(dynamic data) {
+    final message =
+        (data is Map ? data['message'] : data)?.toString().toLowerCase();
+    if (message == null) return false;
+    return _patientAccessLostMessages.any(message.contains);
   }
 
   // This method allows cancellation of requests

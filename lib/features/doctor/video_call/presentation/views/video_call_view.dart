@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/networking/models/care_context_manager_model.dart';
+import 'package:we_care/features/doctor/patient_medical_file/data/models/booking_patient_access_model.dart';
+import 'package:we_care/features/doctor/patient_medical_file/data/repos/patient_medical_file_repo.dart';
 import 'package:we_care/features/doctor/patient_medical_file/presentation/patient_medical_file_launcher.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_actions_grid_widget.dart';
@@ -58,6 +63,11 @@ class _VideoCallViewState extends State<VideoCallView> {
   /// the screen instead of waiting for Jitsi to reconnect.
   bool _isHangingUp = false;
 
+  /// What the patient allowed at booking. Loaded once to lock the action
+  /// tiles up front; null until loaded (or if it failed), in which case the
+  /// tiles stay open and the launcher checks on tap.
+  BookingPatientAccessModel? _patientAccess;
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +75,57 @@ class _VideoCallViewState extends State<VideoCallView> {
       'doctor call screen opened → appointmentId=${widget.appointmentId}',
     );
     _requestMediaPermissions();
+    _loadPatientAccess();
+  }
+
+  Future<void> _loadPatientAccess() async {
+    final result = await getIt<PatientMedicalFileRepo>()
+        .getBookingPatientAccess(widget.appointmentId);
+    if (!mounted) return;
+    result.when(
+      success: (access) => setState(() => _patientAccess = access),
+      failure: (_) {},
+    );
+  }
+
+  /// Why the patient's data can't be opened at all, or null if it can.
+  String? get _patientDataBlockedReason {
+    final access = _patientAccess;
+    if (access == null) return null;
+    if (access.isExpired) return PatientMedicalFileLauncher.expiredMessage;
+    if (!access.hasAnyModule) return PatientMedicalFileLauncher.noAccessMessage;
+    return null;
+  }
+
+  /// Why "توافق أدويتي" / "توافق دواء جديد" can't be opened, or null if
+  /// they can. Both need the medications module.
+  String? get _medicinesCompatibilityBlockedReason {
+    final blocked = _patientDataBlockedReason;
+    if (blocked != null) return blocked;
+    final access = _patientAccess;
+    if (access != null && !access.allows(MedicalModule.medications)) {
+      return PatientMedicalFileLauncher.moduleNotAllowedMessage(
+        MedicalModule.medications,
+      );
+    }
+    return null;
+  }
+
+  void _openPatientScreen({
+    required String route,
+    required String? blockedReason,
+    MedicalModule? requiredModule,
+  }) {
+    if (blockedReason != null) {
+      showError(blockedReason);
+      return;
+    }
+    PatientMedicalFileLauncher.open(
+      context,
+      bookingId: widget.appointmentId,
+      route: route,
+      requiredModule: requiredModule,
+    );
   }
 
   @override
@@ -310,6 +371,25 @@ class _VideoCallViewState extends State<VideoCallView> {
                   onMedicalFileTap: () => PatientMedicalFileLauncher.open(
                     context,
                     bookingId: widget.appointmentId,
+                  ),
+                  isMedicalReportLocked: _patientDataBlockedReason != null,
+                  onMedicalReportTap: () => _openPatientScreen(
+                    route: Routes.myMedicalReportsView,
+                    blockedReason: _patientDataBlockedReason,
+                  ),
+                  isMyMedicinesCompatibilityLocked:
+                      _medicinesCompatibilityBlockedReason != null,
+                  onMyMedicinesCompatibilityTap: () => _openPatientScreen(
+                    route: Routes.medicinesCompatibilityView,
+                    blockedReason: _medicinesCompatibilityBlockedReason,
+                    requiredModule: MedicalModule.medications,
+                  ),
+                  isNewMedicineCompatibilityLocked:
+                      _medicinesCompatibilityBlockedReason != null,
+                  onNewMedicineCompatibilityTap: () => _openPatientScreen(
+                    route: Routes.newMedicationCompatibilityView,
+                    blockedReason: _medicinesCompatibilityBlockedReason,
+                    requiredModule: MedicalModule.medications,
                   ),
                 ),
               ),
