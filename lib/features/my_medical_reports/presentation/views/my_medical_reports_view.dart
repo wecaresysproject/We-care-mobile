@@ -4,12 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_logger.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/appbar_with_centered_title_with_guidance.dart';
 import 'package:we_care/core/global/SharedWidgets/module_guidance_alert_dialog.dart';
 import 'package:we_care/core/global/SharedWidgets/shared_app_bar_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_category_model.dart';
 import 'package:we_care/features/my_medical_reports/data/models/medical_report_categories_data.dart';
 import 'package:we_care/features/my_medical_reports/logic/medical_report_generation_cubit.dart';
@@ -60,7 +62,9 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                           current.moduleGuidanceData,
                       builder: (context, state) {
                         return CustomAppBarWithCenteredTitleWithGuidance(
-                          title: 'تقاريرى الطبية',
+                          title: CareContextManager.isDoctorAccess
+                              ? 'التقرير الطبي للمريض'
+                              : 'تقاريرى الطبية',
                           trailingActions: [
                             CircleIconButton(
                               size: 30.w,
@@ -113,6 +117,16 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
 
                       final category = _mergedCategory(dummyCategory, state);
 
+                      // In care mode (doctor or family), modules the patient
+                      // didn't allow are locked. Basic information is always
+                      // open. Always open for the patient.
+                      final module = dummyCategory.moduleNameIdentifier;
+                      final isLocked =
+                          module != MedicalModule.basicInformation &&
+                              !CareContextManager
+                                  .hasModuleAccessForViewMedicalFilesCategory(
+                                      module);
+
                       final isExpanded = _expandedStates[index] ?? false;
                       final isSelected = _selectedStates[index] ?? false;
 
@@ -124,7 +138,10 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                               title: category.title,
                               iconPath: category.image,
                               isExpanded: isExpanded,
-                              isSelected: isSelected,
+                              isSelected: isSelected && !isLocked,
+                              isLocked: isLocked,
+                              onLockedTap: () => showError(
+                                  'المريض لم يسمح بالوصول إلى هذا القسم'),
                               onExpandToggle: () => _onExpandToggle(
                                 context,
                                 index: index,
@@ -164,7 +181,7 @@ class _MyMedicalReportsViewState extends State<MyMedicalReportsView> {
                                     context, index, dummyCategory.title, state);
                               },
                             ),
-                            if (isExpanded) ...[
+                            if (isExpanded && !isLocked) ...[
                               if (status == RequestStatus.loading)
                                 Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16.h),

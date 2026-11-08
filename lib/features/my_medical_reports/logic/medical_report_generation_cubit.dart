@@ -1,3 +1,4 @@
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
@@ -353,118 +354,170 @@ class MedicalReportGenerationCubit extends Cubit<MedicalReportGenerationState> {
         "[جودة الحياة] getAll (active): ${state.qualityOfLifeGetAll}");
   }
 
+  /// In care mode (doctor or family), sections of modules the patient didn't
+  /// allow are left out of the request. Basic information is always sent.
+  /// Always included for the patient.
+  T? _ifAllowed<T>(MedicalModule module, T Function() build) =>
+      module == MedicalModule.basicInformation ||
+              CareContextManager.hasModuleAccessForViewMedicalFilesCategory(
+                  module)
+          ? build()
+          : null;
+
   Future<void> emitGenerateReport() async {
     final requestBody = MedicalReportRequestModel(
       selections: MedicalReportSelections(
-        basicInformation: BasicInformationSelection(
-          getAll: state.basicInfoGetAll,
-          selectedValues: state.basicInfoSelectedValues,
-        ),
-        vitalSigns: VitalSignsSelectionRequestBody(
-          getAll: state.vitalSignsGetAll,
-          selectedValues: state.vitalSignsSelectedValues,
-        ),
-        medications: MedicineCategorySelectionRequestBody(
-          getAll: state.medicineGetAll,
-          currentMedicines: MedicineDetailsSelection(
-            drugNames: state.medicineCurrentNames,
-          ),
-          expiredLast3Months: MedicineDetailsSelection(
-            drugNames: state.medicineExpiredNames,
-          ),
-        ),
-        chronicDiseases: ChronicDiseasesSelectionRequestBody(
-          getAll: state.chronicDiseasesGetAll,
-          diseaseNames: state.chronicDiseasesSelectedValues,
-        ),
-        urgentComplaints: UrgentComplaintsSelectionRequestBody(
-          attachImages: state.urgentComplaintsAttachImages,
-          getAll: state.urgentComplaintsGetAll,
-          years: state.urgentComplaintsSelectedYears,
-          organs: state.urgentComplaintsSelectedOrgans,
-          complaints: state.urgentComplaintsSelectedComplaints,
-          otherComplaints: state.urgentComplaintsSelectedOtherComplaints,
-        ),
-        radiology: RadiologySelectionRequestBody(
-          getAll: state.radiologyGetAll,
-          attachImages: state.radiologyAttachImages,
-          years: state.radiologySelectedYears,
-          regions: state.radiologySelectedRegions,
-          types: state.radiologySelectedTypes,
-        ),
-        medicalTests: MedicalTestsSelectionRequestBody(
-          getAll: state.medicalTestsGetAll,
-          years: state.medicalTestsSelectedYears,
-          testGroups: state.medicalTestsSelectedTestGroups,
-        ),
-        prescriptions: PrescriptionsSelectionRequestBody(
-          getAll: state.prescriptionsGetAll,
-          years: state.prescriptionsSelectedYears,
-          specialties: state.prescriptionsSelectedSpecialties,
-          doctorNames: state.prescriptionsSelectedDoctorNames,
-        ),
-        surgeries: SurgeriesSelectionRequestBody(
-          getAll: state.surgeriesGetAll,
-          attachImages: state.surgeriesAttachReport,
-          years: state.surgeriesSelectedYears, //! needs getAll here
-          surgeryNames: state.surgeriesSelectedNames, //! needs getAll here
-        ),
-        geneticDiseases: GeneticDiseasesSelectionRequestBody(
-          getAll: state.geneticDiseasesGetAll,
-          familyGeneticDiseases: state.geneticDiseasesSelectedValues,
-          myExpectedGeneticDiseases:
-              state.expectedGeneticDiseasesSelectedValues,
-        ),
-        allergies: AllergiesSelectionRequestBody(
-          getAll: state.allergiesGetAll,
-          types: state.allergiesSelectedTypes,
-        ),
-        eyes: EyesSelectionRequestBody(
-          getAll: state.eyesGetAll,
-          attachReport: state.eyesAttachReport,
-          attachMedicalTests: state.attachEyeMedicalTests,
-          years: state.eyesSelectedYears,
-          regions: state.eyesSelectedRegions,
-          symptoms: state.eyesSelectedSymptoms,
-          medicalProcedures: state.eyesSelectedMedicalProcedures,
-        ),
-        teeth: TeethSelectionRequestBody(
-          getAll: state.dentalGetAll,
-          attachReport: state.dentalAttachReport,
-          years: state.dentalSelectedYears,
-          teethNumbers: state.dentalSelectedTeethNumbers,
-          complaints: state.dentalSelectedComplaints,
-          medicalProcedures: state.dentalSelectedMedicalProcedures,
-        ),
-        smartNutritionalAnalyzer: SmartNutritionalAnalyzerSelectionRequestBody(
-          getAll: state.smartNutritionGetAll,
-          dateRanges: state.smartNutritionSelectedReports,
-        ),
-        supplements: SupplementsSelectionRequestBody(
-          getAll: state.supplementsGetAll,
-          years: state.supplementsSelectedYears,
-          supplementNames: state.supplementsSelectedNames,
-        ),
-        sportsActivity: PhysicalActivitySelectionRequestBody(
-          getAll: state.physicalActivityGetAll,
-          dateRanges: state.physicalActivitySelectedReports,
-        ),
-        mentalDiseases: MentalDiseasesSelectionRequestBody(
-          getAll: state.mentalDiseasesGetAll,
-          mentalIllnessTypes: state.mentalDiseasesSelectedTypes,
-          psychologicalEmergencies: state.mentalDiseasesSelectedMethods,
-        ),
-        qualityOfLife: QualityOfLifeSelectionRequestBody(
-          getAll: state.qualityOfLifeGetAll,
-        ),
-        riskyBehaviours: RiskyBehavioursSelectionRequestBody(
-          getAll: state.riskyBehavioursGetAll,
-          section: state.riskyBehavioursSelectedTypes,
-        ),
-        vaccinations: VaccinationsSelectionRequestBody(
-          getAll: state.vaccinationsGetAll,
-          years: state.vaccinationsSelectedYears,
-        ),
+        basicInformation: _ifAllowed(
+            MedicalModule.basicInformation,
+            () => BasicInformationSelection(
+                  getAll: state.basicInfoGetAll,
+                  selectedValues: state.basicInfoSelectedValues,
+                )),
+        vitalSigns: _ifAllowed(
+            MedicalModule.vitalSigns,
+            () => VitalSignsSelectionRequestBody(
+                  getAll: state.vitalSignsGetAll,
+                  selectedValues: state.vitalSignsSelectedValues,
+                )),
+        medications: _ifAllowed(
+            MedicalModule.medications,
+            () => MedicineCategorySelectionRequestBody(
+                  getAll: state.medicineGetAll,
+                  currentMedicines: MedicineDetailsSelection(
+                    drugNames: state.medicineCurrentNames,
+                  ),
+                  expiredLast3Months: MedicineDetailsSelection(
+                    drugNames: state.medicineExpiredNames,
+                  ),
+                )),
+        chronicDiseases: _ifAllowed(
+            MedicalModule.chronicDiseases,
+            () => ChronicDiseasesSelectionRequestBody(
+                  getAll: state.chronicDiseasesGetAll,
+                  diseaseNames: state.chronicDiseasesSelectedValues,
+                )),
+        urgentComplaints: _ifAllowed(
+            MedicalModule.urgentComplaints,
+            () => UrgentComplaintsSelectionRequestBody(
+                  attachImages: state.urgentComplaintsAttachImages,
+                  getAll: state.urgentComplaintsGetAll,
+                  years: state.urgentComplaintsSelectedYears,
+                  organs: state.urgentComplaintsSelectedOrgans,
+                  complaints: state.urgentComplaintsSelectedComplaints,
+                  otherComplaints:
+                      state.urgentComplaintsSelectedOtherComplaints,
+                )),
+        radiology: _ifAllowed(
+            MedicalModule.radiology,
+            () => RadiologySelectionRequestBody(
+                  getAll: state.radiologyGetAll,
+                  attachImages: state.radiologyAttachImages,
+                  years: state.radiologySelectedYears,
+                  regions: state.radiologySelectedRegions,
+                  types: state.radiologySelectedTypes,
+                )),
+        medicalTests: _ifAllowed(
+            MedicalModule.medicalTests,
+            () => MedicalTestsSelectionRequestBody(
+                  getAll: state.medicalTestsGetAll,
+                  years: state.medicalTestsSelectedYears,
+                  testGroups: state.medicalTestsSelectedTestGroups,
+                )),
+        prescriptions: _ifAllowed(
+            MedicalModule.doctorsPrescriptions,
+            () => PrescriptionsSelectionRequestBody(
+                  getAll: state.prescriptionsGetAll,
+                  years: state.prescriptionsSelectedYears,
+                  specialties: state.prescriptionsSelectedSpecialties,
+                  doctorNames: state.prescriptionsSelectedDoctorNames,
+                )),
+        surgeries: _ifAllowed(
+            MedicalModule.surgeries,
+            () => SurgeriesSelectionRequestBody(
+                  getAll: state.surgeriesGetAll,
+                  attachImages: state.surgeriesAttachReport,
+                  years: state.surgeriesSelectedYears, //! needs getAll here
+                  surgeryNames:
+                      state.surgeriesSelectedNames, //! needs getAll here
+                )),
+        geneticDiseases: _ifAllowed(
+            MedicalModule.geneticDiseases,
+            () => GeneticDiseasesSelectionRequestBody(
+                  getAll: state.geneticDiseasesGetAll,
+                  familyGeneticDiseases: state.geneticDiseasesSelectedValues,
+                  myExpectedGeneticDiseases:
+                      state.expectedGeneticDiseasesSelectedValues,
+                )),
+        allergies: _ifAllowed(
+            MedicalModule.allergies,
+            () => AllergiesSelectionRequestBody(
+                  getAll: state.allergiesGetAll,
+                  types: state.allergiesSelectedTypes,
+                )),
+        eyes: _ifAllowed(
+            MedicalModule.eyes,
+            () => EyesSelectionRequestBody(
+                  getAll: state.eyesGetAll,
+                  attachReport: state.eyesAttachReport,
+                  attachMedicalTests: state.attachEyeMedicalTests,
+                  years: state.eyesSelectedYears,
+                  regions: state.eyesSelectedRegions,
+                  symptoms: state.eyesSelectedSymptoms,
+                  medicalProcedures: state.eyesSelectedMedicalProcedures,
+                )),
+        teeth: _ifAllowed(
+            MedicalModule.dental,
+            () => TeethSelectionRequestBody(
+                  getAll: state.dentalGetAll,
+                  attachReport: state.dentalAttachReport,
+                  years: state.dentalSelectedYears,
+                  teethNumbers: state.dentalSelectedTeethNumbers,
+                  complaints: state.dentalSelectedComplaints,
+                  medicalProcedures: state.dentalSelectedMedicalProcedures,
+                )),
+        smartNutritionalAnalyzer: _ifAllowed(
+            MedicalModule.smartNutritionalAnalyzer,
+            () => SmartNutritionalAnalyzerSelectionRequestBody(
+                  getAll: state.smartNutritionGetAll,
+                  dateRanges: state.smartNutritionSelectedReports,
+                )),
+        supplements: _ifAllowed(
+            MedicalModule.supplements,
+            () => SupplementsSelectionRequestBody(
+                  getAll: state.supplementsGetAll,
+                  years: state.supplementsSelectedYears,
+                  supplementNames: state.supplementsSelectedNames,
+                )),
+        sportsActivity: _ifAllowed(
+            MedicalModule.sportsActivity,
+            () => PhysicalActivitySelectionRequestBody(
+                  getAll: state.physicalActivityGetAll,
+                  dateRanges: state.physicalActivitySelectedReports,
+                )),
+        mentalDiseases: _ifAllowed(
+            MedicalModule.mentalHealth,
+            () => MentalDiseasesSelectionRequestBody(
+                  getAll: state.mentalDiseasesGetAll,
+                  mentalIllnessTypes: state.mentalDiseasesSelectedTypes,
+                  psychologicalEmergencies: state.mentalDiseasesSelectedMethods,
+                )),
+        qualityOfLife: _ifAllowed(
+            MedicalModule.qualityOfLife,
+            () => QualityOfLifeSelectionRequestBody(
+                  getAll: state.qualityOfLifeGetAll,
+                )),
+        riskyBehaviours: _ifAllowed(
+            MedicalModule.riskyBehaviors,
+            () => RiskyBehavioursSelectionRequestBody(
+                  getAll: state.riskyBehavioursGetAll,
+                  section: state.riskyBehavioursSelectedTypes,
+                )),
+        vaccinations: _ifAllowed(
+            MedicalModule.vaccinations,
+            () => VaccinationsSelectionRequestBody(
+                  getAll: state.vaccinationsGetAll,
+                  years: state.vaccinationsSelectedYears,
+                )),
       ),
     );
 

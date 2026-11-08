@@ -175,7 +175,9 @@ class MedicinesDataEntryCubit extends Cubit<MedicinesDataEntryState>
       success: (userMedicalProfileHistory) {
         safeEmit(
           state.copyWith(
-            userMedicalProfileHistory: userMedicalProfileHistory,
+            // Only the allowed modules reach the AI in a doctor's access.
+            userMedicalProfileHistory:
+                userMedicalProfileHistory.limitedToAllowedModules(),
             medicalHistoryStatus: RequestStatus.success,
           ),
         );

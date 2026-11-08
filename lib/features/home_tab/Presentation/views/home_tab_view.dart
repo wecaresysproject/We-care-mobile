@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/di/dependency_injection.dart';
+import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_elevated_button.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/contact_support/presentation/views/contact_support_modal.dart';
 import 'package:we_care/features/home_tab/Presentation/views/widgets/banner_crausal_widget.dart';
@@ -61,11 +64,10 @@ class HomeTabView extends StatelessWidget {
                       ),
                       CustomElevatedButton(
                         text: "توافق دواء جديد",
-                        onPressed: () async {
-                          await context.pushNamedWithSettingRootNavigator(
-                            Routes.newMedicationCompatibilityView,
-                          );
-                        },
+                        onPressed: () => _openMedicinesCompatibility(
+                          context,
+                          Routes.newMedicationCompatibilityView,
+                        ),
                       ),
                       CustomElevatedButton(
                         text: "طبيبك أونلاين",
@@ -112,11 +114,10 @@ class HomeTabView extends StatelessWidget {
                       HomeSecondCategoryItem(
                         categoryName: "توافق\n أدويتي",
                         imagePath: "assets/images/medicines.png",
-                        onTap: () async {
-                          await context.pushNamedWithSettingRootNavigator(
-                            Routes.medicinesCompatibilityView,
-                          );
-                        },
+                        onTap: () => _openMedicinesCompatibility(
+                          context,
+                          Routes.medicinesCompatibilityView,
+                        ),
                       ),
                       HomeSecondCategoryItem(
                         categoryName: "مفكرتي\n الطبية",
@@ -217,4 +218,20 @@ class HomeTabView extends StatelessWidget {
           ),
         ));
   }
+}
+
+/// Both compatibility checks need the patient's medications. In care mode
+/// (family), they only open if the patient allowed that module — the same
+/// rule as the doctor's call tiles. Always open for the patient.
+Future<void> _openMedicinesCompatibility(
+  BuildContext context,
+  String route,
+) async {
+  if (!CareContextManager.hasModuleAccessForViewMedicalFilesCategory(
+    MedicalModule.medications,
+  )) {
+    showError('المريض لم يسمح بالوصول إلى ${MedicalModule.medications.nameAr}');
+    return;
+  }
+  await context.pushNamedWithSettingRootNavigator(route);
 }

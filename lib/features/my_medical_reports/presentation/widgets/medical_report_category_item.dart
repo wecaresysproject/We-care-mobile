@@ -12,6 +12,12 @@ class MedicalReportCategoryItem extends StatelessWidget {
   final VoidCallback onExpandToggle;
   final VoidCallback onCheckboxToggle;
 
+  /// The patient didn't allow this module (doctor access): the item is
+  /// dimmed with a lock, can't be selected or expanded, and a tap calls
+  /// [onLockedTap] instead.
+  final bool isLocked;
+  final VoidCallback? onLockedTap;
+
   const MedicalReportCategoryItem({
     super.key,
     required this.title,
@@ -20,10 +26,22 @@ class MedicalReportCategoryItem extends StatelessWidget {
     required this.isSelected,
     required this.onExpandToggle,
     required this.onCheckboxToggle,
+    this.isLocked = false,
+    this.onLockedTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final item = _buildItem();
+    if (!isLocked) return item;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onLockedTap,
+      child: IgnorePointer(child: Opacity(opacity: 0.45, child: item)),
+    );
+  }
+
+  Widget _buildItem() {
     return Row(
       children: [
         // Checkbox (outside tile on the right in RTL)
@@ -108,18 +126,25 @@ class MedicalReportCategoryItem extends StatelessWidget {
                       ),
                       horizontalSpacing(8),
                       // Chevron (left side of the tile in RTL)
-                      GestureDetector(
-                        onTap: onExpandToggle,
-                        child: AnimatedRotation(
-                          turns: isExpanded ? 0.5 : 0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Icon(
-                            Icons.keyboard_arrow_down,
-                            size: 24.sp,
-                            color: Colors.black,
+                      if (isLocked)
+                        Icon(
+                          Icons.lock_outline,
+                          size: 22.sp,
+                          color: Colors.black,
+                        )
+                      else
+                        GestureDetector(
+                          onTap: onExpandToggle,
+                          child: AnimatedRotation(
+                            turns: isExpanded ? 0.5 : 0,
+                            duration: const Duration(milliseconds: 200),
+                            child: Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 24.sp,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

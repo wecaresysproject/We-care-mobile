@@ -13,6 +13,7 @@ class VideoCallActionTileWidget extends StatelessWidget {
     required this.backgroundColor,
     required this.iconColor,
     this.onTap,
+    this.isLocked = false,
   });
 
   final String iconAssetPath;
@@ -21,9 +22,13 @@ class VideoCallActionTileWidget extends StatelessWidget {
   final Color iconColor;
   final VoidCallback? onTap;
 
+  /// Dims the tile and shows a lock — used when the patient didn't allow the
+  /// data this action needs. [onTap] still fires so it can explain why.
+  final bool isLocked;
+
   @override
   Widget build(BuildContext context) {
-    return Material(
+    final tile = Material(
       color: backgroundColor,
       borderRadius: BorderRadius.circular(14.r),
       child: InkWell(
@@ -51,6 +56,19 @@ class VideoCallActionTileWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+    if (!isLocked) return tile;
+    return Stack(
+      children: [
+        Opacity(opacity: 0.45, child: tile),
+        PositionedDirectional(
+          top: 6.r,
+          end: 6.r,
+          child: IgnorePointer(
+            child: Icon(Icons.lock_outline, size: 16.r, color: iconColor),
+          ),
+        ),
+      ],
     );
   }
 }

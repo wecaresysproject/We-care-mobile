@@ -7,10 +7,34 @@ import 'package:we_care/generated/l10n.dart';
 /// Bottom-sheet quick-action grid on the video call screen: 4 tiles on the
 /// first row, 2 wider tiles on the second — matching the reference design.
 class VideoCallActionsGridWidget extends StatelessWidget {
-  const VideoCallActionsGridWidget({super.key, this.onMedicalFileTap});
+  const VideoCallActionsGridWidget({
+    super.key,
+    this.onMedicalFileTap,
+    this.onMedicalReportTap,
+    this.onMyMedicinesCompatibilityTap,
+    this.onNewMedicineCompatibilityTap,
+    this.isMedicalReportLocked = false,
+    this.isMyMedicinesCompatibilityLocked = false,
+    this.isNewMedicineCompatibilityLocked = false,
+  });
 
   /// Opens the patient's medical file (read-only, allowed modules only).
   final VoidCallback? onMedicalFileTap;
+
+  /// Opens the patient's medical report, limited to the allowed modules.
+  final VoidCallback? onMedicalReportTap;
+
+  /// Opens the patient's current medicines compatibility check.
+  final VoidCallback? onMyMedicinesCompatibilityTap;
+
+  /// Opens the new medicine compatibility check against the patient's data.
+  final VoidCallback? onNewMedicineCompatibilityTap;
+
+  /// Locked tiles show dimmed with a lock — the patient didn't allow the
+  /// data they need.
+  final bool isMedicalReportLocked;
+  final bool isMyMedicinesCompatibilityLocked;
+  final bool isNewMedicineCompatibilityLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +52,8 @@ class VideoCallActionsGridWidget extends StatelessWidget {
                   backgroundColor:
                       AppColorsManager.videoCallNewMedicineTileBackground,
                   iconColor: AppColorsManager.homePrimaryBlue,
+                  isLocked: isNewMedicineCompatibilityLocked,
+                  onTap: onNewMedicineCompatibilityTap,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -39,6 +65,8 @@ class VideoCallActionsGridWidget extends StatelessWidget {
                   backgroundColor:
                       AppColorsManager.videoCallMyMedicinesTileBackground,
                   iconColor: AppColorsManager.homeTargetOrange,
+                  isLocked: isMyMedicinesCompatibilityLocked,
+                  onTap: onMyMedicinesCompatibilityTap,
                 ),
               ),
               SizedBox(width: 10.w),
@@ -50,6 +78,8 @@ class VideoCallActionsGridWidget extends StatelessWidget {
                   backgroundColor:
                       AppColorsManager.videoCallMedicalReportTileBackground,
                   iconColor: AppColorsManager.consultationBadgeText,
+                  isLocked: isMedicalReportLocked,
+                  onTap: onMedicalReportTap,
                 ),
               ),
               SizedBox(width: 10.w),

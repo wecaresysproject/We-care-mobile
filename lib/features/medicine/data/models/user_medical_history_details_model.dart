@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/core/models/medical_module_enum.dart';
+import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 
 part 'user_medical_history_details_model.g.dart';
 
@@ -51,6 +53,47 @@ class UserMedicalHistoryDetailsModel extends Equatable {
       _$UserMedicalHistoryDetailsModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserMedicalHistoryDetailsModelToJson(this);
+
+  /// A copy without the modules the patient didn't allow, in care mode
+  /// (doctor or family). This profile goes straight to the AI, so it must
+  /// not carry data the viewer isn't allowed to see. Returned unchanged for
+  /// the patient.
+  UserMedicalHistoryDetailsModel limitedToAllowedModules() {
+    if (!CareContextManager.isCareModeActive) return this;
+
+    T? keep<T>(MedicalModule module, T? value) =>
+        CareContextManager.hasModuleAccessForViewMedicalFilesCategory(module)
+            ? value
+            : null;
+
+    return UserMedicalHistoryDetailsModel(
+      // Basic information always reaches the AI (age, gender, weight...).
+      basicInformation: basicInformation,
+      vitalSigns: keep(MedicalModule.vitalSigns, vitalSigns),
+      chronicDiseases: keep(MedicalModule.chronicDiseases, chronicDiseases),
+      complaintsModule: keep(MedicalModule.urgentComplaints, complaintsModule),
+      preDescriptions:
+          keep(MedicalModule.doctorsPrescriptions, preDescriptions),
+      medicalTests: keep(MedicalModule.medicalTests, medicalTests),
+      radiology: keep(MedicalModule.radiology, radiology),
+      surgeryEntries: keep(MedicalModule.surgeries, surgeryEntries),
+      geneticDiseases: keep(MedicalModule.geneticDiseases, geneticDiseases),
+      allergy: keep(MedicalModule.allergies, allergy),
+      eyeModule: keep(MedicalModule.eyes, eyeModule),
+      teethModule: keep(MedicalModule.dental, teethModule),
+      mentalIllnessModule:
+          keep(MedicalModule.mentalHealth, mentalIllnessModule),
+      nutritionTrackingModule:
+          keep(MedicalModule.smartNutritionalAnalyzer, nutritionTrackingModule),
+      physicalActivityModule:
+          keep(MedicalModule.sportsActivity, physicalActivityModule),
+      supplementsModule: keep(MedicalModule.supplements, supplementsModule),
+      vaccines: keep(MedicalModule.vaccinations, vaccines),
+      riskyBehaviour: keep(MedicalModule.riskyBehaviors, riskyBehaviour),
+      monthlyHealthSurvey:
+          keep(MedicalModule.qualityOfLife, monthlyHealthSurvey),
+    );
+  }
 
   bool get isHistoryEmpty =>
       (vitalSigns == null || vitalSigns!.isEmpty) &&
