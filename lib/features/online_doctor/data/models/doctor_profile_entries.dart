@@ -139,6 +139,27 @@ class DoctorCertificateModel {
   Map<String, dynamic> toJson() => _$DoctorCertificateModelToJson(this);
 }
 
+/// عنصر فى قسم "التراخيص المهنية" — بيتبنى من رد البروفايل بس (مش
+/// json_serializable).
+class DoctorLicenseModel {
+  /// جهة الترخيص — مثال: "نقابة الأطباء".
+  final String authority;
+  final String licenseNumber;
+  final String country;
+
+  /// سنة الإصدار وسنة الانتهاء.
+  final String fromYear;
+  final String toYear;
+
+  const DoctorLicenseModel({
+    required this.authority,
+    required this.licenseNumber,
+    required this.country,
+    required this.fromYear,
+    required this.toYear,
+  });
+}
+
 /// عنصر فى قسم "الجمعيات الطبية".
 @JsonSerializable()
 class DoctorMembershipModel {

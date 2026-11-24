@@ -9,11 +9,17 @@ class PatientsCountBadgeWidget extends StatelessWidget {
     required this.count,
     required this.backgroundColor,
     required this.textColor,
+    this.label,
+    this.icon = Icons.person,
   });
 
   final int count;
   final Color backgroundColor;
   final Color textColor;
+
+  /// Replaces the default "N مرضى" text.
+  final String? label;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +32,10 @@ class PatientsCountBadgeWidget extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.person, size: 16.r, color: textColor),
+          Icon(icon, size: 16.r, color: textColor),
           SizedBox(width: 4.w),
           Text(
-            S.of(context).patientsCountLabel(count),
+            label ?? S.of(context).patientsCountLabel(count),
             style: AppTextStyles.font12Weight600.copyWith(color: textColor),
           ),
         ],

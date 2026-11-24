@@ -4,12 +4,10 @@ import 'package:we_care/core/di/dependency_injection.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
-import 'package:we_care/core/global/SharedWidgets/error_view_widget.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/doctor/home/logic/cubit/doctor_home_cubit.dart';
 import 'package:we_care/features/doctor/home/presentation/views/widgets/doctor_home_content_widget.dart';
-import 'package:we_care/features/doctor/home/presentation/views/widgets/doctor_home_shimmer_widget.dart';
 
 class DoctorHomeView extends StatelessWidget {
   const DoctorHomeView({super.key});
@@ -17,7 +15,7 @@ class DoctorHomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<DoctorHomeCubit>()..getDoctorHome(),
+      create: (_) => getIt<DoctorHomeCubit>()..loadHome(),
       child: BlocListener<DoctorHomeCubit, DoctorHomeState>(
         listenWhen: (previous, current) =>
             previous.logoutStatus != current.logoutStatus,
@@ -42,26 +40,7 @@ class DoctorHomeView extends StatelessWidget {
             // paragraph regardless of this ambient direction.
             child: Directionality(
               textDirection: TextDirection.ltr,
-              child: BlocBuilder<DoctorHomeCubit, DoctorHomeState>(
-                buildWhen: (previous, current) =>
-                    previous.status != current.status,
-                builder: (context, state) {
-                  switch (state.status) {
-                    case RequestStatus.initial:
-                    case RequestStatus.loading:
-                      return const DoctorHomeShimmerWidget();
-                    case RequestStatus.failure:
-                      return ErrorViewWidget(
-                        errorMessage: state.message,
-                        onRetry: () =>
-                            context.read<DoctorHomeCubit>().getDoctorHome(),
-                      );
-                    case RequestStatus.success:
-                      return DoctorHomeContentWidget(
-                          doctorHome: state.doctorHome!);
-                  }
-                },
-              ),
+              child: const DoctorHomeContentWidget(),
             ),
           ),
         ),

@@ -53,6 +53,7 @@ Future<void> showCheckoutSuccessDialog(
     buttonTitle: "الذهاب للحجوزات",
     buttonAreaHeight: 50,
     onButtonTap: onGoToBookings,
+    filledButton: true,
   );
 }
 
@@ -62,6 +63,7 @@ Future<void> _showCheckoutDialog(
   required String buttonTitle,
   required double buttonAreaHeight,
   required VoidCallback onButtonTap,
+  bool filledButton = false,
 }) {
   return showDialog<void>(
     context: context,
@@ -79,34 +81,103 @@ Future<void> _showCheckoutDialog(
         child: Column(
           children: [
             Expanded(child: Center(child: body)),
-            const Divider(height: 1, thickness: 1, color: Color(0xFFE6E4EA)),
-            SizedBox(
-              height: buttonAreaHeight.h,
-              width: double.infinity,
-              child: InkWell(
-                onTap: onButtonTap,
-                borderRadius: BorderRadius.vertical(
-                  bottom: Radius.circular(32.r),
-                ),
-                child: Center(
-                  child: Text(
-                    buttonTitle,
-                    style: TextStyle(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeightHelper.semiBold,
-                      fontFamily: AppStrings.cairoFontFamily,
-                      color: AppColorsManager.mainDarkBlue,
-                      height: 27 / 20,
+            if (filledButton)
+              _FilledDialogButton(title: buttonTitle, onTap: onButtonTap)
+            else ...[
+              const Divider(
+                height: 1,
+                thickness: 1,
+                color: Color(0xFFE6E4EA),
+              ),
+              SizedBox(
+                height: buttonAreaHeight.h,
+                width: double.infinity,
+                child: InkWell(
+                  onTap: onButtonTap,
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(32.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      buttonTitle,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeightHelper.semiBold,
+                        fontFamily: AppStrings.cairoFontFamily,
+                        color: AppColorsManager.mainDarkBlue,
+                        height: 27 / 20,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ],
         ),
       ),
     ),
   );
+}
+
+/// زرار أساسى مملى (أزرق بخط أبيض وسهم) — عشان الإجراء يبان إنه زرار
+/// بوضوح، بدل النص العادى تحت الفاصل.
+class _FilledDialogButton extends StatelessWidget {
+  const _FilledDialogButton({required this.title, required this.onTap});
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 20.h),
+      child: SizedBox(
+        width: double.infinity,
+        height: 46.h,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColorsManager.mainDarkBlue.withValues(alpha: 0.28),
+                offset: const Offset(0, 6),
+                blurRadius: 14,
+              ),
+            ],
+          ),
+          child: Material(
+            color: AppColorsManager.mainDarkBlue,
+            borderRadius: BorderRadius.circular(16.r),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: onTap,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 17.sp,
+                      fontWeight: FontWeightHelper.bold,
+                      fontFamily: AppStrings.cairoFontFamily,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                  ),
+                  horizontalSpacing(8),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 20.sp,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// حلقة تحميل بتلف — لونها متدرج من الفاتح للأزرق الأساسى زى التصميم.

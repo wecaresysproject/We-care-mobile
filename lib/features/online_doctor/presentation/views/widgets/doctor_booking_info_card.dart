@@ -63,9 +63,6 @@ class DoctorBookingInfoCard extends StatelessWidget {
                     value: doctor.workingDaysLabel.isEmpty
                         ? "غير محدد"
                         : doctor.workingDaysLabel,
-                    hint: doctor.workingHoursLabel.isEmpty
-                        ? null
-                        : doctor.workingHoursLabel,
                   ),
                 ),
                 const _ColumnDivider(),
@@ -114,7 +111,7 @@ class _BookingInfoColumn extends StatelessWidget {
   final String value;
   final String? hint;
 
-  /// بيكبّر النص شوية — بيتستخدم مع تكلفة الكشف.
+  /// بيكبّر النص — بيتستخدم مع تكلفة الكشف.
   final bool isValueHighlighted;
 
   @override
@@ -142,9 +139,10 @@ class _BookingInfoColumn extends StatelessWidget {
             label,
             textAlign: TextAlign.center,
             style: AppTextStyles.font12blackWeight400.copyWith(
-              fontSize: 9.sp,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w600,
               height: 1.4,
-              color: OnlineDoctorTheme.mutedText,
+              color: Colors.black,
             ),
           ),
           verticalSpacing(4),
@@ -152,7 +150,7 @@ class _BookingInfoColumn extends StatelessWidget {
             value,
             textAlign: TextAlign.center,
             style: AppTextStyles.font12blackWeight400.copyWith(
-              fontSize: isValueHighlighted ? 13.sp : 9.5.sp,
+              fontSize: isValueHighlighted ? 18.sp : 10.sp,
               fontWeight: FontWeight.w700,
               height: 1.4,
               color: OnlineDoctorTheme.accentBlue,
@@ -164,9 +162,10 @@ class _BookingInfoColumn extends StatelessWidget {
               hint!,
               textAlign: TextAlign.center,
               style: AppTextStyles.font12blackWeight400.copyWith(
-                fontSize: 8.5.sp,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
                 height: 1.4,
-                color: OnlineDoctorTheme.mutedText,
+                color: OnlineDoctorTheme.headingColor,
               ),
             ),
           ],

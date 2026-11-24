@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
 import 'package:we_care/features/doctor/bookings/data/models/today_appointment_model.dart';
+import 'package:we_care/features/doctor/bookings/logic/cubit/bookings_cubit.dart';
 import 'package:we_care/features/doctor/patient_medical_file/presentation/patient_medical_file_launcher.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/appointment_time_status_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/appointment_type_badge_widget.dart';
@@ -67,11 +69,16 @@ class TodayAppointmentRowWidget extends StatelessWidget {
         Row(
           children: [
             _AllowEntryButton(
-              onTap: () => Navigator.pushNamed(
-                context,
-                Routes.doctorVideoCallView,
-                arguments: appointment.id,
-              ),
+              onTap: () async {
+                final cubit = context.read<BookingsCubit>();
+                await Navigator.pushNamed(
+                  context,
+                  Routes.doctorVideoCallView,
+                  arguments: appointment.id,
+                );
+                // A session ended in the call moves to "الكشوفات المنتهية".
+                await cubit.getBookings(silent: true);
+              },
             ),
             if (appointment.hasOpenDataAccess(now)) ...[
               SizedBox(width: 8.w),

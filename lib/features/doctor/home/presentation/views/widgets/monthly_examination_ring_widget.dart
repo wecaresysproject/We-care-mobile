@@ -16,6 +16,7 @@ class MonthlyExaminationRingWidget extends StatelessWidget {
     required this.trackColor,
     required this.valueTextStyle,
     this.diameter = 72,
+    this.strokeWidth = 7,
   });
 
   final int value;
@@ -24,6 +25,7 @@ class MonthlyExaminationRingWidget extends StatelessWidget {
   final Color trackColor;
   final TextStyle valueTextStyle;
   final double diameter;
+  final double strokeWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class MonthlyExaminationRingWidget extends StatelessWidget {
           fraction: fraction,
           trackColor: trackColor,
           progressColor: ringColor,
-          strokeWidth: 7.w,
+          strokeWidth: strokeWidth.w,
         ),
         child: Center(child: Text('$value', style: valueTextStyle)),
       ),

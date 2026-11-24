@@ -64,6 +64,16 @@ import 'package:we_care/features/doctor/service_prices/data/repos/service_prices
 import 'package:we_care/features/doctor/service_prices/logic/cubit/service_prices_cubit.dart';
 import 'package:we_care/features/doctor/patient_medical_file/data/repos/patient_medical_file_repo.dart';
 import 'package:we_care/features/doctor/video_call/data/repos/video_call_repo.dart';
+import 'package:we_care/features/doctor/prescription/data/repos/doctor_prescription_repo.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/doctor_prescription_cubit.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/prescription_lab_test_form_cubit.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/prescription_medicine_form_cubit.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/prescription_xray_form_cubit.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/previous_prescriptions_cubit.dart';
+import 'package:we_care/features/doctor/patient_files/data/repos/patient_files_repo.dart';
+import 'package:we_care/features/doctor/patient_files/logic/patient_files_cubit.dart';
+import 'package:we_care/features/doctor/statistics/data/repos/doctor_statistics_repo.dart';
+import 'package:we_care/features/doctor/statistics/logic/doctor_statistics_cubit.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_data_entry_repo.dart';
 import 'package:we_care/features/emergency_complaints/data/repos/emergency_complaints_view_repo.dart';
@@ -129,6 +139,7 @@ import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.
 import 'package:we_care/features/online_doctor/logic/cubit/doctors_list_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_comment_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/edit_booking_rating_cubit.dart';
+import 'package:we_care/features/online_doctor/logic/cubit/consultation_review_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/examination_call_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/reschedule_appointment_cubit.dart';
 import 'package:we_care/features/online_doctor/logic/cubit/upcoming_bookings_cubit.dart';
@@ -473,6 +484,9 @@ void setupAppCubits() {
   getIt.registerFactory<EditBookingCommentCubit>(
     () => EditBookingCommentCubit(getIt<OnlineDoctorRepo>()),
   );
+  getIt.registerFactory<ConsultationReviewCubit>(
+    () => ConsultationReviewCubit(getIt<OnlineDoctorRepo>()),
+  );
   getIt.registerFactory<ExaminationCallCubit>(
     () => ExaminationCallCubit(getIt<OnlineDoctorRepo>()),
   );
@@ -610,6 +624,35 @@ void setupAppCubits() {
   getIt.registerFactory<DoctorVideoCallCubit>(
     () => DoctorVideoCallCubit(
       getIt<VideoCallRepo>(),
+    ),
+  );
+  getIt.registerFactory<DoctorPrescriptionCubit>(
+    () => DoctorPrescriptionCubit(
+      getIt<DoctorPrescriptionRepo>(),
+    ),
+  );
+  getIt.registerFactory<DoctorStatisticsCubit>(
+    () => DoctorStatisticsCubit(getIt<DoctorStatisticsRepo>()),
+  );
+  getIt.registerFactory<PatientFilesCubit>(
+    () => PatientFilesCubit(getIt<PatientFilesRepo>()),
+  );
+  getIt.registerFactory<PreviousPrescriptionsCubit>(
+    () => PreviousPrescriptionsCubit(getIt<DoctorPrescriptionRepo>()),
+  );
+  getIt.registerFactory<PrescriptionMedicineFormCubit>(
+    () => PrescriptionMedicineFormCubit(
+      getIt<MedicinesDataEntryRepo>(),
+    ),
+  );
+  getIt.registerFactory<PrescriptionXRayFormCubit>(
+    () => PrescriptionXRayFormCubit(
+      getIt<XRayDataEntryRepo>(),
+    ),
+  );
+  getIt.registerFactory<PrescriptionLabTestFormCubit>(
+    () => PrescriptionLabTestFormCubit(
+      getIt<TestAnalysisDataEntryRepo>(),
     ),
   );
   getIt.registerFactory<DoctorBasicDataCubit>(
@@ -979,6 +1022,7 @@ void setupAppRepos() {
   getIt.registerLazySingleton<DoctorHomeRepo>(
     () => DoctorHomeRepo(
       getIt<AuthApiServices>(),
+      getIt<DoctorServices>(),
     ),
   );
   getIt.registerLazySingleton<BookingsRepo>(
@@ -994,6 +1038,18 @@ void setupAppRepos() {
   getIt.registerLazySingleton<PatientMedicalFileRepo>(
     () => PatientMedicalFileRepo(
       getIt<DoctorServices>(),
+    ),
+  );
+  getIt.registerLazySingleton<DoctorStatisticsRepo>(
+    () => DoctorStatisticsRepo(getIt<DoctorServices>()),
+  );
+  getIt.registerLazySingleton<PatientFilesRepo>(
+    () => PatientFilesRepo(getIt<DoctorServices>()),
+  );
+  getIt.registerLazySingleton<DoctorPrescriptionRepo>(
+    () => DoctorPrescriptionRepo(
+      getIt<DoctorServices>(),
+      getIt<AppSharedRepo>(),
     ),
   );
   getIt.registerLazySingleton<DoctorBasicDataRepo>(

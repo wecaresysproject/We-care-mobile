@@ -164,12 +164,14 @@ class Routes {
   static const rescheduleAppointmentView = '/rescheduleAppointmentView';
   static const bookingsHistoryView = '/bookingsHistoryView';
   static const bookingDetailsView = '/bookingDetailsView';
+  static const bookingPrescriptionImagesView = '/bookingPrescriptionImagesView';
   static const editBookingRatingView = '/editBookingRatingView';
   static const editBookingCommentView = '/editBookingCommentView';
   static const medicalExaminationView = '/medicalExaminationView';
   static const examinationRoomView = '/examinationRoomView';
   static const examinationCallView = '/examinationCallView';
   static const participantCallView = '/participantCallView';
+  static const consultationReviewView = '/consultationReviewView';
   static const doctorsListView = '/doctorsListView';
   static const doctorProfileView = '/doctorProfileView';
   static const bookAppointmentView = '/bookAppointmentView';
@@ -178,7 +180,17 @@ class Routes {
   //! Doctor
   static const doctorHomeView = '/doctorHomeView';
   static const doctorBookingsView = '/doctorBookingsView';
+  static const doctorTodayExaminationsView = '/doctorTodayExaminationsView';
+  static const doctorTodayFollowUpsView = '/doctorTodayFollowUpsView';
+  static const doctorWaitingListView = '/doctorWaitingListView';
   static const doctorVideoCallView = '/doctorVideoCallView';
+  static const doctorPrescriptionView = '/doctorPrescriptionView';
+  static const doctorPrescriptionPreviewView = '/doctorPrescriptionPreviewView';
+  static const doctorPreviousPrescriptionsView =
+      '/doctorPreviousPrescriptionsView';
+  static const doctorPrescriptionCopyView = '/doctorPrescriptionCopyView';
+  static const doctorPatientFilesView = '/doctorPatientFilesView';
+  static const doctorStatisticsView = '/doctorStatisticsView';
   static const doctorBasicDataView = '/doctorBasicDataView';
   static const doctorBasicDataFormView = '/doctorBasicDataFormView';
   static const medicalSpecialtyFormView = '/medicalSpecialtyFormView';

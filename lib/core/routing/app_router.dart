@@ -33,9 +33,11 @@ import 'package:we_care/features/doctor/basic_data/presentation/views/basic_data
 import 'package:we_care/features/doctor/basic_data/presentation/views/doctor_basic_data_form_view.dart';
 import 'package:we_care/features/doctor/booking_settings/presentation/views/booking_settings_form_view.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/bookings_view.dart';
+import 'package:we_care/features/doctor/bookings/presentation/views/doctor_today_appointments_view.dart';
+import 'package:we_care/features/doctor/bookings/presentation/views/doctor_waiting_list_view.dart';
 import 'package:we_care/features/doctor/certificates/presentation/views/certificates_form_view.dart';
 import 'package:we_care/features/doctor/experience/presentation/views/experience_form_view.dart';
-import 'package:we_care/features/doctor/home/presentation/views/doctor_app_shell.dart';
+import 'package:we_care/features/doctor/home/presentation/views/doctor_home_view.dart';
 import 'package:we_care/features/doctor/media_articles/presentation/views/media_articles_form_view.dart';
 import 'package:we_care/features/doctor/medical_specialty/presentation/views/medical_specialty_form_view.dart';
 import 'package:we_care/features/doctor/membership/presentation/views/membership_form_view.dart';
@@ -43,6 +45,17 @@ import 'package:we_care/features/doctor/monthly_examination_target/presentation/
 import 'package:we_care/features/doctor/professional_licenses/presentation/views/professional_licenses_form_view.dart';
 import 'package:we_care/features/doctor/research_and_papers/presentation/views/research_and_papers_form_view.dart';
 import 'package:we_care/features/doctor/service_prices/presentation/views/service_prices_form_view.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/doctor_prescription_cubit.dart';
+import 'package:we_care/features/doctor/prescription/presentation/views/doctor_prescription_view.dart';
+import 'package:we_care/features/doctor/prescription/presentation/views/doctor_prescription_preview_view.dart';
+import 'package:we_care/features/doctor/patient_files/logic/patient_files_cubit.dart';
+import 'package:we_care/features/doctor/statistics/logic/doctor_statistics_cubit.dart';
+import 'package:we_care/features/doctor/statistics/presentation/views/doctor_statistics_view.dart';
+import 'package:we_care/features/doctor/patient_files/presentation/views/doctor_patient_files_view.dart';
+import 'package:we_care/features/doctor/prescription/presentation/views/doctor_previous_prescriptions_view.dart';
+import 'package:we_care/features/doctor/prescription/presentation/views/doctor_prescription_copy_view.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/previous_prescriptions_cubit.dart';
+import 'package:we_care/features/doctor/prescription/logic/doctor_prescription_document_builder.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/video_call_view.dart';
 import 'package:we_care/features/emergency_complaints/data/models/get_single_complaint_response_model.dart';
@@ -174,10 +187,12 @@ import '../../features/online_doctor/presentation/views/medical_examination_view
 import '../../features/online_doctor/data/models/booking_history_model.dart';
 import '../../features/online_doctor/data/models/booking_model.dart';
 import '../../features/online_doctor/logic/cubit/examination_call_cubit.dart';
+import '../../features/online_doctor/presentation/views/consultation_review_view.dart';
 import '../../features/online_doctor/presentation/views/examination_call_view.dart';
 import '../../features/online_doctor/presentation/views/examination_room_view.dart';
 import '../../features/online_doctor/presentation/views/participant_call_view.dart';
 import '../../features/online_doctor/presentation/views/booking_details_view.dart';
+import '../../features/online_doctor/presentation/views/booking_prescription_images_view.dart';
 import '../../features/online_doctor/presentation/views/bookings_history_view.dart';
 import '../../features/online_doctor/presentation/views/edit_booking_comment_view.dart';
 import '../../features/online_doctor/presentation/views/edit_booking_rating_view.dart';
@@ -942,6 +957,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BookingDetailsView(booking: booking),
         );
+      case Routes.bookingPrescriptionImagesView:
+        final images = arguments as List<String>;
+        return MaterialPageRoute(
+          builder: (_) => BookingPrescriptionImagesView(images: images),
+        );
       case Routes.editBookingRatingView:
         final booking = arguments as BookingHistoryModel;
         return MaterialPageRoute(
@@ -965,10 +985,15 @@ class AppRouter {
         final booking = arguments as BookingModel;
         return MaterialPageRoute(
           builder: (_) => BlocProvider<ExaminationCallCubit>(
-            create: (_) => getIt<ExaminationCallCubit>()
-              ..loadMeeting(booking.bookingId),
+            create: (_) =>
+                getIt<ExaminationCallCubit>()..loadMeeting(booking.bookingId),
             child: ExaminationCallView(booking: booking),
           ),
+        );
+      case Routes.consultationReviewView:
+        final booking = arguments as BookingModel;
+        return MaterialPageRoute(
+          builder: (_) => ConsultationReviewView(booking: booking),
         );
       case Routes.participantCallView:
         final appointmentId = arguments as String;
@@ -1002,11 +1027,23 @@ class AppRouter {
       //! Doctor
       case Routes.doctorHomeView:
         return MaterialPageRoute(
-          builder: (_) => const DoctorAppShell(),
+          builder: (_) => const DoctorHomeView(),
         );
       case Routes.doctorBookingsView:
         return MaterialPageRoute(
           builder: (_) => const BookingsView(),
+        );
+      case Routes.doctorTodayExaminationsView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorTodayAppointmentsView.examinations(),
+        );
+      case Routes.doctorTodayFollowUpsView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorTodayAppointmentsView.followUps(),
+        );
+      case Routes.doctorWaitingListView:
+        return MaterialPageRoute(
+          builder: (_) => const DoctorWaitingListView(),
         );
       case Routes.doctorVideoCallView:
         final appointmentId = arguments as String;
@@ -1015,6 +1052,55 @@ class AppRouter {
             create: (_) =>
                 getIt<DoctorVideoCallCubit>()..openMeeting(appointmentId),
             child: VideoCallView(appointmentId: appointmentId),
+          ),
+        );
+      case Routes.doctorPrescriptionView:
+        final args = arguments as DoctorPrescriptionViewArgs;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<DoctorPrescriptionCubit>(
+            create: (_) => getIt<DoctorPrescriptionCubit>()
+              ..loadPrescription(
+                bookingId: args.bookingId,
+                patientName: args.patientName,
+              ),
+            child: DoctorPrescriptionView(
+              bookingId: args.bookingId,
+              patientName: args.patientName,
+            ),
+          ),
+        );
+      case Routes.doctorPrescriptionPreviewView:
+        return MaterialPageRoute(
+          builder: (_) => DoctorPrescriptionPreviewView(
+            data: arguments as PrescriptionDocumentData,
+          ),
+        );
+      case Routes.doctorPreviousPrescriptionsView:
+        final args = arguments as PreviousPrescriptionsArgs;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<PreviousPrescriptionsCubit>(
+            create: (_) => getIt<PreviousPrescriptionsCubit>()..load(args),
+            child: DoctorPreviousPrescriptionsView(args: args),
+          ),
+        );
+      case Routes.doctorStatisticsView:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<DoctorStatisticsCubit>(
+            create: (_) => getIt<DoctorStatisticsCubit>()..load(),
+            child: const DoctorStatisticsView(),
+          ),
+        );
+      case Routes.doctorPatientFilesView:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<PatientFilesCubit>(
+            create: (_) => getIt<PatientFilesCubit>()..init(),
+            child: const DoctorPatientFilesView(),
+          ),
+        );
+      case Routes.doctorPrescriptionCopyView:
+        return MaterialPageRoute(
+          builder: (_) => DoctorPrescriptionCopyView(
+            images: arguments as List<String>,
           ),
         );
       case Routes.doctorBasicDataView:

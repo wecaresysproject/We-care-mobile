@@ -10,6 +10,7 @@ import 'package:we_care/features/doctor/bookings/presentation/views/widgets/book
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/bookings_header_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/bookings_section_card_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/bookings_section_header_widget.dart';
+import 'package:we_care/features/doctor/bookings/presentation/views/widgets/completed_appointments_table_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/today_appointment_row_widget.dart';
 import 'package:we_care/features/doctor/bookings/presentation/views/widgets/waiting_patient_row_widget.dart';
 import 'package:we_care/generated/l10n.dart';
@@ -123,6 +124,21 @@ class _BookingsContentWidgetState extends State<BookingsContentWidget> {
                 text: S.of(context).waitingInfoBannerText,
                 backgroundColor: AppColorsManager.waitingInfoBannerBackground,
               ),
+            ),
+            SizedBox(height: 20.h),
+            BookingsSectionHeaderWidget(
+              title: "الكشوفات المنتهية",
+              titleIcon: Icons.task_alt,
+              patientsCount: bookings.completedAppointments.length,
+              countLabel: "${bookings.completedAppointments.length} منتهية",
+              countIcon: Icons.check_circle,
+              countBackgroundColor:
+                  AppColorsManager.completedCountBadgeBackground,
+              countTextColor: AppColorsManager.completedCountBadgeText,
+            ),
+            SizedBox(height: 12.h),
+            CompletedAppointmentsTableWidget(
+              appointments: bookings.completedAppointments,
             ),
           ],
         ),

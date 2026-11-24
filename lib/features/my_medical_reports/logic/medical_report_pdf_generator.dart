@@ -256,7 +256,7 @@ class MedicalReportPdfGenerator {
       child: image != null
           ? pw.Image(
               image,
-              fit: pw.BoxFit.fill,
+              fit: pw.BoxFit.contain,
               // width: quarterWidth,
               height: quarterHeight,
             )

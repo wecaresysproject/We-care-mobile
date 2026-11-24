@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#69D5FF"/><stop offset=".45" stop-color="#168FE0"/><stop offset="1" stop-color="#0753B8"/>
+  </linearGradient>
+  <linearGradient id="blue2" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0" stop-color="#B9F0FF"/><stop offset=".45" stop-color="#42BCEB"/><stop offset="1" stop-color="#0876C9"/>
+  </linearGradient>
+  <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8AF2C4"/><stop offset=".45" stop-color="#20C58A"/><stop offset="1" stop-color="#07966E"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8CF4E8"/><stop offset=".5" stop-color="#22C5B8"/><stop offset="1" stop-color="#078C9C"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#FFF29A"/><stop offset=".35" stop-color="#FFC928"/><stop offset=".72" stop-color="#E99A00"/><stop offset="1" stop-color="#B96A00"/>
+  </linearGradient>
+  <linearGradient id="goldSide" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F6B91F"/><stop offset="1" stop-color="#C87900"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+    <feOffset dy="3" result="offset"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<g filter="url(#shadow)">
+ <path d="M112 34h32v19h-32z" fill="url(#blue)" stroke="#075AAE" stroke-width="3"/>
+ <rect x="121" y="22" width="14" height="19" rx="5" fill="url(#blue2)"/>
+ <circle cx="128" cy="139" r="88" fill="url(#blue)" stroke="#075AAE" stroke-width="4"/>
+ <circle cx="128" cy="139" r="72" fill="#F5FCFF" stroke="#A8E4FB" stroke-width="4"/>
+ <path d="M128 81v8M128 189v8M70 139h8M178 139h8M87 98l6 6M163 174l6 6M169 98l-6 6M93 174l-6 6" stroke="#0870BD" stroke-width="5" stroke-linecap="round"/>
+ <path d="M128 139l4-40M128 139l-25 19" stroke="#075AAE" stroke-width="7" stroke-linecap="round"/>
+ <circle cx="128" cy="139" r="8" fill="url(#green)" stroke="#078C68" stroke-width="2"/>
+ <path d="M78 89q17-24 45-28" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+</g>
+</svg>

@@ -43,6 +43,21 @@ class DoctorApiConstants {
   /// التخصص الطبى (الرئيسى والفرعى والاهتمامات).
   static const postMedicalSpecialty = "/DoctorUserForDoctor/medical-specialty";
 
+  /// الرئيسية — كل سكشن له endpoint مستقل، من غير parameters.
+  static const getHomeProfileSummary = "/DoctorHome/profile-summary";
+  static const getHomeBookingsStats = "/DoctorHome/bookings-stats";
+  static const getHomeMonthlyExaminations = "/DoctorHome/monthly-examinations";
+  static const getHomePerformanceStats = "/DoctorHome/performance-stats";
+
+  /// إعلانات الرئيسية — `?userType=Doctor&language=ar`، وبيرجّع `data` كـ
+  /// list من روابط الصور.
+  static const getHomeAds = "/Ad/doctor/all";
+  static const getHomeLatestComments = "/DoctorHome/latest-comments";
+  static const getHomeRatingsSummary = "/DoctorHome/ratings-summary";
+
+  /// "إحصائيات" لشهر — `?month=&year=`.
+  static const getStatistics = "/DoctorHome/statistics";
+
   /// شاشة الحجوزات — بيانات الطبيب ومواعيد اليوم وقائمة الانتظار، من غير
   /// parameters.
   static const getDoctorBookings = "/DoctorBookings/bookings";
@@ -67,4 +82,23 @@ class DoctorApiConstants {
   /// وميعاد انتهاء الوصول) — `?bookingId=`.
   static const getBookingPatientAccess =
       "/DoctorBookings/bookings/patient-access";
+
+  /// روشتة الحجز — `GET` لقراءتها و`PUT` بنفس المسار لحفظها أو تعديلها،
+  /// و`?bookingId=` فى الاتنين.
+  static const bookingPrescription = "/DoctorBookings/bookings/prescription";
+
+  /// "الروشتات القديمة": الروشتات اللى الطبيب كتبها لمريض الحجز فى حجوزات
+  /// سابقة — `?bookingId=`.
+  static const previousPrescriptions =
+      "/DoctorBookings/bookings/previous-prescriptions";
+
+  /// "ملفات المرضى" — الحجوزات اللى صلاحية بيانات مريضها لسه مفتوحة.
+  static const openPatientFiles = "/DoctorBookings/patient-files/open";
+
+  /// "ملفات المرضى القدامى" — كل مريض الطبيب كشف عليه قبل كده.
+  static const previousPatients = "/DoctorBookings/patient-files/previous";
+
+  /// روشتات الطبيب لمريض قديم — `?patientId=`.
+  static const patientPrescriptions =
+      "/DoctorBookings/patient-files/prescriptions";
 }

@@ -35,5 +35,6 @@ class ParticipantSearchState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [searchStatus, results, selectedUser, errorMessage];
+  List<Object?> get props =>
+      [searchStatus, results, selectedUser, errorMessage];
 }

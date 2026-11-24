@@ -1,71 +1,128 @@
+import 'dart:convert';
+
+import 'package:we_care/core/Database/cach_helper.dart';
+import 'package:we_care/core/global/Helpers/app_logger.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
+import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/api_error_handler.dart';
 import 'package:we_care/core/networking/api_result.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/networking/auth_service.dart';
-import 'package:we_care/features/doctor/home/data/models/doctor_comment_model.dart';
-import 'package:we_care/features/doctor/home/data/models/doctor_home_model.dart';
-import 'package:we_care/features/doctor/home/data/models/doctor_performance_metric_model.dart';
+import 'package:we_care/features/doctor/doctor_services.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_bookings_stats_model.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_latest_comments_model.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_monthly_examinations_model.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_performance_stats_model.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_profile_summary_model.dart';
+import 'package:we_care/features/doctor/home/data/models/doctor_ratings_summary_model.dart';
 
-/// No doctor-dashboard endpoint exists yet — [getDoctorHome] returns fixed
-/// mock data so the UI/Cubit layers are ready to swap in a real service call
-/// once the backend contract is confirmed. [logout] uses the shared auth API.
+/// Doctor home screen — one call per section (see docs/api/doctor_home_api.md
+/// and docs/api/doctor_home_ads_comments_ratings_api.md)
+/// so each section loads and fails on its own.
 class DoctorHomeRepo {
   final AuthApiServices _authApiServices;
+  final DoctorServices _doctorServices;
 
-  DoctorHomeRepo(this._authApiServices);
+  DoctorHomeRepo(this._authApiServices, this._doctorServices);
 
-  Future<ApiResult<DoctorHomeModel>> getDoctorHome() async {
-    return ApiResult.success(
-      DoctorHomeModel(
-        doctorName: 'د/أحمد محمود',
-        specialty: 'استشارى جهاز مناعى',
-        doctorPhotoUrl: 'assets/images/doctor_photo.png',
-        clinicLogoUrl: 'assets/images/doctor_clinic_logo.png',
-        waitingCount: 10,
-        followUpsCount: 8,
-        currentBookingsCount: 15,
-        allowedBookingsCount: 20,
-        dataCompletionPercentage: 50,
-        achievedExaminationsCount: 8,
-        monthlyTargetExaminationsCount: 10,
-        yearlyTargetExaminationsCount: 600,
-        appearances: DoctorPerformanceMetricModel(
-          monthlyCount: 200,
-          yearlyCount: 600,
-        ),
-        shares: DoctorPerformanceMetricModel(
-          monthlyCount: 200,
-          yearlyCount: 600,
-        ),
-        watches: DoctorPerformanceMetricModel(
-          monthlyCount: 200,
-          yearlyCount: 600,
-        ),
-        // Figma shows 3 carousel dots but only exported one ad creative —
-        // repeated here as a placeholder until real ad content/assets exist.
-        adBannerImageUrls: List.filled(3, 'assets/images/doctor_ad_banner.png'),
-        commentsCount: 80,
-        comments: [
-          DoctorCommentModel(
-            patientName: 'مصطفى عبدالله',
-            comment:
-                'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربي، حيث يمكنك أن تولد مثل هذا النص أو العديد',
-          ),
-          DoctorCommentModel(
-            patientName: 'ندى كمال',
-            comment:
-                'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص',
-          ),
-          DoctorCommentModel(
-            patientName: 'عمر حازم',
-            comment:
-                'هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد هذا النص من مولد النص العربي،',
-          ),
-        ],
-        ratingsCount: 150,
-      ),
-    );
+  /// Fetches the header data and refreshes the on-device copy on success.
+  Future<ApiResult<DoctorProfileSummaryModel>> getProfileSummary() async {
+    try {
+      final response = await _doctorServices.getHomeProfileSummary();
+      final profile = DoctorProfileSummaryModel.fromJson(_data(response));
+      await CacheHelper.setData(
+        AppStrings.doctorProfileSummaryCacheKey,
+        jsonEncode(profile.toJson()),
+      );
+      return ApiResult.success(profile);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// The header data saved by the last successful [getProfileSummary], or
+  /// `null` when there is none (first launch, or after logout cleared it).
+  Future<DoctorProfileSummaryModel?> getCachedProfileSummary() async {
+    try {
+      final String cached =
+          await CacheHelper.getString(AppStrings.doctorProfileSummaryCacheKey);
+      if (cached.isEmpty) return null;
+      return DoctorProfileSummaryModel.fromJson(
+        jsonDecode(cached) as Map<String, dynamic>,
+      );
+    } catch (error) {
+      AppLogger.debug('DoctorHomeRepo: unreadable cached profile — $error');
+      return null;
+    }
+  }
+
+  Future<ApiResult<DoctorBookingsStatsModel>> getBookingsStats() async {
+    try {
+      final response = await _doctorServices.getHomeBookingsStats();
+      return ApiResult.success(
+        DoctorBookingsStatsModel.fromJson(_data(response)),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<DoctorMonthlyExaminationsModel>>
+      getMonthlyExaminations() async {
+    try {
+      final response = await _doctorServices.getHomeMonthlyExaminations();
+      return ApiResult.success(
+        DoctorMonthlyExaminationsModel.fromJson(_data(response)),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<DoctorPerformanceStatsModel>> getPerformanceStats() async {
+    try {
+      final response = await _doctorServices.getHomePerformanceStats();
+      return ApiResult.success(
+        DoctorPerformanceStatsModel.fromJson(_data(response)),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// `GET /Ad/doctor/all` — returns the ad image URLs.
+  Future<ApiResult<List<String>>> getAds() async {
+    try {
+      final response = await _doctorServices.getHomeAds('Doctor', 'ar');
+      final ads = List<String>.from(response['data'] ?? const [])
+          .where((url) => url.trim().isNotEmpty)
+          .toList();
+      return ApiResult.success(ads);
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<DoctorLatestCommentsModel>> getLatestComments() async {
+    try {
+      final response = await _doctorServices.getHomeLatestComments();
+      return ApiResult.success(
+        DoctorLatestCommentsModel.fromJson(_data(response)),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  Future<ApiResult<DoctorRatingsSummaryModel>> getRatingsSummary() async {
+    try {
+      final response = await _doctorServices.getHomeRatingsSummary();
+      return ApiResult.success(
+        DoctorRatingsSummaryModel.fromJson(_data(response)),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
   }
 
   Future<ApiResult<dynamic>> logout() async {
@@ -78,4 +135,7 @@ class DoctorHomeRepo {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }
   }
+
+  Map<String, dynamic> _data(dynamic response) =>
+      response['data'] as Map<String, dynamic>;
 }

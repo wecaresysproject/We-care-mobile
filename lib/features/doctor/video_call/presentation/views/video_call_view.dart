@@ -13,6 +13,8 @@ import 'package:we_care/core/networking/models/care_context_manager_model.dart';
 import 'package:we_care/features/doctor/patient_medical_file/data/models/booking_patient_access_model.dart';
 import 'package:we_care/features/doctor/patient_medical_file/data/repos/patient_medical_file_repo.dart';
 import 'package:we_care/features/doctor/patient_medical_file/presentation/patient_medical_file_launcher.dart';
+import 'package:we_care/features/doctor/prescription/logic/cubit/previous_prescriptions_cubit.dart';
+import 'package:we_care/features/doctor/prescription/presentation/views/doctor_prescription_view.dart';
 import 'package:we_care/features/doctor/video_call/logic/cubit/doctor_video_call_cubit.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_actions_grid_widget.dart';
 import 'package:we_care/features/doctor/video_call/presentation/views/widgets/video_call_controls_row_widget.dart';
@@ -390,6 +392,20 @@ class _VideoCallViewState extends State<VideoCallView> {
                     route: Routes.newMedicationCompatibilityView,
                     blockedReason: _medicinesCompatibilityBlockedReason,
                     requiredModule: MedicalModule.medications,
+                  ),
+                  onPrescriptionTap: () => Navigator.of(context).pushNamed(
+                    Routes.doctorPrescriptionView,
+                    arguments: DoctorPrescriptionViewArgs(
+                      bookingId: widget.appointmentId,
+                      patientName: _patientAccess?.patientName,
+                    ),
+                  ),
+                  onPreviousPrescriptionsTap: () =>
+                      Navigator.of(context).pushNamed(
+                    Routes.doctorPreviousPrescriptionsView,
+                    arguments: PreviousPrescriptionsArgs.booking(
+                      widget.appointmentId,
+                    ),
                   ),
                 ),
               ),

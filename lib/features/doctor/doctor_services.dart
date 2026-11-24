@@ -88,6 +88,30 @@ abstract class DoctorServices {
     @Body() MedicalSpecialtyRequestBodyModel requestBody,
   );
 
+  @GET(DoctorApiConstants.getHomeProfileSummary)
+  Future<dynamic> getHomeProfileSummary();
+
+  @GET(DoctorApiConstants.getHomeBookingsStats)
+  Future<dynamic> getHomeBookingsStats();
+
+  @GET(DoctorApiConstants.getHomeMonthlyExaminations)
+  Future<dynamic> getHomeMonthlyExaminations();
+
+  @GET(DoctorApiConstants.getHomePerformanceStats)
+  Future<dynamic> getHomePerformanceStats();
+
+  @GET(DoctorApiConstants.getHomeAds)
+  Future<dynamic> getHomeAds(
+    @Query("userType") String userType,
+    @Query("language") String language,
+  );
+
+  @GET(DoctorApiConstants.getHomeLatestComments)
+  Future<dynamic> getHomeLatestComments();
+
+  @GET(DoctorApiConstants.getHomeRatingsSummary)
+  Future<dynamic> getHomeRatingsSummary();
+
   @GET(DoctorApiConstants.getDoctorBookings)
   Future<dynamic> getDoctorBookings();
 
@@ -119,6 +143,39 @@ abstract class DoctorServices {
   @GET(DoctorApiConstants.getBookingPatientAccess)
   Future<dynamic> getBookingPatientAccess(
     @Query("bookingId") String bookingId,
+  );
+
+  @GET(DoctorApiConstants.bookingPrescription)
+  Future<dynamic> getBookingPrescription(
+    @Query("bookingId") String bookingId,
+  );
+
+  @PUT(DoctorApiConstants.bookingPrescription)
+  Future<dynamic> saveBookingPrescription(
+    @Query("bookingId") String bookingId,
+    @Body() Map<String, dynamic> requestBody,
+  );
+
+  @GET(DoctorApiConstants.previousPrescriptions)
+  Future<dynamic> getPreviousPrescriptions(
+    @Query("bookingId") String bookingId,
+  );
+
+  @GET(DoctorApiConstants.openPatientFiles)
+  Future<dynamic> getOpenPatientFiles(@Query("search") String? search);
+
+  @GET(DoctorApiConstants.previousPatients)
+  Future<dynamic> getPreviousPatients(@Query("search") String? search);
+
+  @GET(DoctorApiConstants.getStatistics)
+  Future<dynamic> getStatistics(
+    @Query("month") int month,
+    @Query("year") int year,
+  );
+
+  @GET(DoctorApiConstants.patientPrescriptions)
+  Future<dynamic> getPatientPrescriptions(
+    @Query("patientId") String patientId,
   );
 
   // ── Doctor profile modules: GET on the same path as each POST, returns the

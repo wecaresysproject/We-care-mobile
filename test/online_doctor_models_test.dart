@@ -87,4 +87,99 @@ void main() {
       expect(minimal.nearestAvailableAppointment, isNull);
     });
   });
+
+  group('latestComments', () {
+    test('parses comments and skips empty / non-object entries', () {
+      final profile = DoctorModel.fromProfileJson({
+        'doctorId': '3',
+        'comments': 5,
+        'latestComments': [
+          {
+            'id': 'c1',
+            'patientName': 'أشرف السيد أمين',
+            'comment': 'اداء مميز ودكتور محترم وشاطر.',
+            'createdAt': '2026-11-18T20:11:00+02:00',
+          },
+          {'id': 'c2', 'patientName': 'x', 'comment': '  '},
+          'bad',
+        ],
+      });
+      expect(profile.commentsCount, 5);
+      expect(profile.latestComments, hasLength(1));
+      final comment = profile.latestComments.single;
+      expect(comment.patientName, 'أشرف السيد أمين');
+      expect(comment.createdAt,
+          DateTime.parse('2026-11-18T18:11:00Z').toLocal());
+    });
+
+    test('missing latestComments stays empty', () {
+      expect(
+        DoctorModel.fromProfileJson({'doctorId': '3'}).latestComments,
+        isEmpty,
+      );
+    });
+  });
+
+  group('DoctorModel.fromProfileJson', () {
+    final profile = DoctorModel.fromProfileJson({
+      'doctorId': '3',
+      'fullName': 'أشرف أحمد أمين',
+      'basicData': {'shortBio': '', 'spokenLanguages': []},
+      'certificates': {
+        'bachelor': [
+          {
+            'degreeTitle': 'بكالوريوس طب بشري',
+            'grantingBody': 'جامعة عين شمس',
+            'countryName': 'مصر',
+            'obtainedDate': '2004-10-18',
+          },
+        ],
+        'boardCertification': [
+          {
+            'degreeTitle': 'دورة الأمراض المستعصية',
+            'grantingBody': 'جامعة هارفرد',
+            'countryName': 'الولايات المتحدة الأمريكية',
+            'obtainedDate': '2015-10-18',
+          },
+        ],
+      },
+      'licenses': {
+        'licenses': [
+          {
+            'licenseNumber': '٧٦٥٤٣٤٤',
+            'countryName': 'مصر',
+            'licensingAuthority': 'نقابة الاطباء',
+            'licenseDate': '2018-10-18',
+            'expiryDate': '2030-10-18',
+          },
+        ],
+      },
+      'experiences': [],
+    });
+
+    test('keeps academic degrees in education', () {
+      expect(profile.education.map((e) => e.title), ['بكالوريوس طب بشري']);
+      expect(profile.education.single.year, '2004');
+    });
+
+    test('maps boardCertification to the certificates section', () {
+      expect(profile.certificates.single.title, 'دورة الأمراض المستعصية');
+      expect(profile.certificates.single.issuer, 'جامعة هارفرد');
+      expect(profile.certificates.single.year, '2015');
+    });
+
+    test('maps licenses', () {
+      final license = profile.licenses.single;
+      expect(license.authority, 'نقابة الاطباء');
+      expect(license.licenseNumber, '٧٦٥٤٣٤٤');
+      expect(license.fromYear, '2018');
+      expect(license.toYear, '2030');
+    });
+
+    test('empty sections stay empty', () {
+      expect(profile.professionalExperience, isEmpty);
+      expect(profile.languages, isEmpty);
+      expect(profile.about, isEmpty);
+    });
+  });
 }

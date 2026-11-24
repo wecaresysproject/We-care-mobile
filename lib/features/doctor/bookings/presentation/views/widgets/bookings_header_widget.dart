@@ -12,11 +12,17 @@ class BookingsHeaderWidget extends StatelessWidget {
     required this.doctorName,
     required this.specialty,
     required this.doctorPhotoUrl,
+    this.title,
+    this.showSubtitle = true,
   });
 
   final String doctorName;
   final String specialty;
   final String? doctorPhotoUrl;
+
+  /// Overrides the default "الحجوزات" title.
+  final String? title;
+  final bool showSubtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +52,18 @@ class BookingsHeaderWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    S.of(context).bookingsTitle,
+                    title ?? S.of(context).bookingsTitle,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.font20blackWeight700,
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    S.of(context).bookingsSubtitle,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.font13GreyWeight400,
-                  ),
+                  if (showSubtitle) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      S.of(context).bookingsSubtitle,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.font13GreyWeight400,
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -37,6 +37,11 @@ class PrescriptionModel {
   String preDescriptionNotes;
   String modifiedAt;
 
+  /// Written by a doctor during an online consultation — the patient can
+  /// view and share it, but not edit or delete it.
+  @JsonKey(defaultValue: false)
+  bool isCreatedByDoctor;
+
   PrescriptionModel(
       {required this.id,
       required this.userId,
@@ -52,7 +57,8 @@ class PrescriptionModel {
       required this.governate,
       this.hospital,
       required this.preDescriptionNotes,
-      required this.modifiedAt});
+      required this.modifiedAt,
+      this.isCreatedByDoctor = false});
 
   factory PrescriptionModel.fromJson(Map<String, dynamic> json) =>
       _$PrescriptionModelFromJson(json);

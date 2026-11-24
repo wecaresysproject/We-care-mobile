@@ -93,6 +93,8 @@ class AppColorsManager {
   static const Color homeAchievedGreenSurface = Color(0xffEAFBF5);
 
   /// "المستهدف" (target) card — orange identity.
+  // Pale blue fill of the monthly "المستهدف" card and performance headers.
+  static const Color homeTargetBlueSurface = Color(0xffE9F2FE);
   static const Color homeTargetOrange = Color(0xffF58213);
   static const Color homeTargetOrangeDark = Color(0xffB85B0B);
   static const Color homeTargetOrangeSurface = Color(0xffFFF3E7);
@@ -134,6 +136,10 @@ class AppColorsManager {
   /// "N مرضى" waiting-list count badge.
   static const Color waitingCountBadgeBackground = Color(0xffFCEADB);
   static const Color waitingCountBadgeText = Color(0xffF77F07);
+
+  /// "N منتهية" finished-sessions count badge.
+  static const Color completedCountBadgeBackground = Color(0xffDDF5EC);
+  static const Color completedCountBadgeText = Color(0xff00936F);
 
   /// Appointment time-status text.
   static const Color appointmentDueColor = Color(0xff00B087);
@@ -239,6 +245,9 @@ class AppColorsManager {
   static const Color videoCallMedicalFileTileBackground = Color(0xffE3F8EC);
   static const Color videoCallBookingsTileBackground = Color(0xffDFF5F7);
   static const Color videoCallPrescriptionTileBackground = Color(0xffFBE4EA);
+  static const Color videoCallPreviousPrescriptionsTileBackground =
+      Color(0xffFEF4D8);
+  static const Color videoCallPreviousPrescriptionsTileIcon = Color(0xffB45309);
 
   // ---------------------------------------------------------------------------
   // User type (account picker) screen.
@@ -270,4 +279,36 @@ class AppColorsManager {
   static const Color userTypeProviderCardBorder = Color(0xffDFDDF4);
   static const Color userTypeProviderArrowBackground = Color(0xffE4E1F8);
   static const Color userTypeProviderTitleColor = Color(0xff3A2A93);
+
+  // ---------------------------------------------------------------------------
+  // Doctor prescription screen (الروشتة).
+  // ---------------------------------------------------------------------------
+
+  static const Color prescriptionScaffoldBackground = Color(0xffF6F9FE);
+  static const Color prescriptionTitleColor = Color(0xff0E2A5E);
+  static const Color prescriptionSubtitleColor = Color(0xff6B7A90);
+  static const Color prescriptionCardBorder = Color(0xffE3EAF3);
+  static const Color prescriptionActionBlue = Color(0xff1D4ED8);
+
+  /// "الأدوية" section — green accent, light green header strip.
+  static const Color prescriptionMedicinesAccent = Color(0xff16A34A);
+  static const Color prescriptionMedicinesHeaderBackground = Color(0xffF1FAF4);
+
+  /// "الفحوصات" section — blue accent, light blue header strip.
+  static const Color prescriptionExaminationsAccent = Color(0xff1D4ED8);
+  static const Color prescriptionExaminationsHeaderBackground =
+      Color(0xffF1F5FE);
+
+  /// "تعليمات للمريض" section — purple accent, light purple header strip.
+  static const Color prescriptionInstructionsAccent = Color(0xff6D28D9);
+  static const Color prescriptionInstructionsHeaderBackground =
+      Color(0xffF6F2FE);
+
+  /// Medicines table.
+  static const Color prescriptionTableHeaderBackground = Color(0xffF7F9FC);
+  static const Color prescriptionTableDivider = Color(0xffE6ECF2);
+  static const Color prescriptionTableText = Color(0xff1F2937);
+  static const Color prescriptionEditActionBackground = Color(0xffEAF1FF);
+  static const Color prescriptionDeleteAction = Color(0xffDC2626);
+  static const Color prescriptionDeleteActionBackground = Color(0xffFDECEC);
 }

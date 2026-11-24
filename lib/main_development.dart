@@ -19,6 +19,7 @@ import 'package:we_care/core/global/app_strings.dart';
 import 'package:we_care/core/networking/auth_api_constants.dart';
 import 'package:we_care/core/routing/app_router.dart';
 import 'package:we_care/features/chronic_disease/data/models/add_new_medicine_model.dart';
+import 'package:we_care/features/doctor/statistics/data/doctor_statistics_dev_mock.dart';
 import 'package:we_care/features/emergency_complaints/data/models/medical_complaint_model.dart';
 import 'package:we_care/features/genetic_diseases/data/models/new_genetic_disease_model.dart';
 import 'package:we_care/features/medicine/data/models/medicine_alarm_model.dart';
@@ -57,6 +58,10 @@ void main() async {
   await Hive.openBox(MedicinesApiConstants.alarmsScheduledPerMedicineBoxKey);
 
   await setUpDependencyInjection();
+
+  // TODO(statistics): remove once the backend ships the endpoint.
+  // Sample "إحصائيات" while it still answers 404 (development only).
+  DoctorStatisticsDevMock.enabled = true;
 
   // To fix texts being hidden bug in flutter_screenutil in release mode.
   await ScreenUtil.ensureScreenSize();

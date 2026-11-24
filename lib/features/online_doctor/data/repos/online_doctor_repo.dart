@@ -9,6 +9,7 @@ import 'package:we_care/features/online_doctor/data/models/booking_history_filte
 import 'package:we_care/features/online_doctor/data/models/booking_history_model.dart';
 import 'package:we_care/features/online_doctor/data/models/booking_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
+import 'package:we_care/features/online_doctor/data/models/doctor_profile_comment_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_summary_model.dart';
 import 'package:we_care/features/online_doctor/data/models/video_meeting_model.dart';
 import 'package:we_care/features/online_doctor/online_doctor_services.dart';
@@ -42,6 +43,27 @@ class OnlineDoctorRepo {
       return ApiResult.success(
         DoctorModel.fromProfileJson(
           response['data'] as Map<String, dynamic>,
+        ),
+      );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// صفحة من تعليقات المرضى على الطبيب، الأحدث الأول — [skip] عدد اللى
+  /// اتعرض فعلًا و[take] عدد الصفحة.
+  Future<ApiResult<DoctorCommentsPageModel>> getDoctorComments({
+    required String doctorId,
+    required int skip,
+    required int take,
+  }) async {
+    try {
+      final response =
+          await _onlineDoctorServices.getDoctorComments(doctorId, skip, take);
+      final data = response['data'];
+      return ApiResult.success(
+        DoctorCommentsPageModel.fromJson(
+          data is Map ? Map<String, dynamic>.from(data) : const {},
         ),
       );
     } catch (error) {
@@ -236,6 +258,32 @@ class OnlineDoctorRepo {
               DateTime.now(),
         ),
       );
+    } catch (error) {
+      return ApiResult.failure(ApiErrorHandler.handle(error));
+    }
+  }
+
+  /// تقييم المريض بعد ما المكالمة تخلص — بيبعت التقييم لو اختار نجوم،
+  /// والتعليق لو كتبه (نفس طلبات شاشتى التعديل).
+  Future<ApiResult<void>> submitConsultationReview({
+    required String bookingId,
+    int? stars,
+    String comment = '',
+  }) async {
+    try {
+      if (stars != null) {
+        await _onlineDoctorServices.saveBookingRating(
+          bookingId,
+          {"value": stars},
+        );
+      }
+      if (comment.isNotEmpty) {
+        await _onlineDoctorServices.saveBookingComment(
+          bookingId,
+          {"text": comment},
+        );
+      }
+      return const ApiResult.success(null);
     } catch (error) {
       return ApiResult.failure(ApiErrorHandler.handle(error));
     }

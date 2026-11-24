@@ -16,4 +16,5 @@ class AppStrings {
   static const contentTypeKey = "Content-Type";
   static const contentTypeMultiPartValue = "multipart/form-data";
   static const hasRunBefore = 'hasRunBefore';
+  static const doctorProfileSummaryCacheKey = 'doctorProfileSummary';
 }

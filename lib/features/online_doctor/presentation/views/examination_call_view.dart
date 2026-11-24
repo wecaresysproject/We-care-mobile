@@ -53,6 +53,9 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
   /// يستنى Jitsi يرجع يتصل.
   bool _isHangingUp = false;
 
+  /// الطبيب أنهى الاجتماع — الشاشة بتتقفل على صفحة التقييم بدل الرجوع.
+  bool _isEndedByDoctor = false;
+
   @override
   void initState() {
     super.initState();
@@ -149,7 +152,27 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
       CallParticipantRole.doctor,
     );
     if (!mounted) return;
+    final didDoctorLeave = _isRemoteParticipantInRoom && !isDoctorInRoom;
     setState(() => _isRemoteParticipantInRoom = isDoctorInRoom);
+    if (didDoctorLeave) _checkIfEndedByDoctor();
+  }
+
+  /// الطبيب بيقفل الاجتماع من الـ API وبعدين يخرج من الغرفة — لو الاجتماع
+  /// اتقفل فعلاً المريض بيخرج ويروح لصفحة التقييم، ولو لأ يبقى اتصال الطبيب
+  /// وقع وبنستناه يرجع.
+  Future<void> _checkIfEndedByDoctor() async {
+    if (_isHangingUp) return;
+    final isEnded = await context.read<ExaminationCallCubit>().isMeetingEnded();
+    if (!mounted || !isEnded || _isHangingUp) return;
+    _isEndedByDoctor = true;
+    _isHangingUp = true;
+    _callTicker?.cancel();
+    if (_isJoined) {
+      // الخروج بيكمل من حدث `videoConferenceLeft`.
+      _jitsiController.runCommand('hangup');
+      return;
+    }
+    _closeScreen();
   }
 
   void _runJitsiCommand(String command) {
@@ -170,6 +193,13 @@ class _ExaminationCallViewState extends State<ExaminationCallView> {
 
   void _closeScreen() {
     if (!mounted || !(ModalRoute.of(context)?.isCurrent ?? false)) return;
+    if (_isEndedByDoctor) {
+      Navigator.of(context).pushReplacementNamed(
+        Routes.consultationReviewView,
+        arguments: widget.booking,
+      );
+      return;
+    }
     Navigator.of(context).pop();
   }
 

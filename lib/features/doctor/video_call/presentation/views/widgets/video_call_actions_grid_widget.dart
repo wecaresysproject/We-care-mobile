@@ -5,7 +5,7 @@ import 'package:we_care/features/doctor/video_call/presentation/views/widgets/vi
 import 'package:we_care/generated/l10n.dart';
 
 /// Bottom-sheet quick-action grid on the video call screen: 4 tiles on the
-/// first row, 2 wider tiles on the second — matching the reference design.
+/// first row, 3 wider tiles on the second — matching the reference design.
 class VideoCallActionsGridWidget extends StatelessWidget {
   const VideoCallActionsGridWidget({
     super.key,
@@ -13,6 +13,8 @@ class VideoCallActionsGridWidget extends StatelessWidget {
     this.onMedicalReportTap,
     this.onMyMedicinesCompatibilityTap,
     this.onNewMedicineCompatibilityTap,
+    this.onPrescriptionTap,
+    this.onPreviousPrescriptionsTap,
     this.isMedicalReportLocked = false,
     this.isMyMedicinesCompatibilityLocked = false,
     this.isNewMedicineCompatibilityLocked = false,
@@ -29,6 +31,12 @@ class VideoCallActionsGridWidget extends StatelessWidget {
 
   /// Opens the new medicine compatibility check against the patient's data.
   final VoidCallback? onNewMedicineCompatibilityTap;
+
+  /// Opens the prescription the doctor writes for the patient.
+  final VoidCallback? onPrescriptionTap;
+
+  /// Opens "روشتات المريض": what this doctor wrote for the patient before.
+  final VoidCallback? onPreviousPrescriptionsTap;
 
   /// Locked tiles show dimmed with a lock — the patient didn't allow the
   /// data they need.
@@ -114,11 +122,25 @@ class VideoCallActionsGridWidget extends StatelessWidget {
               SizedBox(width: 10.w),
               Expanded(
                 child: VideoCallActionTileWidget(
+                  iconAssetPath:
+                      'assets/svgs/doctor_icon_previous_prescriptions.svg',
+                  label: "الروشتات القديمة",
+                  backgroundColor: AppColorsManager
+                      .videoCallPreviousPrescriptionsTileBackground,
+                  iconColor:
+                      AppColorsManager.videoCallPreviousPrescriptionsTileIcon,
+                  onTap: onPreviousPrescriptionsTap,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                child: VideoCallActionTileWidget(
                   iconAssetPath: 'assets/svgs/doctor_icon_prescription.svg',
-                  label: S.of(context).prescriptionAction,
+                  label: "كتابة الروشتة",
                   backgroundColor:
                       AppColorsManager.videoCallPrescriptionTileBackground,
                   iconColor: AppColorsManager.basicDataRoseBadgeIcon,
+                  onTap: onPrescriptionTap,
                 ),
               ),
             ],
