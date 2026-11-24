@@ -29,15 +29,15 @@ class _DoctorSearchViewState extends State<DoctorSearchView> {
   }
 
   void _onSearchChanged(String query) {
-    final normalizedQuery = query.trim();
+    final normalizedQuery = normalizeArabic(query);
     setState(() {
       _filteredSpecializations = normalizedQuery.isEmpty
           ? doctorSpecializations
           : doctorSpecializations
               .where(
-                (specialization) => (specialization["title"] as String)
-                    .replaceAll('\n', ' ')
-                    .contains(normalizedQuery),
+                (specialization) => normalizeArabic(
+                  (specialization["title"] as String).replaceAll('\n', ' '),
+                ).contains(normalizedQuery),
               )
               .toList();
     });

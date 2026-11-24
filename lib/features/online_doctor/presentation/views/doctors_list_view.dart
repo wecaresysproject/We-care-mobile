@@ -61,10 +61,13 @@ class _DoctorsListBodyState extends State<_DoctorsListBody> {
   List<DoctorSummaryModel> _visibleDoctors(
     List<DoctorSummaryModel> allDoctors,
   ) {
-    final query = _searchQuery.trim();
+    // التطبيع بيخلّى "اشرف" تطابق "أشرف" (وكذلك ة/ه و ى/ي وحالة الحروف الإنجليزى).
+    final query = normalizeArabic(_searchQuery);
     final doctors = query.isEmpty
         ? [...allDoctors]
-        : allDoctors.where((doctor) => doctor.name.contains(query)).toList();
+        : allDoctors
+            .where((doctor) => normalizeArabic(doctor.name).contains(query))
+            .toList();
 
     final sortField = _sortField;
     if (sortField != null) {

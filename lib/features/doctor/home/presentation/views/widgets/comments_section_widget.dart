@@ -22,46 +22,74 @@ class CommentsSectionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
+        CommentsHeaderWidget(commentsCount: commentsCount),
+        SizedBox(height: 8.h),
+        if (comments.isEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 12.h),
+            child: Center(
               child: Text(
-                '$commentsCount',
-                style: AppTextStyles.font18MainBlueWeight500,
+                'لا توجد تعليقات بعد',
+                style: AppTextStyles.font14GreyWeight400,
               ),
             ),
-            Text(
-              S.of(context).commentsTitle,
-              style: AppTextStyles.font18MainBlueWeight500,
-            ),
-            SizedBox(width: 8.w),
-            SvgPicture.asset(
-              'assets/svgs/doctor_icon_comments_edit.svg',
-              width: 24.w,
-              height: 24.h,
-            ),
-          ],
-        ),
-        SizedBox(height: 8.h),
+          ),
         for (final comment in comments) ...[
           CommentBubbleWidget(
             patientName: comment.patientName,
             comment: comment.comment,
+            createdAt: comment.createdAt,
           ),
           SizedBox(height: 8.h),
         ],
-        Container(
-          padding: EdgeInsets.only(bottom: 5.h),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom:
-                  BorderSide(color: AppColorsManager.mainDarkBlue, width: 1.5),
+        // القايمة الكاملة لسه ملهاش endpoint — بيظهر بس لو فيه تعليقات أكتر
+        // من اللى معروضة.
+        if (commentsCount > comments.length)
+          Container(
+            padding: EdgeInsets.only(bottom: 5.h),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: AppColorsManager.mainDarkBlue,
+                  width: 1.5,
+                ),
+              ),
+            ),
+            child: Text(
+              S.of(context).viewMore,
+              style: AppTextStyles.font16MainBlueWeight600,
             ),
           ),
-          child: Text(
-            S.of(context).viewMore,
-            style: AppTextStyles.font16MainBlueWeight600,
-          ),
+      ],
+    );
+  }
+}
+
+/// "التعليقات" title row; the count is omitted when unknown (e.g. on error).
+class CommentsHeaderWidget extends StatelessWidget {
+  const CommentsHeaderWidget({super.key, this.commentsCount});
+
+  final int? commentsCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final count = commentsCount;
+    return Row(
+      children: [
+        Expanded(
+          child: count == null
+              ? const SizedBox.shrink()
+              : Text('$count', style: AppTextStyles.font18MainBlueWeight500),
+        ),
+        Text(
+          S.of(context).commentsTitle,
+          style: AppTextStyles.font18MainBlueWeight500,
+        ),
+        SizedBox(width: 8.w),
+        SvgPicture.asset(
+          'assets/svgs/doctor_icon_comments_edit.svg',
+          width: 24.w,
+          height: 24.h,
         ),
       ],
     );

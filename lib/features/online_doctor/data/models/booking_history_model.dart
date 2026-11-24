@@ -15,6 +15,7 @@ class BookingHistoryModel {
     this.linkedExaminationDate,
     this.prescriptionIssuedDate,
     this.prescriptionFileUrl,
+    this.prescriptionImages = const [],
     this.userRating,
     this.userRatingDate,
     this.userComment,
@@ -49,11 +50,23 @@ class BookingHistoryModel {
           : DateTime.tryParse(linkedDate),
       prescriptionIssuedDate: _tryParseDate(prescription?['issuedDate']),
       prescriptionFileUrl: prescription?['fileUrl'] as String?,
+      prescriptionImages: _prescriptionImages(prescription),
       userRating: (userRating?['value'] as num?)?.toDouble(),
       userRatingDate: _tryParseDate(userRating?['date']),
       userComment: userComment?['text'] as String?,
       userCommentDate: _tryParseDate(userComment?['date']),
     );
+  }
+
+  /// صفحات الروشتة من `images` — ولو فاضية، `fileUrl` كصفحة واحدة.
+  static List<String> _prescriptionImages(Map<String, dynamic>? prescription) {
+    final images = (prescription?['images'] as List? ?? const [])
+        .whereType<String>()
+        .where((url) => url.trim().isNotEmpty)
+        .toList();
+    if (images.isNotEmpty) return images;
+    final fileUrl = prescription?['fileUrl'] as String?;
+    return fileUrl == null || fileUrl.trim().isEmpty ? const [] : [fileUrl];
   }
 
   static DateTime? _tryParseDate(Object? value) =>
@@ -82,6 +95,9 @@ class BookingHistoryModel {
   /// ملف الروشتة — `null` بيخفى زرار "عرض / تحميل الروشتة".
   final String? prescriptionFileUrl;
 
+  /// صفحات الروشتة (صورة لكل صفحة) — فاضية بتخفى زرار "عرض / تحميل الروشتة".
+  final List<String> prescriptionImages;
+
   /// تقييم المستخدم نفسه للموعد ده وتاريخه — `null` لو لسه مقيّمش.
   final double? userRating;
   final DateTime? userRatingDate;
@@ -109,6 +125,7 @@ class BookingHistoryModel {
         linkedExaminationDate: linkedExaminationDate,
         prescriptionIssuedDate: prescriptionIssuedDate,
         prescriptionFileUrl: prescriptionFileUrl,
+        prescriptionImages: prescriptionImages,
         userRating: userRating ?? this.userRating,
         userRatingDate: userRatingDate ?? this.userRatingDate,
         userComment: userComment ?? this.userComment,
@@ -134,6 +151,35 @@ class BookingHistoryModel {
 
   /// عنوان شاشة التفاصيل — "تفاصيل الكشف" / "تفاصيل الاستشارة".
   String get detailsTitle => "تفاصيل ${type.shortName}";
+
+  /// نص زرار المشاركة فى شاشة التفاصيل — صفحات الروشتة بتتبعت معاه كصور.
+  /// التقييم والتعليق مش بيتبعتوا لأنهم رأى المستخدم الشخصى.
+  String get shareText {
+    final specialty = [doctor.specialization, doctor.academicTitle]
+        .where((part) => part.trim().isNotEmpty)
+        .join(" - ");
+    final issuedDate = prescriptionIssuedDate;
+    final pagesCount = prescriptionImages.length;
+    final prescriptionLine = issuedDate == null
+        ? "📋 الروشتة: لا توجد روشتة لهذا الموعد"
+        : "📋 الروشتة: صدرت في ${arabicShortDateLabel(issuedDate)}"
+            "${pagesCount == 0 ? "" : " ($pagesCount ${pagesCount == 1 ? "صفحة مرفقة" : pagesCount == 2 ? "صفحتان مرفقتان" : "صفحات مرفقة"})"}";
+
+    return [
+      "🩺 تفاصيل ${type.badgeLabel}",
+      "",
+      "👨‍⚕️ الطبيب: د. ${doctor.name}",
+      if (specialty.isNotEmpty) "🏷️ التخصص: $specialty",
+      "📅 التاريخ: $dateLabel",
+      "🕐 الوقت: $timeLabel",
+      if (examinationFee != null) "💰 تكلفة الكشف: $examinationFee جنيه",
+      if (paymentMethodLabel != null) "💳 طريقة الدفع: $paymentMethodLabel",
+      if (linkedExaminationLabel.isNotEmpty) "🔗 $linkedExaminationLabel",
+      "✅ حالة الموعد: $statusLabel",
+      "",
+      prescriptionLine,
+    ].join("\n");
+  }
 }
 
 /// الوصف اللفظى للتقييم — بيتعرض تحت النجوم فى شاشة التفاصيل.

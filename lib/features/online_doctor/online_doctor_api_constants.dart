@@ -10,6 +10,10 @@ class OnlineDoctorApiConstants {
   /// إضافة/إزالة طبيب من المفضلة — `POST` / `DELETE` بنفس المسار و`?doctorId=`.
   static const favoriteDoctor = "/OnlineDoctor/favorite";
 
+  /// تعليقات المرضى على الطبيب، الأحدث الأول — `?doctorId=&skip=&take=`.
+  /// بيتنادى من "المزيد" فى قسم التعليقات بعد أول 3 اللى راجعين فى البروفايل.
+  static const getDoctorComments = "/OnlineDoctor/comments";
+
   /// الأيام المتاحة للحجز وتوقيتاتها — `?doctorId=&fromDate=&days=`.
   static const getDoctorAvailability = "/PatientBooking/availability";
 

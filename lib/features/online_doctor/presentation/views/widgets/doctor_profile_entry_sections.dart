@@ -83,6 +83,42 @@ class DoctorCertificatesList extends StatelessWidget {
   }
 }
 
+/// محتوى قسم "التراخيص المهنية".
+class DoctorLicensesList extends StatelessWidget {
+  const DoctorLicensesList({super.key, required this.licenses});
+
+  final List<DoctorLicenseModel> licenses;
+
+  @override
+  Widget build(BuildContext context) {
+    return _EntriesColumn(
+      children: [
+        for (var index = 0; index < licenses.length; index++)
+          DoctorProfileEntryTile(
+            index: index + 1,
+            title: licenses[index].authority.isEmpty
+                ? "ترخيص مزاولة المهنة"
+                : licenses[index].authority,
+            subtitle: _joinNonEmpty([
+              licenses[index].licenseNumber.isEmpty
+                  ? null
+                  : "رقم الترخيص: ${licenses[index].licenseNumber}",
+              licenses[index].country,
+            ]),
+            trailingLine: _validityLine(licenses[index]),
+          ),
+      ],
+    );
+  }
+
+  String? _validityLine(DoctorLicenseModel license) {
+    if (license.fromYear.isEmpty && license.toYear.isEmpty) return null;
+    if (license.toYear.isEmpty) return "منذ ${license.fromYear}";
+    if (license.fromYear.isEmpty) return "سارى حتى ${license.toYear}";
+    return "من ${license.fromYear} حتى ${license.toYear}";
+  }
+}
+
 /// محتوى قسم "الجمعيات الطبية".
 class DoctorMembershipsList extends StatelessWidget {
   const DoctorMembershipsList({super.key, required this.memberships});

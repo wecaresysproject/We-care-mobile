@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:we_care/features/online_doctor/data/models/doctor_profile_comment_model.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_profile_entries.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_review_model.dart';
 import 'package:we_care/features/online_doctor/data/models/nearest_appointment_model.dart';
@@ -100,6 +101,15 @@ class DoctorModel {
   /// الدورات والشهادات المهنية.
   final List<DoctorCertificateModel> certificates;
 
+  /// التراخيص المهنية — من رد البروفايل بس، فمش داخلة فى الـ JSON المتولّد.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final List<DoctorLicenseModel> licenses;
+
+  /// أحدث 3 تعليقات للمرضى (`latestComments`) — من رد البروفايل بس، والباقى
+  /// بيتحمّل بـ "المزيد" من `GET /OnlineDoctor/comments`.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final List<DoctorProfileCommentModel> latestComments;
+
   /// الجمعيات الطبية.
   final List<DoctorMembershipModel> medicalAssociations;
 
@@ -149,6 +159,8 @@ class DoctorModel {
     this.languages = const [],
     this.education = const [],
     this.certificates = const [],
+    this.licenses = const [],
+    this.latestComments = const [],
     this.medicalAssociations = const [],
     this.research = const [],
     this.awards = const [],
@@ -170,6 +182,7 @@ class DoctorModel {
     final booking = _mapOf(json['booking']);
     final servicePrices = _mapOf(json['servicePrices']);
     final certificates = _mapOf(json['certificates']);
+    final licenses = _mapOf(json['licenses']);
     final enabledDays = _listOfMaps(booking['weeklySchedule'])
         .where((day) => day['isEnabled'] == true)
         .toList();
@@ -238,6 +251,27 @@ class DoctorModel {
                 year: _yearOf(_stringOf(e['obtainedDate'])),
               ))
           .toList(),
+      //* "boardCertification" هى "الدورات التخصصية والشهادات المهنية" فى
+      //* إدخال بيانات الطبيب — مكانها قسم الدورات مش التعليم.
+      certificates: _listOfMaps(certificates['boardCertification'])
+          .map((e) => DoctorCertificateModel(
+                title: _stringOf(e['degreeTitle']),
+                issuer: _stringOf(e['grantingBody']),
+                country: _stringOf(e['countryName']),
+                year: _yearOf(_stringOf(e['obtainedDate'])),
+              ))
+          .toList(),
+      licenses: _listOfMaps(licenses['licenses'])
+          .map((e) => DoctorLicenseModel(
+                authority: _stringOf(e['licensingAuthority']),
+                licenseNumber: _stringOf(e['licenseNumber']),
+                country: _stringOf(e['countryName']),
+                fromYear: _yearOf(_stringOf(e['licenseDate'])),
+                toYear: _yearOf(_stringOf(e['expiryDate'])),
+              ))
+          .toList(),
+      latestComments:
+          DoctorProfileCommentModel.listFromJson(json['latestComments']),
       medicalAssociations: _listOfMaps(json['memberships'])
           .map((e) => DoctorMembershipModel(
                 association: _stringOf(e['associationName']),
@@ -296,7 +330,6 @@ const List<String> _degreeKeys = [
   'master',
   'doctorate',
   'fellowship',
-  'boardCertification',
 ];
 
 Map<String, dynamic> _mapOf(dynamic value) =>

@@ -59,6 +59,10 @@ class PrescriptionDetailsView extends StatelessWidget {
                 children: [
                   AppBarWithCenteredTitle(
                     title: 'الروشتة',
+                    // A doctor's prescription can only be shared.
+                    showShareButtonOnly: state
+                            .selectedPrescriptionDetails?.isCreatedByDoctor ==
+                        true,
                     trailingActions: [
                       CircleIconButton(
                         icon: Icons.play_arrow,

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:we_care/core/global/Helpers/app_enums.dart';
 import 'package:we_care/features/online_doctor/data/models/doctor_model.dart';
+import 'package:we_care/features/online_doctor/data/models/doctor_profile_comment_model.dart';
 import 'package:we_care/features/online_doctor/data/repos/online_doctor_repo.dart';
 
 part 'doctor_profile_state.dart';
@@ -31,6 +32,14 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
             requestStatus: RequestStatus.success,
             doctor: doctor,
             isFavorite: doctor.isFavorite,
+            comments: doctor.latestComments,
+            // لو العدد الإجمالى أقل من اللى راجع (بيانات قديمة)، المعروض هو
+            // الإجمالى ومفيش "المزيد".
+            commentsTotalCount:
+                doctor.commentsCount < doctor.latestComments.length
+                    ? doctor.latestComments.length
+                    : doctor.commentsCount,
+            moreCommentsStatus: RequestStatus.initial,
           ),
         );
       },
@@ -46,6 +55,48 @@ class DoctorProfileCubit extends Cubit<DoctorProfileState> {
   }
 
   Future<void> retry() => getDoctorProfile(state.doctorId);
+
+  /// عدد التعليقات اللى بتتحمّل فى كل ضغطة على "المزيد".
+  static const _commentsPageSize = 10;
+
+  /// "المزيد" فى قسم التعليقات — بيجيب الصفحة اللى بعد المعروض ويضيفها.
+  Future<void> loadMoreComments() async {
+    final doctor = state.doctor;
+    if (doctor == null ||
+        !state.hasMoreComments ||
+        state.moreCommentsStatus == RequestStatus.loading) {
+      return;
+    }
+    emit(state.copyWith(moreCommentsStatus: RequestStatus.loading));
+
+    final result = await _onlineDoctorRepo.getDoctorComments(
+      doctorId: doctor.id,
+      skip: state.comments.length,
+      take: _commentsPageSize,
+    );
+
+    result.when(
+      success: (page) {
+        final shownIds = {for (final c in state.comments) c.id};
+        final newComments = page.comments
+            .where((c) => c.id.isEmpty || !shownIds.contains(c.id))
+            .toList();
+        final comments = [...state.comments, ...newComments];
+        emit(
+          state.copyWith(
+            moreCommentsStatus: RequestStatus.success,
+            comments: comments,
+            // صفحة فاضية = خلصت التعليقات، حتى لو الإجمالى بيقول غير كده.
+            commentsTotalCount:
+                newComments.isEmpty ? comments.length : page.totalCount,
+          ),
+        );
+      },
+      failure: (_) {
+        emit(state.copyWith(moreCommentsStatus: RequestStatus.failure));
+      },
+    );
+  }
 
   /// بيقلب حالة المفضلة على السيرفر — القلب بيتحدّث من رد الـ API مش محليًا،
   /// عشان الشاشة تفضل مطابقة لحالة السيرفر حتى لو الطلب فشل.

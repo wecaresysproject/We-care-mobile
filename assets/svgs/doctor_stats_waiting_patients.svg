@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#69D5FF"/><stop offset=".45" stop-color="#168FE0"/><stop offset="1" stop-color="#0753B8"/>
+  </linearGradient>
+  <linearGradient id="blue2" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0" stop-color="#B9F0FF"/><stop offset=".45" stop-color="#42BCEB"/><stop offset="1" stop-color="#0876C9"/>
+  </linearGradient>
+  <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8AF2C4"/><stop offset=".45" stop-color="#20C58A"/><stop offset="1" stop-color="#07966E"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8CF4E8"/><stop offset=".5" stop-color="#22C5B8"/><stop offset="1" stop-color="#078C9C"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#FFF29A"/><stop offset=".35" stop-color="#FFC928"/><stop offset=".72" stop-color="#E99A00"/><stop offset="1" stop-color="#B96A00"/>
+  </linearGradient>
+  <linearGradient id="goldSide" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F6B91F"/><stop offset="1" stop-color="#C87900"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+    <feOffset dy="3" result="offset"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<g filter="url(#shadow)">
+ <path d="M67 37h122v27H67z" rx="10" fill="url(#blue)" stroke="#075AAE" stroke-width="3"/>
+ <path d="M78 64h100c-1 35-18 47-39 64 21 17 38 31 39 64H78c1-33 18-47 39-64C96 111 79 99 78 64z" fill="#E9F9FF" stroke="#168FD0" stroke-width="5"/>
+ <path d="M87 70h80c-2 25-17 35-40 52-23-17-38-27-40-52z" fill="url(#gold)"/>
+ <path d="M127 121l-24 33h50z" fill="url(#gold)"/>
+ <path d="M87 185h80c-2-25-17-35-40-52-23 17-38 27-40 52z" fill="url(#gold)"/>
+ <path d="M67 192h122v27H67z" fill="url(#blue)" stroke="#075AAE" stroke-width="3"/>
+ <path d="M89 45h78" stroke="#D5F7FF" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+ <path d="M89 204h78" stroke="#D5F7FF" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+</g>
+</svg>

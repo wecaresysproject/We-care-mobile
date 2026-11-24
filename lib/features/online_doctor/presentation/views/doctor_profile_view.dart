@@ -15,6 +15,7 @@ import 'package:we_care/features/online_doctor/logic/cubit/doctor_profile_cubit.
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_booking_info_card.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_languages_chips.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_app_bar.dart';
+import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_comments_section.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_entry_sections.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_expandable_section.dart';
 import 'package:we_care/features/online_doctor/presentation/views/widgets/doctor_profile_header_card.dart';
@@ -116,8 +117,13 @@ class _DoctorProfileBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<DoctorProfileCubit, DoctorProfileState>(
       listenWhen: (previous, current) =>
-          previous.favoriteStatus != current.favoriteStatus,
+          previous.favoriteStatus != current.favoriteStatus ||
+          previous.moreCommentsStatus != current.moreCommentsStatus,
       listener: (context, state) {
+        if (state.moreCommentsStatus == RequestStatus.failure) {
+          showError("تعذر تحميل المزيد من التعليقات، حاول مرة أخرى");
+          return;
+        }
         if (state.favoriteStatus == RequestStatus.success) {
           showSuccess(state.favoriteMessage);
         } else if (state.favoriteStatus == RequestStatus.failure) {
@@ -193,6 +199,7 @@ class _DoctorProfileContent extends StatelessWidget {
           body: doctor.about,
           initiallyExpanded: true,
         ),
+      if (doctor.latestComments.isNotEmpty) const _CommentsSection(),
       DoctorProfileExpandableSection(
         title: "التخصص والاهتمامات الطبية",
         iconAsset: "assets/images/doctor_stethoscope_icon.png",
@@ -218,6 +225,12 @@ class _DoctorProfileContent extends StatelessWidget {
           title: "التعليم والمؤهلات",
           icon: Icons.school_rounded,
           content: DoctorQualificationsList(qualifications: doctor.education),
+        ),
+      if (doctor.licenses.isNotEmpty)
+        DoctorProfileExpandableSection(
+          title: "التراخيص المهنية",
+          icon: Icons.verified_rounded,
+          content: DoctorLicensesList(licenses: doctor.licenses),
         ),
       if (doctor.certificates.isNotEmpty)
         DoctorProfileExpandableSection(
@@ -331,6 +344,32 @@ class _BookAppointmentButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// "التعليقات" — بيقرا التعليقات المعروضة من الـ cubit عشان "المزيد" يضيف
+/// عليها من غير ما يبنى باقى الملف. بيتخفى لو مفيش تعليقات.
+class _CommentsSection extends StatelessWidget {
+  const _CommentsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<DoctorProfileCubit, DoctorProfileState>(
+      buildWhen: (previous, current) =>
+          previous.comments != current.comments ||
+          previous.commentsTotalCount != current.commentsTotalCount ||
+          previous.moreCommentsStatus != current.moreCommentsStatus,
+      builder: (context, state) {
+        if (state.comments.isEmpty) return const SizedBox.shrink();
+        return DoctorProfileCommentsSection(
+          comments: state.comments,
+          totalCount: state.commentsTotalCount,
+          hasMore: state.hasMoreComments,
+          isLoadingMore: state.moreCommentsStatus == RequestStatus.loading,
+          onLoadMore: context.read<DoctorProfileCubit>().loadMoreComments,
+        );
+      },
     );
   }
 }

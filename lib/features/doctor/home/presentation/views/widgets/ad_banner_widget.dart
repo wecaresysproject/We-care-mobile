@@ -1,87 +1,114 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:we_care/core/global/Helpers/functions.dart';
+import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 
-class AdBannerWidget extends StatefulWidget {
+/// Home ads carousel — same look and behavior as the patient home's
+/// `BannerCrausalWidget` (auto-playing, full-width rounded slides).
+class AdBannerWidget extends StatelessWidget {
   const AdBannerWidget({super.key, required this.imageUrls});
 
   final List<String> imageUrls;
 
   @override
-  State<AdBannerWidget> createState() => _AdBannerWidgetState();
-}
-
-class _AdBannerWidgetState extends State<AdBannerWidget> {
-  final _pageController = PageController();
-  int _currentPage = 0;
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: double.infinity,
-          height: 173.h,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            color: AppColorsManager.adBannerOverlay,
-            borderRadius: BorderRadius.circular(8.r),
-            border:
-                Border.all(color: AppColorsManager.mainDarkBlue, width: 1.5),
-          ),
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: widget.imageUrls.length,
-            onPageChanged: (page) => setState(() => _currentPage = page),
-            itemBuilder: (context, index) {
-              return Image.asset(widget.imageUrls[index], fit: BoxFit.cover);
-            },
-          ),
-        ),
-        SizedBox(height: 4.h),
-        SizedBox(
-          height: 8.h,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < widget.imageUrls.length; i++) ...[
-                if (i != 0) SizedBox(width: 8.w),
-                _Dot(
-                  width: i == _currentPage ? 14.w : 8.w,
-                  color: i == _currentPage
-                      ? AppColorsManager.mainDarkBlue
-                      : AppColorsManager.unselectedNavIconColor,
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 130.h,
+        autoPlay: true,
+        viewportFraction: 1,
+        enlargeCenterPage: false,
+      ),
+      items: [
+        for (final imageUrl in imageUrls)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.r),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
+              placeholder: (context, url) => Skeletonizer(
+                enabled: true,
+                child: Container(
+                  color: Colors.grey[300],
+                  height: 130.h,
+                  width: double.infinity,
                 ),
-              ],
-            ],
+              ),
+              errorWidget: (context, url, error) => const Center(
+                child: Icon(Icons.error_outline, color: Colors.red),
+              ),
+            ),
           ),
-        ),
       ],
     );
   }
 }
 
-class _Dot extends StatelessWidget {
-  const _Dot({required this.width, required this.color});
+/// Failure state — same look as the patient home's ads error box, with a
+/// fixed message naming the section (the raw server error, e.g. "Resource not
+/// found", doesn't tell the doctor what failed).
+class AdBannerErrorWidget extends StatelessWidget {
+  const AdBannerErrorWidget({super.key, required this.onRetry});
 
-  final double width;
-  final Color color;
+  final VoidCallback onRetry;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: width,
-      height: 8.h,
-      decoration:
-          BoxDecoration(color: color, borderRadius: BorderRadius.circular(5.r)),
+    return Container(
+      padding: EdgeInsets.all(16.h),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: Colors.red.withValues(alpha: 0.3),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.error_outline_rounded,
+            color: Colors.redAccent,
+            size: 32,
+          ),
+          verticalSpacing(8),
+          Text(
+            "تعذر تحميل الإعلانات",
+            textAlign: TextAlign.center,
+            style: AppTextStyles.font14whiteWeight600.copyWith(
+              color: AppColorsManager.textColor,
+            ),
+          ),
+          verticalSpacing(12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(
+                Icons.refresh,
+                size: 20,
+                color: Colors.white,
+              ),
+              label: Text(
+                "إعادة المحاولة",
+                style: AppTextStyles.font14whiteWeight600,
+              ),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

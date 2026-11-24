@@ -8,6 +8,7 @@ import 'package:we_care/core/global/Helpers/app_toasts.dart';
 import 'package:we_care/core/global/Helpers/extensions.dart';
 import 'package:we_care/core/global/Helpers/functions.dart';
 import 'package:we_care/core/global/SharedWidgets/custom_app_back_arrow.dart';
+import 'package:we_care/core/global/SharedWidgets/details_view_images_with_title_widget.dart';
 import 'package:we_care/core/global/theming/app_text_styles.dart';
 import 'package:we_care/core/global/theming/color_manager.dart';
 import 'package:we_care/core/routing/routes.dart';
@@ -93,6 +94,19 @@ class _BookingDetailsBodyState extends State<_BookingDetailsBody> {
     setState(() => _booking = updatedBooking);
   }
 
+  bool _isSharing = false;
+
+  /// بيشارك ملخص الموعد كنص، وصفحات الروشتة مرفقة معاه كصور لو موجودة.
+  Future<void> _onSharePressed() async {
+    setState(() => _isSharing = true);
+    await shareImages(
+      context,
+      _booking.prescriptionImages,
+      _booking.shareText,
+    );
+    if (mounted) setState(() => _isSharing = false);
+  }
+
   void _showMessage(String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -142,24 +156,31 @@ class _BookingDetailsBodyState extends State<_BookingDetailsBody> {
                         ),
                       ),
                     ),
-                    //! مشاركة تفاصيل الموعد لسه محتاجة صيغة متفق عليها —
-                    //! الزرار موجود زى التصميم وهيتفعل معاها.
                     Material(
                       color: OnlineDoctorTheme.iconTint,
                       borderRadius: BorderRadius.circular(12.r),
                       child: InkWell(
-                        onTap: () => _showMessage(
-                          "مشاركة تفاصيل الموعد ستتوفر قريباً",
-                        ),
+                        onTap: _isSharing ? null : _onSharePressed,
                         borderRadius: BorderRadius.circular(12.r),
                         child: SizedBox(
                           width: 40.w,
                           height: 40.h,
-                          child: Icon(
-                            Icons.share_outlined,
-                            size: 19.sp,
-                            color: AppColorsManager.mainDarkBlue,
-                          ),
+                          child: _isSharing
+                              ? Center(
+                                  child: SizedBox(
+                                    width: 18.r,
+                                    height: 18.r,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColorsManager.mainDarkBlue,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.share_outlined,
+                                  size: 19.sp,
+                                  color: AppColorsManager.mainDarkBlue,
+                                ),
                         ),
                       ),
                     ),
@@ -178,8 +199,10 @@ class _BookingDetailsBodyState extends State<_BookingDetailsBody> {
                     verticalSpacing(12),
                     _PrescriptionCard(
                       booking: booking,
-                      onDownloadPressed: () =>
-                          launchExternalUrl(booking.prescriptionFileUrl),
+                      onDownloadPressed: () => context.pushNamed(
+                        Routes.bookingPrescriptionImagesView,
+                        arguments: booking.prescriptionImages,
+                      ),
                     ),
                     verticalSpacing(12),
                     _UserRatingCard(
@@ -641,7 +664,7 @@ class _PrescriptionCard extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (issuedDate != null && booking.prescriptionFileUrl != null)
+            if (issuedDate != null && booking.prescriptionImages.isNotEmpty)
               InkWell(
                 onTap: onDownloadPressed,
                 borderRadius: BorderRadius.circular(8.r),

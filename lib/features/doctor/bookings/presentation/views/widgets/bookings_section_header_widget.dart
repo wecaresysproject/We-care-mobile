@@ -14,6 +14,8 @@ class BookingsSectionHeaderWidget extends StatelessWidget {
     required this.patientsCount,
     required this.countBackgroundColor,
     required this.countTextColor,
+    this.countLabel,
+    this.countIcon = Icons.person,
   });
 
   final String title;
@@ -21,6 +23,8 @@ class BookingsSectionHeaderWidget extends StatelessWidget {
   final int patientsCount;
   final Color countBackgroundColor;
   final Color countTextColor;
+  final String? countLabel;
+  final IconData countIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,8 @@ class BookingsSectionHeaderWidget extends StatelessWidget {
           count: patientsCount,
           backgroundColor: countBackgroundColor,
           textColor: countTextColor,
+          label: countLabel,
+          icon: countIcon,
         ),
         Row(
           mainAxisSize: MainAxisSize.min,

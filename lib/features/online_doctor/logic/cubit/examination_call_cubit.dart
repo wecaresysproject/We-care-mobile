@@ -95,6 +95,20 @@ class ExaminationCallCubit extends Cubit<ExaminationCallState> {
     );
   }
 
+  /// بيسأل الـ API لو الطبيب أنهى الاجتماع — بتتنده لما الطبيب يخرج من
+  /// الغرفة، عشان نفرّق بين إنهاء المكالمة ووقوع اتصاله. مش بتغيّر الحالة.
+  Future<bool> isMeetingEnded() async {
+    final result = await _onlineDoctorRepo.getVideoMeeting(
+      appointmentId: _bookingId,
+    );
+    final isEnded = result.when(
+      success: (meeting) => meeting?.status == VideoMeetingStatus.ended,
+      failure: (_) => false,
+    );
+    VideoCallLogger.info('doctor left → meeting ended=$isEnded');
+    return isEnded;
+  }
+
   void _waitForDoctor() {
     if (state.status != ExaminationCallStatus.waitingForDoctor) {
       emit(state.copyWith(status: ExaminationCallStatus.waitingForDoctor));

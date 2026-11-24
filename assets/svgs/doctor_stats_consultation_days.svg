@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs>
+  <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#69D5FF"/><stop offset=".45" stop-color="#168FE0"/><stop offset="1" stop-color="#0753B8"/>
+  </linearGradient>
+  <linearGradient id="blue2" x1="0" y1="0" x2="0.9" y2="1">
+    <stop offset="0" stop-color="#B9F0FF"/><stop offset=".45" stop-color="#42BCEB"/><stop offset="1" stop-color="#0876C9"/>
+  </linearGradient>
+  <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8AF2C4"/><stop offset=".45" stop-color="#20C58A"/><stop offset="1" stop-color="#07966E"/>
+  </linearGradient>
+  <linearGradient id="teal" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#8CF4E8"/><stop offset=".5" stop-color="#22C5B8"/><stop offset="1" stop-color="#078C9C"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#FFF29A"/><stop offset=".35" stop-color="#FFC928"/><stop offset=".72" stop-color="#E99A00"/><stop offset="1" stop-color="#B96A00"/>
+  </linearGradient>
+  <linearGradient id="goldSide" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F6B91F"/><stop offset="1" stop-color="#C87900"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+    <feOffset dy="3" result="offset"/>
+    <feComponentTransfer><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+<g filter="url(#shadow)">
+ <rect x="43" y="47" width="156" height="157" rx="19" fill="url(#blue)" stroke="#075AAE" stroke-width="3"/>
+ <rect x="52" y="72" width="138" height="122" rx="10" fill="#F3FBFF"/>
+ <path d="M43 68q0-21 20-21h116q20 0 20 21v17H43z" fill="url(#blue2)"/>
+ <path d="M79 35v31M163 35v31" stroke="#075AAE" stroke-width="11" stroke-linecap="round"/>
+ <path d="M79 37v22M163 37v22" stroke="#C4F3FF" stroke-width="4" stroke-linecap="round"/>
+ <g fill="#7ACAF0">
+  <rect x="69" y="103" width="22" height="19" rx="4"/><rect x="105" y="103" width="22" height="19" rx="4"/><rect x="141" y="103" width="22" height="19" rx="4"/>
+  <rect x="69" y="137" width="22" height="19" rx="4"/><rect x="105" y="137" width="22" height="19" rx="4"/><rect x="141" y="137" width="22" height="19" rx="4"/>
+ </g>
+ <circle cx="185" cy="179" r="39" fill="url(#green)" stroke="#078C68" stroke-width="3"/>
+ <path d="M165 179l13 13 27-30" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

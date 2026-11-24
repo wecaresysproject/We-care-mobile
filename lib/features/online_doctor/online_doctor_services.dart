@@ -19,6 +19,13 @@ abstract class OnlineDoctorServices {
     @Query("doctorId") String doctorId,
   );
 
+  @GET(OnlineDoctorApiConstants.getDoctorComments)
+  Future<dynamic> getDoctorComments(
+    @Query("doctorId") String doctorId,
+    @Query("skip") int skip,
+    @Query("take") int take,
+  );
+
   @POST(OnlineDoctorApiConstants.favoriteDoctor)
   Future<dynamic> addDoctorToFavorites(
     @Query("doctorId") String doctorId,

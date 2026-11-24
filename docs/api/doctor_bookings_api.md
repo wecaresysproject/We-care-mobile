@@ -130,6 +130,7 @@ Rules:
   cancelled and not completed. Sorted by `startsAt` ascending. An appointment whose time
   has passed **stays in the list** (shown as **متأخر**) until its session is completed.
 - `waitingPatients`: patients waiting for the doctor's decision, oldest `requestedAt` first.
+- `completedAppointments` (**الكشوفات المنتهية**) — see below.
 - Nothing to show → the list is `[]` (200).
 
 **⚠️ open:** what puts a patient on the waiting list? No patient-side endpoint creates a
@@ -138,7 +139,41 @@ today** who asks to be seen — the screen says an accepted patient *"سيتم �
 مواعيد اليوم"*. This needs to be confirmed, then the patient-side request endpoint added
 to the patient contract.
 
-App models: `BookingsModel`, `TodayAppointmentModel`, `WaitingPatientModel`
+### `completedAppointments` — الكشوفات المنتهية (requested 2026-11-16)
+
+A third list in the same `data` object, beside `appointments` and `waitingList`:
+today's sessions that are over. When a session ends, its booking **leaves
+`appointments` and moves here** — the app shows it under the waiting list as a simple
+table (patient, time, type) with a count badge.
+
+```json
+"completedAppointments": [
+  {
+    "bookingId": "6b01f4c97e523ce1d8678a10",
+    "type": "onlineExamination",
+    "patientName": "أحمد محمد علي",
+    "patientImageUrl": null,
+    "startsAt": "2026-11-16T09:00:00+02:00",
+    "completedAt": "2026-11-16T09:24:00+02:00"
+  }
+]
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `bookingId`, `type`, `patientName`, `patientImageUrl`, `startsAt` | — | Same fields and names as an `appointments[]` item. |
+| `completedAt` | string | ISO 8601 with offset — when the session ended. |
+
+Rules:
+- A session is completed when the doctor ends the meeting (`POST /Video/end`) — the
+  booking's status becomes `completed`. The same moment moves it to the patient's
+  history (patient_booking_api.md §4), so both sides use one rule.
+- Only bookings whose `startsAt` is **today** (`Africa/Cairo`); cancelled bookings are
+  not included.
+- Sorted by `completedAt` descending (last finished first). None → `[]`, never `null`.
+
+App models: `CompletedAppointmentModel` (parsed from `completedAppointments[]`),
+`BookingsModel`, `TodayAppointmentModel`, `WaitingPatientModel`
 (`lib/features/doctor/bookings/data/models/`) — parsed from this shape.
 
 ### Errors

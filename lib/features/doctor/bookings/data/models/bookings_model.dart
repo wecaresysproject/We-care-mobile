@@ -1,3 +1,4 @@
+import 'package:we_care/features/doctor/bookings/data/models/completed_appointment_model.dart';
 import 'package:we_care/features/doctor/bookings/data/models/today_appointment_model.dart';
 import 'package:we_care/features/doctor/bookings/data/models/appointment_type.dart';
 import 'package:we_care/features/doctor/bookings/data/models/waiting_patient_model.dart';
@@ -9,10 +10,11 @@ class BookingsModel {
     required this.doctorPhotoUrl,
     required this.todayAppointments,
     required this.waitingPatients,
+    this.completedAppointments = const [],
   });
 
-  /// `data` of the doctor bookings endpoint — `appointments[]` and
-  /// `waitingList[]`. The backend sends no `doctor` object yet, so the header
+  /// `data` of the doctor bookings endpoint — `appointments[]`,
+  /// `waitingList[]` and `completedAppointments[]`. The backend sends no `doctor` object yet, so the header
   /// fields stay empty until it does.
   factory BookingsModel.fromJson(Map<String, dynamic> json) {
     final doctor = json['doctor'] as Map<String, dynamic>? ?? const {};
@@ -26,6 +28,11 @@ class BookingsModel {
       waitingPatients: (json['waitingList'] as List? ?? const [])
           .map((e) => WaitingPatientModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      completedAppointments:
+          (json['completedAppointments'] as List? ?? const [])
+              .map((e) =>
+                  CompletedAppointmentModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
   }
 
@@ -39,6 +46,9 @@ class BookingsModel {
   /// Oldest `requestedAt` first, as the API returns them.
   final List<WaitingPatientModel> waitingPatients;
 
+  /// Today's finished sessions, last finished first, as the API returns them.
+  final List<CompletedAppointmentModel> completedAppointments;
+
   BookingsModel copyWith({
     List<TodayAppointmentModel>? todayAppointments,
     List<WaitingPatientModel>? waitingPatients,
@@ -49,6 +59,7 @@ class BookingsModel {
       doctorPhotoUrl: doctorPhotoUrl,
       todayAppointments: todayAppointments ?? this.todayAppointments,
       waitingPatients: waitingPatients ?? this.waitingPatients,
+      completedAppointments: completedAppointments,
     );
   }
 }
